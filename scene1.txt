@@ -1,0 +1,43 @@
+# ============================================================
+# Scene file for rendering
+#
+# Instructions for reading this file:
+#   - lines beginning with ‘#’ are comments
+#   - all objects are expressed in world coords
+#   - objects are described with the following parameters:
+#	   - x y z Position for each object
+#      - Light Source also has a color associated with it
+#      - sphere has centre and radius
+#	   - Mesh has a position and string for mesh location
+#      - plane has 4 corner positions in clockwise order
+#      - triangle has positions of its three corners, in
+#        counter-clockwise order
+#   - syntax of the object specifications are as follows:
+#
+#      light    { x  y  z  r  g  b }
+#      sphere   { x  y  z  r }
+#      plane    { x y z  x1 y1 z1  x2 y2 z3  x3 y3 z3  x4 y4 z4}
+#      triangle { x y z  x1 y1 z1  x2 y2 z2  x3 y3 z3 }
+#	   mesh		{ x y z  sLocation }
+#
+# ============================================================
+
+light {
+  .5 .5 .5
+  .5 .5 .5
+}
+
+# plane
+plane {
+	0 0 0
+	-1.0 0.0 -1.0
+	-1.0 0.0 1.0
+	1.0 0.0 -1.0
+	1.0 0.0 1.0
+}
+
+# Mesh
+mesh {
+	0 0 0
+	models/bunny.ply
+}
