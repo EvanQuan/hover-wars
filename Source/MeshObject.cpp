@@ -7,7 +7,7 @@ MeshObject::MeshObject( const glm::vec3* pPosition, const string* sFileName, lon
 {
 	m_fScale = 0.01f;
 	m_pPosition = vec3( 0.0, 0.0, 0.0 );
-	m_pQuaternion = quat( 0.7071f, 0.0f, -0.7071f, 0.0f );	// Hack, get the Mesh oriented properly
+	m_pQuaternion = quat(0.7071f, 0.0f, -0.7071f, 0.0f);	// Hack, get the Mesh oriented properly
 
 	ShaderManager* pShdrMngr = ShaderManager::getInstance();
 

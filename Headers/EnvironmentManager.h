@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "Object3D.h"
 #include "Light.h"
+#include "BoidEngine.h"
 
 // Environment Manager
 // Manages all 3D objects in an environment
@@ -35,6 +36,9 @@ public:
 	void setMaxThreshold( float fMax ) { m_fMaxEdgeThreshold = fMax; }
 	float getMaxThreshold() { return m_fMaxEdgeThreshold; }
 
+	// Boid Methods
+	void initializeBoidEngine(vector< string >& sData);
+
 private:
 	EnvironmentManager();
 	EnvironmentManager(const EnvironmentManager* pCopy);
@@ -44,6 +48,7 @@ private:
 	vector<Object3D*>	m_pObjects;
 	vector<Light*>		m_pLights;
 	Object* getObject( long lID );
+	BoidEngine* m_pBoidEngine;
 
 	// Edge Threshold Implementation
 	float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;

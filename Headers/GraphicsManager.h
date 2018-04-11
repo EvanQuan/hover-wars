@@ -3,7 +3,6 @@
 /* INCLUDES */
 #include "stdafx.h"
 #include "Camera.h"
-#include "BoidEngine.h"
 
 // Forward Declarations
 class ShaderManager;
@@ -85,6 +84,5 @@ private:
 	// Manages Shaders for all assignments
 	ShaderManager* m_pShaderMngr;
 	EnvironmentManager* m_pEnvMngr;
-	BoidEngine* m_pBoidEngine;
 };
 

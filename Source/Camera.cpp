@@ -11,7 +11,7 @@
 #define FOV_Y				60.f
 #define Z_CLOSE				0.01f
 #define Z_FAR				10000.f
-#define START_RADIUS		2.5f
+#define START_RADIUS		10.f
 
 // Vector Indexing
 #define I_THETA				0		// Spherical
@@ -35,7 +35,7 @@ const vec3 DEFAULT_POS = vec3( 90.f, 8.5308f, START_RADIUS ); // (Theta, Phi, Ra
 Camera::Camera( int iHeight, int iWidth )
 {
 	m_vSPos = DEFAULT_POS;	
-	m_vWorldLookAt = vec3( 0.f, 0.f, 0.f );		// (X, Y, Z)
+	m_vWorldLookAt = vec3( 0.f, 5.f, 0.f );		// (X, Y, Z)
 	updateHxW( iHeight, iWidth );
 	m_m4Frame = mat4( 1.0 );
 
@@ -150,7 +150,7 @@ void Camera::orbit( vec2 pDelta )
 void Camera::zoom( float fDelta )
 {
 	
-	RADIUS -= fDelta;
+	RADIUS -= fDelta * 25.0f;
 	RADIUS = RADIUS < ZOOM_MIN ? ZOOM_MIN : RADIUS;
 	RADIUS = RADIUS > ZOOM_MAX ? ZOOM_MAX : RADIUS;
 

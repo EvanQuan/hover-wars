@@ -11,9 +11,6 @@ const mat3 WORLD_COORDS = mat3( 1.0 );
 const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[ 0 ],
 								  WORLD_CENTER, WORLD_COORDS[ 1 ],
 								  WORLD_CENTER, WORLD_COORDS[ 2 ] };
-const string sModelFileName = "models/paper_airplane.obj";
-const string sTexFileName = "textures-256-256/fig-10c.png";
-
 
 // Singleton Variable initialization
 GraphicsManager* GraphicsManager::m_pInstance = nullptr;
@@ -24,7 +21,6 @@ GraphicsManager::GraphicsManager(GLFWwindow* rWindow)
 	// Initialize and Get Shader and Environment Managers
 	m_pShaderMngr	= ShaderManager::getInstance();
 	m_pEnvMngr		= EnvironmentManager::getInstance();
-	m_pBoidEngine = new BoidEngine( &sModelFileName, &sTexFileName );
 
 	m_pWindow = rWindow;
 	int iHeight, iWidth;
@@ -57,9 +53,6 @@ GraphicsManager::~GraphicsManager()
 	// Destruct Camera
 	if ( nullptr != m_pCamera )
 		delete m_pCamera;
-
-	if (nullptr != m_pBoidEngine)
-		delete m_pBoidEngine;
 
 	// Let go of Window Handle
 	m_pWindow = nullptr;
@@ -126,7 +119,6 @@ void GraphicsManager::RenderScene()
 
 	//renderAxis();
 	m_pEnvMngr->renderEnvironment( vCamLookAt );
-	m_pBoidEngine->draw();
 	glDisable(GL_DEPTH_TEST);
 }
 

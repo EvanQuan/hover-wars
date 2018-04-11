@@ -13,6 +13,8 @@ EnvironmentManager::EnvironmentManager()
 	m_fMinEdgeThreshold = 0.0f;
 	m_fMaxEdgeThreshold = 360.0f;
 	m_bPause = false;
+
+	m_pBoidEngine = new BoidEngine();
 }
 
 // Gets the instance of the environment manager.
@@ -27,6 +29,10 @@ EnvironmentManager* EnvironmentManager::getInstance()
 EnvironmentManager::~EnvironmentManager()
 {
 	purgeEnvironment();
+
+	// Delete Boid Engine
+	if (nullptr != m_pBoidEngine)
+		delete m_pBoidEngine;
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -176,9 +182,23 @@ void EnvironmentManager::renderEnvironment( const vec3& vCamLookAt )
 			if ( nullptr != (*pIter) )
 				(*pIter)->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
 		}
+
+		// Draw Boid Engine
+		m_pBoidEngine->draw();
 	}
 
 	m_pLights[0]->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
+}
+
+/*******************************************************************************\
+* Boid Manipulation														   *
+\*******************************************************************************/
+void EnvironmentManager::initializeBoidEngine(vector< string >& sData)
+{
+	if (nullptr != m_pBoidEngine)
+		delete m_pBoidEngine;
+
+	m_pBoidEngine = new BoidEngine(sData);
 }
 
 /*********************************************************************************\

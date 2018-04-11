@@ -10,7 +10,9 @@
 class BoidEngine 
 {
 public:
-	BoidEngine(const string* sModelFileName, const string* sTexFileName);
+	// Default Constructor
+	BoidEngine();
+	BoidEngine(vector< string > &sData);	// Overloaded Constructor for loading from file.
 	~BoidEngine();
 
 	// Public Functionality
@@ -21,40 +23,36 @@ private:
 	BoidEngine(const BoidEngine* pCopy);
 	BoidEngine* operator=(const BoidEngine& pRHS);
 
-	// Scales the Boids
-	float m_fScale;
-	float m_fDeltaT;
-
-	void initializeBoids();
-	void genInstanceData();
-
+	// Boid Structure
 	struct Boid {
-		vec3 vPos, vVelocity, vForce;
-		float fAvoidDistance, fCohesionDistance, fGatherDistance;
+		vec3 vPos, vVelocity, vForce, vGravityForce;
 		mat4 m4FrenetFrame;
-
-		// Calculates Acceleration and updates Velocity and Position
-		//  Resets Force afterwards.
-		void integrate(float fDeltaT)
-		{
-			// Integrate Boid
-			vVelocity += vForce * fDeltaT;
-			vPos += vVelocity * fDeltaT;
-
-			// Setup Frenet Frame
-			m4FrenetFrame[2] = vec4(normalize(vVelocity), 0.0f);																	// Tangent
-			m4FrenetFrame[0] = vec4(normalize(cross(vForce + vec3(0.0f, 100.0f, 0.0f)/*UP-VEC*/, vec3(m4FrenetFrame[2]))), 0.0f);	// BiNormal
-			m4FrenetFrame[1] = vec4(normalize(cross(vec3(m4FrenetFrame[2]), vec3(m4FrenetFrame[0]))), 0.0f);						// Normal
-			m4FrenetFrame[3] = vec4(vPos, 1.0f);
-			vForce = vec3(0.0f);
-		}
 	};
 
-	vector< Boid > m_vBoids;
-	vector< mat4 > m_vInstanceData;
+	// Private Variables
+	float m_fScale;		// Scales the Boids
+	float m_fDeltaT, m_fMinSpeed, m_fMaxSpeed;	 // Speed Limits
+	vector< Boid > m_vBoids;		// Array of Boids
+	vector< mat4 > m_vInstanceData;	// Array of Frenet frames for instance rendering
+	vector< pair< unsigned int, vector< unsigned int > > > m_pScreenSpace;	// Boid Data Structure
+	unsigned int m_iSpaceDim;		// Dimensions of the 3D Boid Grid
+	unsigned int m_iSpaceDimSqr;	// Dimension squared of the 3D Boid Grid
+	unsigned int m_iCurrTimeStep;	// Time Step tracker
+	Mesh* m_pMesh;					// Boid Mesh
+	Texture* m_pTexture;			// Boid Texture
+	quat m_pQuaternion;				// Boid Quarternion for Orienting Boid Direction from Model
+	unsigned int m_iNumBoids;		// Number of Boids in system
+	float m_fAvoidRadius, m_fCohesRadius, m_fGathrRadius, m_fBoundaryRadius; // Radii for Boid Logic
+	float m_fCohesWidth, m_fGathrWidth, m_fBoundaryLimit;
+	vec3 m_fBoundaryCenter;			// Vector from origin to center of Boid-Zone
 
-	Mesh* m_pMesh;
-	Texture* m_pTexture;
-	quat m_pQuaternion;
+	// Private Functions
+	void initializeBoids();
+	void integrateBoid(unsigned int i);
+	void checkBounds(Boid& pBoid);
+	void compareBoids(Boid& pSource, Boid& pComp );
+	unsigned int getSpaceIndex(const vec3& pPos);
+	void checkCell(unsigned int iBoidIndex, unsigned int iCellIndex);
+	vector< unsigned int >* getSpaceContents(unsigned int iIndex);
 };
 

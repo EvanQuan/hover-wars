@@ -13,8 +13,8 @@
 
 /* DEFINES */
 #define INPUT_SIZE			128
-#define START_HEIGHT		512
-#define START_WIDTH			512
+#define START_HEIGHT		1080
+#define START_WIDTH			1920
 #define STARTING_ENV		"scene2.txt"
 #define LIGHT_MOVE_FACTOR	0.05
 

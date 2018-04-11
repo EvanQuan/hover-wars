@@ -30,6 +30,27 @@ light {
   }
 }
 
+#Indices:
+#		0 - Num_Boids
+#		1 - Avoid Radius
+#		2 - Cohesion Radius
+#		3 - Gather Radius
+#		4 - Min Speed (length)
+#		5 - Max Speed (length)
+#		6 - Boundary Radius
+#		7 - Delta T
+#		8 - Scale
+#		9 - Texture Location (Optional)
+#		10 - Mesh Location (Optional)
+boids {
+	200
+	0.5 1.0 1.50
+	5.0 8.0
+	7.0 0.0005 1.0
+	textures-256-256/fig-10c.png
+	models/paper_airplane.obj
+}
+
 # box
 ## bottom
 plane {
