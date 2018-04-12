@@ -184,7 +184,7 @@ void EnvironmentManager::renderEnvironment( const vec3& vCamLookAt )
 		}
 
 		// Draw Boid Engine
-		m_pBoidEngine->draw();
+		m_pBoidEngine->draw( m_bPause );
 	}
 
 	m_pLights[0]->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );

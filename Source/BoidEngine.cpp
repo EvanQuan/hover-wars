@@ -352,14 +352,16 @@ void BoidEngine::checkBounds(Boid& pBoid)
 }
 
 // draws the BoidEngine by setting up the Shader
-void BoidEngine::draw( )
+void BoidEngine::draw( bool m_bPause )
 {
 	ShaderManager* pShdrMngr = ShaderManager::getInstance();
 
 	if ( nullptr != m_pTexture )
 		m_pTexture->bindTexture( ShaderManager::eShaderType::BOID_SHDR, "mySampler" );
 
-	update();
+	if( !m_bPause )
+		update();
+
 	m_pMesh->loadInstanceData(&m_vInstanceData);
 	m_pMesh->drawMesh(pShdrMngr->getProgram( ShaderManager::eShaderType::BOID_SHDR ) );
 

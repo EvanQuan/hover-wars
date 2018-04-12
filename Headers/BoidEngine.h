@@ -16,7 +16,7 @@ public:
 	~BoidEngine();
 
 	// Public Functionality
-	void draw( );
+	void draw( bool m_bPause );
 	void update();
 
 private:
