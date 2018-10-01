@@ -1,6 +1,6 @@
 Compiling on Windows:
-Compiled using MSVS 2015.  Will add one for 2013 as well in the future.  
-You'll need to set up OpenGL, GLEW, and trimesh.lib in the settings of the solution as required libraries.
+Compiled using MSVS 2015.
+You'll need to set up OpenGL and GLEW in the settings of the solution as required libraries.
 
 Compiling on Linux:
 In the file EnvSpec.h: You'll need to switch the comment from Defining Windows to Defining Linux.
@@ -13,7 +13,7 @@ Scroll-Wheel to Zoom
 F - Switch to Wireframe Mode
 
 Write-Up:
-Basic Boid Implementation with Cohesion, Gather and Avoid logic. There's a Spherical Boundary with a defined width that is used to interpolate a pushback function that's similar to avoid (the close to the border, the harder it forces the boid back).
+Basic Boid Implementation with Cohesion, Gather and Avoid logic. There's a Spherical Boundary with a defined width that is used to interpolate a pushback function that's similar to avoid (the closer to the border, the harder it forces the boid back).
 
 In the file: "Scene2.txt" there are some settings that can be modified for the Boids, particularly:
 Indices:
