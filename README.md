@@ -1,8 +1,6 @@
 # CPSC 585 - Games Programming - Winter 2019
 
-## Documentation
-
-[Directory](https://drive.google.com/drive/folders/1bLh6WpMEgnnPTKAaAV5UKnIS_vkfy4ZO)
+## [Documentation](https://drive.google.com/drive/folders/1bLh6WpMEgnnPTKAaAV5UKnIS_vkfy4ZO)
 
 [General Notes](https://docs.google.com/document/d/1ALfsOyqVOHzWtrsITFJuJigNnoELT_yf2ml7x30rzuU/edit?usp=sharing)
 
