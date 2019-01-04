@@ -1,32 +1,71 @@
-Compiling on Windows:
-Compiled using MSVS 2015.
-You'll need to set up OpenGL and GLEW in the settings of the solution as required libraries.
+# CPSC 585 - Games Programming - Winter 2019
 
-Compiling on Linux:
-In the file EnvSpec.h: You'll need to switch the comment from Defining Windows to Defining Linux.
-The included Makefile should generate a run file that will launch the program.  Ensure that this is executed through the command line in order to provide command input functionality of the program.
+## Compilation
 
-Controls:
-P - Pauses the Animation
-Right-Click and Move to Rotate
-Scroll-Wheel to Zoom
-F - Switch to Wireframe Mode
+### Compiling on Windows:
 
-Write-Up:
-Basic Boid Implementation with Cohesion, Gather and Avoid logic. There's a Spherical Boundary with a defined width that is used to interpolate a pushback function that's similar to avoid (the closer to the border, the harder it forces the boid back).
+**Compiled using MSVS 2015.**
 
-In the file: "Scene2.txt" there are some settings that can be modified for the Boids, particularly:
+1. You'll need to set up OpenGL and GLEW in the settings of the solution as
+   required libraries.
+
+### Compiling on Linux:
+
+1. In the file EnvSpec.h: You'll need to switch the comment from Defining
+   Windows to Defining Linux.
+
+2. The included Makefile should generate a run file that will launch the
+   program.  Ensure that this is executed through the command line in order to
+   provide command input functionality of the program.
+
+## Controls:
+
+**P** - Pauses the Animation
+
+**Right-Click** and Move to Rotate
+
+**Scroll-Wheel** to Zoom
+
+**F** - Switch to Wireframe Mode
+
+## Write-Up:
+
+Basic Boid Implementation with Cohesion, Gather and Avoid logic. There's
+a Spherical Boundary with a defined width that is used to interpolate
+a pushback function that's similar to avoid (the closer to the border, the
+harder it forces the boid back).
+
+In the file: "Scene2.txt" there are some settings that can be modified for the
+Boids, particularly:
+
 Indices:
-		0 - Num_Boids
-		1 - Avoid Radius
-		2 - Cohesion Radius
-		3 - Gather Radius
-		4 - Min Speed (length)
-		5 - Max Speed (length)
-		6 - Boundary Radius
-		7 - Delta T
-		8 - Scale
-		9 - Texture Location (Optional)
-		10 - Mesh Location (Optional)
-		
-The update also does a defined loop of update/integration of 16 iterations. This smoothes out the animation with a smaller delta_t. I implemented the screenspace division algorithm as well. This make it much faster for lots of boids before they group up. Once they group up, then they interact with one another and it sort of negates the benefit of the structure.
+```
+0 - Num_Boids
+1 - Avoid Radius
+2 - Cohesion Radius
+3 - Gather Radius
+4 - Min Speed (length)
+5 - Max Speed (length)
+6 - Boundary Radius
+7 - Delta T
+8 - Scale
+9 - Texture Location (Optional)
+10 - Mesh Location (Optional)
+```
+
+The update also does a defined loop of update/integration of 16 iterations.
+This smoothes out the animation with a smaller delta_t. I implemented the
+screenspace division algorithm as well. This make it much faster for lots of
+boids before they group up. Once they group up, then they interact with one
+another and it sort of negates the benefit of the structure.
+
+
+## Team
+
+[Austin Easton](https://github.com/austinen)
+
+[Evan Quan](https://github.com/EvanQuan)
+
+[James Coté](https://github.com/jamescote)
+
+[Jianan Ding](https://github.com/jiananding)
