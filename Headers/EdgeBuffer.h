@@ -1,7 +1,7 @@
 #pragma once
+//TODO: Update to use OBJ instead of Trimesh
 
 #include "stdafx.h"
-#include "TriMesh.h"
 #include "ShaderManager.h"
 #include <unordered_map>
 #include <bitset>
@@ -13,13 +13,13 @@ public:
 	~EdgeBuffer();
 
 	void GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
-							  const vector<trimesh::point>& pNormals,
+							  //const vector<trimesh::point>& pNormals,
 							  int iNumVerts );
 	void GenerateAdjListStrip( const vector<vec3>& pVerts,
 							   const vector<vec3>& pNormals,
 							   int iNumVerts );
 	void CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices,
-								  const vector<trimesh::point>& pNormals,
+								 // const vector<trimesh::point>& pNormals,
 								  const vec3* pLookAt );
 	void CalculateEdgeBufferStrip( const vector<vec3>& pNormals, const vec3* pLookAt );
 

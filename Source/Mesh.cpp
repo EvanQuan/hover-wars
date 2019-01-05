@@ -26,10 +26,8 @@ bool Mesh::genMesh( const string& sFileName )
 	bool bReturnValue = true;
 
 	// Load Mesh
-	if (sFileName.substr(sFileName.find_last_of(".") + 1) == "ply")
-		bReturnValue = loadPly(sFileName);
-	else
-		bReturnValue = loadObj(sFileName);
+	if (sFileName.substr(sFileName.find_last_of(".") + 1) == "obj")
+		bReturnValue = loadObj(sFileName);		
 
 	if (bReturnValue)
 	{
@@ -45,42 +43,6 @@ bool Mesh::genMesh( const string& sFileName )
 		m_pVertices.clear();
 	}
 
-	return bReturnValue;
-}
-
-// Uses a TriMesh Object to load a .ply file. This is Legacy Code, hard to find .ply files anymore.
-bool Mesh::loadPly(const string& sFileName)
-{
-	// Use Trimesh Object to help read in a ply file (Legacy code)
-	trimesh::TriMesh* m_pMesh = trimesh::TriMesh::read(sFileName);
-	bool bReturnValue = (nullptr != m_pMesh);
-
-	if (bReturnValue)
-	{
-		// Specify needed variables of Mesh.
-		m_pMesh->need_faces();
-		m_pMesh->need_normals();
-
-		// Generate Indices list from the faces (All Triangles)
-		for (unsigned int i = 0; i < m_pMesh->faces.size(); ++i)
-		{
-			m_pIndices.push_back(m_pMesh->faces[i][0]);
-			m_pIndices.push_back(m_pMesh->faces[i][1]);
-			m_pIndices.push_back(m_pMesh->faces[i][2]);
-		}
-
-		// Convert the vertices and normals into own format for storing and drawing.
-		for (unsigned int i = 0; i < m_pMesh->vertices.size(); ++i)
-		{
-			m_pVertices.push_back(vec3(m_pMesh->vertices[i][0], m_pMesh->vertices[i][1], m_pMesh->vertices[i][2]));
-			m_pNormals.push_back(vec3(m_pMesh->normals[i][0], m_pMesh->normals[i][1], m_pMesh->normals[i][2]));
-		}
-
-		// Delete Trimesh Object
-		delete m_pMesh;
-	}
-
-	// Return Result
 	return bReturnValue;
 }
 

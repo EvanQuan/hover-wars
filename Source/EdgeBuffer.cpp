@@ -1,3 +1,5 @@
+// TODO: Update to use OBJs
+
 #include "EdgeBuffer.h"
 #include <sstream>
 
@@ -32,7 +34,7 @@ EdgeBuffer::~EdgeBuffer()
 
 
 void EdgeBuffer::GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
-									  const vector<trimesh::point>& pNormals,
+									 // const vector<trimesh::point>& pNormals,
 									  int iNumVerts )
 {
 	// Clear any data we had previously and resize for the new adjacency list.
@@ -44,7 +46,7 @@ void EdgeBuffer::GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
 	// Populate Adjacency List
 	for ( unsigned int i = 0; i < m_pIndices.size(); i += 3 )
 	{
-		Normal1 = vec3( pNormals[ m_pIndices[ i ] ][ 0 ],
+		/*Normal1 = vec3( pNormals[ m_pIndices[ i ] ][ 0 ],
 						pNormals[ m_pIndices[ i ] ][ 1 ],
 						pNormals[ m_pIndices[ i ] ][ 2 ] );
 		Normal2 = vec3( pNormals[ m_pIndices[ i + 1 ] ][ 0 ],
@@ -52,7 +54,7 @@ void EdgeBuffer::GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
 						pNormals[ m_pIndices[ i + 1 ] ][ 2 ] );
 		Normal3 = vec3( pNormals[ m_pIndices[ i + 2 ] ][ 0 ],
 						pNormals[ m_pIndices[ i + 2 ] ][ 1 ],
-						pNormals[ m_pIndices[ i + 2 ] ][ 2 ] );
+						pNormals[ m_pIndices[ i + 2 ] ][ 2 ] );//*/
 
 		pAvgNormal = (Normal1 + Normal2 + Normal3) * AVG_MULTIPLIER;
 		addTriangle( m_pIndices[ i ], m_pIndices[ i + 1 ], m_pIndices[ i + 2 ], i, pAvgNormal );
@@ -89,7 +91,7 @@ void EdgeBuffer::GenerateAdjListStrip( const vector<vec3>& pVerts,
 // Calculates the EdgeBuffer information for a trimesh object.  Only calculates if the camera has
 //	moved since last calculation.
 void EdgeBuffer::CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices,
-										  const vector<trimesh::point>& pNormals,
+										  //const vector<trimesh::point>& pNormals,
 										  const vec3* pLookAt )
 {
 	// Compare new LookAt with previous one.
@@ -104,7 +106,7 @@ void EdgeBuffer::CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices
 		// For Every Triangle: calculate face and update EB
 		for ( unsigned int i = 0; i < iSize; i += 3 )
 		{
-			Normal1 = vec3( pNormals[ m_pIndices[ i ] ][ 0 ],
+			/*Normal1 = vec3( pNormals[ m_pIndices[ i ] ][ 0 ],
 							pNormals[ m_pIndices[ i ] ][ 1 ],
 							pNormals[ m_pIndices[ i ] ][ 2 ] );
 			Normal2 = vec3( pNormals[ m_pIndices[ i + 1 ] ][ 0 ],
@@ -112,7 +114,7 @@ void EdgeBuffer::CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices
 							pNormals[ m_pIndices[ i + 1 ] ][ 2 ] );
 			Normal3 = vec3( pNormals[ m_pIndices[ i + 2 ] ][ 0 ],
 							pNormals[ m_pIndices[ i + 2 ] ][ 1 ],
-							pNormals[ m_pIndices[ i + 2 ] ][ 2 ] );
+							pNormals[ m_pIndices[ i + 2 ] ][ 2 ] );//*/
 		
 			pAvgNormal = (Normal1 + Normal2 + Normal3) * AVG_MULTIPLIER;
 		

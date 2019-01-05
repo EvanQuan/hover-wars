@@ -5,7 +5,6 @@
 //////////////////////////////////////////////////////////////////
 // Name: MeshObject.h
 // Class: Drawable 3D Object that loads a MeshObject generated from an external source.
-//			Uses the TriMesh interface to load the MeshObject
 // Written by: James Cote
 //////////////////////////////////
 class MeshObject :

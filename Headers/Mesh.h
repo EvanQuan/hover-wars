@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "TriMesh.h"
 #include "ShaderManager.h"
 
 //////////////////////////////////////////////////////////////////
@@ -33,7 +32,6 @@ private:
 
 	// Private Methods
 	bool genMesh( const string& sFileName );
-	bool loadPly(const string& sFileName);
 	bool loadObj(const string& sFileName);
 
 	// Indices for Faces of Mesh and Additional Buffer Addresses on the GPU for

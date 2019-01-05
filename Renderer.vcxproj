@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -71,19 +71,19 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>
     <RootNamespace>Renderer</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -103,12 +103,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Pyratic\Documents\Visual Studio 2013\Projects\Renderer\Renderer\Dependencies;C:\Users\Pyratic\Documents\open_gl_wrappers\glew\include;C:\Users\Pyratic\Documents\open_gl_wrappers\glfw\include;C:\Users\Pyratic\Documents\glm;Headers;C:\Users\Pyratic\Documents\Visual Studio 2013\Projects\Renderer\Renderer\libraries\trimesh\MCVS15\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies;open_gl_wrappers\glew\include;open_gl_wrappers\glfw\include;glm;Headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Pyratic\Documents\open_gl_wrappers\glfw\glfw-3.1.2.bin.WIN32\lib-vc2015;C:\Users\Pyratic\Documents\open_gl_wrappers\glew\lib;Dependencies;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glu32.lib;glew32.lib;trimeshd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>open_gl_wrappers\glfw\glfw-3.1.2.bin.WIN32\lib-vc2015;open_gl_wrappers\glew\lib;Dependencies;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -120,14 +120,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Pyratic\Documents\open_gl_wrappers\glew\include;C:\Users\Pyratic\Documents\open_gl_wrappers\glfw\include;C:\Users\Pyratic\Documents\glm;Headers;Dependencies;C:\Users\Pyratic\Documents\Visual Studio 2013\Projects\Renderer\Renderer\libraries\trimesh\MCVS15\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>open_gl_wrappers\glew\include;open_gl_wrappers\glfw\include;glm;Headers;Dependencies</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Pyratic\Documents\open_gl_wrappers\glfw\glfw-3.1.2.bin.WIN32\lib-vc2015;C:\Users\Pyratic\Documents\open_gl_wrappers\glew\lib;Dependencies;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glu32.lib;glew32.lib;trimesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>open_gl_wrappers\glfw\glfw-3.1.2.bin.WIN32\lib-vc2015;open_gl_wrappers\glew\lib;Dependencies;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

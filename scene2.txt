@@ -111,7 +111,7 @@ plane {
 mesh_obj {
 	0 0 0
 	+mesh {
-		models/big_dodge.ply
+		models/big_dodge.obj
 	}
 	+texture {
 		textures-256-256/fig-10d.png
