@@ -1,0 +1,100 @@
+\documentclass[12p]{article}
+% \documentclass{seg thigy}
+% bibliographystyle{seg asdf}
+% \tiny\bibligoraphy{seq_eg} .bib file
+% \usepackage[margin=1in, headheight=110pt]{geometry}
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{amssymb, amsmath, amsfonts, amsthm}
+\usepackage{mathpazo}
+\usepackage{setspace}
+% \usepackage{probsoln}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{listings}
+% \usepackage{lipsum}
+% \usepackage{parskip} % Use for extra line spacing
+
+\pagestyle{fancy}
+\lhead{Team A - Project A}
+\rhead{CPSC 585 - Winter 2019}
+\newenvironment{hangingpar}[1]
+  {\begin{list}
+          {}
+          {\setlength{\itemindent}{-#1}%%'
+           \setlength{\leftmargin}{#1}%%'
+           \setlength{\itemsep}{0pt}%%'
+           \setlength{\parsep}{\parskip}%%'
+           \setlength{\topsep}{\parskip}%%'
+           }
+    \setlength{\parindent}{-#1}%%
+    \item[]
+  }
+  {\end{list}}
+
+\newcommand{\sep}{\;}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newcounter{problem}
+\newcounter{exercise}
+\newcounter{solution}
+\newcounter{question}
+
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+\begin{document}
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1cm}
+    \Large{\textbf{University of Calgary}}\\
+    \Large{\textbf{CPSC 585 - Winter 2019 - Games Programming}}\\
+    \vfill
+    \line(1,0){400}\\[1mm]
+    \huge{\textbf{Project A}}\\
+    \large{\textbf{High-Concept Design Document}}\\
+    \line(1,0){400}\\
+    \vfill
+    \Large{\textbf{Team A}}\\
+    \Large{Austin Easton, Evan Quan, James Cote, Jianan Ding}\\
+    \large{January 21, 2019}
+    % \today \\
+  \end{center}
+\end{titlepage}
+% \thispagestyle{fancy}
+\setcounter{page}{0}
+\tableofcontents
+\pagenumbering{gobble}
+\break
+\pagenumbering{arabic}
+% \onehalfspacing
+
+\section{Game Design}
+\subsection{Game Analysis}
+\subsection{Game Concept}
+\subsection{Game Goals}
+\subsection{Game Genre}
+\subsection{Brand Analysis}
+\subsection{Target Market}
+\subsection{Competitive Analysis}
+\subsection{Gameplay Direction}
+\section{Proposed Features}
+\section{Game Design Elements and Terminology}
+\subsection{Story}
+\subsection{Terminology}
+\subsection{Game Information}
+\subsubsection{Arenas}
+\subsubsection{Power Ups}
+\subsubsection{Abilities}
+\subsubsection{Difficulty}
+\subsubsection{Menu}
+
+\section{Concept Art}
+
+\end{document}
