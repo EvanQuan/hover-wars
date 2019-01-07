@@ -20,10 +20,16 @@
 % TODO change these when we figure them out
 \newcommand{\name}{Project A}
 \newcommand{\team}{Team A}
+\newcommand{\botcount}{4}
 
+% TODO change the placement of these?
 \pagestyle{fancy}
-\lhead{\team{} --- \name{}}
+\lhead{\name{}}
 \rhead{CPSC 585 --- Winter 2019}
+
+\lfoot{High-level Design}
+\rfoot{\team{}}
+
 \newenvironment{hangingpar}[1]
   {\begin{list}
           {}
@@ -74,11 +80,25 @@
 
 \section{Game Design}
 
-\name{} is a game.
+\name{} is a combat-based driving game aimed to test your skill against a team
+of AI\@. The player finds themselves in an arena pitted against \botcount{}
+bots to fight until the player is defeated. Utilizing abilities, power-ups, and
+the navigating the map, the player must survive as long as possible to take out
+the never-ending onslaught of bots.
 
 \subsection{Game Analysis}
+
+\name{} is at its core is inspired by Mario Kart's battle mode. Elements of the
+game are also inspired by Tron (1982), and Pac-Man.
+
 \subsection{Game Concept}
 \subsection{Game Goals}
+
+\begin{itemize}
+  \item The player's central goal is to rack up the highest score possible
+    before the game ends.
+\end{itemize}
+
 \subsection{Game Genre}
 \subsection{Brand Analysis}
 \subsection{Target Market}
