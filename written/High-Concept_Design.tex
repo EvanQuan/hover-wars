@@ -1,5 +1,5 @@
-\documentclass[12p]{article}
-% \documentclass{seg thigy}
+% \documentclass[12p]{article}
+\documentclass{article}
 % bibliographystyle{seg asdf}
 % \tiny\bibligoraphy{seq_eg} .bib file
 % \usepackage[margin=1in, headheight=110pt]{geometry}
@@ -88,21 +88,24 @@ the never-ending onslaught of bots.
 
 \subsection{Game Analysis}
 
-\name{} is at its core is inspired by Mario Kart's battle mode. Elements of the
+\name{} at its core is inspired by Mario Kart's battle mode. Elements of the
 game are also inspired by Tron (1982), and Pac-Man.
 
 \subsection{Game Concept}
 \subsection{Game Goals}
 
 \begin{itemize}
-  \item The player's central goal is to rack up the highest score possible
-    before the game ends.
+  \item The player's central goal is to gain the highest score possible before
+    they lose all their lives and the game ends.
 \end{itemize}
 
 \subsection{Game Genre}
 \subsection{Brand Analysis}
 \subsection{Target Market}
 \subsection{Competitive Analysis}
+
+Being a single-player game, players would compete to achieve the highest score possible, either against other players, or their own past high scores.
+
 \subsection{Gameplay Direction}
 \section{Proposed Features}
 \section{Game Design Elements and Terminology}
@@ -110,8 +113,33 @@ game are also inspired by Tron (1982), and Pac-Man.
 \subsection{Terminology}
 \subsection{Game Information}
 \subsubsection{Arenas}
-\subsubsection{Power Ups}
 \subsubsection{Abilities}
+
+\textbf{Movement}
+
+\textbf{Attacks}
+
+Every vehicle has 3 attack abilities that are available from the start of the game.
+
+\begin{itemize}
+  \item \textbf{Rocket} --- A rocket launches forward straight out from the
+    direction the vehicle is facing until it hits a surface. Upon impact, it
+    explodes, damaging everything in a radius around it. Being the only ranged
+    attack, it is great for attacking distant enemies if aimed well, or when
+    chasing other vehicles. The splash damage can be utilized with parts of the
+    arena environment to hit enemies near walls easier, or to hit multiple
+    enemies that are grouped together.
+  \item \textbf{Spikes} --- Spikes temporarily extend in all directions from
+    the vehicle, damaging other vehicles that come in contact with it. Can be
+    used both aggressively and defensively when other vehicles are nearby. It
+    can also be used in combination with dashing to crash into enemies.
+  \item \textbf{Flame trail} --- A trail of fire is created that follows the
+    players path. Any vehicle that contacts it is damaged. Great to use when
+    being chased.
+\end{itemize}
+
+
+\subsubsection{Power Ups}
 \subsubsection{Difficulty}
 \subsubsection{Menu}
 
