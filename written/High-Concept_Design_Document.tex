@@ -17,9 +17,13 @@
 % \usepackage{lipsum}
 % \usepackage{parskip} % Use for extra line spacing
 
+% TODO change these when we figure them out
+\newcommand{\name}{Project A}
+\newcommand{\team}{Team A}
+
 \pagestyle{fancy}
-\lhead{Team A - Project A}
-\rhead{CPSC 585 - Winter 2019}
+\lhead{\team{} --- \name{}}
+\rhead{CPSC 585 --- Winter 2019}
 \newenvironment{hangingpar}[1]
   {\begin{list}
           {}
@@ -34,18 +38,11 @@
   }
   {\end{list}}
 
+
 \newcommand{\sep}{\;}
 \newtheorem{theorem}{Theorem}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{prop}[theorem]{Proposition}
-\newtheorem{cor}[theorem]{Corollary}
-\newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
-\newcounter{problem}
-\newcounter{exercise}
-\newcounter{solution}
-\newcounter{question}
 
 \newcommand\floor[1]{\lfloor#1\rfloor}
 \newcommand\ceil[1]{\lceil#1\rceil}
@@ -54,14 +51,14 @@
   \begin{center}
     \vspace*{1cm}
     \Large{\textbf{University of Calgary}}\\
-    \Large{\textbf{CPSC 585 - Winter 2019 - Games Programming}}\\
+    \Large{\textbf{CPSC 585 --- Winter 2019 --- Games Programming}}\\
     \vfill
     \line(1,0){400}\\[1mm]
-    \huge{\textbf{Project A}}\\
+    \huge{\textbf{\name{}}}\\
     \large{\textbf{High-Concept Design Document}}\\
     \line(1,0){400}\\
     \vfill
-    \Large{\textbf{Team A}}\\
+    \Large{\textbf{\team{}}}\\
     \Large{Austin Easton, Evan Quan, James Cote, Jianan Ding}\\
     \large{January 21, 2019}
     % \today \\
@@ -71,11 +68,14 @@
 \setcounter{page}{0}
 \tableofcontents
 \pagenumbering{gobble}
-\break
+\break{}
 \pagenumbering{arabic}
 % \onehalfspacing
 
 \section{Game Design}
+
+\name{} is a game.
+
 \subsection{Game Analysis}
 \subsection{Game Concept}
 \subsection{Game Goals}
