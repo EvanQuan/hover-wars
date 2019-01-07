@@ -1,5 +1,5 @@
 #include "Light.h"
-#include "EnvironmentManager.h"
+#include "EntityManager.h"
 
 const float LIGHT_SIZE = 30.f;
 
@@ -9,7 +9,7 @@ Light::Light(const glm::vec3* pPos,
 			 long lID, const string* sTexName, const Anim_Track* pAnimTrack ) : Object( pPos, lID, sTexName, pAnimTrack )
 {
 	m_pColor		= (*pColor);
-	EnvironmentManager::getInstance()->addLight( this );
+	EntityManager::getInstance()->addLight( this );
 	glGenVertexArrays(1, &m_iVertexArray);
 
 	// Generate Buffer and Set up Attributes

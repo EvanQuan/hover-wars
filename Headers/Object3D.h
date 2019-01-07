@@ -25,7 +25,7 @@ protected:
 	vector<vec3> m_pVertices;
 	vector<vec3> m_pNormals;
 	vector<vec2> m_pUVs;
-	vector<vec3[ 3 ]> m_pFaces;
+	//vector<vec3[ 3 ]> m_pFaces;
 
 	GLuint m_iVertexArray, m_iVertexBuffer, m_iNormalBuffer, m_iTextureBuffer;
 

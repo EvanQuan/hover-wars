@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "InputHandler.h"
 #include "GraphicsManager.h"
-#include "EnvironmentManager.h"
+#include "EntityManager.h"
 
 /* DEFINES */
 #define CMD_SIZE	20
@@ -31,7 +31,7 @@ private:
 	CmdHandler(const char* c_Input, int iInputSize, GLFWwindow *rWindow) : InputHandler(c_Input, iInputSize) { m_pGPXMngr = GraphicsManager::getInstance(rWindow); }
 	static CmdHandler* m_pInstance;
 	GraphicsManager *m_pGPXMngr;
-	EnvironmentManager *m_pEnvMngr;
+	EntityManager *m_pEntMngr;
 
 	// internal variables
 	bool bWireFrame;
