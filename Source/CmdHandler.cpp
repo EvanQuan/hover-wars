@@ -6,11 +6,6 @@
 \**********/
 #define INPUT_SIZE 128
 
-/*************\
- * CONSTANTS *
-\*************/
-const float LIGHT_MOVE_FACTOR = 0.05f;
-
 /* Initialize Statics */
 const char CmdHandler::cCommands[NUM_CMDS][CMD_SIZE] = { "-help",
 														 "b-val",
@@ -39,7 +34,7 @@ CmdHandler::CmdHandler(GLFWwindow *rWindow) : InputHandler()
 {
 	// Initializing Base Class
 	m_pGPXMngr = GraphicsManager::getInstance(rWindow);
-	m_pEnvMngr = EnvironmentManager::getInstance();
+	m_pEntMngr = EntityManager::getInstance();
 
 	bWireFrame = false;
 }
@@ -70,7 +65,7 @@ CmdHandler::~CmdHandler()
 {
 	delete m_pInstance;
 	m_pGPXMngr = nullptr;
-	m_pEnvMngr = nullptr;
+	m_pEntMngr = nullptr;
 }
 
 // Process initial input, acts as though key word is first word of input.
@@ -109,7 +104,7 @@ void CmdHandler::process_Input( )
 		else if ( !strcmp( c_FirstWord, cCommands[ SET_COLOR ] ) )
 			bEvaluating = exec_SetColor();
 		else if ( !strcmp( c_FirstWord, cCommands[ LIST ] ) )
-			m_pEnvMngr->listEnvironment();
+			m_pEntMngr->listEnvironment();
 		else if ( !strcmp( c_FirstWord, cCommands[ DELETE ] ) )
 			bEvaluating = exec_Delete();
 		else if ( !strcmp( c_FirstWord, cCommands[ LOAD ] ) )
@@ -219,27 +214,27 @@ void CmdHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 	{
 	case (GLFW_KEY_W):			// Move Light Forward (along Z)
 		pMoveVec.z += LIGHT_MOVE_FACTOR;
-		m_pEnvMngr->moveLight(pMoveVec);
+		m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case(GLFW_KEY_S):			// Move Light Backward (along Z)
 		pMoveVec.z -= LIGHT_MOVE_FACTOR;
-		m_pEnvMngr->moveLight(pMoveVec);
+		m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case(GLFW_KEY_A):			// Move Light Left (along X)
 		pMoveVec.x -= LIGHT_MOVE_FACTOR;
-		m_pEnvMngr->moveLight(pMoveVec);
+		m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case(GLFW_KEY_D):			// Move Light Right (along X)
 		pMoveVec.x += LIGHT_MOVE_FACTOR;
-		m_pEnvMngr->moveLight(pMoveVec);
+		m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case(GLFW_KEY_SPACE):		// Move Light Up (along Y)
 		pMoveVec.y += LIGHT_MOVE_FACTOR;
-		m_pEnvMngr->moveLight(pMoveVec);
+		m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case(GLFW_KEY_X):			// Move Light Down (along Y)
 		pMoveVec.y -= LIGHT_MOVE_FACTOR;
-		m_pEnvMngr->moveLight(pMoveVec);
+		m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case(GLFW_KEY_F):			// Toggle Wireframe
 		if ( GLFW_RELEASE == iAction )
@@ -261,7 +256,7 @@ void CmdHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 		break;
 	case(GLFW_KEY_P):
 		if ( iAction == GLFW_RELEASE )
-			m_pEnvMngr->pause();
+			m_pEntMngr->pause();
 		break;
 	}
 }
@@ -435,8 +430,8 @@ bool CmdHandler::exec_Delete()
 	if ( ERR_CODE != iErr )
 	{
 		lTempVal = strtol( c_Num, &p_End, 10 );
-		//m_pEnvMngr->killLight( lTempVal ); No need to kill lights currently.  Can expand functionality in future.
-		m_pEnvMngr->killObject( lTempVal );
+		//m_pEntMngr->killLight( lTempVal ); No need to kill lights currently.  Can expand functionality in future.
+		m_pEntMngr->killObject( lTempVal );
 	}
 	else
 	{
@@ -491,7 +486,7 @@ bool CmdHandler::exec_Load()
 			{
 				lObjID = strtol( c_Cmd, &p_End, 10 );
 				sTexLoc = string( c_TexLocation );
-				m_pEnvMngr->switchTexture( &sTexLoc, lObjID );
+				m_pEntMngr->switchTexture( &sTexLoc, lObjID );
 			}
 			else    // Errors reading in Texture location and Object ID
 			{
@@ -583,7 +578,7 @@ bool CmdHandler::exec_SetThresholdMin()
 	{
 		fTempVal = strtof( c_Num, &pEnd );
 		if ( checkRange( fTempVal, 0.0f, 360.0f ) )
-			m_pEnvMngr->setMinThreshold( fTempVal );
+			m_pEntMngr->setMinThreshold( fTempVal );
 	}
 	else
 	{
@@ -607,7 +602,7 @@ bool CmdHandler::exec_SetThresholdMax()
 	{
 		fTempVal = strtof( c_Num, &pEnd );
 		if ( checkRange( fTempVal, 0.0f, 360.0f ) )
-			m_pEnvMngr->setMaxThreshold( fTempVal );
+			m_pEntMngr->setMaxThreshold( fTempVal );
 	}
 	else
 	{

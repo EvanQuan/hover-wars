@@ -5,7 +5,7 @@
 #include "MeshObject.h"
 #include "Light.h"
 #include "Anim_Track.h"
-#include "EnvironmentManager.h"
+#include "EntityManager.h"
 #include <sstream>
 #include <iterator>
 
@@ -312,7 +312,7 @@ void Object_Factory::handleData( vector< string >& sData, const string& sIndicat
 	else if ( "mesh_obj" == sIndicator )	// Parse Mesh
 		pResultingObject = createMesh( sData, sData.size() );
 	else if ("boids" == sIndicator)	// Parse Mass Spring System
-		EnvironmentManager::getInstance()->initializeBoidEngine(sData);
+		EntityManager::getInstance()->initializeBoidEngine(sData);
 
 	clearProperties();
 

@@ -4,19 +4,12 @@
 #include "ShaderManager.h"
 #include "Mouse_Handler.h"
 #include "Object_Factory.h"
-#include "EnvironmentManager.h"
+#include "EntityManager.h"
 #include "CmdHandler.h"
 
 #ifdef USING_LINUX
 		#include <Magick++.h>
 #endif
-
-/* DEFINES */
-#define INPUT_SIZE			128
-#define START_HEIGHT		1080
-#define START_WIDTH			1920
-#define STARTING_ENV		"scene2.txt"
-#define LIGHT_MOVE_FACTOR	0.05
 
 // Function Prototypes
 void ErrorCallback(int error, const char* description);
@@ -64,6 +57,7 @@ int main()
 
 		if ( iRunning )
 		{
+			
 			// Bind window to graphics Manager
 			if (iRunning )
 				m_GpxMngr = GraphicsManager::getInstance( m_Window );
@@ -149,7 +143,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 {
 	GraphicsManager* pGPXMngr = GraphicsManager::getInstance(window);
 	ShaderManager* pShdrMngr = ShaderManager::getInstance();
-	EnvironmentManager* pEnvMngr = EnvironmentManager::getInstance();
+	EntityManager* pEnvMngr = EntityManager::getInstance();
 	CmdHandler* pCmdHndlr = CmdHandler::getInstance(window);
 
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit

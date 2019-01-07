@@ -13,12 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\EntityComponentHeaders">
+      <UniqueIdentifier>{fcadce33-0064-4d0a-b452-81429c513e92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EntityComponents">
+      <UniqueIdentifier>{929a9623-930c-4643-9cf4-766a846cf85c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EnvironmentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -99,12 +102,21 @@
     <ClInclude Include="Headers\BoidEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EnvironmentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\GraphicsManager.cpp">
@@ -178,6 +190,18 @@
     </ClCompile>
     <ClCompile Include="Source\BoidEngine.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\CameraComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

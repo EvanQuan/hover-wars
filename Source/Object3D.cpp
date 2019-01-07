@@ -1,5 +1,5 @@
 #include "Object3D.h"
-#include "EnvironmentManager.h"
+#include "EntityManager.h"
 
 // Default Constructor.
 // Initializes to the center of the world and adds
@@ -7,7 +7,7 @@
 Object3D::Object3D( const vec3* pPosition, long lID, const string* sTexName, const Anim_Track* pAnimTrack )
 	: Object( pPosition, lID, sTexName, pAnimTrack )
 {
-	EnvironmentManager::getInstance()->addObject( this );
+	EntityManager::getInstance()->addObject( this );
 
 	m_fScale = 1.f;
 }

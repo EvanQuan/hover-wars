@@ -16,7 +16,10 @@
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\CmdHandler.h" />
     <ClInclude Include="Headers\EdgeBuffer.h" />
-    <ClInclude Include="Headers\EnvironmentManager.h" />
+    <ClInclude Include="Headers\Entity.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
+    <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
     <ClInclude Include="Headers\FreeImage.h" />
     <ClInclude Include="Headers\GraphicsManager.h" />
@@ -46,7 +49,10 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CmdHandler.cpp" />
     <ClCompile Include="Source\EdgeBuffer.cpp" />
-    <ClCompile Include="Source\EnvironmentManager.cpp" />
+    <ClCompile Include="Source\Entity.cpp" />
+    <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
+    <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GraphicsManager.cpp" />
     <ClCompile Include="Source\ImageBuffer.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />

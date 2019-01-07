@@ -1,7 +1,7 @@
 #include "GraphicsManager.h"
 #include "ShaderManager.h"
 #include "Object_Factory.h"
-#include "EnvironmentManager.h"
+#include "EntityManager.h"
 
 ///////////////
 // CONSTANTS //
@@ -20,14 +20,15 @@ GraphicsManager::GraphicsManager(GLFWwindow* rWindow)
 {
 	// Initialize and Get Shader and Environment Managers
 	m_pShaderMngr	= ShaderManager::getInstance();
-	m_pEnvMngr		= EnvironmentManager::getInstance();
+	m_pEntMngr		= EntityManager::getInstance();
 
 	m_pWindow = rWindow;
 	int iHeight, iWidth;
 	glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
 
 	// Set up Camera
-	m_pCamera = new Camera( iHeight, iWidth );
+	//m_pCamera = new Camera( 0, vec3(1.0f), iHeight, iWidth );
+	m_pCamera = m_pEntMngr->generateCameraEntity();
 	m_eView = VIEW_SPHERICAL;
 
 	glGenVertexArrays( 1, &m_pVertexArray );
@@ -50,16 +51,12 @@ GraphicsManager* GraphicsManager::getInstance(GLFWwindow *rWindow)
 // Destruct Shaders, Buffers, Arrays and other GL stuff.
 GraphicsManager::~GraphicsManager()
 {
-	// Destruct Camera
-	if ( nullptr != m_pCamera )
-		delete m_pCamera;
-
 	// Let go of Window Handle
 	m_pWindow = nullptr;
 
 	// Let go of Manager Handles
-	if ( nullptr != m_pEnvMngr )
-		delete m_pEnvMngr;
+	if ( nullptr != m_pEntMngr )
+		delete m_pEntMngr;
 
 	if ( nullptr != m_pShaderMngr )
 		delete m_pShaderMngr;
@@ -89,23 +86,24 @@ bool GraphicsManager::renderGraphics()
 // Will be replaced with functions in Graphic objects.
 void GraphicsManager::RenderScene()
 {
-	mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEnvMngr->getFrenetFrame();
+	mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEntMngr->getFrenetFrame();
+	CameraComponent* pCamera = m_pEntMngr->getActiveCamera();
 	switch ( m_eView )
 	{
 		case VIEW_FOLLOW:
-			m_pCamera->setLookAt( vec3( pFreNetFrame[ 3 ] ) ); // column 3 is the position of the target.
+			pCamera->setLookAt( vec3( pFreNetFrame[ 3 ] ) ); // column 3 is the position of the target.
 			break;
 		case VIEW_FPS:
-			m_pCamera->positionCamera( pFreNetFrame );
-			m_pCamera->setLookAt( vec3( pFreNetFrame[ 3 ] + pFreNetFrame[ 2 ] ) );
+			pCamera->positionCamera( pFreNetFrame );
+			pCamera->setLookAt( vec3( pFreNetFrame[ 3 ] + pFreNetFrame[ 2 ] ) );
 			break;
 		default:
 			break;
 
 	}
-	mat4 pModelViewMatrix = m_pCamera->getToCameraMat();
-	mat4 pProjectionMatrix = m_pCamera->getPerspectiveMat();
-	vec3 vCamLookAt = m_pCamera->getLookAt();
+	mat4 pModelViewMatrix = pCamera->getToCameraMat();
+	mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
+	vec3 vCamLookAt = pCamera->getLookAt();
 
 	GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
 	const GLfloat zero = 1.0f;
@@ -118,7 +116,7 @@ void GraphicsManager::RenderScene()
 	m_pShaderMngr->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
 
 	//renderAxis();
-	m_pEnvMngr->renderEnvironment( vCamLookAt );
+	m_pEntMngr->renderEnvironment( vCamLookAt );
 	glDisable(GL_DEPTH_TEST);
 }
 
@@ -154,7 +152,7 @@ bool GraphicsManager::initializeGraphics( string sFileName )
 		bError = true;
 	}
 	else
-		m_pEnvMngr->initializeEnvironment(sFileName);
+		m_pEntMngr->initializeEnvironment(sFileName);
 
 	return bError; 
 }
@@ -165,12 +163,12 @@ bool GraphicsManager::initializeGraphics( string sFileName )
 
 void GraphicsManager::rotateCamera(vec2 pDelta)
 {
-	m_pCamera->orbit(pDelta);
+	m_pEntMngr->getActiveCamera()->orbit(pDelta);
 }
 
 void GraphicsManager::zoomCamera(float fDelta)
 {
-	m_pCamera->zoom(fDelta);
+	m_pEntMngr->getActiveCamera()->zoom(fDelta);
 }
 
 void GraphicsManager::switchView()
@@ -182,15 +180,20 @@ void GraphicsManager::switchView()
 	{
 		default:
 		case VIEW_SPHERICAL:
-			m_pCamera->setLookAt( vec3( 0.0 ) );
+			m_pEntMngr->getActiveCamera()->setLookAt( vec3( 0.0 ) );
 		case VIEW_FOLLOW:
-			m_pCamera->positionCamera( mat4( 1.0 ) );
-			m_pCamera->setSteady( false );
+			m_pEntMngr->getActiveCamera()->positionCamera( mat4( 1.0 ) );
+			m_pEntMngr->getActiveCamera()->setSteady( false );
 			break;
 		case VIEW_FPS:
-			m_pCamera->setSteady( true );
+			m_pEntMngr->getActiveCamera()->setSteady( true );
 			break;
 	}
+}
+
+void GraphicsManager::resizedWindow( int iHeight, int iWidth )
+{
+	m_pEntMngr->getInstance()->getActiveCamera()->updateHxW(iHeight, iWidth);
 }
 
 /*******************************************************************************\

@@ -37,6 +37,13 @@
 using namespace std;
 using namespace glm;
 
+/* DEFINES */
+#define INPUT_SIZE			128
+#define START_HEIGHT		1080
+#define START_WIDTH			1920
+#define STARTING_ENV		"scene2.txt"
+#define LIGHT_MOVE_FACTOR	0.05
+
 // From Boilerplate code,
 // Shouldn't need to modify this.
 // Accessible anywhere stdafx.h is included and GL Error Checking is required.

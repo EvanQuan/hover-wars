@@ -6,7 +6,7 @@
 
 // Forward Declarations
 class ShaderManager;
-class EnvironmentManager;
+class EntityManager;
 
 // Class: Graphics Manager
 // Purpose: Acts as the Sinew between all moving parts that are required for drawing
@@ -24,7 +24,7 @@ public:
 	bool renderGraphics();
 
 	/// HxW Settings
-	void resizedWindow( int iHeight, int iWidth ) { m_pCamera->updateHxW( iHeight, iWidth ); }
+	void resizedWindow(int iHeight, int iWidth);
 
 	// Camera Functions 
 	//void snapShotCamera();
@@ -83,6 +83,6 @@ private:
 
 	// Manages Shaders for all assignments
 	ShaderManager* m_pShaderMngr;
-	EnvironmentManager* m_pEnvMngr;
+	EntityManager* m_pEntMngr;
 };
 
