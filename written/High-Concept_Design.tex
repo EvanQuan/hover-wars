@@ -17,6 +17,8 @@
 % \usepackage{lipsum}
 % \usepackage{parskip} % Use for extra line spacing
 
+\setlength{\parindent}{0 in}
+
 % TODO change these when we figure them out
 \newcommand{\name}{Project A}
 \newcommand{\team}{Team A}
@@ -117,24 +119,39 @@ Being a single-player game, players would compete to achieve the highest score p
 
 \textbf{Movement}
 
+\begin{itemize}
+  \item \textbf{Standard movement} --- A hovercraft does not rely on wheels to
+    move and so can traverse in any lateral direction without needing to turn,
+    meaning that strafing is possible.
+  \item \textbf{Acceleration/braking} --- A hovercraft can accelerate an brake
+    in any direction is it currently moving. It will often drift if a turn is
+    made, even at relatively slow speeds, which can be both advantageous and
+    disadvantageous.
+  \item \textbf{Dashing} --- A hovercraft can dash in any direction,
+    temporarily gaining invulnerability. From a mobility standpoint, dashing
+    can be used to catch up to other hovercrafts, reach power-ups faster, or
+    lose others when being chased. From a defensive standpoint, it can be used
+    to dodge attacks.
+\end{itemize}
+
 \textbf{Attacks}
 
-Every vehicle has 3 attack abilities that are available from the start of the game.
+Every hovercraft has 3 attack abilities that are available from the start of the game.
 
 \begin{itemize}
   \item \textbf{Rocket} --- A rocket launches forward straight out from the
-    direction the vehicle is facing until it hits a surface. Upon impact, it
+    direction the hovercraft is facing until it hits a surface. Upon impact, it
     explodes, damaging everything in a radius around it. Being the only ranged
     attack, it is great for attacking distant enemies if aimed well, or when
     chasing other vehicles. The splash damage can be utilized with parts of the
     arena environment to hit enemies near walls easier, or to hit multiple
     enemies that are grouped together.
   \item \textbf{Spikes} --- Spikes temporarily extend in all directions from
-    the vehicle, damaging other vehicles that come in contact with it. Can be
+    the hovercraft, damaging other vehicles that come in contact with it. Can be
     used both aggressively and defensively when other vehicles are nearby. It
     can also be used in combination with dashing to crash into enemies.
   \item \textbf{Flame trail} --- A trail of fire is created that follows the
-    players path. Any vehicle that contacts it is damaged. Great to use when
+    players path. Any hovercraft that contacts it is damaged. Great to use when
     being chased.
 \end{itemize}
 
