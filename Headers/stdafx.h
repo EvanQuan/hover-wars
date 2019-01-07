@@ -27,9 +27,9 @@
 #endif
 #ifdef USING_WINDOWS
 #include <string>
-#include <GL/glew.h>
+#include <glew.h>
 #endif
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 
 #define ERR_CODE -1
 

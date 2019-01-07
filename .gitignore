@@ -6,6 +6,9 @@ Debug
 # merge conflicts. 
 Release
 
+# Ignore x64 binaries as well
+x64
+
 # Visual studio files are generated on build. No need to store, and may be
 # different between computers.
 .vs

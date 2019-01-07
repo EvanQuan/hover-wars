@@ -109,12 +109,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies;open_gl_wrappers\glew\include;open_gl_wrappers\glfw\include;glm;Headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glew\Win32;Dependencies\glfw\Win32;glm;Headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>open_gl_wrappers\glfw\glfw-3.1.2.bin.WIN32\lib-vc2015;open_gl_wrappers\glew\lib;Dependencies;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\glfw\Win32;Dependencies\glew\Win32;Dependencies\FreeImage;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -126,13 +126,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>open_gl_wrappers\glew\include;open_gl_wrappers\glfw\include;glm;Headers;Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\glew\Win32;Dependencies\glfw\Win32;glm;Headers;Dependencies/FreeImage</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>open_gl_wrappers\glfw\glfw-3.1.2.bin.WIN32\lib-vc2015;open_gl_wrappers\glew\lib;Dependencies;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\glfw\Win32;Dependencies\glew\Win32;Dependencies/FreeImage;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glu32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
