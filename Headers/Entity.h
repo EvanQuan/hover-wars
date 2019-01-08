@@ -14,7 +14,7 @@ public:
 	vec3 getPosition() { return m_vPosition; }
 	int getID() { return m_iID; }
 
-private:
+protected:
 	vec3 m_vPosition;
 	int m_iID;
 };

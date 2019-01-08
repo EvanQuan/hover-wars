@@ -16,6 +16,8 @@ EntityManager::EntityManager()
 	// Initialize the Edge Threshold to 0 and 360 degrees.
 	m_fMinEdgeThreshold = 0.0f;
 	m_fMaxEdgeThreshold = 360.0f;
+	m_iHeight = START_HEIGHT;
+	m_iWidth = START_WIDTH;
 	m_bPause = false;
 
 	m_pBoidEngine = new BoidEngine();
@@ -287,6 +289,7 @@ vec3 EntityManager::getEntityPosition(int iEntityID)
 	return vReturn;
 }
 
+// Generates a Camera Entity and stores it in the Master Entity List.
 Camera* EntityManager::generateCameraEntity()
 {
 	Camera* pNewCamera = new Camera(getNewEntityID());
@@ -295,16 +298,37 @@ Camera* EntityManager::generateCameraEntity()
 	return pNewCamera;
 }
 
+// Goes through all Existing Camera Components and updates their aspect ratio.
+void EntityManager::updateHxW(int iHeight, int iWidth)
+{
+	for (vector<CameraComponent*>::iterator iter = m_pCameraComponents.begin();
+		iter != m_pCameraComponents.end();
+		++iter)
+	{
+		(*iter)->updateHxW(iHeight, iWidth);
+	}
+
+	// Store new Height and Width in case another Camera Component is created.
+	m_iHeight = iHeight;
+	m_iWidth = iWidth;
+}
+
 /*********************************************************************************\
 * Entity Component Management                                                    *
 \*********************************************************************************/
 
+// Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
-	CameraComponent* pNewCameraCmp = new CameraComponent(iEntityID, getNewComponentID());
+	// Generate new Camera Component
+	CameraComponent* pNewCameraCmp = new CameraComponent(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
 	unique_ptr<EntityComponent> pNewCameraPtr(pNewCameraCmp);
+
+	// Store new Camera Component
 	m_pCameraComponents.push_back(pNewCameraCmp);
 	m_pMasterComponentList.push_back(move(pNewCameraPtr));
+
+	// Set the active Camera if no camera is currently active.
 	if (NULL == m_pActiveCamera)
 		m_pActiveCamera = pNewCameraCmp;
 

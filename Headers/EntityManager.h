@@ -28,8 +28,9 @@ public:
 	// Entity Component functions
 	CameraComponent* generateCameraComponent(int iEntityID);
 
-	// Get Camera Component
-	CameraComponent* getActiveCamera() { return m_pActiveCamera; }
+	// Camera Management
+	void updateHxW(int iHeight, int iWidth);
+	const CameraComponent* getActiveCamera() { return m_pActiveCamera; }
 
 	// Clears the Environment so a new one can be loaded.
 	void purgeEnvironment();
@@ -67,6 +68,7 @@ private:
 
 	// Entity Managing
 	int m_iEntityIDPool, m_iComponentIDPool;
+	int m_iHeight, m_iWidth;
 	inline int getNewEntityID() { return ++m_iEntityIDPool; }
 	inline int getNewComponentID() { return ++m_iComponentIDPool; }
 	vector<unique_ptr<EntityComponent>>	m_pMasterComponentList;

@@ -43,6 +43,7 @@ using namespace glm;
 #define START_WIDTH			1920
 #define STARTING_ENV		"scene2.txt"
 #define LIGHT_MOVE_FACTOR	0.05f
+#define PI					3.14159265f
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
