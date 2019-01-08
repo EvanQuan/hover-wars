@@ -1,0 +1,191 @@
+% \documentclass[12p]{article}
+\documentclass{article}
+% bibliographystyle{seg asdf}
+% \tiny\bibligoraphy{seq_eg} .bib file
+% \usepackage[margin=1in, headheight=110pt]{geometry}
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{amssymb, amsmath, amsfonts, amsthm}
+\usepackage{mathpazo}
+\usepackage{setspace}
+% \usepackage{probsoln}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{listings}
+% \usepackage{lipsum}
+% \usepackage{parskip} % Use for extra line spacing
+
+\setlength{\parindent}{0 in}
+
+% TODO change these when we figure them out
+\newcommand{\name}{Project A}
+\newcommand{\team}{Team A}
+\newcommand{\botcount}{4}
+
+% TODO change the placement of these?
+\pagestyle{fancy}
+\lhead{\name{}}
+\rhead{CPSC 585 --- Winter 2019}
+
+\lfoot{High-level Design}
+\rfoot{\team{}}
+
+\newenvironment{hangingpar}[1]
+  {\begin{list}
+          {}
+          {\setlength{\itemindent}{-#1}%%'
+           \setlength{\leftmargin}{#1}%%'
+           \setlength{\itemsep}{0pt}%%'
+           \setlength{\parsep}{\parskip}%%'
+           \setlength{\topsep}{\parskip}%%'
+           }
+    \setlength{\parindent}{-#1}%%
+    \item[]
+  }
+  {\end{list}}
+
+
+\newcommand{\sep}{\;}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+\begin{document}
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1cm}
+    \Large{\textbf{University of Calgary}}\\
+    \Large{\textbf{CPSC 585 --- Winter 2019 --- Games Programming}}\\
+    \vfill
+    \line(1,0){400}\\[1mm]
+    \huge{\textbf{\name{}}}\\
+    \large{\textbf{High-Concept Design Document}}\\
+    \line(1,0){400}\\
+    \vfill
+    \Large{\textbf{\team{}}}\\
+    \Large{Austin Easton, Evan Quan, James Cote, Jianan Ding}\\
+    \large{January 21, 2019}
+    % \today \\
+  \end{center}
+\end{titlepage}
+% \thispagestyle{fancy}
+\setcounter{page}{0}
+\tableofcontents
+\pagenumbering{gobble}
+\break{}
+\pagenumbering{arabic}
+% \onehalfspacing
+
+\section{Game Design}
+
+\name{} is a combat-based driving game aimed to test your skill against a team
+of AI\@. The player finds themselves driving a hovercraft in an arena pitted
+against \botcount{} enemy hovercrafts. Utilizing their abilities, power-ups,
+and the map itself, the player must survive to destroy as many enemies as
+possible before they are finally defeated.
+
+\subsection{Game Analysis}
+
+\name{} at its core is inspired by Mario Kart's battle mode. Elements of the
+game are also inspired by Tron (1982), and Pac-Man.
+
+\subsection{Game Concept}
+\subsection{Game Goals}
+
+The player's central goal is to gain the highest score possible before they
+lose all their lives and the game ends. % TODO 1 hit, no lives
+The player has the following means to gain score:
+\begin{itemize}
+  \item Destroying enemies. This can be through the use of abilities or through
+    environmental hazards. Depending on the means by which enemies are
+    destroyed, various amount of points can be awarded.
+  \item Taking power-ups.
+\end{itemize}
+
+\subsection{Game Genre}
+\subsection{Brand Analysis}
+\subsection{Target Market}
+
+While violence is a core component of the gameplay, nothing is particularly
+graphic due to the use of vehicles over people. We therefore believe that
+\name{} is appropriately targeted for all ages above 6 years of age.
+% TODO if committing to cyberpunk, add more
+
+\subsection{Competitive Analysis}
+
+Being a single-player game, players would compete to achieve the highest score
+possible, either against other players, or their own past high scores. This can
+be viewed as an asynchronous multiplayer game akin to many classic arcade
+games, where players compete between rounds.
+
+\subsection{Gameplay Direction}
+\section{Proposed Features}
+
+The central constraint of proposed features is development time available to
+implement them. As a result, all features have an associated priority and risk,
+of which higher priority features will be completed first, and higher risk
+features will more likely be altered, replaced, or not implemented at all.
+
+\section{Game Design Elements and Terminology}
+\subsection{Story}
+
+% TODO I can write a reasonably short one to set the scene if need be. Doesn't
+% need to actually be included in the game.
+
+\subsection{Terminology}
+\subsection{Game Information}
+\subsubsection{Arenas}
+
+\subsubsection{Abilities}
+
+\textbf{Movement}
+
+\begin{itemize}
+  \item \textbf{Standard movement} --- A hovercraft does not rely on wheels to
+    move and so can traverse in any lateral direction without needing to turn,
+    meaning that strafing is possible.
+  \item \textbf{Acceleration/braking} --- A hovercraft can accelerate an brake
+    in any direction is it currently moving. It will often drift if a turn is
+    made, even at relatively slow speeds, which can be both advantageous and
+    disadvantageous.
+  \item \textbf{Dashing} --- A hovercraft can dash in any direction,
+    temporarily gaining invulnerability. From a mobility standpoint, dashing
+    can be used to catch up to other hovercrafts, reach power-ups faster, or
+    lose others when being chased. From a defensive standpoint, it can be used
+    to dodge attacks.
+\end{itemize}
+
+\textbf{Attacks}
+
+Every hovercraft has 3 attack abilities that are available from the start of
+the game.
+
+\begin{itemize}
+  \item \textbf{Rocket} --- A rocket launches forward straight out from the
+    direction the hovercraft is facing until it hits a surface. Upon impact, it
+    explodes, damaging everything in a radius around it. Being the only ranged
+    attack, it is great for attacking distant enemies if aimed well, or when
+    chasing other vehicles. The splash damage can be utilized with parts of the
+    arena environment to hit enemies near walls easier, or to hit multiple
+    enemies that are grouped together.
+  \item \textbf{Spikes} --- Spikes temporarily extend in all directions from
+    the hovercraft, damaging other vehicles that come in contact with it. Can
+    be used both aggressively and defensively when other vehicles are nearby.
+    It can also be used in combination with dashing to crash into enemies.
+  \item \textbf{Flame trail} --- A trail of fire is created that follows the
+    players path. Any hovercraft that contacts it is damaged. Great to use when
+    being chased.
+\end{itemize}
+
+
+\subsubsection{Power Ups}
+\subsubsection{Difficulty}
+\subsubsection{Menu}
+
+\section{Concept Art}
+
+\end{document}
