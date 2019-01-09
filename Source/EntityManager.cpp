@@ -20,7 +20,7 @@ EntityManager::EntityManager()
 	m_iWidth = START_WIDTH;
 	m_bPause = false;
 
-	m_pBoidEngine = new BoidEngine();
+	//TODO: redesign Boid Engine: m_pBoidEngine = new BoidEngine();
 }
 
 // Gets the instance of the environment manager.
@@ -193,7 +193,8 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 		}
 
 		// Draw Boid Engine
-		m_pBoidEngine->draw( m_bPause );
+		if( nullptr != m_pBoidEngine )
+			m_pBoidEngine->draw( m_bPause );
 	}
 
 	m_pLights[0]->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
