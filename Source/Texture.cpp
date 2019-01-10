@@ -4,7 +4,7 @@
 Texture::Texture( const string& sFileName )
 {
 	m_uiHeight = m_uiWidth = m_TextureName = 0;
-	m_sFileName = sFileName;
+	m_sManagerKey = sFileName;
 }
 
 // Copy constructor
@@ -13,7 +13,7 @@ Texture::Texture( const Texture& pCopyTexture )
 	m_uiHeight		= pCopyTexture.m_uiHeight;
 	m_uiWidth		= pCopyTexture.m_uiWidth;
 	m_TextureName	= pCopyTexture.m_TextureName;
-	m_sFileName		= pCopyTexture.m_sFileName;
+	m_sManagerKey		= pCopyTexture.m_sManagerKey;
 }
 
 // Copy constructor
@@ -22,7 +22,7 @@ Texture& Texture::operator=( const Texture& pCopyTexture )
 	this->m_uiHeight = pCopyTexture.m_uiHeight;
 	this->m_uiWidth = pCopyTexture.m_uiWidth;
 	this->m_TextureName = pCopyTexture.m_TextureName;
-	this->m_sFileName = pCopyTexture.m_sFileName;
+	this->m_sManagerKey = pCopyTexture.m_sManagerKey;
 
 	return *this;
 }

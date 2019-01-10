@@ -2,9 +2,9 @@
 #include <sstream>
 
 // Basic Constructor
-Mesh::Mesh( const string &sFileName )
+Mesh::Mesh( const string &sManagerKey )
 {
-	m_sFileName = sFileName;
+	m_sManagerKey = sManagerKey;
 	m_m4DefaultInstance =  mat4(1.0f);
 	m_iNumInstances = 1;
 	m_iVertexArray = -1;
@@ -44,6 +44,21 @@ bool Mesh::genMesh( const string& sFileName )
 	}
 
 	return bReturnValue;
+}
+
+bool Mesh::genPlane(int iHeight, int iWidth)
+{
+	// Generate 4 vertices around the origin
+	/***********************************
+		Width = (x-axis)
+		Height = (z-axis)
+	*/
+	int iHalfHeight = iHeight >> 1;
+	int iHalfWidth = iWidth >> 1;
+	m_pVertices.push_back(vec3(static_cast<float>(-iHalfWidth), 0.f, static_cast<float>(-iHalfHeight)));
+	m_pVertices.push_back(vec3(static_cast<float>(-iHalfWidth), 0.f, static_cast<float>(iHalfHeight)));
+	m_pVertices.push_back(vec3(static_cast<float>(iHalfWidth), 0.f, static_cast<float>(-iHalfHeight)));
+	m_pVertices.push_back(vec3(static_cast<float>(iHalfWidth), 0.f, static_cast<float>(iHalfHeight)));
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any

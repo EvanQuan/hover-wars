@@ -19,7 +19,7 @@ public:
 	GLuint getCount() { return m_pIndices.size(); }
 
 	// Gets the file name, only the MeshManager can set this variable.
-	const string& getFileName() { return m_sFileName; }
+	const string& getManagerKey() { return m_sManagerKey; }
 
 	void drawMesh( GLuint iProgram );
 
@@ -32,6 +32,7 @@ private:
 
 	// Private Methods
 	bool genMesh( const string& sFileName );
+	bool genPlane(int iHeight, int iWidth);
 	bool loadObj(const string& sFileName);
 
 	// Indices for Faces of Mesh and Additional Buffer Addresses on the GPU for
@@ -41,7 +42,7 @@ private:
 	vector< vec3 > m_pVNData;
 	GLuint m_iVNBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
 	GLuint m_iVertexArray;
-	string m_sFileName;
+	string m_sManagerKey; // Used as key for finding Mesh in MeshManager
 	ShaderManager* m_pShdrMngr;
 	GLuint m_iNumInstances;
 	mat4 m_m4DefaultInstance;

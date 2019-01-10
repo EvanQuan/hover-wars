@@ -90,7 +90,7 @@ BoidEngine::BoidEngine(vector< string > &sData)
 
 		// Mesh
 		if (iSize > (MIN_PARAMS + 1))
-			m_pMesh			= MeshManager::getInstance()->loadMesh(sData[10], ID); 
+			m_pMesh			= MeshManager::getInstance()->loadMeshFromFile(sData[10], ID); 
 
 		// Complete Initialization
 		initializeBoids();
@@ -101,8 +101,8 @@ BoidEngine::BoidEngine(vector< string > &sData)
 BoidEngine::~BoidEngine()
 {
 	// Cleanup
-	if( nullptr != m_pMesh )
-		MeshManager::getInstance()->unloadMesh( m_pMesh->getFileName(), ID );
+	if (nullptr != m_pMesh)
+		m_pMesh = nullptr;
 
 	if( nullptr != m_pTexture)
 		TextureManager::getInstance()->unloadTexture(m_pTexture->getFileName(), ID);
@@ -137,7 +137,7 @@ void BoidEngine::initializeBoids()
 	if (nullptr == m_pTexture)
 		m_pTexture = TextureManager::getInstance()->loadTexture(sTexFileName, ID);
 	if (nullptr == m_pMesh)
-		m_pMesh = MeshManager::getInstance()->loadMesh(sModelFileName, ID);
+		m_pMesh = MeshManager::getInstance()->loadMeshFromFile(sModelFileName, ID);
 
 	m_pMesh->initMesh();
 

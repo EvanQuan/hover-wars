@@ -11,7 +11,7 @@ MeshObject::MeshObject( const glm::vec3* pPosition, const string* sFileName, lon
 
 	ShaderManager* pShdrMngr = ShaderManager::getInstance();
 
-	m_pMesh = MeshManager::getInstance()->loadMesh( *sFileName, m_lID );
+	m_pMesh = MeshManager::getInstance()->loadMeshFromFile( *sFileName, m_lID );
 	m_pMesh->initMesh( );
 	
 	//m_pEdgeBuffer = new EdgeBuffer( m_iVertexArray );
@@ -29,7 +29,7 @@ MeshObject::~MeshObject()
 	if ( nullptr != m_pAnimTrack )
 		delete m_pAnimTrack;
 
-	MeshManager::getInstance()->unloadMesh( m_pMesh->getFileName(), m_lID );
+	m_pMesh = nullptr;
 }
 
 // draws the MeshObject by setting up the Shader

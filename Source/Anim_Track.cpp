@@ -81,7 +81,7 @@ void Anim_Track::initializeTrack()
 	// Load a Mesh if mesh is specified.
 	if ( !m_sMeshFile.empty() )
 	{
-		m_pMesh = MeshManager::getInstance()->loadMesh( m_sMeshFile, m_lID );
+		m_pMesh = MeshManager::getInstance()->loadMeshFromFile( m_sMeshFile, m_lID );
 
 		if ( nullptr != m_pMesh )
 			m_pMesh->initMesh();
@@ -101,8 +101,8 @@ void Anim_Track::initializeTrack()
 // Destructor
 Anim_Track::~Anim_Track()
 {
-	if ( nullptr != m_pMesh )
-		MeshManager::getInstance()->unloadMesh( m_pMesh->getFileName(), m_lID );
+	if (nullptr != m_pMesh)
+		MeshManager::getInstance()->unloadMesh(m_pMesh);
 
 	if ( nullptr != m_pTexture )
 		TextureManager::getInstance()->unloadTexture( m_pTexture->getFileName(), m_lID );
