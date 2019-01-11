@@ -22,6 +22,7 @@
 
 #ifdef USING_LINUX
 #include <string.h>
+#include <memory>
 #define GLFW_INCLUDE_GLCOREARB
 #define GL_GLEXT_PROTOTYPES
 #endif

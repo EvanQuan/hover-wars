@@ -293,10 +293,11 @@ vec3 EntityManager::getEntityPosition(int iEntityID)
 // Generates a Camera Entity and stores it in the Master Entity List.
 Camera* EntityManager::generateCameraEntity()
 {
-	Camera* pNewCamera = new Camera(getNewEntityID());
-	m_pMasterEntityList.push_back(unique_ptr<Entity>(pNewCamera));
+	unique_ptr<Camera> pNewCamera = make_unique<Camera>(getNewEntityID());
+	Camera* pReturnCamera = pNewCamera.get();
+	m_pMasterEntityList.push_back(move(pNewCamera));
 
-	return pNewCamera;
+	return pReturnCamera;
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.
@@ -322,16 +323,15 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
 	// Generate new Camera Component
-	CameraComponent* pNewCameraCmp = new CameraComponent(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
-	unique_ptr<EntityComponent> pNewCameraPtr(pNewCameraCmp);
-
+	unique_ptr<CameraComponent> pNewCameraCmp = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+	
 	// Store new Camera Component
-	m_pCameraComponents.push_back(pNewCameraCmp);
-	m_pMasterComponentList.push_back(move(pNewCameraPtr));
+	m_pCameraComponents.push_back(pNewCameraCmp.get());
+	m_pMasterComponentList.push_back(move(pNewCameraCmp));
 
 	// Set the active Camera if no camera is currently active.
 	if (NULL == m_pActiveCamera)
-		m_pActiveCamera = pNewCameraCmp;
+	  m_pActiveCamera = m_pCameraComponents.back();
 
-	return pNewCameraCmp;
+	return m_pCameraComponents.back();
 }
