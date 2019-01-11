@@ -81,7 +81,7 @@ void Anim_Track::initializeTrack()
 	// Load a Mesh if mesh is specified.
 	if ( !m_sMeshFile.empty() )
 	{
-		m_pMesh = MeshManager::getInstance()->loadMeshFromFile( m_sMeshFile, m_lID );
+		m_pMesh = MESH_MANAGER->loadMeshFromFile( m_sMeshFile );
 
 		if ( nullptr != m_pMesh )
 			m_pMesh->initMesh();
@@ -93,16 +93,16 @@ void Anim_Track::initializeTrack()
 	else m_pTexture = nullptr;
 
 	// Generate Vertex buffer for curve.
-	m_iVertexBuffer = ShaderManager::getInstance()->genVertexBuffer( m_iVertexArray, m_vTracks.data(), 
+	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer( m_iVertexArray, m_vTracks.data(), 
 																	 m_vTracks.size() * sizeof( vec3 ), GL_DYNAMIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
 }
 
 // Destructor
 Anim_Track::~Anim_Track()
 {
 	if (nullptr != m_pMesh)
-		MeshManager::getInstance()->unloadMesh(m_pMesh);
+		m_pMesh = nullptr;
 
 	if ( nullptr != m_pTexture )
 		TextureManager::getInstance()->unloadTexture( m_pTexture->getFileName(), m_lID );
@@ -129,7 +129,7 @@ void Anim_Track::draw( )
 	vec3 vColor( 0.5 );
 	mat4 vCurrFrenetFrame = getFreNetFrames();
 	glPointSize( 10.f );
-	glUseProgram( ShaderManager::getInstance()->getProgram( ShaderManager::eShaderType::WORLD_SHDR ) );
+	glUseProgram( SHADER_MANAGER->getProgram( ShaderManager::eShaderType::WORLD_SHDR ) );
 	vector< vec3 > vTemps = { vec3( 0.0f ), getPosition() };
 	glBindBuffer( GL_ARRAY_BUFFER, m_iVertexBuffer );
 	//glBufferData( GL_ARRAY_BUFFER, vTemps.size() * sizeof( vec3 ), vTemps.data(), GL_DYNAMIC_DRAW );
@@ -140,7 +140,7 @@ void Anim_Track::draw( )
 	vTemps.push_back( vec3( vCurrFrenetFrame[ 3 ] ) );
 	vTemps.push_back( vec3( vCurrFrenetFrame[ 3 ] ) + getCentripetalAcce( m_fCurrDist ) );
 	glBufferData( GL_ARRAY_BUFFER, vTemps.size() * sizeof( vec3 ), vTemps.data(), GL_DYNAMIC_DRAW );
-	ShaderManager::getInstance()->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &vColor );
+	SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &vColor );
 	//glDrawArrays( GL_POINTS, 0, vTemps.size() );
 	//glDrawArrays( GL_LINES, 0, vTemps.size() );
 
@@ -149,7 +149,7 @@ void Anim_Track::draw( )
 	//vTemps.push_back( vec3( m_m4CurrentFrenetFrame[ 3 ] ) );
 	//vTemps.push_back( vec3( getPosition( m_fCurrDist - (100.f * DELTA_S) ) ) );
 	//glBufferData( GL_ARRAY_BUFFER, vTemps.size() * sizeof( vec3 ), vTemps.data(), GL_DYNAMIC_DRAW );
-	//ShaderManager::getInstance()->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &vec3( 0.25f ) );
+	//SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &vec3( 0.25f ) );
 	//glDrawArrays( GL_POINTS, 0, vTemps.size() );
 	//glDrawArrays( GL_LINES, 0, vTemps.size() );
 
@@ -158,7 +158,7 @@ void Anim_Track::draw( )
 	//vTemps.push_back( vec3( m_m4CurrentFrenetFrame[ 3 ] ) );
 	//vTemps.push_back( vec3( getPosition( m_fCurrDist + (100.f * DELTA_S) ) ) );
 	//glBufferData( GL_ARRAY_BUFFER, vTemps.size() * sizeof( vec3 ), vTemps.data(), GL_DYNAMIC_DRAW );
-	//ShaderManager::getInstance()->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &vec3( 0.75f ) );
+	//SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &vec3( 0.75f ) );
 	//glDrawArrays( GL_POINTS, 0, vTemps.size() );
 	//glDrawArrays( GL_LINES, 0, vTemps.size() );
 
@@ -174,7 +174,7 @@ void Anim_Track::draw( )
 		vTemps.push_back( vec3( vCurrFrenetFrame[ 3 ] ) );
 		vTemps.push_back( vec3( vCurrFrenetFrame[ 3 ] + (vCurrFrenetFrame[ i ] * 0.5) ) );
 		glBufferData( GL_ARRAY_BUFFER, vTemps.size() * sizeof( vec3 ), vTemps.data(), GL_DYNAMIC_DRAW );
-		ShaderManager::getInstance()->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &mTemp[ i ] );
+		SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::WORLD_SHDR, "vColor", &mTemp[ i ] );
 		glDrawArrays( GL_POINTS, 0, vTemps.size() );
 		glDrawArrays( GL_LINES, 0, vTemps.size() );
 	}
@@ -186,15 +186,15 @@ void Anim_Track::draw( )
 	vec3 vSilver( 0.752, 0.752, 0.752 );
 
 	// Draw Main Curve
-	glUseProgram( ShaderManager::getInstance()->getProgram( ShaderManager::eShaderType::RC_TRACK_SHDR ) );
-	ShaderManager::getInstance()->setUniformVec3( ShaderManager::eShaderType::RC_TRACK_SHDR, "vColor", &vBrown );
+	glUseProgram( SHADER_MANAGER->getProgram( ShaderManager::eShaderType::RC_TRACK_SHDR ) );
+	SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::RC_TRACK_SHDR, "vColor", &vBrown );
 	glBindBuffer( GL_ARRAY_BUFFER, m_iVertexBuffer );
 
 	// Draw connecting lines
 	glBufferData( GL_ARRAY_BUFFER, m_vTracks.size() * sizeof( vec3 ), m_vTracks.data(), GL_DYNAMIC_DRAW );
 	glDrawArrays( GL_LINES, 0, m_vTracks.size() );
 
-	ShaderManager::getInstance()->setUniformVec3( ShaderManager::eShaderType::RC_TRACK_SHDR, "vColor", &vSilver );
+	SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::RC_TRACK_SHDR, "vColor", &vSilver );
 	// Draw Track
 	for ( int i = 0; i < 2; ++i )
 	{

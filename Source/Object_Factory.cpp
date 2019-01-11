@@ -14,7 +14,7 @@
 \***********/
 #define MAX_CHARS_PER_LINE 256
 #define MAX_SPHERE_PARAMS 4
-#define MAX_PLANE_PARAMS 16
+#define MAX_PLANE_PARAMS 8
 #define MAX_TRI_PARAMS 12
 #define MAX_LIGHT_PARAMS 6
 #define MAX_MESH_PARAMS 3
@@ -72,30 +72,22 @@ Object3D* Object_Factory::createSphere( vector< string > sData, int iLength )
 }
 
 // Create a Plane given a normal, a position on the plane and a color
-Object3D* Object_Factory::createPlane( vector< string > sData, int iLength )
+void Object_Factory::createPlane( vector< string > sData, int iLength )
 {
-	vec3 pPosition;
-	vector<glm::vec3> vCorners;
-	Plane* pReturnPlane = nullptr;
-	bool bUseEB;
+	// Local Parameters to pull out Plane Data.
+	vec3 pPosition, vNormal;
+	int iHeight, iWidth;
 
-	if ( iLength == MAX_PLANE_PARAMS )
+	if (iLength == MAX_PLANE_PARAMS)
 	{
-		pPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );		// Position of Plane
-		vCorners.push_back( glm::vec3( stof( sData[ 3 ] )/*X*/, stof( sData[ 4 ] )/*Y*/, stof( sData[ 5 ] )/*Z*/ ) );		// First Corner of Plane 
-		vCorners.push_back( glm::vec3( stof( sData[ 6 ] )/*X*/, stof( sData[ 7 ] )/*Y*/, stof( sData[ 8 ] )/*Z*/ ) );		// Second Corner of Plane
-		vCorners.push_back( glm::vec3( stof( sData[ 9 ] )/*X*/, stof( sData[ 10 ] )/*Y*/, stof( sData[ 11 ] )/*Z*/ ) );		// Third Corner of Plane
-		vCorners.push_back( glm::vec3( stof( sData[ 12 ] )/*X*/, stof( sData[ 13 ] )/*Y*/, stof( sData[ 14 ] )/*Z*/ ) );	// Fourth Corner of Plane
-		bUseEB = sData[ 15 ] != "0";
-
-		pReturnPlane = new Plane( &pPosition,
-								  &vCorners,
-								  getNewID(),
-								  &m_sTextureProperty,
-								  bUseEB, m_pAnimProperty );
+		pPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);		// Position of Plane
+		vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
+		iHeight = stoi(sData[6]);
+		iWidth = stoi(sData[7]);
+		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, pPosition, vNormal);
 	}
-
-	return pReturnPlane;
+	else
+		outputError("Plane", sData);
 }
 
 // create a Triangle given 3 positions and a color.
@@ -239,7 +231,7 @@ void Object_Factory::loadFromFile( string sFileName )
 //					there were an incorrect number of parameters.
 // Params: sName - The Name of the Object trying to be loaded
 //		   sData - The Data read in when trying to load.
-void Object_Factory::outputError( const string* sName, vector<string> sData )
+void Object_Factory::outputError( string sName, vector<string> sData )
 {
 	cout << "Error creating " << sName << " with the following data:" << endl;
 	cout << "{";
@@ -304,7 +296,7 @@ void Object_Factory::handleData( vector< string >& sData, const string& sIndicat
 	if ( "sphere" == sIndicator )			// Parse Sphere
 		pResultingObject = createSphere( sData, sData.size() );
 	else if ( "plane" == sIndicator )		// Parse Plane
-		pResultingObject = createPlane( sData, sData.size() );
+		createPlane( sData, sData.size() );
 	else if ( "triangle" == sIndicator )	// Parse Triangle
 		pResultingObject = createTriangle( sData, sData.size() );
 	else if ( "light" == sIndicator )		// Parse Light
@@ -312,12 +304,12 @@ void Object_Factory::handleData( vector< string >& sData, const string& sIndicat
 	else if ( "mesh_obj" == sIndicator )	// Parse Mesh
 		pResultingObject = createMesh( sData, sData.size() );
 	else if ("boids" == sIndicator)	// Parse Mass Spring System
-		EntityManager::getInstance()->initializeBoidEngine(sData);
+		ENTITY_MANAGER->initializeBoidEngine(sData);
 
 	clearProperties();
 
 	if (nullptr == pResultingObject && "boids" != sIndicator)
-		outputError(&sIndicator, sData);
+		outputError(sIndicator, sData);
 
 	pResultingObject = nullptr; // Don't do anything with the Object
 							 // Handled by the Environment Manager

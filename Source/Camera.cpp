@@ -35,7 +35,7 @@ const vec3 DEFAULT_POS = vec3(90.f, 8.5308f, START_RADIUS); // (Theta, Phi, Radi
 Camera::Camera( int iID )
 	: Entity( iID, vec3(0.0f) )
 {
-	EntityManager* pEntMngr = EntityManager::getInstance();
+	EntityManager* pEntMngr = ENTITY_MANAGER;
 	m_pCmraCmp = pEntMngr->generateCameraComponent( iID );
 	assert(m_pCmraCmp != NULL);
 	m_vPosition = DEFAULT_POS;
@@ -43,6 +43,14 @@ Camera::Camera( int iID )
 	updateCameraComponent();
 	m_pCmraCmp->setFOV_Y(FOV_Y);
 	m_pCmraCmp->setZRange(Z_CLOSE, Z_FAR);
+}
+
+Camera::Camera(const Camera& pCopy)
+	: Entity(pCopy)
+{
+	m_pCmraCmp		= pCopy.m_pCmraCmp;
+	m_vWorldLookAt	= pCopy.m_vWorldLookAt;
+	m_bSteadyCam	= pCopy.m_bSteadyCam;
 }
 
 // Destructor

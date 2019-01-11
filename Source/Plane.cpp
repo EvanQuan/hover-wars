@@ -28,12 +28,12 @@ Plane::Plane( const vec3* pPosition,
 	glGenVertexArrays( 1, &m_iVertexArray );
 
 	// Generate Buffers and Set Attributes in VAO
-	m_iVertexBuffer = ShaderManager::getInstance()->genVertexBuffer( m_iVertexArray,  m_pVertices.data(),
+	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer( m_iVertexArray,  m_pVertices.data(),
 																	 m_pVertices.size() * sizeof( glm::vec3 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
-	m_iNormalBuffer = ShaderManager::getInstance()->genVertexBuffer( m_iVertexArray, m_pNormals.data(),
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
+	m_iNormalBuffer = SHADER_MANAGER->genVertexBuffer( m_iVertexArray, m_pNormals.data(),
 																	 m_pNormals.size() * sizeof( glm::vec3 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 1, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 1, 3, 0, nullptr);
 	calculateUVs();
 
 	if ( bUseEB )
@@ -45,7 +45,7 @@ Plane::Plane( const vec3* pPosition,
 		m_pEdgeBuffer = nullptr;
 
 	if ( nullptr == m_pTexture )
-		ShaderManager::getInstance()->setUniformBool( ShaderManager::eShaderType::PLANE_SHDR, "bTextureLoaded", false );
+		SHADER_MANAGER->setUniformBool( ShaderManager::eShaderType::PLANE_SHDR, "bTextureLoaded", false );
 }
 
 // Destructor
@@ -77,7 +77,7 @@ void Plane::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThresho
 		m_pTexture->bindTexture( ShaderManager::eShaderType::PLANE_SHDR, "gSampler" );
 	}
 
-	glUseProgram( ShaderManager::getInstance()->getProgram( ShaderManager::eShaderType::PLANE_SHDR ) );
+	glUseProgram( SHADER_MANAGER->getProgram( ShaderManager::eShaderType::PLANE_SHDR ) );
 
 	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
 
@@ -103,7 +103,7 @@ void Plane::calculateUVs()
 	m_pUVs.push_back( vec2( 1.0, 1.0 ) );
 
 	// Generate Buffer and Set Up Attribute
-	m_iTextureBuffer = ShaderManager::getInstance()->genVertexBuffer( m_iVertexArray, m_pUVs.data(),
+	m_iTextureBuffer = SHADER_MANAGER->genVertexBuffer( m_iVertexArray, m_pUVs.data(),
 																	  m_pUVs.size() * sizeof( vec2 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 2, 2, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 2, 2, 0, nullptr);
 }

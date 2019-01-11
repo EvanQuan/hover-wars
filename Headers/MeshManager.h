@@ -11,9 +11,8 @@ public:
 	~MeshManager();
 
 	// Methods:
-	shared_ptr<Mesh> loadMeshFromFile( const string &sFileName );
-	shared_ptr<Mesh> generatePlaneMesh(int fHeight, int fWidth);
-	void unloadMesh(shared_ptr<Mesh>& pMeshPtr);
+	Mesh* loadMeshFromFile( const string &sFileName );
+	Mesh* generatePlaneMesh(int fHeight, int fWidth, vec3 vPosition = vec3(0.f), vec3 vNormal = vec3(0.f, 1.f, 0.f));
 	void unloadAllMeshes();
 
 private:
@@ -27,5 +26,5 @@ private:
 	bool initializeMesh( Mesh* pMesh, const string& sFileName );
 
 	// Hash Map
-	unordered_map<string, shared_ptr<Mesh>> m_pMeshCache;
+	unordered_map<string, unique_ptr<Mesh>> m_pMeshCache;
 };

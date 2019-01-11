@@ -56,7 +56,7 @@ void Texture::bindTexture( ShaderManager::eShaderType eType, string sVarName )
 {
 	glActiveTexture( GL_TEXTURE0 + m_TextureName );
 	glBindTexture( GL_TEXTURE_2D, m_TextureName );
-	ShaderManager::getInstance()->setUniformInt( eType, sVarName, m_TextureName );
+	SHADER_MANAGER->setUniformInt( eType, sVarName, m_TextureName );
 }
 
 // Unbind Texture when finished.

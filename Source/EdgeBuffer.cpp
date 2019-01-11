@@ -23,7 +23,7 @@ EdgeBuffer::EdgeBuffer( GLuint iVertArray )
 {
 	m_iVertexArray = iVertArray;
 
-	m_iIndicesBuffer	= ShaderManager::getInstance()->genIndicesBuffer( m_iVertexArray, m_vDrawIndices.data(), m_vDrawIndices.size() * sizeof( uvec2 ), GL_DYNAMIC_DRAW );
+	m_iIndicesBuffer	= SHADER_MANAGER->genIndicesBuffer( m_iVertexArray, m_vDrawIndices.data(), m_vDrawIndices.size() * sizeof( uvec2 ), GL_DYNAMIC_DRAW );
 }
 
 EdgeBuffer::~EdgeBuffer()
@@ -228,7 +228,7 @@ void EdgeBuffer::drawEdgeBuffer( float fScale, vec3& pPosition, float fMinThresh
 // Binds program and indices to draw edges of a given type.
 void EdgeBuffer::drawEdges( ShaderManager::eShaderType eType )
 {
-	glUseProgram( ShaderManager::getInstance()->getProgram( eType ) );
+	glUseProgram( SHADER_MANAGER->getProgram( eType ) );
 
 	// Upload new Indices
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_iIndicesBuffer );
@@ -248,9 +248,9 @@ void EdgeBuffer::setUniforms( float fScale, vec3& pPosition )
 		  eEdgeType <= ShaderManager::eLastEdgeShader;
 		  eEdgeType++ )
 	{
-		ShaderManager::getInstance()->setUniformFloat(	   (ShaderManager::eShaderType)eEdgeType, "fWidth", 0.006f );
-		ShaderManager::getInstance()->setUniformFloat(	   (ShaderManager::eShaderType)eEdgeType, "fScale", fScale );
-		ShaderManager::getInstance()->setUnifromMatrix4x4( (ShaderManager::eShaderType)eEdgeType, "translate", &pTranslateMat );
+		SHADER_MANAGER->setUniformFloat(	   (ShaderManager::eShaderType)eEdgeType, "fWidth", 0.006f );
+		SHADER_MANAGER->setUniformFloat(	   (ShaderManager::eShaderType)eEdgeType, "fScale", fScale );
+		SHADER_MANAGER->setUnifromMatrix4x4( (ShaderManager::eShaderType)eEdgeType, "translate", &pTranslateMat );
 	}
 }
 

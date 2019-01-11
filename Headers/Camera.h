@@ -11,7 +11,8 @@ class Camera :
 	public Entity
 {
 public:
-	Camera( int iID );			// Default Constructor
+	Camera( int iID );				// Default Constructor
+	Camera(const Camera& pCopy);	// Copy Constructor
 	virtual ~Camera();
 
 	// Camera Manipulation Functions
@@ -27,8 +28,5 @@ private:
 	bool m_bSteadyCam; // Boolean to steady the camera so it cannot be adjusted by user input.
 
 	vec3 m_vWorldLookAt;
-
-	Camera& operator=(Camera* pCopy) {}		// Overloaded assignment operator; not to be used.
-	Camera(Camera& pCopy);					// Overloaded Copy Constructor; not to be used.
 };
 

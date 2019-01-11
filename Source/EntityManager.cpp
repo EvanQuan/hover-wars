@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include "Object_Factory.h"
 #include "EntityComponentHeaders/CameraComponent.h"
+#include "StaticEntity.h"
 
 #define INTERSECTION_EPSILON 1e-4	// Minimum intersect distance (so we don't intersect with ourselves)
 #define MAX_REFLECTIONS	800
@@ -167,7 +168,7 @@ mat4 EntityManager::getFrenetFrame()
 void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 {
 	// Local Variables
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
 	vec3 pLightPosition;
 
 	// Calculate information for each Light in the scene (Current max = 1)
@@ -293,10 +294,18 @@ vec3 EntityManager::getEntityPosition(int iEntityID)
 // Generates a Camera Entity and stores it in the Master Entity List.
 Camera* EntityManager::generateCameraEntity()
 {
-	Camera* pNewCamera = new Camera(getNewEntityID());
-	m_pMasterEntityList.push_back(unique_ptr<Entity>(pNewCamera));
+	unique_ptr<Camera> pNewCamera = make_unique<Camera>(getNewEntityID());
+	m_pMasterEntityList.push_back(move(pNewCamera));
 
-	return pNewCamera;
+	return pNewCamera.get();
+}
+
+// Generates a Static Plane Entity into the world.
+void EntityManager::generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
+{
+	unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewPlane.get()->loadAsPlane(vNormal, iHeight, iWidth);
+	m_pMasterEntityList.push_back(move(pNewPlane));
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.
@@ -322,16 +331,15 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
 	// Generate new Camera Component
-	CameraComponent* pNewCameraCmp = new CameraComponent(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
-	unique_ptr<EntityComponent> pNewCameraPtr(pNewCameraCmp);
+	unique_ptr<CameraComponent> pNewCameraPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
 
 	// Store new Camera Component
-	m_pCameraComponents.push_back(pNewCameraCmp);
+	m_pCameraComponents.push_back(pNewCameraPtr.get());
 	m_pMasterComponentList.push_back(move(pNewCameraPtr));
 
 	// Set the active Camera if no camera is currently active.
 	if (NULL == m_pActiveCamera)
-		m_pActiveCamera = pNewCameraCmp;
+		m_pActiveCamera = m_pCameraComponents.back();
 
-	return pNewCameraCmp;
+	return m_pCameraComponents.back();
 }

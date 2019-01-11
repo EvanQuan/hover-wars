@@ -67,7 +67,7 @@ int main()
 
 			// Initialize Graphics
 			iRunning = !m_GpxMngr->initializeGraphics( STARTING_ENV );
-			m_ShdrMngr = ShaderManager::getInstance();
+			m_ShdrMngr = SHADER_MANAGER;
 
 		#ifdef USING_WINDOWS
 			m_ShdrMngr->setUniformBool( ShaderManager::eShaderType::MESH_SHDR, "bUsingLinux", false );
@@ -142,8 +142,8 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	GraphicsManager* pGPXMngr = GraphicsManager::getInstance(window);
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
-	EntityManager* pEnvMngr = EntityManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
+	EntityManager* pEnvMngr = ENTITY_MANAGER;
 	CmdHandler* pCmdHndlr = CmdHandler::getInstance(window);
 
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit

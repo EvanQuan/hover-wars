@@ -9,13 +9,13 @@ Light::Light(const glm::vec3* pPos,
 			 long lID, const string* sTexName, const Anim_Track* pAnimTrack ) : Object( pPos, lID, sTexName, pAnimTrack )
 {
 	m_pColor		= (*pColor);
-	EntityManager::getInstance()->addLight( this );
+	ENTITY_MANAGER->addLight( this );
 	glGenVertexArrays(1, &m_iVertexArray);
 
 	// Generate Buffer and Set up Attributes
-	m_iVertexBuffer = ShaderManager::getInstance()->genVertexBuffer(m_iVertexArray, &m_pPosition,
+	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer(m_iVertexArray, &m_pPosition,
 																	sizeof(m_pPosition), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
 }
 
 // Destructor
@@ -27,7 +27,7 @@ Light::~Light()
 
 void Light::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThreshold, bool m_bPause )
 {
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 	if ( nullptr != m_pTexture )
 	{

@@ -90,7 +90,7 @@ BoidEngine::BoidEngine(vector< string > &sData)
 
 		// Mesh
 		if (iSize > (MIN_PARAMS + 1))
-			m_pMesh			= MeshManager::getInstance()->loadMeshFromFile(sData[10], ID); 
+			m_pMesh			= MESH_MANAGER->loadMeshFromFile(sData[10]); 
 
 		// Complete Initialization
 		initializeBoids();
@@ -137,7 +137,7 @@ void BoidEngine::initializeBoids()
 	if (nullptr == m_pTexture)
 		m_pTexture = TextureManager::getInstance()->loadTexture(sTexFileName, ID);
 	if (nullptr == m_pMesh)
-		m_pMesh = MeshManager::getInstance()->loadMeshFromFile(sModelFileName, ID);
+		m_pMesh = MESH_MANAGER->loadMeshFromFile(sModelFileName);
 
 	m_pMesh->initMesh();
 
@@ -354,7 +354,7 @@ void BoidEngine::checkBounds(Boid& pBoid)
 // draws the BoidEngine by setting up the Shader
 void BoidEngine::draw( bool m_bPause )
 {
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 	if ( nullptr != m_pTexture )
 		m_pTexture->bindTexture( ShaderManager::eShaderType::BOID_SHDR, "mySampler" );

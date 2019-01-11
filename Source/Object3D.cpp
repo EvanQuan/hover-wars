@@ -7,7 +7,7 @@
 Object3D::Object3D( const vec3* pPosition, long lID, const string* sTexName, const Anim_Track* pAnimTrack )
 	: Object( pPosition, lID, sTexName, pAnimTrack )
 {
-	EntityManager::getInstance()->addObject( this );
+	ENTITY_MANAGER->addObject( this );
 
 	m_fScale = 1.f;
 }

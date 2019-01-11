@@ -34,12 +34,12 @@ Triangle::Triangle( const vec3* pPosition, const vector<vec3>* pVerts, long lID,
 	glGenVertexArrays( 1, &m_iVertexArray );
 
 	// Generate Buffer
-	m_iVertexBuffer = ShaderManager::getInstance()->genVertexBuffer( m_iVertexArray,
+	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer( m_iVertexArray,
 																	 m_pVertices.data(),
 																	 m_pVertices.size() * sizeof( vec3 ), GL_STATIC_DRAW );
 
 	// Set up Attributes
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
 
 }
 
@@ -55,7 +55,7 @@ void Triangle::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThre
 {
 	glBindVertexArray( m_iVertexArray );
 
-	glUseProgram( ShaderManager::getInstance()->getProgram( ShaderManager::eShaderType::PLANE_SHDR ) );
+	glUseProgram( SHADER_MANAGER->getProgram( ShaderManager::eShaderType::PLANE_SHDR ) );
 
 	if ( nullptr != m_pTexture )
 		m_pTexture->bindTexture( ShaderManager::eShaderType::PLANE_SHDR, "gSampler" );

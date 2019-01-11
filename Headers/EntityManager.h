@@ -23,6 +23,7 @@ public:
 
 	// Entity Functions
 	Camera* generateCameraEntity();
+	void generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
 	vec3 getEntityPosition(int iEntityID);
 
 	// Entity Component functions

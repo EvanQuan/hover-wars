@@ -45,6 +45,11 @@ using namespace glm;
 #define LIGHT_MOVE_FACTOR	0.05f
 #define PI					3.14159265f
 
+/* Manager Defines */
+#define ENTITY_MANAGER EntityManager::getInstance()
+#define SHADER_MANAGER ShaderManager::getInstance()
+#define MESH_MANAGER MeshManager::getInstance()
+
 // From Boilerplate code,
 // Shouldn't need to modify this.
 // Accessible anywhere stdafx.h is included and GL Error Checking is required.

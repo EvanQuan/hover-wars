@@ -13,7 +13,7 @@ Sphere::Sphere( const vec3* pPos,
 				long lID, const string* sTexName, const Anim_Track* pAnimTrack )
 	: Object3D( pPos, lID, sTexName, pAnimTrack )
 {
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 	m_fRadius = fRadius;
 	generateMesh();
@@ -26,11 +26,11 @@ Sphere::Sphere( const vec3* pPos,
 
 	// Generate Buffer and Set Attributes
 	m_iVertexBuffer = pShdrMngr->genVertexBuffer( m_iVertexArray, m_pVertices.data(), m_pVertices.size() * sizeof( vec3 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
 	m_iNormalBuffer = pShdrMngr->genVertexBuffer( m_iVertexArray, m_pNormals.data(), m_pNormals.size() * sizeof( vec3 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 1, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 1, 3, 0, nullptr);
 	m_iTextureBuffer = pShdrMngr->genVertexBuffer( m_iVertexArray, m_pUVs.data(), m_pUVs.size() * sizeof( vec2 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_iVertexArray, 2, 2, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_iVertexArray, 2, 2, 0, nullptr);
 
 	m_pEdgeBuffer = new EdgeBuffer( m_iVertexArray );
 	m_pEdgeBuffer->GenerateAdjListStrip( m_pVertices, m_pNormals, m_pVertices.size() );
@@ -46,7 +46,7 @@ Sphere::~Sphere()
 // Draw the Sphere
 void Sphere::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThreshold, bool m_bPause )
 {
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 
 	glBindVertexArray( m_iVertexArray );
