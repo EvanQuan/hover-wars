@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "EntityComponentHeaders/EntityComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
+#include "EntityComponentHeaders/RenderComponent.h"
 
 
 // Environment Manager
@@ -23,10 +24,12 @@ public:
 
 	// Entity Functions
 	Camera* generateCameraEntity();
+	void generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
 	vec3 getEntityPosition(int iEntityID);
 
 	// Entity Component functions
 	CameraComponent* generateCameraComponent(int iEntityID);
+	RenderComponent* generateRenderComponent(int iEntityID, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode);
 
 	// Camera Management
 	void updateHxW(int iHeight, int iWidth);
@@ -38,6 +41,7 @@ public:
 	void killLight( long lID );
 	void listEnvironment();
 	void renderEnvironment( const vec3& vCamLookAt );
+	void updateEnvironment(const Time& pTimer);
 
 	// Texture Manipulation
 	void switchTexture( const string* sTexLocation, long lObjID );
@@ -73,7 +77,7 @@ private:
 	inline int getNewComponentID() { return ++m_iComponentIDPool; }
 	vector<unique_ptr<EntityComponent>>	m_pMasterComponentList;
 	vector<unique_ptr<Entity>>	m_pMasterEntityList;
-	vector<EntityComponent*>	m_pRenderingComponents;
+	vector<RenderComponent*>	m_pRenderingComponents;
 	vector<CameraComponent*>	m_pCameraComponents;
 	CameraComponent*			m_pActiveCamera;
 

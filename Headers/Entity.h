@@ -8,6 +8,7 @@ class Entity
 {
 public:
 	Entity(int iID, vec3 vPosition);
+	Entity(const Entity& pCopy);
 	virtual ~Entity();
 
 	// Getters/Setters

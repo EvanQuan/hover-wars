@@ -13,7 +13,7 @@ public:
 
 	// Creation Functions
 	Object3D* createSphere( vector< string > sData, int iLength );
-	Object3D* createPlane( vector< string > sData, int iLength );
+	void createPlane( vector< string > sData, int iLength );
 	Object3D* createTriangle( vector< string > sData, int iLength );
 	Light* createLight( vector< string > sData, int iLength );
 	Object3D* createMesh( vector< string > sData, int iLength );
@@ -31,7 +31,7 @@ private:
 
 	long m_lNextID;
 	long getNewID() { return ++m_lNextID; }
-	void outputError( const string* sName, vector<string> sData );
+	void outputError( string sName, vector<string> sData );
 	void pullData( ifstream& inFile, vector< string >& sReturnData );
 	void handleData( vector< string >& sData, const string& sIndicator );
 	void handleProperty( vector< string >& sData, const string& sIndicator );

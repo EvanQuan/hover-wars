@@ -16,60 +16,81 @@ MeshManager* MeshManager::getInstance()
 }
 
 
-// Destructor: Clear the Texture Cache and release the memory
-//				The Destructor of each texture should be called to release the memory of those textures.
+// Destructor: Clear the Mesh Cache and release the memory.
 MeshManager::~MeshManager()
+{
+	unloadAllMeshes();
+}
+
+// unloads all current Meshes to create a clean slate.
+//		Since the meshes are unique pointers, calling clear on the container will properly
+//			call the destructors of the meshes.
+void MeshManager::unloadAllMeshes()
 {
 	m_pMeshCache.clear();
 }
 
-// loadTexture: Takes in a FileName and User Object.  If the Texture is already loaded, 
-//				Add the user to the use list of the texture and return the reference to that texture.
-//				Otherwise, create the texture, attach the user, store this information in the cache and return the
-//				Reference to the texture.
-// Parameters:	sFileName - The location of the file to load.
-//				pUser - The 3D Object requesting a reference to the texture.
-// Written by:  James Cote
-Mesh* MeshManager::loadMesh( const string& sFileName, long lID )
+// loadMeshFromFile:	Takes in a FileName. Load in a mesh from that filename if possible.
+// Return:				Returns a pointer to the desired mesh from the specified file.
+// Parameters:			sFileName - The location of the file to load.
+// Written by:			James Cote
+Mesh* MeshManager::loadMeshFromFile( const string& sFileName )
 {
 	// Attempt to grab it from the texture cache if it already exists
 	Mesh* pReturnMesh = nullptr;
-	MeshContainer* pContainer;
 
+	// Found an existing Mesh from that file.
 	if ( m_pMeshCache.end() != m_pMeshCache.find( sFileName ) )
 	{
-		// Grab the Texture Container from the Cache
-		pContainer = &m_pMeshCache[ sFileName ];
-
-		// Return the Texture
-		pReturnMesh = pContainer->pMesh;
-
-		// Add the User to Use List and Sort for faster searching.
-		pContainer->lUserIDs.push_back( lID );
-		sort( pContainer->lUserIDs.begin(), pContainer->lUserIDs.end() );
+		// Grab the Mesh from the Cache
+		pReturnMesh = m_pMeshCache[ sFileName ].get();
 	}
 	else // Create the New Texture in the Texture Cache, attach the User to the Texture and return the newly created texture.
 	{
-		// Generate Texture Container
-		pContainer = new MeshContainer();
-		pContainer->pMesh = new Mesh( sFileName );
+		// Generate Mesh smart pointer
+		unique_ptr<Mesh> pNewMesh = make_unique<Mesh>( sFileName, Mesh::manager_cookie() );
 
-		if ( !initializeMesh( pContainer->pMesh, sFileName ) )
+		if ( !initializeMesh( pNewMesh.get(), sFileName ) )
 		{
 			if ( sFileName != "" )
 				cout << "Error, unable to load texture: " << sFileName << endl;
-			delete pContainer;
+			pNewMesh.reset();
 		}
 		else
 		{
-			pContainer->lUserIDs.push_back( lID );
-
-			// Attach Texture Container to the Cache
-			m_pMeshCache[ sFileName ] = *pContainer;
-
-			// Return Newly Created Texture.
-			pReturnMesh = pContainer->pMesh;
+			// Return Newly Created Mesh.
+			pReturnMesh = pNewMesh.get();
+			// Attach Mesh to the Cache
+			m_pMeshCache.insert(make_pair( sFileName, move(pNewMesh) ));
 		}
+	}
+
+	return pReturnMesh;
+}
+
+// genereatePlaneMesh:	Searches the Cache for a similar mesh with handle "Plane<iHeight><iWidth>"
+//							or creates a new Plane Mesh if one hasn't been created yet.
+// Returns:				Generated plane mesh or nullptr if no mesh was able to be generated.
+// Written by:			James Cote
+Mesh* MeshManager::generatePlaneMesh(int iHeight, int iWidth, 
+									 vec3 vPosition, vec3 vNormal)
+{
+	// Local Variables
+	string sHashHandle = "Plane" + to_string(iHeight) + to_string(iWidth) + 
+							glm::to_string(vPosition) + glm::to_string(vNormal);
+	Mesh* pReturnMesh = nullptr;
+
+	// Found a plane of this size that already exists, return that.
+	if (m_pMeshCache.end() != m_pMeshCache.find(sHashHandle))
+	{
+		pReturnMesh = m_pMeshCache[sHashHandle].get();
+	}
+	else // Generate a new Plane Mesh of height iHeight and width iWidth
+	{
+		unique_ptr<Mesh> pNewPlane = make_unique<Mesh>(sHashHandle, Mesh::manager_cookie());
+		pNewPlane->genPlane(iHeight, iWidth, vPosition, vNormal);	// Generate Pane
+		pReturnMesh = pNewPlane.get();	// Return raw pointer to managed Mesh.
+		m_pMeshCache.insert(make_pair(sHashHandle, move(pNewPlane)));	// Insert into Mesh Cache
 	}
 
 	return pReturnMesh;
@@ -88,34 +109,4 @@ bool MeshManager::initializeMesh( Mesh* pReturnMesh, const string& sFileName )
 
 	// Return result.
 	return bReturnValue;
-}
-
-// unloadTexture: This tells the Texture Manager that the Object is requesting to drop 
-//				  its connection to the texture.  Using the Object ID, this will attempt to remove
-//				  its reference to it if it exists then if there are no remaining IDs attached to 
-//				  the texture is deleted from memory.
-// Params:		sFileName - The Name of the File; a Handle to the Texture Container
-//				pUser - The 3D Object that is wanting to drop its reference to the texture.
-// Note:		inherently avoids invalid IDs.
-void MeshManager::unloadMesh( const string& sFileName, long lID )
-{
-	// Local Variables
-	MeshContainer* pContainer;
-	vector<long>::iterator pUserID;
-
-	// Search for the specified texture.
-	if ( m_pMeshCache.end() != m_pMeshCache.find( sFileName ) )
-	{
-		// Grab container and find specified user that's referencing the texture
-		pContainer = &m_pMeshCache[ sFileName ];
-		pUserID = find( pContainer->lUserIDs.begin(), pContainer->lUserIDs.end(), lID );
-
-		// If the user is found in the texture userIDs, delete the user.
-		if ( pUserID != pContainer->lUserIDs.end() )
-			pContainer->lUserIDs.erase( pUserID );
-
-		// Unload the texture if the last user was removed
-		if ( pContainer->lUserIDs.empty() )
-			m_pMeshCache.erase( sFileName );
-	}
 }

@@ -19,6 +19,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
+#include "GameTime.h"
+
 
 #ifdef USING_LINUX
 #include <string.h>
@@ -45,6 +47,11 @@ using namespace glm;
 #define STARTING_ENV		"scene2.txt"
 #define LIGHT_MOVE_FACTOR	0.05f
 #define PI					3.14159265f
+
+/* Manager Defines */
+#define ENTITY_MANAGER EntityManager::getInstance()
+#define SHADER_MANAGER ShaderManager::getInstance()
+#define MESH_MANAGER MeshManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

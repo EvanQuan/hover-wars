@@ -19,8 +19,8 @@ GraphicsManager* GraphicsManager::m_pInstance = nullptr;
 GraphicsManager::GraphicsManager(GLFWwindow* rWindow)
 {
 	// Initialize and Get Shader and Environment Managers
-	m_pShaderMngr	= ShaderManager::getInstance();
-	m_pEntMngr		= EntityManager::getInstance();
+	m_pShaderMngr	= SHADER_MANAGER;
+	m_pEntMngr		= ENTITY_MANAGER;
 
 	m_pWindow = rWindow;
 	int iHeight, iWidth;
@@ -34,7 +34,7 @@ GraphicsManager::GraphicsManager(GLFWwindow* rWindow)
 	
 	// Generate Buffer and Set Attribute
 	m_pVertexBuffer = m_pShaderMngr->genVertexBuffer( m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof( vec3 ), GL_STATIC_DRAW );
-	ShaderManager::getInstance()->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
+	SHADER_MANAGER->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
 }
 
 // Singleton Implementations
@@ -67,6 +67,12 @@ GraphicsManager::~GraphicsManager()
 // Intended to be called every cycle, or when the graphics need to be updated
 bool GraphicsManager::renderGraphics()
 {
+	// Update Timer
+	m_pTimer.updateTime();
+
+	// Update Environment
+	m_pEntMngr->updateEnvironment(m_pTimer);
+
 	// call function to draw our scene
 	RenderScene();
 

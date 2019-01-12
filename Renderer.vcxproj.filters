@@ -114,6 +114,15 @@
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\StaticEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Camera.cpp">
@@ -202,6 +211,15 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StaticEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\RenderComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameTime.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

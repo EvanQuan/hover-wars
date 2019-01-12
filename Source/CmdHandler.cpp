@@ -34,7 +34,7 @@ CmdHandler::CmdHandler(GLFWwindow *rWindow) : InputHandler()
 {
 	// Initializing Base Class
 	m_pGPXMngr = GraphicsManager::getInstance(rWindow);
-	m_pEntMngr = EntityManager::getInstance();
+	m_pEntMngr = ENTITY_MANAGER;
 
 	bWireFrame = false;
 }

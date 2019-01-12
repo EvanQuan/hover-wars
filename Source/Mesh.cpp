@@ -2,9 +2,9 @@
 #include <sstream>
 
 // Basic Constructor
-Mesh::Mesh( const string &sFileName )
+Mesh::Mesh( const string &sManagerKey, manager_cookie )
 {
-	m_sFileName = sFileName;
+	m_sManagerKey = sManagerKey;
 	m_m4DefaultInstance =  mat4(1.0f);
 	m_iNumInstances = 1;
 	m_iVertexArray = -1;
@@ -44,6 +44,48 @@ bool Mesh::genMesh( const string& sFileName )
 	}
 
 	return bReturnValue;
+}
+
+// Generate a generic plane at the origin with a given Height and Width
+//	Normals are along the y-axis.
+void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
+{
+	// Generate 4 vertices around the origin
+	/***********************************
+		Width = (x-axis)
+		Height = (z-axis)
+	*/
+	float fHalfHeight = (float)(iHeight >> 1);
+	float fHalfWidth = (float)(iWidth >> 1);
+	m_pVertices.push_back(vec3(-fHalfWidth, 0.f, -fHalfHeight));
+	m_pVertices.push_back(vec3(-fHalfWidth, 0.f, fHalfHeight));
+	m_pVertices.push_back(vec3(fHalfWidth, 0.f, -fHalfHeight));
+	m_pVertices.push_back(vec3(fHalfWidth, 0.f, fHalfHeight));
+
+	// Generate Normals for each Vertex.
+	m_pNormals.insert(m_pNormals.begin(), 4, vNormal);
+
+	// Generate UVs for Plane
+	m_pUVs.push_back(vec2(0.0, 0.0));
+	m_pUVs.push_back(vec2(0.0, 1.0));
+	m_pUVs.push_back(vec2(1.0, 0.0));
+	m_pUVs.push_back(vec2(1.0, 1.0));
+
+	if ((vec3(0.f, 1.f, 0.f) != vNormal) && (vec3(0.0f, -1.f, 0.f) != vNormal))
+	{
+		// create Rotation quaternion to rotate plane.
+		quat q = cross(vec3(0.f, 1.f, 0.f), vNormal);
+		normalize(q);
+		q.w = 1 + dot(vec3(0.f, 1.f, 0.f), vNormal);
+
+		// Rotate Plane
+		Mesh::rotate(q);
+	}
+
+	// If translation is necessary, translate plane.
+	if (vec3(0.f) != vPosition)
+		Mesh::translate(vPosition);
+
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any
@@ -186,7 +228,7 @@ void Mesh::initMesh()
 		glGenVertexArrays(1, &m_iVertexArray);
 
 		// Generate Buffer
-		m_iVNBuffer = ShaderManager::getInstance()->genVertexBuffer(
+		m_iVNBuffer = SHADER_MANAGER->genVertexBuffer(
 			m_iVertexArray,
 			m_pVNData.data(),
 			m_pVNData.size() * sizeof(vec3),
@@ -194,30 +236,30 @@ void Mesh::initMesh()
 
 		// Set-up Attributes
 		// Vertices
-		ShaderManager::getInstance()->setAttrib(
+		SHADER_MANAGER->setAttrib(
 			m_iVertexArray, 0, 3, sizeof(vec3) * 2, (void*)0);
 		// Normals
-		ShaderManager::getInstance()->setAttrib(
+		SHADER_MANAGER->setAttrib(
 			m_iVertexArray, 1, 3, sizeof(vec3) * 2, (void*)sizeof(vec3));
 
 		// Set up Instanced Buffer for Instance Rendering
-		m_iInstancedBuffer = ShaderManager::getInstance()->genVertexBuffer(
+		m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
 			m_iVertexArray, (void*)&m_m4DefaultInstance,
 			sizeof(mat4), GL_STREAM_DRAW);
 
 		// Instance Rendering Attributes
 		// column 0
 		glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-		ShaderManager::getInstance()->setAttrib(
+		SHADER_MANAGER->setAttrib(
 			m_iVertexArray, 2, 4, sizeof(vec4) * 4, (void*)0);
 		// column 1
-		ShaderManager::getInstance()->setAttrib(
+		SHADER_MANAGER->setAttrib(
 			m_iVertexArray, 3, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
 		// column 2
-		ShaderManager::getInstance()->setAttrib(
+		SHADER_MANAGER->setAttrib(
 			m_iVertexArray, 4, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
 		// column 3
-		ShaderManager::getInstance()->setAttrib(
+		SHADER_MANAGER->setAttrib(
 			m_iVertexArray, 5, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
 
 		glBindVertexArray(m_iVertexArray);
@@ -227,7 +269,7 @@ void Mesh::initMesh()
 		glVertexAttribDivisor(5, 1);
 
 		// Indices
-		m_iIndicesBuffer = ShaderManager::getInstance()->genIndicesBuffer(
+		m_iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(
 			m_iVertexArray,
 			m_pIndices.data(),
 			m_pIndices.size() * sizeof(unsigned int),
@@ -238,7 +280,7 @@ void Mesh::initMesh()
 // draws the Mesh
 void Mesh::drawMesh( GLuint iProgram )
 {
-	ShaderManager* pShdrMngr = ShaderManager::getInstance();
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 	// Set Up Shader
 	glBindVertexArray( m_iVertexArray );
@@ -250,4 +292,51 @@ void Mesh::drawMesh( GLuint iProgram )
 	// Unload Shader 
 	glUseProgram(0);
 	glBindVertexArray( 0 );
+}
+
+/****************************************************************************\
+ * Static Mesh Manipulation													*
+\****************************************************************************/
+
+// Translates a Mesh from the origin to the given position.
+//	Should only be used for static objects to set their static positions once.
+void Mesh::translate(vec3 vPosition)
+{
+	// Generate translation matrix to translate plane to new position.
+	mat4 m4TranslationMat = glm::translate(vPosition - vec3(0.f));
+
+	// translate all vertices to new positions
+	for (vector<vec3>::iterator iter = m_pVertices.begin();
+		iter != m_pVertices.end();
+		++iter)
+	{
+		(*iter) = m4TranslationMat * vec4((*iter), 1.f);
+	}
+}
+
+// Given a Quaternion, rotate all vertices of mesh by quaternion value.
+void Mesh::rotate(quat qRotationQuatern)
+{
+	// Rotate all Vertices by quaternion
+	for (vector<vec3>::iterator iter = m_pVertices.begin();
+		iter != m_pVertices.end();
+		++iter)
+	{
+		(*iter) = (*iter) * qRotationQuatern;
+	}
+}
+
+// Uniformally scales a mesh by a given float. Float should be represented as 1.0f == 100%
+void Mesh::scale(float fScale)
+{
+	// Utilize GLM to generate a scale matrix
+	mat4 m4ScaleMatrix = glm::scale(vec3(fScale));
+
+	// Scale all Vertices by scale matrix.
+	for (vector<vec3>::iterator iter = m_pVertices.begin();
+		iter != m_pVertices.end();
+		++iter)
+	{
+		(*iter) = vec4((*iter), 1.f) * m4ScaleMatrix;
+	}
 }

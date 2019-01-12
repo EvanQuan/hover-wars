@@ -11,8 +11,10 @@ public:
 	~MeshManager();
 
 	// Methods:
-	Mesh* loadMesh( const string &sFileName, long lID );
-	void unloadMesh( const string &sFileName, long lID );
+	Mesh* loadMeshFromFile( const string &sFileName );
+	Mesh* generatePlaneMesh(int fHeight, int fWidth, vec3 vPosition = vec3(0.f), vec3 vNormal = vec3(0.f, 1.f, 0.f));
+	void unloadAllMeshes();
+
 private:
 	// Singleton Implementation
 	static MeshManager* pInstance;
@@ -20,16 +22,9 @@ private:
 	MeshManager( const MeshManager& pCopy ) {}
 	MeshManager& operator=( const MeshManager& pRHS ) {}
 	
-	// MeshContainer structure
-	struct MeshContainer
-	{
-		Mesh* pMesh;					// Mesh Object Reference
-		vector<long> lUserIDs;			// List of Users
-	};
-
 	// Private Functions
 	bool initializeMesh( Mesh* pMesh, const string& sFileName );
 
 	// Hash Map
-	unordered_map<string, MeshContainer> m_pMeshCache;
+	unordered_map<string, unique_ptr<Mesh>> m_pMeshCache;
 };

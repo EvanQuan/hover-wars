@@ -17,7 +17,7 @@ public:
 
 	// Updating Functions
 	void updateHxW(int iHeight, int iWidth);
-	void update() { }
+	void update( double dTimeStep ) { /*Not implemented*/ }
 
 	// Set up Camera Matrices
 	mat4 getToCameraMat() const;

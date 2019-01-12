@@ -9,7 +9,7 @@ public:
 	void bindTexture( ShaderManager::eShaderType eType, string sVarName );
 	void unbindTexture();
 
-	const string& getFileName() { return m_sFileName; }
+	const string& getFileName() { return m_sManagerKey; }
 
 private:
 	Texture( const string& sFileName );
@@ -24,7 +24,7 @@ private:
 	GLuint  m_uiWidth, m_uiHeight;
 
 	// Reference to texture's File Name
-	string m_sFileName;
+	string m_sManagerKey;
 
 	// Friend class is TextureManager so only this Manager can create Texture Objects
 	friend class TextureManager;
