@@ -19,6 +19,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
+#include "GameTime.h"
+
 
 #ifdef USING_LINUX
 #include <string.h>

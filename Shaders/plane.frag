@@ -8,7 +8,7 @@ in vec3 L;
 in vec2 texturePos;
 
 uniform sampler2D gSampler;
-uniform bool bTextureLoaded = true;
+uniform bool bTextureLoaded = false;
 
 void main (void)
 {

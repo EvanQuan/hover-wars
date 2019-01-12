@@ -58,11 +58,10 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName )
 		}
 		else
 		{
-			// Attach Mesh to the Cache
-			m_pMeshCache.insert(make_pair( sFileName, move(pNewMesh) ));
-
 			// Return Newly Created Mesh.
 			pReturnMesh = pNewMesh.get();
+			// Attach Mesh to the Cache
+			m_pMeshCache.insert(make_pair( sFileName, move(pNewMesh) ));
 		}
 	}
 

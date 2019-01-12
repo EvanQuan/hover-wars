@@ -65,6 +65,12 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 	// Generate Normals for each Vertex.
 	m_pNormals.insert(m_pNormals.begin(), 4, vNormal);
 
+	// Generate UVs for Plane
+	m_pUVs.push_back(vec2(0.0, 0.0));
+	m_pUVs.push_back(vec2(0.0, 1.0));
+	m_pUVs.push_back(vec2(1.0, 0.0));
+	m_pUVs.push_back(vec2(1.0, 1.0));
+
 	if ((vec3(0.f, 1.f, 0.f) != vNormal) && (vec3(0.0f, -1.f, 0.f) != vNormal))
 	{
 		// create Rotation quaternion to rotate plane.

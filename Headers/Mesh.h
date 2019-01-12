@@ -29,6 +29,7 @@ private:
 	//	Indices and Normals
 	vector<unsigned int> m_pIndices;
 	vector< vec3 > m_pVertices, m_pNormals;
+	vector< vec2 > m_pUVs;
 	vector< vec3 > m_pVNData;
 	GLuint m_iVNBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
 	GLuint m_iVertexArray;
@@ -52,6 +53,11 @@ public:
 	// Get Information for drawing elements.
 	void bindIndicesBuffer() const { glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_iIndicesBuffer ); }
 	GLuint getCount() { return m_pIndices.size(); }
+
+	// Getters for Mesh Data
+	const vector<vec3>& getVertices() const { return m_pVertices; }
+	const vector<vec3>& getNormals() const { return m_pNormals; }
+	const vector<vec2>& getUVs() const { return m_pUVs; }
 
 	// Gets the file name, only the MeshManager can set this variable.
 	const string& getManagerKey() { return m_sManagerKey; }

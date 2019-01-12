@@ -30,6 +30,10 @@ StaticEntity::~StaticEntity()
 void StaticEntity::loadAsPlane(vec3 vNormal, int iHeight, int iWidth)
 {
 	m_pMesh = MESH_MANAGER->generatePlaneMesh(iHeight, iWidth, m_vPosition, vNormal);
+	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, true, ShaderManager::eShaderType::PLANE_SHDR, GL_TRIANGLE_STRIP);
+
+	assert(nullptr != m_pRenderComponent);
+	m_pRenderComponent->initializeComponent(m_pMesh->getVertices(), m_pMesh->getNormals(), m_pMesh->getUVs());
 }
 
 void StaticEntity::loadAsSphere(float fRadius)

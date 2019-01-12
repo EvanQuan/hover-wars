@@ -193,6 +193,11 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 				(*pIter)->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
 		}
 
+		for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
+			pIter != m_pRenderingComponents.end();
+			++pIter)
+			(*pIter)->render();
+
 		// Draw Boid Engine
 		if( nullptr != m_pBoidEngine )
 			m_pBoidEngine->draw( m_bPause );
@@ -295,9 +300,10 @@ vec3 EntityManager::getEntityPosition(int iEntityID)
 Camera* EntityManager::generateCameraEntity()
 {
 	unique_ptr<Camera> pNewCamera = make_unique<Camera>(getNewEntityID());
+	Camera* pReturnCamera = pNewCamera.get();
 	m_pMasterEntityList.push_back(move(pNewCamera));
 
-	return pNewCamera.get();
+	return pReturnCamera;
 }
 
 // Generates a Static Plane Entity into the world.
@@ -323,6 +329,29 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 	m_iWidth = iWidth;
 }
 
+// Main Update Function
+// This function checks the timer and updates necessary components
+//	in the game world. No rendering is done here.
+void EntityManager::updateEnvironment(const Time& pTimer)
+{
+	// Get Total Frame Time and Benchmark for 60 fps
+	duration<double> pFrameTime = pTimer.getFrameTime();
+	constexpr auto pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+
+	// Loop updates to maintain 60 fps
+	while (pFrameTime > milliseconds(0))
+	{
+		// Get the Delta of this time step <= 1/60th of a second (60 fps)
+		// Interpolate on steps < 1/60th of a second
+		auto pDeltaTime = 
+			std::min<common_type<decltype(pFrameTime),decltype(pMaxDeltaTime)>::type>(pFrameTime, pMaxDeltaTime);
+
+		pFrameTime -= pDeltaTime;
+		
+		// UPDATES GO HERE
+	}
+}
+
 /*********************************************************************************\
 * Entity Component Management                                                    *
 \*********************************************************************************/
@@ -342,4 +371,18 @@ CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 		m_pActiveCamera = m_pCameraComponents.back();
 
 	return m_pCameraComponents.back();
+}
+
+// Generates a new Render Component, stores it in the Rendering Components list and Master Components list.
+//	Manages component with a unique pointer stored internally in the Master Components list.
+RenderComponent* EntityManager::generateRenderComponent(int iEntityID, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode)
+{
+	// Generate new Render Component
+	unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bStaticDraw, eType, eMode);
+	RenderComponent* pReturnComponent = pNewRenderComponent.get();	// Return pointer
+	m_pRenderingComponents.push_back(pReturnComponent);				// store in Rendering components list
+	m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
+
+	// Return newly created component.
+	return pReturnComponent;
 }

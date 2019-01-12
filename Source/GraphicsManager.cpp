@@ -67,6 +67,12 @@ GraphicsManager::~GraphicsManager()
 // Intended to be called every cycle, or when the graphics need to be updated
 bool GraphicsManager::renderGraphics()
 {
+	// Update Timer
+	m_pTimer.updateTime();
+
+	// Update Environment
+	m_pEntMngr->updateEnvironment(m_pTimer);
+
 	// call function to draw our scene
 	RenderScene();
 

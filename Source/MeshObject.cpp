@@ -12,7 +12,9 @@ MeshObject::MeshObject( const glm::vec3* pPosition, const string* sFileName, lon
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 	m_pMesh = MESH_MANAGER->loadMeshFromFile( *sFileName );
-	m_pMesh->initMesh( );
+
+	if( nullptr != m_pMesh)
+		m_pMesh->initMesh( );
 	
 	//m_pEdgeBuffer = new EdgeBuffer( m_iVertexArray );
 	//m_pEdgeBuffer->GenerateAdjListMesh( m_pMesh );

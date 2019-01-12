@@ -3,6 +3,7 @@
 /* INCLUDES */
 #include "stdafx.h"
 #include "Camera.h"
+#include <time.h>
 
 // Forward Declarations
 class ShaderManager;
@@ -62,6 +63,7 @@ private:
 
 	// Window Reference
 	GLFWwindow* m_pWindow;
+	Time m_pTimer;
 
 	// Axis Buffer/Array Containers
 	GLuint m_pVertexArray;

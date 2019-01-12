@@ -31,6 +31,7 @@
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
     <ClInclude Include="Headers\FreeImage.h" />
+    <ClInclude Include="Headers\GameTime.h" />
     <ClInclude Include="Headers\GraphicsManager.h" />
     <ClInclude Include="Headers\ImageBuffer.h" />
     <ClInclude Include="Headers\ImageReader.h" />
@@ -64,6 +65,7 @@
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
+    <ClCompile Include="Source\GameTime.cpp" />
     <ClCompile Include="Source\GraphicsManager.cpp" />
     <ClCompile Include="Source\ImageBuffer.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
