@@ -34,7 +34,7 @@ void MeshManager::unloadAllMeshes()
 // Return:				Returns a pointer to the desired mesh from the specified file.
 // Parameters:			sFileName - The location of the file to load.
 // Written by:			James Cote
-Mesh* MeshManager::loadMeshFromFile( const string& sFileName )
+Mesh* MeshManager::loadMeshFromFile( const string& sFileName, vec3 vPosition, bool bStaticMesh )
 {
 	// Attempt to grab it from the texture cache if it already exists
 	Mesh* pReturnMesh = nullptr;
@@ -48,9 +48,9 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName )
 	else // Create the New Texture in the Texture Cache, attach the User to the Texture and return the newly created texture.
 	{
 		// Generate Mesh smart pointer
-		unique_ptr<Mesh> pNewMesh = make_unique<Mesh>( sFileName, Mesh::manager_cookie() );
+		unique_ptr<Mesh> pNewMesh = make_unique<Mesh>( sFileName, bStaticMesh, Mesh::manager_cookie() );
 
-		if ( !initializeMesh( pNewMesh.get(), sFileName ) )
+		if ( !initializeMesh( pNewMesh.get(), sFileName, vPosition ) )
 		{
 			if ( sFileName != "" )
 				cout << "Error, unable to load texture: " << sFileName << endl;
@@ -72,7 +72,7 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName )
 //							or creates a new Plane Mesh if one hasn't been created yet.
 // Returns:				Generated plane mesh or nullptr if no mesh was able to be generated.
 // Written by:			James Cote
-Mesh* MeshManager::generatePlaneMesh(int iHeight, int iWidth, 
+Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, 
 									 vec3 vPosition, vec3 vNormal)
 {
 	// Local Variables
@@ -87,7 +87,7 @@ Mesh* MeshManager::generatePlaneMesh(int iHeight, int iWidth,
 	}
 	else // Generate a new Plane Mesh of height iHeight and width iWidth
 	{
-		unique_ptr<Mesh> pNewPlane = make_unique<Mesh>(sHashHandle, Mesh::manager_cookie());
+		unique_ptr<Mesh> pNewPlane = make_unique<Mesh>(sHashHandle, bStaticMesh, Mesh::manager_cookie());
 		pNewPlane->genPlane(iHeight, iWidth, vPosition, vNormal);	// Generate Pane
 		pReturnMesh = pNewPlane.get();	// Return raw pointer to managed Mesh.
 		m_pMeshCache.insert(make_pair(sHashHandle, move(pNewPlane)));	// Insert into Mesh Cache
@@ -96,16 +96,36 @@ Mesh* MeshManager::generatePlaneMesh(int iHeight, int iWidth,
 	return pReturnMesh;
 }
 
+Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, vec3 vPosition)
+{
+	// Local Variables
+	string sHashHandle = "Sphere" + to_string(fRadius) + glm::to_string(vPosition);
+	Mesh* pReturnMesh = nullptr;
+
+	// Found a sphere of this radius at this position that already exists, return that.
+	if (m_pMeshCache.end() != m_pMeshCache.find(sHashHandle))
+		pReturnMesh = m_pMeshCache[sHashHandle].get();
+	else // Generate a new Sphere Mesh of given Radius
+	{
+		unique_ptr<Mesh> pNewSphere = make_unique<Mesh>(sHashHandle, bStaticMesh, Mesh::manager_cookie());
+		pNewSphere->genSphere(fRadius, vPosition);	// Generate Sphere
+		pReturnMesh = pNewSphere.get();				// Return raw pointer to managed Mesh
+		m_pMeshCache.insert(make_pair(sHashHandle, move(pNewSphere)));	// Move Mesh to Cache
+	}
+
+	return pReturnMesh;
+}
+
 // Attempts to Initialize and return a new mesh object from a given object file.
 // Returns: Mesh Object created or nullptr if mesh failed to create.
 //			Bool: Returns true on Success, False on failure.
-bool MeshManager::initializeMesh( Mesh* pReturnMesh, const string& sFileName )
+bool MeshManager::initializeMesh( Mesh* pReturnMesh, const string& sFileName, vec3 vPosition )
 {
 	// Return Value
 	bool bReturnValue = ( nullptr != pReturnMesh );
 
 	if ( bReturnValue )
-		bReturnValue = pReturnMesh->genMesh( sFileName );
+		bReturnValue = pReturnMesh->genMesh( sFileName, vPosition );
 
 	// Return result.
 	return bReturnValue;

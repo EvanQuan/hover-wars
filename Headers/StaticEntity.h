@@ -12,7 +12,7 @@ class StaticEntity
 {
 public:
 	StaticEntity(int iID, vec3 vPosition);
-	StaticEntity(const StaticEntity& pCopy);
+
 	virtual ~StaticEntity();
 
 	void loadAsPlane(vec3 vNormal, int iHeight, int iWidth);
@@ -20,6 +20,10 @@ public:
 	void loadFromFile(const string& sFileName);
 
 private:
+	// Private Copy Constructor and Assignment Operator
+	StaticEntity(const StaticEntity& pCopy);
+	StaticEntity& operator=(const StaticEntity& pCopy);
+
 	Mesh* m_pMesh; // Contains Vertex information about the mesh.
 	RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
 };

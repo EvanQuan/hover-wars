@@ -52,6 +52,7 @@ using namespace glm;
 #define ENTITY_MANAGER EntityManager::getInstance()
 #define SHADER_MANAGER ShaderManager::getInstance()
 #define MESH_MANAGER MeshManager::getInstance()
+#define TEXTURE_MANAGER TextureManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

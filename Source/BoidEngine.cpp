@@ -86,7 +86,7 @@ BoidEngine::BoidEngine(vector< string > &sData)
 
 		// Texture
 		if (iSize > MIN_PARAMS)
-			m_pTexture		= TextureManager::getInstance()->loadTexture(sData[9], ID);
+			m_pTexture		= TEXTURE_MANAGER->loadTexture(sData[9], ID);
 
 		// Mesh
 		if (iSize > (MIN_PARAMS + 1))
@@ -105,7 +105,7 @@ BoidEngine::~BoidEngine()
 		m_pMesh = nullptr;
 
 	if( nullptr != m_pTexture)
-		TextureManager::getInstance()->unloadTexture(m_pTexture->getFileName(), ID);
+		TEXTURE_MANAGER->unloadTexture(m_pTexture->getFileName(), ID);
 
 	// Clear Vectors incase of resizing
 	m_vBoids.clear();
@@ -135,7 +135,7 @@ void BoidEngine::initializeBoids()
 
 	// Load Default Texture or Mesh if it failed to load.
 	if (nullptr == m_pTexture)
-		m_pTexture = TextureManager::getInstance()->loadTexture(sTexFileName, ID);
+		m_pTexture = TEXTURE_MANAGER->loadTexture(sTexFileName, ID);
 	if (nullptr == m_pMesh)
 		m_pMesh = MESH_MANAGER->loadMeshFromFile(sModelFileName);
 

@@ -8,7 +8,7 @@ Object::Object( const vec3* pPos, long lID, const string* sTexName, const Anim_T
 	m_lID = lID;
 
 	if( !sTexName->empty() )
-		m_pTexture = TextureManager::getInstance()->loadTexture( *sTexName, lID );
+		m_pTexture = TEXTURE_MANAGER->loadTexture( *sTexName, lID );
 	else m_pTexture = nullptr;
 
 	if ( nullptr != pAnimTrack )
@@ -23,7 +23,7 @@ Object::Object( const Object* pCopy )
 	m_lID = pCopy->m_lID;
 
 	if ( nullptr != m_pTexture )
-		TextureManager::getInstance()->unloadTexture( m_pTexture->getFileName(), m_lID );
+		TEXTURE_MANAGER->unloadTexture( m_pTexture->getFileName(), m_lID );
 	else m_pTexture = nullptr;
 
 	m_pAnimTrack = pCopy->m_pAnimTrack;
@@ -33,7 +33,7 @@ Object::Object( const Object* pCopy )
 Object::~Object()
 {
 	if( nullptr != m_pTexture )
-		TextureManager::getInstance()->unloadTexture( m_pTexture->getFileName(), m_lID );
+		TEXTURE_MANAGER->unloadTexture( m_pTexture->getFileName(), m_lID );
 
 	if ( nullptr != m_pAnimTrack )
 		delete m_pAnimTrack;
@@ -44,7 +44,7 @@ Object::~Object()
 // current texture and store the new texture.
 void Object::switchTexture( const string* sTexLoc )
 {
-	TextureManager* pTxMngr = TextureManager::getInstance();
+	TextureManager* pTxMngr = TEXTURE_MANAGER;
 	Texture* pNewTexture = pTxMngr->loadTexture( *sTexLoc, m_lID );
 
 	if ( nullptr != pNewTexture )

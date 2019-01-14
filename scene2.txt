@@ -54,9 +54,9 @@ light {
 # box
 ## bottom
 plane {
-	0 -4 0
+	0 0 0
 	0 1 0
-	400 400
+	40 40
 }
 ## Side 1
 #plane {
@@ -118,9 +118,13 @@ mesh_obj {
 	}
 }
 
-#sphere {
-#	0 .1 0 .025
-#	+anim_track {
-#		savedCurve.txt
-#	}
-#}
+static_mesh {
+	0 0 10
+	+mesh {
+		models/bunny.obj
+	}
+}
+
+sphere {
+	0 4 0 .5
+}

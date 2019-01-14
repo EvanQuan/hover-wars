@@ -12,12 +12,12 @@ public:
 	~Object_Factory();
 
 	// Creation Functions
-	Object3D* createSphere( vector< string > sData, int iLength );
+	void createSphere( vector< string > sData, int iLength );
 	void createPlane( vector< string > sData, int iLength );
-	Object3D* createTriangle( vector< string > sData, int iLength );
 	Light* createLight( vector< string > sData, int iLength );
 	Object3D* createMesh( vector< string > sData, int iLength );
 	Object3D* createMesh( const vec3* pPos, const string* sLocation, const string* sTexLocation );
+	void createStaticMesh(vector< string > sData, int iLength);
 
 	void loadFromFile( string sFileName );
 

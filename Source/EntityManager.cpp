@@ -310,8 +310,24 @@ Camera* EntityManager::generateCameraEntity()
 void EntityManager::generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 {
 	unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewPlane.get()->loadAsPlane(vNormal, iHeight, iWidth);
+	pNewPlane->loadAsPlane(vNormal, iHeight, iWidth);
 	m_pMasterEntityList.push_back(move(pNewPlane));
+}
+
+// Generates a Static Plane Entity into the world.
+void EntityManager::generateStaticSphere(float fRadius, vec3 vPosition)
+{
+	unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewSphere->loadAsSphere(fRadius);
+	m_pMasterEntityList.push_back(move(pNewSphere));
+}
+
+// Generates a Static Mesh at a given location
+void EntityManager::generateStaticMesh(const string& sMeshLocation, vec3 vPosition)
+{
+	unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewMesh->loadFromFile(sMeshLocation);
+	m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.
