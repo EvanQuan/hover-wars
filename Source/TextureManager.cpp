@@ -22,82 +22,55 @@ TextureManager* TextureManager::getInstance()
 //				The Destructor of each texture should be called to release the memory of those textures.
 TextureManager::~TextureManager()
 {
+	unloadAllTextures();
+}
+
+// unloadAllTextures: This will clear all the unique_ptrs for Textures, effectively clearing the heap
+//						and unloading all allocated Texture data.
+void TextureManager::unloadAllTextures( )
+{
 	m_pTextureCache.clear();
 }
 
-// loadTexture: Takes in a FileName and User Object.  If the Texture is already loaded, 
-//				Add the user to the use list of the texture and return the reference to that texture.
-//				Otherwise, create the texture, attach the user, store this information in the cache and return the
-//				Reference to the texture.
+// loadTexture: Takes in a FileName that is uses for a hashmap used to store the textures.
+//				If the texture has already been loaded, return a pointer to that loaded texture.
+//				Otherwise, load the texture and return the pointer to the newly created texture.
+//				Stores all created textures in its hash map.
 // Parameters:	sFileName - The location of the file to load.
-//				pUser - The 3D Object requesting a reference to the texture.
 // Written by:  James Cote
-Texture* TextureManager::loadTexture(const string& sFileName, long lID)
+Texture* TextureManager::loadTexture(const string& sFileName )
 {
 	// Attempt to grab it from the texture cache if it already exists
 	Texture* pReturnTexture = nullptr;
-	TextureContainer* pContainer;
 	
 	if (m_pTextureCache.end() != m_pTextureCache.find(sFileName))
 	{
 		// Grab the Texture Container from the Cache
-		pContainer = &m_pTextureCache[sFileName];
-
-		// Return the Texture
-		pReturnTexture = pContainer->pTexture;
-
-		// Add the User to Use List and Sort for faster searching.
-		pContainer->lUserIDs.push_back(lID);						
-		sort(pContainer->lUserIDs.begin(), pContainer->lUserIDs.end());	
+		pReturnTexture = m_pTextureCache[sFileName].get();
 	}
 	else // Create the New Texture in the Texture Cache, attach the User to the Texture and return the newly created texture.
 	{
-		// Generate Texture Container
-		pContainer = new TextureContainer();
-		pContainer->pTexture = new Texture( sFileName );
+		// Generate Texture Smart Pointer
+		unique_ptr<Texture> pNewTexture = make_unique<Texture>(sFileName, Texture::manager_cookie() );
 
-		if ( !InitializeTexture( pContainer->pTexture, sFileName ) )
+		if ( !InitializeTexture( pNewTexture.get(), sFileName ) )
 		{
 			cout << "Failed to read texture: \"" << sFileName << "\"\n";
 			if( sFileName != "" )
 				cout << "Error, unable to load texture: " << sFileName << endl;
-			delete pContainer;
+			pNewTexture.reset();
 		}
 		else
 		{
-			pContainer->lUserIDs.push_back( lID );
-
-			// Attach Texture Container to the Cache
-			m_pTextureCache[ sFileName ] = *pContainer;
-
-			// Return Newly Created Texture.
-			pReturnTexture = pContainer->pTexture;
+			// Return the raw pointer to the caller
+			pReturnTexture = pNewTexture.get();
+			
+			// Attach Texture to the Cache
+			m_pTextureCache.insert(make_pair(sFileName, move(pNewTexture)));
 		}
 	}
 
 	return pReturnTexture;
 }
 
-// unloadTexture: This tells the Texture Manager that the Object is requesting to drop 
-//				  its connection to the texture.  Using the Object ID, this will attempt to remove
-//				  its reference to it if it exists then if there are no remaining IDs attached to 
-//				  the texture is deleted from memory.
-// Params:		sFileName - The Name of the File; a Handle to the Texture Container
-//				pUser - The 3D Object that is wanting to drop its reference to the texture.
-void TextureManager::unloadTexture(const string& sFileName, long lID)
-{
-	TextureContainer* pContainer;
-	vector<long>::iterator pUserID;
 
-	if (m_pTextureCache.end() != m_pTextureCache.find(sFileName))
-	{
-		pContainer = &m_pTextureCache[sFileName];
-		pUserID = find(pContainer->lUserIDs.begin(), pContainer->lUserIDs.end(), lID);
-		
-		if( pUserID != pContainer->lUserIDs.end())
-			pContainer->lUserIDs.erase(pUserID);
-
-		if( pContainer->lUserIDs.empty() )
-			m_pTextureCache.erase(sFileName);
-	}	
-}

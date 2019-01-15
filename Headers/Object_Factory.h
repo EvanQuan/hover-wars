@@ -26,7 +26,7 @@ private:
 	Object_Factory();
 	Object_Factory( Object_Factory* pCopy );
 	static Object_Factory* m_pInstance;
-	string m_sTextureProperty, m_sMeshProperty;
+	string m_sTextureProperty, m_sMeshProperty, m_sShaderProperty;
 	Anim_Track* m_pAnimProperty;
 
 	long m_lNextID;
@@ -41,7 +41,7 @@ private:
 			delete m_pAnimProperty;
 
 		m_pAnimProperty = nullptr;
-		m_sMeshProperty = m_sTextureProperty = "";
+		m_sMeshProperty = m_sTextureProperty = m_sShaderProperty = "";
 	}
 	void saveProperties( string& sTextureProperty, string& sMeshProperty, Anim_Track* pAnimTrackProp )
 	{

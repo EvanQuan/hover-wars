@@ -59,7 +59,8 @@ void Object_Factory::createSphere( vector< string > sData, int iLength )
 	{
 		vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );	// Position of Sphere
 
-		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), vPosition);
+		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), vPosition, 
+											 m_sTextureProperty, m_sShaderProperty);
 	}
 }
 
@@ -76,7 +77,7 @@ void Object_Factory::createPlane( vector< string > sData, int iLength )
 		vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
 		iHeight = stoi(sData[6]);
 		iWidth = stoi(sData[7]);
-		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, pPosition, vNormal);
+		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, pPosition, vNormal, m_sTextureProperty, m_sShaderProperty);
 	}
 	else
 		outputError("Plane", sData);
@@ -147,7 +148,7 @@ void Object_Factory::createStaticMesh(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, vPosition);
+	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, vPosition, m_sTextureProperty, m_sShaderProperty);
 }
 
 /**************************************************************************\
@@ -294,12 +295,14 @@ void Object_Factory::handleProperty( vector< string >& sData, const string& sInd
 {
 	string sDataTrimmed = trimString( sData[ 0 ] );
 
-	if ( "anim_track" == sIndicator )
-		m_pAnimProperty = new Anim_Track( getNewID(), &sDataTrimmed, &m_sMeshProperty, &m_sTextureProperty );
-	else if ( "texture" == sIndicator )
+	if ("anim_track" == sIndicator)
+		m_pAnimProperty = new Anim_Track(getNewID(), &sDataTrimmed, &m_sMeshProperty, &m_sTextureProperty);
+	else if ("texture" == sIndicator)
 		m_sTextureProperty = sDataTrimmed;
-	else if ( "mesh" == sIndicator )
+	else if ("mesh" == sIndicator)
 		m_sMeshProperty = sDataTrimmed;
+	else if ("shader" == sIndicator)
+		m_sShaderProperty = sDataTrimmed;
 }
 
 // Removes any tabs from the beginning or end of a given string.

@@ -52,7 +52,7 @@ void Sphere::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThresh
 	glBindVertexArray( m_iVertexArray );
 
 	if ( nullptr != m_pTexture )
-		m_pTexture->bindTexture( ShaderManager::eShaderType::MESH_SHDR, "mySampler" );
+		m_pTexture->bindTexture( ShaderManager::eShaderType::MESH_SHDR, "gSampler" );
 
 	if ( nullptr != m_pAnimTrack )
 	{

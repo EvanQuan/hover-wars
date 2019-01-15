@@ -28,6 +28,8 @@ void RenderComponent::render()
 	glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
 
 	// Bind Texture(s) HERE
+	if (nullptr != m_pTexture)
+		m_pTexture->bindTexture(m_eShaderType, "gSampler");
 
 	// Call related glDraw function.
 	if (m_bUsingInstanced)
@@ -38,6 +40,8 @@ void RenderComponent::render()
 		glDrawArrays(m_eMode, 0, m_iCount);
 
 	// Unbind Texture(s) HERE
+	if (nullptr != m_pTexture)
+		m_pTexture->unbindTexture();
 
 	// Clean up OpenGL state
 	glUseProgram(0);
@@ -57,7 +61,7 @@ void RenderComponent::initializeComponent(const Mesh* pMesh, const string* pText
 
 	if (nullptr != pTextureLoc)
 	{
-		
+		m_pTexture = TEXTURE_MANAGER->loadTexture((*pTextureLoc));
 	}
 
 	m_bUsingIndices = pMesh->usingIndices();

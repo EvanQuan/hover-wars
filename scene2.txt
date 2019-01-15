@@ -26,7 +26,7 @@ light {
   1 2 0
   0.133 0.545 0.133
   +texture {
-	textures-256-256/lightbulb.png
+	textures-256-256/lbulbTest.jpeg
   }
 }
 
@@ -57,6 +57,9 @@ plane {
 	0 0 0
 	0 1 0
 	40 40
+	+texture {
+		textures-256-256/groundSeamless.jpg
+	}
 }
 ## Side 1
 #plane {
@@ -123,8 +126,20 @@ static_mesh {
 	+mesh {
 		models/bunny.obj
 	}
+	+texture {
+		textures-256-256/fig-7c.png
+	}
+	+shader {
+		mesh_shdr
+	}
 }
 
 sphere {
 	0 4 0 .5
+	+texture {
+		textures-256-256/fig-7b.png
+	}
+	+shader {
+		mesh_shdr
+	}
 }

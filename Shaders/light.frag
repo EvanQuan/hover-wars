@@ -6,5 +6,6 @@ uniform sampler2D gSampler;
 
 void main(void)
 {    
-    color = texture( gSampler, gl_PointCoord );
+	color = texture( gSampler, gl_PointCoord );
+
 }

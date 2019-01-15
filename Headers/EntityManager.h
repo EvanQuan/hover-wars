@@ -24,9 +24,9 @@ public:
 
 	// Entity Functions
 	Camera* generateCameraEntity();
-	void generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
-	void generateStaticSphere(float fRadius, vec3 vPosition);
-	void generateStaticMesh(const string& sMeshLocation, vec3 vPosition);
+	void generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, const string& sTextureLocation = "", const string& sShaderType = "");
+	void generateStaticSphere(float fRadius, vec3 vPosition, const string& sTextureLocation = "", const string& sShaderType = "");
+	void generateStaticMesh(const string& sMeshLocation, vec3 vPosition, const string& sTextureLocation = "", const string& sShaderType = "" );
 	vec3 getEntityPosition(int iEntityID);
 
 	// Entity Component functions

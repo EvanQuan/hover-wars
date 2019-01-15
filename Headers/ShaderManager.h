@@ -2,6 +2,7 @@
 
 /* INCLUDES */
 #include "stdafx.h"
+#include <unordered_map>
 #include "Shader.h"
 
 // Class: Shader Manager
@@ -30,6 +31,7 @@ public:
 		BOID_SHDR,
 		MAX_SHDRS
 	};
+	const static unordered_map<string, eShaderType> pShaderTypeMap;
 
 	const static eShaderType eDefaultEdgeShader = SILH_SHDR;
 	const static eShaderType eLastEdgeShader = RC_TRACK_SHDR;
@@ -45,6 +47,7 @@ public:
 
 	// Get the specified program for using shaders for rendering
 	GLuint getProgram(eShaderType eType) { return m_pShader[eType].getProgram(); }
+	ShaderManager::eShaderType getShaderType(const string& sKey);
 
 	// Setup Buffers and Arrays in GPU
 	GLuint genVertexBuffer( GLuint iVertArray, const void* pData, GLsizeiptr pSize, GLenum usage );

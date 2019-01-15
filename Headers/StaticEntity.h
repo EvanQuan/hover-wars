@@ -15,9 +15,9 @@ public:
 
 	virtual ~StaticEntity();
 
-	void loadAsPlane(vec3 vNormal, int iHeight, int iWidth);
-	void loadAsSphere(float fRadius);
-	void loadFromFile(const string& sFileName);
+	void loadAsPlane(vec3 vNormal, int iHeight, int iWidth, const string& sTextureLoc, const string& sShaderType);
+	void loadAsSphere(float fRadius, const string& sTextureLoc, const string& sShaderType);
+	void loadFromFile(const string& sFileName, const string& sTextureLoc, const string& sShaderType);
 
 private:
 	// Private Copy Constructor and Assignment Operator

@@ -378,11 +378,29 @@ void Mesh::loadInstanceData(const vector< mat4 >* pNewData)
 // Initialize Open GL handles for drawing mesh.
 void Mesh::initMesh()
 {
+	// HACK:  Will be removed later.
+	vector<float> vVNdata;
+
+	for (unsigned int i = 0; i < m_pVertices.size(); ++i)
+	{
+		// Vertex Data
+		vVNdata.push_back(m_pVertices[i].x);
+		vVNdata.push_back(m_pVertices[i].y);
+		vVNdata.push_back(m_pVertices[i].z);
+
+		// Normal Data
+		if (!m_pNormals.empty())
+		{
+			vVNdata.push_back(m_pNormals[i].x);
+			vVNdata.push_back(m_pNormals[i].y);
+			vVNdata.push_back(m_pNormals[i].z);
+		}
+	}
 	// Generate Buffer
 	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer(
 		m_iVertexArray,
-		m_pVNData.data(),
-		m_pVNData.size() * sizeof(vec3),
+		vVNdata.data(),
+		vVNdata.size() * sizeof(float),
 		GL_STATIC_DRAW);
 
 	// Set-up Attributes

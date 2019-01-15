@@ -39,9 +39,10 @@ void MeshObject::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxTh
 {
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
 	mat4 pPositionTranslated = mat4( m_fScale );
+	mat4 pIdentity = mat4(1.f);
 
 	if ( nullptr != m_pTexture )
-		m_pTexture->bindTexture( ShaderManager::eShaderType::MESH_SHDR, "mySampler" );
+		m_pTexture->bindTexture( ShaderManager::eShaderType::MESH_SHDR, "gSampler" );
 
 	pShdrMngr->setUniformFloat( ShaderManager::eShaderType::MESH_SHDR, "fScale", m_fScale );
 
@@ -65,6 +66,9 @@ void MeshObject::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxTh
 
 	if ( nullptr != m_pTexture )
 		m_pTexture->unbindTexture();
+
+	if (nullptr != m_pAnimTrack)	// Reset Translation to normal for other users of the Shader
+		pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::MESH_SHDR, "translate", &pIdentity);
 
 	glUseProgram(0);
 	glBindVertexArray( 0 );

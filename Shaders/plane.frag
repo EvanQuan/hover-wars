@@ -1,6 +1,6 @@
 #version 430 core
 
-out vec4 color;
+out vec4 FragColor;
 
 in vec3 N;
 in vec3 P;
@@ -8,7 +8,7 @@ in vec3 L;
 in vec2 texturePos;
 
 uniform sampler2D gSampler;
-uniform bool bTextureLoaded = false;
+uniform bool bTextureLoaded = true;
 
 void main (void)
 {
@@ -20,5 +20,7 @@ void main (void)
 
     float kd = 0.8;
     vec3 diffuse = kd*plane_color.rgb*max( 0.0, dot( N, normalize(L - P)));
-    color = vec4( diffuse, 1.0 );
+    FragColor = vec4( diffuse, 1.0 );
+	
+	FragColor = texture(gSampler,texturePos);
 }
