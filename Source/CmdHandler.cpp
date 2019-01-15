@@ -63,149 +63,80 @@ CmdHandler* CmdHandler::getInstance(const char* c_Input, int iInputSize, GLFWwin
 // Destructor
 CmdHandler::~CmdHandler()
 {
-	delete m_pInstance;
 	m_pGPXMngr = nullptr;
 	m_pEntMngr = nullptr;
 }
 
 // Process initial input, acts as though key word is first word of input.
-// First word can be ignored and function will grab the first word.
-void CmdHandler::process_Input( )
-{
-	char cInput[INPUT_SIZE] = {};
-	char c_FirstWord[CMD_SIZE] = {};
-	bool bEvaluating = true;
-
-	while ( bEvaluating )
-	{
-		cout << "Enter Commands: ";
-		cin.getline( cInput, INPUT_SIZE );
-
-		load_Input( cInput, INPUT_SIZE );
-		get_Next_Word( c_FirstWord, CMD_SIZE );
-
-		// Parse initial command
-		if ( !strcmp( c_FirstWord, cCommands[ SET_B ] ) )
-			bEvaluating = exec_SetB();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_Y ] ) )
-			bEvaluating = exec_SetY();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_ALPHA ] ) )
-			bEvaluating = exec_SetAlpha();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_BETA ] ) )
-			bEvaluating = exec_SetBeta();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_RC ] ) )
-			bEvaluating = exec_SetRGBVal( GraphicsManager::RED );
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_GC ] ) )
-			bEvaluating = exec_SetRGBVal( GraphicsManager::GREEN );
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_BC ] ) )
-			bEvaluating = exec_SetRGBVal( GraphicsManager::BLUE );
-		else if ( !strcmp( c_FirstWord, cCommands[ HELP ] ) )
-			outputHelpList();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_COLOR ] ) )
-			bEvaluating = exec_SetColor();
-		else if ( !strcmp( c_FirstWord, cCommands[ LIST ] ) )
-			m_pEntMngr->listEnvironment();
-		else if ( !strcmp( c_FirstWord, cCommands[ DELETE ] ) )
-			bEvaluating = exec_Delete();
-		else if ( !strcmp( c_FirstWord, cCommands[ LOAD ] ) )
-			bEvaluating = exec_Load();
-		else if ( !strcmp( c_FirstWord, cCommands[ TOGGLE_GOOCH ] ) )
-		{
-			m_pGPXMngr->togGooch();
-			bEvaluating = false;
-		}
-		else if ( !strcmp( c_FirstWord, cCommands[ TOGGLE_X_TOON ] ) )
-		{
-			m_pGPXMngr->togToon();
-			bEvaluating = false;
-		}
-		else if ( !strcmp( c_FirstWord, cCommands[ TOGGLE_SPECULAR ] ) )
-		{
-			m_pGPXMngr->togSpec();
-			bEvaluating = false;
-		}
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_SHINE ] ) )
-			bEvaluating = exec_SetShine();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_R ] ) )
-			bEvaluating = exec_SetR();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_THRESHOLD ] ) )
-			bEvaluating = exec_SetThreshold();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_MIN_THRESHOLD ] ) )
-			bEvaluating = exec_SetThresholdMin();
-		else if ( !strcmp( c_FirstWord, cCommands[ SET_MAX_THRESHOLD ] ) )
-			bEvaluating = exec_SetThresholdMax();
-		else
-			cout << "Unknown Command: \"" << c_FirstWord << ".\"" << endl;
-	}
-}
-
-// Outputs the Help Dialog for the command reader.
-void CmdHandler::outputHelpList()
-{
-	cout << "\nVariable Names:\n"
-		<< "\t- \"b-val\"\n"
-		<< "\t\t-- sets the b-value of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point vlaue between 0.0 and 1.0\n"
-		<< "\t- \"y-val\"\n"
-		<< "\t\t-- sets the y-value of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point value between 0.0 and 1.0\n"
-		<< "\t- \"alpha\"\n"
-		<< "\t\t-- sets the alpha value of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point value between 0.0 and 1.0\n"
-		<< "\t- \"beta\"\n"
-		<< "\t\t-- sets the beta value of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point value between 0.0 and 1.0\n"
-		<< "\t- \"rc-val\"\n"
-		<< "\t\t-- sets the red color of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point value between 0.0 and 1.0\n"
-		<< "\t- \"gc-val\"\n"
-		<< "\t\t-- sets the green color of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point value between 0.0 and 1.0\n"
-		<< "\t- \"bc-val\"\n"
-		<< "\t\t-- sets the blue color of the gooch shader\n"
-		<< "\t\t-- takes in a floating-point value between 0.0 and 1.0\n"
-		<< "\t- \"color\"\n"
-		<< "\t\t-- sets the rgb value of the color in the gooch shader at once\n"
-		<< "\t\t-- takes in 3 floating-point values between 0.0 and 1.0, seperated by spaces\n\n"
-		<< "\t- \"list\"\n"
-		<< "\t\t-- lists all the objects in the scene with given ID handles for deleting\n"
-		<< "\t\t-- doesn't take any parameters\n\n"
-		<< "\t- \"delete\"\n"
-		<< "\t\t-- deletes an object from the scene with a given ID\n"
-		<< "\t\t-- takes 1 integer parameter: the ID of the object to delete\n\n"
-		<< "\t- \"load\"\n"
-		<< "\t\t-- loads a texture or model into the scene\n"
-		<< "\t\t-- takes 3 parameters:\n"
-		<< "\t\t\t--- \"model\" or \"texture\" to tell the system which type you're trying to load\n"
-		<< "\t\t\t--- the filename of the model or texture you're trying to load depending on the first parameter\n"
-		<< "\t\t\t--- if trying to load a model, this will be the filename of the texture to load onto the model or, if trying to load a texture,"
-		<< "this will be the ID of the model in the scene to load the texture on\n\n"
-		<< "\t- \"gooch\"\n"
-		<< "\t\t-- this toggle gooch shading on and off\n"
-		<< "\t\t-- no parameters\n\n"
-		<< "\t- \"x-toon\"\n"
-		<< "\t\t-- this toogles x-toon shading on and off\n"
-		<< "\t\t-- no parameters\n\n"
-		<< "\t- \"specular\"\n"
-		<< "\t\t-- this toggles specular shading on and off\n"
-		<< "\t\t-- no parameters\n"
-		<< "\t\t-- if x-toon shading is on, this will switch the algorithm to |V.R|^s where s is the shininess factor\n\n"
-		<< "\t- \"shine\"\n"
-		<< "\t\t-- this changes the value of the shininess factor\n"
-		<< "\t\t-- 1 parameter: floating point number to set the value to >= 1.0\n\n"
-		<< "\t- \"r\"\n"
-		<< "\t\t-- this changes the magintude of the x-toon effect\n"
-		<< "\t\t-- 1 parameter: floating point number to set the value to >= 0.0\n\n"
-		<< "\t- \"threshold\"\n"
-		<< "\t\t-- changes the min and max of the edge threshold for inside edges\n"
-		<< "\t\t-- 2 parameters: floating point values for min and max respectively.  Between the range of 0.0 and 360.0\n\n"
-		<< "\t- \"threshold_min\"\n"
-		<< "\t\t-- changes the min threshold of the inside edges\n"
-		<< "\t\t-- 1 parameter: floating point value for the minimum threshold.  Between the range of 0.0 and 360.0\n\n"
-		<< "\t- \"threshold_max\"\n"
-		<< "\t\t-- changes the max threshold of the inside edges\n"
-		<< "\t\t-- 1 parameter: floating point value for the maximum threshold.  Between the range of 0.0 and 360.0\n\n";
-}
+//// First word can be ignored and function will grab the first word.
+//void CmdHandler::process_Input( )
+//{
+//	char cInput[INPUT_SIZE] = {};
+//	char c_FirstWord[CMD_SIZE] = {};
+//	bool bEvaluating = true;
+//
+//	while ( bEvaluating )
+//	{
+//		cout << "Enter Commands: ";
+//		cin.getline( cInput, INPUT_SIZE );
+//
+//		load_Input( cInput, INPUT_SIZE );
+//		get_Next_Word( c_FirstWord, CMD_SIZE );
+//
+//		// Parse initial command
+//		if ( !strcmp( c_FirstWord, cCommands[ SET_B ] ) )
+//			bEvaluating = exec_SetB();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_Y ] ) )
+//			bEvaluating = exec_SetY();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_ALPHA ] ) )
+//			bEvaluating = exec_SetAlpha();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_BETA ] ) )
+//			bEvaluating = exec_SetBeta();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_RC ] ) )
+//			bEvaluating = exec_SetRGBVal( GraphicsManager::RED );
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_GC ] ) )
+//			bEvaluating = exec_SetRGBVal( GraphicsManager::GREEN );
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_BC ] ) )
+//			bEvaluating = exec_SetRGBVal( GraphicsManager::BLUE );
+//		else if ( !strcmp( c_FirstWord, cCommands[ HELP ] ) )
+//			outputHelpList();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_COLOR ] ) )
+//			bEvaluating = exec_SetColor();
+//		else if ( !strcmp( c_FirstWord, cCommands[ LIST ] ) )
+//			m_pEntMngr->listEnvironment();
+//		else if ( !strcmp( c_FirstWord, cCommands[ DELETE ] ) )
+//			bEvaluating = exec_Delete();
+//		else if ( !strcmp( c_FirstWord, cCommands[ LOAD ] ) )
+//			bEvaluating = exec_Load();
+//		else if ( !strcmp( c_FirstWord, cCommands[ TOGGLE_GOOCH ] ) )
+//		{
+//			m_pGPXMngr->togGooch();
+//			bEvaluating = false;
+//		}
+//		else if ( !strcmp( c_FirstWord, cCommands[ TOGGLE_X_TOON ] ) )
+//		{
+//			m_pGPXMngr->togToon();
+//			bEvaluating = false;
+//		}
+//		else if ( !strcmp( c_FirstWord, cCommands[ TOGGLE_SPECULAR ] ) )
+//		{
+//			m_pGPXMngr->togSpec();
+//			bEvaluating = false;
+//		}
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_SHINE ] ) )
+//			bEvaluating = exec_SetShine();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_R ] ) )
+//			bEvaluating = exec_SetR();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_THRESHOLD ] ) )
+//			bEvaluating = exec_SetThreshold();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_MIN_THRESHOLD ] ) )
+//			bEvaluating = exec_SetThresholdMin();
+//		else if ( !strcmp( c_FirstWord, cCommands[ SET_MAX_THRESHOLD ] ) )
+//			bEvaluating = exec_SetThresholdMax();
+//		else
+//			cout << "Unknown Command: \"" << c_FirstWord << ".\"" << endl;
+//	}
+//}
 
 void CmdHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 {
@@ -414,34 +345,6 @@ bool CmdHandler::exec_SetColor()
 
 	return bReturnVal;
 }
-
-// exec_Delete
-// Executes the Delete Command.  This will take in 1 long integer value as the ID of an
-// object in the scene.  It will then attempt to kill the object with the given ID.
-// This will call to kill Lights and Objects since they do not share IDs.
-bool CmdHandler::exec_Delete()
-{
-	char c_Num[ MAX_INPUT_SIZE ] = {};
-	char* p_End;
-	long lTempVal;
-	bool bReturnVal = false;
-	int iErr = get_Next_Word( c_Num, MAX_INPUT_SIZE );
-
-	if ( ERR_CODE != iErr )
-	{
-		lTempVal = strtol( c_Num, &p_End, 10 );
-		//m_pEntMngr->killLight( lTempVal ); No need to kill lights currently.  Can expand functionality in future.
-		m_pEntMngr->killObject( lTempVal );
-	}
-	else
-	{
-		cout << "Error reading in value: \"" << c_Num << "\".\n";
-		bReturnVal = true;
-	}
-
-	return bReturnVal;
-}
-
 // exec_Load
 // Handles Loading functionality of both Models and Textures.  Models can be loaded freely
 // into the scene and, by default, load into the center of the scene.  Since Textures are
@@ -468,8 +371,7 @@ bool CmdHandler::exec_Load()
 			{
 				sModLoc = string( c_ModelLocation );
 				sTexLoc = string( c_TexLocation );
-				if ( nullptr == Object_Factory::getInstance()->createMesh( &pPos, &sModLoc, &sTexLoc ) )
-					cout << "Error, unable to load " << sModLoc << " as a model.\n";
+				cout << "Error, unable to load " << sModLoc << " as a model.\n";
 			}
 			else  // Errors reading model and texture locatiosn
 			{

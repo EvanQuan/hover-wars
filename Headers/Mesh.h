@@ -33,11 +33,11 @@ private:
 	vector<unsigned int> m_pIndices;
 	vector< vec3 > m_pVertices, m_pNormals;
 	vector< vec2 > m_pUVs;
-	vector< vec3 > m_pVNData;
-	GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
+	GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer, m_iScaleBuffer;
 	GLuint m_iVertexArray;
 	string m_sManagerKey; // Used as key for finding Mesh in MeshManager
 	ShaderManager* m_pShdrMngr;
+	float m_fScale;
 	GLuint m_iNumInstances;
 	mat4 m_m4DefaultInstance;
 	bool m_bStaticMesh;
@@ -51,11 +51,10 @@ private:
 public:
 	explicit Mesh(const string &sFileName, bool bStaticMesh, manager_cookie);
 	virtual ~Mesh();
-	void initMesh( );	// Binds mesh information to a specified Vertex Array.
-	void loadInstanceData(const vector< mat4 >* pNewData);
+	void loadInstanceData(const void* pData, unsigned int iSize);
 
 	// Get Information for drawing elements.
-	void bindIndicesBuffer() const { glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_iIndicesBuffer ); }
+	GLuint getNumInstances() const { return m_iNumInstances; }
 	GLuint getCount() const {
 		if (!m_pIndices.empty())
 			return m_pIndices.size();
@@ -65,16 +64,16 @@ public:
 
 	// Checks for Render Component
 	bool usingIndices() const { return !m_pIndices.empty(); }
+	bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
 
 	// Getters for Mesh Data
 	const vector<vec3>& getVertices() const { return m_pVertices; }
 	const vector<vec3>& getNormals() const { return m_pNormals; }
 	const vector<vec2>& getUVs() const { return m_pUVs; }
+	float getScale() const { return m_fScale; }
 	GLuint getVertexArray() const { return m_iVertexArray; }
 
 	// Gets the file name, only the MeshManager can set this variable.
 	const string& getManagerKey() { return m_sManagerKey; }
-
-	void drawMesh( GLuint iProgram );
 };
 

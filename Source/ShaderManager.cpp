@@ -144,7 +144,7 @@ GLuint ShaderManager::genVertexBuffer(GLuint iVertArray, const void* pData, GLsi
 	glBindBuffer( GL_ARRAY_BUFFER, iVertexBufferLoc );
 	glBufferData( GL_ARRAY_BUFFER, pSize, pData, usage );
 
-	glBindVertexArray( 0 );
+	//glBindVertexArray( 0 );
 	return iVertexBufferLoc;
 }
 
@@ -155,7 +155,7 @@ void ShaderManager::setAttrib(GLuint iVertArray, GLuint iSpecifiedIndex, GLint i
 	glVertexAttribPointer(iSpecifiedIndex, iChunkSize, GL_FLOAT, GL_FALSE, iStride, pOffset);
 	glEnableVertexAttribArray(iSpecifiedIndex);
 
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }
 
 // Binds and creates an Element Array Buffer on the GPU.  Sets the data into the buffer and returns the location.
@@ -170,7 +170,7 @@ GLuint ShaderManager::genIndicesBuffer( GLuint iVertArray,
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, iIndicesBufferLoc );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, pSize, pData, usage );
 
-	glBindVertexArray( 0 );
+	//glBindVertexArray( 0 );
 
 	return iIndicesBufferLoc;
 }

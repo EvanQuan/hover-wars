@@ -1,7 +1,6 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Object3D.h"
 #include "Light.h"
 
 // Solely Generates Objects and assigns IDs to them.
@@ -15,8 +14,7 @@ public:
 	void createSphere( vector< string > sData, int iLength );
 	void createPlane( vector< string > sData, int iLength );
 	Light* createLight( vector< string > sData, int iLength );
-	Object3D* createMesh( vector< string > sData, int iLength );
-	Object3D* createMesh( const vec3* pPos, const string* sLocation, const string* sTexLocation );
+	void createPlayer(vector< string > sData, int iLength);
 	void createStaticMesh(vector< string > sData, int iLength);
 
 	void loadFromFile( string sFileName );

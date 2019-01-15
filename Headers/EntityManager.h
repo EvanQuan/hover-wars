@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "Object3D.h"
 #include "Light.h"
 #include "BoidEngine.h"
 #include "Entity.h"
@@ -27,6 +26,7 @@ public:
 	void generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, const string& sTextureLocation = "", const string& sShaderType = "");
 	void generateStaticSphere(float fRadius, vec3 vPosition, const string& sTextureLocation = "", const string& sShaderType = "");
 	void generateStaticMesh(const string& sMeshLocation, vec3 vPosition, const string& sTextureLocation = "", const string& sShaderType = "" );
+	void generatePlayerEntity(vec3 vPosition, const string& sMeshLocation, const string& sTextureLocation = "", const string& sShaderType = "");
 	vec3 getEntityPosition(int iEntityID);
 
 	// Entity Component functions
@@ -67,7 +67,6 @@ private:
 	static EntityManager* m_pInstance;
 
 	// Object Managing
-	vector<Object3D*>	m_pObjects;
 	vector<Light*>		m_pLights;
 	Object* getObject( long lID );
 	BoidEngine* m_pBoidEngine;

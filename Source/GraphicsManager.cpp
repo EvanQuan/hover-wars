@@ -26,10 +26,6 @@ GraphicsManager::GraphicsManager(GLFWwindow* rWindow)
 	int iHeight, iWidth;
 	glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
 
-	// Set up Camera
-	m_pCamera = m_pEntMngr->generateCameraEntity();
-	m_eView = VIEW_SPHERICAL;
-
 	glGenVertexArrays( 1, &m_pVertexArray );
 	
 	// Generate Buffer and Set Attribute
@@ -91,23 +87,10 @@ bool GraphicsManager::renderGraphics()
 // Will be replaced with functions in Graphic objects.
 void GraphicsManager::RenderScene()
 {
-	mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEntMngr->getFrenetFrame();
+	// HACK: For following Car on Roller Coaster Assignment, Remove
+	//mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEntMngr->getFrenetFrame();
 	const CameraComponent* pCamera = m_pEntMngr->getActiveCamera();
 
-	// Update World Camera
-	switch ( m_eView )
-	{
-		case VIEW_FOLLOW:
-			m_pCamera->setLookAt( vec3( pFreNetFrame[ 3 ] ) ); // column 3 is the position of the target.
-			break;
-		case VIEW_FPS:
-			m_pCamera->positionCamera( pFreNetFrame );
-			m_pCamera->setLookAt( vec3( pFreNetFrame[ 3 ] + pFreNetFrame[ 2 ] ) );
-			break;
-		default:
-			break;
-
-	}
 	mat4 pModelViewMatrix = pCamera->getToCameraMat();
 	mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
 	vec3 vCamLookAt = pCamera->getLookAt();
@@ -161,6 +144,10 @@ bool GraphicsManager::initializeGraphics( string sFileName )
 	else
 		m_pEntMngr->initializeEnvironment(sFileName);
 
+	// Set up Camera
+	m_pCamera = m_pEntMngr->generateCameraEntity();
+	m_eView = VIEW_SPHERICAL;
+
 	return bError; 
 }
 
@@ -180,22 +167,22 @@ void GraphicsManager::zoomCamera(float fDelta)
 
 void GraphicsManager::switchView()
 {
-	m_eView = (cView) (m_eView + 1);
-	m_eView = m_eView >= VIEW_MAX ? VIEW_SPHERICAL : m_eView;
-
-	switch ( m_eView )
-	{
-		default:
-		case VIEW_SPHERICAL:
-			m_pCamera->setLookAt( vec3( 0.0 ) );
-		case VIEW_FOLLOW:
-			m_pCamera->positionCamera( mat4( 1.0 ) );
-			m_pCamera->setSteady( false );
-			break;
-		case VIEW_FPS:
-			m_pCamera->setSteady( true );
-			break;
-	}
+	//m_eView = (cView) (m_eView + 1);
+	//m_eView = m_eView >= VIEW_MAX ? VIEW_SPHERICAL : m_eView;
+	//
+	//switch ( m_eView )
+	//{
+	//	default:
+	//	case VIEW_SPHERICAL:
+	//		m_pCamera->setLookAt( vec3( 0.0 ) );
+	//	case VIEW_FOLLOW:
+	//		m_pCamera->positionCamera( mat4( 1.0 ) );
+	//		m_pCamera->setSteady( false );
+	//		break;
+	//	case VIEW_FPS:
+	//		m_pCamera->setSteady( true );
+	//		break;
+	//}
 }
 
 void GraphicsManager::resizedWindow( int iHeight, int iWidth )

@@ -4,11 +4,11 @@ uniform mat4 modelview;
 uniform mat4 projection;
 uniform vec3 lightPosition;
 uniform float fScale;
-uniform mat4 translate;
 
 layout (location = 0) in vec3 vertex;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uv;
+layout (location = 3) in mat4 translate;
 
 //attributes in camera coordinates
 out vec3 N;
@@ -19,9 +19,9 @@ void main(void)
 {
 	vec4 lightCameraSpace = modelview * vec4(lightPosition, 1.0);
 	lightCameraSpace /= lightCameraSpace.w;
-	   
-    vec3 positionModelSpace = (vec4( vertex, 0.0 )).xyz;
-	positionModelSpace = (translate * vec4(positionModelSpace, 1.0) ).xyz;
+	vec3 vScaledVertex = vertex * fScale;
+    vec3 positionModelSpace = ( vec4( vScaledVertex, 0.0 )).xyz;
+	positionModelSpace = ( translate * vec4(positionModelSpace, 1.0) ).xyz;
     vec4 positionCameraSpace = modelview * vec4(positionModelSpace, 1.0);
 	vec3 P = positionCameraSpace.xyz/positionCameraSpace.w;
 	

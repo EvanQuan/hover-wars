@@ -26,6 +26,7 @@ void RenderComponent::render()
 	// Set up OpenGL state
 	glBindVertexArray(m_pMesh->getVertexArray());
 	glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
+	m_pShdrMngr->setUniformFloat(m_eShaderType, "fScale", m_pMesh->getScale());
 
 	// Bind Texture(s) HERE
 	if (nullptr != m_pTexture)
@@ -33,7 +34,7 @@ void RenderComponent::render()
 
 	// Call related glDraw function.
 	if (m_bUsingInstanced)
-		glDrawElementsInstanced(m_eMode, 0, GL_UNSIGNED_INT, 0, 0);
+		glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
 	else if (m_bUsingIndices)
 		glDrawElements(m_eMode, m_iCount, GL_UNSIGNED_INT, nullptr);
 	else
@@ -44,8 +45,8 @@ void RenderComponent::render()
 		m_pTexture->unbindTexture();
 
 	// Clean up OpenGL state
-	glUseProgram(0);
-	glBindVertexArray(0);
+	//glUseProgram(0);
+	//glBindVertexArray(0);
 }
 
 // Overloaded Update Function
@@ -59,12 +60,13 @@ void RenderComponent::initializeComponent(const Mesh* pMesh, const string* pText
 	// Get number of Vertices.
 	m_iCount = pMesh->getCount();
 
+	// Load Texture if applicable
 	if (nullptr != pTextureLoc)
-	{
 		m_pTexture = TEXTURE_MANAGER->loadTexture((*pTextureLoc));
-	}
 
+	// Check Rendering Flags in Mesh.
 	m_bUsingIndices = pMesh->usingIndices();
+	m_bUsingInstanced = pMesh->usingInstanced();
 
 	// Store Mesh for Reference.
 	m_pMesh = pMesh;

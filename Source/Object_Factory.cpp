@@ -1,7 +1,4 @@
 #include "Object_Factory.h"
-#include "Sphere.h"
-#include "Plane.h"
-#include "MeshObject.h"
 #include "Light.h"
 #include "Anim_Track.h"
 #include "EntityManager.h"
@@ -106,42 +103,11 @@ Light* Object_Factory::createLight( vector< string > sData, int iLength )
 	return pReturnLight;
 }
 
-// Generate a Mesh object given an array of strings as data.
-// sData -> Vector of inputs
-// iLength -> Number of Inputs
-Object3D* Object_Factory::createMesh( vector< string > sData, int iLength )
+void Object_Factory::createPlayer(vector< string > sData, int iLength)
 {
-	vec3 pPosition;
-	MeshObject* pReturnMesh = nullptr;
+	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	if ( MAX_MESH_PARAMS == iLength )
-	{
-		pPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );	// Position of Mesh
-
-		pReturnMesh = new MeshObject( &pPosition,
-									  &m_sMeshProperty,
-									  getNewID(),
-									  &m_sTextureProperty,
-									  m_pAnimProperty );
-	}
-
-	return pReturnMesh;
-}
-
-// Optional way to create a mesh, takes a position, mesh object location and a texture location
-Object3D* Object_Factory::createMesh( const vec3* pPos,
-									  const string* sLocation,
-									  const string* sTexLocation )
-{
-	MeshObject* pNewMesh = nullptr;
-	if ( sLocation->find( ".ply" ) != string::npos )
-		pNewMesh = new MeshObject( pPos,
-								   sLocation,
-								   getNewID(),
-								   sTexLocation,
-								   nullptr );
-
-	return pNewMesh;
+	ENTITY_MANAGER->generatePlayerEntity(vPosition, m_sMeshProperty, m_sTextureProperty, m_sShaderProperty);
 }
 
 void Object_Factory::createStaticMesh(vector< string > sData, int iLength)
@@ -274,8 +240,8 @@ void Object_Factory::handleData( vector< string >& sData, const string& sIndicat
 		createPlane(sData, sData.size());
 	else if ("light" == sIndicator)		// Parse Light
 		pResultingObject = createLight(sData, sData.size());
-	else if ("mesh_obj" == sIndicator)	// Parse Mesh
-		pResultingObject = createMesh(sData, sData.size());
+	else if ("player" == sIndicator)	// Parse Mesh
+		createPlayer(sData, sData.size());
 	else if ("static_mesh" == sIndicator)	// Parse Static Mesh
 		createStaticMesh(sData, sData.size());
 	else if ("boids" == sIndicator)	// Parse Mass Spring System
