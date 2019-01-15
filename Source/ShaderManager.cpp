@@ -7,11 +7,26 @@
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
 
+typedef ShaderManager::eShaderType shader_Type;
+
+// Initialize the Shader Type Hash Map with whatever potential shaders are desired to be accessed.
+const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTypeMap =
+{
+	make_pair<string, eShaderType>("light_shdr", shader_Type::LIGHT_SHDR),
+	make_pair<string, eShaderType>("mesh_shdr", shader_Type::MESH_SHDR),
+	make_pair<string, eShaderType>("plane_shdr", shader_Type::PLANE_SHDR),
+	make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
+	make_pair<string, eShaderType>("boid_shdr", shader_Type::BOID_SHDR),
+};
+
 // Public - Not a singleton
 // Designed mainly to manage different shaders between assignments.  
 ShaderManager::ShaderManager()
 {
 	m_bInitialized = false;
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set Edge Shader Locations
 
@@ -74,6 +89,19 @@ ShaderManager::~ShaderManager()
 {
 	// unbind any shader programs
 	glUseProgram(0);
+	glDisable(GL_BLEND);
+}
+
+// Given a potential string as a hashmap key, return the corresponding ShaderType
+//	Returns: A found ShaderType or Default is Plane Shader.
+shader_Type ShaderManager::getShaderType(const string& sKey)
+{
+	shader_Type eReturnType = PLANE_SHDR;
+
+	if (pShaderTypeMap.end() != pShaderTypeMap.find(sKey))
+		eReturnType = pShaderTypeMap.at(sKey);
+
+	return eReturnType;
 }
 
 /*******************************************************************\

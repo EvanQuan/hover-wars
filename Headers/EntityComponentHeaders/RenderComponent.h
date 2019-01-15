@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "EntityComponent.h"
 #include "ShaderManager.h"
+#include "Mesh.h"
+#include "TextureManager.h"
 
 /************************************************************
 * Name: RenderComponent
@@ -25,7 +27,7 @@ public:
 	void update(double dTimeStep);
 
 	// Initializes the proper buffers on the GPU for rendering.
-	void initializeComponent(const vector<vec3>& vVertices, const vector<vec3>& vNormals, const vector<vec2>& vUVs);
+	void initializeComponent( Mesh const  * pMesh, const string* pTextureLoc = nullptr);
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
@@ -38,7 +40,10 @@ private:
 	GLuint m_iNumInstances;
 	GLenum m_eMode;
 	GLsizei m_iCount;
-	bool m_bStaticDraw, m_bUsingIndices, m_bUsingInstanced;
+	Mesh const * m_pMesh;
+	bool m_bUsingIndices, m_bUsingInstanced;
 	ShaderManager* m_pShdrMngr;
 	ShaderManager::eShaderType m_eShaderType;
+
+	Texture* m_pTexture;
 };

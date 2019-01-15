@@ -1,5 +1,4 @@
 #include "Object_Factory.h"
-#include "Triangle.h"
 #include "Sphere.h"
 #include "Plane.h"
 #include "MeshObject.h"
@@ -51,9 +50,8 @@ Object_Factory::~Object_Factory()
 
 // Creation Functions
 // Create a Sphere given a starting position, color and radius
-Object3D* Object_Factory::createSphere( vector< string > sData, int iLength )
+void Object_Factory::createSphere( vector< string > sData, int iLength )
 {
-	Sphere* pReturnSphere = nullptr;
 	vec3 vPosition;
 
 	// Create the Sphere if we're given the correct # of values
@@ -61,14 +59,9 @@ Object3D* Object_Factory::createSphere( vector< string > sData, int iLength )
 	{
 		vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );	// Position of Sphere
 
-		pReturnSphere = new Sphere( &vPosition,
-									stof( sData[ 3 ] ),		// Radius of Sphere
-									getNewID(),				// Unique ID
-									&m_sTextureProperty,
-									m_pAnimProperty );	// TextureName (if applicable)
+		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), vPosition, 
+											 m_sTextureProperty, m_sShaderProperty);
 	}
-
-	return pReturnSphere;
 }
 
 // Create a Plane given a normal, a position on the plane and a color
@@ -84,35 +77,10 @@ void Object_Factory::createPlane( vector< string > sData, int iLength )
 		vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
 		iHeight = stoi(sData[6]);
 		iWidth = stoi(sData[7]);
-		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, pPosition, vNormal);
+		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, pPosition, vNormal, m_sTextureProperty, m_sShaderProperty);
 	}
 	else
 		outputError("Plane", sData);
-}
-
-// create a Triangle given 3 positions and a color.
-Object3D* Object_Factory::createTriangle( vector< string > sData, int iLength )
-{
-	vec3 pPosition;
-	vector<glm::vec3> vCorners;
-	Triangle* pReturnTri = nullptr;
-
-	if ( MAX_TRI_PARAMS == iLength )
-	{
-		pPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );		// Position of Triangle
-
-		vCorners.push_back( glm::vec3( stof( sData[ 3 ] )/*X*/, stof( sData[ 4 ] )/*Y*/, stof( sData[ 5 ] )/*Z*/ ) );		// Point 1 of Triangle
-		vCorners.push_back( glm::vec3( stof( sData[ 6 ] )/*X*/, stof( sData[ 7 ] )/*Y*/, stof( sData[ 8 ] )/*Z*/ ) );		// Point 2 of Triangle
-		vCorners.push_back( glm::vec3( stof( sData[ 9 ] )/*X*/, stof( sData[ 10 ] )/*Y*/, stof( sData[ 11 ] )/*Z*/ ) );		// Point 3 of Triangle
-
-		pReturnTri = new Triangle( &pPosition,
-								   &vCorners,
-								   getNewID(),
-								   &m_sTextureProperty,
-								   m_pAnimProperty );
-	}
-
-	return pReturnTri;
 }
 
 // Generates a Light object given some input data
@@ -174,6 +142,13 @@ Object3D* Object_Factory::createMesh( const vec3* pPos,
 								   nullptr );
 
 	return pNewMesh;
+}
+
+void Object_Factory::createStaticMesh(vector< string > sData, int iLength)
+{
+	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
+
+	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, vPosition, m_sTextureProperty, m_sShaderProperty);
 }
 
 /**************************************************************************\
@@ -293,16 +268,16 @@ void Object_Factory::handleData( vector< string >& sData, const string& sIndicat
 {
 	Object* pResultingObject = nullptr;
 
-	if ( "sphere" == sIndicator )			// Parse Sphere
-		pResultingObject = createSphere( sData, sData.size() );
-	else if ( "plane" == sIndicator )		// Parse Plane
-		createPlane( sData, sData.size() );
-	else if ( "triangle" == sIndicator )	// Parse Triangle
-		pResultingObject = createTriangle( sData, sData.size() );
-	else if ( "light" == sIndicator )		// Parse Light
-		pResultingObject = createLight( sData, sData.size() );
-	else if ( "mesh_obj" == sIndicator )	// Parse Mesh
-		pResultingObject = createMesh( sData, sData.size() );
+	if ("sphere" == sIndicator)			// Parse Sphere
+		createSphere(sData, sData.size());
+	else if ("plane" == sIndicator)		// Parse Plane
+		createPlane(sData, sData.size());
+	else if ("light" == sIndicator)		// Parse Light
+		pResultingObject = createLight(sData, sData.size());
+	else if ("mesh_obj" == sIndicator)	// Parse Mesh
+		pResultingObject = createMesh(sData, sData.size());
+	else if ("static_mesh" == sIndicator)	// Parse Static Mesh
+		createStaticMesh(sData, sData.size());
 	else if ("boids" == sIndicator)	// Parse Mass Spring System
 		ENTITY_MANAGER->initializeBoidEngine(sData);
 
@@ -320,12 +295,14 @@ void Object_Factory::handleProperty( vector< string >& sData, const string& sInd
 {
 	string sDataTrimmed = trimString( sData[ 0 ] );
 
-	if ( "anim_track" == sIndicator )
-		m_pAnimProperty = new Anim_Track( getNewID(), &sDataTrimmed, &m_sMeshProperty, &m_sTextureProperty );
-	else if ( "texture" == sIndicator )
+	if ("anim_track" == sIndicator)
+		m_pAnimProperty = new Anim_Track(getNewID(), &sDataTrimmed, &m_sMeshProperty, &m_sTextureProperty);
+	else if ("texture" == sIndicator)
 		m_sTextureProperty = sDataTrimmed;
-	else if ( "mesh" == sIndicator )
+	else if ("mesh" == sIndicator)
 		m_sMeshProperty = sDataTrimmed;
+	else if ("shader" == sIndicator)
+		m_sShaderProperty = sDataTrimmed;
 }
 
 // Removes any tabs from the beginning or end of a given string.

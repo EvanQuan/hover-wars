@@ -12,12 +12,12 @@ public:
 	~Object_Factory();
 
 	// Creation Functions
-	Object3D* createSphere( vector< string > sData, int iLength );
+	void createSphere( vector< string > sData, int iLength );
 	void createPlane( vector< string > sData, int iLength );
-	Object3D* createTriangle( vector< string > sData, int iLength );
 	Light* createLight( vector< string > sData, int iLength );
 	Object3D* createMesh( vector< string > sData, int iLength );
 	Object3D* createMesh( const vec3* pPos, const string* sLocation, const string* sTexLocation );
+	void createStaticMesh(vector< string > sData, int iLength);
 
 	void loadFromFile( string sFileName );
 
@@ -26,7 +26,7 @@ private:
 	Object_Factory();
 	Object_Factory( Object_Factory* pCopy );
 	static Object_Factory* m_pInstance;
-	string m_sTextureProperty, m_sMeshProperty;
+	string m_sTextureProperty, m_sMeshProperty, m_sShaderProperty;
 	Anim_Track* m_pAnimProperty;
 
 	long m_lNextID;
@@ -41,7 +41,7 @@ private:
 			delete m_pAnimProperty;
 
 		m_pAnimProperty = nullptr;
-		m_sMeshProperty = m_sTextureProperty = "";
+		m_sMeshProperty = m_sTextureProperty = m_sShaderProperty = "";
 	}
 	void saveProperties( string& sTextureProperty, string& sMeshProperty, Anim_Track* pAnimTrackProp )
 	{

@@ -307,11 +307,27 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
+void EntityManager::generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, const string& sTextureLocation, const string& sShaderType)
 {
 	unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewPlane.get()->loadAsPlane(vNormal, iHeight, iWidth);
+	pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sTextureLocation, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewPlane));
+}
+
+// Generates a Static Plane Entity into the world.
+void EntityManager::generateStaticSphere(float fRadius, vec3 vPosition, const string& sTextureLocation, const string& sShaderType)
+{
+	unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewSphere->loadAsSphere(fRadius, sTextureLocation, sShaderType);
+	m_pMasterEntityList.push_back(move(pNewSphere));
+}
+
+// Generates a Static Mesh at a given location
+void EntityManager::generateStaticMesh(const string& sMeshLocation, vec3 vPosition, const string& sTextureLocation, const string& sShaderType )
+{
+	unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewMesh->loadFromFile(sMeshLocation, sTextureLocation, sShaderType);
+	m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.

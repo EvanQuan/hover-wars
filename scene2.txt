@@ -26,7 +26,7 @@ light {
   1 2 0
   0.133 0.545 0.133
   +texture {
-	textures-256-256/lightbulb.png
+	textures-256-256/lbulbTest.jpeg
   }
 }
 
@@ -54,9 +54,12 @@ light {
 # box
 ## bottom
 plane {
-	0 -4 0
+	0 0 0
 	0 1 0
-	400 400
+	40 40
+	+texture {
+		textures-256-256/groundSeamless.jpg
+	}
 }
 ## Side 1
 #plane {
@@ -118,9 +121,25 @@ mesh_obj {
 	}
 }
 
-#sphere {
-#	0 .1 0 .025
-#	+anim_track {
-#		savedCurve.txt
-#	}
-#}
+static_mesh {
+	0 0 10
+	+mesh {
+		models/bunny.obj
+	}
+	+texture {
+		textures-256-256/fig-7c.png
+	}
+	+shader {
+		mesh_shdr
+	}
+}
+
+sphere {
+	0 4 0 .5
+	+texture {
+		textures-256-256/fig-7b.png
+	}
+	+shader {
+		mesh_shdr
+	}
+}
