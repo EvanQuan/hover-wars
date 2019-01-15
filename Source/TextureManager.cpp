@@ -1,5 +1,4 @@
 #include "TextureManager.h"
-#include "Object3D.h"
 #include "ImageReader.h"
 
 TextureManager* TextureManager::pInstance = nullptr;

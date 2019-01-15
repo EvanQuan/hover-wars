@@ -80,12 +80,7 @@ void Anim_Track::initializeTrack()
 
 	// Load a Mesh if mesh is specified.
 	if ( !m_sMeshFile.empty() )
-	{
 		m_pMesh = MESH_MANAGER->loadMeshFromFile( m_sMeshFile );
-
-		if ( nullptr != m_pMesh )
-			m_pMesh->initMesh();
-	}
 	else m_pMesh = nullptr;
 
 	if ( !m_sTextureFile.empty() )

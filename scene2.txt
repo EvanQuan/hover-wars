@@ -54,7 +54,7 @@ light {
 # box
 ## bottom
 plane {
-	0 0 0
+	0 -2 0
 	0 1 0
 	40 40
 	+texture {
@@ -108,38 +108,35 @@ plane {
 #}
 
 # Mesh
-mesh_obj {
+player {
 	0 0 0
 	+mesh {
 		models/big_dodge.obj
 	}
 	+texture {
 		textures-256-256/fig-10d.png
-	}
-	+anim_track {
-	savedCurve.txt
-	}
-}
-
-static_mesh {
-	0 0 10
-	+mesh {
-		models/bunny.obj
-	}
-	+texture {
-		textures-256-256/fig-7c.png
-	}
+	}	
 	+shader {
 		mesh_shdr
 	}
 }
+
+#static_mesh {
+#	0 0 10
+#	+mesh {
+#		models/bunny.obj
+#	}
+#	+texture {
+#		textures-256-256/fig-7c.png
+#	}
+#	+shader {
+#		mesh_shdr
+#	}
+#}
 
 sphere {
 	0 4 0 .5
 	+texture {
 		textures-256-256/fig-7b.png
-	}
-	+shader {
-		mesh_shdr
 	}
 }

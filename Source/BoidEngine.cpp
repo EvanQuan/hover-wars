@@ -136,8 +136,6 @@ void BoidEngine::initializeBoids()
 	if (nullptr == m_pMesh)
 		m_pMesh = MESH_MANAGER->loadMeshFromFile(sModelFileName);
 
-	m_pMesh->initMesh();
-
 	// Generate List of Boids
 	for (unsigned int i = 0; i < m_iNumBoids; ++i)
 	{
@@ -359,8 +357,8 @@ void BoidEngine::draw( bool m_bPause )
 	if( !m_bPause )
 		update();
 
-	m_pMesh->loadInstanceData(&m_vInstanceData);
-	m_pMesh->drawMesh(pShdrMngr->getProgram( ShaderManager::eShaderType::BOID_SHDR ) );
+	m_pMesh->loadInstanceData(m_vInstanceData.data(), m_vInstanceData.size());
+	//TODO: Deal with this: m_pMesh->drawMesh(pShdrMngr->getProgram( ShaderManager::eShaderType::BOID_SHDR ) );
 
 	if ( nullptr != m_pTexture )
 		m_pTexture->unbindTexture();

@@ -29,6 +29,7 @@ int main()
 	GraphicsManager* m_GpxMngr = 0;
 	ShaderManager* m_ShdrMngr = 0;
 	Mouse_Handler* m_MseHndlr = 0;
+	CmdHandler* m_CmdHndlr = 0;
 
 	// Initialize GL and a window
 	if (!iRunning)
@@ -62,8 +63,9 @@ int main()
 			if (iRunning )
 				m_GpxMngr = GraphicsManager::getInstance( m_Window );
 
-			// Initialize the Mouse Handler.
+			// Initialize the Mouse and Command Handler.
 			m_MseHndlr = Mouse_Handler::getInstance( m_Window );
+			m_CmdHndlr = CmdHandler::getInstance(m_Window);
 
 			// Initialize Graphics
 			iRunning = !m_GpxMngr->initializeGraphics( STARTING_ENV );
@@ -86,7 +88,10 @@ int main()
 			delete m_GpxMngr;
 
 		if( m_MseHndlr != nullptr )
-		  delete m_MseHndlr;
+			delete m_MseHndlr;
+
+		if (m_CmdHndlr != nullptr)
+			delete m_CmdHndlr;
 
 		glfwDestroyWindow(m_Window);
 	}
@@ -148,16 +153,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
 		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (GLFW_KEY_ENTER == key && GLFW_PRESS == action)
-	{
-		// Hide Window to Prompt User
-		glfwHideWindow(window);
-
-		pCmdHndlr->process_Input();
-
-		// Show Window for results
-		glfwShowWindow(window);
-	}
 	else
 		pCmdHndlr->handleKeyBoardInput(key, action, mods);
 }

@@ -17,6 +17,8 @@ Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, manager_cookie )
 	m_bStaticMesh = bStaticMesh;
 	m_m4DefaultInstance =  mat4(1.0f);
 	m_iNumInstances = 1;
+	m_fScale = 0.25f;
+	m_pShdrMngr = SHADER_MANAGER;
 	glGenVertexArrays(1, &m_iVertexArray);
 }
 
@@ -26,6 +28,7 @@ Mesh::~Mesh()
 	glDeleteBuffers( 1, &m_iVertexBuffer );
 	glDeleteBuffers( 1, &m_iIndicesBuffer );
 	glDeleteBuffers(1, &m_iInstancedBuffer);
+	glDeleteBuffers(1, &m_iScaleBuffer);
 	glDeleteVertexArrays( 1, &m_iVertexArray );
 }
 
@@ -169,77 +172,107 @@ void Mesh::addCarteseanPoint(float fPhi, float fTheta, float fRadius)
 	m_pNormals.push_back(normalize( pPoint - vec3(0.f)) );
 }
 
+// Initialize the GPU with Mesh Data and tell it how to read it.
 void Mesh::initalizeVBOs()
 {
 	// This function shouldn't be called without passing in Vertex Data.
 	assert(!m_pVertices.empty());
 
-	// For Static objects, we can use just one VBO since it won't be updated as often.
+	// We can use just one VBO since it's assumed that the geometry won't update as often.
 	//	Therefore, we'll combine all data into one VBO and set openGL to address the data accordingly.
-	if (m_bStaticMesh)
+	// Create a Vector to hold the combined data.
+	vector<float> vVNdata;
+	vVNdata.reserve(m_pVertices.size() * 3 +
+		m_pNormals.size() * 3 +
+		(m_pUVs.size() << 1));
+
+	// Boolean values to determine if additional data exists.
+	bool bHaveNormals = !m_pNormals.empty();
+	bool bHaveUVs = !m_pUVs.empty();
+
+	// Calculate Stride for setting up Attributes
+	GLsizei iStride = sizeof(vec3) +
+		(bHaveNormals ? sizeof(vec3) : 0) +
+		(bHaveUVs ? sizeof(vec2) : 0);
+
+	// Loop through the received input and set up the array of data for the VBO
+	for (unsigned int i = 0; i < m_pVertices.size(); ++i)
 	{
-		// Create a Vector to hold the combined data.
-		vector<float> vVNdata;
-		vVNdata.reserve(m_pVertices.size() * 3 +
-			m_pNormals.size() * 3 +
-			(m_pUVs.size() << 1));
+		// Vertex Data
+		vVNdata.push_back(m_pVertices[i].x);
+		vVNdata.push_back(m_pVertices[i].y);
+		vVNdata.push_back(m_pVertices[i].z);
 
-		// Boolean values to determine if additional data exists.
-		bool bHaveNormals = !m_pNormals.empty();
-		bool bHaveUVs = !m_pUVs.empty();
-
-		// Calculate Stride for setting up Attributes
-		GLsizei iStride = sizeof(vec3) +
-			(bHaveNormals ? sizeof(vec3) : 0) +
-			(bHaveUVs ? sizeof(vec2) : 0);
-
-		// Loop through the received input and set up the array of data for the VBO
-		for (unsigned int i = 0; i < m_pVertices.size(); ++i)
-		{
-			// Vertex Data
-			vVNdata.push_back(m_pVertices[i].x);
-			vVNdata.push_back(m_pVertices[i].y);
-			vVNdata.push_back(m_pVertices[i].z);
-
-			// Normal Data
-			if (bHaveNormals)
-			{
-				vVNdata.push_back(m_pNormals[i].x);
-				vVNdata.push_back(m_pNormals[i].y);
-				vVNdata.push_back(m_pNormals[i].z);
-			}
-
-			// UV Data
-			if (bHaveUVs)
-			{
-				vVNdata.push_back(m_pUVs[i].x);
-				vVNdata.push_back(m_pUVs[i].y);
-			}
-		}
-
-		// Generate VBO
-		m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
-
-		// Set-up Attributes
-		// Vertices
-		m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, iStride, (void*)0);
-		// Normals
+		// Normal Data
 		if (bHaveNormals)
-			m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, iStride, (void*)sizeof(vec3));
-		// UVs
-		if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
-			m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
-
-		// Set up Indices if applicable
-		if (!m_pIndices.empty())
 		{
-			// Set up Index Buffer
-			m_iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(
-				m_iVertexArray,
-				m_pIndices.data(),
-				m_pIndices.size() * sizeof(unsigned int),
-				GL_STATIC_DRAW);
+			vVNdata.push_back(m_pNormals[i].x);
+			vVNdata.push_back(m_pNormals[i].y);
+			vVNdata.push_back(m_pNormals[i].z);
 		}
+
+		// UV Data
+		if (bHaveUVs)
+		{
+			vVNdata.push_back(m_pUVs[i].x);
+			vVNdata.push_back(m_pUVs[i].y);
+		}
+	}
+
+	// Generate VBO
+	m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
+
+	// Set-up Attributes
+	// Vertices
+	m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, iStride, (void*)0);
+	// Normals
+	if (bHaveNormals)
+		m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, iStride, (void*)sizeof(vec3));
+	// UVs
+	if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
+		m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
+
+	// Initialize as Instanced VBO
+	if (!m_bStaticMesh) 
+	{
+		// Set up Instanced Buffer for Instance Rendering
+		m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
+			m_iVertexArray, (void*)&m_m4DefaultInstance,
+			sizeof(mat4), GL_DYNAMIC_DRAW);
+
+		// Instance Rendering Attributes
+		//	Set up openGL for referencing the InstancedBuffer as a Mat4
+		// column 0
+		glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+		SHADER_MANAGER->setAttrib(
+			m_iVertexArray, 3, 4, sizeof(vec4) * 4, (void*)0);
+		// column 1
+		SHADER_MANAGER->setAttrib(
+			m_iVertexArray, 4, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
+		// column 2
+		SHADER_MANAGER->setAttrib(
+			m_iVertexArray, 5, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
+		// column 3
+		SHADER_MANAGER->setAttrib(
+			m_iVertexArray, 6, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
+
+		glBindVertexArray(m_iVertexArray);
+		glVertexAttribDivisor(3, 1);
+		glVertexAttribDivisor(4, 1);
+		glVertexAttribDivisor(5, 1);
+		glVertexAttribDivisor(6, 1);
+	}
+
+	// Set up Indices if applicable
+	if (!m_pIndices.empty())
+	{
+		// Set up Index Buffer
+		m_iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(
+			m_iVertexArray,
+			m_pIndices.data(),
+			m_pIndices.size() * sizeof(unsigned int),
+			GL_STATIC_DRAW);
+
 	}
 }
 
@@ -365,101 +398,15 @@ bool Mesh::loadObj(const string& sFileName)
 	return bReturnValue;
 }
 
-void Mesh::loadInstanceData(const vector< mat4 >* pNewData)
+// Loads instance Data -> an array of transformation Matrices for updating the position of where to draw the mesh.
+void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
 {
-	if (nullptr != pNewData)
+	if (nullptr != pData)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-		glBufferData(GL_ARRAY_BUFFER, pNewData->size() * sizeof(mat4), pNewData->data(), GL_STREAM_DRAW);
-		m_iNumInstances = pNewData->size();
+		glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_STREAM_DRAW);
+		m_iNumInstances = iSize;
 	}
-}
-
-// Initialize Open GL handles for drawing mesh.
-void Mesh::initMesh()
-{
-	// HACK:  Will be removed later.
-	vector<float> vVNdata;
-
-	for (unsigned int i = 0; i < m_pVertices.size(); ++i)
-	{
-		// Vertex Data
-		vVNdata.push_back(m_pVertices[i].x);
-		vVNdata.push_back(m_pVertices[i].y);
-		vVNdata.push_back(m_pVertices[i].z);
-
-		// Normal Data
-		if (!m_pNormals.empty())
-		{
-			vVNdata.push_back(m_pNormals[i].x);
-			vVNdata.push_back(m_pNormals[i].y);
-			vVNdata.push_back(m_pNormals[i].z);
-		}
-	}
-	// Generate Buffer
-	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer(
-		m_iVertexArray,
-		vVNdata.data(),
-		vVNdata.size() * sizeof(float),
-		GL_STATIC_DRAW);
-
-	// Set-up Attributes
-	// Vertices
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 0, 3, sizeof(vec3) * 2, (void*)0);
-	// Normals
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 1, 3, sizeof(vec3) * 2, (void*)sizeof(vec3));
-
-	// Set up Instanced Buffer for Instance Rendering
-	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-		m_iVertexArray, (void*)&m_m4DefaultInstance,
-		sizeof(mat4), GL_STREAM_DRAW);
-
-	// Instance Rendering Attributes
-	// column 0
-	glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 2, 4, sizeof(vec4) * 4, (void*)0);
-	// column 1
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 3, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
-	// column 2
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 4, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
-	// column 3
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 5, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
-
-	glBindVertexArray(m_iVertexArray);
-	glVertexAttribDivisor(2, 1);
-	glVertexAttribDivisor(3, 1);
-	glVertexAttribDivisor(4, 1);
-	glVertexAttribDivisor(5, 1);
-
-	// Indices
-	m_iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(
-		m_iVertexArray,
-		m_pIndices.data(),
-		m_pIndices.size() * sizeof(unsigned int),
-		GL_STATIC_DRAW);
-}
-
-// draws the Mesh
-void Mesh::drawMesh( GLuint iProgram )
-{
-	ShaderManager* pShdrMngr = SHADER_MANAGER;
-
-	// Set Up Shader
-	glBindVertexArray( m_iVertexArray );
-	glUseProgram( iProgram );
-
-	// Draw
-	glDrawElementsInstanced( GL_TRIANGLES, m_pIndices.size(), GL_UNSIGNED_INT, 0, m_iNumInstances );
-
-	// Unload Shader 
-	glUseProgram(0);
-	glBindVertexArray( 0 );
 }
 
 /****************************************************************************\

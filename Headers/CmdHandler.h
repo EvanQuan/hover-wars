@@ -22,7 +22,7 @@ public:
 	static CmdHandler* getInstance(const char* c_Input, int iInputSize, GLFWwindow *rWindow);
 	~CmdHandler();
 
-	void process_Input();
+	//void process_Input();
 	void handleKeyBoardInput(int cKey, int iAction, int iMods);
 
 private:
@@ -42,14 +42,12 @@ private:
 	bool exec_SetBeta();
 	bool exec_SetRGBVal(GraphicsManager::eRGB eRGBType);
 	bool exec_SetColor();
-	bool exec_Delete();
 	bool exec_Load();
 	bool exec_SetShine();
 	bool exec_SetR();
 	bool exec_SetThreshold();
 	bool exec_SetThresholdMin();
 	bool exec_SetThresholdMax();
-	void outputHelpList();
 
 	bool checkRange(float fVal, float fMIN, float fMAX);
 

@@ -21,6 +21,4 @@ void main (void)
     float kd = 0.8;
     vec3 diffuse = kd*plane_color.rgb*max( 0.0, dot( N, normalize(L - P)));
     FragColor = vec4( diffuse, 1.0 );
-	
-	FragColor = texture(gSampler,texturePos);
 }
