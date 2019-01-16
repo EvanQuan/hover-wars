@@ -1,47 +1,32 @@
 #pragma once
 #include "stdafx.h"
-#include "Object.h"
+#include "Entity.h"
+#include "Mesh.h"
 
 // Infinitely small point that emits a light source.
 //	Managed by the Environment Manager.
 class Light :
-	 public Object
+	 public Entity
 {
 public:
+	Light(int iID, const vec3* vPosition);
 	~Light();
 
-	// Virtual inherited functions
-	void draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThreshold, bool m_bPause );
-	string getType() { return "Light"; }
+	// Function to Initialize the Light.
+	void initialize(const vec3* vColor, const string* sMeshName, const string* sTexName, bool bStatic);
 
 	// Light Manipulation
-	void move( vec3 pMoveVec ) { m_pPosition += pMoveVec; }
-
-	// Ouptut Debug information for Light
-	string getDebugOutput()
-	{
-		string sOutput = "";
-
-		sOutput += "Light";
-		sOutput += "/ID:" + to_string( m_lID );
-		sOutput += "/Position:" + glm::to_string(m_pPosition);
-		sOutput += "/Color:" + glm::to_string(m_pColor);
-
-		return sOutput;
-	}
+	void move( vec3 pMoveVec ) { m_vPosition += pMoveVec; }
 
 private:
-	// Protected Constructors, only accessible by the Object Factory.
-	Light( const glm::vec3* pPos,
-		   const glm::vec3* pColor,
-		   long lID, const string* sTexName, const Anim_Track* pAnimTrack );
+	// Private Light Copy constructor and assignment operator
 	Light( const Light* newLight );
+	Light& operator=(const Light& pCopy);
 
 	// Private Variables
 	vec3 m_pColor;
-	GLuint m_iVertexArray, m_iVertexBuffer;
-	
-	// Shake hands with the Object Factory so that Lights can only be made from the Object Factory.
-	friend class Object_Factory;
+	Mesh* m_pMesh;
+	RenderComponent* m_pRenderComponent;
+
 };
 
