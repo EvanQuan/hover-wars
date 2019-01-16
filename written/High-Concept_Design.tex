@@ -82,9 +82,7 @@
 \pagenumbering{arabic}
 % \onehalfspacing
 
-\section{Game Design}
-
-\subsection{Overview}
+\section{Overview}
 
 \name{} is a combat-based driving game aimed to test your skill to fight
 against your enemies. Whether playing alone against AI or with friends, each
@@ -92,95 +90,6 @@ player find themselves driving a hovercraft in an arena pitted against each
 other. Utilizing abilities, picking up power-ups, and the navigating the map,
 everyone must survive to destroy each other in a chaotic battle of strategy and
 wits.
-
-\subsection{Aesthetic Themes}
-
-The game mainly follows a cyberpunk aesthetic.
-
-\subsection{Inspiration}
-
-\name{} at its core is inspired by Mario Kart's battle mode. Abilities and
-mechanics in the game are also inspired by Tron (1982), Rocket League (2015),
-ThinkTanks (2003), and Pac-Man (1980).
-
-\subsection{Designer Goals}
-
-\subsubsection{Vibe}
-
-Playing \name{} should feel exciting and bring a sense of hype and energy,
-similar to combat games like \textbf{Super Smash Bros} or \textbf{Street
-Fighter}. This can be brought about through fast-paced gameplay, coupled with
-action-packed sound effects and music.
-
-\subsubsection{AI and Multiplayer}
-
-The introduction of AI-controlled hovercrafts (bots) adds an interesting
-element to the game, but also a few problems. First, given our past experience
-and the time-frame creating AI, we don't believe the bots will be equally
-competant to a skilled human player.
-
-The crux of the fun should be from the multiplayer experience and not depend on
-the capabilities of the AI.\@
-
-\subsubsection{Driving System}
-
-As the players are driving hovercrafts, their driving experience should model
-that of a hovercraft. The driving model should feel somewhat floaty, meaning
-the vehicles would have lower traction that a typical 4-wheeled vehicle,
-allowing for easier drifting.
-
-There should be a balance in the driving system to feel somewhat floaty to
-imitate a hovercraft, and yet grounded enough to feel fun and responsive.
-
-\begin{itemize}
-    % TODO discuss the thought process of the role of bots in the game in
-    % relation to players from a game design perspective.
-  \item Power-ups should feel intuitive to understand and use. They should not
-    introduce new mechanics or keybindings that will cause the player to
-    ``waste'' them in order to understand what they do.
-  \item 
-\end{itemize}
-
-\subsubsection{Performance}
-
-\begin{itemize}
-  \item \name{} should run at 60 fps for single player and 30 fps for
-    multiplayer.
-\end{itemize}
-
-\subsection{Market Competition}
-
-% TODO redo game competition
-There are competitive elements to both the single-player and multiplayer
-experience. In single-player, players can compete to achieve the highest score
-possible, akin to competing to reach the top positions in the leader boards
-in arcade games or certain online games. In other words, this can be be viewed
-as a competitive asynchronous multiplayer experience.
-
-In multiplayer, players can learn strategies to to counter 
-
-\subsection{Game Genre} % Is this needed?
-
-\name{} is a third-person combat-based driving game. It is designed to be
-a fun party game that is easy for new players to pick up and play, while giving
-the opportunity to those who want to master it the means to do so given.
-
-It is developed for the PC, supporting Windows as a high priority and Mac and
-Linux with lower priorities, using mouse and keyboard controllers. It will also
-support XBOX 360 controller support, allowing for multiplayer modes.
-
-\subsection{Branding}
-
-\name{} is a new IP on its own.
-
-\subsection{Target Market}
-
-While violence is a core component of the gameplay, nothing is particularly
-graphic due to the use of vehicles and the lack of blood and gore. We do not
-intend there to be any mature themes in the game. We therefore believe that
-\name{} is appropriately targeted for all ages 10 and above years of age.
-
-\subsection{Gameplay Direction} % TODO needed?
 
 \section{Gameplay}
 
@@ -233,15 +142,21 @@ abilities, amidst a number of neutral bots for added chaos.
 
 \subsection{Damage}
 
-Players, when alive, can be damaged a set number of times before their
-hovercraft is destroyed. This is the amount of health they have. Independent of
-the source of damage, getting hit deals a single point of damage, putting
-a strong emphasis on dodging and avoiding damage.
+% TODO
+Players start the game alive with a set amount of health, which will be
+explicitly displayed to the player. They can be damaged by the abilities of
+other hovercrafts, lowering their current health. When all health is removed,
+the player's hovercraft is destroyed.
 
 When a player's hovercraft is destroyed, they lose some points and are
 momentarily out of the game before respawning randomly at one of the number of
 respawn points on the map. If another player destroyed said hovercraft, that
 player is awarded points for the kill.
+
+Similar to \textbf{Mario Kart}'s battle mode, all sources of damage deal
+a single point of damage. Hovercraft health is also a small, discrete value.
+This emphases dodging and avoiding abilities, and eases player understanding of
+how abilities work without needing to worry about different damage values.
 
 % TODO promised features/low prio?
 The central constraint of proposed features is development time available to
@@ -364,6 +279,121 @@ maximize points, as well as strategies to counter other players' play styles.
 
 \subsection{Menu}
 
-\section{Concept Art}
+\section{Game Design}
+
+\subsection{Aesthetic Themes}
+
+The game mainly follows a cyberpunk/TRON aesthetic.
+
+\subsection{Inspiration}
+
+\name{} at its core is inspired by \textbf{Mario Kart}'s battle mode. Abilities
+and mechanics in the game are also inspired by \textbf{Tron} (1982),
+\textbf{Rocket League} (2015), \textbf{ThinkTanks} (2003), and \textbf{Pac-Man}
+(1980).
+
+\subsection{Designer Insight/Goals}
+
+Here are some goals we have in mind for the project, as well as some insight
+behind our design decisions.
+
+\subsubsection{Vibe}
+
+Playing \name{} should feel exciting and bring a sense of hype and energy,
+similar to combat games like \textbf{Super Smash Bros} or \textbf{Street
+Fighter}. This can be brought about through fast-paced gameplay, coupled with
+action-packed sound effects and music.
+
+\subsubsection{Role of AI}
+
+The introduction of AI-controlled hovercrafts (bots) adds an interesting
+element to the game, but also a few problems.
+
+\textbf{Difficulty}
+
+First, given our past experience and the time-frame creating AI, we don't
+believe the bots will be equally competent to a skilled human player. If bots
+are given a hovercraft with equal capability to that of a player, it is
+unlikely they will be able to utilize their abilities and movement sufficiently
+to compete with players, or have sufficient game sense to outplay and counter
+different play styles. This poses a problem for single-player, as competing
+against a group of underperforming bots not particularly fun or challenging.
+
+It is possible to give bots a point bonus to compensate for their simple
+behaviour, which partly addresses the challenge issue by giving the bots
+a higher chance to reach the highest score. However, this does not necessarily
+address the fun issue, as the player will still experience fighting against
+simple bots.
+
+\textbf{Single-player and Multiplayer}
+
+Bots should have a role in both single and multiplayer.
+
+
+The crux of the fun should be from the multiplayer experience and not depend on
+the capabilities of the AI.\@
+
+\subsubsection{Driving System}
+
+As the players are driving hovercrafts, their driving experience should model
+that of a hovercraft. The driving model should feel somewhat floaty, meaning
+the vehicles would have lower traction that a typical 4-wheeled vehicle,
+allowing for easier drifting.
+
+There should be a balance in the driving system to feel somewhat floaty to
+imitate a hovercraft, and yet grounded enough to feel fun and responsive.
+
+\begin{itemize}
+    % TODO discuss the thought process of the role of bots in the game in
+    % relation to players from a game design perspective.
+  \item Power-ups should feel intuitive to understand and use. They should not
+    introduce new mechanics or keybindings that will cause the player to
+    ``waste'' them in order to understand what they do.
+  \item 
+\end{itemize}
+
+\subsubsection{Performance}
+
+\begin{itemize}
+  \item \name{} should run at 60 fps for single player and 30 fps for
+    multiplayer.
+\end{itemize}
+
+\subsection{Market Competition}
+
+% TODO redo game competition
+There are competitive elements to both the single-player and multiplayer
+experience. In single-player, players can compete to achieve the highest score
+possible, akin to competing to reach the top positions in the leader boards
+in arcade games or certain online games. In other words, this can be be viewed
+as a competitive asynchronous multiplayer experience.
+
+In multiplayer, players can learn strategies to to counter 
+
+\subsection{Game Genre} % Is this needed?
+
+\name{} is a third-person combat-based driving game. It is designed to be
+a fun party game that is easy for new players to pick up and play, while giving
+the opportunity to those who want to master it the means to do so given.
+
+It is developed for the PC, supporting Windows as a high priority and Mac and
+Linux with lower priorities, using mouse and keyboard controllers. It will also
+support XBOX 360 controller support, allowing for multiplayer modes.
+
+\subsection{Branding}
+
+\name{} is a new IP on its own.
+
+\subsection{Target Market}
+
+While violence is a core component of the gameplay, nothing is particularly
+graphic due to the use of vehicles and the lack of blood and gore. We do not
+intend there to be any mature themes in the game. We therefore believe that
+\name{} is appropriately targeted for all ages 10 and above years of age.
+
+\subsection{Gameplay Direction} % TODO needed?
+
+
+\subsection{Concept Art}
 
 \end{document}
