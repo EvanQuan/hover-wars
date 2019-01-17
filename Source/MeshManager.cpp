@@ -116,6 +116,27 @@ Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, vec3 vPos
 	return pReturnMesh;
 }
 
+Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, int iDepth, vec3 vPosition)
+{
+	// Local Variables
+	string sHashHandle = "Cube" + to_string(iHeight) + to_string(iWidth) + to_string(iDepth) + glm::to_string(vPosition);
+	Mesh* pReturnMesh = nullptr;
+
+	// Found a cube of these dimensions at this position? Return that.
+	if (m_pMeshCache.end() != m_pMeshCache.find(sHashHandle))
+		pReturnMesh = m_pMeshCache[sHashHandle].get();
+	else // Generate a new Cube Mesh with given dimensions
+	{
+		unique_ptr<Mesh> pNewCube = make_unique<Mesh>(sHashHandle, bStaticMesh, Mesh::manager_cookie());
+		pNewCube->genCube(iHeight, iWidth, iDepth, vPosition);
+		pReturnMesh = pNewCube.get();
+		m_pMeshCache.insert(make_pair(sHashHandle, move(pNewCube)));
+	}
+
+	return pReturnMesh;
+}
+
+
 // Attempts to Initialize and return a new mesh object from a given object file.
 // Returns: Mesh Object created or nullptr if mesh failed to create.
 //			Bool: Returns true on Success, False on failure.

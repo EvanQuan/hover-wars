@@ -52,12 +52,6 @@ void EntityManager::initializeEnvironment(string sFileName)
 	pObjFctry->loadFromFile(sFileName);
 }
 
-// Adds a Light to back of List
-void EntityManager::addLight( Light* pNewLight )
-{
-	m_pLights.push_back( pNewLight );
-}
-
 // Remove Object from List with given ID
 //void EntityManager::killObject( long lID )
 //{
@@ -75,24 +69,6 @@ void EntityManager::addLight( Light* pNewLight )
 //		m_pObjects.pop_back();
 //	}
 //}
-
-// Remove Object from List with given ID
-void EntityManager::killLight( long lID )
-{
-	unsigned int i = 0;
-
-	// Iterate to find Object
-	while ( i < m_pLights.size() && nullptr != m_pLights[i] && lID != m_pLights[i]->ID() )
-		++i;
-
-	// Delete Object and remove it from list.
-	if ( i < m_pLights.size() )
-	{
-		swap( m_pLights[i], m_pLights.back() );
-		delete m_pLights.back();
-		m_pLights.pop_back();
-	}
-}
 
 // Outputs all the objects in the environment for debugging.
 //void EntityManager::listEnvironment()
@@ -114,18 +90,6 @@ void EntityManager::killLight( long lID )
 // Clears out the entire environment
 void EntityManager::purgeEnvironment()
 {
-	// Clean up Lights
-	for ( vector<Light*>::iterator pIter = m_pLights.begin();
-		  pIter != m_pLights.end();
-		  ++pIter )
-	{
-		if ( nullptr != (*pIter) )
-			delete (*pIter);
-	}
-
-	// Clear the array of Dangling pointers
-	m_pLights.clear();
-
 	// Clear unique_ptrs of Components and Entities
 	m_pMasterComponentList.clear();
 	m_pMasterEntityList.clear();
@@ -155,20 +119,21 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 {
 	// Local Variables
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
-	vec3 pLightPosition;
+	vec3 pLightPosition, pLightColor;
 
 	// Calculate information for each Light in the scene (Current max = 1)
-	for (vector<Light*>::iterator pLightIter = m_pLights.begin();
+	for (vector<LightingComponent*>::iterator pLightIter = m_pLights.begin();
 		pLightIter != m_pLights.end();
 		++pLightIter)
 	{
 		pLightPosition = (*pLightIter)->getPosition();
+		pLightColor = (*pLightIter)->getColor();
 
 		// Store Information to all Shaders
-		pShdrMngr->setUniformVec3( ShaderManager::eShaderType::LIGHT_SHDR, "lightPosition", &pLightPosition );
 		pShdrMngr->setUniformVec3( ShaderManager::eShaderType::MESH_SHDR, "lightPosition",  &pLightPosition );
 		pShdrMngr->setUniformVec3( ShaderManager::eShaderType::PLANE_SHDR, "lightPosition", &pLightPosition );
 		pShdrMngr->setUniformVec3(ShaderManager::eShaderType::BOID_SHDR, "lightPosition_worldSpace", &pLightPosition );
+		pShdrMngr->setUniformVec3(ShaderManager::eShaderType::PLANE_SHDR, "vLightColor", &pLightColor);
 
 		//(*pLightIter)->draw( vCamLookAt );
 		for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
@@ -180,8 +145,6 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 		if( nullptr != m_pBoidEngine )
 			m_pBoidEngine->draw( m_bPause );
 	}
-
-	m_pLights[0]->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
 }
 
 /*******************************************************************************\
@@ -196,49 +159,8 @@ void EntityManager::initializeBoidEngine(vector< string >& sData)
 }
 
 /*********************************************************************************\
-* Texture Manipulation                                                           *
-\*********************************************************************************/
-void EntityManager::switchTexture( const string* sTexLocation, long lObjID )
-{
-	Object* pObj = getObject( lObjID );
-
-	if ( nullptr != pObj )
-		pObj->switchTexture( sTexLocation );
-	else
-		cout << "Unable to find Object with ID " << lObjID << " to switch texture to \""
-			 << sTexLocation << "\".\n";
-}
-
-/*********************************************************************************\
- * Light Manipulation                                                            *
-\*********************************************************************************/
-void EntityManager::moveLight(vec3 pMoveVec)
-{
-	m_pLights[0]->move(pMoveVec);
-}
-
-/*********************************************************************************\
 * Entity Management                                                              *
 \*********************************************************************************/
-// getObject
-// Given a long integer ID of the Object, this will return the associated Light or 3D object
-// associated with the ID.  Since this is a private function, only the EnvironmentManager
-// can search in this manner and modify the object, preserving encapsulation.
-Object* EntityManager::getObject( long lID )
-{
-	Object* pReturnObj = nullptr;
-	unsigned int i = 0;
-
-	// Iterate to find Object
-	while ( i < m_pLights.size() && nullptr != m_pLights[ i ] && lID != m_pLights[ i ]->ID() )
-		++i;
-
-	// Return Light
-	if ( i < m_pLights.size() )
-		pReturnObj = m_pLights[ i ];
-
-	return pReturnObj;
-}
 
 // Fetches the current position of Entity with ID: iEntityID
 vec3 EntityManager::getEntityPosition(int iEntityID)
@@ -302,6 +224,18 @@ void EntityManager::generatePlayerEntity(vec3 vPosition, const string& sMeshLoca
 	unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
 	pNewPlayer->initializePlayer(sMeshLocation, sTextureLocation, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewPlayer));
+}
+
+// Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
+void EntityManager::generateStaticLight( vec3 vPosition, vec3 vColor, const string& sMeshLocation, const string& sTextureLocation)
+{
+	unique_ptr<Light> pNewLight = make_unique<Light>(getNewEntityID(), &vPosition);
+	pNewLight->initialize(&vColor, &sTextureLocation, true, sMeshLocation);
+
+	if (nullptr == m_pTestingLight)
+		m_pTestingLight = pNewLight.get();
+
+	m_pMasterEntityList.push_back(move(pNewLight));
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.
@@ -374,5 +308,19 @@ RenderComponent* EntityManager::generateRenderComponent(int iEntityID, bool bSta
 	m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
 
 	// Return newly created component.
+	return pReturnComponent;
+}
+
+// Generates a Lighting Component, stores the light in the Lights list as well as manages it in the Master Components list.
+//	Creates a Barebone light component, up to the caller to initialize the light how they desire.
+LightingComponent* EntityManager::generateLightingComponent(int iEntityID)
+{
+	// Generate new Lighting Component
+	unique_ptr<LightingComponent> pNewComponent = make_unique<LightingComponent>(iEntityID, getNewComponentID());
+	LightingComponent* pReturnComponent = pNewComponent.get();
+	m_pLights.push_back(pReturnComponent);
+	m_pMasterComponentList.push_back(move(pNewComponent));
+
+	// Return newly created component
 	return pReturnComponent;
 }

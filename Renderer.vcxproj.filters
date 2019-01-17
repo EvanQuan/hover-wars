@@ -63,9 +63,6 @@
     <ClInclude Include="Headers\InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -82,9 +79,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\MeshManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\MeshObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\BoidEngine.h">
@@ -113,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="Headers\PlayerEntity.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -197,8 +194,8 @@
     <ClCompile Include="Source\PlayerEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Object.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

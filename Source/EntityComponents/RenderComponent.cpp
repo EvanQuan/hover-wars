@@ -30,7 +30,12 @@ void RenderComponent::render()
 
 	// Bind Texture(s) HERE
 	if (nullptr != m_pTexture)
+	{
 		m_pTexture->bindTexture(m_eShaderType, "gSampler");
+		m_pShdrMngr->setUniformBool(m_eShaderType, "bTextureLoaded", true);
+	}
+	else
+		m_pShdrMngr->setUniformBool(m_eShaderType, "bTextureLoaded", false);
 
 	// Call related glDraw function.
 	if (m_bUsingInstanced)
@@ -43,10 +48,6 @@ void RenderComponent::render()
 	// Unbind Texture(s) HERE
 	if (nullptr != m_pTexture)
 		m_pTexture->unbindTexture();
-
-	// Clean up OpenGL state
-	//glUseProgram(0);
-	//glBindVertexArray(0);
 }
 
 // Overloaded Update Function

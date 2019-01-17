@@ -1,51 +1,50 @@
 #include "Light.h"
 #include "EntityManager.h"
 
+
 const float LIGHT_SIZE = 30.f;
+const int LIGHT_HEIGHT = 1;
+const int LIGHT_WIDTH = LIGHT_HEIGHT;
+const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
-Light::Light(const glm::vec3* pPos,
-			 const glm::vec3* pColor,
-			 long lID, const string* sTexName, const Anim_Track* pAnimTrack ) : Object( pPos, lID, sTexName, pAnimTrack )
+Light::Light(int iID, const vec3* vPosition) 
+	: Entity( iID, *vPosition )
 {
-	m_pColor		= (*pColor);
-	ENTITY_MANAGER->addLight( this );
-	glGenVertexArrays(1, &m_iVertexArray);
-
-	// Generate Buffer and Set up Attributes
-	m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer(m_iVertexArray, &m_pPosition,
-																	sizeof(m_pPosition), GL_STATIC_DRAW );
-	SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, nullptr);
+	
 }
 
 // Destructor
 Light::~Light()
 {
-	glDeleteBuffers(1, &m_iVertexBuffer);
-	glDeleteVertexArrays(1, &m_iVertexArray);
+	// Nothing to Destruct
 }
 
-void Light::draw( const vec3& vCamLookAt, float fMinThreshold, float fMaxThreshold, bool m_bPause )
+// Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
+//	If "" is provided for the Mesh name, a generic cube will be generated.
+void Light::initialize(const vec3* vColor, const string* sTexName, bool bStatic, const string& sMeshName )
 {
-	ShaderManager* pShdrMngr = SHADER_MANAGER;
+	// Set the color of the Light
+	m_pColor = (*vColor);
 
-	if ( nullptr != m_pTexture )
-	{
-		m_pTexture->bindTexture( ShaderManager::eShaderType::LIGHT_SHDR, "gSampler" );
-	}
+	// Load Mesh
+	if ("" == sMeshName)
+		m_pMesh = MESH_MANAGER->generateCubeMesh(bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, m_vPosition);
+	else
+		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, m_vPosition, bStatic);
 
-	glBindVertexArray(m_iVertexArray);
-	glUseProgram(pShdrMngr->getProgram( ShaderManager::eShaderType::LIGHT_SHDR));
+	// Create a Render Component
+	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);
 
-	glPointSize(20.f);
-	glDrawArrays(GL_POINTS, 0, 1);
-	glPointSize( 1.f );
+	// Initialize Render Component
+	assert(m_pRenderComponent != nullptr);
+	m_pRenderComponent->initializeComponent(m_pMesh);
 
-	if ( nullptr != m_pTexture )
-	{
-		m_pTexture->unbindTexture();
-	}
+	// Set the Light Color for this light in the Light Shader
+	//	TODO: This will need to be set another way if multiple lights with different colors are created.
+	SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::LIGHT_SHDR, "vLightColor", &m_pColor);
 
-	glUseProgram(0);
-	glBindVertexArray(0);
+	// Create and Initialize the Lighting Component.
+	m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
+	m_pLightingComponent->initializeAsPointLight(&m_vPosition, &m_pColor);
 }

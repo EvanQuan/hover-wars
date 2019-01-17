@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "EntityComponent.h"
 #include "ShaderManager.h"
-#include "Mesh.h"
+#include "MeshManager.h"
 #include "TextureManager.h"
 
 /************************************************************

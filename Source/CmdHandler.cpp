@@ -352,10 +352,8 @@ bool CmdHandler::exec_SetColor()
 bool CmdHandler::exec_Load()
 {
 	char c_Cmd[ MAX_INPUT_SIZE ] = {};
-	char* p_End;
 	int iErr = get_Next_Word( c_Cmd, MAX_INPUT_SIZE );
 	int iModelErr, iTexErr;
-	long lObjID;
 	char c_TexLocation[ MAX_INPUT_SIZE ], c_ModelLocation[ MAX_INPUT_SIZE ];
 	string sTexLoc, sModLoc;
 	vec3 pPos = vec3( 0.0 );	// By Default, all Models load up in the center of the scene
@@ -377,23 +375,6 @@ bool CmdHandler::exec_Load()
 			{
 				cout << "Error reading in values for loading a model: \""
 					<< c_ModelLocation << " " << c_TexLocation << "\".\n";
-				bReturnVal = true;
-			}
-		}
-		else if ( 0 == strcmp( c_Cmd, "texture" ) )		// Handle input to load a new Texture
-		{
-			iTexErr = get_Next_Word( c_TexLocation, MAX_INPUT_SIZE );
-			iErr = get_Next_Word( c_Cmd, MAX_INPUT_SIZE );
-			if ( ERR_CODE != iErr && ERR_CODE != iTexErr )	// No issues, switch Textures
-			{
-				lObjID = strtol( c_Cmd, &p_End, 10 );
-				sTexLoc = string( c_TexLocation );
-				m_pEntMngr->switchTexture( &sTexLoc, lObjID );
-			}
-			else    // Errors reading in Texture location and Object ID
-			{
-				cout << "Error reading in values for loading a texture: \""
-					<< c_TexLocation << " " << c_Cmd << "\".\n";
 				bReturnVal = true;
 			}
 		}

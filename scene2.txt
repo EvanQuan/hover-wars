@@ -24,10 +24,7 @@
 
 light {
   1 2 0
-  0.133 0.545 0.133
-  +texture {
-	textures-256-256/lbulbTest.jpeg
-  }
+  1.0 1.0 1.0
 }
 
 #Indices:
@@ -135,8 +132,8 @@ player {
 #}
 
 sphere {
-	0 4 0 .5
+	4 4 0 .5
 	+texture {
-		textures-256-256/fig-7b.png
+		textures-256-256/nightSpherical.jpg
 	}
 }

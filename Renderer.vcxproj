@@ -27,6 +27,7 @@
     <ClInclude Include="Headers\Entity.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
@@ -39,9 +40,7 @@
     <ClInclude Include="Headers\Light.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
-    <ClInclude Include="Headers\MeshObject.h" />
     <ClInclude Include="Headers\Mouse_Handler.h" />
-    <ClInclude Include="Headers\Object.h" />
     <ClInclude Include="Headers\Object_Factory.h" />
     <ClInclude Include="Headers\PlayerEntity.h" />
     <ClInclude Include="Headers\Shader.h" />
@@ -60,6 +59,7 @@
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
@@ -72,7 +72,6 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
     <ClCompile Include="Source\Mouse_Handler.cpp" />
-    <ClCompile Include="Source\Object.cpp" />
     <ClCompile Include="Source\Object_Factory.cpp" />
     <ClCompile Include="Source\PlayerEntity.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
