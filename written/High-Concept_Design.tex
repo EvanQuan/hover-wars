@@ -28,10 +28,10 @@
 
 % TODO change the placement of these?
 \pagestyle{fancy}
-\lhead{\name{}}
+\lhead{High-level Design}
 \rhead{CPSC 585 --- Winter 2019}
 
-\lfoot{High-level Design}
+\lfoot{\name{}}
 \rfoot{\team{}}
 
 \newenvironment{hangingpar}[1]
@@ -88,8 +88,8 @@
 against your enemies. Whether playing alone against AI or with friends, each
 player find themselves driving a hovercraft in an arena pitted against each
 other. Utilizing abilities, picking up power-ups, and the navigating the map,
-everyone must survive to destroy each other in a chaotic battle of strategy and
-wits.
+everyone must destroy each other in a chaotic battle of strategy and wits
+before the round is over.
 
 \section{Gameplay}
 
@@ -121,11 +121,14 @@ input devices (XBOX controllers).
 The central goal of the game is to gain the highest score possible before the
 round is over. Players have the following means to gain score:
 \begin{itemize}
-  \item Destroying other player hovercrafts, which can only done in
+  \item Damaging other player hovercrafts, which can only be done in
     multiplayer. This can be through the use of abilities accessible to every
-    player. Depending on the means by which enemies are destroyed, various
+    player. Depending on the means by which enemies are damaged, various
     amount of points can be awarded, encouraging the player to make interesting
     plays.
+  \item Destroying other player hovercrafts, which can only be done in
+    multiplayer. If damage is done to a hovercraft's final hit point and it is
+    destroyed, extra points are awarded.
   \item Destroying bots, which can be done in both single and multiplayer.
     These hovercrafts do not have all the abilities of player hovercrafts and
     so reward less points.
@@ -143,10 +146,10 @@ abilities, amidst a number of neutral bots for added chaos.
 \subsection{Damage}
 
 % TODO
-Players start the game alive with a set amount of health, which will be
+Players start the game alive with a set amount of hit points, which will be
 explicitly displayed to the player. They can be damaged by the abilities of
-other hovercrafts, lowering their current health. When all health is removed,
-the player's hovercraft is destroyed.
+other hovercrafts, lowering their current hit points. When all hit points is
+removed, the player's hovercraft is destroyed.
 
 When a player's hovercraft is destroyed, they lose some points and are
 momentarily out of the game before respawning randomly at one of the number of
@@ -154,7 +157,7 @@ respawn points on the map. If another player destroyed said hovercraft, that
 player is awarded points for the kill.
 
 Similar to \textbf{Mario Kart}'s battle mode, all sources of damage deal
-a single point of damage. Hovercraft health is also a small, discrete value.
+a single point of damage. Hovercraft hit points are also a small, discrete value.
 This emphases dodging and avoiding abilities, and eases player understanding of
 how abilities work without needing to worry about different damage values.
 
@@ -184,9 +187,9 @@ a small map focused for single player.
 \textbf{Environmental features}
 
 \begin{itemize}
-  \item Changes in elevation --- Ramps lead to higher and lower platforms. This
-    can given better vision of certain parts of the map, or give opportunities
-    to jump off and surprise enemies.
+  \item Ramps --- Ramps lead to higher and lower platforms, or can be jumped
+    off of. This can provide better vision of certain parts of the map, give
+    opportunities to jump between arenas.
   \item Lava pit --- Falling into the pit will destroy the player hovercraft.
     Avoid at all costs or try to bump enemies into it.
   \item Speed pads --- Driving over these, will give a momentary boost of
@@ -198,7 +201,7 @@ a small map focused for single player.
 
 In all modes, a number of neutral bots will be present on the map. Visually
 distinct from players, bots will attempt to crash into the players to damage
-them. They are weaker than players in that they have less health and fewer
+them. They are weaker than players in that they have fewer hit points and fewer
 abilities, but also award less points on kill. As a result, it is up to players
 to decide much they want to focus on destroying bots versus other players in
 their strategy.
@@ -257,6 +260,7 @@ each attack ability:
     activation.
   \item \textbf{Flame trail} --- The trail continuously lasts for the duration
     of the power-up.
+  \item \textbf{Repair} --- Gain an extra hit point
 \end{itemize}
 
 \subsection{Difficulty}
