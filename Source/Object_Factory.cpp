@@ -59,6 +59,8 @@ void Object_Factory::createSphere( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), vPosition, 
 											 m_sTextureProperty, m_sShaderProperty);
 	}
+	else
+		outputError("sphere", sData);
 }
 
 // Create a Plane given a normal, a position on the plane and a color
@@ -83,24 +85,19 @@ void Object_Factory::createPlane( vector< string > sData, int iLength )
 // Generates a Light object given some input data
 // sData -> String of inputs to parse
 // iLength -> Number of Inputer to parse.
-Light* Object_Factory::createLight( vector< string > sData, int iLength )
+void Object_Factory::createLight( vector< string > sData, int iLength )
 {
 	vec3 pPosition, pColor;
-	Light* pReturnLight = nullptr;
 
 	if ( MAX_LIGHT_PARAMS == iLength )
 	{
 		pPosition = vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );
 		pColor = vec3( stof( sData[ 3 ] )/*R*/, stof( sData[ 4 ] )/*G*/, stof( sData[ 5 ] )/*B*/ );
 
-		pReturnLight = new Light( &pPosition,
-								  &pColor,
-								  getNewID(),
-								  &m_sTextureProperty,
-								  m_pAnimProperty );
+		ENTITY_MANAGER->generateStaticLight(pPosition, pColor, m_sMeshProperty, m_sTextureProperty);
 	}
-
-	return pReturnLight;
+	else
+		outputError("light", sData);
 }
 
 void Object_Factory::createPlayer(vector< string > sData, int iLength)
@@ -232,14 +229,12 @@ void Object_Factory::pullData( ifstream& inFile, vector< string >& sReturnData )
 
 void Object_Factory::handleData( vector< string >& sData, const string& sIndicator )
 {
-	Object* pResultingObject = nullptr;
-
 	if ("sphere" == sIndicator)			// Parse Sphere
 		createSphere(sData, sData.size());
 	else if ("plane" == sIndicator)		// Parse Plane
 		createPlane(sData, sData.size());
 	else if ("light" == sIndicator)		// Parse Light
-		pResultingObject = createLight(sData, sData.size());
+		createLight(sData, sData.size());
 	else if ("player" == sIndicator)	// Parse Mesh
 		createPlayer(sData, sData.size());
 	else if ("static_mesh" == sIndicator)	// Parse Static Mesh
@@ -248,12 +243,6 @@ void Object_Factory::handleData( vector< string >& sData, const string& sIndicat
 		ENTITY_MANAGER->initializeBoidEngine(sData);
 
 	clearProperties();
-
-	if (nullptr == pResultingObject && "boids" != sIndicator)
-		outputError(sIndicator, sData);
-
-	pResultingObject = nullptr; // Don't do anything with the Object
-							 // Handled by the Environment Manager
 }
 
 // Set up internal property storage with property to load objects with.
@@ -286,4 +275,14 @@ string Object_Factory::trimString( const string& sStr )
 	}
 
 	return sReturnString;
+}
+
+// Clear Any Properties that have been created on the last data parse.
+void Object_Factory::clearProperties() // Clear any properties
+{
+	if (nullptr != m_pAnimProperty)
+		delete m_pAnimProperty;
+
+	m_pAnimProperty = nullptr;
+	m_sMeshProperty = m_sTextureProperty = m_sShaderProperty = "";
 }

@@ -19,6 +19,7 @@ private:
 	bool genMesh(const string& sFileName, vec3 vPosition);
 	void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
 	void genSphere(float fRadius, vec3 vPosition);
+	void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
 	void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
 	void initalizeVBOs();
 	bool loadObj(const string& sFileName);

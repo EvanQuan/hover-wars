@@ -67,8 +67,8 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 		Width = (x-axis)
 		Height = (z-axis)
 	*/
-	float fHalfHeight = (float)(iHeight >> 1);
-	float fHalfWidth = (float)(iWidth >> 1);
+	float fHalfHeight = static_cast<float>(iHeight) * 0.5f;
+	float fHalfWidth = static_cast<float>(iWidth) * 0.5f;
 	vNormal = normalize(vNormal); // Normalize Normal Vector
 	m_pVertices.push_back(vec3(-fHalfWidth, 0.f, -fHalfHeight));
 	m_pVertices.push_back(vec3(-fHalfWidth, 0.f, fHalfHeight));
@@ -146,10 +146,106 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 	}
 
 	// Translate to Position
-	if (vec3(0.f) != vPosition)
-		Mesh::translate(vPosition);
+	//if (vec3(0.f) != vPosition)
+	//	Mesh::translate(vPosition);
 
 	// Store Mesh in GPU
+	initalizeVBOs();
+}
+
+// Generates a Cube object given a Height, Width and Depth dimension as well as a position.
+void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
+{
+	// Get half sizes of dimensions to set vertices wrt to origin.
+	float iHalfHeight	= static_cast<float>(iHeight) * 0.5f;
+	float iHalfWidth	= static_cast<float>(iWidth) * 0.5f;
+	float iHalfDepth	= static_cast<float>(iDepth) * 0.5f;
+
+	// Reserve Sizes ahead of time to speed up computation
+	m_pVertices.reserve(24);
+	m_pNormals.reserve(24);
+	m_pUVs.reserve(24);
+	m_pIndices.reserve(36);
+
+	// Generate 24 vertices for all corners per face of the cube.
+	// Face 1 - Front
+	m_pVertices.push_back(vec3(-iHalfWidth, iHalfHeight, iHalfDepth));		// Index 0
+	m_pVertices.push_back(vec3(iHalfWidth, iHalfHeight, iHalfDepth));		// Index 1
+	m_pVertices.push_back(vec3(iHalfWidth, -iHalfHeight, iHalfDepth));		// Index 2
+	m_pVertices.push_back(vec3(-iHalfWidth, -iHalfHeight, iHalfDepth));		// Index 3
+	m_pUVs.push_back(vec2(0.0f));
+	m_pUVs.push_back(vec2(1.0f, 0.f));
+	m_pUVs.push_back(vec2(0.0f, 1.0f));
+	m_pUVs.push_back(vec2(1.f));
+	m_pNormals.insert(m_pNormals.end(), 4, vec3(0.f, 0.f, 1.f));			// Normals for Face 1 (Front)
+
+	// Face 2 - Back
+	m_pVertices.push_back(vec3(-iHalfWidth, iHalfHeight, -iHalfDepth));		// Index 4
+	m_pVertices.push_back(vec3(iHalfWidth, iHalfHeight, -iHalfDepth));		// Index 5
+	m_pVertices.push_back(vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth));	// Index 6
+	m_pVertices.push_back(vec3(iHalfWidth, -iHalfHeight, -iHalfDepth));		// Index 7
+	m_pUVs.push_back(vec2(1.0f, 0.f));
+	m_pUVs.push_back(vec2(0.0f));
+	m_pUVs.push_back(vec2(1.f));
+	m_pUVs.push_back(vec2(0.0f, 1.0f));
+	m_pNormals.insert(m_pNormals.end(), 4, vec3(0.f, 0.f, -1.f));			// Normals for Face 2 (Back)
+
+	// Face 3 - Left
+	m_pVertices.push_back(vec3(iHalfWidth, iHalfHeight, iHalfDepth));		// Index 1
+	m_pVertices.push_back(vec3(iHalfWidth, -iHalfHeight, iHalfDepth));		// Index 2
+	m_pVertices.push_back(vec3(iHalfWidth, iHalfHeight, -iHalfDepth));		// Index 5
+	m_pVertices.push_back(vec3(iHalfWidth, -iHalfHeight, -iHalfDepth));		// Index 7
+	m_pUVs.push_back(vec2(0.0f));
+	m_pUVs.push_back(vec2(0.0f, 1.0f));
+	m_pUVs.push_back(vec2(1.0f, 0.f));
+	m_pUVs.push_back(vec2(1.f));
+	m_pNormals.insert(m_pNormals.end(), 4, vec3(1.f, 0.f, 0.f));			// Normals for Face 3 (Left)
+
+	// Face 4 - Right
+	m_pVertices.push_back(vec3(-iHalfWidth, iHalfHeight, iHalfDepth));		// Index 0
+	m_pVertices.push_back(vec3(-iHalfWidth, -iHalfHeight, iHalfDepth));		// Index 3
+	m_pVertices.push_back(vec3(-iHalfWidth, iHalfHeight, -iHalfDepth));		// Index 4
+	m_pVertices.push_back(vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth));	// Index 6
+	m_pUVs.push_back(vec2(1.0f, 0.f));
+	m_pUVs.push_back(vec2(1.f));
+	m_pUVs.push_back(vec2(0.0f));
+	m_pUVs.push_back(vec2(0.0f, 1.0f));
+	m_pNormals.insert(m_pNormals.end(), 4, vec3(-1.f, 0.f, 0.f));			// Normals for Face 4 (Right)
+
+	// Face 5 - Bottom
+	m_pVertices.push_back(vec3(iHalfWidth, -iHalfHeight, iHalfDepth));		// Index 2
+	m_pVertices.push_back(vec3(-iHalfWidth, -iHalfHeight, iHalfDepth));		// Index 3
+	m_pVertices.push_back(vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth));	// Index 6
+	m_pVertices.push_back(vec3(iHalfWidth, -iHalfHeight, -iHalfDepth));		// Index 7
+	m_pUVs.push_back(vec2(1.0f, 0.f));
+	m_pUVs.push_back(vec2(0.0f));
+	m_pUVs.push_back(vec2(0.0f, 1.0f));
+	m_pUVs.push_back(vec2(1.f));
+	m_pNormals.insert(m_pNormals.end(), 4, vec3(0.f, -1.f, 0.f));			// Normals for Face 5 (Bottom)
+
+	// Face 6 - Top
+	m_pVertices.push_back(vec3(-iHalfWidth, iHalfHeight, iHalfDepth));		// Index 0
+	m_pVertices.push_back(vec3(iHalfWidth, iHalfHeight, iHalfDepth));		// Index 1
+	m_pVertices.push_back(vec3(-iHalfWidth, iHalfHeight, -iHalfDepth));		// Index 4
+	m_pVertices.push_back(vec3(iHalfWidth, iHalfHeight, -iHalfDepth));		// Index 5
+	m_pUVs.push_back(vec2(1.0f, 0.f));
+	m_pUVs.push_back(vec2(1.f));
+	m_pUVs.push_back(vec2(0.0f));
+	m_pUVs.push_back(vec2(0.0f, 1.0f));
+	m_pNormals.insert(m_pNormals.end(), 4, vec3(0.f, 1.f, 0.f));			// Normals for Face 6 (Top)
+
+	m_pIndices = {
+		0, 1, 2, 0, 2, 3,
+		4, 5, 6, 5, 6, 7,
+		8, 9, 10, 9, 10, 11,
+		12, 13, 14, 13, 14, 15,
+		16, 17, 18, 16, 18, 19,
+		20, 21, 22, 21, 22, 23
+	};
+
+	if (m_bStaticMesh)
+		Mesh::translate(vPosition);
+
 	initalizeVBOs();
 }
 
@@ -169,7 +265,7 @@ void Mesh::addCarteseanPoint(float fPhi, float fTheta, float fRadius)
 
 	// Store Vertex and Normal
 	m_pVertices.push_back(pPoint);
-	m_pNormals.push_back(normalize( pPoint - vec3(0.f)) );
+	m_pNormals.push_back(normalize( pPoint ) );
 }
 
 // Initialize the GPU with Mesh Data and tell it how to read it.

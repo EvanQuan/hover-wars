@@ -114,6 +114,9 @@
     <ClInclude Include="Headers\PlayerEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Camera.cpp">
@@ -199,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="Source\Object.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

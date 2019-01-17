@@ -25,9 +25,6 @@
 light {
   1 2 0
   0.133 0.545 0.133
-  +texture {
-	textures-256-256/lbulbTest.jpeg
-  }
 }
 
 #Indices:
@@ -108,18 +105,18 @@ plane {
 #}
 
 # Mesh
-player {
-	0 0 0
-	+mesh {
-		models/big_dodge.obj
-	}
-	+texture {
-		textures-256-256/fig-10d.png
-	}	
-	+shader {
-		mesh_shdr
-	}
-}
+#player {
+#	0 0 0
+#	+mesh {
+#		models/big_dodge.obj
+#	}
+#	+texture {
+#		textures-256-256/fig-10d.png
+#	}	
+#	#+shader {
+#	#	mesh_shdr
+#	#}
+#}
 
 #static_mesh {
 #	0 0 10
@@ -135,7 +132,7 @@ player {
 #}
 
 sphere {
-	0 4 0 .5
+	4 4 0 .5
 	+texture {
 		textures-256-256/fig-7b.png
 	}

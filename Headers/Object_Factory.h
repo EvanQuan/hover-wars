@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Light.h"
+#include "Anim_Track.h"
 
 // Solely Generates Objects and assigns IDs to them.
 class Object_Factory
@@ -13,7 +13,7 @@ public:
 	// Creation Functions
 	void createSphere( vector< string > sData, int iLength );
 	void createPlane( vector< string > sData, int iLength );
-	Light* createLight( vector< string > sData, int iLength );
+	void createLight( vector< string > sData, int iLength );
 	void createPlayer(vector< string > sData, int iLength);
 	void createStaticMesh(vector< string > sData, int iLength);
 
@@ -33,14 +33,8 @@ private:
 	void pullData( ifstream& inFile, vector< string >& sReturnData );
 	void handleData( vector< string >& sData, const string& sIndicator );
 	void handleProperty( vector< string >& sData, const string& sIndicator );
-	void clearProperties( ) // Clear any properties
-	{ 
-		if ( nullptr != m_pAnimProperty )
-			delete m_pAnimProperty;
-
-		m_pAnimProperty = nullptr;
-		m_sMeshProperty = m_sTextureProperty = m_sShaderProperty = "";
-	}
+	void clearProperties(); // Clear any properties
+	
 	void saveProperties( string& sTextureProperty, string& sMeshProperty, Anim_Track* pAnimTrackProp )
 	{
 		sTextureProperty = m_sTextureProperty;
