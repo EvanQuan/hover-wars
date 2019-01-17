@@ -309,8 +309,6 @@ action-packed sound effects and music.
 The introduction of AI-controlled hovercrafts (bots) adds an interesting
 element to the game, but also a few problems.
 
-\textbf{Difficulty}
-
 First, given our past experience and the time-frame creating AI, we don't
 believe the bots will be equally competent to a skilled human player. If bots
 are given a hovercraft with equal capability to that of a player, it is
@@ -325,32 +323,57 @@ a higher chance to reach the highest score. However, this does not necessarily
 address the fun issue, as the player will still experience fighting against
 simple bots.
 
-\textbf{Single-player and Multiplayer}
+Instead, bots can be given an alternative role rather than replacing a player.
+By explicitly giving them less capabilities than the player, and having them
+exist in-game independent from the player count, they can add an extra depth to
+the gameplay without heavily relying on the depth of their capabilities. The
+benefit is that if the bots end up more capable than we initially planned, this
+design decision still works and will simply make the gameplay more engaging.
 
-Bots should have a role in both single and multiplayer.
-
-
-The crux of the fun should be from the multiplayer experience and not depend on
-the capabilities of the AI.\@
+% TODO add later
+% The crux of the fun should be from the multiplayer experience and not depend on
+% the capabilities of the AI.\@
 
 \subsubsection{Driving System}
 
-As the players are driving hovercrafts, their driving experience should model
-that of a hovercraft. The driving model should feel somewhat floaty, meaning
-the vehicles would have lower traction that a typical 4-wheeled vehicle,
-allowing for easier drifting.
+Since players are driving hovercrafts, the driving experience should model
+that of a hovercraft. As a result, the driving model should feel somewhat
+floaty, allowing for easier drifting. Without the constraint of wheels, the
+players should be able to move in any lateral direction without needing to
+turn, allowing for strafing.
 
-There should be a balance in the driving system to feel somewhat floaty to
-imitate a hovercraft, and yet grounded enough to feel fun and responsive.
+However, if the hovercrafts are too floaty, they may be frustrating to control.
+Driving needs to feel responsive, especially if sudden turns or braking are
+done.
 
-\begin{itemize}
-    % TODO discuss the thought process of the role of bots in the game in
-    % relation to players from a game design perspective.
-  \item Power-ups should feel intuitive to understand and use. They should not
-    introduce new mechanics or keybindings that will cause the player to
-    ``waste'' them in order to understand what they do.
-  \item 
-\end{itemize}
+Our goal is for there to be a balance in the driving system for it to feel
+somewhat floaty to imitate a hovercraft, and yet grounded enough to feel fun
+and responsive.
+
+\subsubsection{Learning Curve}
+
+\textbf{Easy to Learn}
+
+A core goal for game is for it to be easy to pick up and start playing.
+Part of this involves controls that are intuitive to new players. While there
+are a fair number of abilities, they are the same for everyone, meaning players
+do not need to know the ins-and-outs of different vehicle abilities that they
+themselves do not have access to.
+
+Power-ups should feel intuitive to understand and use. They should not
+introduce new mechanics or keybindings. It is frustrating for for new players
+to ``waste'' power-ups in order to understand what they do, especially if they
+are single-use. Instead, power-ups should augment already existing abilities
+and clearly display in the UI which ability is improved.
+
+\textbf{Hard to Master}
+
+Players should be given opportunities to improve and apply their skill. Each
+ability is distinct and requires its own skills to use.
+% TODO
+
+\subsubsection{Blue Shell Effect} % TODO balance?
+
 
 \subsubsection{Performance}
 
@@ -358,6 +381,7 @@ imitate a hovercraft, and yet grounded enough to feel fun and responsive.
   \item \name{} should run at 60 fps for single player and 30 fps for
     multiplayer.
 \end{itemize}
+
 
 \subsection{Market Competition}
 
