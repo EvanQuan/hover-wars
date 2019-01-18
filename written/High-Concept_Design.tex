@@ -113,9 +113,19 @@ change as development progresses.
 \textbf{Bot:} An AI-controlled hovercraft. These hovercrafts are distinct from
 player hovercrafts.
 
+% TODO bot art here
+
 \textbf{Player:} The individuals playing the game. May also interchangeably
 refer to the hovercrafts controlled by the players for the sake of brevity,
 especially in relation to the AI-controlled hovercrafts.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{Brainstorming_003.png}
+  \caption{Sketch of the player hovercraft. The hovercraft should tilt based on
+  its movement.}
+\label{fig:Brainstorming_003}
+\end{figure}
 
 \textbf{Power-up:} An item located on the map that can be picked up by a player
 by coming into contact with it. Upon pick-up, the player receives a temporary
@@ -168,26 +178,6 @@ king, that player then switches to become the king.
 Players must team up against a never-ending swarm of bots. Players only have
 one life before they are out of the game. When all the players are destroyed,
 the game ends.
-
-\subsection{Health, Lives, and Damage}
-
-% TODO
-Players start the game alive with a set amount of hit points, which will be
-explicitly displayed to the player. They can be damaged by the abilities of
-other hovercrafts, lowering their current hit points. When all hit points is
-removed, the player's hovercraft is destroyed.
-
-When a player's hovercraft is destroyed, they lose some points and are
-momentarily out of the game before respawning randomly at one of the respawn
-points on the map. If another player destroyed said hovercraft, that player is
-awarded points for the kill.
-
-Similar to \textbf{Mario Kart}'s battle mode, all sources of damage deal
-a single point of damage. Hovercraft hit points are also a small, discrete
-value. This emphases dodging and avoiding abilities, and eases player
-understanding of how abilities work without needing to worry about different
-damage values.
-
 \subsection{Arenas/Maps}
 
 The game will feature a single map. Given the development time frame, a single
@@ -215,39 +205,29 @@ action with be closer and more compact.
   \item Speed pads --- Driving over these, will give a momentary boost of
     speed. Great for getting power-ups quicker, and chasing or escaping other
     players.
+  \item Jump pads --- Driving over these, will give a vertical boost while
+    maintaining horizontal momentum. Great for jumping over obstacles or
+    reaching areas of higher elevation. % TODO is this okay?
 \end{itemize}
 
-\subsection{Bots}
+\subsection{Players}
 
-In all modes, a number of bots will be present on the map. With a visually
-distinct design as players, bots will specifically only target player
-hovercrafts. They are weaker than players in that they have fewer hit points
-and fewer abilities, but also award less points on kill. As a result, it is up
-to players to decide much they want to focus on destroying bots versus other
-players in their strategy.
+Players drive a hovercraft. They innately have full access to a number of
+movement options and abilities from the start of the game.
 
-The capabilities of bots is open-ended as development progresses. Here is
-a tentative priority list of bot functionality, from highest to lowest
-priority.
-\begin{enumerate}
-  \item Target players to chase them. They must be smart enough to recognize
-    the presence of obstacles and general map geometry to reach players in
-    a reasonably direct path if possible. The bots will be equipped with the
-    spikes ability (further details below in the attack abilities section),
-    allowing them to ram into the player for damage.
-  \item Speed boost. Bots will speed up towards players when a path is clear
-    between the two. This will help them use their spikes to crash into the
-    player for damage.
-  \item Fire rockets. At its simplest, bots would be able to aim at players to
-    fire rockets at them. More sophisticated, bots would be able to lead their
-    shots based on the player's predicted trajectory and the rocket trajectory.
-  \item Guard power-ups. Bots will recognize when power-ups are on the map and
-    will guard the area to prevent the player from getting them.
-\end{enumerate}
+\subsubsection{Health, Lives, and Damage}
 
-\subsection{Abilities}
+Players start the game alive with a small set amount of hit points, which will
+be explicitly displayed to the player. They can be damaged by the abilities of
+other hovercrafts, lowering their current hit points. When all hit points is
+removed, the player's hovercraft is destroyed.
 
-\textbf{Movement}
+When a player's hovercraft is destroyed, they lose some points and are
+momentarily out of the game before respawning randomly at one of the respawn
+points on the map. If another player destroyed said hovercraft, that player is
+awarded points for the kill.
+
+\subsubsection{Movement}
 
 \begin{itemize}
   \item \textbf{Standard movement} --- A hovercraft does not rely on wheels to
@@ -256,15 +236,17 @@ priority.
   \item \textbf{Acceleration/braking} --- A hovercraft can accelerate an brake
     in any direction is it currently moving. It will often drift if a turn is
     made, even at relatively slow speeds, which can be both advantageous and
-    disadvantageous.
-  \item \textbf{Dashing} --- A hovercraft can dash in any direction,
-    temporarily gaining invulnerability. From a mobility standpoint, dashing
-    can be used to catch up to other hovercrafts, reach power-ups faster, or
-    lose others when being chased. From a defensive standpoint, it can be used
-    to dodge attacks.
+    disadvantageous. This is open to change as movement is play-tested to
+    figure out what is fun and feels right.
+  \item \textbf{Dashing} --- A hovercraft can dash in any direction. From
+    a mobility standpoint, dashing can be used to catch up to other
+    hovercrafts, reach power-ups faster, or lose others when being chased. From
+    a defensive standpoint, it can be used to dodge attacks.
+    % TODO should be blinking instead? Would make dashing through flame trail
+    % more believable, as well as keeping momentum.
 \end{itemize}
 
-\textbf{Attacks}
+\subsubsection{Abilities}
 
 Every hovercraft has 3 attack abilities that are available from the start of
 the game.
@@ -286,20 +268,118 @@ the game.
     being chased.
 \end{itemize}
 
+\subsection{Bots}
+
+In all modes, a number of bots will be present on the map. With a visually
+distinct design as players, bots will only target player hovercrafts. They are
+weaker than players in that they have fewer hit points and fewer abilities, but
+also award less points on kill. As a result, it is up to players to decide much
+they want to focus on destroying bots versus other players in their strategy.
+
+The capabilities of bots is open-ended as development progresses. Here is
+a tentative priority list of bot functionality, from highest to lowest
+priority.
+
+\subsubsection{Movement}
+
+% TODO discuss running away from players. This may result in bots clumping up
+% and "running into walls" to move away from the player (such as the corners of
+% the map).
+It will be a requirement for bots to be able to target players to chase them.
+They must be smart enough to recognize the presence of obstacles and general
+map geometry to reach players in a reasonably direct path if possible.
+
+At a lower priority, they may be given movement abilities or have more advance
+movement decision-making such as:
+\begin{enumerate}
+  \item Speed boost. Bots will speed up towards players when a path is clear
+    between the two. This will help them use their spikes to crash into the
+    player for damage.
+  \item Guard power-ups. Bots will recognize when power-ups are on the map and
+    will guard the area to prevent the player from getting them.
+\end{enumerate}
+
+\subsubsection{Abilities}
+
+To work with their basic chasing behaviour, the bots will, at minimum, be
+equipped with the spikes ability, allowing them to ram into the player for
+damage. Whether the spikes need to be activated or are always enabled will be
+up to play-testing.
+
+At a lower priority, they may given other abilities like the players:
+\begin{enumerate}
+  \item \textbf{Rockets} --- At its simplest, bots would be able to aim at
+    players to fire rockets at them. More sophisticated, bots would be able to
+    lead their shots based on the player's predicted trajectory and the rocket
+    trajectory. Bot rockets may potentially travel slower than player rockets.
+  \item \textbf{Flame trail} --- Bots will try to intercept the player's path
+    to get them caught in the flame trail.
+    % TODO discuss about dash/blink
+\end{enumerate}
+
+\subsubsection{Friendly fire}
+
+Since the bots team up against the players, any damage they would deal to each
+other would be purely accidental. At first glance, it would seem reasonable to
+disable friendly fire so that bots would not destroy each other en masse.
+However, friendly fire amongst bots may create in-game situations that would
+add extra chaos, excitement or even humour to the game's atmosphere. If need
+be, the bot count or respawn timing would be adjusted for balance to account
+for these friendly kills.
+
+Ultimately, the decision for allow for bot friendly fire will be up to
+play-testing, and we will be open for it to work either way.
 
 \subsection{Power-Ups}
 
 Power-ups spawn at certain explicit power-up locations, where players can pick
 them up by contacting them. Upon contact, the player that picked it up will
-receive a temporary passive bonus. At minimum, there will be a power-up for
-each attack ability:
+temporarily receive passive bonus for a set duration.
+
+At minimum, we want there to be 3 power-up types. While there is no particular
+priority in what power-ups to implement, we would ideally have one power-up for
+each player ability. Here are some ideas:
+
+\textbf{Rocket}
 \begin{itemize}
-  \item \textbf{Rocket} --- Rockets can be launched at a faster rate of fire.
-  \item \textbf{Spikes} --- Create a temporary shield that blocks damage upon
-    activation.
-  \item \textbf{Flame trail} --- The trail continuously lasts for the duration
+  \item \textbf{Rapid-fire rockets} --- Rockets can be launched at a faster rate of
+    fire. Good for spamming at a distance.
+  \item \textbf{Homing rockets} --- Rockets will slightly home towards the
+    closest target. Good for chasing.
+  \item \textbf{Explosive rockets} --- Rockets will have a much larger impact
+    radius. Good for taking out groups of enemies in small corridors.
+\end{itemize}
+
+\textbf{Spikes}
+\begin{itemize}
+  \item \textbf{Large spikes} --- Spike size increases, hitting enemies are
+    further distances.
+  \item \textbf{Passive spikes} --- Spikes are always enabled for the duration
     of the power-up.
-  \item \textbf{Repair} --- Gain an extra hit point
+  \item \textbf{Stunning spikes} --- Spikes will briefly disable enemy movement
+    on contact. Can be used to set up another attack.
+\end{itemize}
+
+\textbf{Flame trail}
+\begin{itemize}
+  \item \textbf{Wide trail} --- The trail is much wider, easing the ability to
+    catch opponents in their tracks.
+  \item \textbf{Passive trail} --- The trail continuously lasts for the duration
+    of the power-up.
+  \item \textbf{Slowing trail} --- The trail slows the movement of enemies
+    crossing it, making them vulnerable to attack.
+  \item \textbf{Blocking trail} --- The trail cannot be bypassed, blocking
+    enemies trying to cross it. Great for defense when being chased, or
+    aggressively to trap enemies in an area.
+\end{itemize}
+
+\textbf{Other}
+\begin{itemize}
+  \item \textbf{Repair} --- The player gains an extra hit point.
+  \item \textbf{Speed boost} --- The player gains a speed boost.
+  \item \textbf{}\textbf{Shield} --- The player is invulnerable to abilities.
+  \item \textbf{Invisibility} --- The player is invisible to other players and
+    will not be targeted by bots.
 \end{itemize}
 
 \subsection{Difficulty}
@@ -332,7 +412,8 @@ for a futuristic city at night appeal.
 \begin{figure}[htpb]
   \centering
   \includegraphics[width=0.8\linewidth]{theme01.jpg}
-  \caption{Taking place at night, there will be a focus on artifical lights from buildings to illuminate the area.}
+  \caption{Taking place at night, there will be a focus on artificial lights
+  from buildings to illuminate the area.}
 \label{fig:theme01}
 \end{figure}
 
@@ -355,15 +436,20 @@ ramps leading to different areas.}
 
 \subsection{Inspiration}
 
-\name{} at its core is inspired by \textbf{Mario Kart}'s battle mode. Abilities
-and mechanics in the game are also inspired by \textbf{Tron} (1982),
-\textbf{Rocket League} (2015), \textbf{ThinkTanks} (2003), and \textbf{Pac-Man}
-(1980).
+\name{} is inspired from a number of other games:
+\begin{itemize}
+  \item \textbf{Akane} (2018) --- aesthetic
+  \item \textbf{Crawl} (2017) --- king of the hill game mode
+  \item \textbf{Mario Kart} (1992) --- free-for-all game mode and general combat design
+  \item \textbf{Pac-Man} (1980) --- bot versus player design
+  \item \textbf{ThinkTanks} (2003) --- Speed and jump pads
+  \item \textbf{Tron} (1982) --- aesthetic and flame trail ability
+\end{itemize}
 
 \subsection{Designer Insight/Goals}
 
 Here are some goals we have in mind for the project, as well as some insight
-behind our design decisions.
+behind our design decisions from our team discussions.
 
 \subsubsection{Vibe}
 
@@ -377,30 +463,28 @@ action-packed sound effects and music.
 The introduction of AI-controlled hovercrafts (bots) adds an interesting
 element to the game, but also a few problems.
 
-First, given our past experience and the time-frame creating AI, we don't
+First, given our past experience and the time-frame creating the AI, we don't
 believe the bots will be equally competent to a skilled human player. If bots
 are given a hovercraft with equal capability to that of a player, it is
 unlikely they will be able to utilize their abilities and movement sufficiently
 to compete with players, or have sufficient game sense to outplay and counter
 different play styles. This poses a problem for single-player, as competing
-against a group of underperforming bots not particularly fun or challenging.
+against a group of underperforming bots will not particularly fun or
+challenging.
 
-It is possible to give bots a point bonus to compensate for their simple
-behaviour, which partly addresses the challenge issue by giving the bots
-a higher chance to reach the highest score. However, this does not necessarily
-address the fun issue, as the player will still experience fighting against
-simple bots.
+To address the challenge issue, it is possible to give bots point bonuses when
+they score to improve their chances to beat players. However, this does not
+necessarily address the fun issue, as the player will still experience fighting
+against simple bots.
 
 Instead, bots can be given an alternative role rather than replacing a player.
 By explicitly giving them less capabilities than the player, and having them
 exist in-game independent from the player count, they can add an extra depth to
 the gameplay without heavily relying on the depth of their capabilities. The
-benefit is that if the bots end up more capable than we initially planned, this
-design decision still works and will simply make the gameplay more engaging.
-
-% TODO add later
-% The crux of the fun should be from the multiplayer experience and not depend on
-% the capabilities of the AI.\@
+benefit is that if the bots end up less capable than we initially planed, the
+combat can still be just as fun since bots will be in greater numbers and team
+up against the players. If they are more capable than we initially planned then
+all the better, since this will simply make the gameplay more engaging.
 
 \subsubsection{Driving System}
 
@@ -416,7 +500,9 @@ done.
 
 Our goal is for there to be a balance in the driving system for it to feel
 somewhat floaty to imitate a hovercraft, and yet grounded enough to feel fun
-and responsive.
+and responsive. As we play-test the movement throughout the development, we
+will iterate on this balance, and may even radically change how driving feels
+if we believe it is best for the game.
 
 \subsubsection{Learning Curve}
 
@@ -442,6 +528,17 @@ ability is distinct and requires its own skills to use.
 
 \subsubsection{Blue Shell Effect} % TODO balance?
 
+\subsubsection{Combat}
+
+% TODO
+% health
+% abilities no hit scan
+% TODO move to insights
+% All sources of damage deal a single point of damage. Hovercraft hit points are
+% also a small, discrete value.
+% This emphasizes dodging and avoiding abilities, and eases player
+% understanding of how abilities work without needing to worry about different
+% damage values.
 
 \subsubsection{Performance}
 
@@ -500,14 +597,6 @@ intend there to be any mature themes in the game. We therefore believe that
   \includegraphics[width=0.8\linewidth]{Brainstorming_002.jpg}
   \caption{Early design of the game application framework}
 \label{fig:Brainstorming_002}
-\end{figure}
-
-\begin{figure}[htpb]
-  \centering
-  \includegraphics[width=0.8\linewidth]{Brainstorming_003.png}
-  \caption{Sketch of hovercraft design. The hovercraft should tilt based on its
-  acceleration.}
-\label{fig:Brainstorming_003}
 \end{figure}
 
 \end{document}
