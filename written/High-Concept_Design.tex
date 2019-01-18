@@ -244,7 +244,7 @@ awarded points for the kill.
     a mobility standpoint, dashing can be used to catch up to other
     hovercrafts, reach power-ups faster, or lose others when being chased. From
     a defensive standpoint, it can be used to dodge attacks.
-    % TODO should be blinking instead? Would make dashing through flame trail
+    % TODO should be blinking instead? Would make dashing through trail
     % more believable, as well as keeping momentum.
 \end{itemize}
 
@@ -265,9 +265,11 @@ the game.
     the hovercraft, damaging other vehicles that come in contact with it. Can
     be used both aggressively and defensively when other vehicles are nearby.
     It can also be used in combination with dashing to crash into enemies.
-  \item \textbf{Flame trail} --- A trail of fire is created that follows the
-    players path. Any hovercraft that contacts it is damaged. Great to use when
-    being chased.
+  \item \textbf{Trail} --- A trail is created behind the player that follows
+    the players path. Any hovercraft that contacts it is damaged. Great to use
+    when being chased. Visually, this trail may be composed of flaming napalm,
+    light energy, or some toxic substance, which is still up for discussion as
+    development continues.
 \end{itemize}
 
 \subsection{Bots}
@@ -314,8 +316,8 @@ At a lower priority, they may given other abilities like the players:
     players to fire rockets at them. More sophisticated, bots would be able to
     lead their shots based on the player's predicted trajectory and the rocket
     trajectory. Bot rockets may potentially travel slower than player rockets.
-  \item \textbf{Flame trail} --- Bots will try to intercept the player's path
-    to get them caught in the flame trail.
+  \item \textbf{Trail} --- Bots will try to intercept the player's path to get
+    them caught in the trail.
     % TODO discuss about dash/blink
 \end{enumerate}
 
@@ -362,7 +364,7 @@ each player ability. Here are some ideas:
     on contact. Can be used to set up another attack.
 \end{itemize}
 
-\textbf{Flame trail}
+\textbf{Trail}
 \begin{itemize}
   \item \textbf{Wide trail} --- The trail is much wider, easing the ability to
     catch opponents in their tracks.
@@ -383,6 +385,9 @@ each player ability. Here are some ideas:
   \item \textbf{Invisibility} --- The player is invisible to other players and
     will not be targeted by bots.
 \end{itemize}
+
+% TODO upgrades? small permanent upgrade that only spwans in the centre of the
+% map creates a point of high contention as players compete to get them
 
 \subsection{Difficulty}
 
@@ -447,7 +452,7 @@ ramps leading to different areas.}
   \item \textbf{Mario Kart} (1992) --- free-for-all game mode and general combat design
   \item \textbf{Pac-Man} (1980) --- bot versus player design
   \item \textbf{ThinkTanks} (2003) --- Speed and jump pads
-  \item \textbf{Tron} (1982) --- aesthetic and flame trail ability
+  \item \textbf{Tron} (1982) --- aesthetic and trail ability
 \end{itemize}
 
 \subsection{Designer Insight/Goals}
@@ -532,14 +537,6 @@ ability is distinct and requires its own skills to use.
 
 \subsubsection{Health and Damage}
 
-% TODO
-% health
-% TODO move to insights
-% All sources of damage deal a single point of damage. Hovercraft hit points are
-% also a small, discrete value.
-% This emphasizes dodging and avoiding abilities, and eases player
-% understanding of how abilities work without needing to worry about different
-% damage values.
 We designed our health and damage system similar to \textbf{Mario Kart}'s.
 There are a few goals we had when choosing this approach for our system:
 \begin{itemize}
@@ -592,7 +589,6 @@ abilities or tweak the existing ones later down the road.
 
 \subsubsection{Blue Shell Effect}
 
-% TODO balance?
 In the context of this game, the blue shell effect can be described as
 \textit{``a mechanism that evens the playing field between players that are
 performing well and those who are not''} in reference to the infamous blue
@@ -611,6 +607,8 @@ means than others. There are a few common rationales for why this is desirable:
     can help combat snowballing.
 \end{enumerate}
 
+% While the blue shell item in \textbf{Mario Kart} is ironically a very poor
+% implementation of a blue shell effect from a game design stance, 
 % Without going into too many details, it is our opinion that the blue shell
 % item in \textbf{Mario Kart}, is ironically a very poor blue shell mechanic
 % that punishes players for performing well without much counter-play.
@@ -620,20 +618,21 @@ means than others. There are a few common rationales for why this is desirable:
 
 \begin{itemize}
   \item \name{} should run at 60 fps for single player and 30 fps for
-    multiplayer.
+    4-person multiplayer.
 \end{itemize}
-
 
 \subsection{Market Competition}
 
-% TODO redo game competition
-There are competitive elements to both the single-player and multiplayer
-experience. In single-player, players can compete to achieve the highest score
-possible, akin to competing to reach the top positions in the leader boards
-in arcade games or certain online games. In other words, this can be be viewed
-as a competitive asynchronous multiplayer experience.
+The main competion with \name{} in the market is Nintendo's \textbf{Mario Kart}
+franchise, which \name{} is heavily inspired from. As a fairly popular
+franchise, we hope to differentiate our game by emphasizing the combat aspect,
+as \textbf{Mario Kart} is primarily racing game first.
 
-In multiplayer, players can learn strategies to to counter 
+Another game that would compete with \name{} would be \textbf{ThinkTanks},
+developed by GarageGames in 2003, which also plays as a vehicle-based battle
+arena game. Our edge over \textbf{ThinkTanks} would be the greater ability
+diversity and faster-paced gameplay, which will hopefully draw a greater
+appeal.
 
 \subsection{Game Genre} % Is this needed?
 
