@@ -82,7 +82,7 @@
 \pagenumbering{arabic}
 % \onehalfspacing
 
-\section{Overview}
+\section{Introduction}
 
 \begin{figure}[htpb]
   \centering
@@ -97,6 +97,10 @@ player find themselves driving a hovercraft in an arena pitted against each
 other. Utilizing abilities, picking up power-ups, and the navigating the map,
 everyone must destroy each other in a chaotic battle of strategy and wits
 before the round is over.
+
+The central constraint of the proposed features is development time available
+to implement them. As a result, the following game features are subject to
+change as development progresses.
 
 \section{Gameplay}
 
@@ -123,34 +127,49 @@ The game supports single and local multiplayer, allowing for 1 to 4 players.
 Local multiplayer would be split-screen multiplayer and would require multiple
 input devices (XBOX controllers).
 
-\subsection{Player Goal}
+\subsection{Game Modes}
+
+The main game mode proposed is \textbf{free-for-all}. At a low priority, other
+modes may be developed if enough time is available.
+
+\textbf{Free-for-all}
+
+The game is composed of a single round that lasts for the duration of a timer.
+Each player is placed in an arena to control a hovercraft with various
+abilities. They must fight each other in a free-for-all battle with those
+abilities, amidst a number of neutral bots roaming the arena to hunt down
+players.
 
 The central goal of the game is to gain the highest score possible before the
 round is over. Players have the following means to gain score:
 \begin{itemize}
   \item Damaging other player hovercrafts, which can only be done in
     multiplayer. This can be through the use of abilities accessible to every
-    player. Depending on the means by which enemies are damaged, various
-    amount of points can be awarded, encouraging the player to make interesting
-    plays.
+    player.
   \item Destroying other player hovercrafts, which can only be done in
     multiplayer. If damage is done to a hovercraft's final hit point and it is
     destroyed, extra points are awarded.
   \item Destroying bots, which can be done in both single and multiplayer.
-    These hovercrafts do not have all the abilities of player hovercrafts and
+    Bot hovercrafts do not have all the abilities of player hovercrafts and
     so reward less points.
   \item Picking up power-ups. These help the player gain points by improving
     their abilities, but also innately give points when they are picked up.
 \end{itemize}
 
-\subsection{Rounds}
+\textbf{\textbf{King of the Hill}}
 
-The game is composed of a single round that lasts for the duration of a timer.
-Each player is placed in an arena to control a hovercraft with various
-abilities. They must fight each other in a free-for-all battle with those
-abilities, amidst a number of neutral bots for added chaos.
+Similar to free-for-all, except a single player is designated the king. Only
+the king is able to score points, meaning that players are incentivized to be
+king for as long as possible to gain score. If another player destroys the
+king, that player then switches to become the king.
 
-\subsection{Damage}
+\textbf{Co-op Survival}
+
+Players must team up against a never-ending swarm of bots. Players only have
+one life before they are out of the game. When all the players are destroyed,
+the game ends.
+
+\subsection{Health, Lives, and Damage}
 
 % TODO
 Players start the game alive with a set amount of hit points, which will be
@@ -159,46 +178,40 @@ other hovercrafts, lowering their current hit points. When all hit points is
 removed, the player's hovercraft is destroyed.
 
 When a player's hovercraft is destroyed, they lose some points and are
-momentarily out of the game before respawning randomly at one of the number of
-respawn points on the map. If another player destroyed said hovercraft, that
-player is awarded points for the kill.
+momentarily out of the game before respawning randomly at one of the respawn
+points on the map. If another player destroyed said hovercraft, that player is
+awarded points for the kill.
 
 Similar to \textbf{Mario Kart}'s battle mode, all sources of damage deal
-a single point of damage. Hovercraft hit points are also a small, discrete value.
-This emphases dodging and avoiding abilities, and eases player understanding of
-how abilities work without needing to worry about different damage values.
-
-% TODO promised features/low prio?
-The central constraint of proposed features is development time available to
-implement them. As a result, all features have an associated priority and risk,
-of which higher priority features will be completed first, and higher risk
-features will more likely be altered, replaced, or not implemented at all.
-
-% TODO I can write a reasonably short one to set the scene if need be. Doesn't
-% need to actually be included in the game.
+a single point of damage. Hovercraft hit points are also a small, discrete
+value. This emphases dodging and avoiding abilities, and eases player
+understanding of how abilities work without needing to worry about different
+damage values.
 
 \subsection{Arenas/Maps}
 
-% TODO mention development time?
 The game will feature a single map. Given the development time frame, a single
 fun and polished map is preferable to multiple mediocre maps. It should be
 ``small'' to ``medium'' in size, to maintain a high player density to ensure
 that players are always in the middle of the action, and do not get lost.
 
+% TODO concept art of the map here
+
 If time allows for additional maps, they may be added at a lower priority, but
 the focus will still be on a singular main map. These additional maps should
 provide a different purpose than the main map. For example, there could be
-a small map focused for single player.
-% TODO should be included? Tentative stuff? High-low priority stuff?
+a small map designed for 1--2 players. This will lower the downtime as the
+action with be closer and more compact.
 
 \textbf{Environmental features}
 
 \begin{itemize}
+  \item Barriers/obstacles --- These can block movement and projectiles.
   \item Ramps --- Ramps lead to higher and lower platforms, or can be jumped
-    off of. This can provide better vision of certain parts of the map, give
-    opportunities to jump between arenas.
-  \item Lava pit --- Falling into the pit will destroy the player hovercraft.
-    Avoid at all costs or try to bump enemies into it.
+    off of over obstacles. This can provide better vision of certain parts of
+    the map, give opportunities to jump between arenas.
+  \item Pit --- Falling into the pit will instantly destroy the player
+    hovercraft. Avoid at all costs or try to bump enemies into it.
   \item Speed pads --- Driving over these, will give a momentary boost of
     speed. Great for getting power-ups quicker, and chasing or escaping other
     players.
@@ -206,12 +219,31 @@ a small map focused for single player.
 
 \subsection{Bots}
 
-In all modes, a number of neutral bots will be present on the map. Visually
-distinct from players, bots will attempt to crash into the players to damage
-them. They are weaker than players in that they have fewer hit points and fewer
-abilities, but also award less points on kill. As a result, it is up to players
-to decide much they want to focus on destroying bots versus other players in
-their strategy.
+In all modes, a number of bots will be present on the map. With a visually
+distinct design as players, bots will specifically only target player
+hovercrafts. They are weaker than players in that they have fewer hit points
+and fewer abilities, but also award less points on kill. As a result, it is up
+to players to decide much they want to focus on destroying bots versus other
+players in their strategy.
+
+The capabilities of bots is open-ended as development progresses. Here is
+a tentative priority list of bot functionality, from highest to lowest
+priority.
+\begin{enumerate}
+  \item Target players to chase them. They must be smart enough to recognize
+    the presence of obstacles and general map geometry to reach players in
+    a reasonably direct path if possible. The bots will be equipped with the
+    spikes ability (further details below in the attack abilities section),
+    allowing them to ram into the player for damage.
+  \item Speed boost. Bots will speed up towards players when a path is clear
+    between the two. This will help them use their spikes to crash into the
+    player for damage.
+  \item Fire rockets. At its simplest, bots would be able to aim at players to
+    fire rockets at them. More sophisticated, bots would be able to lead their
+    shots based on the player's predicted trajectory and the rocket trajectory.
+  \item Guard power-ups. Bots will recognize when power-ups are on the map and
+    will guard the area to prevent the player from getting them.
+\end{enumerate}
 
 \subsection{Abilities}
 
