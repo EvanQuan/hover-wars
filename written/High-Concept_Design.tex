@@ -20,7 +20,7 @@
 \setlength{\parindent}{0 in}
 
 % TODO change these when we figure them out
-\newcommand{\name}{Flatline}
+\newcommand{\name}{Flatlined}
 % Flatlined
 % Hoverwars
 \newcommand{\team}{Team A --- Light Theme is for Heretics}
@@ -105,6 +105,8 @@ change as development progresses.
 \section{Gameplay}
 
 \subsection{Terminology}
+
+% TODO add new ones that makes sense, or remove this because of redundancy
 
 \textbf{Arena/Map:} The closed area where the game takes place.
 
@@ -528,17 +530,50 @@ Players should be given opportunities to improve and apply their skill. Each
 ability is distinct and requires its own skills to use.
 % TODO
 
-\subsubsection{Combat}
+\subsubsection{Health and Damage}
 
 % TODO
 % health
-% abilities no hit scan
 % TODO move to insights
 % All sources of damage deal a single point of damage. Hovercraft hit points are
 % also a small, discrete value.
 % This emphasizes dodging and avoiding abilities, and eases player
 % understanding of how abilities work without needing to worry about different
 % damage values.
+We designed our health and damage system similar to \textbf{Mario Kart}'s.
+
+\subsubsection{Abilities}
+
+In designing our abilities, we have several goals in mind. For each one
+included, we want to make sure that they:
+\begin{itemize}
+  \item \textbf{Feel distinct to use:} They should employ different strategies
+    to use in order to feel unique. Abilities that are too similar can be
+    boring.
+  \item \textbf{Serve different purposes:} Multiple abilities that are
+    best-used for the same situations creates redundancy. Either both abilities
+    are equally useful in those situations, making having both unnecessary, or
+    one is better than the other, making the other obselete.
+  \item \textbf{Introduce some level of counterplay:} If skilled enough,
+    players on the receiving end should be able to avoid getting damaged if
+    they react appropriately. Not being able to react to abilities can feel
+    cheap and frustrating, especially if they recognize what ability is about
+    to be used and feel helpless to respond. As a result, we have avoided all
+    hitscan weapons as they cannot be doged and can be difficult to anticipate.
+  \item \textbf{Are deliberate in their use:} Due to the health and damage
+    system we plan to implement, abilities are viewed more more from a ``hit or
+    miss'' view rather than ``receive various levels of damage'' view. So just
+    as abilities require attention to identify and avoid from the receiving
+    end, they should also require a similar amount of attention to use from the
+    aggressor's end. Players should have to identify their targets and employ
+    some amount of skill to correctly hit their enemies, whether it involves
+    aiming, colliding with or maneuvering around enemies. As a result, we have
+    avoided abilities with high rates of fire that are easily spammable, or
+    ``fire and forget'' weapons that do not require much thought to use.
+\end{itemize}
+
+These goals will always be in mind if we decide to create additional new
+abilities or tweak the existing ones later down the road.
 
 \subsubsection{Blue Shell Effect}
 
@@ -561,6 +596,9 @@ means than others. There are a few common rationales for why this is desirable:
     can help combat snowballing.
 \end{enumerate}
 
+% Without going into too many details, it is our opinion that the blue shell
+% item in \textbf{Mario Kart}, is ironically a very poor blue shell mechanic
+% that punishes players for performing well without much counter-play.
 % TODO describe point system in general, counter-strike, dota
 
 \subsubsection{Performance}
