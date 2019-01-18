@@ -541,6 +541,21 @@ ability is distinct and requires its own skills to use.
 % understanding of how abilities work without needing to worry about different
 % damage values.
 We designed our health and damage system similar to \textbf{Mario Kart}'s.
+There are a few goals we had when choosing this approach for our system:
+\begin{itemize}
+  \item It is easier to understand how much health the player has in ``real
+    terms.'' With a health bar or a percent gauge, while players have some
+    rough idea how many hits can can take, it can still be somewhat fuzzy if
+    abilities deal different amounts of damage, or if players need to roughly
+    calculate how many more hits they can take from their past experience of
+    how much damage abilities do. By keeping the hit points to a small discrete
+    value, players immediately know how many more hits they can take a moment's
+    glance.
+  \item It eases user memory load. Players do not need to concern themselves
+    with the stats of various abilities with how much damage they each do. By
+    keeping it simple, players simply need to know that getting hit with an
+    ability will remove one of their hitpoints.
+\end{itemize}
 
 \subsubsection{Abilities}
 
