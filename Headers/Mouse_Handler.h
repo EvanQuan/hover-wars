@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsManager.h"
+#include "GameManager.h"
 
 class Mouse_Handler
 {
@@ -25,6 +25,6 @@ private:
 	bool m_bTranslateFlag;
 	bool m_bRotateFlag;
 	glm::vec2 m_pInitialPos;
-	GraphicsManager* m_pGpxMngr;
+	GameManager* m_pGpxMngr;
 };
 

@@ -1,9 +1,9 @@
 /* INCLUDES */
 #include "stdafx.h"
-#include "GraphicsManager.h"
+#include "GameManager.h"
 #include "ShaderManager.h"
 #include "Mouse_Handler.h"
-#include "Object_Factory.h"
+#include "Scene_Loader.h"
 #include "EntityManager.h"
 #include "CmdHandler.h"
 
@@ -26,10 +26,11 @@ int main()
 	int iRunning = glfwInit();
 	char c_Input[INPUT_SIZE] = {};
 	GLFWwindow* m_Window = 0;
-	GraphicsManager* m_GpxMngr = 0;
+	GameManager* m_GpxMngr = 0;
 	ShaderManager* m_ShdrMngr = 0;
 	Mouse_Handler* m_MseHndlr = 0;
 	CmdHandler* m_CmdHndlr = 0;
+
 
 	// Initialize GL and a window
 	if (!iRunning)
@@ -61,7 +62,7 @@ int main()
 			
 			// Bind window to graphics Manager
 			if (iRunning )
-				m_GpxMngr = GraphicsManager::getInstance( m_Window );
+				m_GpxMngr = GameManager::getInstance( m_Window );
 
 			// Initialize the Mouse and Command Handler.
 			m_MseHndlr = Mouse_Handler::getInstance( m_Window );
@@ -146,7 +147,7 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 // handles keyboard input events
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	GraphicsManager* pGPXMngr = GraphicsManager::getInstance(window);
+	GameManager* pGPXMngr = GameManager::getInstance(window);
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
 	EntityManager* pEnvMngr = ENTITY_MANAGER;
 	CmdHandler* pCmdHndlr = CmdHandler::getInstance(window);
@@ -163,7 +164,7 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 	// Update the viewport information
 	glViewport(0, 0, iWidth, iHeight);
 
-	GraphicsManager::getInstance(window)->resizedWindow(iHeight, iWidth);
+	GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
 }
 
 // Mouse Button Callback

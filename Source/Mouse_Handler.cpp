@@ -8,7 +8,7 @@ Mouse_Handler* Mouse_Handler::m_pInstance = nullptr;
 // Constructor
 Mouse_Handler::Mouse_Handler(GLFWwindow *rWindow)
 {
-	m_pGpxMngr = GraphicsManager::getInstance( rWindow );
+	m_pGpxMngr = GameManager::getInstance( rWindow );
 	m_bRotateFlag = m_bTranslateFlag = false;
 }
 

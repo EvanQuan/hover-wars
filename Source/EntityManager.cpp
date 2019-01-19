@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-#include "Object_Factory.h"
+#include "Scene_Loader.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "StaticEntity.h"
 #include "PlayerEntity.h"
@@ -46,7 +46,7 @@ EntityManager::~EntityManager()
 // Clears Environment and loads a new environment from specified file.
 void EntityManager::initializeEnvironment(string sFileName)
 {
-	Object_Factory* pObjFctry = Object_Factory::getInstance();
+	Scene_Loader* pObjFctry = Scene_Loader::getInstance();
 
 	purgeEnvironment();
 	pObjFctry->loadFromFile(sFileName);

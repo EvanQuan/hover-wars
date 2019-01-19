@@ -27,9 +27,6 @@
     <ClInclude Include="Headers\EnvSpec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\GraphicsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\ImageBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -40,9 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Mouse_Handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Object_Factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Shader.h">
@@ -111,12 +105,15 @@
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Scene_Loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GraphicsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ImageBuffer.cpp">
@@ -132,9 +129,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Mouse_Handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Object_Factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Shader.cpp">
@@ -196,6 +190,12 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene_Loader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

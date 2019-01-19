@@ -3,7 +3,7 @@
 /* INCLUDES */
 #include "stdafx.h"
 #include "InputHandler.h"
-#include "GraphicsManager.h"
+#include "GameManager.h"
 #include "EntityManager.h"
 
 /* DEFINES */
@@ -28,9 +28,9 @@ public:
 private:
 	// Singleton Variables
 	CmdHandler(GLFWwindow *rWindow);
-	CmdHandler(const char* c_Input, int iInputSize, GLFWwindow *rWindow) : InputHandler(c_Input, iInputSize) { m_pGPXMngr = GraphicsManager::getInstance(rWindow); }
+	CmdHandler(const char* c_Input, int iInputSize, GLFWwindow *rWindow) : InputHandler(c_Input, iInputSize) { m_pGPXMngr = GameManager::getInstance(rWindow); }
 	static CmdHandler* m_pInstance;
-	GraphicsManager *m_pGPXMngr;
+	GameManager *m_pGPXMngr;
 	EntityManager *m_pEntMngr;
 
 	// internal variables
@@ -40,7 +40,7 @@ private:
 	bool exec_SetY();
 	bool exec_SetAlpha();
 	bool exec_SetBeta();
-	bool exec_SetRGBVal(GraphicsManager::eRGB eRGBType);
+	bool exec_SetRGBVal(GameManager::eRGB eRGBType);
 	bool exec_SetColor();
 	bool exec_Load();
 	bool exec_SetShine();
