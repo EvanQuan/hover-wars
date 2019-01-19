@@ -94,10 +94,17 @@
 \begin{figure}[htpb]
   \centering
   \includegraphics[width=1.0\linewidth]{title_art_hover_wars.jpg}
-  \includegraphics[width=1.0\linewidth]{title_art_netrunners.jpg}
+  % \includegraphics[width=1.0\linewidth]{title_art_netrunners.jpg}
   % \caption{Title_art}
 \label{fig:title_art}
 \end{figure}
+
+% \begin{figure}[htpb]
+%   \centering
+%   \includegraphics[width=1.0\linewidth]{title_art_netrunners.jpg}
+%   % \caption{Title_art}
+% \label{fig:title_art2}
+% \end{figure}
 
 % TODO king of the hill / secure the intel description
 % Netrunners are fighting over valuable intelligence down at sector 6 and are
@@ -153,12 +160,13 @@ round is over. Players have the following means to gain score:
     their abilities, but also innately give points when they are picked up.
 \end{itemize}
 
-\textbf{\textbf{King of the Hill}}
+\textbf{\textbf{Secure the Intel}}
 
-Similar to free-for-all, except a single player is designated the king. Only
-the king is able to score points, meaning that players are incentivized to be
-king for as long as possible to gain score. If another player destroys the
-king, that player then switches to become the king.
+Similar to free-for-all, except a single player is designated to have the
+``intel''. Only this player is able to score points, meaning that players are
+incentivized to hold the intel for as long as possible to gain score. If
+another player destroys the player holding the intel, that player then takes
+the intel and the game continues.
 
 \textbf{Co-op Survival}
 
@@ -211,9 +219,9 @@ or potential game design problems they introduce.
 
     \textbf{Potential problem:} While these make sense for a racing game, they
     may detract from the gameplay for a combat arena game. Players will
-    typically want full conrol over their vehicle and driving over a speed bump
-    in locations where they don't want it can be annoying. If a speed boost
-    mechanic is to be implemented, it may be better to have speed boost
+    typically want full control over their vehicle and driving over a speed
+    bump in locations where they don't want it can be annoying. If a speed
+    boost mechanic is to be implemented, it may be better to have speed boost
     power-ups instead of speed pads.
   \item \textbf{Pits} --- Falling into the pit will instantly destroy the player
     hovercraft. Avoid at all costs or try to bump enemies into it.
@@ -260,20 +268,37 @@ movement options and abilities from the start of the game.
 
 \subsubsection{Health, Lives, and Damage}
 
-Modelled after \textbf{Mario Kart}'s health system, we 
-There are a few health and damage systems we have considered.
-\begin{itemize}
-  \item Single
-\end{itemize}
+There are a few health and damage systems we have considered. We are currently
+committed to the hit and continue system, but will be open to change as we
+play-test.
+
+\textbf{Hit and Continue}
+
+Modelled after \textbf{Mario Kart}'s damage system, vehicles are blown away or
+spun around when they are hit by abilities, temporarily making the player hit
+lose control of their vehicle. Shortly afterwards, the player regains control
+and is given a few seconds of invincibility before continuing on playing. This
+minimizes the downtime during play since there is no respawning, while still
+punishing players that get hit.
+
+\textbf{Lives with Hitpoints}
+
 Players start the game alive with a small set amount of hit points, which will
 be explicitly displayed to the player. They can be damaged by the abilities of
-other hovercrafts, lowering their current hit points. When all hit points is
+other hovercrafts, lowering their current hit points. The same temporary loss
+of control will occur as the hit and continue system. When all hit points are
 removed, the player's hovercraft is destroyed.
 
-When a player's hovercraft is destroyed, they lose some points and are
-momentarily out of the game before respawning randomly at one of the respawn
-points on the map. If another player destroyed said hovercraft, that player is
-awarded points for the kill.
+When a player's hovercraft is destroyed, they are momentarily out of the game
+before respawning randomly at one of the respawn points on the map. If another
+player destroyed said hovercraft, that player is awarded points for the kill.
+
+\textbf{One Hit One Kill}
+
+Similar to the lives and hitpoints system, but players are instantly destroyed
+upon impact of an ability. This makes getting hit more punishing and further
+promotes players to dodge abilities.
+
 
 \subsubsection{Movement}
 
@@ -362,19 +387,17 @@ At a lower priority, they may given other abilities like the players:
     rockets.
   \item \textbf{Trail} --- Bots will try to intercept the player's path to get
     them caught in the trail.
-    % TODO discuss about dash/blink
 \end{enumerate}
 
 \subsubsection{Friendly fire}
 
-% TODO respawn
 Since the bots team up against the players, any damage they would deal to each
 other would be purely accidental. At first glance, it would seem reasonable to
 disable friendly fire so that bots would not destroy each other en masse.
 However, friendly fire amongst bots may create in-game situations that would
 add extra chaos, excitement or even humour to the game's atmosphere. If need
-be, the bot count or respawn timing would be adjusted for balance to account
-for these friendly kills.
+be, the bot count (or respawn timing if hovercraft destruction is implemented)
+would be adjusted for balance to account for these friendly kills.
 
 Ultimately, the decision for allow for bot friendly fire will be up to
 play-testing, and we will be open for it to work either way.
@@ -382,7 +405,7 @@ play-testing, and we will be open for it to work either way.
 \subsection{Power-Ups}
 
 Throughout the map, there are set power-up spawn locations that will randomly
-spawn one of serveral power-ups. Players can pick them up by contacting them.
+spawn one of several power-ups. Players can pick them up by contacting them.
 Upon contact, the player that picked it up will temporarily receive passive
 bonus for a set duration.
 
@@ -531,7 +554,7 @@ ramps leading to different areas.}
 \begin{itemize}
   \item \textbf{Akane} (2018) --- aesthetic
   \item \textbf{Counter-strike} (2000) --- point system
-  \item \textbf{Crawl} (2017) --- king of the hill game mode
+  \item \textbf{Crawl} (2017) --- Secure the Intel game mode
   \item \textbf{DOTA 2} (2010) --- point system
   \item \textbf{Mario Kart} (1992) --- free-for-all game mode and general combat design
   \item \textbf{Pac-Man} (1980) --- bot versus player design
@@ -579,9 +602,10 @@ combat can still be just as fun since bots will be in greater numbers and team
 up against the players. If they are more capable than we initially planned then
 all the better, since this will simply make the gameplay more engaging.
 
-% TODO
-% Focus on multiplayer experience
-% bots are background/secondary/garnish to the gameplay
+Overall, the focus of multiplayer will be on the interactions between players
+for the multiplayer experience, where the bots will provide a background or
+secondary element to the gameplay. For single player, the bots will be core to
+the gameplay, as they are the only enemy against the player.
 
 \subsubsection{Driving System}
 
@@ -698,12 +722,14 @@ means than others. There are a few common rationales for why this is desirable:
     can help combat snowballing.
 \end{enumerate}
 
-% While the blue shell item in \textbf{Mario Kart} is ironically a very poor
-% implementation of a blue shell effect from a game design stance, 
-% Without going into too many details, it is our opinion that the blue shell
-% item in \textbf{Mario Kart}, is ironically a very poor blue shell mechanic
-% that punishes players for performing well without much counter-play.
-% TODO describe point system in general, counter-strike, dota
+A blue shell mechanic we want for the game would be to track player
+kill-streaks, which is the number of kills (hits) they have done to other
+players in a row without getting hit themselves. As the kill-streak increases,
+so does a bounty on that player. If another player kills that player with
+a bounty, they are awarded extra points. This makes players that are performing
+well higher priority targets, while not giving them a direct gameplay
+disadvantage that seems unfair. We may experiment with other systems as we
+play-test if we feel like it could be improved or better balanced.
 
 \subsubsection{Performance}
 
@@ -714,7 +740,7 @@ means than others. There are a few common rationales for why this is desirable:
 
 \subsection{Market Competition}
 
-The main competion with \name{} in the market is Nintendo's \textbf{Mario Kart}
+The main competition with \name{} in the market is Nintendo's \textbf{Mario Kart}
 franchise, which \name{} is heavily inspired from. As a fairly popular
 franchise, we hope to differentiate our game by emphasizing the combat aspect,
 as \textbf{Mario Kart} is primarily racing game first.
@@ -745,9 +771,6 @@ While violence is a core component of the gameplay, nothing is particularly
 graphic due to the use of vehicles and the lack of blood and gore. We do not
 intend there to be any mature themes in the game. We therefore believe that
 \name{} is appropriately targeted for all ages 10 and above years of age.
-
-\subsection{Gameplay Direction} % TODO needed?
-
 
 \section{Concept Art}
 
