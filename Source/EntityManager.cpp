@@ -21,6 +21,8 @@ EntityManager::EntityManager()
 	m_iHeight = START_HEIGHT;
 	m_iWidth = START_WIDTH;
 	m_bPause = false;
+	m_pMshMngr = MESH_MANAGER;
+	m_pTxtMngr = TEXTURE_MANAGER;
 
 	//TODO: redesign Boid Engine: m_pBoidEngine = new BoidEngine();
 }
@@ -41,6 +43,14 @@ EntityManager::~EntityManager()
 	// Delete Boid Engine
 	if (nullptr != m_pBoidEngine)
 		delete m_pBoidEngine;
+
+	// Delete Mesh Manager
+	if (nullptr != m_pMshMngr)
+		delete m_pMshMngr;
+	
+	// Delete Texture Manager
+	if (nullptr != m_pTxtMngr)
+		delete m_pTxtMngr;
 }
 
 // Clears Environment and loads a new environment from specified file.
