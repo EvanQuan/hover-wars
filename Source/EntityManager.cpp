@@ -103,6 +103,9 @@ void EntityManager::purgeEnvironment()
 	// Clear unique_ptrs of Components and Entities
 	m_pMasterComponentList.clear();
 	m_pMasterEntityList.clear();
+
+	m_pMshMngr->unloadAllMeshes();
+	m_pTxtMngr->unloadAllTextures();
 }
 
 // Fetch the Frenet Frame of the first MeshObject found (Hack for assignment)
