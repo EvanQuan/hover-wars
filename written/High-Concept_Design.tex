@@ -20,18 +20,24 @@
 \setlength{\parindent}{0 in}
 
 % TODO change these when we figure them out
-\newcommand{\name}{Flatlined}
+\newcommand{\namenobold}{Hover Wars}
+\newcommand{\name}{\textbf{\namenobold}}
+% Darkwire
 % Flatlined
-% Hoverwars
+% Hot Steel
+% Hover Wars    <--- James' pick
+% Netrunners    <--- Evan's pick
+% Pulse
+% Sector 6
+% Silver Helix
 \newcommand{\team}{Team A --- Light Theme is for Heretics}
 \newcommand{\botcount}{4}
 
-% TODO change the placement of these?
 \pagestyle{fancy}
 \lhead{High-level Design}
 \rhead{CPSC 585 --- Winter 2019}
 
-\lfoot{\name{}}
+\lfoot{\namenobold{}}
 \rfoot{\team{}}
 
 \newenvironment{hangingpar}[1]
@@ -64,12 +70,12 @@
     \Large{\textbf{CPSC 585 --- Winter 2019 --- Games Programming}}\\
     \vfill
     \line(1,0){400}\\[1mm]
-    \huge{\textbf{\name{}}}\\
+    \huge{\textbf{\namenobold{}}}\\
     \large{\textbf{High-Concept Design Document}}\\
     \line(1,0){400}\\
     \vfill
     \Large{\textbf{\team{}}}\\
-    \Large{Austin Easton, Evan Quan, James Cote, Jianan Ding}\\
+    \Large{Austin Easton, Evan Quan, James Coté, Jianan Ding}\\
     \large{January 21, 2019}
     % \today \\
   \end{center}
@@ -86,7 +92,7 @@
 
 \begin{figure}[htpb]
   \centering
-  \includegraphics[width=1.0\linewidth]{title_art.jpg}
+  \includegraphics[width=1.0\linewidth]{title_art_hover_wars.jpg}
   % \caption{Title_art}
 \label{fig:title_art}
 \end{figure}
@@ -103,35 +109,6 @@ to implement them. As a result, the following game features are subject to
 change as development progresses.
 
 \section{Gameplay}
-
-\subsection{Terminology}
-
-% TODO add new ones that makes sense, or remove this because of redundancy
-
-\textbf{Arena/Map:} The closed area where the game takes place.
-
-\textbf{Ability:} The capabilities that a hovercraft can actively use.
-
-\textbf{Bot:} An AI-controlled hovercraft. These hovercrafts are distinct from
-player hovercrafts.
-
-% TODO bot art here
-
-\textbf{Player:} The individuals playing the game. May also interchangeably
-refer to the hovercrafts controlled by the players for the sake of brevity,
-especially in relation to the AI-controlled hovercrafts.
-
-\begin{figure}[htpb]
-  \centering
-  \includegraphics[width=0.8\linewidth]{Brainstorming_003.png}
-  \caption{Sketch of the player hovercraft. The hovercraft should tilt based on
-  its movement.}
-\label{fig:Brainstorming_003}
-\end{figure}
-
-\textbf{Power-up:} An item located on the map that can be picked up by a player
-by coming into contact with it. Upon pick-up, the player receives a temporary
-effect, usually beneficial.
 
 \subsection{Player Count}
 
@@ -187,7 +164,12 @@ fun and polished map is preferable to multiple mediocre maps. It should be
 ``small'' to ``medium'' in size, to maintain a high player density to ensure
 that players are always in the middle of the action, and do not get lost.
 
-% TODO concept art of the map here
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{austin_map1.pdf}
+  \caption{A sketch of the map.}
+\label{fig:austin_map1}
+\end{figure}
 
 If time allows for additional maps, they may be added at a lower priority, but
 the focus will still be on a singular main map. These additional maps should
@@ -195,30 +177,86 @@ provide a different purpose than the main map. For example, there could be
 a small map designed for 1--2 players. This will lower the downtime as the
 action with be closer and more compact.
 
-\textbf{Environmental features}
+\textbf{Primary Environmental Features}
+
+These are basic features that are core to the map's design, and so play a high
+priority  in their implementation.
 
 \begin{itemize}
-  \item Barriers/obstacles --- These can block movement and projectiles.
-  \item Ramps --- Ramps lead to higher and lower platforms, or can be jumped
+  \item \textbf{Barriers/obstacles} --- These can block movement and
+    projectiles. These can take the form of various things: street lamps,
+    walls, buildings, tunnels, or other structures.
+  \item \textbf{Ramps} --- Ramps lead to higher and lower platforms, or can be jumped
     off of over obstacles. This can provide better vision of certain parts of
     the map, give opportunities to jump between arenas.
-  \item Pit --- Falling into the pit will instantly destroy the player
-    hovercraft. Avoid at all costs or try to bump enemies into it.
-  \item Speed pads --- Driving over these, will give a momentary boost of
-    speed. Great for getting power-ups quicker, and chasing or escaping other
-    players.
-  \item Jump pads --- Driving over these, will give a vertical boost while
-    maintaining horizontal momentum. Great for jumping over obstacles or
-    reaching areas of higher elevation. % TODO is this okay?
 \end{itemize}
 
+\textbf{Tentative Environmental Features}
+
+These features are open to be cut, either due to time constraints to implement
+or potential game design problems they introduce.
+
+\begin{itemize}
+  \item \textbf{Speed pads} --- Driving over these will give a momentary boost of
+    speed. Designed for getting power-ups quicker, and chasing or escaping
+    other players.
+
+    \textbf{Potential problem:} While these make sense for a racing game, they
+    may detract from the gameplay for a combat arena game. Players will
+    typically want full conrol over their vehicle and driving over a speed bump
+    in locations where they don't want it can be annoying. If a speed boost
+    mechanic is to be implemented, it may be better to have speed boost
+    power-ups instead of speed pads.
+  \item \textbf{Pits} --- Falling into the pit will instantly destroy the player
+    hovercraft. Avoid at all costs or try to bump enemies into it.
+
+    \textbf{Potential problem:} Depending on the placement, size and frequency
+    of the pit, players can be easily frustrated if they are constantly
+    falling in it. Instant death mechanics such as this can also break the flow
+    of gameplay.
+  \item \textbf{Jump pads} --- Driving over these, will give a vertical boost
+    while maintaining horizontal momentum. Designed for jumping over obstacles
+    or reaching areas of higher elevation.
+
+    \textbf{Potential problem:} Similar to speed pads, players may not
+    actually want to use them when traversing across the map. It can
+    potentially be very disorienting to players to use jump pads, especially if
+    they lose control of their movement while in the air.
+\end{itemize}
+
+It is important to note that more doesn't always mean better. Even if the idea
+of certain map features are cool or interesting on paper, if they detract from
+the overall gameplay experience in practice, it is better to leave them out.
+There is value in a good but simple map design.
+
 \subsection{Players}
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{Brainstorming_003.png}
+  \caption{Sketch of the player hovercraft with a more mechanical, used-future
+  design. The hovercraft should tilt based on its movement.}
+\label{fig:Brainstorming_003}
+\end{figure}
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{austin_car1.pdf}
+  \caption{Sketch of the player hovercraft. The hovercraft should tilt based on
+  its movement.}
+\label{fig:austin_car1}
+\end{figure}
 
 Players drive a hovercraft. They innately have full access to a number of
 movement options and abilities from the start of the game.
 
 \subsubsection{Health, Lives, and Damage}
 
+Modelled after \textbf{Mario Kart}'s health system, we 
+There are a few health and damage systems we have considered.
+\begin{itemize}
+  \item Single
+\end{itemize}
 Players start the game alive with a small set amount of hit points, which will
 be explicitly displayed to the player. They can be damaged by the abilities of
 other hovercrafts, lowering their current hit points. When all hit points is
@@ -244,8 +282,6 @@ awarded points for the kill.
     a mobility standpoint, dashing can be used to catch up to other
     hovercrafts, reach power-ups faster, or lose others when being chased. From
     a defensive standpoint, it can be used to dodge attacks.
-    % TODO should be blinking instead? Would make dashing through trail
-    % more believable, as well as keeping momentum.
 \end{itemize}
 
 \subsubsection{Abilities}
@@ -269,16 +305,17 @@ the game.
     the players path. Any hovercraft that contacts it is damaged. Great to use
     when being chased. Visually, this trail may be composed of flaming napalm,
     light energy, or some toxic substance, which is still up for discussion as
-    development continues.
+    development continues. Players can dash through the trail unharmed.
 \end{itemize}
 
 \subsection{Bots}
 
 In all modes, a number of bots will be present on the map. With a visually
-distinct design as players, bots will only target player hovercrafts. They are
-weaker than players in that they have fewer hit points and fewer abilities, but
-also award less points on kill. As a result, it is up to players to decide much
-they want to focus on destroying bots versus other players in their strategy.
+distinct design from players, bots will only target player hovercrafts. They
+are weaker than players in that they have fewer hit points and fewer abilities,
+but also award less points on kill. As a result, it is up to players to decide
+much they want to focus on destroying bots versus other players in their
+strategy.
 
 The capabilities of bots is open-ended as development progresses. Here is
 a tentative priority list of bot functionality, from highest to lowest
@@ -286,9 +323,6 @@ priority.
 
 \subsubsection{Movement}
 
-% TODO discuss running away from players. This may result in bots clumping up
-% and "running into walls" to move away from the player (such as the corners of
-% the map).
 It will be a requirement for bots to be able to target players to chase them.
 They must be smart enough to recognize the presence of obstacles and general
 map geometry to reach players in a reasonably direct path if possible.
@@ -300,7 +334,7 @@ movement decision-making such as:
     between the two. This will help them use their spikes to crash into the
     player for damage.
   \item Guard power-ups. Bots will recognize when power-ups are on the map and
-    will guard the area to prevent the player from getting them.
+    priotize attacking players who they believe are going for them.
 \end{enumerate}
 
 \subsubsection{Abilities}
@@ -315,7 +349,9 @@ At a lower priority, they may given other abilities like the players:
   \item \textbf{Rockets} --- At its simplest, bots would be able to aim at
     players to fire rockets at them. More sophisticated, bots would be able to
     lead their shots based on the player's predicted trajectory and the rocket
-    trajectory. Bot rockets may potentially travel slower than player rockets.
+    trajectory. They may also utilize walls to hit players with the rocket's
+    explosion radius. Bot rockets may potentially travel slower than player
+    rockets.
   \item \textbf{Trail} --- Bots will try to intercept the player's path to get
     them caught in the trail.
     % TODO discuss about dash/blink
@@ -323,6 +359,7 @@ At a lower priority, they may given other abilities like the players:
 
 \subsubsection{Friendly fire}
 
+% TODO respawn
 Since the bots team up against the players, any damage they would deal to each
 other would be purely accidental. At first glance, it would seem reasonable to
 disable friendly fire so that bots would not destroy each other en masse.
@@ -336,13 +373,14 @@ play-testing, and we will be open for it to work either way.
 
 \subsection{Power-Ups}
 
-Power-ups spawn at certain explicit power-up locations, where players can pick
-them up by contacting them. Upon contact, the player that picked it up will
-temporarily receive passive bonus for a set duration.
+Throughout the map, there are set power-up spawn locations that will randomly
+spawn one of serveral power-ups. Players can pick them up by contacting them.
+Upon contact, the player that picked it up will temporarily receive passive
+bonus for a set duration.
 
-At minimum, we want there to be 3 power-up types. While there is no particular
-priority in what power-ups to implement, we would ideally have one power-up for
-each player ability. Here are some ideas:
+At minimum, we want there to be 3 total power-up types. While there is no
+particular priority in what power-ups to implement, we would ideally have one
+power-up for each player ability. Here are some ideas:
 
 \textbf{Rocket}
 \begin{itemize}
@@ -352,16 +390,17 @@ each player ability. Here are some ideas:
     closest target. Good for chasing.
   \item \textbf{Explosive rockets} --- Rockets will have a much larger impact
     radius. Good for taking out groups of enemies in small corridors.
+  \item \textbf{Multirockets} --- Shoot multiple rockets at once.
 \end{itemize}
 
 \textbf{Spikes}
 \begin{itemize}
   \item \textbf{Large spikes} --- Spike size increases, hitting enemies are
     further distances.
-  \item \textbf{Passive spikes} --- Spikes are always enabled for the duration
+  \item \textbf{Longer spike timing} --- Spike duration is increased.
     of the power-up.
-  \item \textbf{Stunning spikes} --- Spikes will briefly disable enemy movement
-    on contact. Can be used to set up another attack.
+  \item \textbf{Bumper spikes} --- When enabled, the player is immune to other
+    players' spikes.
 \end{itemize}
 
 \textbf{Trail}
@@ -386,6 +425,25 @@ each player ability. Here are some ideas:
     will not be targeted by bots.
 \end{itemize}
 
+\subsubsection{Spawning}
+
+There are three power-up spawning systems we believe are workable, each with
+their pros and cons:
+
+\begin{enumerate}
+  \item \textbf{Random Unknown} --- When a power-up spawns, it is unknown to
+    the players what power-up type it is until it is picked up.
+  \item \textbf{Random Known} --- When a power-up spawns, it is randomly chosen
+    from the list of possible power-ups and is known to the player what
+    power-up type it is by its appearance.
+  \item \textbf{Deterministic by location} --- Certain parts of the map
+    deterministically spawn certain power-up types.
+\end{enumerate}
+
+% TODO pros and cons
+As it stands, we are committed towards the \textbf{Random Unknown} spawning
+system, but will be open to change as we play-test.
+% TODO random unknown, randonm known, set locations
 % TODO upgrades? small permanent upgrade that only spwans in the centre of the
 % map creates a point of high contention as players compete to get them
 
@@ -495,6 +553,10 @@ combat can still be just as fun since bots will be in greater numbers and team
 up against the players. If they are more capable than we initially planned then
 all the better, since this will simply make the gameplay more engaging.
 
+% TODO
+% Focus on multiplayer experience
+% bots are background/secondary/garnish to the gameplay
+
 \subsubsection{Driving System}
 
 Since players are driving hovercrafts, the driving experience should model
@@ -505,13 +567,16 @@ turn, allowing for strafing.
 
 However, if the hovercrafts are too floaty, they may be frustrating to control.
 Driving needs to feel responsive, especially if sudden turns or braking are
-done.
+done. Our decision to add the dashing mechanic partially solves this problem,
+allowing for players to make sudden movements to combat times when they may
+feel out of control.
 
 Our goal is for there to be a balance in the driving system for it to feel
 somewhat floaty to imitate a hovercraft, and yet grounded enough to feel fun
 and responsive. As we play-test the movement throughout the development, we
 will iterate on this balance, and may even radically change how driving feels
 if we believe it is best for the game.
+
 
 \subsubsection{Learning Curve}
 
@@ -524,10 +589,10 @@ do not need to know the ins-and-outs of different vehicle abilities that they
 themselves do not have access to.
 
 Power-ups should feel intuitive to understand and use. They should not
-introduce new mechanics or keybindings. It is frustrating for for new players
-to ``waste'' power-ups in order to understand what they do, especially if they
-are single-use. Instead, power-ups should augment already existing abilities
-and clearly display in the UI which ability is improved.
+introduce new mechanics or keybindings. It is frustrating for new players to
+``waste'' power-ups in order to understand what they do, especially if they are
+single-use. Instead, power-ups should augment already existing abilities and
+clearly display in the UI which ability is improved.
 
 \textbf{Hard to Master}
 
