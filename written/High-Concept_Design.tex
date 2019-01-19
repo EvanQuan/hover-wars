@@ -30,6 +30,7 @@
 % Pulse
 % Sector 6
 % Silver Helix
+% Street Warriors
 \newcommand{\team}{Team A --- Light Theme is for Heretics}
 \newcommand{\botcount}{4}
 
@@ -93,9 +94,16 @@
 \begin{figure}[htpb]
   \centering
   \includegraphics[width=1.0\linewidth]{title_art_hover_wars.jpg}
+  \includegraphics[width=1.0\linewidth]{title_art_netrunners.jpg}
   % \caption{Title_art}
 \label{fig:title_art}
 \end{figure}
+
+% TODO king of the hill / secure the intel description
+% Netrunners are fighting over valuable intelligence down at sector 6 and are
+% causing a scene. Police are on their way to recover it, but are no match
+% against your arsenal of weapons. It is up to you to secure the intel against
+% your foes to prevent it from falling into the wrong hands.
 
 \name{} is a combat-based driving game aimed to test your skill to fight
 against your enemies. Whether playing alone against AI or with friends, each
@@ -433,19 +441,37 @@ their pros and cons:
 \begin{enumerate}
   \item \textbf{Random Unknown} --- When a power-up spawns, it is unknown to
     the players what power-up type it is until it is picked up.
+
+    \textbf{Pros:} This can add a sense of surprise to the players as they find
+    out what power up they have. It can also change up the gameplay as players
+    adapt their strategy to best utilize whatever power-up they have gained.
+    This prevents players from just taking a single type of power-up.
+
+    \textbf{Cons:} May not be as interesting as the other systems.
   \item \textbf{Random Known} --- When a power-up spawns, it is randomly chosen
     from the list of possible power-ups and is known to the player what
     power-up type it is by its appearance.
+
+    \textbf{Pros:} This can add an extra layer of strategy as players can
+    scout the map for power-ups they they want, if certain ones work better
+    their for their playstyle or current strategy.
+
+    \textbf{Cons:} If certain power-ups are deemed useless or underpowered,
+    then no players may pick them up. Over the duration of the round, all
+    power-up locations may eventually be filled up with those power-up types as
+    players ignore them.
   \item \textbf{Deterministic by location} --- Certain parts of the map
     deterministically spawn certain power-up types.
+
+    \textbf{Pros:} This can add an extra layer of strategy as players can
+    gravitate towards certain areas to get certain power-ups they want.
+
+    \textbf{Cons:} Certain areas of the map may be neglected if they have bad
+    power-ups.
 \end{enumerate}
 
-% TODO pros and cons
 As it stands, we are committed towards the \textbf{Random Unknown} spawning
 system, but will be open to change as we play-test.
-% TODO random unknown, randonm known, set locations
-% TODO upgrades? small permanent upgrade that only spwans in the centre of the
-% map creates a point of high contention as players compete to get them
 
 \subsection{Difficulty}
 
