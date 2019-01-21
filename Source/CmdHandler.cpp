@@ -1,5 +1,5 @@
 #include "CmdHandler.h"
-#include "Object_Factory.h"
+#include "Scene_Loader.h"
 
 /**********\
 * DEFINES *
@@ -33,7 +33,7 @@ CmdHandler* CmdHandler::m_pInstance = nullptr;
 CmdHandler::CmdHandler(GLFWwindow *rWindow) : InputHandler()
 {
 	// Initializing Base Class
-	m_pGPXMngr = GraphicsManager::getInstance(rWindow);
+	m_pGPXMngr = GameManager::getInstance(rWindow);
 	m_pEntMngr = ENTITY_MANAGER;
 
 	bWireFrame = false;
@@ -291,7 +291,7 @@ bool CmdHandler::exec_SetBeta()
 // Executes the rc-val command:
 //		Checks to ensure correct value input
 //		Calls Graphics Manager to set the uniform Variable
-bool CmdHandler::exec_SetRGBVal(GraphicsManager::eRGB eRGBType )
+bool CmdHandler::exec_SetRGBVal(GameManager::eRGB eRGBType )
 {
 	char c_Num[MAX_INPUT_SIZE] = {};
 	char* p_End;
@@ -318,12 +318,12 @@ bool CmdHandler::exec_SetColor()
 {
 	char c_Num[MAX_INPUT_SIZE] = {};
 	float fTempVal;
-	float fColorRGB[GraphicsManager::RGB_MAX];
+	float fColorRGB[GameManager::RGB_MAX];
 	char* p_End;
 	int iErr;
 	bool bReturnVal = false;
 
-	for (int i = 0; i < GraphicsManager::RGB_MAX; i++)
+	for (int i = 0; i < GameManager::RGB_MAX; i++)
 	{
 		iErr = get_Next_Word(c_Num, MAX_INPUT_SIZE);
 		if (ERR_CODE != iErr) // Ensure no error occurred.
@@ -338,9 +338,9 @@ bool CmdHandler::exec_SetColor()
 
 	if (!bReturnVal)
 	{
-		m_pGPXMngr->setRGBVal(GraphicsManager::RED, fColorRGB[GraphicsManager::RED]);
-		m_pGPXMngr->setRGBVal(GraphicsManager::GREEN, fColorRGB[GraphicsManager::GREEN]);
-		m_pGPXMngr->setRGBVal(GraphicsManager::BLUE, fColorRGB[GraphicsManager::BLUE]);
+		m_pGPXMngr->setRGBVal(GameManager::RED, fColorRGB[GameManager::RED]);
+		m_pGPXMngr->setRGBVal(GameManager::GREEN, fColorRGB[GameManager::GREEN]);
+		m_pGPXMngr->setRGBVal(GameManager::BLUE, fColorRGB[GameManager::BLUE]);
 	}
 
 	return bReturnVal;

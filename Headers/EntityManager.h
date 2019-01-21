@@ -82,6 +82,10 @@ private:
 	CameraComponent*			m_pActiveCamera;
 	Light*						m_pTestingLight; // Temporary, Needs to be removed.
 
+	// Manage Pointers for Deletion.
+	MeshManager*				m_pMshMngr;
+	TextureManager*				m_pTxtMngr;
+
 	// Edge Threshold Implementation
 	float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;
 	bool m_bPause;

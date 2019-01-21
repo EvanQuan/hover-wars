@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-#include "Object_Factory.h"
+#include "Scene_Loader.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "StaticEntity.h"
 #include "PlayerEntity.h"
@@ -21,6 +21,8 @@ EntityManager::EntityManager()
 	m_iHeight = START_HEIGHT;
 	m_iWidth = START_WIDTH;
 	m_bPause = false;
+	m_pMshMngr = MESH_MANAGER;
+	m_pTxtMngr = TEXTURE_MANAGER;
 
 	//TODO: redesign Boid Engine: m_pBoidEngine = new BoidEngine();
 }
@@ -41,12 +43,20 @@ EntityManager::~EntityManager()
 	// Delete Boid Engine
 	if (nullptr != m_pBoidEngine)
 		delete m_pBoidEngine;
+
+	// Delete Mesh Manager
+	if (nullptr != m_pMshMngr)
+		delete m_pMshMngr;
+	
+	// Delete Texture Manager
+	if (nullptr != m_pTxtMngr)
+		delete m_pTxtMngr;
 }
 
 // Clears Environment and loads a new environment from specified file.
 void EntityManager::initializeEnvironment(string sFileName)
 {
-	Object_Factory* pObjFctry = Object_Factory::getInstance();
+	Scene_Loader* pObjFctry = Scene_Loader::getInstance();
 
 	purgeEnvironment();
 	pObjFctry->loadFromFile(sFileName);
@@ -93,6 +103,9 @@ void EntityManager::purgeEnvironment()
 	// Clear unique_ptrs of Components and Entities
 	m_pMasterComponentList.clear();
 	m_pMasterEntityList.clear();
+
+	m_pMshMngr->unloadAllMeshes();
+	m_pTxtMngr->unloadAllTextures();
 }
 
 // Fetch the Frenet Frame of the first MeshObject found (Hack for assignment)
