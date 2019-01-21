@@ -111,17 +111,23 @@
 % causing a scene. Police are on their way to recover it, but are no match
 % against your arsenal of weapons. It is up to you to secure the intel against
 % your foes to prevent it from falling into the wrong hands.
+March 7, 2142. It's the dead of night in the streets of The Grid. You and the
+local gangs are causing a scene down in sector 6. Fighting over the stolen
+intelligence from your latest netrun, you must fend off attackers with the
+armaments of your trusty hovercraft. To make matters worse, the police are on
+their way to retrieve it, and they aren't afraid to put up a fight.
 
-\name{} is a combat-based driving game aimed to test your skill to fight
-against your enemies. Whether playing alone against AI or with friends, each
-player find themselves driving a hovercraft in an arena pitted against each
-other. Utilizing abilities, picking up power-ups, and the navigating the map,
-everyone must destroy each other in a chaotic battle of strategy and wits
-before the round is over.
+\name{} is a combat-based driving game aimed to test your skill and outplay
+your enemies. Whether you're playing alone against the AI or against your
+friends, each player find themselves driving a hovercraft in an arena pitted
+against each other. Utilizing abilities, picking up power-ups, and the
+navigating the map, everyone must destroy each other in a chaotic battle of
+strategy and wits before the round is over.
 
-The central constraint of the proposed features is development time available
-to implement them. As a result, the following game features are subject to
-change as development progresses.
+The following document details a high-level description of the main gameplay
+and game design elements we propose. With the central constraint of these
+proposed features being development time available to implement them, the
+following features are subject to change as development progresses.
 
 \section{Gameplay}
 
@@ -136,9 +142,9 @@ input devices (XBOX controllers).
 The main game mode proposed is \textbf{free-for-all}. At a low priority, other
 modes may be developed if enough time is available.
 
-\textbf{Free-for-all}
+\subsubsection{Free-for-all}
 
-The game is composed of a single round that lasts for the duration of a timer.
+Each game is composed of a single round that lasts for the duration of a timer.
 Each player is placed in an arena to control a hovercraft with various
 abilities. They must fight each other in a free-for-all battle with those
 abilities, amidst a number of AI-controlled hovercrafts roaming the arena to
@@ -147,20 +153,17 @@ hunt down players.
 The central goal of the game is to gain the highest score possible before the
 round is over. Players have the following means to gain score:
 \begin{itemize}
-  \item Damaging other player hovercrafts, which can only be done in
+  \item Attacking other player hovercrafts, which can only be done in
     multiplayer. This can be through the use of abilities accessible to every
     player.
-  \item Destroying other player hovercrafts, which can only be done in
-    multiplayer. If damage is done to a hovercraft's final hit point and it is
-    destroyed, extra points are awarded.
-  \item Destroying bots, which can be done in both single and multiplayer.
-    Bot hovercrafts do not have all the abilities of player hovercrafts and
-    so reward less points.
+  \item Attacking AI-controller hovercrafts (bots), which can be done in both
+    single and multiplayer. Bot hovercrafts do not have all the abilities of
+    player hovercrafts and so reward less points.
   \item Picking up power-ups. These help the player gain points by improving
     their abilities, but also innately give points when they are picked up.
 \end{itemize}
 
-\textbf{\textbf{Secure the Intel}}
+\subsubsection{Secure the Intel}
 
 Similar to free-for-all, except a single player is designated to have the
 ``intel''. Only this player is able to score points, meaning that players are
@@ -168,11 +171,12 @@ incentivized to hold the intel for as long as possible to gain score. If
 another player destroys the player holding the intel, that player then takes
 the intel and the game continues.
 
-\textbf{Co-op Survival}
+\subsubsection{Co-op Survival}
 
 Players must team up against a never-ending swarm of bots. Players only have
 one life before they are out of the game. When all the players are destroyed,
 the game ends.
+
 \subsection{Arenas/Maps}
 
 The game will feature a single map. Given the development time frame, a single
