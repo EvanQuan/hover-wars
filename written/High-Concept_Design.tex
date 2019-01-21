@@ -112,10 +112,10 @@
 % against your arsenal of weapons. It is up to you to secure the intel against
 % your foes to prevent it from falling into the wrong hands.
 March 7, 2142. It's the dead of night in the streets of The Grid. You and the
-local gangs are causing a scene down in sector 6. Fighting over the stolen
+local gangs have been blocked off in sector 6. Fighting over the stolen
 intelligence from your latest netrun, you must fend off attackers with the
 armaments of your trusty hovercraft. To make matters worse, the police are on
-their way to retrieve it, and they aren't afraid to put up a fight.
+their way, and they aren't afraid to put up a fight.
 
 \name{} is a combat-based driving game aimed to test your skill and outplay
 your enemies. Whether you're playing alone against the AI or against your
@@ -449,8 +449,6 @@ power-up for each player ability. Here are some ideas:
 \begin{itemize}
   \item \textbf{Rapid-fire rockets} --- Rockets can be launched at a faster rate of
     fire. Good for spamming at a distance.
-  \item \textbf{Homing rockets} --- Rockets will slightly home towards the
-    closest target. Good for chasing.
   \item \textbf{Explosive rockets} --- Rockets will have a much larger impact
     radius. Good for taking out groups of enemies in small corridors.
   \item \textbf{Multi-rockets} --- Shoot multiple rockets at once.
@@ -469,8 +467,8 @@ power-up for each player ability. Here are some ideas:
 \begin{itemize}
   \item \textbf{Wide trail} --- The trail is much wider, easing the ability to
     catch opponents in their tracks.
-  \item \textbf{Longer trail duration} --- The trail continuously lasts on the map for the
-    duration of the power-up.
+  \item \textbf{Longer trail duration} --- The trail continuously lasts on the
+    map for the duration of the power-up.
   \item \textbf{Slowing trail} --- The trail slows the movement of enemies
     crossing it, making them vulnerable to attack.
   \item \textbf{Blocking trail} --- The trail cannot be bypassed, blocking
@@ -496,6 +494,13 @@ their pros and cons:
 \begin{enumerate}
   \item \textbf{Random Unknown} --- When a power-up spawns, it is unknown to
     the players what power-up type it is until it is picked up.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{powerups_unknown.png}
+  \caption{Concept art of power-up appearance if unknown to player.}
+\label{fig:powerups_unknown}
+\end{figure}
 
     \textbf{Pros:} This can add a sense of surprise to the players as they find
     out what power up they have. It can also change up the gameplay as players
@@ -524,6 +529,14 @@ their pros and cons:
     \textbf{Cons:} Certain areas of the map may be neglected if they have bad
     power-ups.
 \end{enumerate}
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{powerups_known.png}
+  \caption{Concept art of power-up appearance. Certain colours correspond to each ability.}
+\label{fig:powerups_known}
+\end{figure}
+
 
 As it stands, we are committed towards the \textbf{Random Unknown} spawning
 system, but will be open to change as we play-test.
@@ -586,11 +599,12 @@ ramps leading to different areas.}
 \begin{itemize}
   \item \textbf{Akane} (2018) --- aesthetic
   \item \textbf{Counter-strike} (2000) --- point system
-  \item \textbf{Crawl} (2017) --- Secure the Intel game mode
+  \item \textbf{Crawl} (2017) --- secure the intel game mode
+  \item \textbf{Cyberpunk 2020} (1990) --- aesthetic
   \item \textbf{DOTA 2} (2010) --- point system
   \item \textbf{Mario Kart} (1992) --- free-for-all game mode and general combat design
   \item \textbf{Pac-Man} (1980) --- bot versus player design
-  \item \textbf{ThinkTanks} (2003) --- Speed and jump pads
+  \item \textbf{ThinkTanks} (2003) --- speed and jump pads
   \item \textbf{Tron} (1982) --- aesthetic and trail ability
 \end{itemize}
 
