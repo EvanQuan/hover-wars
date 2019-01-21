@@ -76,7 +76,7 @@
     \line(1,0){400}\\
     \vfill
     \Large{\textbf{\team{}}}\\
-    \Large{Austin Easton, Evan Quan, James Coté, Jianan Ding}\\
+    \Large{Austin Easton, Evan Quan, James Cot\'{e}, Jianan Ding}\\
     \large{January 21, 2019}
     % \today \\
   \end{center}
@@ -139,8 +139,8 @@ input devices (XBOX controllers).
 
 \subsection{Game Modes}
 
-The main game mode proposed is \textbf{free-for-all}. At a low priority, other
-modes may be developed if enough time is available.
+The central game mode we propose to implement is \textbf{free-for-all}. At a lower
+priority, other modes may be developed if enough time is available.
 
 \subsubsection{Free-for-all}
 
@@ -163,13 +163,32 @@ round is over. Players have the following means to gain score:
     their abilities, but also innately give points when they are picked up.
 \end{itemize}
 
-\subsubsection{Secure the Intel}
+\subsubsection{Secure the Intel Variant 1}
 
 Similar to free-for-all, except a single player is designated to have the
-``intel''. Only this player is able to score points, meaning that players are
-incentivized to hold the intel for as long as possible to gain score. If
-another player destroys the player holding the intel, that player then takes
-the intel and the game continues.
+``intel''. Only this player is able to score points, meaning that players must
+compete to hold the intel for as long as possible to gain score. If another
+player destroys the player holding the intel, that player then takes the intel
+and the game continues.
+
+\subsubsection{Secure the Intel Variant 2}
+
+A variation of Secure the Intel merged with free-for-all. All players can gain
+points as normal, but the player with the intel passively gains points over
+time. This still incentivizes players to get the intel, but still rewards
+combat between all the players.
+
+\subsubsection{Secure the Intel Variant 3}
+
+Closer to a classical king of hill style game mode, the first player who holds
+the intel for a set amount of time (ex. 2--3 minutes) wins. There is no score
+involved as per the other modes, meaning abilities only exist to gain control
+of the intel or disrupt other players.
+
+\subsubsection{Free-for-all Survival}
+
+Players only have one life before they are knocked out of the game. The last
+player to survive wins the game.
 
 \subsubsection{Co-op Survival}
 
@@ -242,13 +261,52 @@ or potential game design problems they introduce.
     actually want to use them when traversing across the map. It can
     potentially be very disorienting to players to use jump pads, especially if
     they lose control of their movement while in the air. Ramps can serve the
-    same purpose without making the player lose control.
+    same purpose without making the player lose control. Anohter possible
+    solution would be to allow players to influence their trajectory while they
+    are in the air.
 \end{itemize}
 
-It is important to note that more doesn't always mean better. Even if the idea
-of certain map features are cool or interesting on paper, if they detract from
-the overall gameplay experience in practice, it is better to leave them out.
-There is value in a good but simple map design.
+It is important to note that more features doesn't always mean a better map.
+Even if the idea of certain map features are cool or interesting on paper, if
+they detract from the overall gameplay experience in practice, it is better to
+leave them out. There is value in a good but simple map design.
+
+\subsection{Hit Points, Lives, and Damage}
+
+There are a few hit point and damage systems we have considered. We are
+currently committed to implement the \textbf{hit and continue} system, but will
+be open to change as we play-test.
+
+\subsubsection{Hit and Continue}
+
+Modelled after \textbf{Mario Kart}'s damage system, hovercrafts are blown away or
+spun around when they are hit by abilities, temporarily making the player or
+bot that was hit lose control of their vehicle. Shortly afterwards, control is
+regained and the hovercraft is given a few seconds of invincibility before
+continuing on playing. This minimizes the downtime during play since there is
+no respawning, while still punishing players that get hit. It also avoids the
+disorienting effect that respawning can have, especially if the map is not
+familiar to the player.
+
+\subsubsection{Lives with Hit Points}
+
+Players start the game alive with a small set amount of hit points, which will
+be explicitly displayed to the player. They can be damaged by the abilities of
+other hovercrafts, lowering their current hit points. The same temporary loss
+of control will occur as the hit and continue system. When all hit points are
+removed, the player's hovercraft is destroyed.
+
+When a player's hovercraft is destroyed, they are momentarily out of the game
+before respawning randomly at one of the respawn points on the map. If another
+player destroyed said hovercraft, that player is awarded points for the kill.
+
+Under this system, bots could have fewer hit points than players.
+
+\subsubsection{One Hit One Kill}
+
+Similar to the lives and hit points system, but players are instantly destroyed
+upon impact of an ability. This makes getting hit more punishing and further
+promotes players to dodge abilities.
 
 \subsection{Players}
 
@@ -269,40 +327,6 @@ There is value in a good but simple map design.
 
 Players drive a hovercraft. They innately have full access to a number of
 movement options and abilities from the start of the game.
-
-\subsubsection{Health, Lives, and Damage}
-
-There are a few health and damage systems we have considered. We are currently
-committed to the hit and continue system, but will be open to change as we
-play-test.
-
-\textbf{Hit and Continue}
-
-Modelled after \textbf{Mario Kart}'s damage system, vehicles are blown away or
-spun around when they are hit by abilities, temporarily making the player hit
-lose control of their vehicle. Shortly afterwards, the player regains control
-and is given a few seconds of invincibility before continuing on playing. This
-minimizes the downtime during play since there is no respawning, while still
-punishing players that get hit.
-
-\textbf{Lives with Hitpoints}
-
-Players start the game alive with a small set amount of hit points, which will
-be explicitly displayed to the player. They can be damaged by the abilities of
-other hovercrafts, lowering their current hit points. The same temporary loss
-of control will occur as the hit and continue system. When all hit points are
-removed, the player's hovercraft is destroyed.
-
-When a player's hovercraft is destroyed, they are momentarily out of the game
-before respawning randomly at one of the respawn points on the map. If another
-player destroyed said hovercraft, that player is awarded points for the kill.
-
-\textbf{One Hit One Kill}
-
-Similar to the lives and hitpoints system, but players are instantly destroyed
-upon impact of an ability. This makes getting hit more punishing and further
-promotes players to dodge abilities.
-
 
 \subsubsection{Movement}
 
@@ -348,16 +372,16 @@ the game.
 
 \subsection{Bots}
 
-In all modes, a number of bots will be present on the map. With a visually
-distinct design from players, bots will only target player hovercrafts. They
-are weaker than players in that they have fewer hit points and fewer abilities,
-but also award less points on kill. As a result, it is up to players to decide
-much they want to focus on destroying bots versus other players in their
-strategy.
+In all modes, a number of AI-controlled hovercrafts, or bots, will be present
+on the map. With a visually distinct design from players, bots will only target
+player hovercrafts. They are weaker than players in that they have fewer hit
+points and fewer abilities, but also award less points on kill. As a result, it
+is up to players to decide much they want to focus on destroying bots versus
+other players in their strategy.
 
-The capabilities of bots is open-ended as development progresses. Here is
-a tentative priority list of bot functionality, from highest to lowest
-priority.
+The number of bots present in the game as well as their capabilities is
+open-ended as development progresses. Here is a tentative priority list of bot
+functionality, from highest to lowest priority.
 
 \subsubsection{Movement}
 
@@ -393,7 +417,7 @@ At a lower priority, they may given other abilities like the players:
   \item \textbf{Dashing} --- Bots would be able to dash out of the way to dodge
     abilities.
   % \item \textbf{Trail} --- Bots will try to intercept the player's path to get
-  %   them caught in the trail. This is 
+  %   them caught in the trail. This is
     % TODO remove this, too difficult
 \end{enumerate}
 
@@ -456,7 +480,8 @@ power-up for each player ability. Here are some ideas:
 
 \textbf{Other}
 \begin{itemize}
-  \item \textbf{Repair} --- The player gains an extra hit point.
+  \item \textbf{Repair} --- The player gains an extra hit point. This obviously
+    would only exist if we decide to implement a hit point system.
   \item \textbf{Speed boost} --- The player gains a speed boost.
   \item \textbf{}\textbf{Shield} --- The player is invulnerable to abilities.
   \item \textbf{Invisibility} --- The player is invisible to other players and
@@ -654,26 +679,46 @@ clearly display in the UI which ability is improved.
 \textbf{Hard to Master}
 
 Players should be given opportunities to improve and apply their skill. Each
-ability is distinct and requires its own skills to use.
-% TODO
+ability is distinct and require their own skills to use. Players can learn
+which abilities fit well for what situations and adapt to different playstyles.
+Various strategies on map control can be learned to gain power-ups easier or
+deny them to enemies. While \name{} is not primarily geared towards highly
+competitive play, we think its important to consider how the game could play at
+a competitive level when designing and balancing elements of the game.
 
-\subsubsection{Health and Damage}
+\subsubsection{Getting Hit}
 
-We designed our health and damage system similar to \textbf{Mario Kart}'s.
-There are a few goals we had when choosing this approach for our system:
+Independent of which damage system we implement (hit and continue, lives with
+hit points, or one hit one kill), we want to ensure that it is in line with
+number of our design goals.
 \begin{itemize}
-  \item It is easier to understand how much health the player has in ``real
-    terms.'' With a health bar or a percent gauge, while players have some
-    rough idea how many hits can can take, it can still be somewhat fuzzy if
-    abilities deal different amounts of damage, or if players need to roughly
-    calculate how many more hits they can take from their past experience of
-    how much damage abilities do. By keeping the hit points to a small discrete
-    value, players immediately know how many more hits they can take a moment's
-    glance.
-  \item It eases user memory load. Players do not need to concern themselves
-    with the stats of various abilities with how much damage they each do. By
-    keeping it simple, players simply need to know that getting hit with an
-    ability will remove one of their hitpoints.
+  \item \textbf{Emphasize the impact of getting hit} --- Getting hit should
+    feel bad. It should be immediately noticable to the player and have
+    a sizeable in-game impact more than just altering points on the scoreboard
+    or decrementing hit points. A temporary loss of vehicle control is enough
+    to get the player's attention (along with any accompanying visual and audio
+    effects), and punishing enough for them to want to avoid getting hit.
+
+    This system would be constrasted with damage systems found in some first or
+    third-person shooters, in which players may receive a number of hits with
+    either no or minimal in-game effects, allowing them to ``tank'' damage.
+  \item \textbf{Ease user memory load} --- Players do not need to concern
+    themselves with the stats of various abilities with how much damage they
+    each do. By keeping it simple to either getting hit with an abilitiy or
+    not, players simply need to know a single general rule of the consequence
+    of receiving damage.
+  \item \textbf{Easy to Interpret} --- It is easier to understand how much
+    damage the player can take if hit points are described in small values (ex.
+    3), or if there is no hit point system at all. As the player's immediate
+    attention is on the action in front of them, they should perfectly
+    understand the state of their hovercraft at a moment's glance, without
+    needing to read large numbers or perfect rough calculations.
+
+    For example, with a health bar, a percent gauge, or larger hit points
+    values (ex. 100), players may have some rough idea how many hits can can
+    take, but it can still be somewhat fuzzy if abilities deal different
+    amounts of damage, or if players need to figure out how many more hits they
+    can take from how much damage different abilities do.
 \end{itemize}
 
 \subsubsection{Abilities}
