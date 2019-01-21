@@ -141,8 +141,8 @@ modes may be developed if enough time is available.
 The game is composed of a single round that lasts for the duration of a timer.
 Each player is placed in an arena to control a hovercraft with various
 abilities. They must fight each other in a free-for-all battle with those
-abilities, amidst a number of neutral bots roaming the arena to hunt down
-players.
+abilities, amidst a number of AI-controlled hovercrafts roaming the arena to
+hunt down players.
 
 The central goal of the game is to gain the highest score possible before the
 round is over. Players have the following means to gain score:
@@ -178,12 +178,12 @@ the game ends.
 The game will feature a single map. Given the development time frame, a single
 fun and polished map is preferable to multiple mediocre maps. It should be
 ``small'' to ``medium'' in size, to maintain a high player density to ensure
-that players are always in the middle of the action, and do not get lost.
+that players are always in the middle of the action and don't feel lost.
 
 \begin{figure}[htpb]
   \centering
-  \includegraphics[width=0.8\linewidth]{austin_map1.pdf}
-  \caption{A sketch of the map.}
+  \includegraphics[width=0.8\linewidth]{austin_map2.png}
+  \caption{A sketch of the map with a more arena-style design.}
 \label{fig:austin_map1}
 \end{figure}
 
@@ -220,9 +220,9 @@ or potential game design problems they introduce.
     \textbf{Potential problem:} While these make sense for a racing game, they
     may detract from the gameplay for a combat arena game. Players will
     typically want full control over their vehicle and driving over a speed
-    bump in locations where they don't want it can be annoying. If a speed
-    boost mechanic is to be implemented, it may be better to have speed boost
-    power-ups instead of speed pads.
+    bump in locations where they don't want it can be annoying. If a temporary
+    speed boost mechanic is to be implemented, it may be better to have a speed
+    boost power-up instead of speed pads.
   \item \textbf{Pits} --- Falling into the pit will instantly destroy the player
     hovercraft. Avoid at all costs or try to bump enemies into it.
 
@@ -237,7 +237,8 @@ or potential game design problems they introduce.
     \textbf{Potential problem:} Similar to speed pads, players may not
     actually want to use them when traversing across the map. It can
     potentially be very disorienting to players to use jump pads, especially if
-    they lose control of their movement while in the air.
+    they lose control of their movement while in the air. Ramps can serve the
+    same purpose without making the player lose control.
 \end{itemize}
 
 It is important to note that more doesn't always mean better. Even if the idea
@@ -251,15 +252,14 @@ There is value in a good but simple map design.
   \centering
   \includegraphics[width=0.8\linewidth]{Brainstorming_003.png}
   \caption{Sketch of the player hovercraft with a more mechanical, used-future
-  design. The hovercraft should tilt based on its movement.}
+  design.}
 \label{fig:Brainstorming_003}
 \end{figure}
 
 \begin{figure}[htpb]
   \centering
   \includegraphics[width=0.8\linewidth]{austin_car1.pdf}
-  \caption{Sketch of the player hovercraft. The hovercraft should tilt based on
-  its movement.}
+  \caption{Sketch of the player hovercraft with a sport car-like design.}
 \label{fig:austin_car1}
 \end{figure}
 
@@ -334,11 +334,12 @@ the game.
     the hovercraft, damaging other vehicles that come in contact with it. Can
     be used both aggressively and defensively when other vehicles are nearby.
     It can also be used in combination with dashing to crash into enemies.
-  \item \textbf{Trail} --- A trail is created behind the player that follows
-    the players path. Any hovercraft that contacts it is damaged. Great to use
-    when being chased. Visually, this trail may be composed of flaming napalm,
-    light energy, or some toxic substance, which is still up for discussion as
-    development continues. Players can dash through the trail unharmed.
+  \item \textbf{Trail} --- A trail is created on the ground behind the player.
+    Any hovercraft that contacts it is damaged. After some time, the trail
+    eventually disappears. Great to use when being chased. Visually, this trail
+    may be composed of flaming napalm, light energy, or some toxic substance,
+    which is still up for discussion as development continues. Players can dash
+    through the trail unharmed.
 \end{itemize}
 
 \subsection{Bots}
@@ -363,11 +364,11 @@ map geometry to reach players in a reasonably direct path if possible.
 At a lower priority, they may be given movement abilities or have more advance
 movement decision-making such as:
 \begin{enumerate}
-  \item Speed boost. Bots will speed up towards players when a path is clear
-    between the two. This will help them use their spikes to crash into the
-    player for damage.
+  \item Speed boost. Bots will accelerate towards players when a clear path is
+    between the two of them. This will help them use their spikes to crash into
+    the player for damage.
   \item Guard power-ups. Bots will recognize when power-ups are on the map and
-    priotize attacking players who they believe are going for them.
+    prioritize attacking players who they believe are going for them.
 \end{enumerate}
 
 \subsubsection{Abilities}
@@ -385,8 +386,11 @@ At a lower priority, they may given other abilities like the players:
     trajectory. They may also utilize walls to hit players with the rocket's
     explosion radius. Bot rockets may potentially travel slower than player
     rockets.
-  \item \textbf{Trail} --- Bots will try to intercept the player's path to get
-    them caught in the trail.
+  \item \textbf{Dashing} --- Bots would be able to dash out of the way to dodge
+    abilities.
+  % \item \textbf{Trail} --- Bots will try to intercept the player's path to get
+  %   them caught in the trail. This is 
+    % TODO remove this, too difficult
 \end{enumerate}
 
 \subsubsection{Friendly fire}
@@ -421,15 +425,14 @@ power-up for each player ability. Here are some ideas:
     closest target. Good for chasing.
   \item \textbf{Explosive rockets} --- Rockets will have a much larger impact
     radius. Good for taking out groups of enemies in small corridors.
-  \item \textbf{Multirockets} --- Shoot multiple rockets at once.
+  \item \textbf{Multi-rockets} --- Shoot multiple rockets at once.
 \end{itemize}
 
 \textbf{Spikes}
 \begin{itemize}
   \item \textbf{Large spikes} --- Spike size increases, hitting enemies are
     further distances.
-  \item \textbf{Longer spike timing} --- Spike duration is increased.
-    of the power-up.
+  \item \textbf{Longer spike duration} --- Spike duration is increased.
   \item \textbf{Bumper spikes} --- When enabled, the player is immune to other
     players' spikes.
 \end{itemize}
@@ -438,8 +441,8 @@ power-up for each player ability. Here are some ideas:
 \begin{itemize}
   \item \textbf{Wide trail} --- The trail is much wider, easing the ability to
     catch opponents in their tracks.
-  \item \textbf{Passive trail} --- The trail continuously lasts for the duration
-    of the power-up.
+  \item \textbf{Longer trail duration} --- The trail continuously lasts on the map for the
+    duration of the power-up.
   \item \textbf{Slowing trail} --- The trail slows the movement of enemies
     crossing it, making them vulnerable to attack.
   \item \textbf{Blocking trail} --- The trail cannot be bypassed, blocking
@@ -477,7 +480,7 @@ their pros and cons:
 
     \textbf{Pros:} This can add an extra layer of strategy as players can
     scout the map for power-ups they they want, if certain ones work better
-    their for their playstyle or current strategy.
+    for their play style or current strategy.
 
     \textbf{Cons:} If certain power-ups are deemed useless or underpowered,
     then no players may pick them up. Over the duration of the round, all
@@ -520,7 +523,7 @@ maximize points, as well as strategies to counter other players' play styles.
 
 \subsection{Aesthetic}
 
-Visually, the game mainly follows a cyberpunk and TRON aesthetic. We are going
+Visually, the game mainly follows a cyberpunk and Tron aesthetic. We are going
 for a futuristic city at night appeal.
 
 \begin{figure}[htpb]
@@ -779,6 +782,22 @@ intend there to be any mature themes in the game. We therefore believe that
   \includegraphics[width=0.8\linewidth]{Brainstorming_001.png}
   \caption{Rough sketches of the map, UI, and hovercraft}
 \label{fig:Brainstorming_001}
+\end{figure}
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{ingame_ui.png}
+  \caption{Early UI design. Directional arrows are less intrusive and easier to
+  interpretive than a mini-map. Important information such as ability
+cooldowns, score and time should be clearly visible to the player.}
+\label{fig:ingame_ui}
+\end{figure}
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{main_menu.png}
+  \caption{Possible design for the main menu with a Tron-like aestheic.}
+\label{fig:main_menu}
 \end{figure}
 
 \begin{figure}[htpb]
