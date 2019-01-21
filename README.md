@@ -16,10 +16,9 @@
 
 ### Compiling on Windows:
 
-**Compiled using MSVS 2015.**
+**Compiled using MSVS 2017.**
 
-1. You'll need to set up OpenGL and GLEW in the settings of the solution as
-   required libraries.
+1. The Libraries and Settings should all be set up in the VS project.
 
 ### Compiling on Linux:
 
@@ -27,8 +26,7 @@
    Windows to Defining Linux.
 
 2. The included Makefile should generate a run file that will launch the
-   program.  Ensure that this is executed through the command line in order to
-   provide command input functionality of the program.
+   program. 
 
 ## Controls:
 
@@ -40,37 +38,15 @@
 
 **F** - Switch to Wireframe Mode
 
+**WASDX & SPACE** - Will move the light around the scene:
+   **WASD**       - Along the XZ-plane
+   **X & SPACE**  - Along the Y-Axis
+
 ## Write-Up:
 
-Basic Boid Implementation with Cohesion, Gather and Avoid logic. There's
-a Spherical Boundary with a defined width that is used to interpolate
-a pushback function that's similar to avoid (the closer to the border, the
-harder it forces the boid back).
+When the program is run, a small test environment is loaded up. There is a textured plane with diffuse lighting, a Car with toon shading, a textured Sphere with Diffuse lighting and a Cube that's meant to represent the starting position of the light along with the color of the light. Although the light moves with the above-mentioned controls, the cube does not move.
 
-In the file: "Scene2.txt" there are some settings that can be modified for the
-Boids, particularly:
-
-Indices:
-```
-0 - Num_Boids
-1 - Avoid Radius
-2 - Cohesion Radius
-3 - Gather Radius
-4 - Min Speed (length)
-5 - Max Speed (length)
-6 - Boundary Radius
-7 - Delta T
-8 - Scale
-9 - Texture Location (Optional)
-10 - Mesh Location (Optional)
-```
-
-The update also does a defined loop of update/integration of 16 iterations.
-This smoothes out the animation with a smaller delta_t. I implemented the
-screenspace division algorithm as well. This make it much faster for lots of
-boids before they group up. Once they group up, then they interact with one
-another and it sort of negates the benefit of the structure.
-
+This Scene is loaded with the Scene2.txt file using the entity component framework and loaded with the Scene Loader class as per the Framework documentation.
 
 ## Team
 
