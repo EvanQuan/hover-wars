@@ -1,13 +1,5 @@
 # CPSC 585 - Games Programming - Winter 2019
 
-## [Documentation](https://drive.google.com/drive/folders/1bLh6WpMEgnnPTKAaAV5UKnIS_vkfy4ZO)
-
-[General Notes](https://docs.google.com/document/d/1ALfsOyqVOHzWtrsITFJuJigNnoELT_yf2ml7x30rzuU/edit?usp=sharing)
-
-[Feature List](https://docs.google.com/document/d/1w7jZ_TSR2iCMgQbV4RhlWDOfbr-e_QE9J5EHTGxNIUQ/edit?usp=sharing)
-
-[Schedule](https://docs.google.com/document/d/1QfO-LkLsXTUplEyc8ZsQTktRVn2b2XgmmaUhAyBSjyQ/edit?usp=sharing)
-
 ## Compilation
 
 ### Compiling on Windows:
