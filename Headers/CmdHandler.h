@@ -7,7 +7,6 @@
 #include "EntityManager.h"
 
 /* DEFINES */
-#define CMD_SIZE	20
 #define NUM_BASE	10
 
 /* CLASS */
@@ -35,49 +34,5 @@ private:
 
 	// internal variables
 	bool bWireFrame;
-
-	bool exec_SetB();
-	bool exec_SetY();
-	bool exec_SetAlpha();
-	bool exec_SetBeta();
-	bool exec_SetRGBVal(GameManager::eRGB eRGBType);
-	bool exec_SetColor();
-	bool exec_Load();
-	bool exec_SetShine();
-	bool exec_SetR();
-	bool exec_SetThreshold();
-	bool exec_SetThresholdMin();
-	bool exec_SetThresholdMax();
-
-	bool checkRange(float fVal, float fMIN, float fMAX);
-
-	// Enum for Character Commands
-	enum eCommands
-	{
-		HELP = 0,
-		SET_B,
-		SET_Y,
-		SET_ALPHA,
-		SET_BETA,
-		SET_RC,
-		SET_GC,
-		SET_BC,
-		SET_COLOR,
-		LIST,
-		DELETE,
-		LOAD,
-		TOGGLE_GOOCH,
-		TOGGLE_X_TOON,
-		TOGGLE_SPECULAR,
-		SET_SHINE,
-		SET_R,
-		SET_THRESHOLD,
-		SET_MIN_THRESHOLD,
-		SET_MAX_THRESHOLD,
-		NUM_CMDS
-	};
-
-	// All available commands
-	static const char cCommands[NUM_CMDS][CMD_SIZE];
 };
 
