@@ -43,18 +43,6 @@ public:
 		RGB_MAX
 	};
 
-	// Shader Manipulation functions
-	void setRGBVal( eRGB eType, float fVal);
-	void setBeta(float fVal);
-	void setAlpha(float fVal);
-	void setBVal(float fVal);
-	void setYVal(float fVal);
-	void togGooch();
-	void togToon();
-	void togSpec();
-	void setShine( float fVal );
-	void setR( float fVal );
-
 private:
 	// For Singleton Implementation
 	GameManager(GLFWwindow* rWindow); 

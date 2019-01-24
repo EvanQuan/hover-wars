@@ -23,6 +23,7 @@
     <ClInclude Include="Headers\BoidEngine.h" />
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\CmdHandler.h" />
+    <ClInclude Include="Headers\DirectionalLight.h" />
     <ClInclude Include="Headers\EdgeBuffer.h" />
     <ClInclude Include="Headers\Entity.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
@@ -37,7 +38,7 @@
     <ClInclude Include="Headers\ImageBuffer.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
-    <ClInclude Include="Headers\Light.h" />
+    <ClInclude Include="Headers\PointLight.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
     <ClInclude Include="Headers\Mouse_Handler.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="Source\BoidEngine.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CmdHandler.cpp" />
+    <ClCompile Include="Source\DirectionalLight.cpp" />
     <ClCompile Include="Source\EdgeBuffer.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
@@ -67,7 +69,7 @@
     <ClCompile Include="Source\ImageBuffer.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
-    <ClCompile Include="Source\Light.cpp" />
+    <ClCompile Include="Source\PointLight.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />

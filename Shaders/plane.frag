@@ -11,6 +11,12 @@ uniform sampler2D gSampler;
 uniform bool bTextureLoaded = true;
 uniform vec3 vLightColor = vec3( 1.0 );
 
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
 void main (void)
 {
 	vec4 plane_color;

@@ -3,8 +3,12 @@
 layout (lines) in;
 layout (triangle_strip, max_vertices = 6) out;
 
-uniform mat4 modelview;
-uniform mat4 projection;
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
 
 uniform float fWidth;
 

@@ -7,7 +7,7 @@ class PlayerEntity :
 	public Entity
 {
 public:
-	PlayerEntity(int iID, vec3 vPosition);
+	PlayerEntity(int iID, const vec3* vPosition);
 	virtual ~PlayerEntity();
 
 	void initializePlayer(const string& sFileName, 

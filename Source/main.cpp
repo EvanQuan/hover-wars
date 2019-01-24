@@ -73,7 +73,7 @@ int main()
 			m_ShdrMngr = SHADER_MANAGER;
 
 		#ifdef USING_WINDOWS
-			m_ShdrMngr->setUniformBool( ShaderManager::eShaderType::MESH_SHDR, "bUsingLinux", false );
+			m_ShdrMngr->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
 		#endif
 
 			// Main loop

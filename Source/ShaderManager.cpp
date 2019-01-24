@@ -3,6 +3,13 @@
 /////////////
 // Defines //
 /////////////
+#define DIRECTIONAL_LIGHT_OFFSET 16
+#define DIRECTIONAL_LIGHT_SIZE (sizeof(vec4) << 2)
+#define POINT_LIGHT_OFFSET (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE)
+#define POINT_LIGHT_SIZE (sizeof(vec4) << 1)
+#define LIGHT_BUFFER_SIZE (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2))
+#define NUM_DIRECTIONAL_LIGHT_PARAMS 4
+#define NUM_POINT_LIGHT_PARAMS 2
 
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
@@ -13,7 +20,10 @@ typedef ShaderManager::eShaderType shader_Type;
 const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTypeMap =
 {
 	make_pair<string, eShaderType>("light_shdr", shader_Type::LIGHT_SHDR),
-	make_pair<string, eShaderType>("mesh_shdr", shader_Type::MESH_SHDR),
+	make_pair<string, eShaderType>("toon_shdr", shader_Type::TOON_SHDR),
+	make_pair<string, eShaderType>("gooch_shdr", shader_Type::GOOCH_SHDR),
+	make_pair<string, eShaderType>("blinn_phong_shdr", shader_Type::BLINN_PHONG_SHDR),
+	make_pair<string, eShaderType>("diff_shdr", shader_Type::DIFF_SHDR),
 	make_pair<string, eShaderType>("plane_shdr", shader_Type::PLANE_SHDR),
 	make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
 	make_pair<string, eShaderType>("boid_shdr", shader_Type::BOID_SHDR),
@@ -24,6 +34,19 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
 ShaderManager::ShaderManager()
 {
 	m_bInitialized = false;
+
+	// Set up Uniform Buffer Object
+	glGenBuffers(1, &m_iMatricesBuffer);
+	glGenBuffers(1, &m_iLightsBuffer);
+	glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
+	glBufferData(GL_UNIFORM_BUFFER, 152, NULL, GL_STATIC_DRAW);	// Allocate 150 bytes of memory
+	glBindBuffer(GL_UNIFORM_BUFFER, m_iLightsBuffer);
+	glBufferData(GL_UNIFORM_BUFFER, LIGHT_BUFFER_SIZE, NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	// Bind the Uniform Buffer to a base of size 2 * sizeof(mat4) => (Projection and Model View Matrix)
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_iMatricesBuffer, 0, (sizeof(mat4) << 1));	// Bind this buffer base to 0; this is for general Matrices.
+	glBindBufferRange(GL_UNIFORM_BUFFER, 2, m_iLightsBuffer, 0, LIGHT_BUFFER_SIZE);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -58,8 +81,17 @@ ShaderManager::ShaderManager()
 	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/light.vert" );
 	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/light.frag" );
 
-	m_pShader[ eShaderType::MESH_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/mesh.vert" );
-	m_pShader[ eShaderType::MESH_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/mesh.frag" );
+	m_pShader[ eShaderType::TOON_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/toon.vert" );
+	m_pShader[ eShaderType::TOON_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/toon.frag" );
+
+	m_pShader[eShaderType::BLINN_PHONG_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/phong.vert");
+	m_pShader[eShaderType::BLINN_PHONG_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/phong.frag");
+
+	m_pShader[eShaderType::GOOCH_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/gooch.vert");
+	m_pShader[eShaderType::GOOCH_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/gooch.frag");
+
+	m_pShader[eShaderType::DIFF_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/diffuse.vert");
+	m_pShader[eShaderType::DIFF_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/diffuse.frag");
 
 	m_pShader[ eShaderType::PLANE_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/plane.vert" );
 	m_pShader[ eShaderType::PLANE_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/plane.frag" );
@@ -90,6 +122,9 @@ ShaderManager::~ShaderManager()
 	// unbind any shader programs
 	glUseProgram(0);
 	glDisable(GL_BLEND);
+
+	glDeleteBuffers(1, &m_iMatricesBuffer);
+	glDeleteBuffers(1, &m_iLightsBuffer);
 }
 
 // Given a potential string as a hashmap key, return the corresponding ShaderType
@@ -128,11 +163,50 @@ bool ShaderManager::initializeShaders()
 // Set Projection Matrix for all Shaders
 void ShaderManager::setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat )
 {
-	for ( int i = 0; i < MAX_SHDRS; ++i )
+	glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), pProjMat); // Set the Projection Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), pModelViewMat); // Set the Model View Matrix Data to the uniform Buffer.
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirectionalLight, const vector< LightingComponent* >* pPointLights)
+{
+	// Get initial values for Light Block
+	int bUsingDirectionalLight = nullptr != pDirectionalLight;
+	unsigned int iNumPointLights = pPointLights->size();
+	vector< vec4 > pLightData, pDirectionalLightData;
+	
+	if (bUsingDirectionalLight)
 	{
-		setUnifromMatrix4x4( (eShaderType) i, "projection", pProjMat );
-		setUnifromMatrix4x4( (eShaderType) i, "modelview", pModelViewMat );
+		pDirectionalLightData = pDirectionalLight->getLightInformation();
+		assert(pDirectionalLightData.size() == NUM_DIRECTIONAL_LIGHT_PARAMS);
 	}
+	
+	for (vector< LightingComponent* >::const_iterator iter = pPointLights->begin();
+		iter != pPointLights->end();
+		++iter)
+	{
+		vector< vec4 > pPointLightData = (*iter)->getLightInformation();
+
+		assert(pPointLightData.size() == NUM_POINT_LIGHT_PARAMS);
+		pLightData.insert(pLightData.end(), pPointLightData.begin(), pPointLightData.end());
+	}
+
+	// GLSL Uniform Buffer Block:
+	//	Base Alignment = the space a variable takes (including padding) within a uniform block. Per std140 layout rules.
+	//	Aligned Offset = the byte offset of a variable from the start of the block. Must be equal to a multiple of its base alignment.
+	//		For Light Buffer:
+	//			int iNumLights				Base: 4		Aligned: 0
+	//			bool bUsingDirectionalLight	Base: 4		Aligned: 4  // Booleans are stored in 4 bytes in GLSL
+	//			vec3 pDirectionalLight[4]	Base: 64	Aligned: 16 // vec3 stored with 4 bytes of padding; must be aligned to base alignment
+	//			vec3 pPointLight[2]			Base: 32	Aligned: 80
+	glBindBuffer(GL_UNIFORM_BUFFER, m_iLightsBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &iNumPointLights);
+	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &bUsingDirectionalLight);
+	if (bUsingDirectionalLight)	
+		glBufferSubData(GL_UNIFORM_BUFFER, DIRECTIONAL_LIGHT_OFFSET, NUM_DIRECTIONAL_LIGHT_PARAMS * sizeof(vec4), pDirectionalLightData.data());
+	glBufferSubData(GL_UNIFORM_BUFFER, POINT_LIGHT_OFFSET, (NUM_POINT_LIGHT_PARAMS * sizeof(vec4))*iNumPointLights, pLightData.data());
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 // Binds and creates a buffer on the GPU.  Sets the data into the buffer and returns the location of the buffer.

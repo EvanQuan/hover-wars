@@ -3,26 +3,60 @@
 #
 # Instructions for reading this file:
 #   - lines beginning with ‘#’ are comments
-#   - all objects are expressed in world coords
-#   - objects are described with the following parameters:
-#	   - x y z Position for each object
-#      - Light Source also has a color associated with it
-#      - sphere has centre and radius
-#	   - Mesh has a position and string for mesh location
-#      - plane has 4 corner positions in clockwise order
-#      - triangle has positions of its three corners, in
-#        counter-clockwise order
-#   - syntax of the object specifications are as follows:
-#
-#      light    { x  y  z  r  g  b }
-#      sphere   { x  y  z  r }
-#      plane    { x y z  x1 y1 z1  x2 y2 z3  x3 y3 z3  x4 y4 z4  B  TextureLoc}
-#      triangle { x y z  x1 y1 z1  x2 y2 z2  x3 y3 z3 }
-#	   mesh		{ x y z  sLocation }
+#   - all positions are expressed in world coords
 #
 # ============================================================
+# Lighting Instructions
+#
+# Lights can be described as:
+#		point_light 		{ x y z r g b } 
+#			- "x y z" = the Position of the light in World Space
+#			- "r g b" = the color of the light
+#		directional_light 	{ dX dY dZ aR aG aB dR dG dB sR sG sB }
+#			- "dX dY dZ" = the direction of the light source
+#			- "aR aG aB" = the ambient color of the light source
+#			- "dR dG dB" = the diffuse color of the light source
+#			- "sR sG sB" = the specular color of the light source
+#		spotlight {} ** NOT YET IMPLEMENTED **
+#
+# ============================================================
+# Object Instructions
+#
+# Many different objects can be specified with the following syntax:
+#		plane	{ x y z  nX nY nZ  height  width }
+#			- "x y z" 				= the position of the plane
+#			- "nX nY nZ" 			= the normal of the plane 
+#						 			= the plane will be rotated to align with its normal
+#			- "height  width" 		= the height and width of the plane
+#		sphere	{ x y z  r }
+#			- "x y z" 				= the position of the sphere
+#			- "r"					= the radius of the sphere
+#		cube	{ x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
+#			- "x y z"				= the position of the cube
+#			- "height width depth"	= Specifies the dimensions of the cube
+#		static_mesh { x y z }
+#			- "x y z"				= the position of the mesh
+#
+# ============================================================
+# Attributes
+#
+# For any object, additional attributes can be given in-line to specify additional
+#	aspects of an object. Those that can't be used for an object will be ignored.
+#
+#		+texture	{ <texture location> }
+#			- specifies a texture to use for the object.
+#		+mesh		{ <mesh location> }
+#			- specifies a mesh .obj that will be loaded for the object
+#			- if a mesh is expected, but no mesh is given, a cube will be used as default.
+#		+shader		{ <shader type> }
+#			- These are application specific and types are specified in
+#				ShaderManager.cpp.
+#			- if shader type is incorrect, or shader not specified, a simple
+#				diffuse shader will be used (PLANE_SHADER internally).
+#			- TODO: list valid <shader type> inputs here.
+# ============================================================
 
-light {
+point_light {
   1 2 0
   1.0 1.0 1.0
 }
@@ -50,14 +84,14 @@ light {
 
 # box
 ## bottom
-plane {
-	0 -2 0
-	0 1 0
-	40 40
-	+texture {
-		textures-256-256/groundSeamless.jpg
-	}
-}
+#plane {
+#	0 -2 0
+#	0 1 0
+#	40 40
+#	+texture {
+#		textures-256-256/groundSeamless.jpg
+#	}
+#}
 ## Side 1
 #plane {
 #	0 0 0
@@ -114,7 +148,7 @@ player {
 		textures-256-256/fig-10d.png
 	}	
 	+shader {
-		mesh_shdr
+		blinn_phong_shdr
 	}
 }
 
@@ -127,13 +161,13 @@ player {
 #		textures-256-256/fig-7c.png
 #	}
 #	+shader {
-#		mesh_shdr
+#		toon_shdr
 #	}
 #}
 
-sphere {
-	4 4 0 .5
-	+texture {
-		textures-256-256/nightSpherical.jpg
-	}
-}
+#sphere {
+#	4 4 0 .5
+#	+texture {
+#		textures-256-256/nightSpherical.jpg
+#	}
+#}

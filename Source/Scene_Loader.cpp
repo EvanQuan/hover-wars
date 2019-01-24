@@ -1,6 +1,4 @@
 #include "Scene_Loader.h"
-#include "Light.h"
-#include "Anim_Track.h"
 #include "EntityManager.h"
 #include <sstream>
 #include <iterator>
@@ -56,7 +54,7 @@ void Scene_Loader::createSphere( vector< string > sData, int iLength )
 	{
 		vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );	// Position of Sphere
 
-		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), vPosition, 
+		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), &vPosition, 
 											 m_sTextureProperty, m_sShaderProperty);
 	}
 	else
@@ -76,42 +74,67 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 		vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
 		iHeight = stoi(sData[6]);
 		iWidth = stoi(sData[7]);
-		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, pPosition, vNormal, m_sTextureProperty, m_sShaderProperty);
+		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, m_sTextureProperty, m_sShaderProperty);
 	}
 	else
 		outputError("Plane", sData);
 }
 
-// Generates a Light object given some input data
+// Generates a Directional Light object given some input data
 // sData -> String of inputs to parse
 // iLength -> Number of Inputer to parse.
-void Scene_Loader::createLight( vector< string > sData, int iLength )
+void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 {
-	vec3 pPosition, pColor;
+	vec3 vDirection, vDiffuseColor, vAmbientColor, vSpecularColor;
 
 	if ( MAX_LIGHT_PARAMS == iLength )
 	{
-		pPosition = vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );
-		pColor = vec3( stof( sData[ 3 ] )/*R*/, stof( sData[ 4 ] )/*G*/, stof( sData[ 5 ] )/*B*/ );
+		vDirection = vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ );
+		vAmbientColor = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
+		vDiffuseColor = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
+		vSpecularColor = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
 
-		ENTITY_MANAGER->generateStaticLight(pPosition, pColor, m_sMeshProperty, m_sTextureProperty);
+
+		ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
 	}
 	else
 		outputError("light", sData);
 }
 
+// Generates a Light object given some input data
+// sData -> String of inputs to parse
+// iLength -> Number of Inputer to parse.
+void Scene_Loader::createPointLight(vector< string > sData, int iLength)
+{
+	vec3 pPosition, pColor;
+
+	if (MAX_LIGHT_PARAMS == iLength)
+	{
+		pPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+		pColor = vec3(stof(sData[3])/*R*/, stof(sData[4])/*G*/, stof(sData[5])/*B*/);
+
+		ENTITY_MANAGER->generateStaticPointLight(&pPosition, &pColor, m_sMeshProperty, m_sTextureProperty);
+	}
+	else
+		outputError("light", sData);
+}
+
+// Generates a Player Object at a given position
+// NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
+//		object from a scene file.
 void Scene_Loader::createPlayer(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	ENTITY_MANAGER->generatePlayerEntity(vPosition, m_sMeshProperty, m_sTextureProperty, m_sShaderProperty);
+	ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, m_sTextureProperty, m_sShaderProperty);
 }
 
+// Generates a Static Mesh Object at a specified location.
 void Scene_Loader::createStaticMesh(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, vPosition, m_sTextureProperty, m_sShaderProperty);
+	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, m_sTextureProperty, m_sShaderProperty);
 }
 
 /**************************************************************************\
@@ -229,13 +252,13 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 
 void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator )
 {
-	if ("sphere" == sIndicator)			// Parse Sphere
+	if ("sphere" == sIndicator)				// Parse Sphere
 		createSphere(sData, sData.size());
-	else if ("plane" == sIndicator)		// Parse Plane
+	else if ("plane" == sIndicator)			// Parse Plane
 		createPlane(sData, sData.size());
-	else if ("light" == sIndicator)		// Parse Light
-		createLight(sData, sData.size());
-	else if ("player" == sIndicator)	// Parse Mesh
+	else if ("point_light" == sIndicator)	// Parse Point Light
+		createPointLight(sData, sData.size());
+	else if ("player" == sIndicator)		// Parse Player
 		createPlayer(sData, sData.size());
 	else if ("static_mesh" == sIndicator)	// Parse Static Mesh
 		createStaticMesh(sData, sData.size());

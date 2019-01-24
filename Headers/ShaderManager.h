@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <unordered_map>
 #include "Shader.h"
+#include "EntityComponentHeaders/LightingComponent.h"
 
 // Class: Shader Manager
 // Purpose: Manages all the Shaders used by every Assignment.  Manages Uniform variable
@@ -19,7 +20,10 @@ public:
 	enum eShaderType
 	{
 		LIGHT_SHDR = 0,
-		MESH_SHDR,
+		TOON_SHDR,
+		BLINN_PHONG_SHDR,
+		DIFF_SHDR,
+		GOOCH_SHDR,
 		PLANE_SHDR,
 		WORLD_SHDR,
 		SILH_SHDR,
@@ -44,6 +48,7 @@ public:
 	bool initializeShaders();
 
 	void setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat );
+	void setLightsInUniformBuffer(const LightingComponent* pDirectionalLight, const vector< LightingComponent* >* pPointLights );
 
 	// Get the specified program for using shaders for rendering
 	GLuint getProgram(eShaderType eType) { return m_pShader[eType].getProgram(); }
@@ -69,6 +74,8 @@ private:
 	ShaderManager();
 	ShaderManager( const ShaderManager* pCopy );
 	static ShaderManager* m_pInstance;
+
+	GLuint m_iMatricesBuffer, m_iLightsBuffer;
 
 	// Should only be initialized once.
 	bool m_bInitialized;

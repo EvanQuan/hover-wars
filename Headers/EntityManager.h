@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
-#include "Light.h"
+#include "PointLight.h"
+#include "DirectionalLight.h"
 #include "BoidEngine.h"
 #include "Entity.h"
 #include "Camera.h"
@@ -24,11 +25,12 @@ public:
 
 	// Entity Functions
 	Camera* generateCameraEntity();
-	void generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, const string& sTextureLocation = "", const string& sShaderType = "");
-	void generateStaticSphere(float fRadius, vec3 vPosition, const string& sTextureLocation = "", const string& sShaderType = "");
-	void generateStaticMesh(const string& sMeshLocation, vec3 vPosition, const string& sTextureLocation = "", const string& sShaderType = "" );
-	void generateStaticLight( vec3 vPosition, vec3 vColor, const string& sMeshLocation = "",const string& sTextureLocation = "");
-	void generatePlayerEntity(vec3 vPosition, const string& sMeshLocation, const string& sTextureLocation = "", const string& sShaderType = "");
+	void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const string& sTextureLocation = "", const string& sShaderType = "");
+	void generateStaticSphere(float fRadius, const vec3* vPosition, const string& sTextureLocation = "", const string& sShaderType = "");
+	void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const string& sTextureLocation = "", const string& sShaderType = "" );
+	void generateStaticPointLight( const vec3* vPosition, const vec3* vColor, const string& sMeshLocation = "",const string& sTextureLocation = "");
+	void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
+	void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const string& sTextureLocation = "", const string& sShaderType = "");
 	vec3 getEntityPosition(int iEntityID);
 
 	// Entity Component functions
@@ -75,12 +77,13 @@ private:
 	inline int getNewEntityID() { return ++m_iEntityIDPool; }
 	inline int getNewComponentID() { return ++m_iComponentIDPool; }
 	vector<unique_ptr<EntityComponent>>	m_pMasterComponentList;
-	vector<unique_ptr<Entity>>	m_pMasterEntityList;
-	vector<RenderComponent*>	m_pRenderingComponents;
-	vector<CameraComponent*>	m_pCameraComponents;
-	vector<LightingComponent*>	m_pLights;
-	CameraComponent*			m_pActiveCamera;
-	Light*						m_pTestingLight; // Temporary, Needs to be removed.
+	vector<unique_ptr<Entity>>			m_pMasterEntityList;
+	vector<RenderComponent*>			m_pRenderingComponents;
+	vector<CameraComponent*>			m_pCameraComponents;
+	vector<LightingComponent*>			m_pLights;
+	CameraComponent*					m_pActiveCamera;
+	DirectionalLight*					m_pDirectionalLight;
+	PointLight*							m_pTestingLight; // Temporary, Needs to be removed.
 
 	// Manage Pointers for Deletion.
 	MeshManager*				m_pMshMngr;

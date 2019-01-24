@@ -11,11 +11,11 @@ class StaticEntity
 	: public Entity
 {
 public:
-	StaticEntity(int iID, vec3 vPosition);
+	StaticEntity(int iID, const vec3* vPosition);
 
 	virtual ~StaticEntity();
 
-	void loadAsPlane(vec3 vNormal, int iHeight, int iWidth, const string& sTextureLoc, const string& sShaderType);
+	void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const string& sTextureLoc, const string& sShaderType);
 	void loadAsSphere(float fRadius, const string& sTextureLoc, const string& sShaderType);
 	void loadFromFile(const string& sFileName, const string& sTextureLoc, const string& sShaderType);
 
