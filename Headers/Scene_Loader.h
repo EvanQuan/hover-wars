@@ -13,7 +13,8 @@ public:
 	// Creation Functions
 	void createSphere( vector< string > sData, int iLength );
 	void createPlane( vector< string > sData, int iLength );
-	void createLight( vector< string > sData, int iLength );
+	void createPointLight( vector< string > sData, int iLength );
+	void createDirectionalLight(vector< string > sData, int iLength);
 	void createPlayer(vector< string > sData, int iLength);
 	void createStaticMesh(vector< string > sData, int iLength);
 

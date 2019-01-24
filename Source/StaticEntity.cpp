@@ -2,8 +2,8 @@
 #include "EntityManager.h"
 
 // Default Constructor
-StaticEntity::StaticEntity(int iID, vec3 vPosition)
-	: Entity( iID, vPosition )
+StaticEntity::StaticEntity(int iID, const vec3* vPosition)
+	: Entity( iID, *vPosition )
 {
 	
 }
@@ -19,9 +19,9 @@ StaticEntity::~StaticEntity()
 \****************************************************************/
 
 // Load a Plane with a given Normal, Height and Width
-void StaticEntity::loadAsPlane(vec3 vNormal, int iHeight, int iWidth, const string& sTextureLoc, const string& sShaderType)
+void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const string& sTextureLoc, const string& sShaderType)
 {
-	m_pMesh = MESH_MANAGER->generatePlaneMesh( true, iHeight, iWidth, m_vPosition, vNormal);
+	m_pMesh = MESH_MANAGER->generatePlaneMesh( true, iHeight, iWidth, m_vPosition, *vNormal);
 	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
 	assert(nullptr != m_pRenderComponent);

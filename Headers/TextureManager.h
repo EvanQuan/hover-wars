@@ -31,6 +31,7 @@ public:
 
 	// Methods:
 	Texture* loadTexture(const string &sFileName);
+	Texture* genTexture(const vec3* vColor);
 	void unloadAllTextures();
 
 private:

@@ -1,7 +1,10 @@
-#version 430 core
 
-uniform mat4 modelview;
-uniform mat4 projection;
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
 uniform vec3 lightPosition;
 uniform float fScale;
 
@@ -11,9 +14,9 @@ layout (location = 2) in vec2 uv;
 layout (location = 3) in mat4 translate;
 
 //attributes in camera coordinates
-out vec3 N;
-out vec3 L;
-out vec3 V;
+out vec3 NormalVector;
+out vec3 LightVector;
+out vec3 ToCamera;
 
 void main(void)
 {
@@ -27,11 +30,11 @@ void main(void)
 	
 	// create the Normal Matrix to correct Normal into camera space
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
-	N = normalize( normalMatrix * normal );
+	NormalVector = normalize( normalMatrix * normal );
 	
-	L = normalize(lightCameraSpace.xyz - P);
+	LightVector = normalize(lightCameraSpace.xyz - P);
 	
-	V = normalize( - P);
+	ToCamera = normalize( - P);
 	
     gl_Position = projection * positionCameraSpace;    
 }

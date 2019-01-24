@@ -1,10 +1,13 @@
-#version 430 core
 
 layout (lines) in;
 layout (points, max_vertices = 4) out;
 
-uniform mat4 modelview;
-uniform mat4 projection;
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
 
 uniform float fWidth = 0.1;
 uniform vec3 v3_Gravity = vec3( 0.0, -9.81, 0.0 );

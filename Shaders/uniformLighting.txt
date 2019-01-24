@@ -1,0 +1,24 @@
+// Structures for Different Light Sources
+struct DirLight {
+	vec3 vDirection;
+	vec3 vAmbient;
+	vec3 vDiffuse;
+	vec3 vSpecular;
+};
+
+struct PointLight {
+	float fLightPower;
+	vec3 vPosition;
+	vec3 vColor;
+};
+
+#define MAX_POINT_LIGHTS 4
+
+layout (std140, binding = 2) uniform Lights
+{
+	int numPointLights;
+	bool usingDirectionalLight;
+	DirLight pDirectionalLight;
+	PointLight pPointLights[4];
+};
+

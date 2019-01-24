@@ -47,19 +47,12 @@ Texture* TextureManager::loadTexture(const string& sFileName )
 		// Grab the Texture Container from the Cache
 		pReturnTexture = m_pTextureCache[sFileName].get();
 	}
-	else // Create the New Texture in the Texture Cache, attach the User to the Texture and return the newly created texture.
+	else // Create the New Texture in the Texture Cache
 	{
 		// Generate Texture Smart Pointer
 		unique_ptr<Texture> pNewTexture = make_unique<Texture>(sFileName, Texture::manager_cookie() );
 
-		if ( !InitializeTexture( pNewTexture.get(), sFileName ) )
-		{
-			cout << "Failed to read texture: \"" << sFileName << "\"\n";
-			if( sFileName != "" )
-				cout << "Error, unable to load texture: " << sFileName << endl;
-			pNewTexture.reset();
-		}
-		else
+		if ( InitializeTexture( pNewTexture.get(), sFileName ) )
 		{
 			// Return the raw pointer to the caller
 			pReturnTexture = pNewTexture.get();
@@ -67,6 +60,32 @@ Texture* TextureManager::loadTexture(const string& sFileName )
 			// Attach Texture to the Cache
 			m_pTextureCache.insert(make_pair(sFileName, move(pNewTexture)));
 		}
+	}
+
+	return pReturnTexture;
+}
+
+// This will generate a small 1x1 texture with the given color to be used as a simple texture.
+Texture* TextureManager::genTexture(const vec3* vColor)
+{
+	Texture* pReturnTexture = nullptr;
+	string sHashName = glm::to_string(*vColor);
+
+	if (m_pTextureCache.end() != m_pTextureCache.find(sHashName))
+	{
+		// Found a texture for that color that already exists, return it.
+		pReturnTexture = m_pTextureCache[sHashName].get();
+	}
+	else
+	{
+		// generate new texture unique_ptr
+		unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashName, Texture::manager_cookie());
+
+		pNewTexture->genTexture(vColor, 1, 1, GL_RGB, GL_FLOAT);
+
+		pReturnTexture = pNewTexture.get();
+
+		m_pTextureCache.insert(make_pair(sHashName, move(pNewTexture)));
 	}
 
 	return pReturnTexture;

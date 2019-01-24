@@ -26,8 +26,12 @@ public:
 	// Inherited update frunction from EntityComponent
 	void update(double dTimeStep);
 
+	void generateDiffuseTexture(const vec3* vColor);
+
 	// Initializes the proper buffers on the GPU for rendering.
-	void initializeComponent( Mesh const  * pMesh, const string* pTextureLoc = nullptr);
+	void initializeComponent( Mesh const  * pMesh, 
+							  const string* pDiffuseTextureLoc = nullptr,
+							  const string* pSpecularTextureLoc = nullptr );
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
@@ -45,5 +49,11 @@ private:
 	ShaderManager* m_pShdrMngr;
 	ShaderManager::eShaderType m_eShaderType;
 
-	Texture* m_pTexture;
+	// Material Struct for setting uniform in Lighting Shaders
+	struct sMaterial
+	{
+		Texture* m_pDiffuseMap;
+		Texture* m_pSpecularMap;
+		float fShininess;
+	} m_sRenderMaterial;
 };

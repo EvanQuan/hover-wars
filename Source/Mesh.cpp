@@ -4,7 +4,7 @@
 /************************************\
  * Defines: For Sphere Construction *
 \************************************/
-#define SLICE_SIZE 15.f
+#define SLICE_SIZE 5.f
 #define MAX_THETA_DEGS 360.f
 #define MAX_PHI_DEGS 180.f
 #define MAX_THETA_CUTS (int)(MAX_THETA_DEGS / SLICE_SIZE)
@@ -48,6 +48,8 @@ bool Mesh::genMesh( const string& sFileName, vec3 vPosition )
 	{
 		if (m_bStaticMesh)
 		{
+			Mesh::scale(20.0f);
+
 			if (vec3(0.f) != vPosition)
 				Mesh::translate(vPosition);
 		}
@@ -84,6 +86,9 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 	m_pUVs.push_back(vec2(1.0, 0.0));
 	m_pUVs.push_back(vec2(1.0, 1.0));
 
+	// Generate Indices
+	m_pIndices = { 0, 1, 2, 1, 2, 3 };
+
 	float d = dot(vNormal, vec3(0.f, 1.f, 0.f) );
 	if (d < 1.f) // If d >= 1.f, Vectors are the same.
 	{
@@ -107,68 +112,48 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 // Generates a Sphere Mesh
 void Mesh::genSphere(float fRadius, vec3 vPosition)
 {
-	// Generate Vertices and Normals for the Mesh.
-	// Code adapted from Song Ho's example code: https://goo.gl/4AgQfK
-	float phiStep = PI / MAX_PHI_CUTS;
-	float thetaStep = 2 * PI / MAX_THETA_CUTS;
+	// Algorithm pulled from: https://goo.gl/k9Q4mh
+	float const R = 1. / static_cast<float>(MAX_THETA_CUTS - 1);
+	float const S = 1. / static_cast<float>(MAX_PHI_CUTS - 1);
+	int r, s;
 
-	float x, y, z, xy;					// vertex
-	float s, t;							// texCoord
-	float radiusInv = 1.0f / fRadius;	// Normalization multiplier
-	float phiAngle, thetaAngle;
+	// Calculate Sizes of vectors ahead of time to avoid resize calls during loop
+	m_pVertices.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
+	m_pNormals.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
+	m_pUVs.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
 
-	for (int i = 0; i <= MAX_PHI_CUTS; ++i)
-	{
-		phiAngle = PI / 2 - i * phiStep;	// pi/2 to -pi/2
-		xy = fRadius * cosf(phiAngle);		// r * cos(u)
-		z = fRadius * sinf(phiAngle);		// r * sin(u)
+	// Populate Iterators as loop progresses
+	vector<vec3>::iterator v = m_pVertices.begin();
+	vector<vec3>::iterator n = m_pNormals.begin();
+	vector<vec2>::iterator t = m_pUVs.begin();
 
-		// add (MAX_THETA_CUTS + 1) vertices per phi
-		// the first and last vertices have the same position and normal, but different tex coords.
-		for (int j = 0; j <= MAX_THETA_CUTS; ++j)
-		{
-			thetaAngle = j * thetaStep;
+	// Loop through Sphere and generate UVs, Vertices and Normals.
+	for (r = 0; r < MAX_THETA_CUTS; r++) for (s = 0; s < MAX_PHI_CUTS; s++) {
+		float const y = sinf(-(PI / 2) + PI * r * R);
+		float const x = cosf(2 * PI * s * S) * sinf(PI * r * R);
+		float const z = sinf(2 * PI * s * S) * sinf(PI * r * R);
 
-			// vertex position
-			x = xy * cosf(thetaAngle);
-			y = xy * sinf(thetaAngle);
-			m_pVertices.push_back(vec3(x, y, z));
+		// UVs are inverted.
+		*t++ = vec2( (MAX_PHI_CUTS-s) * S, (MAX_THETA_CUTS-r) * R);
 
-			// normal
-			m_pNormals.push_back(m_pVertices.back() * radiusInv);
+		// Scale Sphere to Radius.
+		*v++ = vec3(x * fRadius, y * fRadius, z * fRadius);
 
-			// vertex tex coord between [0, 1]
-			s = static_cast<float>(j) / MAX_THETA_CUTS;
-			t = static_cast<float>(i) / MAX_PHI_CUTS;
-			m_pUVs.push_back(vec2(s, t));
-		}
+		// Store normal in Local space.
+		*n++ = vec3(x, y, z);
 	}
 
-	// Indices
-	//	k1--k1+1
-	//	|  / |
-	//	| /  |
-	//	k2--k2+1
-	unsigned int k1, k2;
-	for (int i = 0; i < MAX_PHI_CUTS; ++i)
-	{
-		k1 = i * (MAX_THETA_CUTS + 1);
-		k2 = k1 + MAX_THETA_CUTS + 1;
+	// Generate indices
+	m_pIndices.resize(MAX_THETA_CUTS * MAX_PHI_CUTS * 4);
+	vector<unsigned int>::iterator i = m_pIndices.begin();
 
-		for (int j = 0; j < MAX_THETA_CUTS; ++j, ++k1, ++k2)
-		{
-			// 2 triangles per section excluding 1st and last stacks
-			if (i != 0)
-				m_pIndices.insert(m_pIndices.end(),{ k1, k2, k1 + 1 });
-			if (i != (MAX_PHI_CUTS - 1))
-				m_pIndices.insert(m_pIndices.end(), { k1 + 1, k2, k2 + 1 });
-		}
+	// Ensure index storage creates counter clockwise pattern for back-face culling.
+	for (r = 0; r < MAX_THETA_CUTS; r++) for (s = 0; s < MAX_PHI_CUTS; s++) {
+		*i++ = r * MAX_PHI_CUTS + s;
+		*i++ = (r + 1) * MAX_PHI_CUTS + s;
+		*i++ = r * MAX_PHI_CUTS + (s + 1);
+		*i++ = (r + 1) * MAX_PHI_CUTS + (s + 1);
 	}
-
-	// Sphere is generated with z as the up vector, rotate it to y as the up vector.
-	quat q = angleAxis(1.57079633f, vec3(1.0f, 0.f, 0.f));
-	normalize(q);
-	Mesh::rotate(q);
 
 	// Translate to Position if Sphere is a Static Mesh.
 	if (m_bStaticMesh && vec3(0.f) != vPosition)
@@ -244,28 +229,28 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 	m_pUVs.push_back(vec2(0.0f, 1.0f));
 
 	// Face 3 - Left
-	m_pVertices.push_back(vIndexes[1]);		// Index 1
-	m_pVertices.push_back(vIndexes[2]);		// Index 2
-	m_pVertices.push_back(vIndexes[5]);		// Index 5
-	m_pVertices.push_back(vIndexes[7]);		// Index 7
-	m_pNormals.push_back(vNormals[1]);
-	m_pNormals.push_back(vNormals[2]);
-	m_pNormals.push_back(vNormals[5]);
-	m_pNormals.push_back(vNormals[7]);
+	m_pVertices.push_back(vIndexes[0]);		// Index 1
+	m_pVertices.push_back(vIndexes[3]);		// Index 2
+	m_pVertices.push_back(vIndexes[4]);		// Index 5
+	m_pVertices.push_back(vIndexes[6]);		// Index 7
+	m_pNormals.push_back(vNormals[0]);
+	m_pNormals.push_back(vNormals[3]);
+	m_pNormals.push_back(vNormals[4]);
+	m_pNormals.push_back(vNormals[6]);
 	m_pUVs.push_back(vec2(0.0f));
 	m_pUVs.push_back(vec2(0.0f, 1.0f));
 	m_pUVs.push_back(vec2(1.0f, 0.f));
 	m_pUVs.push_back(vec2(1.f));
 
 	// Face 4 - Right
-	m_pVertices.push_back(vIndexes[0]);		// Index 0
-	m_pVertices.push_back(vIndexes[3]);		// Index 3
-	m_pVertices.push_back(vIndexes[4]);		// Index 4
-	m_pVertices.push_back(vIndexes[6]);		// Index 6
-	m_pNormals.push_back(vNormals[0]);
-	m_pNormals.push_back(vNormals[3]);
-	m_pNormals.push_back(vNormals[4]);
-	m_pNormals.push_back(vNormals[6]);
+	m_pVertices.push_back(vIndexes[1]);		// Index 0
+	m_pVertices.push_back(vIndexes[2]);		// Index 3
+	m_pVertices.push_back(vIndexes[5]);		// Index 4
+	m_pVertices.push_back(vIndexes[7]);		// Index 6
+	m_pNormals.push_back(vNormals[1]);
+	m_pNormals.push_back(vNormals[2]);
+	m_pNormals.push_back(vNormals[5]);
+	m_pNormals.push_back(vNormals[7]);
 	m_pUVs.push_back(vec2(1.0f, 0.f));
 	m_pUVs.push_back(vec2(1.f));
 	m_pUVs.push_back(vec2(0.0f));
@@ -300,12 +285,12 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 	m_pUVs.push_back(vec2(0.0f, 1.0f));
 
 	m_pIndices = {
-		0, 1, 2, 0, 2, 3,
-		4, 5, 6, 5, 6, 7,
-		8, 9, 10, 9, 10, 11,
-		12, 13, 14, 13, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 21, 22, 23
+		0, 2, 1, 0, 3, 2,
+		5, 6, 4, 5, 7, 6,
+		10, 9, 8, 10, 11, 9,
+		12, 15, 14, 12, 13, 15,
+		17, 19, 16, 17, 18, 19,
+		22, 21, 23, 22, 20, 21
 	};
 
 	if (m_bStaticMesh)
@@ -393,36 +378,32 @@ void Mesh::initalizeVBOs()
 	if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
 		m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
 
-	// Initialize as Instanced VBO
-	if (!m_bStaticMesh) 
-	{
-		// Set up Instanced Buffer for Instance Rendering
-		m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-			m_iVertexArray, (void*)&m_m4DefaultInstance,
-			sizeof(mat4), GL_DYNAMIC_DRAW);
+	// Set up Instanced Buffer for Instance Rendering
+	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
+		m_iVertexArray, (void*)&m_m4DefaultInstance,
+		sizeof(mat4), GL_DYNAMIC_DRAW);
 
-		// Instance Rendering Attributes
-		//	Set up openGL for referencing the InstancedBuffer as a Mat4
-		// column 0
-		glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-		SHADER_MANAGER->setAttrib(
-			m_iVertexArray, 3, 4, sizeof(vec4) * 4, (void*)0);
-		// column 1
-		SHADER_MANAGER->setAttrib(
-			m_iVertexArray, 4, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
-		// column 2
-		SHADER_MANAGER->setAttrib(
-			m_iVertexArray, 5, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
-		// column 3
-		SHADER_MANAGER->setAttrib(
-			m_iVertexArray, 6, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
+	// Instance Rendering Attributes
+	//	Set up openGL for referencing the InstancedBuffer as a Mat4
+	// column 0
+	glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, 3, 4, sizeof(vec4) * 4, (void*)0);
+	// column 1
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, 4, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
+	// column 2
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, 5, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
+	// column 3
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, 6, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
 
-		glBindVertexArray(m_iVertexArray);
-		glVertexAttribDivisor(3, 1);
-		glVertexAttribDivisor(4, 1);
-		glVertexAttribDivisor(5, 1);
-		glVertexAttribDivisor(6, 1);
-	}
+	glBindVertexArray(m_iVertexArray);
+	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
+	glVertexAttribDivisor(5, 1);
+	glVertexAttribDivisor(6, 1);
 
 	// Set up Indices if applicable
 	if (!m_pIndices.empty())

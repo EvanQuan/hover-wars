@@ -2,8 +2,8 @@
 #include "MeshManager.h"
 #include "EntityManager.h"
 
-PlayerEntity::PlayerEntity(int iID, vec3 vPosition)
-	: Entity(iID, vPosition)
+PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
+	: Entity(iID, *vPosition)
 {
 
 }
