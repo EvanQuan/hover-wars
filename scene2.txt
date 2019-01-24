@@ -9,9 +9,10 @@
 # Lighting Instructions
 #
 # Lights can be described as:
-#		point_light 		{ x y z r g b } 
-#			- "x y z" = the Position of the light in World Space
-#			- "r g b" = the color of the light
+#		point_light 		{ x y z  r g b  p } 
+#			- "x y z" 	= the Position of the light in World Space
+#			- "r g b" 	= the color of the light
+#			- "p"		= power of the light
 #		directional_light 	{ dX dY dZ aR aG aB dR dG dB sR sG sB }
 #			- "dX dY dZ" = the direction of the light source
 #			- "aR aG aB" = the ambient color of the light source
@@ -57,8 +58,27 @@
 # ============================================================
 
 point_light {
-  1 2 0
+	7.5 0 0
+	1.0 0.0 1.0
+	5.0
+}
+
+point_light {
+	-7.5 0 0
+	1.0 0.0 0.0
+	5.0
+}
+
+point_light {
+	0 0 7.5
+	0.0 0.0 1.0
+	5.0
+}
+
+point_light {
+  0 0 -7.5
   1.0 1.0 1.0
+  5.0
 }
 
 #Indices:
@@ -84,14 +104,17 @@ point_light {
 
 # box
 ## bottom
-#plane {
-#	0 -2 0
-#	0 1 0
-#	40 40
-#	+texture {
-#		textures-256-256/groundSeamless.jpg
-#	}
-#}
+plane {
+	0 -2 0
+	0 1 0
+	40 40
+	+texture {
+		textures/groundSeamless.jpg
+	}
+	+shader {
+		plane_shdr
+	}
+}
 ## Side 1
 #plane {
 #	0 0 0
@@ -145,29 +168,29 @@ player {
 		models/big_dodge.obj
 	}
 	+texture {
-		textures-256-256/fig-10d.png
+		textures/tronBase.png
 	}	
 	+shader {
 		blinn_phong_shdr
 	}
 }
 
-#static_mesh {
-#	0 0 10
-#	+mesh {
-#		models/bunny.obj
-#	}
-#	+texture {
-#		textures-256-256/fig-7c.png
-#	}
-#	+shader {
-#		toon_shdr
-#	}
-#}
+static_mesh {
+	0 0 10
+	+mesh {
+		models/bunny.obj
+	}
+	+texture {
+		textures/fig-7c.png
+	}
+	+shader {
+		toon_shdr
+	}
+}
 
-#sphere {
-#	4 4 0 .5
-#	+texture {
-#		textures-256-256/nightSpherical.jpg
-#	}
-#}
+sphere {
+	4 4 0 .5
+	+texture {
+		textures/nightSpherical.jpg
+	}
+}

@@ -1,4 +1,3 @@
-#version 430 core
 
 // Gooch Variables
 float b = 0.0;		// Determine maxmimum "blueness" in temperature shift

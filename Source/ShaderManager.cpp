@@ -6,10 +6,11 @@
 #define DIRECTIONAL_LIGHT_OFFSET 16
 #define DIRECTIONAL_LIGHT_SIZE (sizeof(vec4) << 2)
 #define POINT_LIGHT_OFFSET (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE)
-#define POINT_LIGHT_SIZE (sizeof(vec4) << 1)
+// POINT_LIGHT_SIZE: float bytesize of 4 -> 16 bytes due to spacing requirements of uniform buffers
+#define POINT_LIGHT_SIZE (sizeof(vec4) << 1) + sizeof(vec4)
 #define LIGHT_BUFFER_SIZE (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2))
 #define NUM_DIRECTIONAL_LIGHT_PARAMS 4
-#define NUM_POINT_LIGHT_PARAMS 2
+#define NUM_POINT_LIGHT_PARAMS 3
 
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
@@ -49,6 +50,7 @@ ShaderManager::ShaderManager()
 	glBindBufferRange(GL_UNIFORM_BUFFER, 2, m_iLightsBuffer, 0, LIGHT_BUFFER_SIZE);
 
 	glEnable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set Edge Shader Locations

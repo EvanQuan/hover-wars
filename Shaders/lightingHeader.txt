@@ -1,0 +1,74 @@
+struct Material {
+	sampler2D vDiffuse;
+	sampler2D vSpecular;
+	float fShininess;
+};
+
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
+// Defaulted to Chrome
+uniform Material sMaterial;
+in vec2 TexCoords;
+
+// Calculates information about a specified directional light.
+vec3 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
+{
+	vec3 lightDir = normalize( -light.vDirection );
+	
+	// diffuse Shading
+	float diff = max( dot(vNormal, lightDir), 0.0);
+	float spec = 0.0;
+	
+	if( diff > 0.0 )
+	{
+		// Specular Shading
+		vec3 reflectDir = reflect( -lightDir, vNormal );
+		spec = pow(max(dot(vToCamera, reflectDir), 0.0), sMaterial.fShininess );
+	}
+	
+	vec3 vTextureColor = vec3( texture( sMaterial.vDiffuse, TexCoords ) );
+	
+	// Combine Results
+	vec3 ambient	= light.vAmbient	* vTextureColor;
+	vec3 diffuse	= light.vDiffuse	* diff * vTextureColor;
+	vec3 specular 	= light.vSpecular	* spec * vec3( texture( sMaterial.vSpecular, TexCoords ) );
+	
+	return (ambient + diffuse + specular);
+}
+
+// Calculate information about a given point light with the current Frag Position
+//	Using a Blinn-Phong calculation adapted from goo.gl/vzRHX2 (Wikipedia)
+vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+{
+	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
+	lightCameraSpace /= lightCameraSpace.w;
+	
+	vec3 vToLight = lightCameraSpace.xyz - vFragPos;
+	float distance = length(vToLight);
+	vToLight = normalize(vToLight);
+	
+	float lambertian = max(dot(vToLight, vNormal), 0.0);
+	float specular = 0.0;
+	
+	if( lambertian > 0.0 )
+	{
+		// Blinn-Phong Calculation
+		vec3 vHalfDir = normalize( vToLight + vToCamera );
+		float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+		specular = pow( specAngle, sMaterial.fShininess );
+	}
+
+	// Apply Diffuse Value
+	vec3 colorLinear = vec3(texture( sMaterial.vDiffuse, TexCoords )) * lambertian * light.vColor * light.fLightPower / distance;
+	
+	// Apply Specular value
+	//colorLinear += vec3( texture(sMaterial.vSpecular, TexCoords ) ) * specular * light.vColor * light.fLightPower / distance;
+
+	return colorLinear;
+}
+
+

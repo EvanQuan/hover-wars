@@ -1,5 +1,8 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 
+const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
+const string DEFAULT_SPECULAR_MAP = "textures/defaultSpecMap.jpg";
+
 // Default Constructor:
 //		Requires an EntityID for the Entity that the component is a part of
 //			and a ComponentID issued by the EntityManager.
@@ -29,13 +32,9 @@ void RenderComponent::render()
 	m_pShdrMngr->setUniformFloat(m_eShaderType, "fScale", m_pMesh->getScale());
 
 	// Bind Texture(s) HERE
-	if (nullptr != m_pTexture)
-	{
-		m_pTexture->bindTexture(m_eShaderType, "gSampler");
-		m_pShdrMngr->setUniformBool(m_eShaderType, "bTextureLoaded", true);
-	}
-	else
-		m_pShdrMngr->setUniformBool(m_eShaderType, "bTextureLoaded", false);
+ 	m_sRenderMaterial.m_pDiffuseMap->bindTexture(m_eShaderType, "sMaterial.vDiffuse");
+	m_sRenderMaterial.m_pSpecularMap->bindTexture(m_eShaderType, "sMaterial.vSpecular");
+	m_pShdrMngr->setUniformFloat(m_eShaderType, "sMaterial.fShininess", m_sRenderMaterial.fShininess);
 
 	// Call related glDraw function.
 	if (m_bUsingInstanced)
@@ -46,8 +45,8 @@ void RenderComponent::render()
 		glDrawArrays(m_eMode, 0, m_iCount);
 
 	// Unbind Texture(s) HERE
-	if (nullptr != m_pTexture)
-		m_pTexture->unbindTexture();
+	m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
+	m_sRenderMaterial.m_pSpecularMap->unbindTexture();
 }
 
 // Overloaded Update Function
@@ -56,14 +55,29 @@ void RenderComponent::update(double dTimeDelta)
 
 }
 
-void RenderComponent::initializeComponent(const Mesh* pMesh, const string* pTextureLoc)
+void RenderComponent::initializeComponent(const Mesh* pMesh, 
+										  const string* pDiffuseTextureLoc,
+										  const string* pSpecularTextureLoc)
 {
 	// Get number of Vertices.
 	m_iCount = pMesh->getCount();
 
+	// Load Diffuse Texture if applicable
+	if (nullptr != pDiffuseTextureLoc)
+		m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture((*pDiffuseTextureLoc));
+
+	// If Texture failed to load, load default
+	if( nullptr == m_sRenderMaterial.m_pDiffuseMap)
+		m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
+
 	// Load Texture if applicable
-	if (nullptr != pTextureLoc)
-		m_pTexture = TEXTURE_MANAGER->loadTexture((*pTextureLoc));
+	if (nullptr != pSpecularTextureLoc)
+		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->loadTexture((*pSpecularTextureLoc));
+	
+	// If Texture failed to load, load default
+	if (nullptr == m_sRenderMaterial.m_pSpecularMap)
+		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->loadTexture(DEFAULT_SPECULAR_MAP);
+
 
 	// Check Rendering Flags in Mesh.
 	m_bUsingIndices = pMesh->usingIndices();
@@ -71,4 +85,10 @@ void RenderComponent::initializeComponent(const Mesh* pMesh, const string* pText
 
 	// Store Mesh for Reference.
 	m_pMesh = pMesh;
+}
+
+// Generates a simple 1x1 diffuse texture based on the given color.
+void RenderComponent::generateDiffuseTexture(const vec3* vColor)
+{
+	m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->genTexture(vColor);
 }

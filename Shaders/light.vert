@@ -1,4 +1,3 @@
-#version 430 core
 
 layout (std140, binding = 0) uniform Matrices
 {
@@ -12,12 +11,15 @@ layout (location = 2) in vec2 uv;
 
 out vec3 V;
 out vec3 vNormalInCameraSpace;
+out vec2 TexCoords;
 
 void main(void)
 {
 	vec3 vPositionModelSpace = (vec4( vertex, 0.0 )).xyz;
 	vec4 vPositionCameraSpace = modelview * vec4(vPositionModelSpace, 1.0);
 	vec3 P = vPositionCameraSpace.xyz/vPositionCameraSpace.w;
+	
+	TexCoords = uv;
 	
 	// Normal Matrix to correct Normal in camera space
 	mat3 m3NormalMatrix = transpose( inverse( mat3( modelview ) ) );

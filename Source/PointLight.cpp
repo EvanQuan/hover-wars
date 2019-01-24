@@ -22,7 +22,7 @@ PointLight::~PointLight()
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //	If "" is provided for the Mesh name, a generic cube will be generated.
-void PointLight::initialize(const vec3* vColor, const string* sTexName, bool bStatic, const string& sMeshName )
+void PointLight::initialize(float fPower, const vec3* vColor, const string* sTexName, bool bStatic, const string& sMeshName )
 {
 	// Set the color of the Light
 	m_pColor = (*vColor);
@@ -39,12 +39,10 @@ void PointLight::initialize(const vec3* vColor, const string* sTexName, bool bSt
 	// Initialize Render Component
 	assert(m_pRenderComponent != nullptr);
 	m_pRenderComponent->initializeComponent(m_pMesh);
-
-	// Set the Light Color for this light in the Light Shader
-	//	TODO: This will need to be set another way if multiple lights with different colors are created.
-	SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::LIGHT_SHDR, "vLightColor", &m_pColor);
+	vec3 pPoweredColor = m_pColor * fPower;
+	m_pRenderComponent->generateDiffuseTexture(&pPoweredColor); // Generates a Texture for the light based on the light color.
 
 	// Create and Initialize the Lighting Component.
 	m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
-	m_pLightingComponent->initializeAsPointLight(&m_vPosition, &m_pColor);
+	m_pLightingComponent->initializeAsPointLight(&m_vPosition, &m_pColor, fPower);
 }

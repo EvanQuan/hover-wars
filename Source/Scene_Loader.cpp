@@ -10,7 +10,7 @@
 #define MAX_SPHERE_PARAMS 4
 #define MAX_PLANE_PARAMS 8
 #define MAX_TRI_PARAMS 12
-#define MAX_LIGHT_PARAMS 6
+#define MAX_POINT_LIGHT_PARAMS 7
 #define MAX_MESH_PARAMS 3
 #define MAX_TRACK_PARAMS 1
 #define COMMENT_CHAR '#'
@@ -87,7 +87,7 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 {
 	vec3 vDirection, vDiffuseColor, vAmbientColor, vSpecularColor;
 
-	if ( MAX_LIGHT_PARAMS == iLength )
+	if ( MAX_POINT_LIGHT_PARAMS == iLength )
 	{
 		vDirection = vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ );
 		vAmbientColor = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
@@ -108,12 +108,12 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 {
 	vec3 pPosition, pColor;
 
-	if (MAX_LIGHT_PARAMS == iLength)
+	if (MAX_POINT_LIGHT_PARAMS == iLength)
 	{
 		pPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
 		pColor = vec3(stof(sData[3])/*R*/, stof(sData[4])/*G*/, stof(sData[5])/*B*/);
 
-		ENTITY_MANAGER->generateStaticPointLight(&pPosition, &pColor, m_sMeshProperty, m_sTextureProperty);
+		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, m_sMeshProperty, m_sTextureProperty);
 	}
 	else
 		outputError("light", sData);

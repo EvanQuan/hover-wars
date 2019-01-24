@@ -30,6 +30,7 @@ vector< vec4 > LightingComponent::getLightInformation() const
 	switch (m_eType)
 	{
 	case POINT_LIGHT:
+		m_pReturnVector.push_back(vec4(m_fLightPower));
 		m_pReturnVector.push_back(vec4( m_vPosition, 0.0 ));
 		m_pReturnVector.push_back(vec4( m_vDiffuseColor, 0.0 ));
 		break;
@@ -48,9 +49,10 @@ vector< vec4 > LightingComponent::getLightInformation() const
 }
 
 // Initializes this Lighting Component as a Simple Point Light with a position and a color
-void LightingComponent::initializeAsPointLight(const vec3* vPosition, const vec3* vColor)
+void LightingComponent::initializeAsPointLight(const vec3* vPosition, const vec3* vColor, float fPower)
 {
 	m_eType				= POINT_LIGHT;
+	m_fLightPower		= fPower;
 	m_vPosition			= *vPosition;
 	m_vDiffuseColor		= *vColor;
 }

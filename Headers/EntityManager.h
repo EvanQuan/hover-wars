@@ -28,7 +28,7 @@ public:
 	void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const string& sTextureLocation = "", const string& sShaderType = "");
 	void generateStaticSphere(float fRadius, const vec3* vPosition, const string& sTextureLocation = "", const string& sShaderType = "");
 	void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const string& sTextureLocation = "", const string& sShaderType = "" );
-	void generateStaticPointLight( const vec3* vPosition, const vec3* vColor, const string& sMeshLocation = "",const string& sTextureLocation = "");
+	void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const string& sMeshLocation = "",const string& sTextureLocation = "");
 	void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
 	void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const string& sTextureLocation = "", const string& sShaderType = "");
 	vec3 getEntityPosition(int iEntityID);

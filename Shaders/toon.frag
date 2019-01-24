@@ -1,4 +1,3 @@
-#version 430 core
 
 uniform bool bUsingLinux = true;
 float Rval = 1.0;	// Determines the Magnitude of the xtoon effect
@@ -22,7 +21,7 @@ void main(void)
 	if( bUsingLinux )
 		UV = -UV;
 
-	vec4 vObjColor = texture(gSampler, UV);
+	vec4 vObjColor = texture(sMaterial.vDiffuse, UV);
 
     color = vec4(vObjColor.xyz, 1.0);
 }

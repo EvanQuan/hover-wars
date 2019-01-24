@@ -1,4 +1,3 @@
-#version 430 core
 
 out vec4 color;
 
@@ -10,5 +9,5 @@ in vec3 V;
 
 void main(void)
 {    
-	color = vec4( vLightColor, 1.0 );
+	color = texture(sMaterial.vDiffuse, TexCoords);
 }
