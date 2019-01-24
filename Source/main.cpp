@@ -61,8 +61,10 @@ int main()
 		{
 			
 			// Bind window to graphics Manager
-			if (iRunning )
+			if (iRunning)
+			{
 				m_GpxMngr = GameManager::getInstance( m_Window );
+			}
 
 			// Initialize the Mouse and Command Handler.
 			m_MseHndlr = Mouse_Handler::getInstance( m_Window );
@@ -86,13 +88,19 @@ int main()
 
 		// Clean up!
 		if (m_GpxMngr != nullptr)
+		{
 			delete m_GpxMngr;
+		}
 
-		if( m_MseHndlr != nullptr )
+		if (m_MseHndlr != nullptr)
+		{
 			delete m_MseHndlr;
+		}
 
 		if (m_CmdHndlr != nullptr)
+		{
 			delete m_CmdHndlr;
+		}
 
 		glfwDestroyWindow(m_Window);
 	}
@@ -153,9 +161,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	CmdHandler* pCmdHndlr = CmdHandler::getInstance(window);
 
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
+	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
 	else
+	{
 		pCmdHndlr->handleKeyBoardInput(key, action, mods);
+	}
 }
 
 // handles Window Resize events
@@ -178,17 +190,25 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	{
 		glfwGetCursorPos(window, &fX, &fY);
 		if (GLFW_PRESS == action)
+		{
 			mMouseHndlr->mouseTStart();
+		}
 		else if (GLFW_RELEASE == action)
+		{
 			mMouseHndlr->mouseTEnd();
+		}
 	}
 	if (GLFW_MOUSE_BUTTON_2 == button)
 	{
 		glfwGetCursorPos(window, &fX, &fY);
 		if (GLFW_PRESS == action)
+		{
 			mMouseHndlr->mouseRStart();
+		}
 		else if (GLFW_RELEASE == action)
+		{
 			mMouseHndlr->mouseREnd();
+		}
 	}
 }
 

@@ -22,7 +22,9 @@ CmdHandler::CmdHandler(GLFWwindow *rWindow) : InputHandler()
 CmdHandler* CmdHandler::getInstance(GLFWwindow *rWindow)
 {
 	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new CmdHandler(rWindow);
+	}
 
 	return m_pInstance;
 }
@@ -31,9 +33,13 @@ CmdHandler* CmdHandler::getInstance(GLFWwindow *rWindow)
 CmdHandler* CmdHandler::getInstance(const char* c_Input, int iInputSize, GLFWwindow *rWindow)
 {
 	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new CmdHandler(c_Input, iInputSize, rWindow);
+	}
 	else
+	{
 		m_pInstance->load_Input(c_Input, iInputSize);
+	}
 
 	return m_pInstance;
 }

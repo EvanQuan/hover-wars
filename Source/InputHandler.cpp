@@ -58,7 +58,9 @@ int InputHandler::get_Next_Word(char* c_ReturnWord, int iReturnSize)
 
 		// Skip leading whitespace
 		while ((m_iCurrIndex < m_iInputSize) && (' ' == m_cBuffer[m_iCurrIndex]))
+		{
 			m_iCurrIndex++;
+		}
 
 		// Copy next word
 		while ((iIndex < (iReturnSize - 1)) && (m_cBuffer[m_iCurrIndex] != ' ') && !p_EOB())
