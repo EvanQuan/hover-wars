@@ -5,7 +5,7 @@
 #include "Mouse_Handler.h"
 #include "Scene_Loader.h"
 #include "EntityManager.h"
-#include "CmdHandler.h"
+#include "CommandHandler.h"
 
 #ifdef USING_LINUX
 		#include <Magick++.h>
@@ -29,7 +29,7 @@ int main()
 	GameManager* m_GpxMngr = 0;
 	ShaderManager* m_ShdrMngr = 0;
 	Mouse_Handler* m_MseHndlr = 0;
-	CmdHandler* m_CmdHndlr = 0;
+	CommandHandler* m_CmdHndlr = 0;
 
 
 	// Initialize GL and a window
@@ -68,7 +68,7 @@ int main()
 
 			// Initialize the Mouse and Command Handler.
 			m_MseHndlr = Mouse_Handler::getInstance( m_Window );
-			m_CmdHndlr = CmdHandler::getInstance(m_Window);
+			m_CmdHndlr = CommandHandler::getInstance(m_Window);
 
 			// Initialize Graphics
 			iRunning = !m_GpxMngr->initializeGraphics( STARTING_ENV );
@@ -158,7 +158,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	GameManager* pGPXMngr = GameManager::getInstance(window);
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
 	EntityManager* pEnvMngr = ENTITY_MANAGER;
-	CmdHandler* pCmdHndlr = CmdHandler::getInstance(window);
+	CommandHandler* pCmdHndlr = CommandHandler::getInstance(window);
 
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
 	{

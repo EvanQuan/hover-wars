@@ -22,7 +22,7 @@
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
     <ClInclude Include="Headers\Camera.h" />
-    <ClInclude Include="Headers\CmdHandler.h" />
+    <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DirectionalLight.h" />
     <ClInclude Include="Headers\EdgeBuffer.h" />
     <ClInclude Include="Headers\Entity.h" />
@@ -56,7 +56,7 @@
     <ClCompile Include="Source\Anim_Track.cpp" />
     <ClCompile Include="Source\BoidEngine.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
-    <ClCompile Include="Source\CmdHandler.cpp" />
+    <ClCompile Include="Source\CommandHandler.cpp" />
     <ClCompile Include="Source\DirectionalLight.cpp" />
     <ClCompile Include="Source\EdgeBuffer.cpp" />
     <ClCompile Include="Source\Entity.cpp" />

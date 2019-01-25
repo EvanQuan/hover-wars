@@ -1,3 +1,9 @@
+/*
+
+Receives user input (mouse, keyboard and controller) from initiates appropriate
+actions that correspond to input to CommandHandler.
+
+*/
 #include "stdafx.h"
 #include "InputHandler.h"
 
