@@ -34,7 +34,7 @@ EdgeBuffer::~EdgeBuffer()
 
 
 void EdgeBuffer::GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
-									 // const vector<trimesh::point>& pNormals,
+									  const vector<vec3>& pNormals,
 									  int iNumVerts )
 {
 	// Clear any data we had previously and resize for the new adjacency list.
@@ -46,21 +46,15 @@ void EdgeBuffer::GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
 	// Populate Adjacency List
 	for ( unsigned int i = 0; i < m_pIndices.size(); i += 3 )
 	{
-		/*Normal1 = vec3( pNormals[ m_pIndices[ i ] ][ 0 ],
-						pNormals[ m_pIndices[ i ] ][ 1 ],
-						pNormals[ m_pIndices[ i ] ][ 2 ] );
-		Normal2 = vec3( pNormals[ m_pIndices[ i + 1 ] ][ 0 ],
-						pNormals[ m_pIndices[ i + 1 ] ][ 1 ],
-						pNormals[ m_pIndices[ i + 1 ] ][ 2 ] );
-		Normal3 = vec3( pNormals[ m_pIndices[ i + 2 ] ][ 0 ],
-						pNormals[ m_pIndices[ i + 2 ] ][ 1 ],
-						pNormals[ m_pIndices[ i + 2 ] ][ 2 ] );//*/
+		Normal1 = vec3( pNormals[ m_pIndices[ i ] ] );
+		Normal2 = vec3( pNormals[ m_pIndices[ i + 1 ] ] );
+		Normal3 = vec3( pNormals[ m_pIndices[ i + 2 ] ] );//*/
 
 		pAvgNormal = (Normal1 + Normal2 + Normal3) * AVG_MULTIPLIER;
 		addTriangle( m_pIndices[ i ], m_pIndices[ i + 1 ], m_pIndices[ i + 2 ], i, pAvgNormal );
 	}
 
-	printEB();
+	//printEB();
 }
 
 void EdgeBuffer::GenerateAdjListStrip( const vector<vec3>& pVerts,
@@ -91,7 +85,7 @@ void EdgeBuffer::GenerateAdjListStrip( const vector<vec3>& pVerts,
 // Calculates the EdgeBuffer information for a trimesh object.  Only calculates if the camera has
 //	moved since last calculation.
 void EdgeBuffer::CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices,
-										  //const vector<trimesh::point>& pNormals,
+										  const vector<vec3>& pNormals,
 										  const vec3* pLookAt )
 {
 	// Compare new LookAt with previous one.
@@ -106,15 +100,9 @@ void EdgeBuffer::CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices
 		// For Every Triangle: calculate face and update EB
 		for ( unsigned int i = 0; i < iSize; i += 3 )
 		{
-			/*Normal1 = vec3( pNormals[ m_pIndices[ i ] ][ 0 ],
-							pNormals[ m_pIndices[ i ] ][ 1 ],
-							pNormals[ m_pIndices[ i ] ][ 2 ] );
-			Normal2 = vec3( pNormals[ m_pIndices[ i + 1 ] ][ 0 ],
-							pNormals[ m_pIndices[ i + 1 ] ][ 1 ],
-							pNormals[ m_pIndices[ i + 1 ] ][ 2 ] );
-			Normal3 = vec3( pNormals[ m_pIndices[ i + 2 ] ][ 0 ],
-							pNormals[ m_pIndices[ i + 2 ] ][ 1 ],
-							pNormals[ m_pIndices[ i + 2 ] ][ 2 ] );//*/
+			Normal1 = vec3( pNormals[ m_pIndices[ i ] ] );
+			Normal2 = vec3( pNormals[ m_pIndices[ i + 1 ] ] );
+			Normal3 = vec3( pNormals[ m_pIndices[ i + 2 ] ] );//*/
 		
 			pAvgNormal = (Normal1 + Normal2 + Normal3) * AVG_MULTIPLIER;
 		
@@ -146,15 +134,9 @@ void EdgeBuffer::CalculateEdgeBufferStrip( const vector<vec3>& pNormals, const v
 		// Populate Adjacency List
 		for ( unsigned int i = 0; i + 3 <= pNormals.size(); i = i + 2 )
 		{
-			Normal1 = vec3( pNormals[ i ][ 0 ],
-							pNormals[ i ][ 1 ],
-							pNormals[ i ][ 2 ] );
-			Normal2 = vec3( pNormals[ i + 1 ][ 0 ],
-							pNormals[ i + 1 ][ 1 ],
-							pNormals[ i + 1 ][ 2 ] );
-			Normal3 = vec3( pNormals[ i + 2 ][ 0 ],
-							pNormals[ i + 2 ][ 1 ],
-							pNormals[ i + 2 ][ 2 ] );
+			Normal1 = vec3( pNormals[ i ] );
+			Normal2 = vec3( pNormals[ i + 1 ] );
+			Normal3 = vec3( pNormals[ i + 2 ] );
 
 			pAvgNormal = (Normal1 + Normal2 + Normal3) * AVG_MULTIPLIER;
 
@@ -165,15 +147,9 @@ void EdgeBuffer::CalculateEdgeBufferStrip( const vector<vec3>& pNormals, const v
 			// Update Edges
 			updateTriangle( i, i + 1, i + 2, bFront, !bFront );
 
-			Normal1 = vec3( pNormals[ i + 2 ][ 0 ],
-							pNormals[ i + 2 ][ 1 ],
-							pNormals[ i + 2 ][ 2 ] );
-			Normal2 = vec3( pNormals[ i + 1 ][ 0 ],
-							pNormals[ i + 1 ][ 1 ],
-							pNormals[ i + 1 ][ 2 ] );
-			Normal3 = vec3( pNormals[ i + 3 ][ 0 ],
-							pNormals[ i + 3 ][ 1 ],
-							pNormals[ i + 3 ][ 2 ] );
+			Normal1 = vec3( pNormals[ i + 2 ] );
+			Normal2 = vec3( pNormals[ i + 1 ] );
+			Normal3 = vec3( pNormals[ i + 3 ] );
 
 			pAvgNormal = (Normal1 + Normal2 + Normal3) * AVG_MULTIPLIER;
 
@@ -196,7 +172,7 @@ void EdgeBuffer::CalculateEdgeBufferStrip( const vector<vec3>& pNormals, const v
  * Private Functions														   *
 \*******************************************************************************/
 
-void EdgeBuffer::drawEdgeBuffer( float fScale, vec3& pPosition, float fMinThreshold, float fMaxThreshold )
+void EdgeBuffer::drawEdgeBuffer( float fMinThreshold, float fMaxThreshold )
 {
 	// Get current bindings as a restore point
 	GLint iCurrProgBinding = 0, iCurrVABinding = 0;
@@ -204,7 +180,7 @@ void EdgeBuffer::drawEdgeBuffer( float fScale, vec3& pPosition, float fMinThresh
 	glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgBinding );
 
 	// Set Uniforms
-	setUniforms( fScale, pPosition );
+	//setUniforms( fScale, pPosition );
 
 	// Bind Edge Buffer data
 	glBindVertexArray( m_iVertexArray );
@@ -234,7 +210,7 @@ void EdgeBuffer::drawEdges( ShaderManager::eShaderType eType )
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_iIndicesBuffer );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, m_vDrawIndices.size() * sizeof( uvec2 ), m_vDrawIndices.data(), GL_DYNAMIC_DRAW );
 
-	glDrawElements( GL_LINES, m_vDrawIndices.size() * 2, GL_UNSIGNED_INT, nullptr );
+	glDrawElementsInstanced( GL_LINES, m_vDrawIndices.size() * 2, GL_UNSIGNED_INT, 0, 1 );
 }
 
 // Set Uniforms to all edge shaders: Scale, Position and Edge Width.

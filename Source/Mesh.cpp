@@ -20,6 +20,7 @@ Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, manager_cookie )
 	m_fScale = 0.25f;
 	m_pShdrMngr = SHADER_MANAGER;
 	glGenVertexArrays(1, &m_iVertexArray);
+	m_pEdgeBuffer = new EdgeBuffer(m_iVertexArray);
 }
 
 // Delete any buffers that we initialized
@@ -30,6 +31,9 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &m_iInstancedBuffer);
 	glDeleteBuffers(1, &m_iScaleBuffer);
 	glDeleteVertexArrays( 1, &m_iVertexArray );
+
+	if (nullptr != m_pEdgeBuffer)
+		delete m_pEdgeBuffer;
 }
 
 // Load the Mesh from a given file name
@@ -113,8 +117,8 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 void Mesh::genSphere(float fRadius, vec3 vPosition)
 {
 	// Algorithm pulled from: https://goo.gl/k9Q4mh
-	float const R = 1. / static_cast<float>(MAX_THETA_CUTS - 1);
-	float const S = 1. / static_cast<float>(MAX_PHI_CUTS - 1);
+	float const R = 1.f / static_cast<float>(MAX_THETA_CUTS - 1);
+	float const S = 1.f / static_cast<float>(MAX_PHI_CUTS - 1);
 	int r, s;
 
 	// Calculate Sizes of vectors ahead of time to avoid resize calls during loop
@@ -146,13 +150,14 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 	// Generate indices
 	m_pIndices.resize(MAX_THETA_CUTS * MAX_PHI_CUTS * 4);
 	vector<unsigned int>::iterator i = m_pIndices.begin();
+	unsigned int iWrapAroundMask = m_pVertices.size();
 
 	// Ensure index storage creates counter clockwise pattern for back-face culling.
 	for (r = 0; r < MAX_THETA_CUTS; r++) for (s = 0; s < MAX_PHI_CUTS; s++) {
-		*i++ = r * MAX_PHI_CUTS + s;
-		*i++ = (r + 1) * MAX_PHI_CUTS + s;
-		*i++ = r * MAX_PHI_CUTS + (s + 1);
-		*i++ = (r + 1) * MAX_PHI_CUTS + (s + 1);
+		*i++ = (r * MAX_PHI_CUTS + s) % iWrapAroundMask;
+		*i++ = ((r + 1) * MAX_PHI_CUTS + s) % iWrapAroundMask;
+		*i++ = (r * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
+		*i++ = ((r + 1) * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
 	}
 
 	// Translate to Position if Sphere is a Static Mesh.
@@ -416,6 +421,9 @@ void Mesh::initalizeVBOs()
 			GL_STATIC_DRAW);
 
 	}
+
+	// Generate Adjacency List for the Mesh.
+	m_pEdgeBuffer->GenerateAdjListMesh(m_pIndices, m_pNormals, m_pVertices.size());
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any
@@ -549,6 +557,16 @@ void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
 		glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_STREAM_DRAW);
 		m_iNumInstances = iSize;
 	}
+}
+
+void Mesh::renderEdgeBuffer(float fMinThreshold, float fMaxThreshold) const
+{
+	m_pEdgeBuffer->drawEdgeBuffer(fMinThreshold, fMaxThreshold);
+}
+
+void Mesh::updateEdgeBuffer(const vec3& vLookAt) const
+{
+	m_pEdgeBuffer->CalculateEdgeBufferMesh(m_pIndices, m_pNormals, &vLookAt);
 }
 
 /****************************************************************************\

@@ -1,4 +1,5 @@
 #include "EntityComponentHeaders/RenderComponent.h"
+#include "EntityManager.h"
 
 const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
 const string DEFAULT_SPECULAR_MAP = "textures/defaultSpecMap.jpg";
@@ -43,6 +44,9 @@ void RenderComponent::render()
 		glDrawElements(m_eMode, m_iCount, GL_UNSIGNED_INT, nullptr);
 	else
 		glDrawArrays(m_eMode, 0, m_iCount);
+
+	m_pMesh->updateEdgeBuffer(ENTITY_MANAGER->getActiveCamera()->getLookAt());
+	m_pMesh->renderEdgeBuffer( 90.f, 180.f );
 
 	// Unbind Texture(s) HERE
 	m_sRenderMaterial.m_pDiffuseMap->unbindTexture();

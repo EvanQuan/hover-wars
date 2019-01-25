@@ -13,17 +13,17 @@ public:
 	~EdgeBuffer();
 
 	void GenerateAdjListMesh( const vector<unsigned int>& m_pIndices,
-							  //const vector<trimesh::point>& pNormals,
+							  const vector<vec3>& pNormals,
 							  int iNumVerts );
 	void GenerateAdjListStrip( const vector<vec3>& pVerts,
 							   const vector<vec3>& pNormals,
 							   int iNumVerts );
 	void CalculateEdgeBufferMesh( const vector<unsigned int>& m_pIndices,
-								 // const vector<trimesh::point>& pNormals,
+								  const vector<vec3>& pNormals,
 								  const vec3* pLookAt );
 	void CalculateEdgeBufferStrip( const vector<vec3>& pNormals, const vec3* pLookAt );
 
-	void drawEdgeBuffer( float fScale, vec3& pPosition, float fMinThreshold, float fMaxThreshold );
+	void drawEdgeBuffer( float fMinThreshold, float fMaxThreshold );
 
 private:
 	// Edge Structure
