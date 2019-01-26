@@ -2,7 +2,7 @@
 #include "EntityManager.h"
 
 const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
-const string DEFAULT_SPECULAR_MAP = "textures/defaultSpecMap.jpg";
+const vec3 DEFAULT_SPEC_COLOR = vec3(0.f);
 
 // Default Constructor:
 //		Requires an EntityID for the Entity that the component is a part of
@@ -16,6 +16,9 @@ RenderComponent::RenderComponent(int iEntityID, int iComponentID, bool bStaticDr
 	m_eShaderType = eType;
 	m_eMode = eMode;
 	m_pShdrMngr = SHADER_MANAGER;
+	m_sRenderMaterial.fShininess = 0.0f;
+	m_sRenderMaterial.m_pDiffuseMap = nullptr;
+	m_sRenderMaterial.m_pSpecularMap = nullptr;
 }
 
 // Destructor
@@ -45,9 +48,6 @@ void RenderComponent::render()
 	else
 		glDrawArrays(m_eMode, 0, m_iCount);
 
-	m_pMesh->updateEdgeBuffer(ENTITY_MANAGER->getActiveCamera()->getLookAt());
-	m_pMesh->renderEdgeBuffer( 90.f, 180.f );
-
 	// Unbind Texture(s) HERE
 	m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
 	m_sRenderMaterial.m_pSpecularMap->unbindTexture();
@@ -60,28 +60,32 @@ void RenderComponent::update(double dTimeDelta)
 }
 
 void RenderComponent::initializeComponent(const Mesh* pMesh, 
-										  const string* pDiffuseTextureLoc,
-										  const string* pSpecularTextureLoc)
+										  const Material* pMaterial)
 {
 	// Get number of Vertices.
 	m_iCount = pMesh->getCount();
 
-	// Load Diffuse Texture if applicable
-	if (nullptr != pDiffuseTextureLoc)
-		m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture((*pDiffuseTextureLoc));
+	if (nullptr != pMaterial)
+	{
+		// Load Diffuse Texture if applicable
+		if ("" != pMaterial->sDiffuseMap)
+			m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(pMaterial->sDiffuseMap);
 
-	// If Texture failed to load, load default
-	if( nullptr == m_sRenderMaterial.m_pDiffuseMap)
+		// Load Texture if applicable
+		if ("" != pMaterial->sOptionalSpecMap)
+			m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->loadTexture(pMaterial->sOptionalSpecMap);
+		else	// "" as Spec Map Location? just generate a texture from whatever the Spec Shade is.
+			m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&pMaterial->vOptionalSpecShade);
+
+		// Store Shininess
+		m_sRenderMaterial.fShininess = pMaterial->fShininess;
+	}
+
+	// Set some defaults if no Maps were specified.
+	if( nullptr == m_sRenderMaterial.m_pDiffuseMap )
 		m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
-
-	// Load Texture if applicable
-	if (nullptr != pSpecularTextureLoc)
-		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->loadTexture((*pSpecularTextureLoc));
-	
-	// If Texture failed to load, load default
-	if (nullptr == m_sRenderMaterial.m_pSpecularMap)
-		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->loadTexture(DEFAULT_SPECULAR_MAP);
-
+	if( nullptr == m_sRenderMaterial.m_pSpecularMap )
+		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
 
 	// Check Rendering Flags in Mesh.
 	m_bUsingIndices = pMesh->usingIndices();

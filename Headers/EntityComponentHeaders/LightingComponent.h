@@ -13,6 +13,15 @@ class LightingComponent
 	: public EntityComponent
 {
 public:
+
+	enum eLightType
+	{
+		POINT_LIGHT = 0,
+		DIRECTIONAL_LIGHT,
+		SPOTLIGHT,
+		MAX_TYPES
+	};
+
 	LightingComponent(int iEntityID, int iComponentID);
 	virtual ~LightingComponent();
 
@@ -32,6 +41,7 @@ public:
 	// Getters for the Lights
 	vec3 getPosition() { return m_vPosition; }
 	vec3 getColor() { return m_vDiffuseColor; }
+	eLightType getType() { return m_eType; }
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
@@ -45,12 +55,6 @@ private:
 	// Directional Light Variables
 	vec3 m_vDirection, m_vAmbientColor, m_vSpecularColor;
 
-	enum eLightType
-	{
-		POINT_LIGHT = 0,
-		DIRECTIONAL_LIGHT,
-		SPOTLIGHT,
-		MAX_TYPES
-	};
+	
 	eLightType m_eType;
 };

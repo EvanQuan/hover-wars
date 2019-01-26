@@ -30,8 +30,7 @@ public:
 
 	// Initializes the proper buffers on the GPU for rendering.
 	void initializeComponent( Mesh const  * pMesh, 
-							  const string* pDiffuseTextureLoc = nullptr,
-							  const string* pSpecularTextureLoc = nullptr );
+							  const Material* pMaterial = nullptr);
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
@@ -50,7 +49,7 @@ private:
 	ShaderManager::eShaderType m_eShaderType;
 
 	// Material Struct for setting uniform in Lighting Shaders
-	struct sMaterial
+	struct sRenderMaterial
 	{
 		Texture* m_pDiffuseMap;
 		Texture* m_pSpecularMap;

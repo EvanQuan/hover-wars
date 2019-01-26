@@ -7,10 +7,11 @@
 #define DIRECTIONAL_LIGHT_SIZE (sizeof(vec4) << 2)
 #define POINT_LIGHT_OFFSET (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE)
 // POINT_LIGHT_SIZE: float bytesize of 4 -> 16 bytes due to spacing requirements of uniform buffers
-#define POINT_LIGHT_SIZE (sizeof(vec4) << 1) + sizeof(vec4)
+#define POINT_LIGHT_SIZE ((sizeof(vec4) << 1) + sizeof(vec4))
 #define LIGHT_BUFFER_SIZE (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2))
 #define NUM_DIRECTIONAL_LIGHT_PARAMS 4
 #define NUM_POINT_LIGHT_PARAMS 3
+#define MAX_NUM_POINT_LIGHTS 4
 
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
@@ -175,7 +176,7 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 {
 	// Get initial values for Light Block
 	int bUsingDirectionalLight = nullptr != pDirectionalLight;
-	unsigned int iNumPointLights = pPointLights->size();
+	unsigned int iNumPointLights = 0;
 	vector< vec4 > pLightData, pDirectionalLightData;
 	
 	if (bUsingDirectionalLight)
@@ -188,10 +189,17 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 		iter != pPointLights->end();
 		++iter)
 	{
-		vector< vec4 > pPointLightData = (*iter)->getLightInformation();
+		if (LightingComponent::eLightType::POINT_LIGHT == (*iter)->getType())
+		{
+			vector< vec4 > pPointLightData = (*iter)->getLightInformation();
 
-		assert(pPointLightData.size() == NUM_POINT_LIGHT_PARAMS);
-		pLightData.insert(pLightData.end(), pPointLightData.begin(), pPointLightData.end());
+			assert(pPointLightData.size() == NUM_POINT_LIGHT_PARAMS);
+			pLightData.insert(pLightData.end(), pPointLightData.begin(), pPointLightData.end());
+			++iNumPointLights;
+
+			if (MAX_NUM_POINT_LIGHTS == iNumPointLights)
+				break;
+		}
 	}
 
 	// GLSL Uniform Buffer Block:

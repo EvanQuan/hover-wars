@@ -1,5 +1,4 @@
 #pragma once
-
 #include "stdafx.h"
 #include "Anim_Track.h"
 
@@ -25,8 +24,9 @@ private:
 	Scene_Loader();
 	Scene_Loader( Scene_Loader* pCopy );
 	static Scene_Loader* m_pInstance;
-	string m_sTextureProperty, m_sMeshProperty, m_sShaderProperty;
+	string m_sMeshProperty, m_sShaderProperty;
 	Anim_Track* m_pAnimProperty;
+	Material m_pMaterialProperty;
 
 	long m_lNextID;
 	long getNewID() { return ++m_lNextID; }
@@ -34,21 +34,9 @@ private:
 	void pullData( ifstream& inFile, vector< string >& sReturnData );
 	void handleData( vector< string >& sData, const string& sIndicator );
 	void handleProperty( vector< string >& sData, const string& sIndicator );
+	void grabMaterial(vector< string >& sData);
 	void clearProperties(); // Clear any properties
 	
-	void saveProperties( string& sTextureProperty, string& sMeshProperty, Anim_Track* pAnimTrackProp )
-	{
-		sTextureProperty = m_sTextureProperty;
-		sMeshProperty = m_sMeshProperty;
-		pAnimTrackProp = m_pAnimProperty;
-
-	}
-	void restoreProperties( const string& sTextureProperty, const string& sMeshProperty, Anim_Track* pAnim )
-	{
-		m_sTextureProperty = (sTextureProperty == "") ? m_sTextureProperty : sTextureProperty;
-		m_sMeshProperty = (sMeshProperty == "") ? m_sMeshProperty : sMeshProperty;
-		m_pAnimProperty = (nullptr == pAnim) ? m_pAnimProperty : pAnim;
-	}
 	string trimString( const string& sStr );
 };
 

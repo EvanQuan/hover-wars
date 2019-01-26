@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "Scene_Loader.h"
 #include "BoidEngine.h"
 #include "Entity.h"
 #include "Camera.h"
@@ -25,12 +26,12 @@ public:
 
 	// Entity Functions
 	Camera* generateCameraEntity();
-	void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const string& sTextureLocation = "", const string& sShaderType = "");
-	void generateStaticSphere(float fRadius, const vec3* vPosition, const string& sTextureLocation = "", const string& sShaderType = "");
-	void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const string& sTextureLocation = "", const string& sShaderType = "" );
-	void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const string& sMeshLocation = "",const string& sTextureLocation = "");
+	void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const string& sShaderType = "");
+	void generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const string& sShaderType = "");
+	void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const string& sShaderType = "" );
+	void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation = "");
 	void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
-	void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const string& sTextureLocation = "", const string& sShaderType = "");
+	void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, const string& sShaderType = "");
 	vec3 getEntityPosition(int iEntityID);
 
 	// Entity Component functions
@@ -88,6 +89,7 @@ private:
 	// Manage Pointers for Deletion.
 	MeshManager*				m_pMshMngr;
 	TextureManager*				m_pTxtMngr;
+	Scene_Loader*				m_pScnLdr;
 
 	// Edge Threshold Implementation
 	float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;

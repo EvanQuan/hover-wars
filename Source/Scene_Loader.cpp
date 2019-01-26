@@ -9,8 +9,8 @@
 #define MAX_CHARS_PER_LINE 256
 #define MAX_SPHERE_PARAMS 4
 #define MAX_PLANE_PARAMS 8
-#define MAX_TRI_PARAMS 12
 #define MAX_POINT_LIGHT_PARAMS 7
+#define MAX_DIR_LIGHT_PARAMS 12
 #define MAX_MESH_PARAMS 3
 #define MAX_TRACK_PARAMS 1
 #define COMMENT_CHAR '#'
@@ -23,8 +23,7 @@ Scene_Loader::Scene_Loader()
 {
 	m_lNextID = 0;
 
-	m_pAnimProperty = nullptr;
-	m_sMeshProperty = m_sTextureProperty = "";
+	clearProperties();
 }
 
 // Returns the singleton instance of the Object Factory
@@ -55,7 +54,7 @@ void Scene_Loader::createSphere( vector< string > sData, int iLength )
 		vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );	// Position of Sphere
 
 		ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), &vPosition, 
-											 m_sTextureProperty, m_sShaderProperty);
+											 &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
 		outputError("sphere", sData);
@@ -74,7 +73,7 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 		vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
 		iHeight = stoi(sData[6]);
 		iWidth = stoi(sData[7]);
-		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, m_sTextureProperty, m_sShaderProperty);
+		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
 		outputError("Plane", sData);
@@ -87,9 +86,9 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 {
 	vec3 vDirection, vDiffuseColor, vAmbientColor, vSpecularColor;
 
-	if ( MAX_POINT_LIGHT_PARAMS == iLength )
+	if ( MAX_DIR_LIGHT_PARAMS == iLength )
 	{
-		vDirection = vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ );
+		vDirection = normalize( vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ ) );
 		vAmbientColor = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
 		vDiffuseColor = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
 		vSpecularColor = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
@@ -113,7 +112,7 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 		pPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
 		pColor = vec3(stof(sData[3])/*R*/, stof(sData[4])/*G*/, stof(sData[5])/*B*/);
 
-		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, m_sMeshProperty, m_sTextureProperty);
+		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty);
 	}
 	else
 		outputError("light", sData);
@@ -126,7 +125,7 @@ void Scene_Loader::createPlayer(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, m_sTextureProperty, m_sShaderProperty);
+	ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, &m_pMaterialProperty, m_sShaderProperty);
 }
 
 // Generates a Static Mesh Object at a specified location.
@@ -134,7 +133,7 @@ void Scene_Loader::createStaticMesh(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, m_sTextureProperty, m_sShaderProperty);
+	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, m_sShaderProperty);
 }
 
 /**************************************************************************\
@@ -232,14 +231,11 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 			if ( '+' == sParser[ 0 ] )
 			{
 				// Handle Property
-				saveProperties( sTexturePropPH, sMeshPropPH, pAnimTrackPropPH );	// Save properties from being overwritten.
-				m_sMeshProperty = m_sTextureProperty = "";
 				sPropertyIndicator = sParser.substr( 1, sParser.size() - 1 );	// Grab property identifier without the '+'
 				sStream.str( "" );			// Clear rest of stream.
 				sStream.clear();			// clear flags
 				pullData( inFile, sPropertyData );						// pull property information
 				handleProperty( sPropertyData, sPropertyIndicator );	// store property internally
-				restoreProperties( sTexturePropPH, sMeshPropPH, pAnimTrackPropPH );	// restore previous properties.
 			}
 			else if ( "" != sParser )					// Avoid Garbage
 				sReturnData.push_back( sParser );
@@ -252,15 +248,17 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 
 void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator )
 {
-	if ("sphere" == sIndicator)				// Parse Sphere
+	if ("sphere" == sIndicator)					// Parse Sphere
 		createSphere(sData, sData.size());
-	else if ("plane" == sIndicator)			// Parse Plane
+	else if ("plane" == sIndicator)				// Parse Plane
 		createPlane(sData, sData.size());
-	else if ("point_light" == sIndicator)	// Parse Point Light
+	else if ("point_light" == sIndicator)		// Parse Point Light
 		createPointLight(sData, sData.size());
-	else if ("player" == sIndicator)		// Parse Player
+	else if ("directional_light" == sIndicator)	// Parse Directional Light
+		createDirectionalLight(sData, sData.size());
+	else if ("player" == sIndicator)			// Parse Player
 		createPlayer(sData, sData.size());
-	else if ("static_mesh" == sIndicator)	// Parse Static Mesh
+	else if ("static_mesh" == sIndicator)		// Parse Static Mesh
 		createStaticMesh(sData, sData.size());
 	else if ("boids" == sIndicator)	// Parse Mass Spring System
 		ENTITY_MANAGER->initializeBoidEngine(sData);
@@ -273,14 +271,53 @@ void Scene_Loader::handleProperty( vector< string >& sData, const string& sIndic
 {
 	string sDataTrimmed = trimString( sData[ 0 ] );
 
-	if ("anim_track" == sIndicator)
-		m_pAnimProperty = new Anim_Track(getNewID(), &sDataTrimmed, &m_sMeshProperty, &m_sTextureProperty);
-	else if ("texture" == sIndicator)
-		m_sTextureProperty = sDataTrimmed;
+	if ("material" == sIndicator)
+		grabMaterial(sData);
 	else if ("mesh" == sIndicator)
 		m_sMeshProperty = sDataTrimmed;
 	else if ("shader" == sIndicator)
 		m_sShaderProperty = sDataTrimmed;
+}
+
+// Grabs a Material from the given data
+//	format for Material:
+//		- sData[0] = string location for Diffuse Map (Required)
+//		- sData[1] = (Optional) string location for Specular Map
+//		- sData[1], sData[2], sData[3] = (Optional) float values for a generated specular map.
+//		- sData[1]/sData[2]/sData[4] = (Required) float value for Shininess of Material.
+// Possible sizes for sData = 
+//		- 2: Diffuse Map and Shininess value. Specular Map defaults to 0.0
+//		- 3: Diffuse Map, Spec Map location, Shininess Value.
+//		- 5: Diffuse Map, Spec Map Shade, Shininess Value
+void Scene_Loader::grabMaterial(vector< string >& sData)
+{
+	switch (sData.size())
+	{
+	case 2:	// Diffuse Map and Shininess Value
+		m_pMaterialProperty.sDiffuseMap = sData[0];
+		m_pMaterialProperty.vOptionalSpecShade = vec3(0.0);
+		m_pMaterialProperty.fShininess = stof(sData[1]);
+		break;
+	case 3: // Diffuse Map, Spec Map location and Shininess Value
+		m_pMaterialProperty.sDiffuseMap = sData[0];
+		m_pMaterialProperty.sOptionalSpecMap = sData[1];
+		m_pMaterialProperty.fShininess = stof(sData[2]);
+		break;
+	case 5: // Diffuse Map, Spec Map Shade and Shininess Value
+		m_pMaterialProperty.sDiffuseMap = sData[0];
+		m_pMaterialProperty.vOptionalSpecShade = vec3(stof(sData[1]), stof(sData[2]), stof(sData[3]));
+		m_pMaterialProperty.fShininess = stof(sData[4]);
+		break;
+	default:
+		cout << "Error: Double Check Material parameters:{ \n";
+		for (vector<string>::iterator iter = sData.begin();
+			iter != sData.end();
+			++iter)
+			cout << (*iter) << " ";
+		cout << "}\n";
+		break;
+	}
+		
 }
 
 // Removes any tabs from the beginning or end of a given string.
@@ -307,5 +344,9 @@ void Scene_Loader::clearProperties() // Clear any properties
 		delete m_pAnimProperty;
 
 	m_pAnimProperty = nullptr;
-	m_sMeshProperty = m_sTextureProperty = m_sShaderProperty = "";
+	m_sMeshProperty = m_sShaderProperty = "";
+
+	m_pMaterialProperty.fShininess = 0.0f;
+	m_pMaterialProperty.sDiffuseMap = m_pMaterialProperty.sOptionalSpecMap = "";
+	m_pMaterialProperty.vOptionalSpecShade = vec3(0.0f);
 }

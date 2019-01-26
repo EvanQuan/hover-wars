@@ -20,7 +20,6 @@ Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, manager_cookie )
 	m_fScale = 0.25f;
 	m_pShdrMngr = SHADER_MANAGER;
 	glGenVertexArrays(1, &m_iVertexArray);
-	m_pEdgeBuffer = new EdgeBuffer(m_iVertexArray);
 }
 
 // Delete any buffers that we initialized
@@ -31,9 +30,6 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &m_iInstancedBuffer);
 	glDeleteBuffers(1, &m_iScaleBuffer);
 	glDeleteVertexArrays( 1, &m_iVertexArray );
-
-	if (nullptr != m_pEdgeBuffer)
-		delete m_pEdgeBuffer;
 }
 
 // Load the Mesh from a given file name
@@ -421,9 +417,6 @@ void Mesh::initalizeVBOs()
 			GL_STATIC_DRAW);
 
 	}
-
-	// Generate Adjacency List for the Mesh.
-	m_pEdgeBuffer->GenerateAdjListMesh(m_pIndices, m_pNormals, m_pVertices.size());
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any
@@ -557,16 +550,6 @@ void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
 		glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_STREAM_DRAW);
 		m_iNumInstances = iSize;
 	}
-}
-
-void Mesh::renderEdgeBuffer(float fMinThreshold, float fMaxThreshold) const
-{
-	m_pEdgeBuffer->drawEdgeBuffer(fMinThreshold, fMaxThreshold);
-}
-
-void Mesh::updateEdgeBuffer(const vec3& vLookAt) const
-{
-	m_pEdgeBuffer->CalculateEdgeBufferMesh(m_pIndices, m_pNormals, &vLookAt);
 }
 
 /****************************************************************************\

@@ -1,6 +1,6 @@
 
 // Gooch Variables
-float fShine = 5.0;	// Specular "Shininess" value
+float fShine = 0.5;	// Specular "Shininess" value
 
 const vec3 MIDNIGHT_BLUE = vec3(0.09803921568627450980392156862745, 0.09803921568627450980392156862745, 0.43921568627450980392156862745098); 
 out vec4 color;

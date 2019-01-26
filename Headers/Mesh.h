@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
 #include "ShaderManager.h"
-#include "EdgeBuffer.h"
 
 //////////////////////////////////////////////////////////////////
 // Name: Mesh.h
@@ -43,7 +42,6 @@ private:
 	GLuint m_iNumInstances;
 	mat4 m_m4DefaultInstance;
 	bool m_bStaticMesh;
-	EdgeBuffer* m_pEdgeBuffer;
 
 	// Friend Class: Object_Factory to create Meshes.
 	friend class MeshManager;
@@ -68,8 +66,6 @@ public:
 	// Checks for Render Component
 	bool usingIndices() const { return !m_pIndices.empty(); }
 	bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
-	void renderEdgeBuffer(float fMinThreshold, float fMaxThreshold) const;
-	void updateEdgeBuffer(const vec3& vLookAt) const;
 
 	// Getters for Mesh Data
 	const vector<vec3>& getVertices() const { return m_pVertices; }
