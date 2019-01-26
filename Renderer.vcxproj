@@ -24,7 +24,6 @@
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\CmdHandler.h" />
     <ClInclude Include="Headers\DirectionalLight.h" />
-    <ClInclude Include="Headers\EdgeBuffer.h" />
     <ClInclude Include="Headers\Entity.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
@@ -58,7 +57,6 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CmdHandler.cpp" />
     <ClCompile Include="Source\DirectionalLight.cpp" />
-    <ClCompile Include="Source\EdgeBuffer.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />

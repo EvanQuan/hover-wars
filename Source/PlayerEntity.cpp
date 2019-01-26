@@ -15,7 +15,7 @@ PlayerEntity::~PlayerEntity()
 
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
-									const string& sTextureLocation,
+									const Material* pMaterial,
 									const string& sShaderType)
 {
 	// Load Mesh and Rendering Component
@@ -24,5 +24,5 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 
 	// Ensure that the Entity Manager returned a Render Component and Initialize it.
 	assert(nullptr != m_pRenderComponent);
-	m_pRenderComponent->initializeComponent(m_pMesh, &sTextureLocation);
+	m_pRenderComponent->initializeComponent(m_pMesh, pMaterial);
 }

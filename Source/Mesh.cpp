@@ -113,8 +113,8 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 void Mesh::genSphere(float fRadius, vec3 vPosition)
 {
 	// Algorithm pulled from: https://goo.gl/k9Q4mh
-	float const R = 1. / static_cast<float>(MAX_THETA_CUTS - 1);
-	float const S = 1. / static_cast<float>(MAX_PHI_CUTS - 1);
+	float const R = 1.f / static_cast<float>(MAX_THETA_CUTS - 1);
+	float const S = 1.f / static_cast<float>(MAX_PHI_CUTS - 1);
 	int r, s;
 
 	// Calculate Sizes of vectors ahead of time to avoid resize calls during loop
@@ -146,13 +146,14 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 	// Generate indices
 	m_pIndices.resize(MAX_THETA_CUTS * MAX_PHI_CUTS * 4);
 	vector<unsigned int>::iterator i = m_pIndices.begin();
+	unsigned int iWrapAroundMask = m_pVertices.size();
 
 	// Ensure index storage creates counter clockwise pattern for back-face culling.
 	for (r = 0; r < MAX_THETA_CUTS; r++) for (s = 0; s < MAX_PHI_CUTS; s++) {
-		*i++ = r * MAX_PHI_CUTS + s;
-		*i++ = (r + 1) * MAX_PHI_CUTS + s;
-		*i++ = r * MAX_PHI_CUTS + (s + 1);
-		*i++ = (r + 1) * MAX_PHI_CUTS + (s + 1);
+		*i++ = (r * MAX_PHI_CUTS + s) % iWrapAroundMask;
+		*i++ = ((r + 1) * MAX_PHI_CUTS + s) % iWrapAroundMask;
+		*i++ = (r * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
+		*i++ = ((r + 1) * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
 	}
 
 	// Translate to Position if Sphere is a Static Mesh.

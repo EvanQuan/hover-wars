@@ -44,8 +44,12 @@
 # For any object, additional attributes can be given in-line to specify additional
 #	aspects of an object. Those that can't be used for an object will be ignored.
 #
-#		+texture	{ <texture location> }
+#		+material	{ <diffuse map location> <*specular map location*> S }
 #			- specifies a texture to use for the object.
+#			- <diffuse map location> 	= specifies a texture to use as a diffuse map for the object
+#			- <*specular map location*>	= (Optional) specifies a texture to use as a specular map.
+#										= (Optional) if specified as 3 floats, a texture of that shade will be generated.
+#			- S							= specifies the shininess of the material
 #		+mesh		{ <mesh location> }
 #			- specifies a mesh .obj that will be loaded for the object
 #			- if a mesh is expected, but no mesh is given, a cube will be used as default.
@@ -57,28 +61,35 @@
 #			- TODO: list valid <shader type> inputs here.
 # ============================================================
 
+directional_light {
+	-1 -1 -1
+	0 0 0
+	0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+	0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+}
+
 point_light {
 	7.5 0 0
 	1.0 0.0 1.0
-	5.0
+	6.0
 }
 
 point_light {
 	-7.5 0 0
 	1.0 0.0 0.0
-	5.0
+	6.0
 }
 
 point_light {
 	0 0 7.5
 	0.0 0.0 1.0
-	5.0
+	6.0
 }
 
 point_light {
   0 0 -7.5
   1.0 1.0 1.0
-  5.0
+  6.0
 }
 
 #Indices:
@@ -108,8 +119,10 @@ plane {
 	0 -2 0
 	0 1 0
 	40 40
-	+texture {
+	+material {
 		textures/groundSeamless.jpg
+		0 0 0
+		0
 	}
 	+shader {
 		plane_shdr
@@ -167,8 +180,10 @@ player {
 	+mesh {
 		models/big_dodge.obj
 	}
-	+texture {
+	+material {
 		textures/tronBase.png
+		0.1 0.1 0.1
+		20.0
 	}	
 	+shader {
 		blinn_phong_shdr
@@ -180,8 +195,9 @@ static_mesh {
 	+mesh {
 		models/bunny.obj
 	}
-	+texture {
+	+material {
 		textures/fig-7c.png
+		0.0
 	}
 	+shader {
 		toon_shdr
@@ -190,7 +206,9 @@ static_mesh {
 
 sphere {
 	4 4 0 .5
-	+texture {
+	+material {
 		textures/nightSpherical.jpg
+		textures/nightSphericalSpecMap.png
+		100.0
 	}
 }

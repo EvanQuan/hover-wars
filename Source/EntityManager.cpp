@@ -1,5 +1,4 @@
 #include "EntityManager.h"
-#include "Scene_Loader.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "StaticEntity.h"
 #include "PlayerEntity.h"
@@ -23,6 +22,7 @@ EntityManager::EntityManager()
 	m_bPause = false;
 	m_pMshMngr = MESH_MANAGER;
 	m_pTxtMngr = TEXTURE_MANAGER;
+	m_pScnLdr = SCENE_LOADER;
 
 	//TODO: redesign Boid Engine: m_pBoidEngine = new BoidEngine();
 }
@@ -51,6 +51,9 @@ EntityManager::~EntityManager()
 	// Delete Texture Manager
 	if (nullptr != m_pTxtMngr)
 		delete m_pTxtMngr;
+
+	if (nullptr != m_pScnLdr)
+		delete m_pScnLdr;
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -135,7 +138,6 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 {
 	// Local Variables
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
-	vec3 pLightPosition, pLightColor;
 	const LightingComponent* pDirectionalLightComponent = nullptr;
 
 	if (nullptr != m_pDirectionalLight)
@@ -144,18 +146,6 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 
 	// Calculate information for each Light in the scene (Current max = 1)
 	assert(!m_pLights.empty());
-	pLightPosition = m_pLights.front()->getPosition();
-	pLightColor = m_pLights.front()->getColor();
-
-	// Store Information to all Shaders
-	//pShdrMngr->setUniformVec3( ShaderManager::eShaderType::BLINN_PHONG_SHDR, "lightPosition",  &pLightPosition );
-	//pShdrMngr->setUniformVec3(ShaderManager::eShaderType::DIFF_SHDR, "lightPosition", &pLightPosition);
-	//pShdrMngr->setUniformVec3(ShaderManager::eShaderType::TOON_SHDR, "lightPosition", &pLightPosition);
-	//pShdrMngr->setUniformVec3( ShaderManager::eShaderType::PLANE_SHDR, "lightPosition", &pLightPosition );
-	//pShdrMngr->setUniformVec3(ShaderManager::eShaderType::BOID_SHDR, "lightPosition_worldSpace", &pLightPosition );
-	//pShdrMngr->setUniformVec3(ShaderManager::eShaderType::PLANE_SHDR, "vLightColor", &pLightColor);
-	//const vector< LightingComponent* > pLightingComponents = { m_pLights.front() };
-
 	pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
 	//(*pLightIter)->draw( vCamLookAt );
@@ -218,41 +208,41 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const string& sTextureLocation, const string& sShaderType)
+void EntityManager::generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const string& sShaderType)
 {
 	unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sTextureLocation, sShaderType);
+	pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sMaterial, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewPlane));
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticSphere(float fRadius, const vec3* vPosition, const string& sTextureLocation, const string& sShaderType)
+void EntityManager::generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const string& sShaderType)
 {
 	unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewSphere->loadAsSphere(fRadius, sTextureLocation, sShaderType);
+	pNewSphere->loadAsSphere(fRadius, sMaterial, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
 // Generates a Static Mesh at a given location
-void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const string& sTextureLocation, const string& sShaderType )
+void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const string& sShaderType )
 {
 	unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewMesh->loadFromFile(sMeshLocation, sTextureLocation, sShaderType);
+	pNewMesh->loadFromFile(sMeshLocation, sMaterial, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
-void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const string& sTextureLocation, const string& sShaderType)
+void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, const string& sShaderType)
 {
 	unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
-	pNewPlayer->initializePlayer(sMeshLocation, sTextureLocation, sShaderType);
+	pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewPlayer));
 }
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
-void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const string& sMeshLocation, const string& sTextureLocation)
+void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation)
 {
 	unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), vPosition);
-	pNewLight->initialize(fPower, vColor, &sTextureLocation, true, sMeshLocation);
+	pNewLight->initialize(fPower, vColor, true, sMaterial, sMeshLocation);
 
 	if (nullptr == m_pTestingLight)
 		m_pTestingLight = pNewLight.get();

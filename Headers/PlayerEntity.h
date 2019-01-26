@@ -11,7 +11,7 @@ public:
 	virtual ~PlayerEntity();
 
 	void initializePlayer(const string& sFileName, 
-							const string& sTextureLocation, 
+							const Material* pMaterial, 
 							const string& sShaderType);
 
 private:

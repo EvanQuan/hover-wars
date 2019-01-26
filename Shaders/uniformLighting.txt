@@ -12,8 +12,6 @@ struct PointLight {
 	vec3 vColor;
 };
 
-#define MAX_POINT_LIGHTS 4
-
 layout (std140, binding = 2) uniform Lights
 {
 	int numPointLights;

@@ -5,12 +5,11 @@ layout (std140, binding = 0) uniform Matrices
 	mat4 modelview;
 };
 
-
-uniform mat4 translate;
 uniform float fScale;
 
 layout (location = 0) in vec3 vertex;
 layout (location = 1) in vec3 normal;
+layout (location = 3) in mat4 translate;
 
 out vec3 V;
 out vec3 N;
@@ -25,6 +24,6 @@ void main(void)
 	N = normalize( normalMatrix * normal );
 	ObjN = normalize( normal );
 	
-    gl_Position = /*projection * modelview * vec4( (*/translate * vec4( vertex, 1.0 ) * fScale/*).xyz, 1.0 )*/;
+    gl_Position = translate * vec4( vertex, 1.0 ) * fScale;
 
 }

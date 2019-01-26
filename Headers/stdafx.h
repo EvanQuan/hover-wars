@@ -48,11 +48,22 @@ using namespace glm;
 #define LIGHT_MOVE_FACTOR	0.05f
 #define PI					3.14159265f
 
+/* GLOBAL STRUCTS */
+struct Material
+{
+	string sDiffuseMap;
+	string sOptionalSpecMap;
+	vec3 vOptionalSpecShade;
+	float fShininess;
+};
+
+
 /* Manager Defines */
-#define ENTITY_MANAGER EntityManager::getInstance()
-#define SHADER_MANAGER ShaderManager::getInstance()
-#define MESH_MANAGER MeshManager::getInstance()
+#define ENTITY_MANAGER	EntityManager::getInstance()
+#define SHADER_MANAGER	ShaderManager::getInstance()
+#define MESH_MANAGER	MeshManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
+#define SCENE_LOADER	Scene_Loader::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
