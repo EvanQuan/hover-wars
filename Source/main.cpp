@@ -1,11 +1,11 @@
 /* INCLUDES */
 #include "stdafx.h"
+#include "CommandHandler.h"
+#include "EntityManager.h"
 #include "GameManager.h"
-#include "ShaderManager.h"
 #include "Mouse_Handler.h"
 #include "Scene_Loader.h"
-#include "EntityManager.h"
-#include "CommandHandler.h"
+#include "ShaderManager.h"
 
 #ifdef USING_LINUX
 		#include <Magick++.h>
