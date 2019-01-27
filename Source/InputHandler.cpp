@@ -67,28 +67,20 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 {
 	vec3 pMoveVec(0.f, 0.f, 0.f);
-	CommandHandler::Command command;
+	CommandHandler::Command command = CommandHandler::NOTHING;
 	switch (cKey)
 	{
 	case GLFW_KEY_W:
 		command = CommandHandler::MOVE_FORWARD;
-		// pMoveVec.z += LIGHT_MOVE_FACTOR;
-		// m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case GLFW_KEY_S:
 		command = CommandHandler::MOVE_BACK;
-		// pMoveVec.z -= LIGHT_MOVE_FACTOR;
-		// m_pEntMngr->moveLight(pMoveVec);
 		break;
 	case GLFW_KEY_A:
-		command = CommandHandler::MOVE_RIGHT;
-		// pMoveVec.x -= LIGHT_MOVE_FACTOR;
-		// m_pEntMngr->moveLight(pMoveVec);
+		command = CommandHandler::MOVE_LEFT;
 		break;
 	case GLFW_KEY_D:
-		command = CommandHandler::MOVE_LEFT;
-		// pMoveVec.x += LIGHT_MOVE_FACTOR;
-		// m_pEntMngr->moveLight(pMoveVec);
+		command = CommandHandler::MOVE_RIGHT;
 		break;
 	case GLFW_KEY_J:
 		command = CommandHandler::TURN_LEFT;
@@ -117,30 +109,20 @@ void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 	case GLFW_KEY_APOSTROPHE:
 		command = CommandHandler::ABILITY_SPIKES;
 		break;
-		// pMoveVec.y += LIGHT_MOVE_FACTOR;
-		// m_pEntMngr->moveLight(pMoveVec);
-	// case(GLFW_KEY_X):
-		// pMoveVec.y -= LIGHT_MOVE_FACTOR;
-		// m_pEntMngr->moveLight(pMoveVec);
-		// break;
-	case(GLFW_KEY_F):
-		command = GLFW_RELEASE == iAction ? CommandHandler::DEBUG_TOGGLE_WIREFRAME
-		                                  : CommandHandler::NOTHING;
+	case GLFW_KEY_F:
+		if (GLFW_PRESS == iAction)
+		{
+			command = CommandHandler::DEBUG_TOGGLE_WIREFRAME;
+		}
 		break;
-	case(GLFW_KEY_ENTER):
+	case GLFW_KEY_ENTER:
 		command = CommandHandler::MENU_SELECT;
 		break;
-	// case(GLFW_KEY_C):
-		// if( iAction == GLFW_RELEASE )
-			// m_pGPXMngr->switchView();
-		// break;
-	case(GLFW_KEY_P):
+	case GLFW_KEY_P:
 		command = CommandHandler::MENU_PAUSE;
 		// if ( iAction == GLFW_RELEASE )
 			// m_pEntMngr->pause();
 		break;
-	default:
-		command = CommandHandler::NOTHING;
 	}
 	m_pCommandHandler->executeCommand(CommandHandler::PLAYER_ONE, command);
 }

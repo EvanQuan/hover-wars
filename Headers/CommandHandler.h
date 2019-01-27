@@ -17,7 +17,7 @@ public:
 	static CommandHandler* getInstance(GLFWwindow *rWindow);
 	~CommandHandler();
 
-	static enum Command
+	enum Command
 	{
 		ABILITY_ROCKET,
 		ABILITY_SPIKES,
@@ -40,7 +40,7 @@ public:
 		NOTHING,
 	};
 
-	static enum PlayerNumber
+	enum PlayerNumber
 	{
 		PLAYER_ONE,
 		PLAYER_TWO,
