@@ -1,92 +1,196 @@
 /*
 
-Receives user input (mouse, keyboard and controller) from initiates appropriate
+Receives user input (mouse, keyboard and controller) and initiates appropriate
 actions that correspond to input to CommandHandler.
 
 */
 #include "stdafx.h"
 #include "InputHandler.h"
+#include "Mouse_Handler.h"
 
+// Single Singleton instance
+InputHandler* InputHandler::m_pInstance = nullptr;
 
-InputHandler::InputHandler()
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouseMovecallback(GLFWwindow* window, double x, double y);
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+InputHandler::InputHandler(GLFWwindow *rWindow)
 {
-	m_eErrors		= INPUT_EMPTY;
-	m_cBuffer[0]	= 0;
-	m_iCurrIndex	= 0;
-	m_iInputSize	= 0;
+	// Initializing Base Class
+	m_pCommandHandler = CommandHandler::getInstance(rWindow);
+	m_pMouseHandler = Mouse_Handler::getInstance(rWindow);
+	glfwSetKeyCallback(rWindow, KeyCallback);
+	glfwSetMouseButtonCallback(rWindow, mouseButtonCallback);
+	glfwSetCursorPosCallback(rWindow, mouseMovecallback);
+	glfwSetScrollCallback(rWindow, mouseScrollCallback);
 }
 
-// Overloaded Constructor for loading input on initialization.
-InputHandler::InputHandler(const char* c_Input, int iInputSize)
+InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
-	this->load_Input(c_Input, iInputSize);
+	if (nullptr == m_pInstance)
+	{
+		m_pInstance = new InputHandler(rWindow);
+	}
+
+	return m_pInstance;
 }
+
+
 
 InputHandler::~InputHandler()
 {
-
+	m_pCommandHandler = nullptr;
+	m_pMouseHandler = nullptr;
 }
 
-// Loads a new input into the Handler
-void InputHandler::load_Input(const char* c_Input, int iInputSize)
+
+// handles keyboard input events
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	// Verify the size of the input to ensure it doesn't go out of bounds.
-	if (iInputSize > MAX_INPUT_SIZE)
+	GameManager* pGPXMngr = GameManager::getInstance(window);
+	ShaderManager* pShdrMngr = SHADER_MANAGER;
+	EntityManager* pEnvMngr = ENTITY_MANAGER;
+	InputHandler* pInputHandler = InputHandler::getInstance(window);
+
+	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
 	{
-		m_iInputSize = MAX_INPUT_SIZE;
-		m_eErrors = INPUT_TRUNCATED;
+		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 	else
 	{
-		m_iInputSize = iInputSize;
-		m_eErrors = INPUT_HEALTHY;
+		pInputHandler->handleKeyBoardInput(key, action, mods);
 	}
-
-	// Copy Input into Handler Buffer
-	for (int i = 0; i < m_iInputSize; ++i)
-	{
-		m_cBuffer[i] = c_Input[i];
-	}
-
-	m_iCurrIndex = 0;
 }
 
-// Returns the next word up to the next space or new line character.
-int InputHandler::get_Next_Word(char* c_ReturnWord, int iReturnSize)
+void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 {
-	int iReturnVal = -1;		// Return an Error if nothing happened.
-	int iIndex = 0;
-
-	// Process if there's stuff in the buffer to grab.
-	if (INPUT_HEALTHY == m_eErrors)
+	vec3 pMoveVec(0.f, 0.f, 0.f);
+	CommandHandler::Command command;
+	switch (cKey)
 	{
-		iReturnVal = 0;
-
-		// Skip leading whitespace
-		while ((m_iCurrIndex < m_iInputSize) && (' ' == m_cBuffer[m_iCurrIndex]))
-		{
-			m_iCurrIndex++;
-		}
-
-		// Copy next word
-		while ((iIndex < (iReturnSize - 1)) && (m_cBuffer[m_iCurrIndex] != ' ') && !p_EOB())
-		{
-			c_ReturnWord[iIndex] = m_cBuffer[m_iCurrIndex];
-			iIndex++;
-			m_iCurrIndex++;
-		}
-
-		// Set nullptr terminator
-		c_ReturnWord[iIndex] = '\0';
-
-		// Return the number of Characters Copied.
-		iReturnVal = iIndex;
+	case GLFW_KEY_W:
+		command = CommandHandler::MOVE_FORWARD;
+		// pMoveVec.z += LIGHT_MOVE_FACTOR;
+		// m_pEntMngr->moveLight(pMoveVec);
+		break;
+	case GLFW_KEY_S:
+		command = CommandHandler::MOVE_BACK;
+		// pMoveVec.z -= LIGHT_MOVE_FACTOR;
+		// m_pEntMngr->moveLight(pMoveVec);
+		break;
+	case GLFW_KEY_A:
+		command = CommandHandler::MOVE_RIGHT;
+		// pMoveVec.x -= LIGHT_MOVE_FACTOR;
+		// m_pEntMngr->moveLight(pMoveVec);
+		break;
+	case GLFW_KEY_D:
+		command = CommandHandler::MOVE_LEFT;
+		// pMoveVec.x += LIGHT_MOVE_FACTOR;
+		// m_pEntMngr->moveLight(pMoveVec);
+		break;
+	case GLFW_KEY_J:
+		command = CommandHandler::TURN_LEFT;
+		break;
+	case GLFW_KEY_L:
+		command = CommandHandler::TURN_RIGHT;
+		break;
+	case GLFW_KEY_K:
+		command = CommandHandler::DASH_BACK;
+		break;
+	case GLFW_KEY_I:
+		command = CommandHandler::DASH_FORWARD;
+		break;
+	case GLFW_KEY_H:
+		command = CommandHandler::DASH_LEFT;
+		break;
+	case GLFW_KEY_SEMICOLON:
+		command = CommandHandler::DASH_RIGHT;
+		break;
+	case GLFW_KEY_SPACE:
+		command = CommandHandler::ABILITY_ROCKET;
+		break;
+	case GLFW_KEY_LEFT_SHIFT:
+		command = CommandHandler::ABILITY_TRAIL;
+		break;
+	case GLFW_KEY_APOSTROPHE:
+		command = CommandHandler::ABILITY_SPIKES;
+		break;
+		// pMoveVec.y += LIGHT_MOVE_FACTOR;
+		// m_pEntMngr->moveLight(pMoveVec);
+	// case(GLFW_KEY_X):
+		// pMoveVec.y -= LIGHT_MOVE_FACTOR;
+		// m_pEntMngr->moveLight(pMoveVec);
+		// break;
+	case(GLFW_KEY_F):
+		command = GLFW_RELEASE == iAction ? CommandHandler::DEBUG_TOGGLE_WIREFRAME
+		                                  : CommandHandler::NOTHING;
+		break;
+	case(GLFW_KEY_ENTER):
+		command = CommandHandler::MENU_SELECT;
+		break;
+	// case(GLFW_KEY_C):
+		// if( iAction == GLFW_RELEASE )
+			// m_pGPXMngr->switchView();
+		// break;
+	case(GLFW_KEY_P):
+		command = CommandHandler::MENU_PAUSE;
+		// if ( iAction == GLFW_RELEASE )
+			// m_pEntMngr->pause();
+		break;
+	default:
+		command = CommandHandler::NOTHING;
 	}
-	
-	return iReturnVal;
+	m_pCommandHandler->executeCommand(CommandHandler::PLAYER_ONE, command);
 }
 
-InputHandler::INPUT_ERRORS InputHandler::check_Status()
+
+// Mouse Button Callback
+// Handle mouse movement controls.
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	return m_eErrors;
+	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance( window );
+	double fX, fY;
+
+	if (GLFW_MOUSE_BUTTON_1 == button)
+	{
+		glfwGetCursorPos(window, &fX, &fY);
+		if (GLFW_PRESS == action)
+		{
+			mMouseHndlr->mouseTStart();
+		}
+		else if (GLFW_RELEASE == action)
+		{
+			mMouseHndlr->mouseTEnd();
+		}
+	}
+	if (GLFW_MOUSE_BUTTON_2 == button)
+	{
+		glfwGetCursorPos(window, &fX, &fY);
+		if (GLFW_PRESS == action)
+		{
+			mMouseHndlr->mouseRStart();
+		}
+		else if (GLFW_RELEASE == action)
+		{
+			mMouseHndlr->mouseREnd();
+		}
+	}
+}
+
+// Handles input from Mouse Moves.
+void mouseMovecallback(GLFWwindow* window, double x, double y)
+{
+	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance(window);
+
+	mMouseHndlr->updateMouse((float)x, (float)y);
+}
+
+// Handle scroll wheel callbacks
+void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Mouse_Handler* pMsHndlr = Mouse_Handler::getInstance(window);
+
+	pMsHndlr->mouseZoom((float)yoffset * 0.05f);
 }

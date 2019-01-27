@@ -1,9 +1,8 @@
 /* INCLUDES */
 #include "stdafx.h"
-#include "CommandHandler.h"
 #include "EntityManager.h"
 #include "GameManager.h"
-#include "Mouse_Handler.h"
+#include "InputHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
 
@@ -13,11 +12,7 @@
 
 // Function Prototypes
 void ErrorCallback(int error, const char* description);
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight);
-void mouseMovecallback(GLFWwindow* window, double x, double y);
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char* cTitle);
 
 // Main entry point for the Graphics System
@@ -28,8 +23,7 @@ int main()
 	GLFWwindow* m_Window = 0;
 	GameManager* m_GpxMngr = 0;
 	ShaderManager* m_ShdrMngr = 0;
-	Mouse_Handler* m_MseHndlr = 0;
-	CommandHandler* m_CmdHndlr = 0;
+	InputHandler* m_inputHandler = 0;
 
 
 	// Initialize GL and a window
@@ -66,9 +60,8 @@ int main()
 				m_GpxMngr = GameManager::getInstance( m_Window );
 			}
 
-			// Initialize the Mouse and Command Handler.
-			m_MseHndlr = Mouse_Handler::getInstance( m_Window );
-			m_CmdHndlr = CommandHandler::getInstance(m_Window);
+			// Initialize the InputHandler for mouse, keyboard, controllers
+			m_inputHandler = InputHandler::getInstance(m_Window);
 
 			// Initialize Graphics
 			iRunning = !m_GpxMngr->initializeGraphics( STARTING_ENV );
@@ -92,14 +85,9 @@ int main()
 			delete m_GpxMngr;
 		}
 
-		if (m_MseHndlr != nullptr)
+		if (m_inputHandler != nullptr)
 		{
-			delete m_MseHndlr;
-		}
-
-		if (m_CmdHndlr != nullptr)
-		{
-			delete m_CmdHndlr;
+			delete m_inputHandler;
 		}
 
 		glfwDestroyWindow(m_Window);
@@ -140,36 +128,13 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 	}
 	else
 	{
-		glfwSetKeyCallback(*rWindow, KeyCallback);
 		glfwSetWindowSizeCallback(*rWindow, WindowResizeCallback);
-		glfwSetMouseButtonCallback(*rWindow, mouseButtonCallback);
-		glfwSetCursorPosCallback(*rWindow, mouseMovecallback);
-		glfwSetScrollCallback(*rWindow, mouseScrollCallback);
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glfwMakeContextCurrent(*rWindow);
 	}
 
 	return bSuccess;
 }
-
-// handles keyboard input events
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	GameManager* pGPXMngr = GameManager::getInstance(window);
-	ShaderManager* pShdrMngr = SHADER_MANAGER;
-	EntityManager* pEnvMngr = ENTITY_MANAGER;
-	CommandHandler* pCmdHndlr = CommandHandler::getInstance(window);
-
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
-	else
-	{
-		pCmdHndlr->handleKeyBoardInput(key, action, mods);
-	}
-}
-
 // handles Window Resize events
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 {
@@ -177,53 +142,4 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 	glViewport(0, 0, iWidth, iHeight);
 
 	GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
-}
-
-// Mouse Button Callback
-// Handle mouse movement controls.
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance( window );
-	double fX, fY;
-
-	if (GLFW_MOUSE_BUTTON_1 == button)
-	{
-		glfwGetCursorPos(window, &fX, &fY);
-		if (GLFW_PRESS == action)
-		{
-			mMouseHndlr->mouseTStart();
-		}
-		else if (GLFW_RELEASE == action)
-		{
-			mMouseHndlr->mouseTEnd();
-		}
-	}
-	if (GLFW_MOUSE_BUTTON_2 == button)
-	{
-		glfwGetCursorPos(window, &fX, &fY);
-		if (GLFW_PRESS == action)
-		{
-			mMouseHndlr->mouseRStart();
-		}
-		else if (GLFW_RELEASE == action)
-		{
-			mMouseHndlr->mouseREnd();
-		}
-	}
-}
-
-// Handles input from Mouse Moves.
-void mouseMovecallback(GLFWwindow* window, double x, double y)
-{
-	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance(window);
-
-	mMouseHndlr->updateMouse((float)x, (float)y);
-}
-
-// Handle scroll wheel callbacks
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	Mouse_Handler* pMsHndlr = Mouse_Handler::getInstance(window);
-
-	pMsHndlr->mouseZoom((float)yoffset * 0.05f);
 }
