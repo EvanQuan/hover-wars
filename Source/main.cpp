@@ -20,9 +20,9 @@ int main()
 {
 	int iRunning = glfwInit();
 	char c_Input[INPUT_SIZE] = {};
-	GLFWwindow* m_Window = 0;
-	GameManager* m_GpxMngr = 0;
-	ShaderManager* m_ShdrMngr = 0;
+	GLFWwindow* m_window = 0;
+	GameManager* m_gameManager = 0;
+	ShaderManager* m_shaderManager = 0;
 	InputHandler* m_inputHandler = 0;
 
 
@@ -33,7 +33,7 @@ int main()
 	{
 		// Set Error Callback and init window
 		glfwSetErrorCallback( ErrorCallback );
-		iRunning = initializeWindow( &m_Window, START_HEIGHT, START_WIDTH, "Animation" );
+		iRunning = initializeWindow( &m_window, START_HEIGHT, START_WIDTH, "Animation" );
 
 		#ifdef USING_LINUX
 				Magick::InitializeMagick("");	// Initializing Magick for Linux Only.
@@ -57,32 +57,32 @@ int main()
 			// Bind window to graphics Manager
 			if (iRunning)
 			{
-				m_GpxMngr = GameManager::getInstance( m_Window );
+				m_gameManager = GameManager::getInstance( m_window );
 			}
 
 			// Initialize the InputHandler for mouse, keyboard, controllers
-			m_inputHandler = InputHandler::getInstance(m_Window);
+			m_inputHandler = InputHandler::getInstance(m_window);
 
 			// Initialize Graphics
-			iRunning = !m_GpxMngr->initializeGraphics( STARTING_ENV );
-			m_ShdrMngr = SHADER_MANAGER;
+			iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
+			m_shaderManager = SHADER_MANAGER;
 
 		#ifdef USING_WINDOWS
-			m_ShdrMngr->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
+			m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
 		#endif
 
 			// Main loop
 			while ( iRunning )
 			{
 				// do Graphics Loop
-				iRunning = m_GpxMngr->renderGraphics();
+				iRunning = m_gameManager->renderGraphics();
 			}
 		}
 
 		// Clean up!
-		if (m_GpxMngr != nullptr)
+		if (m_gameManager != nullptr)
 		{
-			delete m_GpxMngr;
+			delete m_gameManager;
 		}
 
 		if (m_inputHandler != nullptr)
@@ -90,7 +90,7 @@ int main()
 			delete m_inputHandler;
 		}
 
-		glfwDestroyWindow(m_Window);
+		glfwDestroyWindow(m_window);
 	}
 
 	glfwTerminate();
