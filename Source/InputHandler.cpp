@@ -4,6 +4,7 @@ Receives user input (mouse, keyboard and controller) and initiates appropriate
 actions that correspond to input to CommandHandler.
 
 */
+#include <iostream> // debug
 #include "stdafx.h"
 #include "InputHandler.h"
 #include "Mouse_Handler.h"
@@ -16,8 +17,26 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	// Initializing Base Class
 	initializeKeysPressed();
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
-	m_pMouseHandler = Mouse_Handler::getInstance(rWindow);
+	// Controller
+	// Each controller counts as 1 joystick
+
+	controllersPresent[0] = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	controllersPresent[1] = glfwJoystickPresent(GLFW_JOYSTICK_2);
+	controllersPresent[2] = glfwJoystickPresent(GLFW_JOYSTICK_3);
+	controllersPresent[3] = glfwJoystickPresent(GLFW_JOYSTICK_4);
+
+	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+	{
+		if (controllersPresent[i])
+		{
+			std::cout << "Controller " << (i + 1) << " is connected" << std::endl;
+		}
+	}
+
+	// Keyboard
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
+	// Mouse
+	m_pMouseHandler = Mouse_Handler::getInstance(rWindow);
 	glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
 	glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
 	glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);

@@ -6,6 +6,7 @@ using namespace std;
 
 #define MAX_INPUT_SIZE 256
 #define KEYS 349
+#define MAX_PLAYER_COUNT 4
 #define KEYBOARD_PLAYER CommandHandler::PLAYER_ONE
 
 // Input Handler Class
@@ -35,5 +36,7 @@ private:
 	// Allows for multiple key input
 	// https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
 	bool pressed[KEYS];
+
+	int controllersPresent[MAX_PLAYER_COUNT];
 };
 
