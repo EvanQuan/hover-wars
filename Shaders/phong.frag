@@ -39,6 +39,10 @@ void main(void)
 	for( int i = 0; i < numPointLights; i++ )
 		vColorLinear += CalcPointLight( pPointLights[i], NormalVector, vFragPosition, ToCamera );
 	
+	// add Spot Light contributions
+	for( int i = 0; i < numSpotLights; i++ )
+		vColorLinear += CalcSpotLight( pSpotLights[i], NormalVector, vFragPosition, ToCamera );
+	
 	// Calculate the final color of the fragment
     color = vec4(vColorLinear, 1.0);
 }

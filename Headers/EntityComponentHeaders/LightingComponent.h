@@ -7,6 +7,8 @@
 * Written by: James Cote
 * Description: Component used for storing Lighting information.
 *	Namely a position for the light and a type of light.
+*	Additional lighting information is added depending on the light
+*	type specified by the enum eLightType
 ***************************************************************/
 
 class LightingComponent 
@@ -31,8 +33,10 @@ public:
 	// Initializes the proper buffers on the GPU for rendering.
 	void initializeAsPointLight( const vec3* vPosition, const vec3* vColor, float fPower );
 	void initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular);
+	void initializeAsSpotLight(const vec3* vPosition, const vec3* vColor, const vec3* vDirection, float fPhi, float fSoftPhi);
 
-	vector< vec4 > getLightInformation() const;
+	// Returns light information for storing in Shader
+	const vector< vec4 >* getLightInformation() const { return &m_pLightData; }
 
 	// Updates the position of the light, necessary for moving the light with dynamic objects
 	void updatePosition(const vec3* vPosition) { m_vPosition = *vPosition; }
@@ -50,11 +54,13 @@ private:
 
 	// Private Variables
 	vec3 m_vPosition, m_vDiffuseColor;
-	float m_fLightPower;
+	float m_fLightPower, m_fPhi, m_fSoftPhi;
 
 	// Directional Light Variables
 	vec3 m_vDirection, m_vAmbientColor, m_vSpecularColor;
 
+	// Data Storage for Shader
+	vector< vec4 > m_pLightData;
 	
 	eLightType m_eType;
 };

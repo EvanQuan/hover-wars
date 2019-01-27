@@ -12,11 +12,21 @@ struct PointLight {
 	vec3 vColor;
 };
 
+struct SpotLight {
+	float fCosPhi;
+	float fCosCutoff;
+	vec3 vPosition;
+	vec3 vDirection;
+	vec3 vColor;
+};
+
 layout (std140, binding = 2) uniform Lights
 {
 	int numPointLights;
+	int numSpotLights;
 	bool usingDirectionalLight;
 	DirLight pDirectionalLight;
 	PointLight pPointLights[4];
+	SpotLight pSpotLights[4];
 };
 

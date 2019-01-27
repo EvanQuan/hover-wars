@@ -17,7 +17,10 @@ in vec2 TexCoords;
 // Calculates information about a specified directional light.
 vec3 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
 {	
-	vec3 vToLight = normalize( -light.vDirection );
+	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
+	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
+	
+	vec3 vToLight = normalize( -vLightDirection );
 	
 	float lambertian = max(dot(vToLight, vNormal), 0.0);
 	float specular = 0.0;
@@ -70,6 +73,54 @@ vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	// Apply Specular value
 	colorLinear += vec3( texture(sMaterial.vSpecular, TexCoords ) ) * specular * light.vColor * light.fLightPower / distance;
 
+	return colorLinear;
+}
+
+vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+{
+	// Convert the Camera to view space
+	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
+	lightCameraSpace /= lightCameraSpace.w;
+	
+	// Get To Light vector as well as distance from Fragment to Light.
+	vec3 vToLight = lightCameraSpace.xyz - vFragPos;
+	float fDist = length(vToLight);
+	vToLight = normalize( vToLight );
+	
+	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
+	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
+	
+	// Return Values
+	vec3 colorLinear = vec3(0.0);
+	
+	// Calculate angle of Light to FragPos and SpotLight direction to determine if fragment lies within spotlight.
+	float fTheta = dot( vLightDirection, -vToLight );
+	
+	if( fTheta > light.fCosPhi )
+	{
+		// Intensity for soft edge dropoff
+		float fIntensity = clamp((fTheta - light.fCosPhi)/(light.fCosCutoff - light.fCosPhi), 0.0, 1.0);
+		float lambertian = max(dot(vToLight, vNormal), 0.0);
+		float specular = 0.0;
+		
+		if( lambertian > 0.0 )
+		{
+			// Blinn-Phong Calculation
+			vec3 vHalfDir = normalize( vToLight + vToCamera );
+			float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+			specular = pow( specAngle, sMaterial.fShininess );
+		}
+
+		// Apply Diffuse Value
+		colorLinear = vec3(texture( sMaterial.vDiffuse, TexCoords )) * lambertian * light.vColor;
+		
+		// Apply Specular value
+		colorLinear += vec3( texture(sMaterial.vSpecular, TexCoords ) ) * specular * light.vColor;
+		
+		// Apply Intensity modifier
+		colorLinear *= fIntensity;
+	}
+	
 	return colorLinear;
 }
 

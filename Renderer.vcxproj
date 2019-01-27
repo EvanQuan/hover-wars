@@ -45,6 +45,7 @@
     <ClInclude Include="Headers\PlayerEntity.h" />
     <ClInclude Include="Headers\Shader.h" />
     <ClInclude Include="Headers\ShaderManager.h" />
+    <ClInclude Include="Headers\SpotLight.h" />
     <ClInclude Include="Headers\StaticEntity.h" />
     <ClInclude Include="Headers\stb_image.h" />
     <ClInclude Include="Headers\stdafx.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="Source\PlayerEntity.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
+    <ClCompile Include="Source\SpotLight.cpp" />
     <ClCompile Include="Source\StaticEntity.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
@@ -136,6 +138,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

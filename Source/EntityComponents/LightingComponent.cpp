@@ -21,33 +21,6 @@ void LightingComponent::update(double dTimeDelta)
 
 }
 
-vector< vec4 > LightingComponent::getLightInformation() const 
-{
-	// Local Variables
-	vector< vec4 > m_pReturnVector;
-
-	// Populate the Return Vector with relavent data based on Light Type.
-	switch (m_eType)
-	{
-	case POINT_LIGHT:
-		m_pReturnVector.push_back(vec4(m_fLightPower));
-		m_pReturnVector.push_back(vec4( m_vPosition, 0.0 ));
-		m_pReturnVector.push_back(vec4( m_vDiffuseColor, 0.0 ));
-		break;
-	case DIRECTIONAL_LIGHT:
-		m_pReturnVector.push_back(vec4( m_vDirection, 0.0 ));
-		m_pReturnVector.push_back(vec4( m_vAmbientColor, 0.0));
-		m_pReturnVector.push_back(vec4( m_vDiffuseColor, 0.0));
-		m_pReturnVector.push_back(vec4( m_vSpecularColor, 0.0 ));
-		break;
-	default:
-		break;
-	}
-
-	// Return Result
-	return m_pReturnVector;
-}
-
 // Initializes this Lighting Component as a Simple Point Light with a position and a color
 void LightingComponent::initializeAsPointLight(const vec3* vPosition, const vec3* vColor, float fPower)
 {
@@ -55,6 +28,9 @@ void LightingComponent::initializeAsPointLight(const vec3* vPosition, const vec3
 	m_fLightPower		= fPower;
 	m_vPosition			= *vPosition;
 	m_vDiffuseColor		= *vColor;
+
+	// Store Light Data for passing to Shaders :> Assumes the Light is static and won't be moving.
+	m_pLightData = { vec4(m_fLightPower), vec4(m_vPosition, 0.0), vec4(m_vDiffuseColor, 0.0) };
 }
 
 // Initializes this Lighting Component as a Directional Light with a Direction, Ambient Color, Diffuse Color and Specular Color
@@ -65,4 +41,21 @@ void LightingComponent::initializeAsDirectionalLight(const vec3* vDirection, con
 	m_vDiffuseColor		= *vDiffuse;
 	m_vAmbientColor		= *vAmbient;
 	m_vSpecularColor	= *vSpecular;
+
+	// Store Light Data for passing to Shaders :> Assumes the Light is static and won't be moving.
+	m_pLightData = { vec4(m_vDirection, 0.0), vec4(m_vAmbientColor, 0.0), vec4(m_vDiffuseColor, 0.0), vec4(m_vSpecularColor, 0.0) };
+}
+
+// Initializes this Lighting Component as a SpotLight with a Position, Color, Direction and cutoff angle.
+void LightingComponent::initializeAsSpotLight(const vec3* vPosition, const vec3* vColor, const vec3* vDirection, float fPhi, float fSoftPhi)
+{
+	m_eType				= SPOTLIGHT;
+	m_vPosition			= *vPosition;
+	m_vDiffuseColor		= *vColor;
+	m_vDirection		= *vDirection;
+	m_fPhi				= cos(radians(fPhi));	// Do one conversion of the cut off angle now instead of every fragment.
+	m_fSoftPhi			= cos(radians(fPhi - fSoftPhi));
+
+	// Store Light Data for passing to Shaders :> Assumes the Light is static and won't be moving.
+	m_pLightData = { vec4(m_fPhi, m_fSoftPhi, 0.0, 0.0), vec4(m_vPosition, 0.0), vec4(m_vDirection, 0.0), vec4(m_vDiffuseColor, 0.0) };
 }
