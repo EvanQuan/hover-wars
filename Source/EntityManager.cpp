@@ -143,12 +143,9 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 	if (nullptr != m_pDirectionalLight)
 		pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
 	
-
-	// Calculate information for each Light in the scene (Current max = 1)
-	assert(!m_pLights.empty());
+	// Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
 	pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
-	//(*pLightIter)->draw( vCamLookAt );
 	for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
 		pIter != m_pRenderingComponents.end();
 		++pIter)
@@ -263,6 +260,14 @@ void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3*
 		m_pDirectionalLight = pNewDirectionalLight.get();
 		m_pMasterEntityList.push_back(move(pNewDirectionalLight));
 	}
+}
+
+// Generates a new Spot Light Entity and stores it in the Entity Manager.
+void EntityManager::generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation)
+{
+	unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), vPosition);
+	pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, sMaterial);
+	m_pMasterEntityList.push_back(move(pNewLight));
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.

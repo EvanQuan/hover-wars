@@ -3,15 +3,19 @@
 /////////////
 // Defines //
 /////////////
-#define DIRECTIONAL_LIGHT_OFFSET 16
-#define DIRECTIONAL_LIGHT_SIZE (sizeof(vec4) << 2)
-#define POINT_LIGHT_OFFSET (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE)
+#define DIRECTIONAL_LIGHT_OFFSET		16
+#define NUM_DIRECTIONAL_LIGHT_PARAMS	4
+#define DIRECTIONAL_LIGHT_SIZE			(sizeof(vec4) * NUM_DIRECTIONAL_LIGHT_PARAMS)
+#define POINT_LIGHT_OFFSET				(DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE)
 // POINT_LIGHT_SIZE: float bytesize of 4 -> 16 bytes due to spacing requirements of uniform buffers
-#define POINT_LIGHT_SIZE ((sizeof(vec4) << 1) + sizeof(vec4))
-#define LIGHT_BUFFER_SIZE (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2))
-#define NUM_DIRECTIONAL_LIGHT_PARAMS 4
-#define NUM_POINT_LIGHT_PARAMS 3
-#define MAX_NUM_POINT_LIGHTS 4
+#define NUM_POINT_LIGHT_PARAMS			3
+#define POINT_LIGHT_SIZE				(sizeof(vec4) * NUM_POINT_LIGHT_PARAMS)
+#define MAX_NUM_POINT_LIGHTS			4
+#define NUM_SPOT_LIGHT_PARAMS			4
+#define SPOT_LIGHT_SIZE					(sizeof(vec4) * NUM_SPOT_LIGHT_PARAMS)
+#define SPOT_LIGHT_OFFSET				(POINT_LIGHT_OFFSET + (POINT_LIGHT_SIZE * MAX_NUM_POINT_LIGHTS))
+#define LIGHT_BUFFER_SIZE				(DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2) + (SPOT_LIGHT_SIZE << 2))
+#define MAX_NUM_SPOT_LIGHTS				4
 
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
@@ -23,9 +27,7 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
 {
 	make_pair<string, eShaderType>("light_shdr", shader_Type::LIGHT_SHDR),
 	make_pair<string, eShaderType>("toon_shdr", shader_Type::TOON_SHDR),
-	make_pair<string, eShaderType>("gooch_shdr", shader_Type::GOOCH_SHDR),
 	make_pair<string, eShaderType>("blinn_phong_shdr", shader_Type::BLINN_PHONG_SHDR),
-	make_pair<string, eShaderType>("diff_shdr", shader_Type::DIFF_SHDR),
 	make_pair<string, eShaderType>("plane_shdr", shader_Type::PLANE_SHDR),
 	make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
 	make_pair<string, eShaderType>("boid_shdr", shader_Type::BOID_SHDR),
@@ -55,32 +57,6 @@ ShaderManager::ShaderManager()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set Edge Shader Locations
-
-	// Silhouette Edge
-	m_pShader[ eShaderType::SILH_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/silhouette.vert" );
-	m_pShader[ eShaderType::SILH_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/silhouette.frag" );
-	m_pShader[ eShaderType::SILH_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY, "Shaders/silhouette.geo" );
-
-	// Inside Edge
-	m_pShader[ eShaderType::INSIDE_EDGE_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	 "Shaders/insideEdge.vert" );
-	m_pShader[ eShaderType::INSIDE_EDGE_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/insideEdge.frag" );
-	m_pShader[ eShaderType::INSIDE_EDGE_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY, "Shaders/insideEdge.geo" );
-
-	// Outside Edge
-	m_pShader[ eShaderType::OUTSIDE_EDGE_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	  "Shaders/outsideEdge.vert" );
-	m_pShader[ eShaderType::OUTSIDE_EDGE_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/outsideEdge.frag" );
-	m_pShader[ eShaderType::OUTSIDE_EDGE_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY, "Shaders/outsideEdge.geo" );
-
-	// Inside Boundary Edge
-	m_pShader[ eShaderType::INSIDE_BOUNDRY_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	"Shaders/insideBoundEdge.vert" );
-	m_pShader[ eShaderType::INSIDE_BOUNDRY_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/insideBoundEdge.frag" );
-	m_pShader[ eShaderType::INSIDE_BOUNDRY_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY, "Shaders/insideBoundEdge.geo" );
-
-	// Outside Boundary Edge
-	m_pShader[ eShaderType::OUTSIDE_BOUNDRY_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	 "Shaders/outsideBoundEdge.vert" );
-	m_pShader[ eShaderType::OUTSIDE_BOUNDRY_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/outsideBoundEdge.frag" );
-	m_pShader[ eShaderType::OUTSIDE_BOUNDRY_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY, "Shaders/outsideBoundEdge.geo" );
-
 	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/light.vert" );
 	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/light.frag" );
 
@@ -89,12 +65,6 @@ ShaderManager::ShaderManager()
 
 	m_pShader[eShaderType::BLINN_PHONG_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/phong.vert");
 	m_pShader[eShaderType::BLINN_PHONG_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/phong.frag");
-
-	m_pShader[eShaderType::GOOCH_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/gooch.vert");
-	m_pShader[eShaderType::GOOCH_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/gooch.frag");
-
-	m_pShader[eShaderType::DIFF_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/diffuse.vert");
-	m_pShader[eShaderType::DIFF_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/diffuse.frag");
 
 	m_pShader[ eShaderType::PLANE_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/plane.vert" );
 	m_pShader[ eShaderType::PLANE_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/plane.frag" );
@@ -176,29 +146,44 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 {
 	// Get initial values for Light Block
 	int bUsingDirectionalLight = nullptr != pDirectionalLight;
-	unsigned int iNumPointLights = 0;
-	vector< vec4 > pLightData, pDirectionalLightData;
+	unsigned int iNumPointLights = 0, iNumSpotLights = 0;
+	vector< vec4 > vPointLightData, vSpotLightData;
+	const vector< vec4 > *pDirectionalLightData = nullptr, *pPointLightData = nullptr, *pSpotLightData = nullptr;
 	
 	if (bUsingDirectionalLight)
 	{
 		pDirectionalLightData = pDirectionalLight->getLightInformation();
-		assert(pDirectionalLightData.size() == NUM_DIRECTIONAL_LIGHT_PARAMS);
+		assert(pDirectionalLightData->size() == NUM_DIRECTIONAL_LIGHT_PARAMS);
 	}
 	
+	// Pull the data from the Lighting Components
 	for (vector< LightingComponent* >::const_iterator iter = pPointLights->begin();
 		iter != pPointLights->end();
 		++iter)
 	{
-		if (LightingComponent::eLightType::POINT_LIGHT == (*iter)->getType())
+		// POINT_LIGHT - Limited by a maximum number of Point Lights to store in the buffer.
+		if (MAX_NUM_POINT_LIGHTS > iNumPointLights && 
+			LightingComponent::eLightType::POINT_LIGHT == (*iter)->getType())
 		{
-			vector< vec4 > pPointLightData = (*iter)->getLightInformation();
+			// Get Information
+			pPointLightData = (*iter)->getLightInformation();
 
-			assert(pPointLightData.size() == NUM_POINT_LIGHT_PARAMS);
-			pLightData.insert(pLightData.end(), pPointLightData.begin(), pPointLightData.end());
-			++iNumPointLights;
+			// Returned amount of information should be expected.
+			assert(pPointLightData->size() == NUM_POINT_LIGHT_PARAMS);
+			vPointLightData.insert(vPointLightData.end(), pPointLightData->begin(), pPointLightData->end());
+			++iNumPointLights;		// count this as an added Point Light
+		}
+		else if (MAX_NUM_SPOT_LIGHTS > iNumSpotLights &&
+				 LightingComponent::eLightType::SPOTLIGHT == (*iter)->getType())
+		{
+			// Get Information
+			pSpotLightData = (*iter)->getLightInformation();
 
-			if (MAX_NUM_POINT_LIGHTS == iNumPointLights)
-				break;
+			// Assert Expectations
+			assert(pSpotLightData->size() == NUM_SPOT_LIGHT_PARAMS);
+			vSpotLightData.insert(vSpotLightData.end(), pSpotLightData->begin(), pSpotLightData->end());
+			++iNumSpotLights;
+			
 		}
 	}
 
@@ -212,10 +197,12 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 	//			vec3 pPointLight[2]			Base: 32	Aligned: 80
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iLightsBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &iNumPointLights);
-	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &bUsingDirectionalLight);
+	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &iNumSpotLights);
+	glBufferSubData(GL_UNIFORM_BUFFER, 8, 4, &bUsingDirectionalLight);
 	if (bUsingDirectionalLight)	
-		glBufferSubData(GL_UNIFORM_BUFFER, DIRECTIONAL_LIGHT_OFFSET, NUM_DIRECTIONAL_LIGHT_PARAMS * sizeof(vec4), pDirectionalLightData.data());
-	glBufferSubData(GL_UNIFORM_BUFFER, POINT_LIGHT_OFFSET, (NUM_POINT_LIGHT_PARAMS * sizeof(vec4))*iNumPointLights, pLightData.data());
+		glBufferSubData(GL_UNIFORM_BUFFER, DIRECTIONAL_LIGHT_OFFSET, NUM_DIRECTIONAL_LIGHT_PARAMS * sizeof(vec4), pDirectionalLightData->data());
+	glBufferSubData(GL_UNIFORM_BUFFER, POINT_LIGHT_OFFSET, (NUM_POINT_LIGHT_PARAMS * sizeof(vec4))*iNumPointLights, vPointLightData.data());
+	glBufferSubData(GL_UNIFORM_BUFFER, SPOT_LIGHT_OFFSET, (NUM_SPOT_LIGHT_PARAMS * sizeof(vec4))*iNumSpotLights, vSpotLightData.data());
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

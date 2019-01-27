@@ -10,8 +10,6 @@
 // Purpose: Manages all the Shaders used by every Assignment.  Manages Uniform variable
 //			manipulation and properly initializes and destroys created Shaders.
 // Current Issues: Uniform variables hard-coded.
-// TODO: (Low Priority) Scan through all shader code for uniform variables and set up
-//						management of those variables dynamically. 
 // Written by: James Coté
 class ShaderManager
 {
@@ -22,23 +20,13 @@ public:
 		LIGHT_SHDR = 0,
 		TOON_SHDR,
 		BLINN_PHONG_SHDR,
-		DIFF_SHDR,
-		GOOCH_SHDR,
 		PLANE_SHDR,
 		WORLD_SHDR,
-		SILH_SHDR,
-		INSIDE_EDGE_SHDR,
-		OUTSIDE_EDGE_SHDR,
-		INSIDE_BOUNDRY_SHDR,
-		OUTSIDE_BOUNDRY_SHDR,
 		RC_TRACK_SHDR,
 		BOID_SHDR,
 		MAX_SHDRS
 	};
 	const static unordered_map<string, eShaderType> pShaderTypeMap;
-
-	const static eShaderType eDefaultEdgeShader = SILH_SHDR;
-	const static eShaderType eLastEdgeShader = RC_TRACK_SHDR;
 
 	// Singleton implementation and Destructor
 	static ShaderManager* getInstance();

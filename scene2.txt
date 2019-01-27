@@ -18,7 +18,12 @@
 #			- "aR aG aB" = the ambient color of the light source
 #			- "dR dG dB" = the diffuse color of the light source
 #			- "sR sG sB" = the specular color of the light source
-#		spotlight {} ** NOT YET IMPLEMENTED **
+#		spotlight 			{ x y z  dX dY dZ  r g b  Phi  *softPhi* }
+#			- "x y z"		= the position of the light source
+#			- "dX dY dZ"	= the direction of the spotlight
+#			- "r g b"		= the color of the spotlight
+#			- "Phi"			= the cutoff angle (in degrees) specifying the radius of the spotlight 		
+#			- "*softPhi*"	= (Optional) a degree from the cutoff angle to smooth out hard edges, default is 5
 #
 # ============================================================
 # Object Instructions
@@ -68,28 +73,36 @@ directional_light {
 	0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
 }
 
+spotlight {
+	0 6 0
+	0 -1 0
+	1 1 1
+	25.0
+	10.0
+}
+
 point_light {
 	7.5 0 0
-	1.0 0.0 1.0
-	6.0
+	0.0 1.0 1.0
+	5.0
 }
 
 point_light {
 	-7.5 0 0
 	1.0 0.0 0.0
-	6.0
+	5.0
 }
 
 point_light {
 	0 0 7.5
 	0.0 0.0 1.0
-	6.0
+	5.0
 }
 
 point_light {
   0 0 -7.5
   1.0 1.0 1.0
-  6.0
+  5.0
 }
 
 #Indices:

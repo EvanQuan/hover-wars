@@ -14,6 +14,7 @@ public:
 	void createPlane( vector< string > sData, int iLength );
 	void createPointLight( vector< string > sData, int iLength );
 	void createDirectionalLight(vector< string > sData, int iLength);
+	void createSpotLight(vector< string > sData, int iLength);
 	void createPlayer(vector< string > sData, int iLength);
 	void createStaticMesh(vector< string > sData, int iLength);
 

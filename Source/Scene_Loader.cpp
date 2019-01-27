@@ -11,6 +11,8 @@
 #define MAX_PLANE_PARAMS 8
 #define MAX_POINT_LIGHT_PARAMS 7
 #define MAX_DIR_LIGHT_PARAMS 12
+#define MAX_SPOTLIGHT_PARAMS 10
+#define DEFAULT_SOFT_CUTOFF 5.f
 #define MAX_MESH_PARAMS 3
 #define MAX_TRACK_PARAMS 1
 #define COMMENT_CHAR '#'
@@ -76,7 +78,7 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
-		outputError("Plane", sData);
+		outputError("plane", sData);
 }
 
 // Generates a Directional Light object given some input data
@@ -97,7 +99,7 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
 	}
 	else
-		outputError("light", sData);
+		outputError("directional_light", sData);
 }
 
 // Generates a Light object given some input data
@@ -115,7 +117,34 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty);
 	}
 	else
-		outputError("light", sData);
+		outputError("point_light", sData);
+}
+
+// Generates a SpotLight object with a Position, Direction, Color and Phi angle of the spotlight.
+//	There is also an optional soft edge cutoff able to be specified to simulate soft edges for the spotlight.
+void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
+{
+	vec3 vPosition, vDirection, vColor;
+	float fSoftCutoff = DEFAULT_SOFT_CUTOFF;
+	
+	// Check for Optional Parameter
+	if ((MAX_SPOTLIGHT_PARAMS + 1) == iLength)
+	{
+		fSoftCutoff = stof(sData[MAX_SPOTLIGHT_PARAMS]);
+		--iLength;	// Handle the Optional and resolve the rest as normal
+	}
+
+	// Grab Data and give to Entity Manager
+	if (MAX_SPOTLIGHT_PARAMS == iLength)
+	{
+		vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+		vDirection = vec3( stof(sData[3])/*dX*/, stof(sData[4])/*dY*/, stof(sData[5])/*dZ*/);
+		vColor = vec3( stof(sData[6])/*R*/, stof(sData[7])/*G*/, stof(sData[8])/*B*/);
+
+		ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty);
+	}
+	else
+		outputError("spotlight", sData);
 }
 
 // Generates a Player Object at a given position
@@ -256,6 +285,8 @@ void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator
 		createPointLight(sData, sData.size());
 	else if ("directional_light" == sIndicator)	// Parse Directional Light
 		createDirectionalLight(sData, sData.size());
+	else if ("spotlight" == sIndicator)			// Parse Spotlight
+		createSpotLight(sData, sData.size());
 	else if ("player" == sIndicator)			// Parse Player
 		createPlayer(sData, sData.size());
 	else if ("static_mesh" == sIndicator)		// Parse Static Mesh
