@@ -11,20 +11,15 @@ actions that correspond to input to CommandHandler.
 // Single Singleton instance
 InputHandler* InputHandler::m_pInstance = nullptr;
 
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void mouseMovecallback(GLFWwindow* window, double x, double y);
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
 	m_pMouseHandler = Mouse_Handler::getInstance(rWindow);
-	glfwSetKeyCallback(rWindow, KeyCallback);
-	glfwSetMouseButtonCallback(rWindow, mouseButtonCallback);
-	glfwSetCursorPosCallback(rWindow, mouseMovecallback);
-	glfwSetScrollCallback(rWindow, mouseScrollCallback);
+	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
+	glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
+	glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
+	glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
 }
 
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
@@ -47,27 +42,35 @@ InputHandler::~InputHandler()
 
 
 // handles keyboard input events
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	GameManager* pGPXMngr = GameManager::getInstance(window);
-	ShaderManager* pShdrMngr = SHADER_MANAGER;
-	EntityManager* pEnvMngr = ENTITY_MANAGER;
+	// TODO is it expensive to assign these every call back?
+	// GameManager* pGPXMngr = GameManager::getInstance(window);
+	// ShaderManager* pShdrMngr = SHADER_MANAGER;
+	// EntityManager* pEnvMngr = ENTITY_MANAGER;
 	InputHandler* pInputHandler = InputHandler::getInstance(window);
 
+	// TODO Later should escape no longer quit, as there may need to be some
+	// tear down steps before the game exits?
 	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 	else
 	{
-		pInputHandler->handleKeyBoardInput(key, action, mods);
+		pInputHandler->handleKeyBoardInput(key, action);
 	}
 }
 
-void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
+void InputHandler::handleKeyBoardInput(int cKey, int iAction)
 {
-	vec3 pMoveVec(0.f, 0.f, 0.f);
-	CommandHandler::Command command = CommandHandler::NOTHING;
+	if (GLFW_KEY_UNKNOWN == cKey)
+	{
+		return;
+	}
+	// pressed[cKey] = iAction != GLFW_RELEASE;
+	// if (GLFW_PRESS == iAction)
+	CommandHandler::Command command;
 	switch (cKey)
 	{
 	case GLFW_KEY_W:
@@ -110,10 +113,8 @@ void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 		command = CommandHandler::ABILITY_SPIKES;
 		break;
 	case GLFW_KEY_F:
-		if (GLFW_PRESS == iAction)
-		{
-			command = CommandHandler::DEBUG_TOGGLE_WIREFRAME;
-		}
+		command = GLFW_PRESS == iAction ? CommandHandler::DEBUG_TOGGLE_WIREFRAME
+		                                : CommandHandler::NOTHING;
 		break;
 	case GLFW_KEY_ENTER:
 		command = CommandHandler::MENU_SELECT;
@@ -123,6 +124,8 @@ void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 		// if ( iAction == GLFW_RELEASE )
 			// m_pEntMngr->pause();
 		break;
+	default:
+		command = CommandHandler::NOTHING;
 	}
 	m_pCommandHandler->executeCommand(CommandHandler::PLAYER_ONE, command);
 }
@@ -130,7 +133,7 @@ void InputHandler::handleKeyBoardInput(int cKey, int iAction, int iMods)
 
 // Mouse Button Callback
 // Handle mouse movement controls.
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance( window );
 	double fX, fY;
@@ -162,7 +165,7 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 }
 
 // Handles input from Mouse Moves.
-void mouseMovecallback(GLFWwindow* window, double x, double y)
+void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
 	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance(window);
 
@@ -170,7 +173,7 @@ void mouseMovecallback(GLFWwindow* window, double x, double y)
 }
 
 // Handle scroll wheel callbacks
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Mouse_Handler* pMsHndlr = Mouse_Handler::getInstance(window);
 
