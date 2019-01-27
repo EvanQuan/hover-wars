@@ -66,7 +66,7 @@ Texture* TextureManager::loadTexture(const string& sFileName )
 }
 
 // This will generate a small 1x1 texture with the given color to be used as a simple texture.
-Texture* TextureManager::genTexture(const vec3* vColor)
+Texture* TextureManager::genTexture(const vec4* vColor)
 {
 	Texture* pReturnTexture = nullptr;
 	string sHashName = glm::to_string(*vColor);
@@ -81,7 +81,7 @@ Texture* TextureManager::genTexture(const vec3* vColor)
 		// generate new texture unique_ptr
 		unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashName, Texture::manager_cookie());
 
-		pNewTexture->genTexture(vColor, 1, 1, GL_RGB, GL_FLOAT);
+		pNewTexture->genTexture(vColor, 1, 1, GL_RGBA, GL_FLOAT);
 
 		pReturnTexture = pNewTexture.get();
 

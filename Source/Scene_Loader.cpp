@@ -326,7 +326,7 @@ void Scene_Loader::grabMaterial(vector< string >& sData)
 	{
 	case 2:	// Diffuse Map and Shininess Value
 		m_pMaterialProperty.sDiffuseMap = sData[0];
-		m_pMaterialProperty.vOptionalSpecShade = vec3(0.0);
+		m_pMaterialProperty.vOptionalSpecShade = vec4(0.0f);
 		m_pMaterialProperty.fShininess = stof(sData[1]);
 		break;
 	case 3: // Diffuse Map, Spec Map location and Shininess Value
@@ -336,7 +336,7 @@ void Scene_Loader::grabMaterial(vector< string >& sData)
 		break;
 	case 5: // Diffuse Map, Spec Map Shade and Shininess Value
 		m_pMaterialProperty.sDiffuseMap = sData[0];
-		m_pMaterialProperty.vOptionalSpecShade = vec3(stof(sData[1]), stof(sData[2]), stof(sData[3]));
+		m_pMaterialProperty.vOptionalSpecShade = vec4(stof(sData[1]), stof(sData[2]), stof(sData[3]), 0.0f);
 		m_pMaterialProperty.fShininess = stof(sData[4]);
 		break;
 	default:
@@ -379,5 +379,5 @@ void Scene_Loader::clearProperties() // Clear any properties
 
 	m_pMaterialProperty.fShininess = 0.0f;
 	m_pMaterialProperty.sDiffuseMap = m_pMaterialProperty.sOptionalSpecMap = "";
-	m_pMaterialProperty.vOptionalSpecShade = vec3(0.0f);
+	m_pMaterialProperty.vOptionalSpecShade = vec4(0.0f);
 }

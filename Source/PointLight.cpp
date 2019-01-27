@@ -39,7 +39,7 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
 	// Initialize Render Component
 	assert(m_pRenderComponent != nullptr);
 	m_pRenderComponent->initializeComponent(m_pMesh, pMaterial);
-	vec3 pPoweredColor = m_pColor * fPower;
+	vec4 pPoweredColor = vec4( m_pColor, 1.0 ) * fPower;
 	m_pRenderComponent->generateDiffuseTexture(&pPoweredColor); // Generates a Texture for the light based on the light color.
 
 	// Create and Initialize the Lighting Component.

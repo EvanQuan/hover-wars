@@ -2,7 +2,7 @@
 #include "EntityManager.h"
 
 const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
-const vec3 DEFAULT_SPEC_COLOR = vec3(0.f);
+const vec4 DEFAULT_SPEC_COLOR = vec4(0.f);
 
 // Default Constructor:
 //		Requires an EntityID for the Entity that the component is a part of
@@ -96,7 +96,7 @@ void RenderComponent::initializeComponent(const Mesh* pMesh,
 }
 
 // Generates a simple 1x1 diffuse texture based on the given color.
-void RenderComponent::generateDiffuseTexture(const vec3* vColor)
+void RenderComponent::generateDiffuseTexture(const vec4* vColor)
 {
 	m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->genTexture(vColor);
 }
