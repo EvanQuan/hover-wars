@@ -13,13 +13,10 @@ uniform vec3 vLightColor = vec3( 1.0 );
 
 void main (void)
 {
-	vec4 plane_color;
-	if( !bTextureLoaded )
-		plane_color = vec4( 0.133, 0.545, 0.133, 1.0 );
-	//else
-		plane_color = texture(sMaterial.vDiffuse,TexCoords);
+	if( texture(sMaterial.vDiffuse, TexCoords).a < 0.1 )
+		discard;
 
-	vec3 vColorLinear = vec3(0.0);
+	vec4 vColorLinear = vec4(0.0);
 	
 	// add directional light's contribution
 	if( usingDirectionalLight )
@@ -33,5 +30,5 @@ void main (void)
 	for( int i = 0; i < numSpotLights; i++ )
 		vColorLinear += CalcSpotLight( pSpotLights[i], NormalVector, vFragPosition, ToCamera );
 		
-    FragColor = vec4( vColorLinear, 1.0 );
+    FragColor = vColorLinear;
 }

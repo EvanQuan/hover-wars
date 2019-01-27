@@ -15,7 +15,7 @@ uniform Material sMaterial;
 in vec2 TexCoords;
 
 // Calculates information about a specified directional light.
-vec3 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
+vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
 {	
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
 	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
@@ -34,20 +34,20 @@ vec3 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
 	}
 
 	// Apply Diffuse Value
-	vec3 colorLinear = vec3(texture( sMaterial.vDiffuse, TexCoords )) * lambertian * light.vDiffuse;
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vDiffuse, 1.0);
 	
 	// Apply Specular value
-	colorLinear += vec3( texture(sMaterial.vSpecular, TexCoords ) ) * specular * light.vSpecular;
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vSpecular, 1.0);
 
 	// Apply Ambient Value
-	colorLinear += vec3( texture(sMaterial.vDiffuse, TexCoords ) ) * light.vAmbient;
+	colorLinear += texture(sMaterial.vDiffuse, TexCoords ) * vec4(light.vAmbient, 1.0);
 	
 	return colorLinear;
 }
 
 // Calculate information about a given point light with the current Frag Position
 //	Using a Blinn-Phong calculation adapted from goo.gl/vzRHX2 (Wikipedia)
-vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
 {
 	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
 	lightCameraSpace /= lightCameraSpace.w;
@@ -68,15 +68,15 @@ vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	}
 
 	// Apply Diffuse Value
-	vec3 colorLinear = vec3(texture( sMaterial.vDiffuse, TexCoords )) * lambertian * light.vColor * light.fLightPower / distance;
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vColor, 1.0) * light.fLightPower / distance;
 	
 	// Apply Specular value
-	colorLinear += vec3( texture(sMaterial.vSpecular, TexCoords ) ) * specular * light.vColor * light.fLightPower / distance;
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vColor, 1.0) * light.fLightPower / distance;
 
 	return colorLinear;
 }
 
-vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+vec4 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
 {
 	// Convert the Camera to view space
 	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
@@ -91,7 +91,7 @@ vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera
 	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
 	
 	// Return Values
-	vec3 colorLinear = vec3(0.0);
+	vec4 colorLinear = vec4(0.0);
 	
 	// Calculate angle of Light to FragPos and SpotLight direction to determine if fragment lies within spotlight.
 	float fTheta = dot( vLightDirection, -vToLight );
@@ -112,10 +112,10 @@ vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera
 		}
 
 		// Apply Diffuse Value
-		colorLinear = vec3(texture( sMaterial.vDiffuse, TexCoords )) * lambertian * light.vColor;
+		colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vColor, 1.0);
 		
 		// Apply Specular value
-		colorLinear += vec3( texture(sMaterial.vSpecular, TexCoords ) ) * specular * light.vColor;
+		colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vColor, 1.0);
 		
 		// Apply Intensity modifier
 		colorLinear *= fIntensity;

@@ -26,7 +26,7 @@ public:
 	// Inherited update frunction from EntityComponent
 	void update(double dTimeStep);
 
-	void generateDiffuseTexture(const vec3* vColor);
+	void generateDiffuseTexture(const vec4* vColor);
 
 	// Initializes the proper buffers on the GPU for rendering.
 	void initializeComponent( Mesh const  * pMesh, 

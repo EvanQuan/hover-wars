@@ -39,7 +39,7 @@ void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3*
 	// Initialize Render Component
 	assert(m_pRenderComponent != nullptr);
 	m_pRenderComponent->initializeComponent(m_pMesh, sMaterial);
-	vec3 pPoweredColor = m_pColor;
+	vec4 pPoweredColor = vec4( m_pColor, 1.0);
 	m_pRenderComponent->generateDiffuseTexture(&pPoweredColor); // Generates a Texture for the light based on the light color.
 
 	// Create and Initialize the Lighting Component.

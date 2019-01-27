@@ -53,7 +53,7 @@ struct Material
 {
 	string sDiffuseMap;
 	string sOptionalSpecMap;
-	vec3 vOptionalSpecShade;
+	vec4 vOptionalSpecShade;
 	float fShininess;
 };
 
