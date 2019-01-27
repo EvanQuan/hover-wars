@@ -42,6 +42,7 @@ public:
 
 	enum PlayerNumber
 	{
+		PLAYER_INVALID,
 		PLAYER_ONE,
 		PLAYER_TWO,
 		PLAYER_THREE,
@@ -84,6 +85,7 @@ private:
 	};
 
 	std::map<PlayerNumber, const char*> m_pPlayerNumberToString = {
+		{PLAYER_INVALID, "Player Invalid"},
 		{PLAYER_ONE, "Player One"},
 		{PLAYER_TWO, "Player Two"},
 		{PLAYER_THREE, "Player Three"},

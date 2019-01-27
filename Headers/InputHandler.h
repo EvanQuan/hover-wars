@@ -16,7 +16,6 @@ public:
 	static InputHandler* getInstance(GLFWwindow *rWindow);
 	~InputHandler();
 
-	void receiveKeyBoardInput(int cKey, int iAction);
 	void handleInput();
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -27,6 +26,7 @@ public:
 private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
+	void initializeKeysPressed();
 	static InputHandler* m_pInstance;
 	Mouse_Handler* m_pMouseHandler;
 	CommandHandler *m_pCommandHandler;

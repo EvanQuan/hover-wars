@@ -28,7 +28,9 @@ int main()
 
 	// Initialize GL and a window
 	if (!iRunning)
+	{
 		cout << "Error: GLFW failed to intialize, ending program." << endl;
+	}
 	else
 	{
 		// Set Error Callback and init window
@@ -58,6 +60,7 @@ int main()
 			if (iRunning)
 			{
 				m_gameManager = GameManager::getInstance( m_window );
+				m_gameManager->m_inputHandler = InputHandler::getInstance( m_window );
 			}
 
 			// Initialize the InputHandler for mouse, keyboard, controllers

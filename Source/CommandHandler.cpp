@@ -19,8 +19,10 @@ CommandHandler* CommandHandler::m_pInstance = nullptr;
 CommandHandler::CommandHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
-	m_pGPXMngr = GameManager::getInstance(rWindow);
-	m_pEntMngr = ENTITY_MANAGER;
+	// NOTE: Do not get an instance of GameManager here or there will be
+	// infinite mutual recursion and a call stack overflow
+	// m_pGPXMngr = GameManager::getInstance(rWindow);
+	// m_pEntMngr = ENTITY_MANAGER;
 
 	bWireFrame = false;
 }
@@ -40,8 +42,7 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 // Destructor
 CommandHandler::~CommandHandler()
 {
-	m_pGPXMngr = nullptr;
-	m_pEntMngr = nullptr;
+	// m_pEntMngr = nullptr;
 }
 
 void CommandHandler::executeCommand(PlayerNumber player, Command command)
@@ -68,6 +69,7 @@ void CommandHandler::executeCommand(PlayerNumber player, Command command)
 	case TURN_RIGHT:
 		std::cout << m_pPlayerNumberToString.at(player) << ": "
 		          << m_pCommandToString.at(command) << std::endl;
+		// std::cout << "hi" << std::endl;
 		break;
 	case DEBUG_TOGGLE_WIREFRAME:
 		bWireFrame = !bWireFrame;

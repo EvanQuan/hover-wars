@@ -14,6 +14,7 @@ InputHandler* InputHandler::m_pInstance = nullptr;
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
+	initializeKeysPressed();
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
 	m_pMouseHandler = Mouse_Handler::getInstance(rWindow);
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
@@ -81,59 +82,64 @@ void InputHandler::handleInput()
 	CommandHandler::Command command;
 	for (int key = 0; key < KEYS; key++)
 	{
-		switch (key)
+		if (pressed[key])
 		{
-		case GLFW_KEY_W:
-			command = CommandHandler::MOVE_FORWARD;
-			break;
-		case GLFW_KEY_S:
-			command = CommandHandler::MOVE_BACK;
-			break;
-		case GLFW_KEY_A:
-			command = CommandHandler::MOVE_LEFT;
-			break;
-		case GLFW_KEY_D:
-			command = CommandHandler::MOVE_RIGHT;
-			break;
-		case GLFW_KEY_J:
-			command = CommandHandler::TURN_LEFT;
-			break;
-		case GLFW_KEY_L:
-			command = CommandHandler::TURN_RIGHT;
-			break;
-		case GLFW_KEY_K:
-			command = CommandHandler::DASH_BACK;
-			break;
-		case GLFW_KEY_I:
-			command = CommandHandler::DASH_FORWARD;
-			break;
-		case GLFW_KEY_H:
-			command = CommandHandler::DASH_LEFT;
-			break;
-		case GLFW_KEY_SEMICOLON:
-			command = CommandHandler::DASH_RIGHT;
-			break;
-		case GLFW_KEY_SPACE:
-			command = CommandHandler::ABILITY_ROCKET;
-			break;
-		case GLFW_KEY_LEFT_SHIFT:
-			command = CommandHandler::ABILITY_TRAIL;
-			break;
-		case GLFW_KEY_APOSTROPHE:
-			command = CommandHandler::ABILITY_SPIKES;
-			break;
-		case GLFW_KEY_ENTER:
-			command = CommandHandler::MENU_SELECT;
-			break;
-		case GLFW_KEY_P:
-			command = CommandHandler::MENU_PAUSE;
-			// if ( iAction == GLFW_RELEASE )
-				// m_pEntMngr->pause();
-			break;
-		default:
-			command = CommandHandler::NOTHING;
+			switch (key)
+			{
+			case GLFW_KEY_W:
+				command = CommandHandler::MOVE_FORWARD;
+				break;
+			case GLFW_KEY_S:
+				command = CommandHandler::MOVE_BACK;
+				break;
+			case GLFW_KEY_A:
+				command = CommandHandler::MOVE_LEFT;
+				break;
+			case GLFW_KEY_D:
+				command = CommandHandler::MOVE_RIGHT;
+				break;
+			case GLFW_KEY_J:
+				command = CommandHandler::TURN_LEFT;
+				break;
+			case GLFW_KEY_L:
+				command = CommandHandler::TURN_RIGHT;
+				break;
+			case GLFW_KEY_K:
+				command = CommandHandler::DASH_BACK;
+				break;
+			case GLFW_KEY_I:
+				command = CommandHandler::DASH_FORWARD;
+				break;
+			case GLFW_KEY_H:
+				command = CommandHandler::DASH_LEFT;
+				break;
+			case GLFW_KEY_SEMICOLON:
+				command = CommandHandler::DASH_RIGHT;
+				break;
+			case GLFW_KEY_SPACE:
+				command = CommandHandler::ABILITY_ROCKET;
+				break;
+			case GLFW_KEY_LEFT_SHIFT:
+				command = CommandHandler::ABILITY_TRAIL;
+				break;
+			case GLFW_KEY_APOSTROPHE:
+				command = CommandHandler::ABILITY_SPIKES;
+				break;
+			case GLFW_KEY_ENTER:
+				command = CommandHandler::MENU_SELECT;
+				break;
+			case GLFW_KEY_P:
+				command = CommandHandler::MENU_PAUSE;
+				// if ( iAction == GLFW_RELEASE )
+					// m_pEntMngr->pause();
+				break;
+			default:
+				command = CommandHandler::NOTHING;
+			}
+			if (CommandHandler::NOTHING != command) {
+				m_pCommandHandler->executeCommand(KEYBOARD_PLAYER, command);
+			}
 		}
-		m_pCommandHandler->executeCommand(KEYBOARD_PLAYER, command);
 	}
 }
 
@@ -185,4 +191,12 @@ void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, doubl
 	Mouse_Handler* pMsHndlr = Mouse_Handler::getInstance(window);
 
 	pMsHndlr->mouseZoom((float)yoffset * 0.05f);
+}
+
+void InputHandler::initializeKeysPressed()
+{
+	for (int key = 0; key < KEYS; key++)
+	{
+		pressed[key] = false;
+	}
 }
