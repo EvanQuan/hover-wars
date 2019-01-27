@@ -16,21 +16,50 @@
 2. The included Makefile should generate a run file that will launch the
    program.
 
-## Controls:
+## Controls
 
-**P** - Pauses the Animation
+#### Keyboard
 
-**Right-Click** and Move to Rotate
+##### Movement
 
-**Scroll-Wheel** to Zoom
+**W** - Move Forward
+
+**A** - Move Left
+
+**S** - Move Back
+
+**D** - Move Right
+
+**J** - Turn Left
+
+**L** - Turn Right
+
+##### Dash
+
+**I** - Dash Forward
+
+**H** - Dash Left
+
+**K** - Dash Back
+
+**;** - Dash Right
+
+##### Abilities
+
+**Space** - Rocket
+
+**Left Shift** - Trail
+
+**'** - Spikes
+
+#### Other
+
+**P** - Pause the game
 
 **F** - Switch to Wireframe Mode
 
-**WASDX & SPACE** - Will move the light around the scene:
 
-   **WASD**       - Along the XZ-plane
-
-   **X & SPACE**  - Along the Y-Axis
+#### XBOX Controller
 
 ## Write-Up:
 
