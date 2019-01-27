@@ -16,7 +16,9 @@ Mouse_Handler::Mouse_Handler(GLFWwindow *rWindow)
 Mouse_Handler* Mouse_Handler::getInstance(GLFWwindow *rWindow)
 {
 	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new Mouse_Handler(rWindow);
+	}
 
 	return m_pInstance;
 }
