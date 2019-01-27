@@ -1,7 +1,8 @@
-#include "GameManager.h"
-#include "ShaderManager.h"
-#include "Scene_Loader.h"
 #include "EntityManager.h"
+#include "GameManager.h"
+#include "InputHandler.h"
+#include "Scene_Loader.h"
+#include "ShaderManager.h"
 
 ///////////////
 // CONSTANTS //
@@ -22,6 +23,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
 	m_pShaderMngr	= SHADER_MANAGER;
 	m_pEntMngr		= ENTITY_MANAGER;
 
+	// NOTE: Do not get an instance of InputHandler here or there will be
+	// infinite mutual recursion and a call stack overflow
+
 	m_pWindow = rWindow;
 	int iHeight, iWidth;
 	glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
@@ -38,7 +42,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
 GameManager* GameManager::getInstance(GLFWwindow *rWindow)
 {
 	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new GameManager(rWindow);
+	}
 
 	return m_pInstance;
 }
@@ -65,6 +71,9 @@ bool GameManager::renderGraphics()
 {
 	// Update Timer
 	m_pTimer.updateTime();
+
+	// Handle player input 
+	m_inputHandler->handleInput();
 
 	// Update Environment
 	m_pEntMngr->updateEnvironment(m_pTimer);

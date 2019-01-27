@@ -6,8 +6,9 @@
 #include <time.h>
 
 // Forward Declarations
-class ShaderManager;
 class EntityManager;
+class InputHandler;
+class ShaderManager;
 
 // Class: Graphics Manager
 // Purpose: Acts as the Sinew between all moving parts that are required for drawing
@@ -43,6 +44,10 @@ public:
 		RGB_MAX
 	};
 
+	// Must be set after getInstance() to avoid mutual getInstance() recursion
+	// with InputHandler/CommandHandler
+	InputHandler* m_inputHandler;
+
 private:
 	// For Singleton Implementation
 	GameManager(GLFWwindow* rWindow); 
@@ -72,7 +77,8 @@ private:
 	void renderAxis();
 
 	// Manages Shaders for all assignments
-	ShaderManager* m_pShaderMngr;
 	EntityManager* m_pEntMngr;
+	ShaderManager* m_pShaderMngr;
+
 };
 
