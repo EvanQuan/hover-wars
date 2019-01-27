@@ -6,6 +6,7 @@ using namespace std;
 
 #define MAX_INPUT_SIZE 256
 #define KEYS 349
+#define KEYBOARD_PLAYER CommandHandler::PLAYER_ONE
 
 // Input Handler Class
 // Handles input by storing a line of text and returning a word at a time.
@@ -15,8 +16,8 @@ public:
 	static InputHandler* getInstance(GLFWwindow *rWindow);
 	~InputHandler();
 
-	// Make private if never called externally?
-	void handleKeyBoardInput(int cKey, int iAction);
+	void receiveKeyBoardInput(int cKey, int iAction);
+	void handleInput();
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
