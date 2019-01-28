@@ -18,6 +18,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
 	// Controller
 	initializeJoysticks();
+	// TODO glfwSetJoystickCallback() no present in glfw 3.1, need 3.2
 
 	// Keyboard
 	initializeKeysPressed();
@@ -220,6 +221,7 @@ void InputHandler::initializeJoysticks()
 	}
 }
 
+// Check all if all joysticks are connected
 void InputHandler::checkForPresentJoysticks()
 {
 	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
