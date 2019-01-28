@@ -17,7 +17,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	// Initializing Base Class
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
 	// Controller
-	initializeControllers();
+	initializeJoysticks();
 
 	// Keyboard
 	initializeKeysPressed();
@@ -207,23 +207,65 @@ void InputHandler::initializeKeysPressed()
 	}
 }
 
-void InputHandler::initializeControllers()
+// TODO later this should detect controllers connecting/disconnecting in the
+// middle of the menu or game.
+void InputHandler::initializeJoysticks()
 {
-	// Detect which controllers are connected
-	controllersPresent[GLFW_JOYSTICK_1] = glfwJoystickPresent(GLFW_JOYSTICK_1);
-	controllersPresent[GLFW_JOYSTICK_2] = glfwJoystickPresent(GLFW_JOYSTICK_2);
-	controllersPresent[GLFW_JOYSTICK_3] = glfwJoystickPresent(GLFW_JOYSTICK_3);
-	controllersPresent[GLFW_JOYSTICK_4] = glfwJoystickPresent(GLFW_JOYSTICK_4);
+	checkForPresentJoysticks();
 
 	// Initialize all connnected controllers
-	for (int i = GLFW_JOYSTICK_1; i < MAX_PLAYER_COUNT; i++)
+	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
 	{
-		if (controllersPresent[i])
-		{
-
-			std::cout << "Controller " << (i + 1) << " is connected" << std::endl;
-		}
+		initializeJoystick(joystickID);
 	}
+}
+
+void InputHandler::checkForPresentJoysticks()
+{
+	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+	{
+		m_pJoystickIsPresent[i] = glfwJoystickPresent(i);
+	}
+}
 
 
+// This should be used instead of initializeJoysticks due to how
+// controllers connecting and disconnecting can work
+// It should also check if a controller is already initialized before doing so
+// but need to emperically check if ID changes when controllers connect/disconnect
+// before doing so
+void InputHandler::initializeJoystick(int joystickID)
+{
+	if (!m_pJoystickIsPresent[joystickID])
+	{
+		return;
+	}
+	// Axis states
+	int axesCount;
+	m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &axesCount);
+
+	// Button states
+	int buttonCount;
+	m_pJoystickButtons[joystickID] = glfwGetJoystickButtons(joystickID, &buttonCount);
+
+	// Names
+	m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
+
+	// DEBUG Print information
+	std::cout << m_pJoystickNames[joystickID] << " " << (joystickID + 1)
+		<< " is connected." << std::endl;
+
+	std::cout << "\tAxes[" << axesCount << "]: ";
+	for (int i = 0; i < axesCount; i++)
+	{
+		std::cout << m_pJoystickAxes[joystickID][i] << " ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "\tButtons[" << buttonCount << "]: ";
+	for (int i = 0; i < buttonCount; i++)
+	{
+		std::cout << m_pJoystickButtons[joystickID][i] << " ";
+	}
+	std::cout << std::endl;
 }

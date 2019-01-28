@@ -28,7 +28,9 @@ private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
 	void initializeKeysPressed();
-	void initializeControllers();
+	void checkForPresentJoysticks();
+	void initializeJoysticks();
+	void initializeJoystick(int joystickID);
 	static InputHandler* m_pInstance;
 	Mouse_Handler* m_pMouseHandler;
 	CommandHandler *m_pCommandHandler;
@@ -38,6 +40,13 @@ private:
 	// https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
 	bool pressed[KEYS];
 
-	int controllersPresent[MAX_PLAYER_COUNT];
+	// List of joysticks that are present (detected) by the game.
+	// Only present controllers are initialized
+	// 1 - present
+	// 0 - not present
+	int m_pJoystickIsPresent[MAX_PLAYER_COUNT];
+	const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
+	const unsigned char* m_pJoystickButtons[MAX_PLAYER_COUNT];
+	const char* m_pJoystickNames[MAX_PLAYER_COUNT];
 };
 
