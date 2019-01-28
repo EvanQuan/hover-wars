@@ -28,6 +28,7 @@ private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
 	void initializeKeysPressed();
+	void initializeControllers();
 	static InputHandler* m_pInstance;
 	Mouse_Handler* m_pMouseHandler;
 	CommandHandler *m_pCommandHandler;

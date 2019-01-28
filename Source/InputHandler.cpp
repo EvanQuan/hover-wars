@@ -15,25 +15,12 @@ InputHandler* InputHandler::m_pInstance = nullptr;
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
-	initializeKeysPressed();
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
 	// Controller
-	// Each controller counts as 1 joystick
-
-	controllersPresent[0] = glfwJoystickPresent(GLFW_JOYSTICK_1);
-	controllersPresent[1] = glfwJoystickPresent(GLFW_JOYSTICK_2);
-	controllersPresent[2] = glfwJoystickPresent(GLFW_JOYSTICK_3);
-	controllersPresent[3] = glfwJoystickPresent(GLFW_JOYSTICK_4);
-
-	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
-	{
-		if (controllersPresent[i])
-		{
-			std::cout << "Controller " << (i + 1) << " is connected" << std::endl;
-		}
-	}
+	initializeControllers();
 
 	// Keyboard
+	initializeKeysPressed();
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
 	// Mouse
 	m_pMouseHandler = Mouse_Handler::getInstance(rWindow);
@@ -218,4 +205,25 @@ void InputHandler::initializeKeysPressed()
 	{
 		pressed[key] = false;
 	}
+}
+
+void InputHandler::initializeControllers()
+{
+	// Detect which controllers are connected
+	controllersPresent[GLFW_JOYSTICK_1] = glfwJoystickPresent(GLFW_JOYSTICK_1);
+	controllersPresent[GLFW_JOYSTICK_2] = glfwJoystickPresent(GLFW_JOYSTICK_2);
+	controllersPresent[GLFW_JOYSTICK_3] = glfwJoystickPresent(GLFW_JOYSTICK_3);
+	controllersPresent[GLFW_JOYSTICK_4] = glfwJoystickPresent(GLFW_JOYSTICK_4);
+
+	// Initialize all connnected controllers
+	for (int i = GLFW_JOYSTICK_1; i < MAX_PLAYER_COUNT; i++)
+	{
+		if (controllersPresent[i])
+		{
+
+			std::cout << "Controller " << (i + 1) << " is connected" << std::endl;
+		}
+	}
+
+
 }
