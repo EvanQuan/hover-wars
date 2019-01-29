@@ -20,15 +20,15 @@
 #define BUTTON_X 2
 #define BUTTON_Y 3
 #define BUTTON_LEFT_BUMPER 4
-#define BUTTON_RIGHT_BUMPER 6
-#define BUTTON_BACK 7
-#define BUTTON_START 8
-#define BUTTON_LEFT_STICK 9
-#define BUTTON_RIGHT_STICK 10
-#define BUTTON_UP 11
-#define BUTTON_RIGHT 12
-#define BUTTON_DOWN 13
-#define BUTTON_LEFT 14
+#define BUTTON_RIGHT_BUMPER 5
+#define BUTTON_BACK 6
+#define BUTTON_START 7
+#define BUTTON_LEFT_STICK 8
+#define BUTTON_RIGHT_STICK 9
+#define BUTTON_UP 10
+#define BUTTON_RIGHT 11
+#define BUTTON_DOWN 12
+#define BUTTON_LEFT 13
 // TODO What is the 16th button (15)?
 // Is it the centre xbox button (home)?
 

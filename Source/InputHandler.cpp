@@ -320,11 +320,18 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
 	const float* axes = m_pJoystickAxes[joystickID];
 	std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: " << std::endl
 	          << "\t\tLeft stick x: " << axes[AXIS_LEFT_STICK_X] << std::endl
-	                        << " y: " << axes[AXIS_LEFT_STICK_Y] << std::endl
+	          << "\t\t           y: " << axes[AXIS_LEFT_STICK_Y] << std::endl
 	          << "\t\tRight stick x: " << axes[AXIS_RIGHT_STICK_X] << std::endl
-	                         << " y: " << axes[AXIS_RIGHT_STICK_Y] << std::endl
+	          << "\t\t            y: " << axes[AXIS_RIGHT_STICK_Y] << std::endl
 	          << "\t\tLeft trigger: " << axes[AXIS_LEFT_TRIGGER] << std::endl
 	          << "\t\tRight trigger: " << axes[AXIS_RIGHT_TRIGGER] << std::endl;
+	std::cout << "\t\t[";
+	for (int i = 0; i < m_pJoystickAxesCount[joystickID]; i++)
+	{
+		std::cout << axes[i] << " ";
+	}
+	std::cout << "]" << std::endl;
+
 }
 
 void InputHandler::debugPrintJoystickButtons(int joystickID)
@@ -333,7 +340,7 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
 	{
 		return;
 	}
-	const float* buttons = m_pJoystickAxes[joystickID];
+	const unsigned char* buttons = m_pJoystickButtons[joystickID];
 	std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
 	          << "\t\tA: " << buttons[BUTTON_A] << std::endl
 	          << "\t\tB: " << buttons[BUTTON_B] << std::endl
@@ -349,7 +356,13 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
 	          << "\t\tRight: " << buttons[BUTTON_RIGHT] << std::endl
 	          << "\t\tDown: " << buttons[BUTTON_DOWN] << std::endl
 	          << "\t\tLeft: " << buttons[BUTTON_LEFT] << std::endl;
-	// TODO 16th button
+	std::cout << "\t\t[";
+	for (int i = 0; i < m_pJoystickButtonCount[joystickID]; i++)
+	{
+		std::cout << buttons[i] << " ";
+	}
+	std::cout << "]" << std::endl;
+
 }
 
 void InputHandler::disconnectJoystick(int joystickID)
