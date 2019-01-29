@@ -46,48 +46,49 @@ CommandHandler::~CommandHandler()
 	// m_pEntMngr = nullptr;
 }
 
-void CommandHandler::executeCommand(PlayerNumber player, Command command)
+void CommandHandler::execute(int joystickID, FixedCommand command)
 {
-	// vec3 pMoveVec(0.f, 0.f, 0.f);
 	switch (command)
 	{
-	case ABILITY_ROCKET:			// Move Light Forward (along Z)
+	case ABILITY_ROCKET:
 	case ABILITY_SPIKES:
 	case ABILITY_TRAIL:
-	case CAMERA_FLIP:
+	case CAMERA_CHANGE:
 	case DASH_BACK:
 	case DASH_FORWARD:
 	case DASH_LEFT:
 	case DASH_RIGHT:
+	case MENU_BACK:
 	case MENU_PAUSE:
-	case MENU_SELECT:
 	case MENU_START:
-	case MOVE_BACK:
-	case MOVE_FORWARD:
-	case MOVE_LEFT:
-	case MOVE_RIGHT:
-	case TURN_LEFT:
-	case TURN_RIGHT:
-		std::cout << m_pPlayerNumberToString.at(player) << ": "
-		          << m_pCommandToString.at(command) << std::endl;
-		// std::cout << "hi" << std::endl;
+		std::cout << "Player " << joystickID << ": "
+		          << m_pFixedCommandToString.at(command) << std::endl;
 		break;
 	case DEBUG_TOGGLE_WIREFRAME:
 		bWireFrame = !bWireFrame;
 		if (bWireFrame)
+		{
 			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		}
 		else
+		{
 			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+		}
+		std::cout << "Player " << joystickID << ": "
+		          << m_pFixedCommandToString.at(command) << std::endl;
+	}
+}
+
+void CommandHandler::execute(int joystickID, VariableCommand command, const float x, const float y)
+{
+	switch (command)
+	{
+	case MOVE:
+	case TURN:
+		std::cout << "Player " << joystickID << ": "
+		          << m_pVariableCommandToString.at(command) << std::endl
+		          << "\tx: " << x << std::endl
+		          << "\ty: " << y << std::endl;
 		break;
-	// case GLFW_KEY_ENTER:		// Input Handling (TODO)
-		// break;
-	// case GLFW_KEY_UP:
-		// break;
-	// case GLFW_KEY_C:
-		// m_pGPXMngr->switchView();
-		// break;
-	// case GLFW_KEY_P:
-		// m_pEntMngr->pause();
-		// break;
 	}
 }
