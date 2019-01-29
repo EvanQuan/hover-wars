@@ -42,6 +42,7 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 // Destructor
 CommandHandler::~CommandHandler()
 {
+	// TODO delete singleton instance?
 	// m_pEntMngr = nullptr;
 }
 

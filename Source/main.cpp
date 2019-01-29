@@ -83,12 +83,12 @@ int main()
 		}
 
 		// Clean up!
-		if (m_gameManager != nullptr)
+		if (nullptr != m_gameManager)
 		{
 			delete m_gameManager;
 		}
 
-		if (m_inputHandler != nullptr)
+		if (nullptr != m_inputHandler)
 		{
 			delete m_inputHandler;
 		}
