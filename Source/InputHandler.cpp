@@ -16,9 +16,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
 	m_pCommandHandler = CommandHandler::getInstance(rWindow);
-	// Controller
-	initializeJoysticks();
-	// TODO glfwSetJoystickCallback() no present in glfw 3.1, need 3.2
 
 	// Keyboard
 	initializeKeysPressed();
@@ -28,6 +25,9 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
 	glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
 	glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
+	// Controller
+	initializeJoysticksAtStart();
+	glfwSetJoystickCallback(InputHandler::joystickCallback);
 }
 
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
@@ -56,8 +56,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	}
 
 	// TODO is it expensive to assign these every call back?
-	InputHandler* pInputHandler = InputHandler::getInstance(window);
-	pInputHandler->pressed[key] = action != GLFW_RELEASE;
+	m_pInstance->pressed[key] = action != GLFW_RELEASE;
 	// GameManager* pGPXMngr = GameManager::getInstance(window);
 	// ShaderManager* pShdrMngr = SHADER_MANAGER;
 	// EntityManager* pEnvMngr = ENTITY_MANAGER;
@@ -73,7 +72,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	case GLFW_KEY_F:
 		if (GLFW_PRESS == action)
 		{
-			pInputHandler->m_pCommandHandler->executeCommand(KEYBOARD_PLAYER, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
+			m_pInstance->m_pCommandHandler->executeCommand(KEYBOARD_PLAYER, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
 		}
 		break;
 
@@ -210,14 +209,30 @@ void InputHandler::initializeKeysPressed()
 
 // TODO later this should detect controllers connecting/disconnecting in the
 // middle of the menu or game.
-void InputHandler::initializeJoysticks()
+void InputHandler::initializeJoysticksAtStart()
 {
+	initializeJoystickVariables();
 	checkForPresentJoysticks();
 
-	// Initialize all connnected controllers
+	// Initialize all connnected joysticks
+	// joystickCallback only checks for joysticks that go from disconnected to
+	// connected, and therefore does not check for joysticks that are already
+	// connected at the start of the program.
 	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
 	{
 		initializeJoystick(joystickID);
+	}
+}
+
+// Initialize joystick variables before they are set
+void InputHandler::initializeJoystickVariables()
+{
+	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+	{
+		m_pJoystickIsPresent[i] = false;
+		m_pJoystickAxesCount[i] = 0;
+		m_pJoystickButtonCount[i] = 0;
+		m_pJoystickNames[i] = EMPTY_CONTROLLER;
 	}
 }
 
@@ -238,36 +253,64 @@ void InputHandler::checkForPresentJoysticks()
 // before doing so
 void InputHandler::initializeJoystick(int joystickID)
 {
+	// Check if joystick is present. Can only initialize if present.
+	m_pJoystickIsPresent[joystickID] = glfwJoystickPresent(joystickID);
 	if (!m_pJoystickIsPresent[joystickID])
 	{
 		return;
 	}
 	// Axis states
-	int axesCount;
-	m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &axesCount);
+	m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
 
 	// Button states
-	int buttonCount;
-	m_pJoystickButtons[joystickID] = glfwGetJoystickButtons(joystickID, &buttonCount);
+	m_pJoystickButtons[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
 	// Names
 	m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
 
-	// DEBUG Print information
-	std::cout << m_pJoystickNames[joystickID] << " " << (joystickID + 1)
-		<< " is connected." << std::endl;
+	debugPrintJoystickInformation(joystickID);
+}
 
-	std::cout << "\tAxes[" << axesCount << "]: ";
-	for (int i = 0; i < axesCount; i++)
+// DEBUG Print information about a joystick
+void InputHandler::debugPrintJoystickInformation(int joystickID)
+{
+	std::cout << m_pJoystickNames[joystickID] << " " << joystickID
+		<< " is " <<  (m_pJoystickIsPresent[joystickID] ? "" : "dis" ) << "connected"
+		<< std::endl;
+
+	std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: ";
+	for (int i = 0; i < m_pJoystickAxesCount[joystickID];  i++)
 	{
 		std::cout << m_pJoystickAxes[joystickID][i] << " ";
 	}
 	std::cout << std::endl;
 
-	std::cout << "\tButtons[" << buttonCount << "]: ";
-	for (int i = 0; i < buttonCount; i++)
+	std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: ";
+	for (int i = 0; i < m_pJoystickButtonCount[joystickID]; i++)
 	{
 		std::cout << m_pJoystickButtons[joystickID][i] << " ";
 	}
 	std::cout << std::endl;
+
+}
+
+void InputHandler::disconnectJoystick(int joystickID)
+{
+	m_pJoystickIsPresent[joystickID] = false;
+	debugPrintJoystickInformation(joystickID);
+
+}
+
+// Checks for joystick connection/disconnection
+// TODO true? Must be called in initialize() to avoid infinite getInstance() recursion
+void InputHandler::joystickCallback(int joystickID, int event)
+{
+	if (event == GLFW_CONNECTED)
+	{
+		m_pInstance->initializeJoystick(joystickID);
+	}
+	else if (event == GLFW_DISCONNECTED)
+	{
+		m_pInstance->disconnectJoystick(joystickID);
+	}
 }
