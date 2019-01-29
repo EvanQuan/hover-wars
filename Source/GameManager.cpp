@@ -56,14 +56,18 @@ GameManager::~GameManager()
 	m_pWindow = nullptr;
 
 	// Let go of Manager Handles
-	if ( nullptr != m_pEntMngr )
+	if (nullptr != m_pEntMngr)
+	{
 		delete m_pEntMngr;
+	}
 
-	if ( nullptr != m_pShaderMngr )
+	if (nullptr != m_pShaderMngr)
+	{
 		delete m_pShaderMngr;
+	}
 
-	glDeleteBuffers( 1, &m_pVertexBuffer );
-	glDeleteVertexArrays( 1, &m_pVertexArray );
+	glDeleteBuffers(1, &m_pVertexBuffer);
+	glDeleteVertexArrays(1, &m_pVertexArray);
 }
 
 // Intended to be called every cycle, or when the graphics need to be updated

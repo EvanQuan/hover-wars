@@ -1,15 +1,6 @@
 #pragma once
+
 #include "CommandHandler.h"
-#include "Mouse_Handler.h"
-
-using namespace std;
-
-#define MAX_INPUT_SIZE 256
-#define KEYS 349
-#define MAX_PLAYER_COUNT 4
-#define KEYBOARD_PLAYER CommandHandler::PLAYER_ONE
-#define XBOX_CONTROLLER "Xbox"
-#define EMPTY_CONTROLLER "Empty Controller"
 
 // Input Handler Class
 // Handles input by storing a line of text and returning a word at a time.
@@ -20,6 +11,8 @@ public:
 	~InputHandler();
 
 	void handleInput();
+	void handleKeyboardInput();
+	void handleJoystickInput();
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void joystickCallback(int joystickID, int event);
@@ -27,25 +20,47 @@ public:
 	static void mouseMoveCallback(GLFWwindow* window, double x, double y);
 	static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+	void updateMouse(float fX, float fY);
+
+	// Flag the Mouse for Rotations or Translations (Cannot do both at the same time).
+	void mouseTStart() { m_bTranslateFlag = !m_bRotateFlag; }
+	void mouseTEnd() { m_bTranslateFlag = false; }
+	void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
+	void mouseREnd() { m_bRotateFlag = false; }
+
+	void mouseZoom(float fZoomVal);
+
 private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
-	void initializeKeysPressed();
-	void initializeJoystickVariables();
 	void checkForPresentJoysticks();
-	void initializeJoysticksAtStart();
-	void initializeJoystick(int joystickID);
+	void debugPrintJoystickAxes(int joystickID);
+	void debugPrintJoystickButtons(int joystickID);
+	void debugPrintJoystickInformation(int joystickID);
+	void debugPrintJoystickInformation();
 	void disconnectJoystick(int joystickID);
-	void debugPrintJoystickInformation(int joystick);
-	static InputHandler* m_pInstance;
-	Mouse_Handler* m_pMouseHandler;
-	CommandHandler *m_pCommandHandler;
+	void initializeJoystick(int joystickID);
+	void initializeJoystickVariables();
+	void initializeJoysticksAtStart();
+	void initializeKeysPressed();
+	void updateJoysticks();
 
-	// Tracks all keys if they areare pressed
+	static InputHandler* m_pInstance;
+	GameManager* m_pGameManager;
+	CommandHandler* m_pCommandHandler;
+
+	CommandHandler::FixedCommand fixedCommand;
+	CommandHandler::VariableCommand variableCommand;
+	float x;
+	float y;
+
+	// Keyboard
+	// Tracks all keys if they are pressed
 	// Allows for multiple key input
 	// https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
 	bool pressed[KEYS];
 
+	// Joysticks
 	// List of joysticks that are present (detected) by the game.
 	// Only present controllers are initialized
 	// 1 - present
@@ -54,7 +69,12 @@ private:
 	int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
 	const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
 	int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
-	const unsigned char* m_pJoystickButtons[MAX_PLAYER_COUNT];
+	const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
 	const char* m_pJoystickNames[MAX_PLAYER_COUNT];
+
+	// Mouse
+	bool m_bTranslateFlag;
+	bool m_bRotateFlag;
+	glm::vec2 m_pInitialPos;
 };
 
