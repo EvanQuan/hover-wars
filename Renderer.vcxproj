@@ -40,7 +40,6 @@
     <ClInclude Include="Headers\PointLight.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
-    <ClInclude Include="Headers\Mouse_Handler.h" />
     <ClInclude Include="Headers\Scene_Loader.h" />
     <ClInclude Include="Headers\PlayerEntity.h" />
     <ClInclude Include="Headers\Shader.h" />
@@ -73,7 +72,6 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
-    <ClCompile Include="Source\Mouse_Handler.cpp" />
     <ClCompile Include="Source\Scene_Loader.cpp" />
     <ClCompile Include="Source\PlayerEntity.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
