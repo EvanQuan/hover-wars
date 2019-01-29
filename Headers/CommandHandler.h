@@ -47,7 +47,7 @@ public:
 		{
 			return m_pInstance->m_keyToFixedCommand.at(key);
 		}
-		catch (const std::out_of_range& oor)
+		catch (...)
 		{
 			return INVALID_FIXED;
 		}
@@ -58,7 +58,7 @@ public:
 		{
 			return m_pInstance->m_keyToVariableCommand.at(key);
 		}
-		catch (const std::out_of_range& oor)
+		catch (...)
 		{
 			return INVALID_VARIABLE;
 		}
@@ -69,7 +69,7 @@ public:
 		{
 			return m_pInstance->m_buttonToFixedCommand.at(button);
 		}
-		catch (const std::out_of_range& oor)
+		catch (...)
 		{
 			return INVALID_FIXED;
 		}
@@ -80,7 +80,7 @@ public:
 		{
 			return m_pInstance->m_axisToFixedCommand.at(axis);
 		}
-		catch (const std::out_of_range& oor)
+		catch (...)
 		{
 			return INVALID_FIXED;
 		}
