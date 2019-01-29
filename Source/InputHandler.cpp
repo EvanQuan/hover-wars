@@ -18,6 +18,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	m_pGameManager = GameManager::getInstance(rWindow);
 
 	// Keyboard
+	m_keyboardPlayer = GLFW_JOYSTICK_1;
 	initializeKeysPressed();
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
 	// Mouse
@@ -74,7 +75,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	case GLFW_KEY_F:
 		if (GLFW_PRESS == action)
 		{
-			m_pInstance->m_pCommandHandler->execute(KEYBOARD_PLAYER, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
+			m_pInstance->m_pCommandHandler->execute(m_pInstance->m_keyboardPlayer, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
 		}
 		break;
 
@@ -178,7 +179,7 @@ void InputHandler::handleKeyboardInput()
 				fixedCommand = CommandHandler::INVALID_FIXED;
 			}
 			if (CommandHandler::INVALID_FIXED != fixedCommand) {
-				m_pCommandHandler->execute(KEYBOARD_PLAYER, fixedCommand);
+				m_pCommandHandler->execute(m_keyboardPlayer, fixedCommand);
 			}
 			else
 			{
@@ -219,7 +220,7 @@ void InputHandler::handleKeyboardInput()
 				}
 				if (CommandHandler::INVALID_VARIABLE != variableCommand)
 				{
-					m_pCommandHandler->execute(KEYBOARD_PLAYER, variableCommand, x, y);
+					m_pCommandHandler->execute(m_keyboardPlayer, variableCommand, x, y);
 				}
 			}
 		}

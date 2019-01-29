@@ -30,6 +30,7 @@ public:
 
 	void mouseZoom(float fZoomVal);
 
+	int m_keyboardPlayer;
 private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
