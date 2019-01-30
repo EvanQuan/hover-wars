@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 #include "GameManager.h"
-#include "InputHandler.h"
+#include "CommandHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
 
@@ -84,8 +84,8 @@ bool GameManager::renderGraphics()
 	// Update Timer
 	m_pTimer.updateTime();
 
-	// Handle player input 
-	m_inputHandler->handleInput();
+	// Execute all commands for this frame
+	m_commandHandler->executeAllCommands();
 
 	// Update Environment
 	m_pEntMngr->updateEnvironment(m_pTimer);

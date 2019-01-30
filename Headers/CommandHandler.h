@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "EntityManager.h"
 #include "GameManager.h"
+#include "InputHandler.h"
 
 /* CLASS */
 /*
@@ -46,7 +47,18 @@ public:
 
 	void execute(int joystickID, FixedCommand command);
 	void execute(int joystickID, VariableCommand command, const float x, const float y);
+	/*
+	Execute all commands for a given frame.
+	*/
+	void executeAllCommands();
+	/*
+	Execute all commands from user input (keyboard, mouse, controllers).
+	*/
+	void executeInputCommands();
 
+	/*
+	Convert a key to its corresponding FixedCommand
+	*/
 	static FixedCommand keyToFixedCommand(int key)
 	{
 		try
@@ -58,6 +70,9 @@ public:
 			return INVALID_FIXED;
 		}
 	};
+	/*
+	Convert a key to its corresponding VariableCommand
+	*/
 	static VariableCommand keyToVariableCommand(int key)
 	{
 		try
@@ -69,6 +84,9 @@ public:
 			return INVALID_VARIABLE;
 		}
 	};
+	/*
+	Convert a joystick button to its corresponding FixedCommand
+	*/
 	static FixedCommand buttonToFixedCommand(int button)
 	{
 		try
@@ -80,6 +98,9 @@ public:
 			return INVALID_FIXED;
 		}
 	};
+	/*
+	Convert a joystick axis to its corresponding FixedCommand
+	*/
 	static FixedCommand axisToFixedCommand(int axis)
 	{
 		try
@@ -144,11 +165,18 @@ private:
 	// Singleton Variables
 	CommandHandler(GLFWwindow *rWindow);
 	static CommandHandler* m_pInstance;
-	GameManager *m_pGPXMngr;
-	EntityManager *m_pEntMngr;
+	EntityManager *m_pEntityManager;
+	GameManager *m_pGameManager;
+	InputHandler *m_pInputHandler;
 
-	// internal variables
+	// Internal variables
 	bool bWireFrame;
+	// For keyboard command handling
+	FixedCommand m_pFixedCommand;
+	VariableCommand m_pVariableCommand;
+	float x;
+	float y;
+
 
 	// For input debugging
 	std::map<FixedCommand, const char*> m_pFixedCommandToString =
@@ -174,5 +202,11 @@ private:
 		{TURN, "Turn"},
 		{INVALID_VARIABLE, "Invalid"},
 	};
+
+	void executeKeyboardCommands();
+	void executeJoystickCommands();
+
+
+
 };
 
