@@ -1,9 +1,3 @@
-/*
-
-Receives user input (mouse, keyboard and controller) and initiates appropriate
-actions that correspond to input to CommandHandler.
-
-*/
 #include <iostream> // debug
 #include "stdafx.h"
 #include "InputHandler.h"

@@ -2,8 +2,12 @@
 
 #include "CommandHandler.h"
 
-// Input Handler Class
-// Handles input by storing a line of text and returning a word at a time.
+/*
+
+Receives user input (mouse, keyboard and controller) and initiates appropriate
+actions that correspond to input to CommandHandler.
+
+*/
 class InputHandler
 {
 public:

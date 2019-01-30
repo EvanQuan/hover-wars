@@ -1,10 +1,3 @@
-/*
-
-Receives user command initiates appropriate actions that correspond to that command.
-Usually these commands would come from InputHandler (user input), but may come
-from other means for test purposes.
-
-*/
 #include <iostream>
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
