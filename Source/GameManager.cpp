@@ -49,6 +49,14 @@ GameManager* GameManager::getInstance(GLFWwindow *rWindow)
 	return m_pInstance;
 }
 
+// Does not require window parameter, but assumes that Singleton instance has
+// been instantiated beforehand.
+GameManager* GameManager::getInstance()
+{
+	assert(nullptr != m_pInstance);
+	return m_pInstance;
+}
+
 // Destruct Shaders, Buffers, Arrays and other GL stuff.
 GameManager::~GameManager()
 {

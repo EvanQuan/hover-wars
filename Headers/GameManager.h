@@ -19,6 +19,7 @@ class GameManager
 {
 public:
 	static GameManager* getInstance(GLFWwindow *rWindow);
+	static GameManager* getInstance();
 	~GameManager();
 	
 	// Graphics Application
