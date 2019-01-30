@@ -1,9 +1,3 @@
-/*
-
-Receives user input (mouse, keyboard and controller) and initiates appropriate
-actions that correspond to input to CommandHandler.
-
-*/
 #include <iostream> // debug
 #include "stdafx.h"
 #include "InputHandler.h"
@@ -13,18 +7,15 @@ InputHandler* InputHandler::m_pInstance = nullptr;
 
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
-	// Initializing Base Class
-	m_pCommandHandler = CommandHandler::getInstance(rWindow);
-	m_pGameManager = GameManager::getInstance(rWindow);
-
 	// Keyboard
+	m_keyboardPlayer = GLFW_JOYSTICK_1;
 	initializeKeysPressed();
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
 	// Mouse
-	m_bRotateFlag = m_bTranslateFlag = false;
-	glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
-	glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
-	glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
+	// m_bRotateFlag = m_bTranslateFlag = false;
+	// glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
+	// glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
+	// glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
 	// Controller
 	initializeJoysticksAtStart();
 	glfwSetJoystickCallback(InputHandler::joystickCallback);
@@ -44,11 +35,7 @@ InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 
 InputHandler::~InputHandler()
 {
-	if (nullptr != m_pCommandHandler)
-	{
-		delete m_pCommandHandler;
-	}
-	m_pGameManager = nullptr;
+	// m_pGameManager = nullptr; // TODO remove later once GameManager no longer needed
 }
 
 
@@ -60,8 +47,12 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 		return;
 	}
 
-	// Input is handled in handleInput(), which is called every frame
-	m_pInstance->pressed[key] = action != GLFW_RELEASE;
+	// Possible actions:
+	//		GLFW_RELEASE = 0
+	//		GLFW_PRESS   = 1
+	//		GLFW_REPEAT  = 2
+	// Note that any time a key is pressed, it will count as TRUE
+	m_pInstance->pressed[key] = action;
 
 	// Special keys handled differently than just pressed/not pressed
 	switch (key)
@@ -74,210 +65,63 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	case GLFW_KEY_F:
 		if (GLFW_PRESS == action)
 		{
-			m_pInstance->m_pCommandHandler->execute(KEYBOARD_PLAYER, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
+			// m_pInstance->m_pCommandHandler->execute(m_pInstance->m_keyboardPlayer, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
 		}
 		break;
 
 	}
 }
 
-/*
-Looks at all the keys that are currently pressed and sends each pressed keys'
-commands to CommandHandler. This should be called every frame update.
-*/
-void InputHandler::handleInput()
-{
-	system("CLS");
-	handleJoystickInput();
-
-	handleKeyboardInput();
-}
-
-void InputHandler::handleJoystickInput()
-{
-	updateJoysticks();
-	// debugPrintJoystickInformation();
-
-	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
-	{
-		const float* axes = m_pJoystickAxes[joystickID];
-		const unsigned char* buttonsPressed = m_pJoystickButtonsPressed[joystickID];
-		if (m_pJoystickIsPresent[joystickID])
-		{
-
-			// Check buttons
-			for (int button = BUTTON_A; button < BUTTON_LEFT; button++)
-			{
-				if (buttonsPressed[button])
-				{
-					m_pCommandHandler->execute(joystickID, CommandHandler::buttonToFixedCommand(button));
-				}
-			}
-
-			// Check axes
-			// Joystick axes will not be remappable, so no need to make code generalizable
-			m_pCommandHandler->execute(joystickID, CommandHandler::MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-			m_pCommandHandler->execute(joystickID, CommandHandler::TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
-
-			// NOTE: With works with the assumption that triggers are mapped to fixed commands
-			// If we decide that triggers work better for variable commands, then we will need to change this.
-			if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_NETURAL)
-			{
-				m_pCommandHandler->execute(joystickID, CommandHandler::axisToFixedCommand(AXIS_LEFT_TRIGGER));
-			}
-			if (axes[AXIS_RIGHT_TRIGGER] > TRIGGER_NETURAL)
-			{
-				m_pCommandHandler->execute(joystickID, CommandHandler::axisToFixedCommand(AXIS_RIGHT_TRIGGER));
-			}
-		}
-	}
-}
-
-void InputHandler::handleKeyboardInput()
-{
-	for (int key = 0; key < KEYS; key++)
-	{
-		if (pressed[key])
-		{
-			// Fixed
-			switch (key)
-			{
-			case GLFW_KEY_K:
-				fixedCommand = CommandHandler::DASH_BACK;
-				break;
-			case GLFW_KEY_I:
-				fixedCommand = CommandHandler::DASH_FORWARD;
-				break;
-			case GLFW_KEY_H:
-				fixedCommand = CommandHandler::DASH_LEFT;
-				break;
-			case GLFW_KEY_SEMICOLON:
-				fixedCommand = CommandHandler::DASH_RIGHT;
-				break;
-			case GLFW_KEY_SPACE:
-				fixedCommand = CommandHandler::ABILITY_ROCKET;
-				break;
-			case GLFW_KEY_LEFT_SHIFT:
-				fixedCommand = CommandHandler::ABILITY_TRAIL;
-				break;
-			case GLFW_KEY_APOSTROPHE:
-				fixedCommand = CommandHandler::ABILITY_SPIKES;
-				break;
-			case GLFW_KEY_TAB:
-				fixedCommand = CommandHandler::MENU_BACK;
-				break;
-			case GLFW_KEY_ENTER:
-				fixedCommand = CommandHandler::MENU_START;
-				break;
-			case GLFW_KEY_P:
-				fixedCommand = CommandHandler::MENU_PAUSE;
-				// if ( iAction == GLFW_RELEASE )
-					// m_pEntMngr->pause();
-				break;
-			default:
-				fixedCommand = CommandHandler::INVALID_FIXED;
-			}
-			if (CommandHandler::INVALID_FIXED != fixedCommand) {
-				m_pCommandHandler->execute(KEYBOARD_PLAYER, fixedCommand);
-			}
-			else
-			{
-				switch (key)
-				{
-				case GLFW_KEY_W:
-					variableCommand = CommandHandler::MOVE;
-					x = JOYSTICK_MAX;
-					y = JOYSTICK_NEUTRAL;
-					break;
-				case GLFW_KEY_S:
-					variableCommand = CommandHandler::MOVE;
-					x = JOYSTICK_MIN;
-					y = JOYSTICK_NEUTRAL;
-					break;
-				case GLFW_KEY_A:
-					variableCommand = CommandHandler::MOVE;
-					x = JOYSTICK_NEUTRAL;
-					y = JOYSTICK_MIN;
-					break;
-				case GLFW_KEY_D:
-					variableCommand = CommandHandler::MOVE;
-					x = JOYSTICK_NEUTRAL;
-					y = JOYSTICK_MAX;
-					break;
-				case GLFW_KEY_J:
-					variableCommand = CommandHandler::TURN;
-					x = JOYSTICK_MIN;
-					y = JOYSTICK_NEUTRAL;
-					break;
-				case GLFW_KEY_L:
-					variableCommand = CommandHandler::TURN;
-					x = JOYSTICK_MAX;
-					y = JOYSTICK_NEUTRAL;
-					break;
-				default:
-					variableCommand = CommandHandler::INVALID_VARIABLE;
-				}
-				if (CommandHandler::INVALID_VARIABLE != variableCommand)
-				{
-					m_pCommandHandler->execute(KEYBOARD_PLAYER, variableCommand, x, y);
-				}
-			}
-		}
-	}
-
-}
-
-
 // Mouse Button Callback
 // Handle mouse movement controls.
-void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	double fX, fY;
-
-	if (GLFW_MOUSE_BUTTON_1 == button)
-	{
-		glfwGetCursorPos(window, &fX, &fY);
-		if (GLFW_PRESS == action)
-		{
-			m_pInstance->mouseTStart();
-		}
-		else if (GLFW_RELEASE == action)
-		{
-			m_pInstance->mouseTEnd();
-		}
-	}
-	if (GLFW_MOUSE_BUTTON_2 == button)
-	{
-		glfwGetCursorPos(window, &fX, &fY);
-		if (GLFW_PRESS == action)
-		{
-			m_pInstance->mouseRStart();
-		}
-		else if (GLFW_RELEASE == action)
-		{
-			m_pInstance->mouseREnd();
-		}
-	}
-}
+// void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+// {
+	// double fX, fY;
+// 
+	// if (GLFW_MOUSE_BUTTON_1 == button)
+	// {
+		// glfwGetCursorPos(window, &fX, &fY);
+		// if (GLFW_PRESS == action)
+		// {
+			// m_pInstance->mouseTStart();
+		// }
+		// else if (GLFW_RELEASE == action)
+		// {
+			// m_pInstance->mouseTEnd();
+		// }
+	// }
+	// if (GLFW_MOUSE_BUTTON_2 == button)
+	// {
+		// glfwGetCursorPos(window, &fX, &fY);
+		// if (GLFW_PRESS == action)
+		// {
+			// m_pInstance->mouseRStart();
+		// }
+		// else if (GLFW_RELEASE == action)
+		// {
+			// m_pInstance->mouseREnd();
+		// }
+	// }
+// }
 
 // Handles input from Mouse Moves.
-void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
-{
-	if (m_pInstance->m_bRotateFlag)
-	{
-		m_pInstance->m_pGameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
-	}
-
-	// Set new current position
-	m_pInstance->m_pInitialPos.x = (float) x;
-	m_pInstance->m_pInitialPos.y = (float) y;
-}
+// void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
+// {
+	// if (m_pInstance->m_bRotateFlag)
+	// {
+		// m_pInstance->m_pGameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
+	// }
+// 
+	// // Set new current position
+	// m_pInstance->m_pInitialPos.x = (float) x;
+	// m_pInstance->m_pInitialPos.y = (float) y;
+// }
 
 // Handle scroll wheel callbacks
-void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	m_pInstance->m_pGameManager->zoomCamera((float) yoffset * 0.05f);
-}
+// void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+// {
+	// m_pInstance->m_pGameManager->zoomCamera((float) yoffset * 0.05f);
+// }
 
 // Keys begin not pressed until notified that they are by keyCallback.
 void InputHandler::initializeKeysPressed()

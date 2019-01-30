@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 #include "GameManager.h"
-#include "InputHandler.h"
+#include "CommandHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
 
@@ -49,6 +49,14 @@ GameManager* GameManager::getInstance(GLFWwindow *rWindow)
 	return m_pInstance;
 }
 
+// Does not require window parameter, but assumes that Singleton instance has
+// been instantiated beforehand.
+GameManager* GameManager::getInstance()
+{
+	assert(nullptr != m_pInstance);
+	return m_pInstance;
+}
+
 // Destruct Shaders, Buffers, Arrays and other GL stuff.
 GameManager::~GameManager()
 {
@@ -76,8 +84,8 @@ bool GameManager::renderGraphics()
 	// Update Timer
 	m_pTimer.updateTime();
 
-	// Handle player input 
-	m_inputHandler->handleInput();
+	// Execute all commands for this frame
+	m_commandHandler->executeAllCommands();
 
 	// Update Environment
 	m_pEntMngr->updateEnvironment(m_pTimer);

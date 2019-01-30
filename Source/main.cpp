@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "InputHandler.h"
+#include "CommandHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
 
@@ -59,8 +60,8 @@ int main()
 			// Bind window to graphics Manager
 			if (iRunning)
 			{
-				m_gameManager = GameManager::getInstance( m_window );
-				m_gameManager->m_inputHandler = InputHandler::getInstance( m_window );
+				m_gameManager = GameManager::getInstance(m_window);
+				m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
 			}
 
 			// Initialize the InputHandler for mouse, keyboard, controllers

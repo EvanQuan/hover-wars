@@ -50,7 +50,6 @@ using namespace glm;
 
 #define KEYS 349
 #define MAX_PLAYER_COUNT GLFW_JOYSTICK_4
-#define KEYBOARD_PLAYER GLFW_JOYSTICK_1
 #define XBOX_CONTROLLER "Xbox"
 #define EMPTY_CONTROLLER "Empty Controller"
 // m_pJoystickAxes

@@ -7,7 +7,7 @@
 
 // Forward Declarations
 class EntityManager;
-class InputHandler;
+class CommandHandler;
 class ShaderManager;
 
 // Class: Graphics Manager
@@ -19,6 +19,7 @@ class GameManager
 {
 public:
 	static GameManager* getInstance(GLFWwindow *rWindow);
+	static GameManager* getInstance();
 	~GameManager();
 	
 	// Graphics Application
@@ -45,8 +46,8 @@ public:
 	};
 
 	// Must be set after getInstance() to avoid mutual getInstance() recursion
-	// with InputHandler/CommandHandler
-	InputHandler* m_inputHandler;
+	// with CommandHandler
+	CommandHandler* m_commandHandler;
 
 private:
 	// For Singleton Implementation
