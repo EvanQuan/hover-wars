@@ -1,21 +1,23 @@
 #include <iostream> // debug
 #include "stdafx.h"
 #include "InputHandler.h"
+#include "GameManager.h"
 
 // Single Singleton instance
 InputHandler* InputHandler::m_pInstance = nullptr;
 
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
+	m_gameManager = GameManager::getInstance(rWindow);
 	// Keyboard
 	m_keyboardPlayer = GLFW_JOYSTICK_1;
 	initializeKeysPressed();
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
 	// Mouse
-	// m_bRotateFlag = m_bTranslateFlag = false;
-	// glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
-	// glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
-	// glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
+	m_bRotateFlag = m_bTranslateFlag = false;
+	glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
+	glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
+	glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
 	// Controller
 	initializeJoysticksAtStart();
 	glfwSetJoystickCallback(InputHandler::joystickCallback);
@@ -35,7 +37,7 @@ InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 
 InputHandler::~InputHandler()
 {
-	// m_pGameManager = nullptr; // TODO remove later once GameManager no longer needed
+	m_gameManager = nullptr; // TODO remove later once GameManager no longer needed
 }
 
 
@@ -74,54 +76,54 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 
 // Mouse Button Callback
 // Handle mouse movement controls.
-// void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-// {
-	// double fX, fY;
-// 
-	// if (GLFW_MOUSE_BUTTON_1 == button)
-	// {
-		// glfwGetCursorPos(window, &fX, &fY);
-		// if (GLFW_PRESS == action)
-		// {
-			// m_pInstance->mouseTStart();
-		// }
-		// else if (GLFW_RELEASE == action)
-		// {
-			// m_pInstance->mouseTEnd();
-		// }
-	// }
-	// if (GLFW_MOUSE_BUTTON_2 == button)
-	// {
-		// glfwGetCursorPos(window, &fX, &fY);
-		// if (GLFW_PRESS == action)
-		// {
-			// m_pInstance->mouseRStart();
-		// }
-		// else if (GLFW_RELEASE == action)
-		// {
-			// m_pInstance->mouseREnd();
-		// }
-	// }
-// }
+void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	double fX, fY;
+
+	if (GLFW_MOUSE_BUTTON_1 == button)
+	{
+		glfwGetCursorPos(window, &fX, &fY);
+		if (GLFW_PRESS == action)
+		{
+			m_pInstance->mouseTStart();
+		}
+		else if (GLFW_RELEASE == action)
+		{
+			m_pInstance->mouseTEnd();
+		}
+	}
+	if (GLFW_MOUSE_BUTTON_2 == button)
+	{
+		glfwGetCursorPos(window, &fX, &fY);
+		if (GLFW_PRESS == action)
+		{
+			m_pInstance->mouseRStart();
+		}
+		else if (GLFW_RELEASE == action)
+		{
+			m_pInstance->mouseREnd();
+		}
+	}
+}
 
 // Handles input from Mouse Moves.
-// void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
-// {
-	// if (m_pInstance->m_bRotateFlag)
-	// {
-		// m_pInstance->m_pGameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
-	// }
-// 
-	// // Set new current position
-	// m_pInstance->m_pInitialPos.x = (float) x;
-	// m_pInstance->m_pInitialPos.y = (float) y;
-// }
+void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
+{
+	if (m_pInstance->m_bRotateFlag)
+	{
+		m_pInstance->m_gameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
+	}
+
+	// Set new current position
+	m_pInstance->m_pInitialPos.x = (float) x;
+	m_pInstance->m_pInitialPos.y = (float) y;
+}
 
 // Handle scroll wheel callbacks
-// void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-// {
-	// m_pInstance->m_pGameManager->zoomCamera((float) yoffset * 0.05f);
-// }
+void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
+}
 
 // Keys begin not pressed until notified that they are by keyCallback.
 void InputHandler::initializeKeysPressed()
