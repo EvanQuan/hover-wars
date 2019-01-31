@@ -6,16 +6,28 @@
 /***********\
 * Defines *
 \***********/
-#define MAX_CHARS_PER_LINE 256
-#define MAX_SPHERE_PARAMS 4
-#define MAX_PLANE_PARAMS 8
+#define MAX_CHARS_PER_LINE     256
+#define MAX_SPHERE_PARAMS      4
+#define MAX_PLANE_PARAMS       8
 #define MAX_POINT_LIGHT_PARAMS 7
-#define MAX_DIR_LIGHT_PARAMS 12
-#define MAX_SPOTLIGHT_PARAMS 10
-#define DEFAULT_SOFT_CUTOFF 5.f
-#define MAX_MESH_PARAMS 3
-#define MAX_TRACK_PARAMS 1
-#define COMMENT_CHAR '#'
+#define MAX_DIR_LIGHT_PARAMS   12
+#define MAX_SPOTLIGHT_PARAMS   10
+#define DEFAULT_SOFT_CUTOFF    5.f
+#define MAX_MESH_PARAMS        3
+#define MAX_TRACK_PARAMS       1
+#define COMMENT_CHAR           '#'
+#define SPHERE                 "sphere"
+#define PLANE                  "plane"
+#define POINT_LIGHT            "point_light"
+#define DIRECTIONAL_LIGHT      "DIRECTIONAL_light"
+#define SPOTLIGHT              "spotlight"
+#define PLAYER                 "player"
+#define STATIC_MESH            "static_mesh"
+#define BOIDS                  "boids"
+#define MATERIAL               "material"
+#define MESH                   "mesh"
+#define SHADER                 "shader"
+
 
 // Singleton Declaration
 Scene_Loader* Scene_Loader::m_pInstance = nullptr;
@@ -64,7 +76,7 @@ void Scene_Loader::createSphere( vector< string > sData, int iLength )
 	}
 	else
 	{
-		outputError("sphere", sData);
+		outputError(SPHERE, sData);
 	}
 }
 
@@ -85,7 +97,7 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 	}
 	else
 	{
-		outputError("plane", sData);
+		outputError(PLANE, sData);
 	}
 }
 
@@ -108,7 +120,7 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 	}
 	else
 	{
-		outputError("directional_light", sData);
+		outputError(DIRECTIONAL_LIGHT, sData);
 	}
 }
 
@@ -128,7 +140,7 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 	}
 	else
 	{
-		outputError("point_light", sData);
+		outputError(POINT_LIGHT, sData);
 	}
 }
 
@@ -157,7 +169,7 @@ void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
 	}
 	else
 	{
-		outputError("spotlight", sData);
+		outputError(SPOTLIGHT, sData);
 	}
 }
 
@@ -295,21 +307,21 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 
 void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator )
 {
-	if ("sphere" == sIndicator)					// Parse Sphere
+	if (SPHERE == sIndicator)					// Parse Sphere
 		createSphere(sData, sData.size());
-	else if ("plane" == sIndicator)				// Parse Plane
+	else if (PLANE == sIndicator)				// Parse Plane
 		createPlane(sData, sData.size());
-	else if ("point_light" == sIndicator)		// Parse Point Light
+	else if (POINT_LIGHT == sIndicator)		// Parse Point Light
 		createPointLight(sData, sData.size());
-	else if ("directional_light" == sIndicator)	// Parse Directional Light
+	else if (DIRECTIONAL_LIGHT == sIndicator)	// Parse Directional Light
 		createDirectionalLight(sData, sData.size());
-	else if ("spotlight" == sIndicator)			// Parse Spotlight
+	else if (SPOTLIGHT == sIndicator)			// Parse Spotlight
 		createSpotLight(sData, sData.size());
-	else if ("player" == sIndicator)			// Parse Player
+	else if (PLAYER == sIndicator)			// Parse Player
 		createPlayer(sData, sData.size());
-	else if ("static_mesh" == sIndicator)		// Parse Static Mesh
+	else if (STATIC_MESH == sIndicator)		// Parse Static Mesh
 		createStaticMesh(sData, sData.size());
-	else if ("boids" == sIndicator)	// Parse Mass Spring System
+	else if (BOIDS == sIndicator)	// Parse Mass Spring System
 		ENTITY_MANAGER->initializeBoidEngine(sData);
 
 	clearProperties();
@@ -320,11 +332,11 @@ void Scene_Loader::handleProperty( vector< string >& sData, const string& sIndic
 {
 	string sDataTrimmed = trimString( sData[ 0 ] );
 
-	if ("material" == sIndicator)
+	if (MATERIAL == sIndicator)
 		grabMaterial(sData);
-	else if ("mesh" == sIndicator)
+	else if (MESH == sIndicator)
 		m_sMeshProperty = sDataTrimmed;
-	else if ("shader" == sIndicator)
+	else if (SHADER == sIndicator)
 		m_sShaderProperty = sDataTrimmed;
 }
 
@@ -362,7 +374,9 @@ void Scene_Loader::grabMaterial(vector< string >& sData)
 		for (vector<string>::iterator iter = sData.begin();
 			iter != sData.end();
 			++iter)
+		{
 			cout << (*iter) << " ";
+		}
 		cout << "}\n";
 		break;
 	}
