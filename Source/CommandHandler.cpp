@@ -2,13 +2,12 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
 
-/**********\
-* DEFINES *
-\**********/
-#define INPUT_SIZE 128
-
+// Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
 
+/*
+Constructor
+*/
 CommandHandler::CommandHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
@@ -19,8 +18,9 @@ CommandHandler::CommandHandler(GLFWwindow *rWindow)
 	m_pInputHandler = InputHandler::getInstance(rWindow);
 }
 
-// Get a copy of CmdHandler that doesn't have any initialized
-//   Input associated with it.
+/*
+Get Singleton instance
+*/
 CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 {
 	if (nullptr == m_pInstance)
@@ -31,7 +31,9 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 	return m_pInstance;
 }
 
-// Destructor
+/*
+Destructor
+*/
 CommandHandler::~CommandHandler()
 {
 	// m_pEntMngr = nullptr;
@@ -40,6 +42,15 @@ CommandHandler::~CommandHandler()
 	m_pGameManager = nullptr;
 }
 
+/*
+Make a player of given joystickID execute a FixedCommand.
+FixedCommands are binary in that either they are executed or they are not, with
+no extra parameters.
+
+For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
+that is all the information the program needs to know for that player to
+execute that command.
+*/
 void CommandHandler::execute(int joystickID, FixedCommand command)
 {
 	switch (command)
@@ -66,7 +77,24 @@ void CommandHandler::execute(int joystickID, FixedCommand command)
 	}
 }
 
+/*
+Make a player of given joystickID execute a VariableCommand.
+VariableCommands require extra parameters to complete the command.
+Specifically, they require an axis or axes to make sense of the command.
 
+For example: if a player of joystickID 0 executes the MOVE command, they also
+need to specify the x and y axis values to determine what direction and at what
+intensity to go at.
+
+Axes values are normalized and follow Cartesian coordinates:
+                        y = 1
+                          ^
+                          |
+            x = -1 <-- x, y = 0 --> x = 1
+                          |
+			              v
+                        y = -1
+*/
 void CommandHandler::execute(int joystickID, VariableCommand command, const float x, const float y)
 {
 	switch (command)
@@ -81,11 +109,17 @@ void CommandHandler::execute(int joystickID, VariableCommand command, const floa
 	}
 }
 
+/*
+Execute all the commands for a given frame. This should be called every frame update.
+*/
 void CommandHandler::executeAllCommands()
 {
 	executeInputCommands();
 }
 
+/*
+Execute all commands specified by user input from keyboard and joysticks.
+*/
 void CommandHandler::executeInputCommands()
 {
 	system("CLS"); // Clear the terminal
@@ -93,6 +127,9 @@ void CommandHandler::executeInputCommands()
 	executeJoystickCommands();
 }
 
+/*
+Execute all commands specified by the keyboard
+*/
 void CommandHandler::executeKeyboardCommands()
 {
 	for (int key = 0; key < KEYS; key++)
@@ -185,6 +222,9 @@ void CommandHandler::executeKeyboardCommands()
 	}
 }
 
+/*
+Execute all commands specified by the controllers
+*/
 void CommandHandler::executeJoystickCommands()
 {
 	m_pInputHandler->updateJoysticks();
