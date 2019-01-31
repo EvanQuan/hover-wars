@@ -53,8 +53,6 @@ public:
 
 	// The only reason this needed is for mouse input, which may not actually
 	// be needed for the final product. ie. this may be removed later on.
-	// If GameManager::getInstance() is called in constructor, we get 3-way
-	// cyclical mutual recursion.
 	GameManager* m_gameManager;
 private:
 	// Singleton Variables
