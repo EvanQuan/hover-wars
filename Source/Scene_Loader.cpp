@@ -19,7 +19,7 @@
 #define SPHERE                 "sphere"
 #define PLANE                  "plane"
 #define POINT_LIGHT            "point_light"
-#define DIRECTIONAL_LIGHT      "DIRECTIONAL_light"
+#define DIRECTIONAL_LIGHT      "directional_light"
 #define SPOTLIGHT              "spotlight"
 #define PLAYER                 "player"
 #define STATIC_MESH            "static_mesh"
