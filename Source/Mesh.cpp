@@ -51,7 +51,9 @@ bool Mesh::genMesh( const string& sFileName, vec3 vPosition )
 			Mesh::scale(20.0f);
 
 			if (vec3(0.f) != vPosition)
+			{
 				Mesh::translate(vPosition);
+			}
 		}
 		initalizeVBOs();
 	}
@@ -103,7 +105,9 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 
 	// If translation is necessary, translate plane.
 	if (vec3(0.f) != vPosition)
+	{
 		Mesh::translate(vPosition);
+	}
 
 	// Load Mesh into GPU
 	initalizeVBOs();
@@ -158,7 +162,9 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 
 	// Translate to Position if Sphere is a Static Mesh.
 	if (m_bStaticMesh && vec3(0.f) != vPosition)
+	{
 		Mesh::translate(vPosition);
+	}
 
 	// Store Mesh in GPU
 	initalizeVBOs();
@@ -295,7 +301,9 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 	};
 
 	if (m_bStaticMesh)
+	{
 		Mesh::translate(vPosition);
+	}
 
 	initalizeVBOs();
 }
@@ -374,10 +382,14 @@ void Mesh::initalizeVBOs()
 	m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, iStride, (void*)0);
 	// Normals
 	if (bHaveNormals)
+	{
 		m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, iStride, (void*)sizeof(vec3));
+	}
 	// UVs
 	if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
+	{
 		m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
+	}
 
 	// Set up Instanced Buffer for Instance Rendering
 	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(

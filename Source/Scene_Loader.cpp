@@ -31,8 +31,10 @@ Scene_Loader::Scene_Loader()
 // Returns the singleton instance of the Object Factory
 Scene_Loader* Scene_Loader::getInstance()
 {
-	if ( nullptr == m_pInstance )
+	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new Scene_Loader();
+	}
 
 	return m_pInstance;
 }
@@ -40,8 +42,10 @@ Scene_Loader* Scene_Loader::getInstance()
 
 Scene_Loader::~Scene_Loader()
 {
-	if ( nullptr != m_pAnimProperty )
+	if (nullptr != m_pAnimProperty)
+	{
 		delete m_pAnimProperty;
+	}
 }
 
 // Creation Functions
@@ -59,7 +63,9 @@ void Scene_Loader::createSphere( vector< string > sData, int iLength )
 											 &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
+	{
 		outputError("sphere", sData);
+	}
 }
 
 // Create a Plane given a normal, a position on the plane and a color
@@ -78,7 +84,9 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
+	{
 		outputError("plane", sData);
+	}
 }
 
 // Generates a Directional Light object given some input data
@@ -99,7 +107,9 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
 	}
 	else
+	{
 		outputError("directional_light", sData);
+	}
 }
 
 // Generates a Light object given some input data
@@ -117,7 +127,9 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty);
 	}
 	else
+	{
 		outputError("point_light", sData);
+	}
 }
 
 // Generates a SpotLight object with a Position, Direction, Color and Phi angle of the spotlight.
@@ -144,7 +156,9 @@ void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
 		ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty);
 	}
 	else
+	{
 		outputError("spotlight", sData);
+	}
 }
 
 // Generates a Player Object at a given position
@@ -231,8 +245,10 @@ void Scene_Loader::outputError( string sName, vector<string> sData )
 		  ++pIter )
 	{
 		cout << *pIter;
-		if ( pIter != sData.end() - 1 )
+		if (pIter != sData.end() - 1)
+		{
 			cout << ", ";
+		}
 	}
 	cout << "}" << endl;
 }
@@ -266,8 +282,10 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 				pullData( inFile, sPropertyData );						// pull property information
 				handleProperty( sPropertyData, sPropertyIndicator );	// store property internally
 			}
-			else if ( "" != sParser )					// Avoid Garbage
+			else if ("" != sParser)					// Avoid Garbage
+			{
 				sReturnData.push_back( sParser );
+			}
 		}
 	} while ( "}" != sReturnData.back() );				// Repeat until end delimiter
 
@@ -372,7 +390,9 @@ string Scene_Loader::trimString( const string& sStr )
 void Scene_Loader::clearProperties() // Clear any properties
 {
 	if (nullptr != m_pAnimProperty)
+	{
 		delete m_pAnimProperty;
+	}
 
 	m_pAnimProperty = nullptr;
 	m_sMeshProperty = m_sShaderProperty = "";

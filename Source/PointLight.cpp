@@ -29,9 +29,13 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
 
 	// Load Mesh
 	if ("" == sMeshName)
+	{
 		m_pMesh = MESH_MANAGER->generateCubeMesh(bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, m_vPosition);
+	}
 	else
+	{
 		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, m_vPosition, bStatic);
+	}
 
 	// Create a Render Component
 	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);

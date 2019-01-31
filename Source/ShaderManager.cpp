@@ -84,7 +84,9 @@ ShaderManager::ShaderManager()
 ShaderManager* ShaderManager::getInstance()
 {
 	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new ShaderManager();
+	}
 
 	return m_pInstance;
 }
@@ -107,7 +109,9 @@ shader_Type ShaderManager::getShaderType(const string& sKey)
 	shader_Type eReturnType = PLANE_SHDR;
 
 	if (pShaderTypeMap.end() != pShaderTypeMap.find(sKey))
+	{
 		eReturnType = pShaderTypeMap.at(sKey);
+	}
 
 	return eReturnType;
 }
@@ -121,8 +125,10 @@ bool ShaderManager::initializeShaders()
 {
 	// Initialize Shaders
 	m_bInitialized = true;
-	for ( int eIndex = LIGHT_SHDR; eIndex < MAX_SHDRS; eIndex++ )
+	for (int eIndex = LIGHT_SHDR; eIndex < MAX_SHDRS; eIndex++)
+	{
 		m_bInitialized &= m_pShader[eIndex].initializeShader( );
+	}
 
 	// return False if not all Shaders Initialized Properly
 	return m_bInitialized;
@@ -199,8 +205,10 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &iNumPointLights);
 	glBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &iNumSpotLights);
 	glBufferSubData(GL_UNIFORM_BUFFER, 8, 4, &bUsingDirectionalLight);
-	if (bUsingDirectionalLight)	
+	if (bUsingDirectionalLight)
+	{
 		glBufferSubData(GL_UNIFORM_BUFFER, DIRECTIONAL_LIGHT_OFFSET, NUM_DIRECTIONAL_LIGHT_PARAMS * sizeof(vec4), pDirectionalLightData->data());
+	}
 	glBufferSubData(GL_UNIFORM_BUFFER, POINT_LIGHT_OFFSET, (NUM_POINT_LIGHT_PARAMS * sizeof(vec4))*iNumPointLights, vPointLightData.data());
 	glBufferSubData(GL_UNIFORM_BUFFER, SPOT_LIGHT_OFFSET, (NUM_SPOT_LIGHT_PARAMS * sizeof(vec4))*iNumSpotLights, vSpotLightData.data());
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -259,8 +267,10 @@ void ShaderManager::setUnifromMatrix4x4( eShaderType eType, string sVarName, con
 		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
 		glUseProgram( iProgram );
 		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
-		if ( ERR_CODE != iVariableLocation )
+		if (ERR_CODE != iVariableLocation)
+		{
 			glUniformMatrix4fv( iVariableLocation, 1, GL_FALSE, value_ptr( *pResultingMatrix ) );
+		}
 		glUseProgram( iCurrProgram );
 
 		#ifdef DEBUG
@@ -282,8 +292,10 @@ void ShaderManager::setUniformVec3( eShaderType eType, string sVarName, const gl
 		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
 		glUseProgram( iProgram );
 		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
-		if ( ERR_CODE != iVariableLocation )
+		if (ERR_CODE != iVariableLocation)
+		{
 			glUniform3fv( iVariableLocation, 1, glm::value_ptr( *pResultingVector ) );
+		}
 		glUseProgram( iCurrProgram );
 
 		#ifdef DEBUG
@@ -306,7 +318,9 @@ void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fV
 		glUseProgram(iProgram);
 		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 		if (ERR_CODE != iVariableLocation)
+		{
 			glUniform1f(iVariableLocation, fVal);
+		}
 		glUseProgram(iCurrProgram);
 		
 		#ifdef DEBUG
@@ -328,8 +342,10 @@ void ShaderManager::setUniformInt( eShaderType eType, string sVarName, int iVal 
 		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
 		glUseProgram( iProgram );
 		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
-		if ( ERR_CODE != iVariableLocation )
-			glUniform1i( iVariableLocation, iVal );
+		if (ERR_CODE != iVariableLocation)
+		{
+			glUniform1i(iVariableLocation, iVal);
+		}
 		glUseProgram( iCurrProgram );
 
 	#ifdef DEBUG
