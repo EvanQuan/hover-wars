@@ -1,7 +1,8 @@
 #pragma once
 
+ #include "GameManager.h"
+// class GameManager;
 /*
-
 Receives and stores user input (mouse, keyboard and controller).
 */
 class InputHandler
@@ -12,18 +13,18 @@ public:
 
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void joystickCallback(int joystickID, int event);
-	// static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-	// static void mouseMoveCallback(GLFWwindow* window, double x, double y);
-	// static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+	static void mouseMoveCallback(GLFWwindow* window, double x, double y);
+	static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-	// void updateMouse(float fX, float fY);
+	void updateMouse(float fX, float fY);
 	void updateJoysticks();
 
 	// Flag the Mouse for Rotations or Translations (Cannot do both at the same time).
-	// void mouseTStart() { m_bTranslateFlag = !m_bRotateFlag; }
-	// void mouseTEnd() { m_bTranslateFlag = false; }
-	// void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
-	// void mouseREnd() { m_bRotateFlag = false; }
+	void mouseTStart() { m_bTranslateFlag = !m_bRotateFlag; }
+	void mouseTEnd() { m_bTranslateFlag = false; }
+	void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
+	void mouseREnd() { m_bRotateFlag = false; }
 
 	// void mouseZoom(float fZoomVal);
 
@@ -49,6 +50,12 @@ public:
 	int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
 	const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
 	const char* m_pJoystickNames[MAX_PLAYER_COUNT];
+
+	// The only reason this needed is for mouse input, which may not actually
+	// be needed for the final product. ie. this may be removed later on.
+	// If GameManager::getInstance() is called in constructor, we get 3-way
+	// cyclical mutual recursion.
+	GameManager* m_gameManager;
 private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
@@ -64,9 +71,6 @@ private:
 	void initializeKeysPressed();
 
 	static InputHandler* m_pInstance;
-	// The only reason this needed is for mouse input, which may not actually
-	// be needed for the final product. ie. this may be removed later on.
-	// static GameManager* m_pGameManager;
 
 
 	// Mouse

@@ -66,6 +66,7 @@ int main()
 
 			// Initialize the InputHandler for mouse, keyboard, controllers
 			m_inputHandler = InputHandler::getInstance(m_window);
+			m_inputHandler->m_gameManager = GameManager::getInstance(m_window);
 
 			// Initialize Graphics
 			iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
