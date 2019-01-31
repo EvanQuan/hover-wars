@@ -57,12 +57,9 @@ int main()
 		if ( iRunning )
 		{
 			
-			// Bind window to graphics Manager
-			if (iRunning)
-			{
-				m_gameManager = GameManager::getInstance(m_window);
-				m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
-			}
+			// Bind window to Game Manager
+			m_gameManager = GameManager::getInstance(m_window);
+			m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
 
 			// Initialize the InputHandler for mouse, keyboard, controllers
 			m_inputHandler = InputHandler::getInstance(m_window);
