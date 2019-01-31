@@ -56,21 +56,30 @@ void CommandHandler::execute(int joystickID, FixedCommand command)
 	case MENU_BACK:
 	case MENU_PAUSE:
 	case MENU_START:
-		std::cout << "Player " << joystickID << ": "
-		          << m_pFixedCommandToString.at(command) << std::endl;
+		cout << "Player " << joystickID << ": "
+		     << m_pFixedCommandToString.at(command)
+		     << endl;
 		break;
 	case DEBUG_TOGGLE_WIREFRAME:
-		bWireFrame = !bWireFrame;
-		if (bWireFrame)
-		{
-			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-		}
-		else
-		{
-			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-		}
-		std::cout << "Player " << joystickID << ": "
-		          << m_pFixedCommandToString.at(command) << std::endl;
+		debugToggleWireframe();
+		break;
+	default:
+		cout << "Player " << joystickID << ": "
+		     << m_pFixedCommandToString.at(command)
+		     << " not implemented yet." << endl;
+	}
+}
+
+void CommandHandler::debugToggleWireframe()
+{
+	bWireFrame = !bWireFrame;
+	if (bWireFrame)
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	}
+	else
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 }
 
@@ -110,9 +119,9 @@ void CommandHandler::executeKeyboardCommands()
 			switch (key)
 			{
 			case GLFW_KEY_F:
-				if (m_pInputHandler->pressed[key] == GLFW_PRESS)
+				if (GLFW_PRESS == m_pInputHandler->pressed[key])
 				{
-					m_pFixedCommand = DASH_BACK;
+					m_pFixedCommand = DEBUG_TOGGLE_WIREFRAME;
 				}
 				else
 				{

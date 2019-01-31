@@ -56,6 +56,8 @@ public:
 	*/
 	void executeInputCommands();
 
+	void debugToggleWireframe();
+
 	/*
 	Convert a key to its corresponding FixedCommand
 	*/

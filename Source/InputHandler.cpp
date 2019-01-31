@@ -54,6 +54,10 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	//		GLFW_PRESS   = 1
 	//		GLFW_REPEAT  = 2
 	// Note that any time a key is pressed, it will count as TRUE
+	if (GLFW_PRESS == m_pInstance->pressed[key] && GLFW_PRESS == action)
+	{
+		cout << "Press and was press" << endl;
+	}
 	m_pInstance->pressed[key] = action;
 
 	// Special keys handled differently than just pressed/not pressed
