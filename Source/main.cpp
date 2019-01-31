@@ -20,7 +20,6 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 int main()
 {
 	int iRunning = glfwInit();
-	char c_Input[INPUT_SIZE] = {};
 	GLFWwindow* m_window = 0;
 	GameManager* m_gameManager = 0;
 	ShaderManager* m_shaderManager = 0;
@@ -54,7 +53,7 @@ int main()
 				glGetError();
 		#endif
 
-		if ( iRunning )
+		if (iRunning)
 		{
 			
 			// Bind window to Game Manager
@@ -73,7 +72,7 @@ int main()
 		#endif
 
 			// Main loop
-			while ( iRunning )
+			while (iRunning)
 			{
 				// do Graphics Loop
 				iRunning = m_gameManager->renderGraphics();
@@ -112,10 +111,11 @@ void ErrorCallback(int error, const char* description)
 	cout << description << endl;
 }
 
+/*
+ * @return true if window successfully initialized
+ */
 bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char* cTitle)
 {
-	bool bSuccess = true;
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -125,16 +125,12 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 	if (!*rWindow)
 	{
 		cout << "Program failed to create GLFW window" << endl;
-		bSuccess = false;
+		return false;
 	}
-	else
-	{
-		glfwSetWindowSizeCallback(*rWindow, WindowResizeCallback);
-		glfwWindowHint(GLFW_SAMPLES, 4);
-		glfwMakeContextCurrent(*rWindow);
-	}
-
-	return bSuccess;
+	glfwSetWindowSizeCallback(*rWindow, WindowResizeCallback);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwMakeContextCurrent(*rWindow);
+	return true;
 }
 // handles Window Resize events
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)

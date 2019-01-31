@@ -58,10 +58,12 @@ private:
 	// Singleton Variables
 	InputHandler(GLFWwindow *rWindow);
 	void checkForPresentJoysticks();
+	void debugKeyCommands(GLFWwindow* window, int key, int action);
 	void debugPrintJoystickAxes(int joystickID);
 	void debugPrintJoystickButtons(int joystickID);
-	void debugPrintJoystickInformation(int joystickID);
 	void debugPrintJoystickInformation();
+	void debugPrintJoystickInformation(int joystickID);
+	void debugToggleWireframe();
 	void disconnectJoystick(int joystickID);
 	void initializeJoystick(int joystickID);
 	void initializeJoystickVariables();
@@ -75,5 +77,8 @@ private:
 	bool m_bTranslateFlag;
 	bool m_bRotateFlag;
 	glm::vec2 m_pInitialPos;
+
+	bool bWireFrame;
 };
+
 

@@ -82,12 +82,18 @@ bool InitializeTexture(Texture *mytex, const string &imageFileName)
 	{
 		// Get the format of the Texture
 		GLenum eFormat;
-		if (1 == nrComponents)
+		switch (nrComponents)
+		{
+		case 1:
 			eFormat = GL_RED;
-		else if (3 == nrComponents)
+			break;
+		case 3:
 			eFormat = GL_RGB;
-		else if (4 == nrComponents)
+			break;
+		case 4:
 			eFormat = GL_RGBA;
+			break;
+		}
 
 		// Generate Texture in GPU
 		mytex->genTexture(data, iWidth, iHeight, eFormat, GL_UNSIGNED_BYTE);

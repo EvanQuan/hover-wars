@@ -2,13 +2,12 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
 
-/**********\
-* DEFINES *
-\**********/
-#define INPUT_SIZE 128
-
+// Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
 
+/*
+Constructor
+*/
 CommandHandler::CommandHandler(GLFWwindow *rWindow)
 {
 	// Initializing Base Class
@@ -17,11 +16,11 @@ CommandHandler::CommandHandler(GLFWwindow *rWindow)
 	// m_pGameManager = GameManager::getInstance();
 	// m_pEntityManger = ENTITY_MANAGER;
 	m_pInputHandler = InputHandler::getInstance(rWindow);
-	bWireFrame = false;
 }
 
-// Get a copy of CmdHandler that doesn't have any initialized
-//   Input associated with it.
+/*
+Get Singleton instance
+*/
 CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 {
 	if (nullptr == m_pInstance)
@@ -32,7 +31,9 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 	return m_pInstance;
 }
 
-// Destructor
+/*
+Destructor
+*/
 CommandHandler::~CommandHandler()
 {
 	// m_pEntMngr = nullptr;
@@ -41,6 +42,15 @@ CommandHandler::~CommandHandler()
 	m_pGameManager = nullptr;
 }
 
+/*
+Make a player of given joystickID execute a FixedCommand.
+FixedCommands are binary in that either they are executed or they are not, with
+no extra parameters.
+
+For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
+that is all the information the program needs to know for that player to
+execute that command.
+*/
 void CommandHandler::execute(int joystickID, FixedCommand command)
 {
 	switch (command)
@@ -56,24 +66,35 @@ void CommandHandler::execute(int joystickID, FixedCommand command)
 	case MENU_BACK:
 	case MENU_PAUSE:
 	case MENU_START:
-		std::cout << "Player " << joystickID << ": "
-		          << m_pFixedCommandToString.at(command) << std::endl;
+		cout << "Player " << joystickID << ": "
+		     << m_pFixedCommandToString.at(command)
+		     << endl;
 		break;
-	case DEBUG_TOGGLE_WIREFRAME:
-		bWireFrame = !bWireFrame;
-		if (bWireFrame)
-		{
-			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-		}
-		else
-		{
-			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-		}
-		std::cout << "Player " << joystickID << ": "
-		          << m_pFixedCommandToString.at(command) << std::endl;
+	default:
+		cout << "Player " << joystickID << ": "
+		     << m_pFixedCommandToString.at(command)
+		     << " not implemented yet." << endl;
 	}
 }
 
+/*
+Make a player of given joystickID execute a VariableCommand.
+VariableCommands require extra parameters to complete the command.
+Specifically, they require an axis or axes to make sense of the command.
+
+For example: if a player of joystickID 0 executes the MOVE command, they also
+need to specify the x and y axis values to determine what direction and at what
+intensity to go at.
+
+Axes values are normalized and follow Cartesian coordinates:
+                        y = 1
+                          ^
+                          |
+            x = -1 <-- x, y = 0 --> x = 1
+                          |
+			              v
+                        y = -1
+*/
 void CommandHandler::execute(int joystickID, VariableCommand command, const float x, const float y)
 {
 	switch (command)
@@ -88,11 +109,17 @@ void CommandHandler::execute(int joystickID, VariableCommand command, const floa
 	}
 }
 
+/*
+Execute all the commands for a given frame. This should be called every frame update.
+*/
 void CommandHandler::executeAllCommands()
 {
 	executeInputCommands();
 }
 
+/*
+Execute all commands specified by user input from keyboard and joysticks.
+*/
 void CommandHandler::executeInputCommands()
 {
 	system("CLS"); // Clear the terminal
@@ -100,6 +127,9 @@ void CommandHandler::executeInputCommands()
 	executeJoystickCommands();
 }
 
+/*
+Execute all commands specified by the keyboard
+*/
 void CommandHandler::executeKeyboardCommands()
 {
 	for (int key = 0; key < KEYS; key++)
@@ -109,16 +139,6 @@ void CommandHandler::executeKeyboardCommands()
 			// Fixed
 			switch (key)
 			{
-			case GLFW_KEY_F:
-				if (m_pInputHandler->pressed[key] == GLFW_PRESS)
-				{
-					m_pFixedCommand = DASH_BACK;
-				}
-				else
-				{
-					m_pFixedCommand = INVALID_FIXED;
-				}
-				break;
 			case GLFW_KEY_K:
 				m_pFixedCommand = DASH_BACK;
 				break;
@@ -148,8 +168,6 @@ void CommandHandler::executeKeyboardCommands()
 				break;
 			case GLFW_KEY_P:
 				m_pFixedCommand = MENU_PAUSE;
-				// if ( iAction == GLFW_RELEASE )
-					// m_pEntMngr->pause();
 				break;
 			default:
 				m_pFixedCommand = INVALID_FIXED;
@@ -204,6 +222,9 @@ void CommandHandler::executeKeyboardCommands()
 	}
 }
 
+/*
+Execute all commands specified by the controllers
+*/
 void CommandHandler::executeJoystickCommands()
 {
 	m_pInputHandler->updateJoysticks();

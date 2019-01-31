@@ -56,6 +56,8 @@ public:
 	*/
 	void executeInputCommands();
 
+	void debugToggleWireframe();
+
 	/*
 	Convert a key to its corresponding FixedCommand
 	*/
@@ -170,7 +172,6 @@ private:
 	InputHandler *m_pInputHandler;
 
 	// Internal variables
-	bool bWireFrame;
 	// For keyboard command handling
 	FixedCommand m_pFixedCommand;
 	VariableCommand m_pVariableCommand;

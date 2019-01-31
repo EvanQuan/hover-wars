@@ -9,8 +9,10 @@ MeshManager::MeshManager()
 
 MeshManager* MeshManager::getInstance()
 {
-	if ( nullptr == pInstance )
+	if (nullptr == pInstance)
+	{
 		pInstance = new MeshManager();
+	}
 
 	return pInstance;
 }
@@ -52,8 +54,10 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, vec3 vPosition, bo
 
 		if ( !initializeMesh( pNewMesh.get(), sFileName, vPosition ) )
 		{
-			if ( sFileName != "" )
+			if (sFileName != "")
+			{
 				cout << "Error, unable to load texture: " << sFileName << endl;
+			}
 			pNewMesh.reset();
 		}
 		else
@@ -104,7 +108,9 @@ Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, vec3 vPos
 
 	// Found a sphere of this radius at this position that already exists, return that.
 	if (m_pMeshCache.end() != m_pMeshCache.find(sHashHandle))
+	{
 		pReturnMesh = m_pMeshCache[sHashHandle].get();
+	}
 	else // Generate a new Sphere Mesh of given Radius
 	{
 		unique_ptr<Mesh> pNewSphere = make_unique<Mesh>(sHashHandle, bStaticMesh, Mesh::manager_cookie());
@@ -124,7 +130,9 @@ Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, i
 
 	// Found a cube of these dimensions at this position? Return that.
 	if (m_pMeshCache.end() != m_pMeshCache.find(sHashHandle))
+	{
 		pReturnMesh = m_pMeshCache[sHashHandle].get();
+	}
 	else // Generate a new Cube Mesh with given dimensions
 	{
 		unique_ptr<Mesh> pNewCube = make_unique<Mesh>(sHashHandle, bStaticMesh, Mesh::manager_cookie());
@@ -145,8 +153,10 @@ bool MeshManager::initializeMesh( Mesh* pReturnMesh, const string& sFileName, ve
 	// Return Value
 	bool bReturnValue = ( nullptr != pReturnMesh );
 
-	if ( bReturnValue )
+	if (bReturnValue)
+	{
 		bReturnValue = pReturnMesh->genMesh( sFileName, vPosition );
+	}
 
 	// Return result.
 	return bReturnValue;

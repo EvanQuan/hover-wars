@@ -6,16 +6,28 @@
 /***********\
 * Defines *
 \***********/
-#define MAX_CHARS_PER_LINE 256
-#define MAX_SPHERE_PARAMS 4
-#define MAX_PLANE_PARAMS 8
+#define MAX_CHARS_PER_LINE     256
+#define MAX_SPHERE_PARAMS      4
+#define MAX_PLANE_PARAMS       8
 #define MAX_POINT_LIGHT_PARAMS 7
-#define MAX_DIR_LIGHT_PARAMS 12
-#define MAX_SPOTLIGHT_PARAMS 10
-#define DEFAULT_SOFT_CUTOFF 5.f
-#define MAX_MESH_PARAMS 3
-#define MAX_TRACK_PARAMS 1
-#define COMMENT_CHAR '#'
+#define MAX_DIR_LIGHT_PARAMS   12
+#define MAX_SPOTLIGHT_PARAMS   10
+#define DEFAULT_SOFT_CUTOFF    5.f
+#define MAX_MESH_PARAMS        3
+#define MAX_TRACK_PARAMS       1
+#define COMMENT_CHAR           '#'
+#define SPHERE                 "sphere"
+#define PLANE                  "plane"
+#define POINT_LIGHT            "point_light"
+#define DIRECTIONAL_LIGHT      "directional_light"
+#define SPOTLIGHT              "spotlight"
+#define PLAYER                 "player"
+#define STATIC_MESH            "static_mesh"
+#define BOIDS                  "boids"
+#define MATERIAL               "material"
+#define MESH                   "mesh"
+#define SHADER                 "shader"
+
 
 // Singleton Declaration
 Scene_Loader* Scene_Loader::m_pInstance = nullptr;
@@ -31,8 +43,10 @@ Scene_Loader::Scene_Loader()
 // Returns the singleton instance of the Object Factory
 Scene_Loader* Scene_Loader::getInstance()
 {
-	if ( nullptr == m_pInstance )
+	if (nullptr == m_pInstance)
+	{
 		m_pInstance = new Scene_Loader();
+	}
 
 	return m_pInstance;
 }
@@ -40,8 +54,10 @@ Scene_Loader* Scene_Loader::getInstance()
 
 Scene_Loader::~Scene_Loader()
 {
-	if ( nullptr != m_pAnimProperty )
+	if (nullptr != m_pAnimProperty)
+	{
 		delete m_pAnimProperty;
+	}
 }
 
 // Creation Functions
@@ -59,7 +75,9 @@ void Scene_Loader::createSphere( vector< string > sData, int iLength )
 											 &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
-		outputError("sphere", sData);
+	{
+		outputError(SPHERE, sData);
+	}
 }
 
 // Create a Plane given a normal, a position on the plane and a color
@@ -78,7 +96,9 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, m_sShaderProperty);
 	}
 	else
-		outputError("plane", sData);
+	{
+		outputError(PLANE, sData);
+	}
 }
 
 // Generates a Directional Light object given some input data
@@ -99,7 +119,9 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 		ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
 	}
 	else
-		outputError("directional_light", sData);
+	{
+		outputError(DIRECTIONAL_LIGHT, sData);
+	}
 }
 
 // Generates a Light object given some input data
@@ -117,7 +139,9 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty);
 	}
 	else
-		outputError("point_light", sData);
+	{
+		outputError(POINT_LIGHT, sData);
+	}
 }
 
 // Generates a SpotLight object with a Position, Direction, Color and Phi angle of the spotlight.
@@ -144,7 +168,9 @@ void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
 		ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty);
 	}
 	else
-		outputError("spotlight", sData);
+	{
+		outputError(SPOTLIGHT, sData);
+	}
 }
 
 // Generates a Player Object at a given position
@@ -231,8 +257,10 @@ void Scene_Loader::outputError( string sName, vector<string> sData )
 		  ++pIter )
 	{
 		cout << *pIter;
-		if ( pIter != sData.end() - 1 )
+		if (pIter != sData.end() - 1)
+		{
 			cout << ", ";
+		}
 	}
 	cout << "}" << endl;
 }
@@ -266,8 +294,10 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 				pullData( inFile, sPropertyData );						// pull property information
 				handleProperty( sPropertyData, sPropertyIndicator );	// store property internally
 			}
-			else if ( "" != sParser )					// Avoid Garbage
+			else if ("" != sParser)					// Avoid Garbage
+			{
 				sReturnData.push_back( sParser );
+			}
 		}
 	} while ( "}" != sReturnData.back() );				// Repeat until end delimiter
 
@@ -277,21 +307,21 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 
 void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator )
 {
-	if ("sphere" == sIndicator)					// Parse Sphere
+	if (SPHERE == sIndicator)					// Parse Sphere
 		createSphere(sData, sData.size());
-	else if ("plane" == sIndicator)				// Parse Plane
+	else if (PLANE == sIndicator)				// Parse Plane
 		createPlane(sData, sData.size());
-	else if ("point_light" == sIndicator)		// Parse Point Light
+	else if (POINT_LIGHT == sIndicator)		// Parse Point Light
 		createPointLight(sData, sData.size());
-	else if ("directional_light" == sIndicator)	// Parse Directional Light
+	else if (DIRECTIONAL_LIGHT == sIndicator)	// Parse Directional Light
 		createDirectionalLight(sData, sData.size());
-	else if ("spotlight" == sIndicator)			// Parse Spotlight
+	else if (SPOTLIGHT == sIndicator)			// Parse Spotlight
 		createSpotLight(sData, sData.size());
-	else if ("player" == sIndicator)			// Parse Player
+	else if (PLAYER == sIndicator)			// Parse Player
 		createPlayer(sData, sData.size());
-	else if ("static_mesh" == sIndicator)		// Parse Static Mesh
+	else if (STATIC_MESH == sIndicator)		// Parse Static Mesh
 		createStaticMesh(sData, sData.size());
-	else if ("boids" == sIndicator)	// Parse Mass Spring System
+	else if (BOIDS == sIndicator)	// Parse Mass Spring System
 		ENTITY_MANAGER->initializeBoidEngine(sData);
 
 	clearProperties();
@@ -302,11 +332,11 @@ void Scene_Loader::handleProperty( vector< string >& sData, const string& sIndic
 {
 	string sDataTrimmed = trimString( sData[ 0 ] );
 
-	if ("material" == sIndicator)
+	if (MATERIAL == sIndicator)
 		grabMaterial(sData);
-	else if ("mesh" == sIndicator)
+	else if (MESH == sIndicator)
 		m_sMeshProperty = sDataTrimmed;
-	else if ("shader" == sIndicator)
+	else if (SHADER == sIndicator)
 		m_sShaderProperty = sDataTrimmed;
 }
 
@@ -344,7 +374,9 @@ void Scene_Loader::grabMaterial(vector< string >& sData)
 		for (vector<string>::iterator iter = sData.begin();
 			iter != sData.end();
 			++iter)
+		{
 			cout << (*iter) << " ";
+		}
 		cout << "}\n";
 		break;
 	}
@@ -372,7 +404,9 @@ string Scene_Loader::trimString( const string& sStr )
 void Scene_Loader::clearProperties() // Clear any properties
 {
 	if (nullptr != m_pAnimProperty)
+	{
 		delete m_pAnimProperty;
+	}
 
 	m_pAnimProperty = nullptr;
 	m_sMeshProperty = m_sShaderProperty = "";

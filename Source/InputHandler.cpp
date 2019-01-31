@@ -22,6 +22,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	initializeJoysticksAtStart();
 	glfwSetJoystickCallback(InputHandler::joystickCallback);
 
+	bWireFrame = false;
 
 }
 
@@ -56,23 +57,46 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	// Note that any time a key is pressed, it will count as TRUE
 	m_pInstance->pressed[key] = action;
 
-	// Special keys handled differently than just pressed/not pressed
-	switch (key)
-	{
-	case GLFW_KEY_ESCAPE:
-		// TODO Later should escape no longer close window, as there may need
-		// to be some tear down steps before the game exits?
-		glfwSetWindowShouldClose(window, GL_TRUE);
-		break;
-	case GLFW_KEY_F:
-		if (GLFW_PRESS == action)
-		{
-			// m_pInstance->m_pCommandHandler->execute(m_pInstance->m_keyboardPlayer, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
-		}
-		break;
+	m_pInstance->debugKeyCommands(window, key, action);
+}
 
+/*
+Special keys handled differently than the rest. Since key updates occur at a
+slower rate than frame updates, we cannot rely on GLFW_PRESS checks for commands,
+as that may execute multiple commands (for multiple frames) before the action
+goes from GLFW_PRESS to GLFW_REPEAT.
+ */
+void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
+{
+	if (GLFW_PRESS == action)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_ESCAPE:
+			// TODO Later should escape no longer close window, as there may need
+			// to be some tear down steps before the game exits?
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_F:
+			debugToggleWireframe();
+			break;
+		}
 	}
 }
+
+void InputHandler::debugToggleWireframe()
+{
+	bWireFrame = !bWireFrame;
+	if (bWireFrame)
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	}
+	else
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	}
+}
+
 
 // Mouse Button Callback
 // Handle mouse movement controls.
@@ -134,8 +158,12 @@ void InputHandler::initializeKeysPressed()
 	}
 }
 
-// TODO later this should detect controllers connecting/disconnecting in the
-// middle of the menu or game.
+/*
+Initializes all joysticks at the start of the program. This is necessary as
+joysticks that are already connected before the program starts do not initiate
+glfwSetJoystickCallback(), which initializes controllers that are connected
+mid-program.
+*/
 void InputHandler::initializeJoysticksAtStart()
 {
 	initializeJoystickVariables();
@@ -173,11 +201,10 @@ void InputHandler::checkForPresentJoysticks()
 }
 
 
-// This should be used instead of initializeJoysticks due to how
-// controllers connecting and disconnecting can work
-// It should also check if a controller is already initialized before doing so
-// but need to emperically check if ID changes when controllers connect/disconnect
-// before doing so
+/*
+Initializes a joysticks of a given joystickID. It will only initialize if the
+joystick is actually present.
+*/
 void InputHandler::initializeJoystick(int joystickID)
 {
 	// Check if joystick is present. Can only initialize if present.
@@ -223,18 +250,17 @@ void InputHandler::debugPrintJoystickInformation(int joystickID)
 
 void InputHandler::debugPrintJoystickAxes(int joystickID)
 {
-
 	if (!m_pJoystickIsPresent[joystickID])
 	{
 		return;
 	}
 	const float* axes = m_pJoystickAxes[joystickID];
 	std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: " << std::endl
-	          << "\t\tLeft stick x: " << axes[AXIS_LEFT_STICK_X] << std::endl
-	          << "\t\t           y: " << axes[AXIS_LEFT_STICK_Y] << std::endl
+	          << "\t\tLeft stick x: "  << axes[AXIS_LEFT_STICK_X]  << std::endl
+	          << "\t\t           y: "  << axes[AXIS_LEFT_STICK_Y]  << std::endl
 	          << "\t\tRight stick x: " << axes[AXIS_RIGHT_STICK_X] << std::endl
 	          << "\t\t            y: " << axes[AXIS_RIGHT_STICK_Y] << std::endl
-	          << "\t\tLeft trigger: " << axes[AXIS_LEFT_TRIGGER] << std::endl
+	          << "\t\tLeft trigger: "  << axes[AXIS_LEFT_TRIGGER]  << std::endl
 	          << "\t\tRight trigger: " << axes[AXIS_RIGHT_TRIGGER] << std::endl;
 	std::cout << "\t\t[";
 	for (int i = 0; i < m_pJoystickAxesCount[joystickID]; i++)
@@ -253,20 +279,20 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
 	}
 	const unsigned char* buttonsPressed = m_pJoystickButtonsPressed[joystickID];
 	std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
-	          << "\t\tA: " << buttonsPressed[BUTTON_A] << std::endl
-	          << "\t\tB: " << buttonsPressed[BUTTON_B] << std::endl
-	          << "\t\tX: " << buttonsPressed[BUTTON_X] << std::endl
-	          << "\t\tY: " << buttonsPressed[BUTTON_Y] << std::endl
-	          << "\t\tLeft Bumper: " << buttonsPressed[BUTTON_LEFT_BUMPER] << std::endl
+	          << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
+	          << "\t\tB: "            << buttonsPressed[BUTTON_B]            << std::endl
+	          << "\t\tX: "            << buttonsPressed[BUTTON_X]            << std::endl
+	          << "\t\tY: "            << buttonsPressed[BUTTON_Y]            << std::endl
+	          << "\t\tLeft Bumper: "  << buttonsPressed[BUTTON_LEFT_BUMPER]  << std::endl
 	          << "\t\tRight Bumper: " << buttonsPressed[BUTTON_RIGHT_BUMPER] << std::endl
-	          << "\t\tBack: " << buttonsPressed[BUTTON_BACK] << std::endl
-	          << "\t\tStart: " << buttonsPressed[BUTTON_START] << std::endl
-	          << "\t\tLeft Stick: " << buttonsPressed[BUTTON_LEFT_STICK] << std::endl
-	          << "\t\tRight Stick: " << buttonsPressed[BUTTON_RIGHT_STICK] << std::endl
-	          << "\t\tUp: " << buttonsPressed[BUTTON_UP] << std::endl
-	          << "\t\tRight: " << buttonsPressed[BUTTON_RIGHT] << std::endl
-	          << "\t\tDown: " << buttonsPressed[BUTTON_DOWN] << std::endl
-	          << "\t\tLeft: " << buttonsPressed[BUTTON_LEFT] << std::endl;
+	          << "\t\tBack: "         << buttonsPressed[BUTTON_BACK]         << std::endl
+	          << "\t\tStart: "        << buttonsPressed[BUTTON_START]        << std::endl
+	          << "\t\tLeft Stick: "   << buttonsPressed[BUTTON_LEFT_STICK]   << std::endl
+	          << "\t\tRight Stick: "  << buttonsPressed[BUTTON_RIGHT_STICK]  << std::endl
+	          << "\t\tUp: "           << buttonsPressed[BUTTON_UP]           << std::endl
+	          << "\t\tRight: "        << buttonsPressed[BUTTON_RIGHT]        << std::endl
+	          << "\t\tDown: "         << buttonsPressed[BUTTON_DOWN]         << std::endl
+	          << "\t\tLeft: "         << buttonsPressed[BUTTON_LEFT]         << std::endl;
 	std::cout << "\t\t[";
 	for (int i = 0; i < m_pJoystickButtonCount[joystickID]; i++)
 	{
