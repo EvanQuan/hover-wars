@@ -22,6 +22,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 	initializeJoysticksAtStart();
 	glfwSetJoystickCallback(InputHandler::joystickCallback);
 
+	bWireFrame = false;
 
 }
 
@@ -54,29 +55,48 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	//		GLFW_PRESS   = 1
 	//		GLFW_REPEAT  = 2
 	// Note that any time a key is pressed, it will count as TRUE
-	if (GLFW_PRESS == m_pInstance->pressed[key] && GLFW_PRESS == action)
-	{
-		cout << "Press and was press" << endl;
-	}
 	m_pInstance->pressed[key] = action;
 
-	// Special keys handled differently than just pressed/not pressed
-	switch (key)
-	{
-	case GLFW_KEY_ESCAPE:
-		// TODO Later should escape no longer close window, as there may need
-		// to be some tear down steps before the game exits?
-		glfwSetWindowShouldClose(window, GL_TRUE);
-		break;
-	case GLFW_KEY_F:
-		if (GLFW_PRESS == action)
-		{
-			// m_pInstance->m_pCommandHandler->execute(m_pInstance->m_keyboardPlayer, CommandHandler::DEBUG_TOGGLE_WIREFRAME);
-		}
-		break;
+	m_pInstance->debugKeyCommands(window, key, action);
+}
 
+/*
+ * Special keys handled differently than the rest. Since key updates occur at a
+ * slow rate than frame updates, we cannot rely on GLFW_PRESS checks for commands,
+ * as that may execute multiple commands (for multiple frames) before the
+ * action goes from GLFW_PRESS to GLFW_REPEAT.
+ */
+void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
+{
+	if (GLFW_PRESS == action)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_ESCAPE:
+			// TODO Later should escape no longer close window, as there may need
+			// to be some tear down steps before the game exits?
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_F:
+			debugToggleWireframe();
+			break;
+		}
 	}
 }
+
+void InputHandler::debugToggleWireframe()
+{
+	bWireFrame = !bWireFrame;
+	if (bWireFrame)
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	}
+	else
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	}
+}
+
 
 // Mouse Button Callback
 // Handle mouse movement controls.

@@ -17,7 +17,6 @@ CommandHandler::CommandHandler(GLFWwindow *rWindow)
 	// m_pGameManager = GameManager::getInstance();
 	// m_pEntityManger = ENTITY_MANAGER;
 	m_pInputHandler = InputHandler::getInstance(rWindow);
-	bWireFrame = false;
 }
 
 // Get a copy of CmdHandler that doesn't have any initialized
@@ -60,9 +59,6 @@ void CommandHandler::execute(int joystickID, FixedCommand command)
 		     << m_pFixedCommandToString.at(command)
 		     << endl;
 		break;
-	case DEBUG_TOGGLE_WIREFRAME:
-		debugToggleWireframe();
-		break;
 	default:
 		cout << "Player " << joystickID << ": "
 		     << m_pFixedCommandToString.at(command)
@@ -70,18 +66,6 @@ void CommandHandler::execute(int joystickID, FixedCommand command)
 	}
 }
 
-void CommandHandler::debugToggleWireframe()
-{
-	bWireFrame = !bWireFrame;
-	if (bWireFrame)
-	{
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	}
-	else
-	{
-		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-	}
-}
 
 void CommandHandler::execute(int joystickID, VariableCommand command, const float x, const float y)
 {
@@ -118,16 +102,6 @@ void CommandHandler::executeKeyboardCommands()
 			// Fixed
 			switch (key)
 			{
-			case GLFW_KEY_F:
-				if (GLFW_PRESS == m_pInputHandler->pressed[key])
-				{
-					m_pFixedCommand = DEBUG_TOGGLE_WIREFRAME;
-				}
-				else
-				{
-					m_pFixedCommand = INVALID_FIXED;
-				}
-				break;
 			case GLFW_KEY_K:
 				m_pFixedCommand = DASH_BACK;
 				break;
@@ -157,8 +131,6 @@ void CommandHandler::executeKeyboardCommands()
 				break;
 			case GLFW_KEY_P:
 				m_pFixedCommand = MENU_PAUSE;
-				// if ( iAction == GLFW_RELEASE )
-					// m_pEntMngr->pause();
 				break;
 			default:
 				m_pFixedCommand = INVALID_FIXED;
