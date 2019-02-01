@@ -80,16 +80,11 @@ void Anim_Track::initializeTrack()
 
 	// Load a Mesh if mesh is specified.
 	if ( !m_sMeshFile.empty() )
-	{
 		m_pMesh = MESH_MANAGER->loadMeshFromFile( m_sMeshFile );
-
-		if ( nullptr != m_pMesh )
-			m_pMesh->initMesh();
-	}
 	else m_pMesh = nullptr;
 
 	if ( !m_sTextureFile.empty() )
-		m_pTexture = TextureManager::getInstance()->loadTexture( m_sTextureFile, m_lID );
+		m_pTexture = TEXTURE_MANAGER->loadTexture( m_sTextureFile );
 	else m_pTexture = nullptr;
 
 	// Generate Vertex buffer for curve.
@@ -104,8 +99,6 @@ Anim_Track::~Anim_Track()
 	if (nullptr != m_pMesh)
 		m_pMesh = nullptr;
 
-	if ( nullptr != m_pTexture )
-		TextureManager::getInstance()->unloadTexture( m_pTexture->getFileName(), m_lID );
 
 	glDeleteBuffers( 1, &m_iVertexBuffer );
 	glDeleteVertexArrays( 1, &m_iVertexArray );

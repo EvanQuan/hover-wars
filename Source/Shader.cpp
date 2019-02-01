@@ -1,5 +1,8 @@
 #include "Shader.h"
 
+const string LIGHTING_HEADER_LOC = "Shaders/lightingHeader.txt";
+const string UNIFORM_LIGHTING_LOC = "Shaders/uniformLighting.txt";
+
 // Shader Compiler Enums
 const GLenum gleShaderTypes[ Shader::eShader::MAX_PARTS ] =
 {
@@ -89,6 +92,22 @@ string Shader::LoadSource( int iShaderType, bool* bError)
 		ifstream input( m_uiShaderLocations[ iShaderType ] );
 		if ( input )
 		{
+
+			source = "#version 430 core\n";
+
+			if ( iShaderType == FRAGMENT)
+			{
+				
+				ifstream uniformLight(UNIFORM_LIGHTING_LOC);
+				copy(istreambuf_iterator<char>(uniformLight),
+					istreambuf_iterator<char>(),
+					back_inserter(source));
+			
+				ifstream lightingHead(LIGHTING_HEADER_LOC);
+				copy(istreambuf_iterator<char>(lightingHead),
+					istreambuf_iterator<char>(),
+					back_inserter(source));
+			}
 			copy( istreambuf_iterator<char>( input ),
 				istreambuf_iterator<char>(),
 				back_inserter( source ) );

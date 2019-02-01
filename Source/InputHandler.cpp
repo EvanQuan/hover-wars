@@ -1,84 +1,343 @@
+#include <iostream> // debug
 #include "stdafx.h"
 #include "InputHandler.h"
+#include "GameManager.h"
 
+// Single Singleton instance
+InputHandler* InputHandler::m_pInstance = nullptr;
 
-InputHandler::InputHandler()
+InputHandler::InputHandler(GLFWwindow *rWindow)
 {
-	m_eErrors		= INPUT_EMPTY;
-	m_cBuffer[0]	= 0;
-	m_iCurrIndex	= 0;
-	m_iInputSize	= 0;
+	m_gameManager = GameManager::getInstance(rWindow);
+	// Keyboard
+	m_keyboardPlayer = GLFW_JOYSTICK_1;
+	initializeKeysPressed();
+	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
+	// Mouse
+	m_bRotateFlag = m_bTranslateFlag = false;
+	glfwSetMouseButtonCallback(rWindow, InputHandler::mouseButtonCallback);
+	glfwSetCursorPosCallback(rWindow, InputHandler::mouseMoveCallback);
+	glfwSetScrollCallback(rWindow, InputHandler::mouseScrollCallback);
+	// Controller
+	initializeJoysticksAtStart();
+	glfwSetJoystickCallback(InputHandler::joystickCallback);
+
+	bWireFrame = false;
+
 }
 
-// Overloaded Constructor for loading input on initialization.
-InputHandler::InputHandler(const char* c_Input, int iInputSize)
+InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
-	this->load_Input(c_Input, iInputSize);
+	if (nullptr == m_pInstance)
+	{
+		m_pInstance = new InputHandler(rWindow);
+	}
+
+	return m_pInstance;
 }
 
 InputHandler::~InputHandler()
 {
-
+	m_gameManager = nullptr; // TODO remove later once GameManager no longer needed
 }
 
-// Loads a new input into the Handler
-void InputHandler::load_Input(const char* c_Input, int iInputSize)
+
+// handles keyboard input events
+void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	// Verify the size of the input to ensure it doesn't go out of bounds.
-	if (iInputSize > MAX_INPUT_SIZE)
+	if (GLFW_KEY_UNKNOWN == key)
 	{
-		m_iInputSize = MAX_INPUT_SIZE;
-		m_eErrors = INPUT_TRUNCATED;
+		return;
+	}
+
+	// Possible actions:
+	//		GLFW_RELEASE = 0
+	//		GLFW_PRESS   = 1
+	//		GLFW_REPEAT  = 2
+	// Note that any time a key is pressed, it will count as TRUE
+	m_pInstance->pressed[key] = action;
+
+	m_pInstance->debugKeyCommands(window, key, action);
+}
+
+/*
+Special keys handled differently than the rest. Since key updates occur at a
+slower rate than frame updates, we cannot rely on GLFW_PRESS checks for commands,
+as that may execute multiple commands (for multiple frames) before the action
+goes from GLFW_PRESS to GLFW_REPEAT.
+ */
+void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
+{
+	if (GLFW_PRESS == action)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_ESCAPE:
+			// TODO Later should escape no longer close window, as there may need
+			// to be some tear down steps before the game exits?
+			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_F:
+			debugToggleWireframe();
+			break;
+		}
+	}
+}
+
+void InputHandler::debugToggleWireframe()
+{
+	bWireFrame = !bWireFrame;
+	if (bWireFrame)
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	}
 	else
 	{
-		m_iInputSize = iInputSize;
-		m_eErrors = INPUT_HEALTHY;
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
-
-	// Copy Input into Handler Buffer
-	for (int i = 0; i < m_iInputSize; ++i)
-	{
-		m_cBuffer[i] = c_Input[i];
-	}
-
-	m_iCurrIndex = 0;
 }
 
-// Returns the next word up to the next space or new line character.
-int InputHandler::get_Next_Word(char* c_ReturnWord, int iReturnSize)
+
+// Mouse Button Callback
+// Handle mouse movement controls.
+void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	int iReturnVal = -1;		// Return an Error if nothing happened.
-	int iIndex = 0;
+	double fX, fY;
 
-	// Process if there's stuff in the buffer to grab.
-	if (INPUT_HEALTHY == m_eErrors)
+	if (GLFW_MOUSE_BUTTON_1 == button)
 	{
-		iReturnVal = 0;
-
-		// Skip leading whitespace
-		while ((m_iCurrIndex < m_iInputSize) && (' ' == m_cBuffer[m_iCurrIndex]))
-			m_iCurrIndex++;
-
-		// Copy next word
-		while ((iIndex < (iReturnSize - 1)) && (m_cBuffer[m_iCurrIndex] != ' ') && !p_EOB())
+		glfwGetCursorPos(window, &fX, &fY);
+		if (GLFW_PRESS == action)
 		{
-			c_ReturnWord[iIndex] = m_cBuffer[m_iCurrIndex];
-			iIndex++;
-			m_iCurrIndex++;
+			m_pInstance->mouseTStart();
 		}
-
-		// Set nullptr terminator
-		c_ReturnWord[iIndex] = '\0';
-
-		// Return the number of Characters Copied.
-		iReturnVal = iIndex;
+		else if (GLFW_RELEASE == action)
+		{
+			m_pInstance->mouseTEnd();
+		}
 	}
-	
-	return iReturnVal;
+	if (GLFW_MOUSE_BUTTON_2 == button)
+	{
+		glfwGetCursorPos(window, &fX, &fY);
+		if (GLFW_PRESS == action)
+		{
+			m_pInstance->mouseRStart();
+		}
+		else if (GLFW_RELEASE == action)
+		{
+			m_pInstance->mouseREnd();
+		}
+	}
 }
 
-InputHandler::INPUT_ERRORS InputHandler::check_Status()
+// Handles input from Mouse Moves.
+void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
-	return m_eErrors;
+	if (m_pInstance->m_bRotateFlag)
+	{
+		m_pInstance->m_gameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
+	}
+
+	// Set new current position
+	m_pInstance->m_pInitialPos.x = (float) x;
+	m_pInstance->m_pInitialPos.y = (float) y;
+}
+
+// Handle scroll wheel callbacks
+void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
+}
+
+// Keys begin not pressed until notified that they are by keyCallback.
+void InputHandler::initializeKeysPressed()
+{
+	for (int key = 0; key < KEYS; key++)
+	{
+		pressed[key] = false;
+	}
+}
+
+/*
+Initializes all joysticks at the start of the program. This is necessary as
+joysticks that are already connected before the program starts do not initiate
+glfwSetJoystickCallback(), which initializes controllers that are connected
+mid-program.
+*/
+void InputHandler::initializeJoysticksAtStart()
+{
+	initializeJoystickVariables();
+	checkForPresentJoysticks();
+
+	// Initialize all connnected joysticks
+	// joystickCallback only checks for joysticks that go from disconnected to
+	// connected, and therefore does not check for joysticks that are already
+	// connected at the start of the program.
+	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
+	{
+		initializeJoystick(joystickID);
+	}
+}
+
+// Initialize joystick variables before they are set
+void InputHandler::initializeJoystickVariables()
+{
+	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+	{
+		m_pJoystickIsPresent[i] = false;
+		m_pJoystickAxesCount[i] = 0;
+		m_pJoystickButtonCount[i] = 0;
+		m_pJoystickNames[i] = EMPTY_CONTROLLER;
+	}
+}
+
+// Check all if all joysticks are connected
+void InputHandler::checkForPresentJoysticks()
+{
+	for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+	{
+		m_pJoystickIsPresent[i] = glfwJoystickPresent(i);
+	}
+}
+
+
+/*
+Initializes a joysticks of a given joystickID. It will only initialize if the
+joystick is actually present.
+*/
+void InputHandler::initializeJoystick(int joystickID)
+{
+	// Check if joystick is present. Can only initialize if present.
+	m_pJoystickIsPresent[joystickID] = glfwJoystickPresent(joystickID);
+	if (!m_pJoystickIsPresent[joystickID])
+	{
+		return;
+	}
+	// Axis states
+	m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
+
+	// Button states
+	m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+
+	// Names
+	m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
+
+	debugPrintJoystickInformation(joystickID);
+}
+
+// DEBUG Print information about all joysticks
+void InputHandler::debugPrintJoystickInformation()
+{
+	return; // DEBUG
+	system("CLS");
+	for (int joystickID = 0; joystickID < MAX_PLAYER_COUNT; joystickID++)
+	{
+		debugPrintJoystickInformation(joystickID);
+	}
+
+}
+
+// DEBUG Print information about a joystick
+void InputHandler::debugPrintJoystickInformation(int joystickID)
+{
+	std::cout << m_pJoystickNames[joystickID] << " " << joystickID
+		<< " is " <<  (m_pJoystickIsPresent[joystickID] ? "" : "dis" ) << "connected"
+		<< std::endl;
+
+	debugPrintJoystickAxes(joystickID);
+	debugPrintJoystickButtons(joystickID);
+}
+
+void InputHandler::debugPrintJoystickAxes(int joystickID)
+{
+	if (!m_pJoystickIsPresent[joystickID])
+	{
+		return;
+	}
+	const float* axes = m_pJoystickAxes[joystickID];
+	std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: " << std::endl
+	          << "\t\tLeft stick x: "  << axes[AXIS_LEFT_STICK_X]  << std::endl
+	          << "\t\t           y: "  << axes[AXIS_LEFT_STICK_Y]  << std::endl
+	          << "\t\tRight stick x: " << axes[AXIS_RIGHT_STICK_X] << std::endl
+	          << "\t\t            y: " << axes[AXIS_RIGHT_STICK_Y] << std::endl
+	          << "\t\tLeft trigger: "  << axes[AXIS_LEFT_TRIGGER]  << std::endl
+	          << "\t\tRight trigger: " << axes[AXIS_RIGHT_TRIGGER] << std::endl;
+	std::cout << "\t\t[";
+	for (int i = 0; i < m_pJoystickAxesCount[joystickID]; i++)
+	{
+		std::cout << axes[i] << " ";
+	}
+	std::cout << "]" << std::endl;
+
+}
+
+void InputHandler::debugPrintJoystickButtons(int joystickID)
+{
+	if (!m_pJoystickIsPresent[joystickID])
+	{
+		return;
+	}
+	const unsigned char* buttonsPressed = m_pJoystickButtonsPressed[joystickID];
+	std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
+	          << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
+	          << "\t\tB: "            << buttonsPressed[BUTTON_B]            << std::endl
+	          << "\t\tX: "            << buttonsPressed[BUTTON_X]            << std::endl
+	          << "\t\tY: "            << buttonsPressed[BUTTON_Y]            << std::endl
+	          << "\t\tLeft Bumper: "  << buttonsPressed[BUTTON_LEFT_BUMPER]  << std::endl
+	          << "\t\tRight Bumper: " << buttonsPressed[BUTTON_RIGHT_BUMPER] << std::endl
+	          << "\t\tBack: "         << buttonsPressed[BUTTON_BACK]         << std::endl
+	          << "\t\tStart: "        << buttonsPressed[BUTTON_START]        << std::endl
+	          << "\t\tLeft Stick: "   << buttonsPressed[BUTTON_LEFT_STICK]   << std::endl
+	          << "\t\tRight Stick: "  << buttonsPressed[BUTTON_RIGHT_STICK]  << std::endl
+	          << "\t\tUp: "           << buttonsPressed[BUTTON_UP]           << std::endl
+	          << "\t\tRight: "        << buttonsPressed[BUTTON_RIGHT]        << std::endl
+	          << "\t\tDown: "         << buttonsPressed[BUTTON_DOWN]         << std::endl
+	          << "\t\tLeft: "         << buttonsPressed[BUTTON_LEFT]         << std::endl;
+	std::cout << "\t\t[";
+	for (int i = 0; i < m_pJoystickButtonCount[joystickID]; i++)
+	{
+		std::cout << buttonsPressed[i] << " ";
+	}
+	std::cout << "]" << std::endl;
+
+}
+
+void InputHandler::disconnectJoystick(int joystickID)
+{
+	m_pJoystickIsPresent[joystickID] = false;
+	debugPrintJoystickInformation(joystickID);
+
+}
+
+// Checks for joystick connection/disconnection
+// TODO true? Must be called in initialize() to avoid infinite getInstance() recursion
+void InputHandler::joystickCallback(int joystickID, int event)
+{
+	if (event == GLFW_CONNECTED)
+	{
+		m_pInstance->initializeJoystick(joystickID);
+	}
+	else if (event == GLFW_DISCONNECTED)
+	{
+		m_pInstance->disconnectJoystick(joystickID);
+	}
+}
+
+// Get the input status of all the present controllers and store it.
+// Buttons and axes
+// TODO more efficient iteration algorithm?
+void InputHandler::updateJoysticks()
+{
+	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
+	{
+		if (m_pJoystickIsPresent[joystickID])
+		{
+			// Axis states
+			m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
+
+			// Button states
+			m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+		}
+	}
+
 }

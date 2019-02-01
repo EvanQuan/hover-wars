@@ -11,15 +11,19 @@ class StaticEntity
 	: public Entity
 {
 public:
-	StaticEntity(int iID, vec3 vPosition);
-	StaticEntity(const StaticEntity& pCopy);
+	StaticEntity(int iID, const vec3* vPosition);
+
 	virtual ~StaticEntity();
 
-	void loadAsPlane(vec3 vNormal, int iHeight, int iWidth);
-	void loadAsSphere(float fRadius);
-	void loadFromFile(const string& sFileName);
+	void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const string& sShaderType);
+	void loadAsSphere(float fRadius, const Material* pMaterial, const string& sShaderType);
+	void loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType);
 
 private:
+	// Private Copy Constructor and Assignment Operator
+	StaticEntity(const StaticEntity& pCopy);
+	StaticEntity& operator=(const StaticEntity& pCopy);
+
 	Mesh* m_pMesh; // Contains Vertex information about the mesh.
 	RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
 };

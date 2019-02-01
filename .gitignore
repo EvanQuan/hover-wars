@@ -14,6 +14,9 @@ Release
 # 2017 if on Windows, but we can ignore this anyways.
 UpgradeLog.htm
 
+# Mac
+.DS_Store
+
 # Latex
 
 ## Core latex/pdflatex auxiliary files:

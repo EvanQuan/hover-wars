@@ -1,4 +1,3 @@
-#version 430 core
 
 uniform vec3 vColor;
 

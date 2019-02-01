@@ -30,8 +30,9 @@ public:
 	~TextureManager();	// destructor.
 
 	// Methods:
-	Texture* loadTexture(const string &sFileName, long lID);
-	void unloadTexture(const string &sFileName, long lID);
+	Texture* loadTexture(const string &sFileName);
+	Texture* genTexture(const vec4* vColor);
+	void unloadAllTextures();
 
 private:
 	// Singleton Implementation
@@ -40,14 +41,7 @@ private:
 	TextureManager( const TextureManager& pCopy ) {}
 	TextureManager& operator=( const TextureManager& pRHS ) {}
 
-	// TextureContainer structure
-	struct TextureContainer
-	{
-		Texture* pTexture;		// Texture Object Reference
-		vector<long> lUserIDs;	// List of Users
-	};
-
 	// Hash Map
-	unordered_map<string, TextureContainer> m_pTextureCache;
+	unordered_map<string, unique_ptr<Texture>> m_pTextureCache;
 };
 

@@ -1,7 +1,7 @@
 #include "EntityManager.h"
-#include "Object_Factory.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "StaticEntity.h"
+#include "PlayerEntity.h"
 
 #define INTERSECTION_EPSILON 1e-4	// Minimum intersect distance (so we don't intersect with ourselves)
 #define MAX_REFLECTIONS	800
@@ -20,6 +20,9 @@ EntityManager::EntityManager()
 	m_iHeight = START_HEIGHT;
 	m_iWidth = START_WIDTH;
 	m_bPause = false;
+	m_pMshMngr = MESH_MANAGER;
+	m_pTxtMngr = TEXTURE_MANAGER;
+	m_pScnLdr = SCENE_LOADER;
 
 	//TODO: redesign Boid Engine: m_pBoidEngine = new BoidEngine();
 }
@@ -41,169 +44,116 @@ EntityManager::~EntityManager()
 	if (nullptr != m_pBoidEngine)
 		delete m_pBoidEngine;
 
-	m_pMasterComponentList.clear();
-	m_pMasterEntityList.clear();
+	// Delete Mesh Manager
+	if (nullptr != m_pMshMngr)
+		delete m_pMshMngr;
+	
+	// Delete Texture Manager
+	if (nullptr != m_pTxtMngr)
+		delete m_pTxtMngr;
+
+	if (nullptr != m_pScnLdr)
+		delete m_pScnLdr;
 }
 
 // Clears Environment and loads a new environment from specified file.
 void EntityManager::initializeEnvironment(string sFileName)
 {
-	Object_Factory* pObjFctry = Object_Factory::getInstance();
+	Scene_Loader* pObjFctry = Scene_Loader::getInstance();
 
 	purgeEnvironment();
 	pObjFctry->loadFromFile(sFileName);
 }
 
-// Adds object to back of List
-void EntityManager::addObject( Object3D* pNewObject )
-{
-	m_pObjects.push_back( pNewObject );
-}
-
-// Adds a Light to back of List
-void EntityManager::addLight( Light* pNewLight )
-{
-	m_pLights.push_back( pNewLight );
-}
-
 // Remove Object from List with given ID
-void EntityManager::killObject( long lID )
-{
-	unsigned int i = 0;
-
-	// Iterate to find Object
-	while ( i < m_pObjects.size() && nullptr != m_pObjects[i] && lID != m_pObjects[i]->ID() )
-		++i;
-
-	// Delete Object and remove it from list.
-	if ( i < m_pObjects.size() )
-	{
-		swap( m_pObjects[i], m_pObjects.back() );
-		delete m_pObjects.back();
-		m_pObjects.pop_back();
-	}
-}
-
-// Remove Object from List with given ID
-void EntityManager::killLight( long lID )
-{
-	unsigned int i = 0;
-
-	// Iterate to find Object
-	while ( i < m_pLights.size() && nullptr != m_pLights[i] && lID != m_pLights[i]->ID() )
-		++i;
-
-	// Delete Object and remove it from list.
-	if ( i < m_pLights.size() )
-	{
-		swap( m_pLights[i], m_pLights.back() );
-		delete m_pLights.back();
-		m_pLights.pop_back();
-	}
-}
+//void EntityManager::killObject( long lID )
+//{
+//	unsigned int i = 0;
+//
+//	// Iterate to find Object
+//	while ( i < m_pObjects.size() && nullptr != m_pObjects[i] && lID != m_pObjects[i]->ID() )
+//		++i;
+//
+//	// Delete Object and remove it from list.
+//	if ( i < m_pObjects.size() )
+//	{
+//		swap( m_pObjects[i], m_pObjects.back() );
+//		delete m_pObjects.back();
+//		m_pObjects.pop_back();
+//	}
+//}
 
 // Outputs all the objects in the environment for debugging.
-void EntityManager::listEnvironment()
-{
-	cout << "Environment:" << endl;
-	for ( vector<Object3D*>::iterator pIter = m_pObjects.begin();
-		  pIter != m_pObjects.end();
-		  ++pIter )
-		cout << "\t" << (*pIter)->getDebugOutput() << endl;
-
-	for ( vector<Light*>::iterator pIter = m_pLights.begin();
-		  pIter != m_pLights.end();
-		  ++pIter )
-		cout << "\t" << (*pIter)->getDebugOutput() << endl;
-
-	cout << endl;
-}
+//void EntityManager::listEnvironment()
+//{
+//	cout << "Environment:" << endl;
+//	for ( vector<Object3D*>::iterator pIter = m_pObjects.begin();
+//		  pIter != m_pObjects.end();
+//		  ++pIter )
+//		cout << "\t" << (*pIter)->getDebugOutput() << endl;
+//
+//	for ( vector<Light*>::iterator pIter = m_pLights.begin();
+//		  pIter != m_pLights.end();
+//		  ++pIter )
+//		cout << "\t" << (*pIter)->getDebugOutput() << endl;
+//
+//	cout << endl;
+//}
 
 // Clears out the entire environment
 void EntityManager::purgeEnvironment()
 {
-	// Clean Up objects
-	for ( vector<Object3D*>::iterator pIter = m_pObjects.begin();
-		  pIter != m_pObjects.end();
-		  ++pIter )
-	{
-		if ( nullptr != (*pIter) )
-			delete (*pIter);
-	}
+	// Clear unique_ptrs of Components and Entities
+	m_pMasterComponentList.clear();
+	m_pMasterEntityList.clear();
 
-	// Clean up Lights
-	for ( vector<Light*>::iterator pIter = m_pLights.begin();
-		  pIter != m_pLights.end();
-		  ++pIter )
-	{
-		if ( nullptr != (*pIter) )
-			delete (*pIter);
-	}
-
-	// Clear the array of Dangling pointers
-	m_pObjects.clear();
-	m_pLights.clear();
+	m_pMshMngr->unloadAllMeshes();
+	m_pTxtMngr->unloadAllTextures();
+	m_pDirectionalLight = nullptr;
+	m_pTestingLight = nullptr;
+	m_pActiveCamera = nullptr;
 }
 
 // Fetch the Frenet Frame of the first MeshObject found (Hack for assignment)
-mat4 EntityManager::getFrenetFrame()
-{ 
-	mat4 pReturnVal = mat4( 1.0 );	// Default: return Identity Matrix
-
-	for ( vector<Object3D*>::iterator pObjIter = m_pObjects.begin();
-		 pObjIter != m_pObjects.end();
-		 ++pObjIter )
-	{
-		if ( !(*pObjIter)->getType().compare( "MeshObject" ) )
-		{
-			pReturnVal = (*pObjIter)->getFreNetFrames();
-			break;
-		}
-	}
-
-	// Return
-	return pReturnVal;
-}
+//mat4 EntityManager::getFrenetFrame()
+//{ 
+//	mat4 pReturnVal = mat4( 1.0 );	// Default: return Identity Matrix
+//
+//	for ( vector<Object3D*>::iterator pObjIter = m_pObjects.begin();
+//		 pObjIter != m_pObjects.end();
+//		 ++pObjIter )
+//	{
+//		if ( !(*pObjIter)->getType().compare( "MeshObject" ) )
+//		{
+//			pReturnVal = (*pObjIter)->getFreNetFrames();
+//			break;
+//		}
+//	}
+//
+//	// Return
+//	return pReturnVal;
+//}
 
 void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 {
 	// Local Variables
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
-	vec3 pLightPosition;
+	const LightingComponent* pDirectionalLightComponent = nullptr;
 
-	// Calculate information for each Light in the scene (Current max = 1)
-	for (vector<Light*>::iterator pLightIter = m_pLights.begin();
-		pLightIter != m_pLights.end();
-		++pLightIter)
-	{
-		pLightPosition = (*pLightIter)->getPosition();
+	if (nullptr != m_pDirectionalLight)
+		pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
+	
+	// Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
+	pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
-		// Store Information to all Shaders
-		pShdrMngr->setUniformVec3( ShaderManager::eShaderType::LIGHT_SHDR, "lightPosition", &pLightPosition );
-		pShdrMngr->setUniformVec3( ShaderManager::eShaderType::MESH_SHDR, "lightPosition",  &pLightPosition );
-		pShdrMngr->setUniformVec3( ShaderManager::eShaderType::PLANE_SHDR, "lightPosition", &pLightPosition );
-		pShdrMngr->setUniformVec3(ShaderManager::eShaderType::BOID_SHDR, "lightPosition_worldSpace", &pLightPosition );
+	for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
+		pIter != m_pRenderingComponents.end();
+		++pIter)
+		(*pIter)->render();
 
-		//(*pLightIter)->draw( vCamLookAt );
-		for ( vector<Object3D*>::iterator pIter = m_pObjects.begin();
-			pIter != m_pObjects.end();
-			++pIter )
-		{
-			if ( nullptr != (*pIter) )
-				(*pIter)->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
-		}
-
-		for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
-			pIter != m_pRenderingComponents.end();
-			++pIter)
-			(*pIter)->render();
-
-		// Draw Boid Engine
-		if( nullptr != m_pBoidEngine )
-			m_pBoidEngine->draw( m_bPause );
-	}
-
-	m_pLights[0]->draw( vCamLookAt, m_fMinEdgeThreshold, m_fMaxEdgeThreshold, m_bPause );
+	// Draw Boid Engine
+	if( nullptr != m_pBoidEngine )
+		m_pBoidEngine->draw( m_bPause );
 }
 
 /*******************************************************************************\
@@ -218,60 +168,8 @@ void EntityManager::initializeBoidEngine(vector< string >& sData)
 }
 
 /*********************************************************************************\
-* Texture Manipulation                                                           *
-\*********************************************************************************/
-void EntityManager::switchTexture( const string* sTexLocation, long lObjID )
-{
-	Object* pObj = getObject( lObjID );
-
-	if ( nullptr != pObj )
-		pObj->switchTexture( sTexLocation );
-	else
-		cout << "Unable to find Object with ID " << lObjID << " to switch texture to \""
-			 << sTexLocation << "\".\n";
-}
-
-/*********************************************************************************\
- * Light Manipulation                                                            *
-\*********************************************************************************/
-void EntityManager::moveLight(vec3 pMoveVec)
-{
-	m_pLights[0]->move(pMoveVec);
-}
-
-/*********************************************************************************\
 * Entity Management                                                              *
 \*********************************************************************************/
-// getObject
-// Given a long integer ID of the Object, this will return the associated Light or 3D object
-// associated with the ID.  Since this is a private function, only the EnvironmentManager
-// can search in this manner and modify the object, preserving encapsulation.
-Object* EntityManager::getObject( long lID )
-{
-	Object* pReturnObj = nullptr;
-	unsigned int i = 0;
-
-	// Iterate to find Object
-	while ( i < m_pLights.size() && nullptr != m_pLights[ i ] && lID != m_pLights[ i ]->ID() )
-		++i;
-
-	// Return Light
-	if ( i < m_pLights.size() )
-		pReturnObj = m_pLights[ i ];
-	else // Not a Light, see if it's a 3D object
-	{
-		i = 0;
-		// Iterate to find Object
-		while ( i < m_pObjects.size() && nullptr != m_pObjects[ i ] && lID != m_pObjects[ i ]->ID() )
-			++i;
-
-		// Return Object
-		if ( i < m_pObjects.size() )
-			pReturnObj = m_pObjects[ i ];
-	}
-
-	return pReturnObj;
-}
 
 // Fetches the current position of Entity with ID: iEntityID
 vec3 EntityManager::getEntityPosition(int iEntityID)
@@ -307,11 +205,69 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
+void EntityManager::generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const string& sShaderType)
 {
 	unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewPlane.get()->loadAsPlane(vNormal, iHeight, iWidth);
+	pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sMaterial, sShaderType);
 	m_pMasterEntityList.push_back(move(pNewPlane));
+}
+
+// Generates a Static Plane Entity into the world.
+void EntityManager::generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const string& sShaderType)
+{
+	unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewSphere->loadAsSphere(fRadius, sMaterial, sShaderType);
+	m_pMasterEntityList.push_back(move(pNewSphere));
+}
+
+// Generates a Static Mesh at a given location
+void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const string& sShaderType )
+{
+	unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+	pNewMesh->loadFromFile(sMeshLocation, sMaterial, sShaderType);
+	m_pMasterEntityList.push_back(move(pNewMesh));
+}
+
+void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, const string& sShaderType)
+{
+	unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
+	pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType);
+	m_pMasterEntityList.push_back(move(pNewPlayer));
+}
+
+// Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
+void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation)
+{
+	unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), vPosition);
+	pNewLight->initialize(fPower, vColor, true, sMaterial, sMeshLocation);
+
+	if (nullptr == m_pTestingLight)
+		m_pTestingLight = pNewLight.get();
+
+	m_pMasterEntityList.push_back(move(pNewLight));
+}
+
+// Generates a New Directional Light and stores it in the Entity Manager.
+//	If a Directional Light already exists, no new Directional Light will be created.
+void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor)
+{
+	if (nullptr == m_pDirectionalLight)
+	{
+		unique_ptr<DirectionalLight> pNewDirectionalLight = make_unique<DirectionalLight>(getNewEntityID());
+		pNewDirectionalLight->initialize(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
+
+		// Set the current Directional Light and store inside the Master Entity List.
+		m_pDirectionalLight = pNewDirectionalLight.get();
+		m_pMasterEntityList.push_back(move(pNewDirectionalLight));
+	}
+}
+
+// Generates a new Spot Light Entity and stores it in the Entity Manager.
+void EntityManager::generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation)
+{
+	unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), vPosition);
+	pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, sMaterial);
+	m_pMasterEntityList.push_back(move(pNewLight));
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.
@@ -384,5 +340,19 @@ RenderComponent* EntityManager::generateRenderComponent(int iEntityID, bool bSta
 	m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
 
 	// Return newly created component.
+	return pReturnComponent;
+}
+
+// Generates a Lighting Component, stores the light in the Lights list as well as manages it in the Master Components list.
+//	Creates a Barebone light component, up to the caller to initialize the light how they desire.
+LightingComponent* EntityManager::generateLightingComponent(int iEntityID)
+{
+	// Generate new Lighting Component
+	unique_ptr<LightingComponent> pNewComponent = make_unique<LightingComponent>(iEntityID, getNewComponentID());
+	LightingComponent* pReturnComponent = pNewComponent.get();
+	m_pLights.push_back(pReturnComponent);
+	m_pMasterComponentList.push_back(move(pNewComponent));
+
+	// Return newly created component
 	return pReturnComponent;
 }

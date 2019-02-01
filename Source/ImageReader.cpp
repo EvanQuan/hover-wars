@@ -13,6 +13,8 @@
 //          University of Calgary
 // Date:    January-February 2016
 // ==========================================================================
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include "EnvSpec.h"
 #include "ImageReader.h"
@@ -70,35 +72,42 @@ bool InitializeTexture(Texture *texture, const string &imageFileName)
 
 bool InitializeTexture(Texture *mytex, const string &imageFileName)
 {
-	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-	FIBITMAP* dib = nullptr;
-	char* bits = nullptr;
-	GLuint height, width;
+	// Local Variables
+	int iWidth, iHeight, nrComponents;
+	bool bReturnValue = false;
+	unsigned char* data = stbi_load(imageFileName.data(), &iWidth, &iHeight, &nrComponents, 0);
 
-	fif = FreeImage_GetFileType(imageFileName.c_str(), 0);
-	if (fif == FIF_UNKNOWN)
-		fif = FreeImage_GetFIFFromFilename(imageFileName.c_str());
-	if (fif == FIF_UNKNOWN)
-		return false;
+	// Ensure that data was properly loaded.
+	if (nullptr != data)
+	{
+		// Get the format of the Texture
+		GLenum eFormat;
+		switch (nrComponents)
+		{
+		case 1:
+			eFormat = GL_RED;
+			break;
+		case 3:
+			eFormat = GL_RGB;
+			break;
+		case 4:
+			eFormat = GL_RGBA;
+			break;
+		}
 
-	if (FreeImage_FIFSupportsReading(fif))
-		dib = FreeImage_Load(fif, imageFileName.c_str());
-	if (!dib)
-		return false;
+		// Generate Texture in GPU
+		mytex->genTexture(data, iWidth, iHeight, eFormat, GL_UNSIGNED_BYTE);
+		
+		bReturnValue = true;
+	}
+	else
+		cout << "Failed to load Texture at path: " << imageFileName << endl;
+		
 
-	dib = FreeImage_ConvertTo32Bits( dib );
+	// Free the data that was loaded.
+	stbi_image_free(data);
 
-	bits = (char*)FreeImage_GetBits(dib);
-	width = FreeImage_GetWidth(dib);
-	height = FreeImage_GetHeight(dib);
-	if ((bits == 0) || (width == 0) || (height == 0))
-		return false;
-
-	mytex->genTexture( bits, width, height, GL_BGRA, GL_UNSIGNED_BYTE );
-
-	FreeImage_Unload(dib);
-
-	return true;
+	return bReturnValue;
 }
 
 #endif

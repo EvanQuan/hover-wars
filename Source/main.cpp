@@ -1,11 +1,11 @@
 /* INCLUDES */
 #include "stdafx.h"
-#include "GraphicsManager.h"
-#include "ShaderManager.h"
-#include "Mouse_Handler.h"
-#include "Object_Factory.h"
 #include "EntityManager.h"
-#include "CmdHandler.h"
+#include "GameManager.h"
+#include "InputHandler.h"
+#include "CommandHandler.h"
+#include "Scene_Loader.h"
+#include "ShaderManager.h"
 
 #ifdef USING_LINUX
 		#include <Magick++.h>
@@ -13,31 +13,29 @@
 
 // Function Prototypes
 void ErrorCallback(int error, const char* description);
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight);
-void mouseMovecallback(GLFWwindow* window, double x, double y);
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char* cTitle);
 
 // Main entry point for the Graphics System
 int main()
 {
 	int iRunning = glfwInit();
-	char c_Input[INPUT_SIZE] = {};
-	GLFWwindow* m_Window = 0;
-	GraphicsManager* m_GpxMngr = 0;
-	ShaderManager* m_ShdrMngr = 0;
-	Mouse_Handler* m_MseHndlr = 0;
+	GLFWwindow* m_window = 0;
+	GameManager* m_gameManager = 0;
+	ShaderManager* m_shaderManager = 0;
+	InputHandler* m_inputHandler = 0;
+
 
 	// Initialize GL and a window
 	if (!iRunning)
+	{
 		cout << "Error: GLFW failed to intialize, ending program." << endl;
+	}
 	else
 	{
 		// Set Error Callback and init window
 		glfwSetErrorCallback( ErrorCallback );
-		iRunning = initializeWindow( &m_Window, START_HEIGHT, START_WIDTH, "Animation" );
+		iRunning = initializeWindow( &m_window, START_HEIGHT, START_WIDTH, "Animation" );
 
 		#ifdef USING_LINUX
 				Magick::InitializeMagick("");	// Initializing Magick for Linux Only.
@@ -55,40 +53,44 @@ int main()
 				glGetError();
 		#endif
 
-		if ( iRunning )
+		if (iRunning)
 		{
 			
-			// Bind window to graphics Manager
-			if (iRunning )
-				m_GpxMngr = GraphicsManager::getInstance( m_Window );
+			// Bind window to Game Manager
+			m_gameManager = GameManager::getInstance(m_window);
+			m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
 
-			// Initialize the Mouse Handler.
-			m_MseHndlr = Mouse_Handler::getInstance( m_Window );
+			// Initialize the InputHandler for mouse, keyboard, controllers
+			m_inputHandler = InputHandler::getInstance(m_window);
 
 			// Initialize Graphics
-			iRunning = !m_GpxMngr->initializeGraphics( STARTING_ENV );
-			m_ShdrMngr = SHADER_MANAGER;
+			iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
+			m_shaderManager = SHADER_MANAGER;
 
 		#ifdef USING_WINDOWS
-			m_ShdrMngr->setUniformBool( ShaderManager::eShaderType::MESH_SHDR, "bUsingLinux", false );
+			m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
 		#endif
 
 			// Main loop
-			while ( iRunning )
+			while (iRunning)
 			{
 				// do Graphics Loop
-				iRunning = m_GpxMngr->renderGraphics();
+				iRunning = m_gameManager->renderGraphics();
 			}
 		}
 
 		// Clean up!
-		if (m_GpxMngr != nullptr)
-			delete m_GpxMngr;
+		if (nullptr != m_gameManager)
+		{
+			delete m_gameManager;
+		}
 
-		if( m_MseHndlr != nullptr )
-		  delete m_MseHndlr;
+		if (nullptr != m_inputHandler)
+		{
+			delete m_inputHandler;
+		}
 
-		glfwDestroyWindow(m_Window);
+		glfwDestroyWindow(m_window);
 	}
 
 	glfwTerminate();
@@ -109,10 +111,11 @@ void ErrorCallback(int error, const char* description)
 	cout << description << endl;
 }
 
+/*
+ * @return true if window successfully initialized
+ */
 bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char* cTitle)
 {
-	bool bSuccess = true;
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -122,92 +125,18 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 	if (!*rWindow)
 	{
 		cout << "Program failed to create GLFW window" << endl;
-		bSuccess = false;
+		return false;
 	}
-	else
-	{
-		glfwSetKeyCallback(*rWindow, KeyCallback);
-		glfwSetWindowSizeCallback(*rWindow, WindowResizeCallback);
-		glfwSetMouseButtonCallback(*rWindow, mouseButtonCallback);
-		glfwSetCursorPosCallback(*rWindow, mouseMovecallback);
-		glfwSetScrollCallback(*rWindow, mouseScrollCallback);
-		glfwWindowHint(GLFW_SAMPLES, 4);
-		glfwMakeContextCurrent(*rWindow);
-	}
-
-	return bSuccess;
+	glfwSetWindowSizeCallback(*rWindow, WindowResizeCallback);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwMakeContextCurrent(*rWindow);
+	return true;
 }
-
-// handles keyboard input events
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	GraphicsManager* pGPXMngr = GraphicsManager::getInstance(window);
-	ShaderManager* pShdrMngr = SHADER_MANAGER;
-	EntityManager* pEnvMngr = ENTITY_MANAGER;
-	CmdHandler* pCmdHndlr = CmdHandler::getInstance(window);
-
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)											// Exit
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (GLFW_KEY_ENTER == key && GLFW_PRESS == action)
-	{
-		// Hide Window to Prompt User
-		glfwHideWindow(window);
-
-		pCmdHndlr->process_Input();
-
-		// Show Window for results
-		glfwShowWindow(window);
-	}
-	else
-		pCmdHndlr->handleKeyBoardInput(key, action, mods);
-}
-
 // handles Window Resize events
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 {
 	// Update the viewport information
 	glViewport(0, 0, iWidth, iHeight);
 
-	GraphicsManager::getInstance(window)->resizedWindow(iHeight, iWidth);
-}
-
-// Mouse Button Callback
-// Handle mouse movement controls.
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance( window );
-	double fX, fY;
-
-	if (GLFW_MOUSE_BUTTON_1 == button)
-	{
-		glfwGetCursorPos(window, &fX, &fY);
-		if (GLFW_PRESS == action)
-			mMouseHndlr->mouseTStart();
-		else if (GLFW_RELEASE == action)
-			mMouseHndlr->mouseTEnd();
-	}
-	if (GLFW_MOUSE_BUTTON_2 == button)
-	{
-		glfwGetCursorPos(window, &fX, &fY);
-		if (GLFW_PRESS == action)
-			mMouseHndlr->mouseRStart();
-		else if (GLFW_RELEASE == action)
-			mMouseHndlr->mouseREnd();
-	}
-}
-
-// Handles input from Mouse Moves.
-void mouseMovecallback(GLFWwindow* window, double x, double y)
-{
-	Mouse_Handler* mMouseHndlr = Mouse_Handler::getInstance(window);
-
-	mMouseHndlr->updateMouse((float)x, (float)y);
-}
-
-// Handle scroll wheel callbacks
-void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	Mouse_Handler* pMsHndlr = Mouse_Handler::getInstance(window);
-
-	pMsHndlr->mouseZoom((float)yoffset * 0.05f);
+	GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
 }

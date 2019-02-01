@@ -1,7 +1,10 @@
-#version 430 core
 
-uniform mat4 modelview;
-uniform mat4 projection;
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
 
 layout (location = 0) in vec3 vertex;
 

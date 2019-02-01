@@ -1,4 +1,3 @@
-#version 430 core
 
 // Gooch Variables
 uniform float b = 0.0;		// Determine maxmimum "blueness" in temperature shift
@@ -26,7 +25,7 @@ in vec3 N;
 in vec3 L;
 in vec3 V;
 
-uniform sampler2D mySampler;
+uniform sampler2D gSampler;
 
 void main(void)
 {
@@ -57,7 +56,7 @@ void main(void)
 		if( bUsingLinux )
 			UV = -UV;
 
-		vObjColor = texture(mySampler, UV);
+		vObjColor = texture(gSampler, UV);
 	}
 
 	kCool = vec3( 0.0, 0.0, b) + (alpha * vObjColor.rgb);

@@ -1,25 +1,12 @@
 # CPSC 585 - Games Programming - Winter 2019
 
-![](https://raw.githubusercontent.com/wiki/EvanQuan/qvim/title_art.jpg)
-
-## [Documentation](https://drive.google.com/drive/folders/1bLh6WpMEgnnPTKAaAV5UKnIS_vkfy4ZO)
-
-[General Notes](https://docs.google.com/document/d/1ALfsOyqVOHzWtrsITFJuJigNnoELT_yf2ml7x30rzuU/edit?usp=sharing)
-
-[High-Concept Design Document](https://docs.google.com/document/d/1aplep-cNz6xHb8NYZChN0oXfnQwkUXKJKouJS7nf4Pw/edit?usp=sharing)
-
-[Feature List](https://docs.google.com/document/d/1w7jZ_TSR2iCMgQbV4RhlWDOfbr-e_QE9J5EHTGxNIUQ/edit?usp=sharing)
-
-[Schedule](https://docs.google.com/document/d/1QfO-LkLsXTUplEyc8ZsQTktRVn2b2XgmmaUhAyBSjyQ/edit?usp=sharing)
-
 ## Compilation
 
 ### Compiling on Windows:
 
-**Compiled using MSVS 2015.**
+**Compiled using MSVS 2017.**
 
-1. You'll need to set up OpenGL and GLEW in the settings of the solution as
-   required libraries.
+1. The Libraries and Settings should all be set up in the VS project.
 
 ### Compiling on Linux:
 
@@ -27,50 +14,64 @@
    Windows to Defining Linux.
 
 2. The included Makefile should generate a run file that will launch the
-   program.  Ensure that this is executed through the command line in order to
-   provide command input functionality of the program.
+   program.
 
-## Controls:
+## Controls
 
-**P** - Pauses the Animation
+#### Keyboard
 
-**Right-Click** and Move to Rotate
+##### Movement
 
-**Scroll-Wheel** to Zoom
+**W** - Move Forward
+
+**A** - Move Left
+
+**S** - Move Back
+
+**D** - Move Right
+
+**J** - Turn Left
+
+**L** - Turn Right
+
+##### Dash
+
+**I** - Dash Forward
+
+**H** - Dash Left
+
+**K** - Dash Back
+
+**;** - Dash Right
+
+##### Abilities
+
+**Space** - Rocket
+
+**Left Shift** - Trail
+
+**'** - Spikes
+
+#### Other
+
+**P** - Pause the game
 
 **F** - Switch to Wireframe Mode
 
+
+#### XBOX Controller
+
 ## Write-Up:
 
-Basic Boid Implementation with Cohesion, Gather and Avoid logic. There's
-a Spherical Boundary with a defined width that is used to interpolate
-a pushback function that's similar to avoid (the closer to the border, the
-harder it forces the boid back).
+When the program is run, a small test environment is loaded up. There is
+a textured plane with diffuse lighting, a Car with toon shading, a textured
+Sphere with Diffuse lighting and a Cube that's meant to represent the starting
+position of the light along with the color of the light. Although the light
+moves with the above-mentioned controls, the cube does not move.
 
-In the file: "Scene2.txt" there are some settings that can be modified for the
-Boids, particularly:
-
-Indices:
-```
-0 - Num_Boids
-1 - Avoid Radius
-2 - Cohesion Radius
-3 - Gather Radius
-4 - Min Speed (length)
-5 - Max Speed (length)
-6 - Boundary Radius
-7 - Delta T
-8 - Scale
-9 - Texture Location (Optional)
-10 - Mesh Location (Optional)
-```
-
-The update also does a defined loop of update/integration of 16 iterations.
-This smoothes out the animation with a smaller delta_t. I implemented the
-screenspace division algorithm as well. This make it much faster for lots of
-boids before they group up. Once they group up, then they interact with one
-another and it sort of negates the benefit of the structure.
-
+This Scene is loaded with the Scene2.txt file using the entity component
+framework and loaded with the Scene Loader class as per the Framework
+documentation.
 
 ## Team
 

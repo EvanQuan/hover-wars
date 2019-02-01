@@ -2,14 +2,14 @@
 
 /* INCLUDES */
 #include "stdafx.h"
+#include <unordered_map>
 #include "Shader.h"
+#include "EntityComponentHeaders/LightingComponent.h"
 
 // Class: Shader Manager
 // Purpose: Manages all the Shaders used by every Assignment.  Manages Uniform variable
 //			manipulation and properly initializes and destroys created Shaders.
 // Current Issues: Uniform variables hard-coded.
-// TODO: (Low Priority) Scan through all shader code for uniform variables and set up
-//						management of those variables dynamically. 
 // Written by: James Coté
 class ShaderManager
 {
@@ -18,21 +18,15 @@ public:
 	enum eShaderType
 	{
 		LIGHT_SHDR = 0,
-		MESH_SHDR,
+		TOON_SHDR,
+		BLINN_PHONG_SHDR,
 		PLANE_SHDR,
 		WORLD_SHDR,
-		SILH_SHDR,
-		INSIDE_EDGE_SHDR,
-		OUTSIDE_EDGE_SHDR,
-		INSIDE_BOUNDRY_SHDR,
-		OUTSIDE_BOUNDRY_SHDR,
 		RC_TRACK_SHDR,
 		BOID_SHDR,
 		MAX_SHDRS
 	};
-
-	const static eShaderType eDefaultEdgeShader = SILH_SHDR;
-	const static eShaderType eLastEdgeShader = RC_TRACK_SHDR;
+	const static unordered_map<string, eShaderType> pShaderTypeMap;
 
 	// Singleton implementation and Destructor
 	static ShaderManager* getInstance();
@@ -42,9 +36,11 @@ public:
 	bool initializeShaders();
 
 	void setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat );
+	void setLightsInUniformBuffer(const LightingComponent* pDirectionalLight, const vector< LightingComponent* >* pPointLights );
 
 	// Get the specified program for using shaders for rendering
 	GLuint getProgram(eShaderType eType) { return m_pShader[eType].getProgram(); }
+	ShaderManager::eShaderType getShaderType(const string& sKey);
 
 	// Setup Buffers and Arrays in GPU
 	GLuint genVertexBuffer( GLuint iVertArray, const void* pData, GLsizeiptr pSize, GLenum usage );
@@ -66,6 +62,8 @@ private:
 	ShaderManager();
 	ShaderManager( const ShaderManager* pCopy );
 	static ShaderManager* m_pInstance;
+
+	GLuint m_iMatricesBuffer, m_iLightsBuffer;
 
 	// Should only be initialized once.
 	bool m_bInitialized;

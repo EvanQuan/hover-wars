@@ -86,7 +86,7 @@ BoidEngine::BoidEngine(vector< string > &sData)
 
 		// Texture
 		if (iSize > MIN_PARAMS)
-			m_pTexture		= TextureManager::getInstance()->loadTexture(sData[9], ID);
+			m_pTexture		= TEXTURE_MANAGER->loadTexture(sData[9]);
 
 		// Mesh
 		if (iSize > (MIN_PARAMS + 1))
@@ -103,9 +103,6 @@ BoidEngine::~BoidEngine()
 	// Cleanup
 	if (nullptr != m_pMesh)
 		m_pMesh = nullptr;
-
-	if( nullptr != m_pTexture)
-		TextureManager::getInstance()->unloadTexture(m_pTexture->getFileName(), ID);
 
 	// Clear Vectors incase of resizing
 	m_vBoids.clear();
@@ -135,11 +132,9 @@ void BoidEngine::initializeBoids()
 
 	// Load Default Texture or Mesh if it failed to load.
 	if (nullptr == m_pTexture)
-		m_pTexture = TextureManager::getInstance()->loadTexture(sTexFileName, ID);
+		m_pTexture = TEXTURE_MANAGER->loadTexture(sTexFileName);
 	if (nullptr == m_pMesh)
 		m_pMesh = MESH_MANAGER->loadMeshFromFile(sModelFileName);
-
-	m_pMesh->initMesh();
 
 	// Generate List of Boids
 	for (unsigned int i = 0; i < m_iNumBoids; ++i)
@@ -357,13 +352,13 @@ void BoidEngine::draw( bool m_bPause )
 	ShaderManager* pShdrMngr = SHADER_MANAGER;
 
 	if ( nullptr != m_pTexture )
-		m_pTexture->bindTexture( ShaderManager::eShaderType::BOID_SHDR, "mySampler" );
+		m_pTexture->bindTexture( ShaderManager::eShaderType::BOID_SHDR, "gSampler" );
 
 	if( !m_bPause )
 		update();
 
-	m_pMesh->loadInstanceData(&m_vInstanceData);
-	m_pMesh->drawMesh(pShdrMngr->getProgram( ShaderManager::eShaderType::BOID_SHDR ) );
+	m_pMesh->loadInstanceData(m_vInstanceData.data(), m_vInstanceData.size());
+	//TODO: Deal with this: m_pMesh->drawMesh(pShdrMngr->getProgram( ShaderManager::eShaderType::BOID_SHDR ) );
 
 	if ( nullptr != m_pTexture )
 		m_pTexture->unbindTexture();

@@ -29,6 +29,6 @@ private:
 	void updateTime();
 
 	// Only allows Graphics Manager to update the timer.
-	friend class GraphicsManager;
+	friend class GameManager;
 };
 

@@ -1,50 +1,84 @@
 #pragma once
-#include <iostream>
 
-using namespace std;
-
-#define MAX_INPUT_SIZE 256
-
-// Input Handler Class
-// Handles input by storing a line of text and returning a word at a time.
+ #include "GameManager.h"
+// class GameManager;
+/*
+Receives and stores user input (mouse, keyboard and controller).
+*/
 class InputHandler
 {
 public:
+	static InputHandler* getInstance(GLFWwindow *rWindow);
 	~InputHandler();
 
-	// Public Enum for Errors.
-	enum INPUT_ERRORS
-	{
-		INPUT_HEALTHY = 0,
-		INPUT_TRUNCATED,
-		INPUT_EMPTY
-	};
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void joystickCallback(int joystickID, int event);
+	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+	static void mouseMoveCallback(GLFWwindow* window, double x, double y);
+	static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-	// Loads a new input into the Handler
-	void load_Input(const char* c_Input, int iInputSize);
+	void updateMouse(float fX, float fY);
+	void updateJoysticks();
 
-	// Returns the next word up to the next space or new line character.
-	int get_Next_Word(char* c_ReturnWord, int iReturnSize);
+	// Flag the Mouse for Rotations or Translations (Cannot do both at the same time).
+	void mouseTStart() { m_bTranslateFlag = !m_bRotateFlag; }
+	void mouseTEnd() { m_bTranslateFlag = false; }
+	void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
+	void mouseREnd() { m_bRotateFlag = false; }
 
-	// Error checking: Check the current status of the Input Handler.
-	INPUT_ERRORS check_Status();
+	// void mouseZoom(float fZoomVal);
 
-protected:
-	// Singleton, accessable only from child classes.
-	InputHandler();
-	InputHandler(const char* c_Input, int iInputSize);  // Overloaded Constructor for loading input on initialization.
-	InputHandler( const InputHandler* pNewInptHndlr );
+	int m_keyboardPlayer;
 
-	char m_cBuffer[MAX_INPUT_SIZE + 1];
-	int m_iInputSize, m_iCurrIndex;
-	INPUT_ERRORS m_eErrors;	// "Healthy" means that there's input left on the buffer and no errors have occurred.
+	float x;
+	float y;
 
-	bool p_EOB() {	// Check to see if reached End of Buffer (EOB)
-		bool bReturn = !(m_iCurrIndex < m_iInputSize) ||
-				'\0' == m_cBuffer[m_iCurrIndex];
-		if (bReturn)
-			m_eErrors = INPUT_EMPTY;
-		return bReturn;
-	}
+	// Keyboard
+	// Tracks all keys if they are pressed
+	// Allows for multiple key input
+	// https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
+	int pressed[KEYS];
+
+	// Joysticks
+	// List of joysticks that are present (detected) by the game.
+	// Only present controllers are initialized
+	// 1 - present
+	// 0 - not present
+	int m_pJoystickIsPresent[MAX_PLAYER_COUNT];
+	int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
+	const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
+	int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
+	const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
+	const char* m_pJoystickNames[MAX_PLAYER_COUNT];
+
+	// The only reason this needed is for mouse input, which may not actually
+	// be needed for the final product. ie. this may be removed later on.
+	GameManager* m_gameManager;
+private:
+	// Singleton Variables
+	InputHandler(GLFWwindow *rWindow);
+	void checkForPresentJoysticks();
+	void debugKeyCommands(GLFWwindow* window, int key, int action);
+	void debugPrintJoystickAxes(int joystickID);
+	void debugPrintJoystickButtons(int joystickID);
+	void debugPrintJoystickInformation();
+	void debugPrintJoystickInformation(int joystickID);
+	void debugToggleWireframe();
+	void disconnectJoystick(int joystickID);
+	void initializeJoystick(int joystickID);
+	void initializeJoystickVariables();
+	void initializeJoysticksAtStart();
+	void initializeKeysPressed();
+
+	static InputHandler* m_pInstance;
+
+
+	// Mouse
+	bool m_bTranslateFlag;
+	bool m_bRotateFlag;
+	glm::vec2 m_pInitialPos;
+
+	bool bWireFrame;
 };
+
 

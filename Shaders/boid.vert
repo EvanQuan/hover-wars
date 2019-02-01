@@ -1,11 +1,14 @@
-#version 430 core
 
 layout (location = 0) in vec3 vertex;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in mat4 instanceMatrix;
 
-uniform mat4 modelview;
-uniform mat4 projection;
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
 uniform vec3 lightPosition;
 uniform float fScale;
 

@@ -1,30 +1,10 @@
 #include "Texture.h"
 
 // Default Constructor, init everything to 0
-Texture::Texture( const string& sFileName )
+Texture::Texture( const string& sFileName, Texture::manager_cookie )
 {
 	m_uiHeight = m_uiWidth = m_TextureName = 0;
 	m_sManagerKey = sFileName;
-}
-
-// Copy constructor
-Texture::Texture( const Texture& pCopyTexture )
-{
-	m_uiHeight		= pCopyTexture.m_uiHeight;
-	m_uiWidth		= pCopyTexture.m_uiWidth;
-	m_TextureName	= pCopyTexture.m_TextureName;
-	m_sManagerKey		= pCopyTexture.m_sManagerKey;
-}
-
-// Copy constructor
-Texture& Texture::operator=( const Texture& pCopyTexture )
-{
-	this->m_uiHeight = pCopyTexture.m_uiHeight;
-	this->m_uiWidth = pCopyTexture.m_uiWidth;
-	this->m_TextureName = pCopyTexture.m_TextureName;
-	this->m_sManagerKey = pCopyTexture.m_sManagerKey;
-
-	return *this;
 }
 
 // Destructor, delete textures on the GPU
@@ -42,10 +22,12 @@ void Texture::genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GL
 
 	glGenTextures( 1, &m_TextureName );
 	glBindTexture(GL_TEXTURE_2D, m_TextureName );
-	glTexStorage2D( GL_TEXTURE_2D, 1, GL_RGBA8, m_uiWidth, m_uiHeight );
-	glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, m_uiWidth, m_uiHeight, eFormat, eType, pBits );
+	glTexImage2D( GL_TEXTURE_2D, 0, eFormat, m_uiWidth, m_uiHeight, 0, eFormat, eType, pBits );
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Set Texture Parameters
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	glBindTexture( GL_TEXTURE_2D, 0 );

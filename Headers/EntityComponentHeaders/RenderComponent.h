@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "EntityComponent.h"
 #include "ShaderManager.h"
+#include "MeshManager.h"
+#include "TextureManager.h"
 
 /************************************************************
 * Name: RenderComponent
@@ -24,8 +26,11 @@ public:
 	// Inherited update frunction from EntityComponent
 	void update(double dTimeStep);
 
+	void generateDiffuseTexture(const vec4* vColor);
+
 	// Initializes the proper buffers on the GPU for rendering.
-	void initializeComponent(const vector<vec3>& vVertices, const vector<vec3>& vNormals, const vector<vec2>& vUVs);
+	void initializeComponent( Mesh const  * pMesh, 
+							  const Material* pMaterial = nullptr);
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
@@ -38,7 +43,16 @@ private:
 	GLuint m_iNumInstances;
 	GLenum m_eMode;
 	GLsizei m_iCount;
-	bool m_bStaticDraw, m_bUsingIndices, m_bUsingInstanced;
+	Mesh const * m_pMesh;
+	bool m_bUsingIndices, m_bUsingInstanced;
 	ShaderManager* m_pShdrMngr;
 	ShaderManager::eShaderType m_eShaderType;
+
+	// Material Struct for setting uniform in Lighting Shaders
+	struct sRenderMaterial
+	{
+		Texture* m_pDiffuseMap;
+		Texture* m_pSpecularMap;
+		float fShininess;
+	} m_sRenderMaterial;
 };

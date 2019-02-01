@@ -22,71 +22,64 @@
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
     <ClInclude Include="Headers\Camera.h" />
-    <ClInclude Include="Headers\CmdHandler.h" />
-    <ClInclude Include="Headers\EdgeBuffer.h" />
+    <ClInclude Include="Headers\CommandHandler.h" />
+    <ClInclude Include="Headers\DirectionalLight.h" />
     <ClInclude Include="Headers\Entity.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
     <ClInclude Include="Headers\FreeImage.h" />
     <ClInclude Include="Headers\GameTime.h" />
-    <ClInclude Include="Headers\GraphicsManager.h" />
+    <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\ImageBuffer.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
-    <ClInclude Include="Headers\Light.h" />
+    <ClInclude Include="Headers\PointLight.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
-    <ClInclude Include="Headers\MeshObject.h" />
-    <ClInclude Include="Headers\Mouse_Handler.h" />
-    <ClInclude Include="Headers\Object.h" />
-    <ClInclude Include="Headers\Object3D.h" />
-    <ClInclude Include="Headers\Object_Factory.h" />
-    <ClInclude Include="Headers\Plane.h" />
+    <ClInclude Include="Headers\Scene_Loader.h" />
+    <ClInclude Include="Headers\PlayerEntity.h" />
     <ClInclude Include="Headers\Shader.h" />
     <ClInclude Include="Headers\ShaderManager.h" />
-    <ClInclude Include="Headers\Sphere.h" />
+    <ClInclude Include="Headers\SpotLight.h" />
     <ClInclude Include="Headers\StaticEntity.h" />
+    <ClInclude Include="Headers\stb_image.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
-    <ClInclude Include="Headers\Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Anim_Track.cpp" />
     <ClCompile Include="Source\BoidEngine.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
-    <ClCompile Include="Source\CmdHandler.cpp" />
-    <ClCompile Include="Source\EdgeBuffer.cpp" />
+    <ClCompile Include="Source\CommandHandler.cpp" />
+    <ClCompile Include="Source\DirectionalLight.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
-    <ClCompile Include="Source\GraphicsManager.cpp" />
+    <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\ImageBuffer.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
-    <ClCompile Include="Source\Light.cpp" />
+    <ClCompile Include="Source\PointLight.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
-    <ClCompile Include="Source\MeshObject.cpp" />
-    <ClCompile Include="Source\Mouse_Handler.cpp" />
-    <ClCompile Include="Source\Object.cpp" />
-    <ClCompile Include="Source\Object3D.cpp" />
-    <ClCompile Include="Source\Object_Factory.cpp" />
-    <ClCompile Include="Source\Plane.cpp" />
+    <ClCompile Include="Source\Scene_Loader.cpp" />
+    <ClCompile Include="Source\PlayerEntity.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
-    <ClCompile Include="Source\Sphere.cpp" />
+    <ClCompile Include="Source\SpotLight.cpp" />
     <ClCompile Include="Source\StaticEntity.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
-    <ClCompile Include="Source\Triangle.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>
@@ -143,6 +136,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

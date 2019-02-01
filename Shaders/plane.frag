@@ -1,24 +1,34 @@
-#version 430 core
 
-out vec4 color;
+//in vec2 TexCoords;
 
-in vec3 N;
-in vec3 P;
-in vec3 L;
-in vec2 texturePos;
+out vec4 FragColor;
 
-uniform sampler2D gSampler;
-uniform bool bTextureLoaded = false;
+in vec3 NormalVector;
+in vec3 vFragPosition;
+in vec3 ToCamera;
+//in vec2 TexCoords;
+
+uniform bool bTextureLoaded = true;
+uniform vec3 vLightColor = vec3( 1.0 );
 
 void main (void)
 {
-	vec4 plane_color;
-	if( !bTextureLoaded )
-		plane_color = vec4( 0.133, 0.545, 0.133, 1.0 );
-	else
-		plane_color = texture(gSampler,texturePos);
+	if( texture(sMaterial.vDiffuse, TexCoords).a < 0.1 )
+		discard;
 
-    float kd = 0.8;
-    vec3 diffuse = kd*plane_color.rgb*max( 0.0, dot( N, normalize(L - P)));
-    color = vec4( diffuse, 1.0 );
+	vec4 vColorLinear = vec4(0.0);
+	
+	// add directional light's contribution
+	if( usingDirectionalLight )
+		vColorLinear += CalcDirLight( pDirectionalLight, NormalVector, ToCamera );
+		
+	// add Point Light contributions
+	for( int i = 0; i < numPointLights; i++ )
+		vColorLinear += CalcPointLight( pPointLights[i], NormalVector, vFragPosition, ToCamera );
+	
+	// add Spot Light contributions
+	for( int i = 0; i < numSpotLights; i++ )
+		vColorLinear += CalcSpotLight( pSpotLights[i], NormalVector, vFragPosition, ToCamera );
+		
+    FragColor = vColorLinear;
 }
