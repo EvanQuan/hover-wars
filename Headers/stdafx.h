@@ -105,6 +105,7 @@ struct Material
 #define SCENE_LOADER	Scene_Loader::getInstance()
 #define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
+#define USER_INTERFACE	UserInterface::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

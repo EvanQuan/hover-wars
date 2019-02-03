@@ -3,6 +3,7 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
+#include "UserInterface.h"
 
 ///////////////
 // CONSTANTS //
@@ -20,8 +21,9 @@ GameManager* GameManager::m_pInstance = nullptr;
 GameManager::GameManager(GLFWwindow* rWindow)
 {
 	// Initialize and Get Shader and Environment Managers
-	m_pShaderMngr	= SHADER_MANAGER;
-	m_pEntMngr		= ENTITY_MANAGER;
+	m_pShaderMngr    = SHADER_MANAGER;
+	m_pEntMngr       = ENTITY_MANAGER;
+	m_pUserInterface = USER_INTERFACE;
 
 	// NOTE: Do not get an instance of InputHandler here or there will be
 	// infinite mutual recursion and a call stack overflow
@@ -72,6 +74,11 @@ GameManager::~GameManager()
 	if (nullptr != m_pShaderMngr)
 	{
 		delete m_pShaderMngr;
+	}
+
+	if (nullptr != m_pUserInterface)
+	{
+		delete m_pUserInterface;
 	}
 
 	glDeleteBuffers(1, &m_pVertexBuffer);

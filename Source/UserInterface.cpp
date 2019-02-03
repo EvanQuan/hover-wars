@@ -8,7 +8,7 @@ UserInterface::UserInterface()
 {
 }
 
-UserInterface* UserInterface::getInstance(GLFWwindow* window)
+UserInterface* UserInterface::getInstance()
 {
 	if (nullptr == m_pInstance)
 	{

@@ -8,7 +8,7 @@ An interface to all user interface features.
 class UserInterface
 {
 public:
-	static UserInterface* getInstance(GLFWwindow* window);
+	static UserInterface* getInstance();
 	~UserInterface();
 
 	void setPlayerCount(int count);
