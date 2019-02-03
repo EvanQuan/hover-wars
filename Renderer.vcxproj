@@ -137,12 +137,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\ftgl-2.1.3~rc5\src\FTGL;Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeImage</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\ftgl-2.1.3~rc5\src\FTGL;Dependencies\FreeImage</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
