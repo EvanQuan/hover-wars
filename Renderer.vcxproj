@@ -50,6 +50,7 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
+    <ClInclude Include="UserInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Anim_Track.cpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="Source\StaticEntity.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
+    <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>
