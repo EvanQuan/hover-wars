@@ -22,6 +22,9 @@
 #include "EnvSpec.h"
 #include "GameTime.h"
 
+// FreeType
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #ifdef USING_LINUX
 #include <string.h>
