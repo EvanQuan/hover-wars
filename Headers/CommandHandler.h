@@ -1,7 +1,6 @@
 #pragma once
 
 /* INCLUDES */
-#include <map>
 #include "stdafx.h"
 #include "EntityManager.h"
 #include "GameManager.h"

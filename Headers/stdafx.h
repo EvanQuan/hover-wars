@@ -7,11 +7,12 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include <iostream>
-#include <fstream>
-#include <iterator>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

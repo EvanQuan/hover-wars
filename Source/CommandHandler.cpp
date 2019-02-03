@@ -1,4 +1,3 @@
-#include <iostream>
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
 
