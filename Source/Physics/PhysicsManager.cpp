@@ -1,6 +1,7 @@
 #include "characterkinematic/PxControllerManager.h"
 #include "PxPhysicsAPI.h"
 #include "PxFoundation.h"
+#include "Physics/PhysicsManager.h"
 #include <iostream>
 #include <vector>
 
@@ -11,7 +12,6 @@ using namespace physx;
 
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
-
 PxFoundation*			gFoundation = NULL;
 PxPhysics*				gPhysics = NULL;
 
@@ -24,9 +24,27 @@ PxMaterial*				gMaterial = NULL;
 PxPvd*                  gPvd = NULL;
 PxCooking *				gCook;
 PxReal stackZ = -3.0f;
+physicsDynamicObject::physicsDynamicObject(float x, float y, float z, float cubeSize) {
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(cubeSize, cubeSize, cubeSize), *gMaterial);
+	PxTransform localTm(PxVec3(x, y, z));
+	body = gPhysics->createRigidDynamic(localTm);
+	body->attachShape(*shape);
+	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+	gScene->addActor(*body);
+}
+void physicsDynamicObject::addForce(float x, float y, float z) {
+	body->addForce(PxVec3(x, y, z));
+}
+physicsStaticObject::physicsStaticObject(float x, float y, float z, float cubeSize) {
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(cubeSize, cubeSize, cubeSize), *gMaterial);
+	PxTransform localTm(PxVec3(x, y, z));
+	body = gPhysics->createRigidStatic(localTm);
+	body->attachShape(*shape);
+	gScene->addActor(*body);
+}
 void initPhysics(bool interactive)
 {
-	gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gErrorCallback);
+	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
 	gPvd = PxCreatePvd(*gFoundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
@@ -38,7 +56,7 @@ void initPhysics(bool interactive)
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
-	//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	gScene = gPhysics->createScene(sceneDesc);
 
 	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
@@ -96,7 +114,6 @@ void stepPhysics(bool interactive)
 	PX_UNUSED(interactive);
 	gScene->simulate(1.0f / 60.0f);
 	gScene->fetchResults(true);
-	//processWallBonds();
 }
 
 void cleanupPhysics(bool interactive)
@@ -108,7 +125,7 @@ void cleanupPhysics(bool interactive)
 	PxPvdTransport* transport = gPvd->getTransport();
 	gPvd->release();
 	transport->release();
-	manager->release();
+	//manager->release();
 	gFoundation->release();
 
 }

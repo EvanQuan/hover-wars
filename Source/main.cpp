@@ -6,6 +6,7 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
+#include "Physics/PhysicsManager.h"
 
 #ifdef USING_LINUX
 		#include <Magick++.h>
@@ -24,7 +25,6 @@ int main()
 	GameManager* m_gameManager = 0;
 	ShaderManager* m_shaderManager = 0;
 	InputHandler* m_inputHandler = 0;
-
 
 	// Initialize GL and a window
 	if (!iRunning)
@@ -67,6 +67,8 @@ int main()
 			iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
 			m_shaderManager = SHADER_MANAGER;
 
+			initPhysics(true);
+
 		#ifdef USING_WINDOWS
 			m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
 		#endif
@@ -94,7 +96,7 @@ int main()
 	}
 
 	glfwTerminate();
-
+	cleanupPhysics(true);
 	cout << "Finished Program, au revoir!" << endl;
 
 #ifdef DEBUG // To Read any debug info output in console before ending.
