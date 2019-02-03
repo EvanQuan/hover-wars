@@ -23,7 +23,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 	// Initialize and Get Shader and Environment Managers
 	m_pShaderMngr    = SHADER_MANAGER;
 	m_pEntMngr       = ENTITY_MANAGER;
-	m_pUserInterface = USER_INTERFACE;
+	m_pUserInterface = UserInterface::getInstance(rWindow);
 
 	// NOTE: Do not get an instance of InputHandler here or there will be
 	// infinite mutual recursion and a call stack overflow
