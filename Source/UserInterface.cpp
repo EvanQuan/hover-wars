@@ -82,7 +82,7 @@ void UserInterface::setScore(int joystickID, int score)
 
 
 // https://learnopengl.com/code_viewer.php?code=in-practice/text_rendering
-// void UserInterface::renderText(Shader &shader, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
+// void UserInterface::renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
 // {
 	// Activate corresponding render state	
 	// TODO shader stuff  here
@@ -97,11 +97,11 @@ void UserInterface::setScore(int joystickID, int score)
 //	{
 //		Character ch = characters[*c];
 //		
-//		GLfloat xpos = x + ch.Bearing.x * scale;
-//		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+//		GLfloat xpos = x + ch.bearing.x * scale;
+//		GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
 //		
-//		GLfloat w = ch.Size.x * scale;
-//		GLfloat h = ch.Size.y * scale;
+//		GLfloat w = ch.size.x * scale;
+//		GLfloat h = ch.size.y * scale;
 //		// Update VBO for each character
 //		GLfloat vertices[6][4] = {
 //			{ xpos,     ypos + h,   0.0, 0.0 },            
@@ -122,7 +122,7 @@ void UserInterface::setScore(int joystickID, int score)
 //		// Render quad
 //		glDrawArrays(GL_TRIANGLES, 0, 6);
 //		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-//		x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+//		x += (ch.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 //	}
 //	glBindVertexArray(0);
 //	glBindTexture(GL_TEXTURE_2D, 0);

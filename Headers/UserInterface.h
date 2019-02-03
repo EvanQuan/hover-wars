@@ -34,15 +34,15 @@ private:
 
 	/// Holds all state information relevant to a character as loaded using FreeType
 	struct Character {
-		GLuint TextureID;   // ID handle of the glyph texture
-		glm::ivec2 Size;    // Size of glyph
-		glm::ivec2 Bearing; // Offset from baseline to left/top of glyph
-		GLuint Advance;     // Horizontal offset to advance to next glyph
+		GLuint textureID;  // ID handle of the glyph texture
+		ivec2 size;        // Size of glyph
+		ivec2 bearing;     // Offset from baseline to left/top of glyph
+		GLuint advance;    // Horizontal offset to advance to next glyph
 	};
 
-	std::map<GLchar, Character> characters;
+	map<GLchar, Character> characters;
 
-	std::map<int, int> scores;
+	map<int, int> scores;
 
 	int displayCount;
 

@@ -26,6 +26,9 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+// FTGL
+// #include <FTGL/ftgl.h>
+
 #ifdef USING_LINUX
 #include <string.h>
 #include <memory>
