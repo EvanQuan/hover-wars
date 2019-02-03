@@ -96,10 +96,11 @@ struct Material
 
 /* Manager Defines */
 #define ENTITY_MANAGER	EntityManager::getInstance()
-#define SHADER_MANAGER	ShaderManager::getInstance()
+#define GAME_MANAGER	GameManager::getInstance()
 #define MESH_MANAGER	MeshManager::getInstance()
-#define TEXTURE_MANAGER TextureManager::getInstance()
 #define SCENE_LOADER	Scene_Loader::getInstance()
+#define SHADER_MANAGER	ShaderManager::getInstance()
+#define TEXTURE_MANAGER TextureManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
