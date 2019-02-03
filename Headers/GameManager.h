@@ -79,8 +79,8 @@ private:
 	void renderAxis();
 
 	// Manages Shaders for all assignments
-	EntityManager* m_pEntMngr;
-	ShaderManager* m_pShaderMngr;
+	EntityManager* m_pEntityManager;
+	ShaderManager* m_pShaderManager;
 	UserInterface* m_pUserInterface;
 
 };
