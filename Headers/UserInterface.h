@@ -29,7 +29,6 @@ private:
 	void renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
 	void initializeScores();
 	void initializeUserInterface();
-	void initializeDisplayCount();
 	void initializeCooldowns();
 
 	/// Holds all state information relevant to a character as loaded using FreeType
@@ -44,7 +43,7 @@ private:
 
 	map<int, int> scores;
 
-	int displayCount;
+	int m_pDisplayCount;
 
 	// Window reference
 	GLFWwindow* m_pWindow;

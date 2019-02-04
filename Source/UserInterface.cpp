@@ -7,7 +7,7 @@ UserInterface* UserInterface::m_pInstance = nullptr;
 UserInterface::UserInterface(GLFWwindow* window)
 {
 	m_pWindow = window;
-	displayCount = 0;
+	m_pDisplayCount = 0;
 	initializeUserInterface();
 
 }
@@ -28,7 +28,13 @@ UserInterface::~UserInterface()
 }
 
 /*
-Set the number of UIs to display
+Set the number of UIs to display.
+Values:
+	0 - No UIs aree displayed. This should be done in the main menu (not in game).
+	1 - 1 player. This will display across the whole window.
+	2 - 2 player. Each UI will display across 1/4 of the window.
+	3 - 3 player. Each UI will display across 1/4 of the window.
+	4 - 4 player. Each UI will display across 1/4 of the window.
 */
 void UserInterface::setDisplayCount(int count)
 {
@@ -40,10 +46,14 @@ void UserInterface::setDisplayCount(int count)
 	{
 		count = DISPLAY_COUNT_MAX;
 	}
+	m_pDisplayCount = count;
+
+	initializeUserInterface();
 }
 
 /*
-Initialize all aspects of the UI. This should be done at the start of every game.
+Initialize all aspects of the UI according to the current display count. This
+should be done at the start of every game, or if the game resets.
 */
 void UserInterface::initializeUserInterface()
 {
@@ -73,11 +83,22 @@ void UserInterface::initializeCooldowns()
 	}
 }
 
+/*
+Set a specified player's score to the specified value.
+*/
 void UserInterface::setScore(int joystickID, int score)
 {
 	scores.insert(pair<int, int>(joystickID, score));
 	// TODO
 	// make this render
+}
+
+/*
+Initialize all UI components according to the current value of m_pDisplayCount
+*/
+void initializeDisplayCount()
+{
+	// TODO
 }
 
 
