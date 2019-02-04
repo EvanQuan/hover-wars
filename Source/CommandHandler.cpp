@@ -230,11 +230,11 @@ void CommandHandler::executeJoystickCommands()
 
 	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
 	{
-		const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-		const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
 		int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
 		if (joystickIsPresent)
 		{
+			const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
+			const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
 
 			// Check buttons
 			for (int button = BUTTON_A; button < BUTTON_LEFT; button++)
