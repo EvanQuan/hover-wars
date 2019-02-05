@@ -117,18 +117,18 @@ public:
 
 	std::map<int, FixedCommand> m_keyToFixedCommand =
 	{
-		{GLFW_KEY_SPACE, ABILITY_ROCKET},
-		{GLFW_KEY_APOSTROPHE, ABILITY_SPIKES},
-		{GLFW_KEY_LEFT_SHIFT, ABILITY_TRAIL},
+		{GLFW_KEY_SPACE,       ABILITY_ROCKET},
+		{GLFW_KEY_APOSTROPHE,  ABILITY_SPIKES},
+		{GLFW_KEY_LEFT_SHIFT,  ABILITY_TRAIL},
 		{GLFW_KEY_RIGHT_SHIFT, CAMERA_CHANGE},
-		{GLFW_KEY_K, DASH_BACK},
-		{GLFW_KEY_I, DASH_FORWARD},
-		{GLFW_KEY_H, DASH_LEFT},
-		{GLFW_KEY_SEMICOLON, DASH_RIGHT},
-		{GLFW_KEY_F, DEBUG_TOGGLE_WIREFRAME},
-		{GLFW_KEY_TAB, MENU_BACK},
-		{GLFW_KEY_P, MENU_PAUSE},
-		{GLFW_KEY_ENTER, MENU_START},
+		{GLFW_KEY_K,           DASH_BACK},
+		{GLFW_KEY_I,           DASH_FORWARD},
+		{GLFW_KEY_H,           DASH_LEFT},
+		{GLFW_KEY_SEMICOLON,   DASH_RIGHT},
+		{GLFW_KEY_F,           DEBUG_TOGGLE_WIREFRAME},
+		{GLFW_KEY_TAB,         MENU_BACK},
+		{GLFW_KEY_P,           MENU_PAUSE},
+		{GLFW_KEY_ENTER,       MENU_START},
 	};
 
 	std::map<int, VariableCommand> m_keyToVariableCommand =
@@ -143,29 +143,29 @@ public:
 
 	std::map<int, FixedCommand> m_buttonToFixedCommand =
 	{
-		{BUTTON_LEFT_BUMPER, ABILITY_SPIKES},
+		{BUTTON_LEFT_BUMPER,  ABILITY_SPIKES},
 		{BUTTON_RIGHT_BUMPER, CAMERA_CHANGE},
-		{BUTTON_A, DASH_BACK},
-		{BUTTON_Y, DASH_FORWARD},
-		{BUTTON_X, DASH_LEFT},
-		{BUTTON_B, DASH_RIGHT},
-		{BUTTON_START, DEBUG_TOGGLE_WIREFRAME},
-		{BUTTON_BACK, MENU_BACK},
-		{BUTTON_BACK, MENU_PAUSE},
-		{BUTTON_START, MENU_START},
-		{BUTTON_LEFT_STICK, INVALID_FIXED},
-		{BUTTON_RIGHT_STICK, INVALID_FIXED},
-		{BUTTON_UP, INVALID_FIXED},
-		{BUTTON_RIGHT, INVALID_FIXED},
-		{BUTTON_DOWN, INVALID_FIXED},
-		{BUTTON_LEFT, INVALID_FIXED},
-		{BUTTON_UNKNOWN1, INVALID_FIXED},
-		{BUTTON_UNKNOWN2, INVALID_FIXED},
+		{BUTTON_A,            DASH_BACK},
+		{BUTTON_Y,            DASH_FORWARD},
+		{BUTTON_X,            DASH_LEFT},
+		{BUTTON_B,            DASH_RIGHT},
+		{BUTTON_START,        DEBUG_TOGGLE_WIREFRAME},
+		{BUTTON_BACK,         MENU_BACK},
+		{BUTTON_BACK,         MENU_PAUSE},
+		{BUTTON_START,        MENU_START},
+		{BUTTON_LEFT_STICK,   INVALID_FIXED},
+		{BUTTON_RIGHT_STICK,  INVALID_FIXED},
+		{BUTTON_UP,           INVALID_FIXED},
+		{BUTTON_RIGHT,        INVALID_FIXED},
+		{BUTTON_DOWN,         INVALID_FIXED},
+		{BUTTON_LEFT,         INVALID_FIXED},
+		{BUTTON_UNKNOWN1,     INVALID_FIXED},
+		{BUTTON_UNKNOWN2,     INVALID_FIXED},
 	};
 
 	std::map<int, FixedCommand> m_axisToFixedCommand =
 	{
-		{AXIS_LEFT_TRIGGER, ABILITY_TRAIL},
+		{AXIS_LEFT_TRIGGER,  ABILITY_TRAIL},
 		{AXIS_RIGHT_TRIGGER, ABILITY_ROCKET},
 	};
 
@@ -189,25 +189,25 @@ private:
 	// For input debugging
 	std::map<FixedCommand, const char*> m_pFixedCommandToString =
 	{
-		{ABILITY_ROCKET, "Rocket"},
-		{ABILITY_SPIKES, "Spikes"},
-		{ABILITY_TRAIL, "Trail"},
-		{CAMERA_CHANGE, "Change Camera"},
-		{DASH_BACK, "Dash back"},
-		{DASH_FORWARD, "Dash Forward"},
-		{DASH_LEFT, "Dash Left"},
-		{DASH_RIGHT, "Dash Right"},
+		{ABILITY_ROCKET,         "Rocket"},
+		{ABILITY_SPIKES,         "Spikes"},
+		{ABILITY_TRAIL,          "Trail"},
+		{CAMERA_CHANGE,          "Change Camera"},
+		{DASH_BACK,              "Dash back"},
+		{DASH_FORWARD,           "Dash Forward"},
+		{DASH_LEFT,              "Dash Left"},
+		{DASH_RIGHT,             "Dash Right"},
 		{DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
-		{MENU_BACK, "Menu Back"},
-		{MENU_PAUSE, "Menu Pause"},
-		{MENU_START, "Menu Start"},
-		{INVALID_FIXED, "Invalid"},
+		{MENU_BACK,              "Menu Back"},
+		{MENU_PAUSE,             "Menu Pause"},
+		{MENU_START,             "Menu Start"},
+		{INVALID_FIXED,          "Invalid"},
 	};
 
 	std::map<VariableCommand, const char*> m_pVariableCommandToString =
 	{
-		{MOVE, "Move"},
-		{TURN, "Turn"},
+		{MOVE,             "Move"},
+		{TURN,             "Turn"},
 		{INVALID_VARIABLE, "Invalid"},
 	};
 

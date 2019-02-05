@@ -237,7 +237,7 @@ void CommandHandler::executeJoystickCommands()
 			const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
 
 			// Check buttons
-			for (int button = BUTTON_A; button < BUTTON_LEFT; button++)
+			for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
 			{
 				if (buttonsPressed[button])
 				{
