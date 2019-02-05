@@ -20,15 +20,6 @@ bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char*
 // Main entry point for the Graphics System
 int main()
 {
-	::TestClass t;
-	int x = t.add(1, 1);
-	cout << x << endl;
-	cout << t.getValue() << endl;
-	t.setValue(3);
-	cout << t.getValue() << endl;
-	
-	return 0;
-	
 	int iRunning = glfwInit();
 	GLFWwindow* m_window = 0;
 	GameManager* m_gameManager = 0;
