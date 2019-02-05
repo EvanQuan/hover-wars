@@ -34,6 +34,7 @@ public:
 	void rotateCamera(vec2 pDelta);
 	void zoomCamera(float fDelta);
 	void moveCamera( vec3 pDirection );
+	void intersectPlane(float fX, float fY);
 	void switchView();
 
 	// Helper Enum for RGB Values

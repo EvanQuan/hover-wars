@@ -14,17 +14,14 @@ EntityManager::EntityManager()
 	// Initialize ID Pools
 	m_iComponentIDPool = m_iEntityIDPool = 0;
 
-	// Initialize the Edge Threshold to 0 and 360 degrees.
-	m_fMinEdgeThreshold = 0.0f;
-	m_fMaxEdgeThreshold = 360.0f;
+	// Initialize Local Variables
 	m_iHeight = START_HEIGHT;
 	m_iWidth = START_WIDTH;
 	m_bPause = false;
 	m_pMshMngr = MESH_MANAGER;
 	m_pTxtMngr = TEXTURE_MANAGER;
 	m_pScnLdr = SCENE_LOADER;
-
-	//TODO: redesign Boid Engine: m_pBoidEngine = new BoidEngine();
+	m_pEmtrEngn = EMITTER_ENGINE;
 }
 
 // Gets the instance of the environment manager.
@@ -54,6 +51,9 @@ EntityManager::~EntityManager()
 
 	if (nullptr != m_pScnLdr)
 		delete m_pScnLdr;
+
+	if (nullptr != m_pEmtrEngn)
+		delete m_pEmtrEngn;
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -106,6 +106,7 @@ void EntityManager::purgeEnvironment()
 	// Clear unique_ptrs of Components and Entities
 	m_pMasterComponentList.clear();
 	m_pMasterEntityList.clear();
+	m_pEmtrEngn->clearAllEmitters();
 
 	m_pMshMngr->unloadAllMeshes();
 	m_pTxtMngr->unloadAllTextures();
@@ -150,6 +151,9 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 		pIter != m_pRenderingComponents.end();
 		++pIter)
 		(*pIter)->render();
+
+	if (nullptr != m_pEmtrEngn)
+		m_pEmtrEngn->renderEmitters();
 
 	// Draw Boid Engine
 	if( nullptr != m_pBoidEngine )
@@ -291,7 +295,7 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
 	// Get Total Frame Time and Benchmark for 60 fps
-	duration<double> pFrameTime = pTimer.getFrameTime();
+	duration<float> pFrameTime = pTimer.getFrameTime();
 	constexpr auto pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
 	// Loop updates to maintain 60 fps
@@ -305,6 +309,7 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 		pFrameTime -= pDeltaTime;
 		
 		// UPDATES GO HERE
+		m_pEmtrEngn->update(pDeltaTime);
 	}
 }
 

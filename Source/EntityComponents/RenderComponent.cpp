@@ -31,9 +31,11 @@ RenderComponent::~RenderComponent()
 void RenderComponent::render()
 {
 	// Set up OpenGL state
-	glBindVertexArray(m_pMesh->getVertexArray());
+	glBindVertexArray(m_iVertexArray);
 	glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
-	m_pShdrMngr->setUniformFloat(m_eShaderType, "fScale", m_pMesh->getScale());
+
+	if( nullptr != m_pMesh )
+		m_pShdrMngr->setUniformFloat(m_eShaderType, "fScale", m_pMesh->getScale());
 
 	// Bind Texture(s) HERE
  	m_sRenderMaterial.m_pDiffuseMap->bindTexture(m_eShaderType, "sMaterial.vDiffuse");
@@ -93,6 +95,7 @@ void RenderComponent::initializeComponent(const Mesh* pMesh,
 
 	// Store Mesh for Reference.
 	m_pMesh = pMesh;
+	m_iVertexArray = pMesh->getVertexArray();	// Store Vertex Array Locally.
 }
 
 // Generates a simple 1x1 diffuse texture based on the given color.

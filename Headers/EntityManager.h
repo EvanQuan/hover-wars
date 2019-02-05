@@ -5,6 +5,7 @@
 #include "SpotLight.h"
 #include "Scene_Loader.h"
 #include "BoidEngine.h"
+#include "EmitterEngine.h"
 #include "Entity.h"
 #include "Camera.h"
 #include "EntityComponentHeaders/EntityComponent.h"
@@ -92,6 +93,7 @@ private:
 	MeshManager*				m_pMshMngr;
 	TextureManager*				m_pTxtMngr;
 	Scene_Loader*				m_pScnLdr;
+	EmitterEngine*				m_pEmtrEngn;
 
 	// Edge Threshold Implementation
 	float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;
