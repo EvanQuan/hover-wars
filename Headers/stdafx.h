@@ -81,6 +81,8 @@ using namespace glm;
 #define BUTTON_RIGHT        11
 #define BUTTON_DOWN         12
 #define BUTTON_LEFT         13
+#define BUTTON_UNKNOWN1     14
+#define BUTTON_UNKNOWN2     15
 // TODO What are buttons 14, 15?
 // Is it the centre xbox button (home)?
 // Joystick/trigger values
