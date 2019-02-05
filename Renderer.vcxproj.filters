@@ -120,6 +120,9 @@
     <ClInclude Include="Headers\FuncUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TestClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Camera.cpp">
@@ -210,6 +213,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\FuncUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

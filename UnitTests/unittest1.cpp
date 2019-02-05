@@ -1,23 +1,39 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include "..\TestClass.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace UnitTests
+namespace Test
 {		
-	TEST_CLASS(UnitTestTest)
+	TEST_CLASS(TestClassTest)
 	{
+
 	public:
 		
-		TEST_METHOD(TestMethodTrue)
+		::TestClass t;
+		int x;
+		TEST_METHOD_INITIALIZE(InitWithDefaultConstructor)
 		{
-			// TODO: Your test code here
-			Assert::IsTrue(true);
+			t = ::TestClass();
+			x = 0;
+		}
+
+
+		TEST_METHOD(Add1Plus1Equals2_AreEqual)
+		{
+			x = t.add(1, 1);
+			Assert::AreEqual(2, x);
+		}
+
+		TEST_METHOD(Add1Plus3Equals3_NotEquals)
+		{
+			x = t.add(1, 1);
+			Assert::AreNotEqual(3, t.add(1, 1));
 		}
 
 		TEST_METHOD(TestMethodAreEqual)
 		{
-			// TODO: Your test code here
 			Assert::AreEqual(1, 1);
 		}
 
