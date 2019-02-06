@@ -110,7 +110,7 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
 		if (GLFW_PRESS == action)
 		{
 			m_pInstance->mouseTStart();
-			m_pInstance->m_gameManager->intersectPlane(fX, fY); // TESTING
+			m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
 		}
 		else if (GLFW_RELEASE == action)
 		{
