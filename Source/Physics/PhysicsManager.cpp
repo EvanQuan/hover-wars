@@ -32,6 +32,23 @@ physicsDynamicObject::physicsDynamicObject(float x, float y, float z, float cube
 	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
 	gScene->addActor(*body);
 }
+glm::mat4 getMat4(PxTransform transform) {
+	float matrixArray[4][4];
+	PxMat44 mat44 = PxMat44(transform);
+	for (int i = 0; i < 4; i++) {
+		matrixArray[0][i] = mat44.column0.x;
+		matrixArray[1][i] = mat44.column0.y;
+		matrixArray[2][i] = mat44.column0.z;
+		matrixArray[3][i] = mat44.column0.w;
+	}
+	return glm::make_mat4x4(&matrixArray);
+}
+glm::mat4 physicsStaticObject::getTransformMatrix() {
+	return getMat4(body->getGlobalPose());
+}
+glm::mat4 physicsDynamicObject::getTransformMatrix() {
+	return getMat4(body->getGlobalPose());
+}
 void physicsDynamicObject::addForce(float x, float y, float z) {
 	body->addForce(PxVec3(x, y, z));
 }
@@ -42,7 +59,9 @@ physicsStaticObject::physicsStaticObject(float x, float y, float z, float cubeSi
 	body->attachShape(*shape);
 	gScene->addActor(*body);
 }
-void initPhysics(bool interactive)
+PhysicsManager * PhysicsManager::instance = nullptr;
+
+void PhysicsManager::initPhysics(bool interactive)
 {
 	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
@@ -68,7 +87,7 @@ void initPhysics(bool interactive)
 	}
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
-	PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial);
+	PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial); //TODO add this to the create plane function in static entity
 	gScene->addActor(*groundPlane);
 	gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 	if (!gCook)
@@ -93,7 +112,7 @@ void initPhysics(bool interactive)
 		//createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
 	//createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
 }
-void createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
+void PhysicsManager::createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 {
 	PxShape* shape = gPhysics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
 	for (PxU32 i = 0; i < size; i++)
@@ -109,14 +128,14 @@ void createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
 	}
 	shape->release();
 }
-void stepPhysics(bool interactive)
+void PhysicsManager::stepPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 	gScene->simulate(1.0f / 60.0f);
 	gScene->fetchResults(true);
 }
 
-void cleanupPhysics(bool interactive)
+void PhysicsManager::cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 	gScene->release();
@@ -129,3 +148,14 @@ void cleanupPhysics(bool interactive)
 	gFoundation->release();
 
 }
+PhysicsManager *PhysicsManager::getInstance() {
+	if (instance == nullptr) {
+		instance = new PhysicsManager();
+	}
+	return instance;
+}
+void PhysicsManager::createSphereObject() {
+	physicsDynamicObject *sphere = new physicsDynamicObject();
+	dynamicObjects.push_back(sphere);
+}
+

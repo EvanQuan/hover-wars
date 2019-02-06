@@ -154,7 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glew;Dependencies\glfw;glm;Headers;Dependencies\PhysX3\PhysX-3.4\PhysX_3.4\Include;Dependencies\PhysX3\PhysX-3.4\PxShared\include;Dependencies\PhysX3\PhysX-3.4\PxShared\include\foundation</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glew;Dependencies\glfw;glm;Headers;Dependencies\PhysX4\PhysX_32\include;Dependencies\PhysX4\pxShared\include;Dependencies\PhysX4\pxShared\include\foundation</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

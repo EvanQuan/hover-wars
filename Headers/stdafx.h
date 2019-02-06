@@ -20,6 +20,7 @@
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
 #include "GameTime.h"
+#include "Physics/PhysicsManager.h"
 
 
 #ifdef USING_LINUX
@@ -100,6 +101,7 @@ struct Material
 #define MESH_MANAGER	MeshManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
 #define SCENE_LOADER	Scene_Loader::getInstance()
+#define PHYSICS_MANAGER PhysicsManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
