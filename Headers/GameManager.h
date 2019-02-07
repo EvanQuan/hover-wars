@@ -79,7 +79,7 @@ private:
 	void RenderScene();
 	void renderAxis();
 
-	// Manages Shaders for all assignments
+	// Manager Pointers
 	EntityManager* m_pEntityManager;
 	ShaderManager* m_pShaderManager;
 	UserInterface* m_pUserInterface;

@@ -188,20 +188,20 @@ plane {
 #}
 
 # Mesh
-#player {
-#	0 0 0
-#	+mesh {
-#		models/big_dodge.obj
-#	}
-#	+material {
-#		textures/tronBase.png
-#		0.1 0.1 0.1
-#		20.0
-#	}	
-#	+shader {
-#		blinn_phong_shdr
-#	}
-#}
+player {
+	0 0 0
+	+mesh {
+		models/big_dodge.obj
+	}
+	+material {
+		textures/tronBase.png
+		0.1 0.1 0.1
+		20.0
+	}	
+	+shader {
+		blinn_phong_shdr
+	}
+}
 
 static_mesh {
 	0 0 10
