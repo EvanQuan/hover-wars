@@ -9,6 +9,7 @@
 class EntityManager;
 class CommandHandler;
 class ShaderManager;
+class UserInterface;
 
 // Class: Graphics Manager
 // Purpose: Acts as the Sinew between all moving parts that are required for drawing
@@ -78,8 +79,9 @@ private:
 	void renderAxis();
 
 	// Manages Shaders for all assignments
-	EntityManager* m_pEntMngr;
-	ShaderManager* m_pShaderMngr;
+	EntityManager* m_pEntityManager;
+	ShaderManager* m_pShaderManager;
+	UserInterface* m_pUserInterface;
 
 };
 

@@ -51,6 +51,8 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
+    <ClInclude Include="Headers\UserInterface.h" />
+    <ClInclude Include="TestClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Anim_Track.cpp" />
@@ -82,6 +84,8 @@
     <ClCompile Include="Source\StaticEntity.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
+    <ClCompile Include="Source\UserInterface.cpp" />
+    <ClCompile Include="TestClass.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>
@@ -131,20 +135,28 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)\Dependencies;$(VCInstallDir)UnitTest\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Dependencies;$(VCInstallDir)UnitTest\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)\Dependencies;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Dependencies;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies\PhysX4\PhysX_32\include;Dependencies\PhysX4\pxShared\include;Dependencies\PhysX4\pxShared\include\foundation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies\PhysX4\PhysX_32\include;Dependencies\PhysX4\pxShared\include;Dependencies\PhysX4\pxShared\include\foundation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeImage;Dependencies\PhysX4\PhysX_32\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXCooking_32.lib;PhysXTask_static_32.lib;SceneQuery_static_32.lib;SimulationController_static_32.lib;PhysXExtensions_static_32.lib;PhysXPvdSDK_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeType;Dependencies\PhysX4\PhysX_32\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeType.lib;glew32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXCooking_32.lib;PhysXTask_static_32.lib;SceneQuery_static_32.lib;SimulationController_static_32.lib;PhysXExtensions_static_32.lib;PhysXPvdSDK_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -154,11 +166,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeImage;Dependencies\glew;Dependencies\glfw;glm;Headers;Dependencies\PhysX3\PhysX-3.4\PhysX_3.4\Include;Dependencies\PhysX3\PhysX-3.4\PxShared\include;Dependencies\PhysX3\PhysX-3.4\PxShared\include\foundation</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\glew;Dependencies\glfw;glm;Headers;Dependencies\PhysX3\PhysX-3.4\PhysX_3.4\Include;Dependencies\PhysX3\PhysX-3.4\PxShared\include;Dependencies\PhysX3\PhysX-3.4\PxShared\include\foundation</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeImage;Dependencies\PhysX3\PhysX-3.4\PxShared\lib\vc15win64;Dependencies\PhysX3\PhysX-3.4\PhysX_3.4\Lib\vc15win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeType;Dependencies\PhysX3\PhysX-3.4\PxShared\lib\vc15win64;Dependencies\PhysX3\PhysX-3.4\PhysX_3.4\Lib\vc15win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -171,14 +183,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeImage\;Dependencies\glfw;Dependencies\glew;glm;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeImage\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies;Dependencies\FreeType</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

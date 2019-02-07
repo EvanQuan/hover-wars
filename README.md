@@ -82,3 +82,11 @@ documentation.
 [James Coté](https://github.com/jamescote)
 
 [Jianan Ding](https://github.com/jiananding)
+
+## Libraries
+
+[OpenGL]
+
+[FTGL 2.1.3~rc5](https://sourceforge.net/projects/ftgl/)
+
+[GLFW 3.2.1](https://www.glfw.org/)

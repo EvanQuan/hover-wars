@@ -8,6 +8,7 @@
 #include "ShaderManager.h"
 #include "Physics/PhysicsManager.h"
 
+#include "..\TestClass.h"
 #ifdef USING_LINUX
 		#include <Magick++.h>
 #endif

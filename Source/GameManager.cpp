@@ -3,6 +3,7 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
+#include "UserInterface.h"
 
 ///////////////
 // CONSTANTS //
@@ -20,8 +21,9 @@ GameManager* GameManager::m_pInstance = nullptr;
 GameManager::GameManager(GLFWwindow* rWindow)
 {
 	// Initialize and Get Shader and Environment Managers
-	m_pShaderMngr	= SHADER_MANAGER;
-	m_pEntMngr		= ENTITY_MANAGER;
+	m_pShaderManager    = SHADER_MANAGER;
+	m_pEntityManager       = ENTITY_MANAGER;
+	m_pUserInterface = UserInterface::getInstance(rWindow);
 
 	// NOTE: Do not get an instance of InputHandler here or there will be
 	// infinite mutual recursion and a call stack overflow
@@ -33,7 +35,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 	glGenVertexArrays( 1, &m_pVertexArray );
 	
 	// Generate Buffer and Set Attribute
-	m_pVertexBuffer = m_pShaderMngr->genVertexBuffer( m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof( vec3 ), GL_STATIC_DRAW );
+	m_pVertexBuffer = m_pShaderManager->genVertexBuffer( m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof( vec3 ), GL_STATIC_DRAW );
 	SHADER_MANAGER->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
 }
 
@@ -64,14 +66,19 @@ GameManager::~GameManager()
 	m_pWindow = nullptr;
 
 	// Let go of Manager Handles
-	if (nullptr != m_pEntMngr)
+	if (nullptr != m_pEntityManager)
 	{
-		delete m_pEntMngr;
+		delete m_pEntityManager;
 	}
 
-	if (nullptr != m_pShaderMngr)
+	if (nullptr != m_pShaderManager)
 	{
-		delete m_pShaderMngr;
+		delete m_pShaderManager;
+	}
+
+	if (nullptr != m_pUserInterface)
+	{
+		delete m_pUserInterface;
 	}
 
 	glDeleteBuffers(1, &m_pVertexBuffer);
@@ -88,7 +95,7 @@ bool GameManager::renderGraphics()
 	m_commandHandler->executeAllCommands();
 
 	// Update Environment
-	m_pEntMngr->updateEnvironment(m_pTimer);
+	m_pEntityManager->updateEnvironment(m_pTimer);
 
 	// call function to draw our scene
 	RenderScene();
@@ -110,7 +117,7 @@ void GameManager::RenderScene()
 {
 	// HACK: For following Car on Roller Coaster Assignment, Remove
 	//mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEntMngr->getFrenetFrame();
-	const CameraComponent* pCamera = m_pEntMngr->getActiveCamera();
+	const CameraComponent* pCamera = m_pEntityManager->getActiveCamera();
 
 	mat4 pModelViewMatrix = pCamera->getToCameraMat();
 	mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
@@ -124,10 +131,10 @@ void GameManager::RenderScene()
 	glEnable(GL_DEPTH_TEST);
 	
 	// Set camera information in Shaders before rendering
-	m_pShaderMngr->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
+	m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
 
 	//renderAxis();
-	m_pEntMngr->renderEnvironment( vCamLookAt );
+	m_pEntityManager->renderEnvironment( vCamLookAt );
 	glDisable(GL_DEPTH_TEST);
 }
 
@@ -137,7 +144,7 @@ void GameManager::renderAxis()
 	CheckGLErrors();
 
 	glBindVertexArray( m_pVertexArray );
-	glUseProgram( m_pShaderMngr->getProgram( ShaderManager::eShaderType::WORLD_SHDR ) );
+	glUseProgram( m_pShaderManager->getProgram( ShaderManager::eShaderType::WORLD_SHDR ) );
 
 	glDrawArrays( GL_LINES, 0, AXIS_VERTS.size() );
 	glDrawArrays( GL_POINTS, 0, AXIS_VERTS.size() );
@@ -156,17 +163,17 @@ bool GameManager::initializeGraphics( string sFileName )
 	bool bError = false;
 
 	// Shaders
-	if (!m_pShaderMngr->initializeShaders())
+	if (!m_pShaderManager->initializeShaders())
 	{
 		cout
 			<< "Couldn't initialize shaders." << endl;
 		bError = true;
 	}
 	else
-		m_pEntMngr->initializeEnvironment(sFileName);
+		m_pEntityManager->initializeEnvironment(sFileName);
 
 	// Set up Camera
-	m_pCamera = m_pEntMngr->generateCameraEntity();
+	m_pCamera = m_pEntityManager->generateCameraEntity();
 	m_eView = VIEW_SPHERICAL;
 
 	return bError; 
@@ -208,5 +215,5 @@ void GameManager::switchView()
 
 void GameManager::resizedWindow( int iHeight, int iWidth )
 {
-	m_pEntMngr->updateHxW(iHeight, iWidth);
+	m_pEntityManager->updateHxW(iHeight, iWidth);
 }
