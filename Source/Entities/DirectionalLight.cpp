@@ -1,4 +1,4 @@
-#include "DirectionalLight.h"
+#include "EntityHeaders/DirectionalLight.h"
 #include "EntityManager.h"
 
 

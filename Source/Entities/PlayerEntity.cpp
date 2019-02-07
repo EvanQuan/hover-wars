@@ -1,4 +1,4 @@
-#include "PlayerEntity.h"
+#include "EntityHeaders/PlayerEntity.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
 

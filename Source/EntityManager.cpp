@@ -1,7 +1,7 @@
 #include "EntityManager.h"
 #include "EntityComponentHeaders/CameraComponent.h"
-#include "StaticEntity.h"
-#include "PlayerEntity.h"
+#include "EntityHeaders/StaticEntity.h"
+#include "EntityHeaders/PlayerEntity.h"
 
 #define INTERSECTION_EPSILON 1e-4	// Minimum intersect distance (so we don't intersect with ourselves)
 #define MAX_REFLECTIONS	800

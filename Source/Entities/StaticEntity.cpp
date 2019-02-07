@@ -1,4 +1,4 @@
-#include "StaticEntity.h"
+#include "EntityHeaders/StaticEntity.h"
 #include "EntityManager.h"
 
 // Default Constructor

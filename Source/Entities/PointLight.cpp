@@ -1,4 +1,4 @@
-#include "SpotLight.h"
+#include "EntityHeaders/PointLight.h"
 #include "EntityManager.h"
 
 
@@ -8,41 +8,45 @@ const int LIGHT_WIDTH = LIGHT_HEIGHT;
 const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
-SpotLight::SpotLight(int iID, const vec3* vPosition) 
+PointLight::PointLight(int iID, const vec3* vPosition) 
 	: Entity( iID, *vPosition )
 {
 	
 }
 
 // Destructor
-SpotLight::~SpotLight()
+PointLight::~PointLight()
 {
 	// Nothing to Destruct
 }
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //	If "" is provided for the Mesh name, a generic cube will be generated.
-void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial)
+void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial, const string& sMeshName )
 {
 	// Set the color of the Light
 	m_pColor = (*vColor);
 
 	// Load Mesh
-	if ("" == sMeshLocation)
-		m_pMesh = MESH_MANAGER->generateSphereMesh(bStatic, 0.25f, m_vPosition);
+	if ("" == sMeshName)
+	{
+		m_pMesh = MESH_MANAGER->generateCubeMesh(bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, m_vPosition);
+	}
 	else
-		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshLocation, m_vPosition, bStatic);
+	{
+		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, m_vPosition, bStatic);
+	}
 
 	// Create a Render Component
-	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLE_STRIP);
+	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);
 
 	// Initialize Render Component
 	assert(m_pRenderComponent != nullptr);
-	m_pRenderComponent->initializeComponent(m_pMesh, sMaterial);
-	vec4 pPoweredColor = vec4( m_pColor, 1.0);
+	m_pRenderComponent->initializeComponent(m_pMesh, pMaterial);
+	vec4 pPoweredColor = vec4( m_pColor, 1.0 ) * fPower;
 	m_pRenderComponent->generateDiffuseTexture(&pPoweredColor); // Generates a Texture for the light based on the light color.
 
 	// Create and Initialize the Lighting Component.
 	m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
-	m_pLightingComponent->initializeAsSpotLight(&m_vPosition, &m_pColor, vDirection, fPhi, fSoftPhi);
+	m_pLightingComponent->initializeAsPointLight(&m_vPosition, &m_pColor, fPower);
 }
