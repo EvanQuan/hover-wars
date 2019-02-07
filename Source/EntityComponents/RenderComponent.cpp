@@ -2,7 +2,7 @@
 #include "EntityManager.h"
 
 const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
-const vec4 DEFAULT_SPEC_COLOR = vec4(0.f);
+const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 
 // Default Constructor:
 //		Requires an EntityID for the Entity that the component is a part of
@@ -64,9 +64,35 @@ void RenderComponent::update(double dTimeDelta)
 void RenderComponent::initializeComponent(const Mesh* pMesh, 
 										  const Material* pMaterial)
 {
+	// Ensure the Mesh passed in is valid.
+	assert(nullptr != pMesh);
+
 	// Get number of Vertices.
 	m_iCount = pMesh->getCount();
 
+	// Load the Material
+	loadMaterial(pMaterial);
+
+	// Check Rendering Flags in Mesh.
+	m_bUsingIndices = pMesh->usingIndices();
+	m_bUsingInstanced = pMesh->usingInstanced();
+
+	// Store Mesh for Reference.
+	m_pMesh = pMesh;
+	m_iVertexArray = pMesh->getVertexArray();	// Store Vertex Array Locally.
+}
+
+// Generates a simple 1x1 diffuse texture based on the given color.
+void RenderComponent::generateDiffuseTexture(const vec4* vColor)
+{
+	m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->genTexture(vColor);
+}
+
+// Function to load a Material. Checks passed in material and loads a default if necessary.
+// Overwrites any currently loaded Material with the new material if applicable. 
+//	Texture Manager manages the textures using unique pointers, therefore, no memory is lost by simply replacing existing textures.
+void RenderComponent::loadMaterial(const Material* pMaterial)
+{
 	if (nullptr != pMaterial)
 	{
 		// Load Diffuse Texture if applicable
@@ -84,22 +110,14 @@ void RenderComponent::initializeComponent(const Mesh* pMesh,
 	}
 
 	// Set some defaults if no Maps were specified.
-	if( nullptr == m_sRenderMaterial.m_pDiffuseMap )
+	if (nullptr == m_sRenderMaterial.m_pDiffuseMap)
 		m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
-	if( nullptr == m_sRenderMaterial.m_pSpecularMap )
+	if (nullptr == m_sRenderMaterial.m_pSpecularMap)
 		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
-
-	// Check Rendering Flags in Mesh.
-	m_bUsingIndices = pMesh->usingIndices();
-	m_bUsingInstanced = pMesh->usingInstanced();
-
-	// Store Mesh for Reference.
-	m_pMesh = pMesh;
-	m_iVertexArray = pMesh->getVertexArray();	// Store Vertex Array Locally.
 }
 
-// Generates a simple 1x1 diffuse texture based on the given color.
-void RenderComponent::generateDiffuseTexture(const vec4* vColor)
+void RenderComponent::getDiffuseTextureDimensions(int* iHeight, int* iWidth)
 {
-	m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->genTexture(vColor);
+	if (nullptr != m_sRenderMaterial.m_pDiffuseMap)
+		m_sRenderMaterial.m_pDiffuseMap->getTextureDimensions(iHeight, iWidth);
 }

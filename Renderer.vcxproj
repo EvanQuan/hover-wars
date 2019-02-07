@@ -38,6 +38,7 @@
     <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
+    <ClInclude Include="Headers\InteractableEntity.h" />
     <ClInclude Include="Headers\PointLight.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\InteractableEntity.cpp" />
     <ClCompile Include="Source\PointLight.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />

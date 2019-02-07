@@ -144,6 +144,29 @@ Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, i
 	return pReturnMesh;
 }
 
+// Provides a Generated Mesh as a Billboard Mesh
+Mesh* MeshManager::generateBillboardMesh(vec3 vPosition, vec3 vNormal, vec2 vUVStart, vec2 vUVEnd, int iHeight, int iWidth)
+{
+	// Local Variables
+	string sHashHandle = "Billboard" + to_string(iHeight) + to_string(iWidth) + glm::to_string(vPosition);
+	Mesh* pReturnMesh = nullptr;
+
+	// Find another Billboard with the given hashhandle, if found, return the pre-existing Mesh
+	if (m_pMeshCache.end() != m_pMeshCache.find(sHashHandle))
+	{
+		pReturnMesh = m_pMeshCache[sHashHandle].get();
+	}
+	else // generate a new Billboard Mesh
+	{
+		unique_ptr<Mesh> pNewMesh = make_unique<Mesh>(sHashHandle, true, Mesh::manager_cookie());
+		pNewMesh->genBillboard(&vPosition, &vNormal, &vUVStart, &vUVEnd, iHeight, iWidth);
+		pReturnMesh = pNewMesh.get();
+		m_pMeshCache.insert(make_pair(sHashHandle, move(pNewMesh)));
+	}
+
+	return pReturnMesh;
+}
+
 
 // Attempts to Initialize and return a new mesh object from a given object file.
 // Returns: Mesh Object created or nullptr if mesh failed to create.

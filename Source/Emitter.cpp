@@ -102,9 +102,6 @@ void Emitter::update(duration<float> dTimeInMilliseconds)
 		}
 	}
 
-	// Debugging
-	cout << "Size: " << m_pPositions.size() << endl;
-
 	// Clean up any Emitters that are subject for deletion.
 	m_pParticleList.erase(
 		remove_if(

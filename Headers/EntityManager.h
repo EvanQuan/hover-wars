@@ -6,6 +6,7 @@
 #include "Scene_Loader.h"
 #include "BoidEngine.h"
 #include "EmitterEngine.h"
+#include "InteractableEntity.h"
 #include "Entity.h"
 #include "Camera.h"
 #include "EntityComponentHeaders/EntityComponent.h"
@@ -87,6 +88,7 @@ private:
 	vector<LightingComponent*>			m_pLights;
 	CameraComponent*					m_pActiveCamera;
 	DirectionalLight*					m_pDirectionalLight;
+	InteractableEntity*					m_pBillboardTesting;
 	PointLight*							m_pTestingLight; // Temporary, Needs to be removed.
 
 	// Manage Pointers for Deletion.
