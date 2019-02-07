@@ -28,6 +28,7 @@
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
@@ -64,6 +65,7 @@
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
