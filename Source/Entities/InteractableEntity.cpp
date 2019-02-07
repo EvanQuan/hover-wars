@@ -1,4 +1,4 @@
-#include "InteractableEntity.h"
+#include "EntityHeaders/InteractableEntity.h"
 #include "EntityManager.h"
 
 // Default Constructor
@@ -36,4 +36,8 @@ void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int i
 
 	// Initialize Render Component with Mesh.
 	m_pRenderComponent->initializeComponent(m_pBillboardMesh);
+
+	// PHYSICSTODO: Set up Physics Component as a Physics Object for an interactable Object. This may be temporary, but maybe make it a cylinder?
+	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
+	m_pPhysicsComponent->initializeComponent(true, m_pBillboardMesh); // PHYSICSTODO
 }

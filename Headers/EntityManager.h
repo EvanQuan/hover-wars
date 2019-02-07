@@ -1,18 +1,19 @@
 #pragma once
 #include "stdafx.h"
-#include "PointLight.h"
-#include "DirectionalLight.h"
-#include "SpotLight.h"
+#include "EntityHeaders/PointLight.h"
+#include "EntityHeaders/DirectionalLight.h"
+#include "EntityHeaders/SpotLight.h"
 #include "Scene_Loader.h"
 #include "BoidEngine.h"
 #include "EmitterEngine.h"
-#include "InteractableEntity.h"
-#include "Entity.h"
-#include "Camera.h"
+#include "EntityHeaders/InteractableEntity.h"
+#include "EntityHeaders/Entity.h"
+#include "EntityHeaders/Camera.h"
 #include "EntityComponentHeaders/EntityComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
 
 
 // Environment Manager
@@ -42,6 +43,7 @@ public:
 	CameraComponent* generateCameraComponent(int iEntityID);
 	RenderComponent* generateRenderComponent(int iEntityID, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode);
 	LightingComponent* generateLightingComponent(int iEntityID);
+	PhysicsComponent* generatePhysicsComponent(int iEntityID);
 
 	// Camera Management
 	void updateHxW(int iHeight, int iWidth);
@@ -86,6 +88,7 @@ private:
 	vector<RenderComponent*>			m_pRenderingComponents;
 	vector<CameraComponent*>			m_pCameraComponents;
 	vector<LightingComponent*>			m_pLights;
+	vector<PhysicsComponent*>			m_pPhysicsComponents; // PHYSICSTODO: If this isn't necessary, remove it.
 	CameraComponent*					m_pActiveCamera;
 	DirectionalLight*					m_pDirectionalLight;
 	InteractableEntity*					m_pBillboardTesting;
@@ -96,6 +99,7 @@ private:
 	TextureManager*				m_pTxtMngr;
 	Scene_Loader*				m_pScnLdr;
 	EmitterEngine*				m_pEmtrEngn;
+	PhysicsManager*				m_pPhysxMngr;
 
 	// Edge Threshold Implementation
 	float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;

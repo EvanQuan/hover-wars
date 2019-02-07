@@ -68,8 +68,6 @@ bool InitializeTexture(Texture *texture, const string &imageFileName)
 // FreeImage implementation of the InitializeTexture() function
 #ifdef USING_WINDOWS
 
-#include "FreeImage.h"
-
 bool InitializeTexture(Texture *mytex, const string &imageFileName)
 {
 	// Local Variables

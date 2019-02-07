@@ -1,4 +1,4 @@
-#include "PlayerEntity.h"
+#include "EntityHeaders/PlayerEntity.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
 
@@ -25,4 +25,8 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 	// Ensure that the Entity Manager returned a Render Component and Initialize it.
 	assert(nullptr != m_pRenderComponent);
 	m_pRenderComponent->initializeComponent(m_pMesh, pMaterial);
+
+	// PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
+	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
+	m_pPhysicsComponent->initializeComponent(true, m_pMesh); // PHYSICSTODO
 }

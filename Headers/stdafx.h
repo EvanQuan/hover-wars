@@ -47,6 +47,7 @@
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
+using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE			128

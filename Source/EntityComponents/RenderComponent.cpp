@@ -56,9 +56,9 @@ void RenderComponent::render()
 }
 
 // Overloaded Update Function
-void RenderComponent::update(double dTimeDelta)
+void RenderComponent::update(duration<float> fTimeDelta)
 {
-
+	/* Not Implemented */
 }
 
 void RenderComponent::initializeComponent(const Mesh* pMesh, 

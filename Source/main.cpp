@@ -26,6 +26,7 @@ int main()
 	GameManager* m_gameManager = 0;
 	ShaderManager* m_shaderManager = 0;
 	InputHandler* m_inputHandler = 0;
+	PhysicsManager* m_pPhysicsManager = 0;
 
 	// Initialize GL and a window
 	if (!iRunning)
@@ -68,7 +69,9 @@ int main()
 			iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
 			m_shaderManager = SHADER_MANAGER;
 
-			initPhysics(true);
+			// Initialize Physics
+			m_pPhysicsManager = PHYSICS_MANAGER;
+			m_pPhysicsManager->initPhysics(true);
 
 		#ifdef USING_WINDOWS
 			m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
@@ -93,11 +96,13 @@ int main()
 			delete m_inputHandler;
 		}
 
+		if (nullptr != m_pPhysicsManager)
+			delete m_pPhysicsManager;
+
 		glfwDestroyWindow(m_window);
 	}
 
 	glfwTerminate();
-	cleanupPhysics(true);
 	cout << "Finished Program, au revoir!" << endl;
 
 #ifdef DEBUG // To Read any debug info output in console before ending.

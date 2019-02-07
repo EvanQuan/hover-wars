@@ -24,7 +24,7 @@ public:
 	void render();
 
 	// Inherited update frunction from EntityComponent
-	void update(double dTimeStep);
+	void update(duration<float> fTimeDelta);
 	void updateCount(GLsizei iNewCount) { m_iCount = iNewCount; }
 
 	void generateDiffuseTexture(const vec4* vColor);
