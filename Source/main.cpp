@@ -7,6 +7,7 @@
 #include "Scene_Loader.h"
 #include "ShaderManager.h"
 
+#include "..\TestClass.h"
 #ifdef USING_LINUX
 		#include <Magick++.h>
 #endif

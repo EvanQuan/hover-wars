@@ -7,11 +7,12 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
-#include <iostream>
-#include <fstream>
-#include <iterator>
-#include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,6 +22,12 @@
 #include "EnvSpec.h"
 #include "GameTime.h"
 
+// FreeType
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+// FTGL
+// #include <FTGL/ftgl.h>
 
 #ifdef USING_LINUX
 #include <string.h>
@@ -44,7 +51,7 @@ using namespace glm;
 #define INPUT_SIZE			128
 #define START_HEIGHT		1080
 #define START_WIDTH			1920
-#define STARTING_ENV		"scene2.txt"
+#define STARTING_ENV		"scene2.scene"
 #define LIGHT_MOVE_FACTOR	0.05f
 #define PI					3.14159265f
 #define PI_2				6.28318530718f
@@ -76,6 +83,8 @@ using namespace glm;
 #define BUTTON_RIGHT        11
 #define BUTTON_DOWN         12
 #define BUTTON_LEFT         13
+#define BUTTON_UNKNOWN1     14
+#define BUTTON_UNKNOWN2     15
 // TODO What are buttons 14, 15?
 // Is it the centre xbox button (home)?
 // Joystick/trigger values
@@ -98,8 +107,9 @@ struct Material
 
 /* Manager Defines */
 #define ENTITY_MANAGER	EntityManager::getInstance()
-#define SHADER_MANAGER	ShaderManager::getInstance()
+#define GAME_MANAGER	GameManager::getInstance()
 #define MESH_MANAGER	MeshManager::getInstance()
+#define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
 #define SCENE_LOADER	Scene_Loader::getInstance()
 #define EMITTER_ENGINE	EmitterEngine::getInstance()
