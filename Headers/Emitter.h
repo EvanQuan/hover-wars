@@ -1,5 +1,5 @@
 #pragma once
-#include "Entity.h"
+#include "EntityHeaders/Entity.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 
 /*************************************************

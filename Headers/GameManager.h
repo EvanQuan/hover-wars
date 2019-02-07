@@ -2,7 +2,7 @@
 
 /* INCLUDES */
 #include "stdafx.h"
-#include "Camera.h"
+#include "EntityHeaders/Camera.h"
 #include <time.h>
 
 // Forward Declarations

@@ -19,11 +19,14 @@
     <Filter Include="Source Files\EntityComponents">
       <UniqueIdentifier>{929a9623-930c-4643-9cf4-766a846cf85c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\EntityHeaders">
+      <UniqueIdentifier>{9e71f766-7dc6-43ed-9f0f-aa380744455f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{b37ab373-e882-44b8-ac80-cec82eee7459}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EnvSpec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,9 +54,6 @@
     <ClInclude Include="Headers\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\FreeImage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Anim_Track.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,22 +69,13 @@
     <ClInclude Include="Headers\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\StaticEntity.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\GameTime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\PlayerEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
@@ -96,19 +87,10 @@
     <ClInclude Include="Headers\Scene_Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\PointLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\DirectionalLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\CommandHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\SpotLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EmitterEngine.h">
@@ -117,20 +99,38 @@
     <ClInclude Include="Headers\Emitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\InteractableEntity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\UserInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\Camera.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\Entity.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\PlayerEntity.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\PointLight.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\SpotLight.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\StaticEntity.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ImageReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -170,22 +170,13 @@
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\StaticEntity.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameTime.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PlayerEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
@@ -197,15 +188,6 @@
     <ClCompile Include="Source\Scene_Loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PointLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DirectionalLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SpotLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\CommandHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -215,14 +197,35 @@
     <ClCompile Include="Source\Emitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\InteractableEntity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\UserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestClass.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Camera.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\DirectionalLight.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Entity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\InteractableEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\PlayerEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\PointLight.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\SpotLight.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\StaticEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

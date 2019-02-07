@@ -1,4 +1,4 @@
-#include "InteractableEntity.h"
+#include "EntityHeaders/InteractableEntity.h"
 #include "EntityManager.h"
 
 // Default Constructor
