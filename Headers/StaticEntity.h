@@ -7,6 +7,8 @@
 // Name: StaticEntity
 // Written by: James Cote
 // Description: General Entity for static objects in the game world.
+//		Static objects are considered objects that don't move and don't interact
+//		with anything other than simple physics.
 class StaticEntity
 	: public Entity
 {

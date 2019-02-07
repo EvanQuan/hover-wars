@@ -25,6 +25,9 @@ public:
 	vec3 getCameraWorldPos() const;
 	vec3 getLookAt() const;
 
+	// Getters
+	vec3 getRay(float fX, float fY) const;
+
 	// Setters for modifying Camera
 	void setLookAt(vec3 vLookAt) { m_vWorldLookAt = vLookAt; }
 	void positionCamera(mat4 frame) { m_m4Frame = frame; }

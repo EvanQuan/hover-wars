@@ -179,15 +179,12 @@ void Anim_Track::draw( )
 	vec3 vSilver( 0.752, 0.752, 0.752 );
 
 	// Draw Main Curve
-	glUseProgram( SHADER_MANAGER->getProgram( ShaderManager::eShaderType::RC_TRACK_SHDR ) );
-	SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::RC_TRACK_SHDR, "vColor", &vBrown );
 	glBindBuffer( GL_ARRAY_BUFFER, m_iVertexBuffer );
 
 	// Draw connecting lines
 	glBufferData( GL_ARRAY_BUFFER, m_vTracks.size() * sizeof( vec3 ), m_vTracks.data(), GL_DYNAMIC_DRAW );
 	glDrawArrays( GL_LINES, 0, m_vTracks.size() );
 
-	SHADER_MANAGER->setUniformVec3( ShaderManager::eShaderType::RC_TRACK_SHDR, "vColor", &vSilver );
 	// Draw Track
 	for ( int i = 0; i < 2; ++i )
 	{

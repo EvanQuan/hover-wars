@@ -1,0 +1,127 @@
+struct Material {
+	sampler2D vDiffuse;
+	sampler2D vSpecular;
+	float fShininess;
+};
+
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+};
+
+// Defaulted to Chrome
+uniform Material sMaterial;
+in vec2 TexCoords;
+
+// Calculates information about a specified directional light.
+vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
+{	
+	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
+	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
+	
+	vec3 vToLight = normalize( -vLightDirection );
+	
+	float lambertian = max(dot(vToLight, vNormal), 0.0);
+	float specular = 0.0;
+	
+	if( lambertian > 0.0 )
+	{
+		// Blinn-Phong Calculation
+		vec3 vHalfDir = normalize( vToLight + vToCamera );
+		float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+		specular = pow( specAngle, sMaterial.fShininess );
+	}
+
+	// Apply Diffuse Value
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vDiffuse, 1.0);
+	
+	// Apply Specular value
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vSpecular, 1.0);
+
+	// Apply Ambient Value
+	colorLinear += texture(sMaterial.vDiffuse, TexCoords ) * vec4(light.vAmbient, 1.0);
+	
+	return colorLinear;
+}
+
+// Calculate information about a given point light with the current Frag Position
+//	Using a Blinn-Phong calculation adapted from goo.gl/vzRHX2 (Wikipedia)
+vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+{
+	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
+	lightCameraSpace /= lightCameraSpace.w;
+	
+	vec3 vToLight = lightCameraSpace.xyz - vFragPos;
+	float distance = length(vToLight);
+	vToLight = normalize(vToLight);
+	
+	float lambertian = max(dot(vToLight, vNormal), 0.0);
+	float specular = 0.0;
+	
+	if( lambertian > 0.0 )
+	{
+		// Blinn-Phong Calculation
+		vec3 vHalfDir = normalize( vToLight + vToCamera );
+		float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+		specular = pow( specAngle, sMaterial.fShininess );
+	}
+
+	// Apply Diffuse Value
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vColor, 1.0) * light.fLightPower / distance;
+	
+	// Apply Specular value
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vColor, 1.0) * light.fLightPower / distance;
+
+	return colorLinear;
+}
+
+vec4 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+{
+	// Convert the Camera to view space
+	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
+	lightCameraSpace /= lightCameraSpace.w;
+	
+	// Get To Light vector as well as distance from Fragment to Light.
+	vec3 vToLight = lightCameraSpace.xyz - vFragPos;
+	float fDist = length(vToLight);
+	vToLight = normalize( vToLight );
+	
+	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
+	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
+	
+	// Return Values
+	vec4 colorLinear = vec4(0.0);
+	
+	// Calculate angle of Light to FragPos and SpotLight direction to determine if fragment lies within spotlight.
+	float fTheta = dot( vLightDirection, -vToLight );
+	
+	if( fTheta > light.fCosPhi )
+	{
+		// Intensity for soft edge dropoff
+		float fIntensity = clamp((fTheta - light.fCosPhi)/(light.fCosCutoff - light.fCosPhi), 0.0, 1.0);
+		float lambertian = max(dot(vToLight, vNormal), 0.0);
+		float specular = 0.0;
+		
+		if( lambertian > 0.0 )
+		{
+			// Blinn-Phong Calculation
+			vec3 vHalfDir = normalize( vToLight + vToCamera );
+			float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+			specular = pow( specAngle, sMaterial.fShininess );
+		}
+
+		// Apply Diffuse Value
+		colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vColor, 1.0);
+		
+		// Apply Specular value
+		colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vColor, 1.0);
+		
+		// Apply Intensity modifier
+		colorLinear *= fIntensity;
+	}
+	
+	return colorLinear;
+}
+
+

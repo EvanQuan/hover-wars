@@ -31,6 +31,7 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
 	make_pair<string, eShaderType>("plane_shdr", shader_Type::PLANE_SHDR),
 	make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
 	make_pair<string, eShaderType>("boid_shdr", shader_Type::BOID_SHDR),
+	make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR)
 };
 
 // Public - Not a singleton
@@ -73,8 +74,9 @@ ShaderManager::ShaderManager()
 	m_pShader[ eShaderType::WORLD_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/world.frag" );
 
 	// RC_Track Shaders
-	m_pShader[ eShaderType::RC_TRACK_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	  "Shaders/rc_track.vert" );
-	m_pShader[ eShaderType::RC_TRACK_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/rc_track.frag" );
+	m_pShader[ eShaderType::BILLBOARD_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	"Shaders/billboard.vert" );
+	m_pShader[ eShaderType::BILLBOARD_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY,	"Shaders/billboard.geo" );
+	m_pShader[ eShaderType::BILLBOARD_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT,	"Shaders/billboard.frag" );
 
 	m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/boid.vert");
 	m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/boid.frag");

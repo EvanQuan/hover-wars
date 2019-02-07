@@ -217,3 +217,27 @@ void GameManager::resizedWindow( int iHeight, int iWidth )
 {
 	m_pEntityManager->updateHxW(iHeight, iWidth);
 }
+
+// Calculates an intersection given screen coordinates.
+void GameManager::intersectPlane(float fX, float fY)
+{
+	// Local Variables
+	vec3 vRay = m_pEntityManager->getActiveCamera()->getRay(fX, fY);
+	vec3 vNormal = vec3(0.0, 1.0, 0.0); // normal of xz-plane
+	vec3 vCameraPos = m_pEntityManager->getActiveCamera()->getCameraWorldPos();
+	vec3 vIntersection = vec3(-1.0f);
+	float fT = dot(vRay, vNormal);
+
+	// Calculate Intersection
+	if (fT > FLT_EPSILON || fT < -FLT_EPSILON)
+	{
+		// Is intersecting.
+		fT = -(dot(vCameraPos, vNormal) / fT);
+
+		// Not behind camera.
+		if (fT >= 0)
+			vIntersection = vCameraPos + (fT*vRay);
+
+		EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 180.f);
+	}
+}

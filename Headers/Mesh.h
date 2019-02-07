@@ -20,6 +20,7 @@ private:
 	void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
 	void genSphere(float fRadius, vec3 vPosition);
 	void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
+	void genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth );
 	void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
 	void initalizeVBOs();
 	bool loadObj(const string& sFileName);
@@ -28,6 +29,9 @@ private:
 	void translate(vec3 vPosition);
 	void rotate(quat qRotationQuatern);
 	void scale(float fScale);
+
+	// VBO Initialization
+	void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
 
 	// Indices for Faces of Mesh and Additional Buffer Addresses on the GPU for
 	//	Indices and Normals
@@ -42,6 +46,14 @@ private:
 	GLuint m_iNumInstances;
 	mat4 m_m4DefaultInstance;
 	bool m_bStaticMesh;
+
+	// Billboard Information
+	struct sBillboardInfo
+	{
+		vec3 vPosition, vNormal;
+		vec2 vUVStart, vUVEnd, vDimensions;
+	};
+	vector<sBillboardInfo> m_pBillboardList;
 
 	// Friend Class: Object_Factory to create Meshes.
 	friend class MeshManager;
@@ -59,6 +71,8 @@ public:
 	GLuint getCount() const {
 		if (!m_pIndices.empty())
 			return m_pIndices.size();
+		else if (!m_pBillboardList.empty())
+			return m_pBillboardList.size();
 		else
 			return m_pVertices.size();
 	}
@@ -66,6 +80,11 @@ public:
 	// Checks for Render Component
 	bool usingIndices() const { return !m_pIndices.empty(); }
 	bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
+
+	// Billboard Usage
+	unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth);
+	void updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd);
+	void flushBillboards();
 
 	// Getters for Mesh Data
 	const vector<vec3>& getVertices() const { return m_pVertices; }

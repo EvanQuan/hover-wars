@@ -33,6 +33,9 @@ public:
 	void bindTexture( ShaderManager::eShaderType eType, string sVarName );
 	void unbindTexture();
 
+	// Get Dimensions of Texture
+	void getTextureDimensions(int* iHeight, int* iWidth) { *iHeight = m_uiHeight; *iWidth = m_uiWidth; }
+
 	// Gets the Hash Key for the texture for referencing in the Texture Manager
 	const string& getFileName() { return m_sManagerKey; }
 };

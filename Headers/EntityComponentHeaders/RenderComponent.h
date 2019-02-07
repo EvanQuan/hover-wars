@@ -25,12 +25,18 @@ public:
 
 	// Inherited update frunction from EntityComponent
 	void update(double dTimeStep);
+	void updateCount(GLsizei iNewCount) { m_iCount = iNewCount; }
 
 	void generateDiffuseTexture(const vec4* vColor);
 
 	// Initializes the proper buffers on the GPU for rendering.
 	void initializeComponent( Mesh const  * pMesh, 
 							  const Material* pMaterial = nullptr);
+
+	void getDiffuseTextureDimensions(int* iHeight, int* iWidth);
+
+	// Function to load Material for Render Component
+	void loadMaterial(const Material* pMaterial);
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
