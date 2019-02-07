@@ -10,6 +10,16 @@
 #define MAX_THETA_CUTS (int)(MAX_THETA_DEGS / SLICE_SIZE)
 #define MAX_PHI_CUTS (int)(MAX_PHI_DEGS / SLICE_SIZE)
 
+/**********************************************\
+ * Defines: For Billboard Buffer Manipulation *
+\**********************************************/
+#define BILLBOARD_STRIDE	(sizeof(vec3) + /*Vertex*/ sizeof(vec3) + /*Normal*/ sizeof(vec2) + /*UVStart*/ sizeof(vec2) + /*UVEnd*/ sizeof(vec2) /*Height/Width*/ )
+#define VERTEX_OFFSET		0
+#define NORMAL_OFFSET		sizeof(vec3)
+#define UV_START_OFFSET		(sizeof(vec3) << 1)
+#define UV_END_OFFSET		((sizeof(vec3) << 1) + sizeof(vec2))
+#define DIMENSION_OFFSET	((sizeof(vec3) << 1) + (sizeof(vec2) << 1))
+
 // Basic Constructor
 Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, manager_cookie )
 {
@@ -308,6 +318,81 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 	initalizeVBOs();
 }
 
+// This will store the position as a vertex with a given normal as the direction to draw the billboard in.
+//	the height and width will be set up and stored in the VBO as well.
+//	The billboard functionality of a Mesh will set up the VBOs in a very different manner:
+//		- Still instanced, a translation matrix will be specified for each vertex
+//		- For each data entry:
+//			* Vertex (vec3)
+//			* Normal (vec3)
+//			* UVStart (vec2)
+//			* UVEnd	(vec2)
+//			* Height (unsigned int)
+//			* Width (unsigned int)
+void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+{
+	// Generate VBO
+	m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, 0, GL_STATIC_DRAW);
+
+	// Set up VBO Attributes
+	m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, BILLBOARD_STRIDE, (void*)VERTEX_OFFSET);	/*Vertex*/
+	m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, BILLBOARD_STRIDE, (void*)NORMAL_OFFSET);	/*Normal*/
+	m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, BILLBOARD_STRIDE, (void*)UV_START_OFFSET);	/*UVStart*/
+	m_pShdrMngr->setAttrib(m_iVertexArray, 3, 2, BILLBOARD_STRIDE, (void*)UV_END_OFFSET);	/*UVEnd*/
+	m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);/*Height/Width*/
+
+	// Add first Billboard
+	addBillboard(vPosition, vNormal, vUVStart, vUVEnd, iHeight, iWidth);
+}
+
+/****************************************************************************************\
+ * Billboard Usage																		*
+\****************************************************************************************/
+
+// Adds a Billboard object to the Mesh.
+unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+{
+	// Create new Billboard
+	sBillboardInfo sNewBillboard;
+	sNewBillboard.vPosition = *vPosition;
+	sNewBillboard.vNormal = *vNormal;
+	sNewBillboard.vUVStart = *vUVStart;
+	sNewBillboard.vUVEnd = *vUVEnd;
+	sNewBillboard.vDimensions = vec2(static_cast<float>(iHeight), static_cast<float>(iWidth));
+
+	// add to main list
+	m_pBillboardList.push_back(sNewBillboard);
+
+	// Reload Data in GPU.
+	glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
+
+	// Return the index for this billboard for later reference.
+	return m_pBillboardList.size() - 1;
+}
+
+// Updates the UVs of a specified billboard, used for sprite animation.
+void Mesh::updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd)
+{
+	// Update in Billboard List
+	m_pBillboardList[iIndex].vUVStart = *vNewUVStart;
+	m_pBillboardList[iIndex].vUVEnd = *vNewUVEnd;
+	vec2 pDataArray[] = { *vNewUVStart, *vNewUVEnd };
+
+	// Update in VBO
+	glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, ((iIndex * BILLBOARD_STRIDE) + UV_START_OFFSET), sizeof(vec2) << 1, pDataArray);
+}
+
+// Clear VBO data and Clear the Billboard data internally.
+void Mesh::flushBillboards()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, 0, (void*)0, GL_DYNAMIC_DRAW);
+
+	m_pBillboardList.clear();
+}
+
 // Generates a Caresean point and normal for that point based on a given spherical coord
 void Mesh::addCarteseanPoint(float fPhi, float fTheta, float fRadius)
 {
@@ -391,32 +476,8 @@ void Mesh::initalizeVBOs()
 		m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
 	}
 
-	// Set up Instanced Buffer for Instance Rendering
-	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-		m_iVertexArray, (void*)&m_m4DefaultInstance,
-		sizeof(mat4), GL_DYNAMIC_DRAW);
-
-	// Instance Rendering Attributes
-	//	Set up openGL for referencing the InstancedBuffer as a Mat4
-	// column 0
-	glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 3, 4, sizeof(vec4) * 4, (void*)0);
-	// column 1
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 4, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
-	// column 2
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 5, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
-	// column 3
-	SHADER_MANAGER->setAttrib(
-		m_iVertexArray, 6, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
-
-	glBindVertexArray(m_iVertexArray);
-	glVertexAttribDivisor(3, 1);
-	glVertexAttribDivisor(4, 1);
-	glVertexAttribDivisor(5, 1);
-	glVertexAttribDivisor(6, 1);
+	// Initialize Instance Buffer
+	setupInstanceBuffer(3);
 
 	// Set up Indices if applicable
 	if (!m_pIndices.empty())
@@ -429,6 +490,36 @@ void Mesh::initalizeVBOs()
 			GL_STATIC_DRAW);
 
 	}
+}
+
+void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
+{
+	// Set up Instanced Buffer for Instance Rendering
+	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
+		m_iVertexArray, (void*)&m_m4DefaultInstance,
+		sizeof(mat4), GL_DYNAMIC_DRAW);
+
+	// Instance Rendering Attributes
+	//	Set up openGL for referencing the InstancedBuffer as a Mat4
+	// column 0
+	glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
+	// column 1
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
+	// column 2
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
+	// column 3
+	SHADER_MANAGER->setAttrib(
+		m_iVertexArray, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
+
+	glBindVertexArray(m_iVertexArray);
+	glVertexAttribDivisor(iStartSpecifiedIndex, 1);
+	glVertexAttribDivisor(iStartSpecifiedIndex + 1, 1);
+	glVertexAttribDivisor(iStartSpecifiedIndex + 2, 1);
+	glVertexAttribDivisor(iStartSpecifiedIndex + 3, 1);
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any

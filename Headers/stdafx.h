@@ -54,6 +54,8 @@ using namespace glm;
 #define STARTING_ENV		"scene2.scene"
 #define LIGHT_MOVE_FACTOR	0.05f
 #define PI					3.14159265f
+#define PI_2				6.28318530718f
+#define PI_OVER_180			0.01745f
 
 #define KEYS 349
 #define MAX_PLAYER_COUNT GLFW_JOYSTICK_4
@@ -107,9 +109,10 @@ struct Material
 #define ENTITY_MANAGER	EntityManager::getInstance()
 #define GAME_MANAGER	GameManager::getInstance()
 #define MESH_MANAGER	MeshManager::getInstance()
-#define SCENE_LOADER	Scene_Loader::getInstance()
 #define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
+#define SCENE_LOADER	Scene_Loader::getInstance()
+#define EMITTER_ENGINE	EmitterEngine::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

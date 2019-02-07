@@ -125,6 +125,27 @@ vec3 CameraComponent::getCartesianPos() const
 	return vReturn;
 }
 
+// Ray Casting:
+//	Tutorial from: antongerdelan.net/opengl/raycasting.html
+vec3 CameraComponent::getRay(float fX, float fY) const
+{
+	// Convert to 3D Normalized Device Coordinates
+	float fMouseX = (2.0f * fX / (float)m_iWidth) - 1.0f;
+	float fMouseY = (-2.0f * fY / (float)m_iHeight) + 1.0f;
+
+	// Create 4D Homogeneous Clip Coordinates
+	vec4 ray_clip = vec4(fMouseX, fMouseY, -1.0f, 1.0f);
+
+	// 4D Eye (Camera) Coordinates - Inverse Projection Matrix
+	vec4 ray_eye = inverse(getPerspectiveMat()) * ray_clip;
+
+	// Un-project the x,y part -> manually set z,w
+	ray_eye = vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+	// 4D World Coordinates
+	return normalize(vec3(inverse(getToCameraMat()) * ray_eye));
+}
+
 // Handle logic for changing window size.
 void CameraComponent::updateHxW(int iHeight, int iWidth)
 {

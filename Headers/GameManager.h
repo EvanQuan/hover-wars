@@ -35,6 +35,7 @@ public:
 	void rotateCamera(vec2 pDelta);
 	void zoomCamera(float fDelta);
 	void moveCamera( vec3 pDirection );
+	void intersectPlane(float fX, float fY);
 	void switchView();
 
 	// Helper Enum for RGB Values
@@ -78,7 +79,7 @@ private:
 	void RenderScene();
 	void renderAxis();
 
-	// Manages Shaders for all assignments
+	// Manager Pointers
 	EntityManager* m_pEntityManager;
 	ShaderManager* m_pShaderManager;
 	UserInterface* m_pUserInterface;

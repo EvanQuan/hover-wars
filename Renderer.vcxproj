@@ -24,6 +24,8 @@
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DirectionalLight.h" />
+    <ClInclude Include="Headers\Emitter.h" />
+    <ClInclude Include="Headers\EmitterEngine.h" />
     <ClInclude Include="Headers\Entity.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
@@ -34,9 +36,9 @@
     <ClInclude Include="Headers\FreeImage.h" />
     <ClInclude Include="Headers\GameTime.h" />
     <ClInclude Include="Headers\GameManager.h" />
-    <ClInclude Include="Headers\ImageBuffer.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
+    <ClInclude Include="Headers\InteractableEntity.h" />
     <ClInclude Include="Headers\PointLight.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
@@ -59,6 +61,8 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CommandHandler.cpp" />
     <ClCompile Include="Source\DirectionalLight.cpp" />
+    <ClCompile Include="Source\Emitter.cpp" />
+    <ClCompile Include="Source\EmitterEngine.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
@@ -67,9 +71,9 @@
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
     <ClCompile Include="Source\GameManager.cpp" />
-    <ClCompile Include="Source\ImageBuffer.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\InteractableEntity.cpp" />
     <ClCompile Include="Source\PointLight.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
@@ -146,14 +150,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies;Dependencies\FreeType;Dependencies\FreeImage</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies;Dependencies\FreeType</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -180,14 +184,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\FreeImage;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies;Dependencies\FreeType;Dependencies\FreeImage</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies;Dependencies\FreeType</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
