@@ -21,6 +21,7 @@
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
 #include "GameTime.h"
+#include "Physics/PhysicsManager.h"
 
 // FreeType
 #include <ft2build.h>
@@ -110,6 +111,7 @@ struct Material
 #define SCENE_LOADER	Scene_Loader::getInstance()
 #define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
+#define PHYSICS_MANAGER PhysicsManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
