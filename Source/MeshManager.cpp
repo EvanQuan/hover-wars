@@ -36,7 +36,7 @@ void MeshManager::unloadAllMeshes()
 // Return:				Returns a pointer to the desired mesh from the specified file.
 // Parameters:			sFileName - The location of the file to load.
 // Written by:			James Cote
-Mesh* MeshManager::loadMeshFromFile( const string& sFileName, vec3 vPosition, bool bStaticMesh )
+Mesh* MeshManager::loadMeshFromFile( const string& sFileName, float fScale, vec3 vPosition, bool bStaticMesh )
 {
 	// Attempt to grab it from the texture cache if it already exists
 	Mesh* pReturnMesh = nullptr;
@@ -52,7 +52,7 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, vec3 vPosition, bo
 		// Generate Mesh smart pointer
 		unique_ptr<Mesh> pNewMesh = make_unique<Mesh>( sFileName, bStaticMesh, Mesh::manager_cookie() );
 
-		if ( !initializeMesh( pNewMesh.get(), sFileName, vPosition ) )
+		if ( !initializeMesh( pNewMesh.get(), sFileName, vPosition, fScale ) )
 		{
 			if (sFileName != "")
 			{
@@ -171,14 +171,14 @@ Mesh* MeshManager::generateBillboardMesh(vec3 vPosition, vec3 vNormal, vec2 vUVS
 // Attempts to Initialize and return a new mesh object from a given object file.
 // Returns: Mesh Object created or nullptr if mesh failed to create.
 //			Bool: Returns true on Success, False on failure.
-bool MeshManager::initializeMesh( Mesh* pReturnMesh, const string& sFileName, vec3 vPosition )
+bool MeshManager::initializeMesh( Mesh* pReturnMesh, const string& sFileName, vec3 vPosition, float fScale )
 {
 	// Return Value
 	bool bReturnValue = ( nullptr != pReturnMesh );
 
 	if (bReturnValue)
 	{
-		bReturnValue = pReturnMesh->genMesh( sFileName, vPosition );
+		bReturnValue = pReturnMesh->genMesh( sFileName, vPosition, fScale );
 	}
 
 	// Return result.

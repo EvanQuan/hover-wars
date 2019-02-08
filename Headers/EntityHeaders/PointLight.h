@@ -15,7 +15,7 @@ public:
 	virtual ~PointLight();
 
 	// Function to Initialize the Light.
-	void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "" );
+	void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "", float m_fMeshScale = 1.0f );
 
 	// Light Manipulation
 	void move(vec3 pMoveVec) { m_vPosition += pMoveVec; m_pLightingComponent->updatePosition(&m_vPosition); }

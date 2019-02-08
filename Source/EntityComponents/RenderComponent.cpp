@@ -34,9 +34,6 @@ void RenderComponent::render()
 	glBindVertexArray(m_iVertexArray);
 	glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
 
-	if( nullptr != m_pMesh )
-		m_pShdrMngr->setUniformFloat(m_eShaderType, "fScale", m_pMesh->getScale());
-
 	// Bind Texture(s) HERE
  	m_sRenderMaterial.m_pDiffuseMap->bindTexture(m_eShaderType, "sMaterial.vDiffuse");
 	m_sRenderMaterial.m_pSpecularMap->bindTexture(m_eShaderType, "sMaterial.vSpecular");

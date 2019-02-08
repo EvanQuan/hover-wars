@@ -136,7 +136,7 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 		pPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
 		pColor = vec3(stof(sData[3])/*R*/, stof(sData[4])/*G*/, stof(sData[5])/*B*/);
 
-		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty);
+		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
 	}
 	else
 	{
@@ -165,7 +165,7 @@ void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
 		vDirection = vec3( stof(sData[3])/*dX*/, stof(sData[4])/*dY*/, stof(sData[5])/*dZ*/);
 		vColor = vec3( stof(sData[6])/*R*/, stof(sData[7])/*G*/, stof(sData[8])/*B*/);
 
-		ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty);
+		ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
 	}
 	else
 	{
@@ -180,15 +180,14 @@ void Scene_Loader::createPlayer(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
-	ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, &m_pMaterialProperty, m_sShaderProperty);
+	ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty );
 }
 
 // Generates a Static Mesh Object at a specified location.
 void Scene_Loader::createStaticMesh(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
-
-	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, m_sShaderProperty);
+	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty);
 }
 
 /**************************************************************************\
@@ -335,7 +334,10 @@ void Scene_Loader::handleProperty( vector< string >& sData, const string& sIndic
 	if (MATERIAL == sIndicator)
 		grabMaterial(sData);
 	else if (MESH == sIndicator)
+	{
 		m_sMeshProperty = sDataTrimmed;
+		m_fMeshScaleProperty = sData.size() > 1 ? stof(sData[1]) : 1.0f;
+	}
 	else if (SHADER == sIndicator)
 		m_sShaderProperty = sDataTrimmed;
 }
@@ -410,6 +412,7 @@ void Scene_Loader::clearProperties() // Clear any properties
 
 	m_pAnimProperty = nullptr;
 	m_sMeshProperty = m_sShaderProperty = "";
+	m_fMeshScaleProperty = 1.0f;
 
 	m_pMaterialProperty.fShininess = 0.0f;
 	m_pMaterialProperty.sDiffuseMap = m_pMaterialProperty.sOptionalSpecMap = "";

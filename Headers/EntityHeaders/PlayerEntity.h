@@ -12,7 +12,8 @@ public:
 
 	void initializePlayer(const string& sFileName, 
 							const Material* pMaterial, 
-							const string& sShaderType);
+							const string& sShaderType,
+							float fScale);
 
 private:
 	Mesh* m_pMesh;

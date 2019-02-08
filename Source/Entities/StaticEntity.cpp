@@ -39,10 +39,10 @@ void StaticEntity::loadAsSphere(float fRadius, const Material* pMaterial, const 
 }
 
 // Load a Static Mesh from a given file
-void StaticEntity::loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType)
+void StaticEntity::loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType, float fScale)
 {
 	// Grab the Mesh Object
-	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, m_vPosition, true);
+	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, fScale, m_vPosition, true);
 
 	// Set up Render component
 	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
