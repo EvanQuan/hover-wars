@@ -55,9 +55,10 @@
 #			- <*specular map location*>	= (Optional) specifies a texture to use as a specular map.
 #										= (Optional) if specified as 3 floats, a texture of that shade will be generated.
 #			- S							= specifies the shininess of the material
-#		+mesh		{ <mesh location> }
+#		+mesh		{ <mesh location>  s }
 #			- specifies a mesh .obj that will be loaded for the object
 #			- if a mesh is expected, but no mesh is given, a cube will be used as default.
+#			- "s"					= the scale of the mesh *Optional: Default is 1.0f*
 #		+shader		{ <shader type> }
 #			- These are application specific and types are specified in
 #				ShaderManager.cpp.
@@ -192,6 +193,7 @@ player {
 	0 0 0
 	+mesh {
 		models/big_dodge.obj
+		0.25
 	}
 	+material {
 		textures/tronBase.png
@@ -207,6 +209,7 @@ static_mesh {
 	0 0 10
 	+mesh {
 		models/bunny.obj
+		5.0
 	}
 	+material {
 		textures/fig-7c.png

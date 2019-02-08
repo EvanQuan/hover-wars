@@ -3,6 +3,7 @@ layout (std140, binding = 0) uniform Matrices
 {
 	mat4 projection;
 	mat4 modelview;
+	mat4 modelviewInv;
 };
 
 layout (location = 0) in vec3 vertex;
@@ -23,9 +24,7 @@ void main(void)
     vec4 positionCameraSpace = vec4( modelview[0][2], modelview[1][2], modelview[2][2], modelview[3][2] );
 	vec3 P = positionCameraSpace.xyz * positionCameraSpace.w;
 	
-	mat4 CameraMatrix = inverse(modelview);
-	
-	vToCamera = vec3( CameraMatrix[3][0], CameraMatrix[3][1], CameraMatrix[3][2]) - vertex;
+	vToCamera = vec3( modelviewInv[3][0], modelviewInv[3][1], modelviewInv[3][2]) - vertex;
 	
 	// create the Normal Matrix to correct Normal into camera space
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));

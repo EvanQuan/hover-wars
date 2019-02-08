@@ -22,7 +22,7 @@ PointLight::~PointLight()
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //	If "" is provided for the Mesh name, a generic cube will be generated.
-void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial, const string& sMeshName )
+void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial, const string& sMeshName, float m_fMeshScale )
 {
 	// Set the color of the Light
 	m_pColor = (*vColor);
@@ -34,7 +34,7 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
 	}
 	else
 	{
-		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, m_vPosition, bStatic);
+		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, m_fMeshScale, m_vPosition, bStatic);
 	}
 
 	// Create a Render Component

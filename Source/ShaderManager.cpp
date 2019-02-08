@@ -44,13 +44,13 @@ ShaderManager::ShaderManager()
 	glGenBuffers(1, &m_iMatricesBuffer);
 	glGenBuffers(1, &m_iLightsBuffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
-	glBufferData(GL_UNIFORM_BUFFER, 152, NULL, GL_STATIC_DRAW);	// Allocate 150 bytes of memory
+	glBufferData(GL_UNIFORM_BUFFER, (sizeof(mat4) * 3), NULL, GL_STATIC_DRAW);	// Allocate 150 bytes of memory
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iLightsBuffer);
 	glBufferData(GL_UNIFORM_BUFFER, LIGHT_BUFFER_SIZE, NULL, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	// Bind the Uniform Buffer to a base of size 2 * sizeof(mat4) => (Projection and Model View Matrix)
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_iMatricesBuffer, 0, (sizeof(mat4) << 1));	// Bind this buffer base to 0; this is for general Matrices.
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_iMatricesBuffer, 0, (sizeof(mat4) * 3));	// Bind this buffer base to 0; this is for general Matrices.
 	glBindBufferRange(GL_UNIFORM_BUFFER, 2, m_iLightsBuffer, 0, LIGHT_BUFFER_SIZE);
 
 	glEnable(GL_BLEND);
@@ -60,6 +60,9 @@ ShaderManager::ShaderManager()
 	// Set Edge Shader Locations
 	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/light.vert" );
 	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/light.frag" );
+
+	m_pShader[eShaderType::PARTICLE_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/particle.vert");
+	m_pShader[eShaderType::PARTICLE_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/particle.frag");
 
 	m_pShader[ eShaderType::TOON_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/toon.vert" );
 	m_pShader[ eShaderType::TOON_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/toon.frag" );
@@ -144,9 +147,11 @@ bool ShaderManager::initializeShaders()
 // Set Projection Matrix for all Shaders
 void ShaderManager::setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat )
 {
+	mat4 pInvModelViewMat = inverse(*pModelViewMat);
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), pProjMat); // Set the Projection Matrix Data to the uniform Buffer.
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), pModelViewMat); // Set the Model View Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), pProjMat);								// Set the Projection Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), pModelViewMat);				// Set the Model View Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, (sizeof(mat4) * 2), sizeof(mat4), &pInvModelViewMat);	// Set the Inverse Model View Matrix Data for getting Camera Position.
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

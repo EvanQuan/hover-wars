@@ -26,6 +26,7 @@ private:
 	Scene_Loader( Scene_Loader* pCopy );
 	static Scene_Loader* m_pInstance;
 	string m_sMeshProperty, m_sShaderProperty;
+	float m_fMeshScaleProperty;
 	Anim_Track* m_pAnimProperty;
 	Material m_pMaterialProperty;
 

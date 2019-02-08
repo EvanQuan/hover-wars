@@ -16,7 +16,7 @@ private:
 	Mesh& operator= (const Mesh& pRHS);
 
 	// Private Methods
-	bool genMesh(const string& sFileName, vec3 vPosition);
+	bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
 	void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
 	void genSphere(float fRadius, vec3 vPosition);
 	void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
@@ -24,11 +24,6 @@ private:
 	void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
 	void initalizeVBOs();
 	bool loadObj(const string& sFileName);
-
-	// Mesh Manipulation - better used for Static Meshes that aren't intended to be moved often.
-	void translate(vec3 vPosition);
-	void rotate(quat qRotationQuatern);
-	void scale(float fScale);
 
 	// VBO Initialization
 	void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
@@ -42,9 +37,7 @@ private:
 	GLuint m_iVertexArray;
 	string m_sManagerKey; // Used as key for finding Mesh in MeshManager
 	ShaderManager* m_pShdrMngr;
-	float m_fScale;
-	GLuint m_iNumInstances;
-	mat4 m_m4DefaultInstance;
+	vector<mat4> m_m4ListOfInstances;
 	bool m_bStaticMesh;
 
 	// Billboard Information
@@ -67,7 +60,7 @@ public:
 	void loadInstanceData(const void* pData, unsigned int iSize);
 
 	// Get Information for drawing elements.
-	GLuint getNumInstances() const { return m_iNumInstances; }
+	GLuint getNumInstances() const { return m_m4ListOfInstances.size(); }
 	GLuint getCount() const {
 		if (!m_pIndices.empty())
 			return m_pIndices.size();
@@ -81,6 +74,10 @@ public:
 	bool usingIndices() const { return !m_pIndices.empty(); }
 	bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
 
+	// Function to add a new Instance Matrix for the Mesh. If the Mesh is dynamic, it will replace the current instance, static will add a new instance.
+	void addInstance(const vec3* vPosition, quat qRotation, float fScale);	// Specify particular components and a transformation matrix will be generated
+	void addInstance(const mat4* m4Transform);								// Specify a previously generated transformation matrix
+
 	// Billboard Usage
 	unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth);
 	void updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd);
@@ -90,7 +87,6 @@ public:
 	const vector<vec3>& getVertices() const { return m_pVertices; }
 	const vector<vec3>& getNormals() const { return m_pNormals; }
 	const vector<vec2>& getUVs() const { return m_pUVs; }
-	float getScale() const { return m_fScale; }
 	GLuint getVertexArray() const { return m_iVertexArray; }
 
 	// Gets the file name, only the MeshManager can set this variable.

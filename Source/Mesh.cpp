@@ -25,9 +25,6 @@ Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, manager_cookie )
 {
 	m_sManagerKey = sManagerKey;
 	m_bStaticMesh = bStaticMesh;
-	m_m4DefaultInstance =  mat4(1.0f);
-	m_iNumInstances = 1;
-	m_fScale = 0.25f;
 	m_pShdrMngr = SHADER_MANAGER;
 	glGenVertexArrays(1, &m_iVertexArray);
 }
@@ -44,7 +41,7 @@ Mesh::~Mesh()
 
 // Load the Mesh from a given file name
 //  Result: Stores the mesh variables into a set of vertices
-bool Mesh::genMesh( const string& sFileName, vec3 vPosition )
+bool Mesh::genMesh( const string& sFileName, vec3 vPosition, float fScale )
 {
 	// Return Value
 	bool bReturnValue = true;
@@ -56,15 +53,15 @@ bool Mesh::genMesh( const string& sFileName, vec3 vPosition )
 	// Store Mesh in GPU
 	if (bReturnValue)
 	{
-		if (m_bStaticMesh)
-		{
-			Mesh::scale(20.0f);
+		// Apply Scale before Translation
+		mat4 m4Transformation = scale(vec3(fScale)) * mat4(1.0f);
+		if (vec3(0.f) != vPosition)
+			m4Transformation = translate(vPosition) * m4Transformation;
 
-			if (vec3(0.f) != vPosition)
-			{
-				Mesh::translate(vPosition);
-			}
-		}
+		// Store initial transformation
+		m_m4ListOfInstances.push_back(m4Transformation);
+
+		// Initialize VBOs
 		initalizeVBOs();
 	}
 
@@ -101,23 +98,27 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 	// Generate Indices
 	m_pIndices = { 0, 1, 2, 1, 2, 3 };
 
+	// Initial Translation Matrix
+	mat4 m4TranslationMatrix = mat4(1.0f);
+
 	float d = dot(vNormal, vec3(0.f, 1.f, 0.f) );
 	if (d < 1.f) // If d >= 1.f, Vectors are the same.
 	{
 		// create Rotation quaternion to rotate plane.
-		vec3 vCross = cross(vNormal, vec3(0.f, 1.f, 0.f));// *invs;
+		vec3 vCross = cross(vNormal, vec3(0.f, 1.f, 0.f));
 		quat q = angleAxis(acos(d), vCross);
 		normalize(q);
 	
 		// Rotate Plane
-		Mesh::rotate(q);
+		m4TranslationMatrix = toMat4(q) * m4TranslationMatrix;
 	}
 
 	// If translation is necessary, translate plane.
 	if (vec3(0.f) != vPosition)
-	{
-		Mesh::translate(vPosition);
-	}
+		m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
+
+	// Store Initial Transformation Matrix
+	m_m4ListOfInstances.push_back(m4TranslationMatrix);
 
 	// Load Mesh into GPU
 	initalizeVBOs();
@@ -170,11 +171,15 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 		*i++ = ((r + 1) * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
 	}
 
+	// Initial Transformation Matrix
+	mat4 m4InitialTransformation = mat4(1.0f);
+
 	// Translate to Position if Sphere is a Static Mesh.
-	if (m_bStaticMesh && vec3(0.f) != vPosition)
-	{
-		Mesh::translate(vPosition);
-	}
+	if (vec3(0.f) != vPosition)
+		m4InitialTransformation = translate(vPosition) * m4InitialTransformation;
+
+	// Store Initial Transformation Matrix
+	m_m4ListOfInstances.push_back(m4InitialTransformation);
 
 	// Store Mesh in GPU
 	initalizeVBOs();
@@ -310,10 +315,15 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 		22, 21, 23, 22, 20, 21
 	};
 
-	if (m_bStaticMesh)
-	{
-		Mesh::translate(vPosition);
-	}
+	// Initial Transformation Matrix
+	mat4 m4InitialTransformationMatrix = mat4(1.0f);
+
+	// Translation
+	if (vec3(0.0f) != vPosition)
+		m4InitialTransformationMatrix = translate(vPosition);
+
+	// Store Initial Transformation Matrix in Transformation vector
+	m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
 
 	initalizeVBOs();
 }
@@ -488,7 +498,6 @@ void Mesh::initalizeVBOs()
 			m_pIndices.data(),
 			m_pIndices.size() * sizeof(unsigned int),
 			GL_STATIC_DRAW);
-
 	}
 }
 
@@ -496,8 +505,8 @@ void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
 {
 	// Set up Instanced Buffer for Instance Rendering
 	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-		m_iVertexArray, (void*)&m_m4DefaultInstance,
-		sizeof(mat4), GL_DYNAMIC_DRAW);
+		m_iVertexArray, (void*)m_m4ListOfInstances.data(),
+		sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
 
 	// Instance Rendering Attributes
 	//	Set up openGL for referencing the InstancedBuffer as a Mat4
@@ -651,53 +660,32 @@ void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
 		glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_STREAM_DRAW);
-		m_iNumInstances = iSize;
 	}
 }
 
-/****************************************************************************\
- * Static Mesh Manipulation													*
-\****************************************************************************/
-
-// Translates a Mesh from the origin to the given position.
-//	Should only be used for static objects to set their static positions once.
-void Mesh::translate(vec3 vPosition)
+// Taking in a new Position a Rotation Quaternion and a Scale, add a new transformation matrix to the internal list and updates the VBO.
+void Mesh::addInstance(const vec3* vPosition, quat qRotation, float fScale)
 {
-	// Generate translation matrix to translate plane to new position.
-	mat4 m4TranslationMat = glm::translate(vPosition - vec3(0.f));
+	// Order as Scale -> Rotation -> Translation
+	mat4 m4NewTransform = scale(vec3(fScale));
+	m4NewTransform = toMat4(qRotation) * m4NewTransform;
+	m4NewTransform = translate(*vPosition) * m4NewTransform;
 
-	// translate all vertices to new positions
-	for (vector<vec3>::iterator iter = m_pVertices.begin();
-		iter != m_pVertices.end();
-		++iter)
-	{
-		(*iter) = m4TranslationMat * vec4((*iter), 1.f);
-	}
+	// Utilize Overloaded Function for functionality.
+	addInstance(&m4NewTransform);
 }
 
-// Given a Quaternion, rotate all vertices of mesh by quaternion value.
-void Mesh::rotate(quat qRotationQuatern)
+// Take in a new Transformation Matrix, update the internal transform list as well as the VBO
+//	Dynamic Meshes will replace their old transformation and Static Meshes will add a transformation.
+void Mesh::addInstance(const mat4* m4Transform)
 {
-	// Rotate all Vertices by quaternion
-	for (vector<vec3>::iterator iter = m_pVertices.begin();
-		iter != m_pVertices.end();
-		++iter)
-	{
-		(*iter) = vec3(qRotationQuatern * vec4((*iter), 1.f));
-	}
-}
+	// If Dynamic, clear previous position.
+	if (!m_bStaticMesh)
+		m_m4ListOfInstances.clear();
 
-// Uniformally scales a mesh by a given float. Float should be represented as 1.0f == 100%
-void Mesh::scale(float fScale)
-{
-	// Utilize GLM to generate a scale matrix
-	mat4 m4ScaleMatrix = glm::scale(vec3(fScale));
+	// Add new Transformation
+	m_m4ListOfInstances.push_back(*m4Transform);
 
-	// Scale all Vertices by scale matrix.
-	for (vector<vec3>::iterator iter = m_pVertices.begin();
-		iter != m_pVertices.end();
-		++iter)
-	{
-		(*iter) = vec4((*iter), 1.f) * m4ScaleMatrix;
-	}
+	// Load VBO with new Data.
+	loadInstanceData(m_m4ListOfInstances.data(), m_m4ListOfInstances.size());
 }
