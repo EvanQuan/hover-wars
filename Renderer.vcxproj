@@ -19,8 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Anim_Track.h" />
-    <ClInclude Include="Headers\BoidEngine.h" />
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\Emitter.h" />
     <ClInclude Include="Headers\EmitterEngine.h" />
@@ -55,8 +53,6 @@
     <ClInclude Include="TestClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Anim_Track.cpp" />
-    <ClCompile Include="Source\BoidEngine.cpp" />
     <ClCompile Include="Source\CommandHandler.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
     <ClCompile Include="Source\EmitterEngine.cpp" />

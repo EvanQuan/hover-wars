@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "Anim_Track.h"
 
 // Solely Generates Objects and assigns IDs to them.
 class Scene_Loader
@@ -16,7 +15,7 @@ public:
 	void createDirectionalLight(vector< string > sData, int iLength);
 	void createSpotLight(vector< string > sData, int iLength);
 	void createPlayer(vector< string > sData, int iLength);
-	void createStaticMesh(vector< string > sData, int iLength);
+	void createStaticMesh(vector< string > sData, unsigned int iLength);
 
 	void loadFromFile( string sFileName );
 
@@ -27,7 +26,6 @@ private:
 	static Scene_Loader* m_pInstance;
 	string m_sMeshProperty, m_sShaderProperty;
 	float m_fMeshScaleProperty;
-	Anim_Track* m_pAnimProperty;
 	Material m_pMaterialProperty;
 
 	long m_lNextID;
