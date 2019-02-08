@@ -20,10 +20,6 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 									float fScale)
 {
 	// Load Mesh and Rendering Component
-	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, fScale, m_vPosition);
-	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
-
-	// Ensure that the Entity Manager returned a Render Component and Initialize it.
-	assert(nullptr != m_pRenderComponent);
-	m_pRenderComponent->initializeComponent(m_pMesh, pMaterial);
+	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, fScale, m_vPosition);
+	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 }

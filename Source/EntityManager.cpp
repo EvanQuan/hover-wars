@@ -34,10 +34,6 @@ EntityManager::~EntityManager()
 {
 	purgeEnvironment();
 
-	// Delete Boid Engine
-	if (nullptr != m_pBoidEngine)
-		delete m_pBoidEngine;
-
 	// Delete Mesh Manager
 	if (nullptr != m_pMshMngr)
 		delete m_pMshMngr;
@@ -154,28 +150,13 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 	// Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
 	pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
-	for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
+	for (unordered_map<Mesh const*, RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
 		pIter != m_pRenderingComponents.end();
 		++pIter)
-		(*pIter)->render();
+		(*pIter).second->render();
 
 	if (nullptr != m_pEmtrEngn)
 		m_pEmtrEngn->renderEmitters();
-
-	// Draw Boid Engine
-	if( nullptr != m_pBoidEngine )
-		m_pBoidEngine->draw( m_bPause );
-}
-
-/*******************************************************************************\
-* Boid Manipulation														   *
-\*******************************************************************************/
-void EntityManager::initializeBoidEngine(vector< string >& sData)
-{
-	if (nullptr != m_pBoidEngine)
-		delete m_pBoidEngine;
-
-	m_pBoidEngine = new BoidEngine(sData);
 }
 
 /*********************************************************************************\
@@ -343,13 +324,27 @@ CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 
 // Generates a new Render Component, stores it in the Rendering Components list and Master Components list.
 //	Manages component with a unique pointer stored internally in the Master Components list.
-RenderComponent* EntityManager::generateRenderComponent(int iEntityID, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode)
+RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode)
 {
 	// Generate new Render Component
-	unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bStaticDraw, eType, eMode);
-	RenderComponent* pReturnComponent = pNewRenderComponent.get();	// Return pointer
-	m_pRenderingComponents.push_back(pReturnComponent);				// store in Rendering components list
-	m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
+	RenderComponent* pReturnComponent;
+
+	// Since Meshes are more static with their material, if there is a rendering component
+	//	for that mesh already, return that instead since that Mesh will probably have multiple instances
+	//	per render.
+	if (m_pRenderingComponents.end() != m_pRenderingComponents.find(pMeshKey))
+		pReturnComponent = m_pRenderingComponents[pMeshKey];
+	else	// Otherwise, if it hasn't been found, create the new render component and associate it with that Mesh Pointer.
+	{
+		// Initialize new Unique_Ptr for Render Component.
+		unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bStaticDraw, eType, eMode);
+		pNewRenderComponent->initializeComponent(pMeshKey);	// Initialize Render Component
+
+		// Grab return Pointer and store Component within Entity Manager.
+		pReturnComponent = pNewRenderComponent.get();	// Return pointer
+		m_pRenderingComponents.insert(make_pair(pMeshKey, pReturnComponent));
+		m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
+	}
 
 	// Return newly created component.
 	return pReturnComponent;

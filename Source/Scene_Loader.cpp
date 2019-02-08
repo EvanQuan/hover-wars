@@ -54,10 +54,6 @@ Scene_Loader* Scene_Loader::getInstance()
 
 Scene_Loader::~Scene_Loader()
 {
-	if (nullptr != m_pAnimProperty)
-	{
-		delete m_pAnimProperty;
-	}
 }
 
 // Creation Functions
@@ -115,7 +111,6 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 		vDiffuseColor = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
 		vSpecularColor = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
 
-
 		ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
 	}
 	else
@@ -129,14 +124,20 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 // iLength -> Number of Inputer to parse.
 void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 {
+	// Local Variables
 	vec3 pPosition, pColor;
+	float fPower;
 
 	if (MAX_POINT_LIGHT_PARAMS == iLength)
 	{
 		pPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
 		pColor = vec3(stof(sData[3])/*R*/, stof(sData[4])/*G*/, stof(sData[5])/*B*/);
+		fPower = stof(sData[6])/*P*/;
 
-		ENTITY_MANAGER->generateStaticPointLight( stof(sData[6])/*P*/, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
+		// Set the Diffuse Color of the Material
+		m_pMaterialProperty.vOptionalDiffuseColor = vec4(pColor * fPower, 1.0);
+
+		ENTITY_MANAGER->generateStaticPointLight( fPower, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
 	}
 	else
 	{
@@ -165,6 +166,9 @@ void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
 		vDirection = vec3( stof(sData[3])/*dX*/, stof(sData[4])/*dY*/, stof(sData[5])/*dZ*/);
 		vColor = vec3( stof(sData[6])/*R*/, stof(sData[7])/*G*/, stof(sData[8])/*B*/);
 
+		// Set the Diffuse color of the material.
+		m_pMaterialProperty.vOptionalDiffuseColor = vec4(vColor, 1.0);
+
 		ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
 	}
 	else
@@ -184,10 +188,17 @@ void Scene_Loader::createPlayer(vector< string > sData, int iLength)
 }
 
 // Generates a Static Mesh Object at a specified location.
-void Scene_Loader::createStaticMesh(vector< string > sData, int iLength)
+void Scene_Loader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
-	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
-	ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty);
+	// Local Variables
+	vec3 vPosition;
+
+	// Add a number of Static Meshes with the same Properties to all specified positions.
+	for (unsigned int i = 0; i + 3 <= iLength; i += 3)
+	{
+		vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);	// Position of Mesh
+		ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty);
+	}
 }
 
 /**************************************************************************\
@@ -269,7 +280,6 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 {
 	string sBuffer, sParser;
 	string sTexturePropPH, sMeshPropPH;
-	Anim_Track* pAnimTrackPropPH = nullptr;
 	vector< string > sPropertyData;
 	string sPropertyIndicator;
 	stringstream sStream( sBuffer );
@@ -320,8 +330,6 @@ void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator
 		createPlayer(sData, sData.size());
 	else if (STATIC_MESH == sIndicator)		// Parse Static Mesh
 		createStaticMesh(sData, sData.size());
-	else if (BOIDS == sIndicator)	// Parse Mass Spring System
-		ENTITY_MANAGER->initializeBoidEngine(sData);
 
 	clearProperties();
 }
@@ -405,16 +413,11 @@ string Scene_Loader::trimString( const string& sStr )
 // Clear Any Properties that have been created on the last data parse.
 void Scene_Loader::clearProperties() // Clear any properties
 {
-	if (nullptr != m_pAnimProperty)
-	{
-		delete m_pAnimProperty;
-	}
-
-	m_pAnimProperty = nullptr;
 	m_sMeshProperty = m_sShaderProperty = "";
 	m_fMeshScaleProperty = 1.0f;
 
 	m_pMaterialProperty.fShininess = 0.0f;
 	m_pMaterialProperty.sDiffuseMap = m_pMaterialProperty.sOptionalSpecMap = "";
+	m_pMaterialProperty.vOptionalDiffuseColor = vec4(0.0f);
 	m_pMaterialProperty.vOptionalSpecShade = vec4(0.0f);
 }

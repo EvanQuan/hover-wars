@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "ShaderManager.h"
+#include "Texture.h"
 
 //////////////////////////////////////////////////////////////////
 // Name: Mesh.h
@@ -24,9 +25,21 @@ private:
 	void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
 	void initalizeVBOs();
 	bool loadObj(const string& sFileName);
+	void loadMaterial(const Material* pMaterial);
+
+	// function to generate a quaternion to rotate from y-axis normal to specified normal
+	mat4 getRotationMat4ToNormal(const vec3* vNormal);
 
 	// VBO Initialization
 	void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
+
+	// Material Struct for setting uniform in Lighting Shaders
+	struct sRenderMaterial
+	{
+		Texture* m_pDiffuseMap;
+		Texture* m_pSpecularMap;
+		float fShininess;
+	} m_sRenderMaterial;
 
 	// Indices for Faces of Mesh and Additional Buffer Addresses on the GPU for
 	//	Indices and Normals
@@ -55,7 +68,7 @@ private:
 	struct manager_cookie {};
 
 public:
-	explicit Mesh(const string &sFileName, bool bStaticMesh, manager_cookie);
+	explicit Mesh(const string &sFileName, bool bStaticMesh, const Material* pMaterial, manager_cookie);
 	virtual ~Mesh();
 	void loadInstanceData(const void* pData, unsigned int iSize);
 
@@ -75,8 +88,8 @@ public:
 	bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
 
 	// Function to add a new Instance Matrix for the Mesh. If the Mesh is dynamic, it will replace the current instance, static will add a new instance.
-	void addInstance(const vec3* vPosition, quat qRotation, float fScale);	// Specify particular components and a transformation matrix will be generated
-	void addInstance(const mat4* m4Transform);								// Specify a previously generated transformation matrix
+	void addInstance(const vec3* vPosition, const vec3* vNormal, float fScale);	// Specify particular components and a transformation matrix will be generated
+	void addInstance(const mat4* m4Transform);									// Specify a previously generated transformation matrix
 
 	// Billboard Usage
 	unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth);
@@ -88,6 +101,10 @@ public:
 	const vector<vec3>& getNormals() const { return m_pNormals; }
 	const vector<vec2>& getUVs() const { return m_pUVs; }
 	GLuint getVertexArray() const { return m_iVertexArray; }
+
+	// Functionality for Binding and Unbinding Textures
+	void bindTextures(ShaderManager::eShaderType eShaderType) const ;
+	void unbindTextures() const;
 
 	// Gets the file name, only the MeshManager can set this variable.
 	const string& getManagerKey() { return m_sManagerKey; }
