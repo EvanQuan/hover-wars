@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Mesh.h"
 #include "EntityComponentHeaders/RenderComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
 
 class PlayerEntity :
 	public Entity
@@ -18,5 +19,6 @@ public:
 private:
 	Mesh* m_pMesh;
 	RenderComponent* m_pRenderComponent;
+	PhysicsComponent* m_pPhysicsComponent;
 };
 

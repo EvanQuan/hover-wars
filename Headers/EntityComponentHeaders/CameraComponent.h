@@ -17,7 +17,7 @@ public:
 
 	// Updating Functions
 	void updateHxW(int iHeight, int iWidth);
-	void update( double dTimeStep ) { /*Not implemented*/ }
+	void update(duration<float> fTimeDelta); // Overloading virtual update function from Entity Component
 
 	// Set up Camera Matrices
 	mat4 getToCameraMat() const;

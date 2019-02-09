@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "MeshManager.h"
 #include "EntityComponentHeaders/RenderComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
 
 // Name: InteractableEntity
 // Written by: James Cote
@@ -29,4 +30,5 @@ private:
 
 	Mesh* m_pBillboardMesh;
 	RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
+	PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
 };

@@ -32,6 +32,5 @@ private:
 	Mesh* m_pMesh;
 	RenderComponent* m_pRenderComponent;
 	LightingComponent* m_pLightingComponent;
-
 };
 

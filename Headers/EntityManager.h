@@ -12,6 +12,8 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
+#include "Physics/PhysicsManager.h"
 
 
 // Environment Manager
@@ -41,6 +43,7 @@ public:
 	CameraComponent* generateCameraComponent(int iEntityID);
 	RenderComponent* generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode);
 	LightingComponent* generateLightingComponent(int iEntityID);
+	PhysicsComponent* generatePhysicsComponent(int iEntityID);
 
 	// Camera Management
 	void updateHxW(int iHeight, int iWidth);
@@ -74,6 +77,7 @@ private:
 	int m_iHeight, m_iWidth;
 	inline int getNewEntityID() { return ++m_iEntityIDPool; }
 	inline int getNewComponentID() { return ++m_iComponentIDPool; }
+	vector<PhysicsComponent*>			m_pPhysicsComponents; // PHYSICSTODO: If this isn't necessary, remove it.
 	vector<unique_ptr<EntityComponent>>				m_pMasterComponentList;
 	vector<unique_ptr<Entity>>						m_pMasterEntityList;
 	unordered_map<Mesh const*, RenderComponent*>	m_pRenderingComponents;
@@ -89,6 +93,7 @@ private:
 	TextureManager*				m_pTxtMngr;
 	Scene_Loader*				m_pScnLdr;
 	EmitterEngine*				m_pEmtrEngn;
+	PhysicsManager*				m_pPhysxMngr;
 
 	// Edge Threshold Implementation
 	float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;

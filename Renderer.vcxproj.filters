@@ -19,11 +19,17 @@
     <Filter Include="Source Files\EntityComponents">
       <UniqueIdentifier>{929a9623-930c-4643-9cf4-766a846cf85c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{0c416677-2926-419e-815e-eb7bdeab70e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{f1ea1db2-3783-411c-8d6c-0d0b1f24d104}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files\EntityHeaders">
-      <UniqueIdentifier>{9e71f766-7dc6-43ed-9f0f-aa380744455f}</UniqueIdentifier>
+      <UniqueIdentifier>{4f841631-2c03-4cc6-bea5-3fdd0eea5bda}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Entities">
-      <UniqueIdentifier>{b37ab373-e882-44b8-ac80-cec82eee7459}</UniqueIdentifier>
+      <UniqueIdentifier>{72755986-b017-4af1-8d3f-016b67399074}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,11 +99,17 @@
     <ClInclude Include="Headers\Emitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Physics\PhysicsManager.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\UserInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestClass.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\Camera.h">
       <Filter>Header Files\EntityHeaders</Filter>
@@ -122,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +194,9 @@
     <ClCompile Include="Source\CommandHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsManager.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Source\EmitterEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -190,6 +208,12 @@
     </ClCompile>
     <ClCompile Include="TestClass.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Camera.cpp">
       <Filter>Source Files\Entities</Filter>
@@ -215,5 +239,10 @@
     <ClCompile Include="Source\Entities\StaticEntity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Renderer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -22,6 +22,16 @@
 #include "EnvSpec.h"
 #include "GameTime.h"
 
+#ifdef USING_WINDOWS
+#include <string>
+#include <glew.h>
+#endif
+#include <glfw3.h>
+
+// PhysX
+#include "PxPhysicsAPI.h"
+using namespace physx;
+
 // FreeType
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -35,17 +45,14 @@
 #define GLFW_INCLUDE_GLCOREARB
 #define GL_GLEXT_PROTOTYPES
 #endif
-#ifdef USING_WINDOWS
-#include <string>
-#include <glew.h>
-#endif
-#include <glfw3.h>
+
 
 #define ERR_CODE -1
 
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
+using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE			128
@@ -112,6 +119,7 @@ struct Material
 #define MESH_MANAGER	MeshManager::getInstance()
 #define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
+#define PHYSICS_MANAGER PhysicsManager::getInstance()
 #define SCENE_LOADER	Scene_Loader::getInstance()
 #define EMITTER_ENGINE	EmitterEngine::getInstance()
 
