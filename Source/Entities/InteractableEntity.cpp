@@ -30,4 +30,8 @@ void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int i
 
 	// Generate the Render Component
 	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pBillboardMesh, true, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
+
+	// PHYSICSTODO: Set up Physics Component as a Physics Object for an interactable Object. This may be temporary, but maybe make it a cylinder?
+	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
+	m_pPhysicsComponent->initializeComponent(true, m_pBillboardMesh); // PHYSICSTODO
 }

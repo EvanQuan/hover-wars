@@ -28,7 +28,7 @@ public:
 	virtual ~LightingComponent();
 
 	// Inherited update frunction from EntityComponent
-	void update(double dTimeStep);
+	void update(duration<float> fTimeDelta);
 
 	// Initializes the proper buffers on the GPU for rendering.
 	void initializeAsPointLight( const vec3* vPosition, const vec3* vColor, float fPower );

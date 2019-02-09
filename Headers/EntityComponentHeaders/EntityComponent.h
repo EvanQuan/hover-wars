@@ -14,7 +14,7 @@ class EntityComponent
 public:
 	virtual ~EntityComponent();
 
-	virtual void update(double dTimeDelta) = 0;
+	virtual void update(duration<float> fTimeDelta) = 0;
 
 	// Getters and Setters
 	int getEntityID() { return m_iEntityID; }

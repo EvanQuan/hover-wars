@@ -21,6 +21,7 @@
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
 #include "GameTime.h"
+#include "Physics/PhysicsManager.h"
 
 // PhysX
 #include "PxPhysicsAPI.h"
@@ -49,6 +50,7 @@
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
+using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE			128
@@ -115,6 +117,7 @@ struct Material
 #define MESH_MANAGER	MeshManager::getInstance()
 #define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
+#define PHYSICS_MANAGER PhysicsManager::getInstance()
 #define SCENE_LOADER	Scene_Loader::getInstance()
 #define EMITTER_ENGINE	EmitterEngine::getInstance()
 

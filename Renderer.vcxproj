@@ -25,6 +25,7 @@
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
     <ClInclude Include="Headers\EntityHeaders\Camera.h" />
     <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
+    <ClInclude Include="Headers\Physics\PhysicsManager.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
     <ClInclude Include="Headers\Scene_Loader.h" />
@@ -67,12 +69,14 @@
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
     <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
@@ -148,6 +152,7 @@
       <AdditionalIncludeDirectories>Dependencies\PhysX;Dependencies\FreeType;Dependencies\glfw;Dependencies\glew;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -162,11 +167,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\FreeImage\x64;Dependencies\glew\x64;Dependencies\glfw\x64;glm;Headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\FreeType;Dependencies\glew;Dependencies\glfw;glm;Headers;Dependencies\PhysX4\PhysX_32\include;Dependencies\PhysX4\pxShared\include;Dependencies\PhysX4\pxShared\include\foundation</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\glfw\x64;Dependencies\glew\x64;Dependencies\FreeImage\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\glfw;Dependencies\glew;Dependencies\FreeType;Dependencies\PhysX3\PhysX-3.4\PxShared\lib\vc15win64;Dependencies\PhysX3\PhysX-3.4\PhysX_3.4\Lib\vc15win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;FreeImage.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>

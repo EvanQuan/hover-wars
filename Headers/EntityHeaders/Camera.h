@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "Entity.h"
 #include "EntityComponentHeaders/CameraComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
 
 #define ZOOM_MAX			1000.f
 
@@ -24,6 +25,7 @@ public:
 
 private:
 	CameraComponent* m_pCmraCmp;
+	PhysicsComponent* m_pPhysicsCmp;
 	void updateCameraComponent();
 	bool m_bSteadyCam; // Boolean to steady the camera so it cannot be adjusted by user input.
 

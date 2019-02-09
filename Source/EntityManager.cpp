@@ -19,6 +19,7 @@ EntityManager::EntityManager()
 	m_pTxtMngr = TEXTURE_MANAGER;
 	m_pScnLdr = SCENE_LOADER;
 	m_pEmtrEngn = EMITTER_ENGINE;
+	m_pPhysxMngr = PHYSICS_MANAGER;
 }
 
 // Gets the instance of the environment manager.
@@ -113,6 +114,7 @@ void EntityManager::purgeEnvironment()
 
 	m_pMshMngr->unloadAllMeshes();
 	m_pTxtMngr->unloadAllTextures();
+	m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
 	m_pDirectionalLight = nullptr;
 	m_pTestingLight = nullptr;
 	m_pActiveCamera = nullptr;
@@ -298,6 +300,15 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 		
 		// UPDATES GO HERE
 		m_pEmtrEngn->update(pDeltaTime);
+		m_pPhysxMngr->update(pDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
+
+		// PHYSICSTODO: Maybe this needs to happen? perhaps the Physics Manager just takes care
+		//	of the update and the Physics component can just fetch information as the Entity
+		//	needs it on their update? How should this be done?
+		for (vector<PhysicsComponent*>::const_iterator iter = m_pPhysicsComponents.begin();
+			iter != m_pPhysicsComponents.end();
+			++iter)
+			(*iter)->update(pDeltaTime);
 	}
 }
 
@@ -358,6 +369,23 @@ LightingComponent* EntityManager::generateLightingComponent(int iEntityID)
 	unique_ptr<LightingComponent> pNewComponent = make_unique<LightingComponent>(iEntityID, getNewComponentID());
 	LightingComponent* pReturnComponent = pNewComponent.get();
 	m_pLights.push_back(pReturnComponent);
+	m_pMasterComponentList.push_back(move(pNewComponent));
+
+	// Return newly created component
+	return pReturnComponent;
+}
+
+// This function will generate a new Physics component, store it within the internal
+//	Master Component list as well as a separate PhysicsComponent* list that can be
+//	managed by the Entity Manager. PHYSICSTODO: Maybe the separate list isn't necessary
+//												and only the Physics Manager needs to be updated
+//												or modified on a frame by frame basis?
+PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
+{
+	// Generate new Physics Component
+	unique_ptr<PhysicsComponent> pNewComponent = make_unique<PhysicsComponent>(iEntityID, getNewComponentID());
+	PhysicsComponent* pReturnComponent = pNewComponent.get();
+	m_pPhysicsComponents.push_back(pReturnComponent);
 	m_pMasterComponentList.push_back(move(pNewComponent));
 
 	// Return newly created component
