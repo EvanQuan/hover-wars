@@ -118,43 +118,43 @@ void PhysicsManager::initPhysics(bool interactive)
 	//	"my" referring to the namespace of the function: PhysicsManager. I also put the small case
 	//	character in front of the Variable name to signify the type of variable it is, 
 	//	'b' for bool, 'i' for int, 'p' for pointer, etc.
-	m_bInteractive = interactive;	// Storing this boolean internally to set up
-									// physics to persistantly be this way. Maybe 
-									// this needs to be designed differently?
-
-	// Comment each of these lines, tell us what each function is doing and why it is necessary.
-	gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-
-	gPvd = PxCreatePvd(*gFoundation);
-	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-
-	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-	gDispatcher = PxDefaultCpuDispatcherCreate(2);
-	sceneDesc.cpuDispatcher = gDispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-	gScene = gPhysics->createScene(sceneDesc);
-
-	PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-	if (pvdClient)
-	{
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-	}
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial); //TODO add this to the create plane function in static entity
-	gScene->addActor(*groundPlane);
-	gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
-	if (!gCook)
-		std::cout << ("PxCreateCooking failed!") << std::endl;
-
-	//manager = PxCreateControllerManager(*gScene);
-	//PxBoxControllerDesc desc = PxBoxControllerDesc();
+//m_bInteractive = interactive;	// Storing this boolean internally to set up
+//								// physics to persistantly be this way. Maybe 
+//								// this needs to be designed differently?
+//
+//// Comment each of these lines, tell us what each function is doing and why it is necessary.
+//gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+//
+//gPvd = PxCreatePvd(*gFoundation);
+//PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+//gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+//
+//gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+//
+//PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+//sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+//gDispatcher = PxDefaultCpuDispatcherCreate(2);
+//sceneDesc.cpuDispatcher = gDispatcher;
+//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+//gScene = gPhysics->createScene(sceneDesc);
+//
+//PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+//if (pvdClient)
+//{
+//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+//	pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+//}
+//gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+//
+//PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial); //TODO add this to the create plane function in static entity
+//gScene->addActor(*groundPlane);
+//gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
+//if (!gCook)
+//	std::cout << ("PxCreateCooking failed!") << std::endl;
+//
+////manager = PxCreateControllerManager(*gScene);
+////PxBoxControllerDesc desc = PxBoxControllerDesc();
 	//desc.setToDefault();
 	//desc.position = PxExtendedVec3(1,1,1);
 	//desc.volumeGrowth = 5.0f;
@@ -166,8 +166,8 @@ void PhysicsManager::initPhysics(bool interactive)
 	//PxController* c = manager->createController(desc);
 	//std::cout << c << std::endl;
 	//initWall(gPhysics);
-	for (PxU32 i = 0; i < 5; i++)
-		createStack(PxTransform(PxVec3(0, 0, stackZ += 3.0f)), 5, 0.1f);
+	//for (PxU32 i = 0; i < 5; i++)
+	//	createStack(PxTransform(PxVec3(0, 0, stackZ += 3.0f)), 5, 0.1f);
 
 	//createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
 //createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
@@ -178,16 +178,32 @@ void PhysicsManager::initPhysics(bool interactive)
 // Also called from the Destructor before the Destructor performs any hard clean up.
 void PhysicsManager::cleanupPhysics()
 {
-	PX_UNUSED(m_bInteractive);
-	gScene->release();
-	gDispatcher->release();
-	gPhysics->release();
-	PxPvdTransport* transport = gPvd->getTransport();
-	gPvd->release();
-	transport->release();
-	//manager->release();
-	gFoundation->release();
-
+	//PX_UNUSED(m_bInteractive);
+	//
+	//if( nullptr != gScene )
+	//	gScene->release();
+	//
+	//if( nullptr != gDispatcher )
+	//	gDispatcher->release();
+	//
+	//if( nullptr != gPhysics )
+	//	gPhysics->release();
+	//
+	//PxPvdTransport* transport = nullptr;
+	//
+	//if (nullptr != gPvd)
+	//{
+	//	transport = gPvd->getTransport();
+	//	gPvd->release();
+	//	transport->release();
+	//}
+	//
+	//if (nullptr != manager)
+	//	manager->release();
+	//
+	//if (nullptr != gFoundation)
+	//	gFoundation->release();
+	//
 }
 
 // Make sure these are well commented so others looking at this code can
@@ -206,21 +222,6 @@ void PhysicsManager::createSphereObject() {
 /********************************************************************************\
  * Private Functions															*
 \********************************************************************************/
-
-// This should be a private function for Physics Manager as it uses it internally to
-//	obfuscate the public interface of the Physics Manager
-mat4 PhysicsManager::getMat4(PxTransform transform) {
-	float matrixArray[4][4];
-	PxMat44 mat44 = PxMat44(transform);
-	for (int i = 0; i < 4; i++) {
-		matrixArray[0][i] = mat44.column0.x;
-		matrixArray[1][i] = mat44.column0.y;
-		matrixArray[2][i] = mat44.column0.z;
-		matrixArray[3][i] = mat44.column0.w;
-	}
-	return glm::make_mat4x4(&matrixArray);
-}
-
 
 /** Saving this code for however you want to design it.
 glm::mat4 physicsStaticObject::getTransformMatrix() {
@@ -266,8 +267,8 @@ void PhysicsManager::createStack(const PxTransform& t, PxU32 size, PxReal halfEx
 //	every frame, but you can decide how often to call this function and how it works under the hood.
 void PhysicsManager::stepPhysics()
 {
-	PX_UNUSED(m_bInteractive
-		/*Private Variable, lasts lifetime of PhysicsManager since initialization, may need to be redesigned as needed?*/);
-	gScene->simulate(1.0f / 60.0f);
-	gScene->fetchResults(true);
+	//PX_UNUSED(m_bInteractive
+	//	/*Private Variable, lasts lifetime of PhysicsManager since initialization, may need to be redesigned as needed?*/);
+	//gScene->simulate(1.0f / 60.0f);
+	//gScene->fetchResults(true);
 }

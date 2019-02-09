@@ -5,10 +5,14 @@ Debug
 # Similarly to the Debug directory, building in release mode will cause
 # merge conflicts. 
 Release
+Checked
 
 # Visual studio files are generated on build. No need to store, and may be
 # different between computers.
 .vs
+
+*.vcxproj.user
+*.sdf
 
 # This file was generated on build from Blend. Should be using Visual Studio
 # 2017 if on Windows, but we can ignore this anyways.

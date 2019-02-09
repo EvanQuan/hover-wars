@@ -13,6 +13,7 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
+#include "Physics/PhysicsManager.h"
 
 
 // Environment Manager

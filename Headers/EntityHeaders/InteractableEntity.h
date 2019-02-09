@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "MeshManager.h"
 #include "EntityComponentHeaders/RenderComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
 
 // Name: InteractableEntity
 // Written by: James Cote

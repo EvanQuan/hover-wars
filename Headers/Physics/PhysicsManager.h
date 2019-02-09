@@ -1,7 +1,6 @@
 #pragma once
-#include "characterkinematic/PxControllerManager.h"
-#include "PxPhysicsAPI.h"
-#include "PxFoundation.h"
+//#include "characterkinematic/PxControllerManager.h"
+//#include "PxFoundation.h"
 #include "stdafx.h"
 
 
@@ -56,7 +55,7 @@ private:
 	float m_fTimeSinceLastUpdate;	// Increments every update to track how long since last Physics Update.
 	// Moving these from Constructor to Here to privatize these variables used by the Physics
 	//	manager
-	PxDefaultAllocator		gAllocator;
+	PxDefaultAllocator gAllocator;
 	PxDefaultErrorCallback	gErrorCallback;
 	PxFoundation*			gFoundation = NULL;
 	PxPhysics*				gPhysics = NULL;
@@ -74,7 +73,6 @@ private:
 	// Private Functions - Not necessary for outside classes to have access to these, they don't need to know about them.
 	void createStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
 	void stepPhysics(); // This probably functions within the update function to be used as necessary.
-	mat4 getMat4(PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
 };
 
 

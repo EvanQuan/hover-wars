@@ -21,10 +21,16 @@
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
 #include "GameTime.h"
-#include "Physics/PhysicsManager.h"
+
+#ifdef USING_WINDOWS
+#include <string>
+#include <glew.h>
+#endif
+#include <glfw3.h>
 
 // PhysX
 #include "PxPhysicsAPI.h"
+using namespace physx;
 
 // FreeType
 #include <ft2build.h>
@@ -39,11 +45,7 @@
 #define GLFW_INCLUDE_GLCOREARB
 #define GL_GLEXT_PROTOTYPES
 #endif
-#ifdef USING_WINDOWS
-#include <string>
-#include <glew.h>
-#endif
-#include <glfw3.h>
+
 
 #define ERR_CODE -1
 
