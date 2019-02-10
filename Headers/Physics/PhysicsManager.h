@@ -29,7 +29,7 @@ public:
 	//	fTimeDelta is given in seconds and is usually a fraction of a second.
 	//	<= 1/60th of a second to maintain 60FPS, may be <= 1/30th of a second in
 	//	the case of multiplayer, depending on performance.
-	void update(duration<float> fTimeDelta);
+	void update(float fTimeDelta);
 	void initPhysics(bool interactive);
 	void cleanupPhysics( );		// This could serve different purposes depending on implementation.
 								// Either it cleans up currently running physics so we can return to main

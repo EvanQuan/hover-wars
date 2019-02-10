@@ -11,6 +11,8 @@ public:
 	Entity(const Entity& pCopy);
 	virtual ~Entity();
 
+	virtual void update(float fTimeInMilliseconds) = 0;
+
 	// Getters/Setters
 	vec3 getPosition() { return m_vPosition; }
 	int getID() { return m_iID; }
