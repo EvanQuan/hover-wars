@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-Represents an ability. Abilities can be activated and have a cool down. 
+Represents an ability. Abilities can be activated and have a cool down.
 */
 enum eAbility
 {
