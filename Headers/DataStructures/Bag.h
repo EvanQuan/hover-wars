@@ -7,7 +7,7 @@ using namespace std;
 /*
 Bags contain quantities of objects, which can be added or removed.
 
-Entirely class is defined in header, instead of .cpp file.
+Entirely class is defined in header, instead of .cpp file due to template usage.
 https://stackoverflow.com/questions/1353973/c-template-linking-error 
 
 Use of map instead of unordered map makees it easier for pairs to be key.
