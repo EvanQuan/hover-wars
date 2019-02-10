@@ -45,7 +45,7 @@ public:
 	};
 
 	void execute(int joystickID, FixedCommand command);
-	void execute(int joystickID, VariableCommand command, const float x, const float y);
+	void execute(int joystickID, VariableCommand command, float x, float y);
 	/*
 	Execute all commands for a given frame.
 	*/

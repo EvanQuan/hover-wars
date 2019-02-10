@@ -94,7 +94,7 @@ Axes values are normalized and follow Cartesian coordinates:
 			              v
                         y = -1
 */
-void CommandHandler::execute(int joystickID, VariableCommand command, const float x, const float y)
+void CommandHandler::execute(int joystickID, VariableCommand command, float x, float y)
 {
 	switch (command)
 	{
