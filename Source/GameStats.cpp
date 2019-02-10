@@ -44,7 +44,7 @@ Initialize the scores of all players to 0
 void GameStats::initializeScores()
 {
 	for (int player = PLAYER_1; player <= PLAYER_4; player++) {
-		setScore((ePlayer) player, 0);
+		this->setScore((ePlayer) player, 0);
 	}
 }
 
@@ -57,7 +57,7 @@ void GameStats::initializeKillstreaks()
 	{
 		for (int playerHit = PLAYER_1; playerHit <= PLAYER_4; playerHit++)
 		{
-			resetKillstreak((ePlayer)playerToAdd, (ePlayer)playerHit);
+			this->resetKillstreak((ePlayer)playerToAdd, (ePlayer)playerHit);
 		}
 	}
 }
@@ -77,4 +77,8 @@ void GameStats::addKillstreak(ePlayer playerToAdd, ePlayer playerHit)
 {
 	// if (killstreaks.find()
 	// killstreaks.insert(pair<pair<ePlayer, ePlayer>(playerToAdd, playerHit), 1>);
+}
+
+void GameStats::resetKillstreak(ePlayer playerToReset, ePlayer playerHit)
+{
 }

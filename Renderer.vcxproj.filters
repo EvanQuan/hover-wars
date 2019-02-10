@@ -34,6 +34,12 @@
     <Filter Include="Header Files\Enums">
       <UniqueIdentifier>{5379aecf-b417-4d72-bec9-ad8dc26d2c44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DataStructures">
+      <UniqueIdentifier>{0c184211-2636-40c9-ae34-b8311e961dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataStructures">
+      <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -153,6 +159,9 @@
     <ClInclude Include="Headers\Enums\ePowerup.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\DataStructures\Bag.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -256,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameStats.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataStructures\Bag.cpp">
+      <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
