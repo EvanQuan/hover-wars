@@ -73,7 +73,8 @@ using namespace physx;
 #define PI_OVER_180			0.01745f
 
 #define KEYS 349
-#define MAX_PLAYER_COUNT GLFW_JOYSTICK_4
+#define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
+#define MAX_PLAYER_COUNT 4
 #define XBOX_CONTROLLER "Xbox"
 #define EMPTY_CONTROLLER "Empty Controller"
 // m_pJoystickAxes

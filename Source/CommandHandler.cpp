@@ -228,7 +228,7 @@ void CommandHandler::executeJoystickCommands()
 {
 	m_pInputHandler->updateJoysticks();
 
-	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
+	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_JOYSTICK; joystickID++)
 	{
 		int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
 		if (joystickIsPresent)
