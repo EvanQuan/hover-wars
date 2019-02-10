@@ -59,30 +59,6 @@ void GameStats::addScore(ePlayer player, eAddScoreReason reason)
 }
 
 /*
-@return the score of the specified player
-*/
-int GameStats::getScore(ePlayer player)
-{
-	return scores.count(player);
-}
-
-/*
-Signifies a specified player has picked up the specified powerup.
-*/
-void GameStats::setPowerupStatus(ePlayer player, ePowerup powerup)
-{
-	powerupStatus.insert(make_pair(player, powerup));
-}
-
-/*
-@return the power up status of the specified player
-*/
-ePowerup GameStats::getPowerupStatus(ePlayer player)
-{
-	return powerupStatus.at(player);
-}
-
-/*
 Signifies that playerAttacker hit a bot.
 */
 void GameStats::hitBot(ePlayer playerAttacker)

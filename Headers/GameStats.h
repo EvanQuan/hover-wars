@@ -96,10 +96,6 @@ public:
 	void initializeStats();
 
 	void addScore(ePlayer player, eAddScoreReason reason);
-	int getScore(ePlayer player);
-
-	void setPowerupStatus(ePlayer player, ePowerup powerup);
-	ePowerup getPowerupStatus(ePlayer player);
 
 	/*
 	Overall game stats
@@ -132,12 +128,6 @@ private:
 	void addDomination(ePlayer playerAttacker, ePlayer playerHit);
 	void resetDomination(ePlayer playerAttacker, ePlayer playerHit);
 	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
-
-	// Current game stats
-	Bag<ePlayer> scores;
-	Bag<ePlayer> killstreaks;
-	Bag<pair<ePlayer, ePlayer>> dominations;
-	unordered_map<ePlayer, ePowerup> powerupStatus;
 
 	unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
 	{
