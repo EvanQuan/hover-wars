@@ -119,14 +119,18 @@ private:
 	GameStats();
 	static GameStats* m_pInstance;
 
+	// Actions
 	void hitBot(ePlayer playerAttacker);
 	void hitPlayer(ePlayer playerAttacker, ePlayer playerHit);
+	// Score
 	void updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit);
 	int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
 	int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
 	void addScore(ePlayer playerAttacker, int points);
-	void addDomination(ePlayer playerAttacker, ePlayer playerHit);
-	void resetDomination(ePlayer playerAttacker, ePlayer playerHit);
+	// Killstreaks
+	void updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+	void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+	void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
 	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
 
 	unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
