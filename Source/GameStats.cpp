@@ -40,7 +40,7 @@ void GameStats::initializeStats()
 /*
 Get a stat. For example:
 
-	int killstreak = get(PLAYER_1, CURRENT_KILLSTREAKS_AGAINST_PLAYER_2);
+	int killstreak = gameStats.get(PLAYER_1, CURRENT_KILLSTREAKS_AGAINST_PLAYER_2);
 
 will retrieve Player 1's current killstreaks against player 2.
 */
