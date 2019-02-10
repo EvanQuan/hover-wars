@@ -23,14 +23,18 @@ GameStats::~GameStats()
 }
 
 /*
-Initialize all stats. This should be done at the start of every game,
-or if the game resets.
+Initialize all stats. This should be done at the start of every game, or if the
+game resets.
 */
 void GameStats::initializeStats()
 {
-	scores.clear();
-	dominations.clear();
-	initializePowerUpStatus();
+	for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+	{
+		for (int stat = 0; stat < STAT_COUNT; stat++)
+		{
+			stats[player][stat] = 0;
+		}
+	}
 }
 
 /*
@@ -83,7 +87,7 @@ Signifies that playerAttacker hit a bot.
 */
 void GameStats::hitBot(ePlayer playerAttacker)
 {
-	scores.add(playerAttacker, POINTS_HIT_BOT);
+	scores.add(playerAttacker, POINTS_GAINED_HIT_BOT);
 }
 /*
 Signifies that playerAttacker hit playerHit
@@ -93,6 +97,36 @@ Updates killstreaks and scores.
 void GameStats::hitPlayer(ePlayer playerAttacker, ePlayer playerHit)
 {
 	addDomination(playerAttacker, playerHit);
+	updateAttackerAndHitScore(playerAttacker, playerHit);
+}
+
+/*
+Update the scores from the result of playerAttacker hitting playerHit
+*/
+void GameStats::updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit)
+{
+	scores.add(playerAttacker, getScoreForAttacker(playerAttacker, playerHit));
+	scores.remove(playerHit, getScoreForHit(playerAttacker, playerHit));
+}
+
+/*
+Get the score for playerAtacker to gain if they hit playerHit
+*/
+int GameStats::getScoreForAttacker(ePlayer playerAttacker, ePlayer playerHit)
+{
+	int basePoints = POINTS_GAINED_HIT_PLAYER;
+	int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK];
+	return basePoints + killstreakBonus;
+}
+
+/*
+Get the score for playerHit to lose if hit by playerAttacker
+*/
+int GameStats::getScoreForHit(ePlayer playerAttacker, ePlayer playerHit)
+{
+	int basePoints = POINTS_LOST_GOT_HIT;
+	int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[playerHit][CURRENT_TOTAL_KILLSTREAK];
+	return basePoints + killstreakBonus;
 }
 
 /*
