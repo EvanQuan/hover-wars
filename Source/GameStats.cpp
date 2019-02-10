@@ -158,7 +158,23 @@ count as dominating.
 */
 bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
 {
-	return dominations.count(make_pair(playerToCheck, playerHit)) >= DOMINATION_COUNT;
+	switch (playerHit)
+	{
+	case PLAYER_1:
+		return stats[playerToCheck][IS_DOMINATING_PLAYER_1];
+		break;
+	case PLAYER_2:
+		return stats[playerToCheck][IS_DOMINATING_PLAYER_1];
+		break;
+	case PLAYER_3:
+		return stats[playerToCheck][IS_DOMINATING_PLAYER_1];
+		break;
+	case PLAYER_4:
+		return stats[playerToCheck][IS_DOMINATING_PLAYER_1];
+		break;
+	default:
+		return false;
+	}
 }
 
 /*
