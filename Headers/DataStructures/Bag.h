@@ -1,6 +1,8 @@
 #pragma once
-#include <stdafx.h>
-// #include <unordered_map>
+#include <unordered_map>
+#include <iterator>
+
+using namespace std;
 
 /*
 Bags contain quantities of objects, which can be added or removed.

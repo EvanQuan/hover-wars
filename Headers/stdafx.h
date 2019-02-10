@@ -53,7 +53,7 @@ using namespace physx;
 #include "Enums/ePowerup.h"
 
 // Custom Data Structures
-// #include "DataStructures/Bag.h"
+#include "DataStructures/Bag.h"
 
 #define ERR_CODE -1
 
