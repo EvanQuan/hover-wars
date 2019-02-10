@@ -40,11 +40,11 @@
     <Filter Include="Source Files\DataStructures">
       <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\snippetvehiclecommon">
-      <UniqueIdentifier>{ac2e6c48-4f0a-467c-9421-b634e72d773c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\snippetvehiclecommon">
-      <UniqueIdentifier>{336a28b4-0c5c-42b7-b57b-e56eea9720ef}</UniqueIdentifier>
+      <UniqueIdentifier>{18c6a556-d17d-436c-911d-559a6a6ec6ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\snippetvehiclecommon">
+      <UniqueIdentifier>{d048e2f4-49d0-47bf-9469-5329cf1881c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
