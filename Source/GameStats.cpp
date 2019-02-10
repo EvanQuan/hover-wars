@@ -28,57 +28,24 @@ or if the game resets.
 */
 void GameStats::initializeStats()
 {
-	initializeScores();
-	initializeKillstreaks();
-}
-
-
-void addKillstreak(ePlayer player)
-{
-	
+	scores.clear();
+	killstreaks.clear();
 }
 
 /*
-Initialize the scores of all players to 0
-*/
-void GameStats::initializeScores()
-{
-	for (int player = PLAYER_1; player <= PLAYER_4; player++) {
-		this->setScore((ePlayer) player, 0);
-	}
-}
-
-/*
-Initialize the killstreak of all players to 0
-*/
-void GameStats::initializeKillstreaks()
-{
-	for (int playerToAdd = PLAYER_1; playerToAdd <= PLAYER_4; playerToAdd++)
-	{
-		for (int playerHit = PLAYER_1; playerHit <= PLAYER_4; playerHit++)
-		{
-			this->resetKillstreak((ePlayer)playerToAdd, (ePlayer)playerHit);
-		}
-	}
-}
-
-/*
-Set a specified player's score to the specified value.
-*/
-void GameStats::setScore(ePlayer player, int score)
-{
-	// scores.insert(pair<ePlayer, int>(player, score));
-}
-
-/*
-Add to a player's killstreak against another player
+Add to a player's killstreak against another player.
 */
 void GameStats::addKillstreak(ePlayer playerToAdd, ePlayer playerHit)
 {
-	// if (killstreaks.find()
-	// killstreaks.insert(pair<pair<ePlayer, ePlayer>(playerToAdd, playerHit), 1>);
+	killstreaks.add(make_pair(playerToAdd, playerHit), 1);
 }
 
+/*
+Reset a player's killstreak against another player.
+*/
 void GameStats::resetKillstreak(ePlayer playerToReset, ePlayer playerHit)
 {
+	killstreaks.erase(make_pair(playerToReset, playerHit));
 }
+
+void

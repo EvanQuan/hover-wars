@@ -31,7 +31,10 @@ public:
 	enum eAddScoreReason
 	{
 		HIT_BOT,
-		HIT_PLAYER,
+		HIT_PLAYER_1,
+		HIT_PLAYER_2,
+		HIT_PLAYER_3,
+		HIT_PLAYER_4,
 		PICKUP_POWERUP,
 	};
 
@@ -45,7 +48,6 @@ public:
 	void initializeStats();
 
 	void addScore(ePlayer player, eAddScoreReason reason);
-	void removeScore(ePlayer player, eRemoveScoreReason reason);
 
 	void pickup(ePlayer player, ePowerup powerup);
 
@@ -53,19 +55,12 @@ private:
 	GameStats();
 	static GameStats* m_pInstance;
 
-	void setScore(ePlayer player, int score);
 	void addKillstreak(ePlayer playerToAdd, ePlayer playerHit);
 	void resetKillstreak(ePlayer playerToReset, ePlayer playerHit);
 
-	void initializeScores();
-	void initializeKillstreaks();
-
-
-	// multimap<ePlayer, int> scores;
-	// multimap<pair<ePlayer, ePlayer>, int> killstreaks;
-
-	// Window reference
-	GLFWwindow* m_pWindow;
+	Bag<ePlayer> scores;
+	Bag<pair<ePlayer, ePlayer>> killstreaks;
+	unordered_map<ePlayer, eAbility> powerupStatus;
 };
 
 
