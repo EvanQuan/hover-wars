@@ -40,9 +40,8 @@
 #		cube	{ x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
 #			- "x y z"				= the position of the cube
 #			- "height width depth"	= Specifies the dimensions of the cube
-#		static_mesh { x y z... }
-#			- "x y z..."			= the position of the mesh
-#									= multiple positions can be specified for instanced rendering
+#		static_mesh { x y z }
+#			- "x y z"				= the position of the mesh
 #
 # ============================================================
 # Attributes
@@ -56,10 +55,9 @@
 #			- <*specular map location*>	= (Optional) specifies a texture to use as a specular map.
 #										= (Optional) if specified as 3 floats, a texture of that shade will be generated.
 #			- S							= specifies the shininess of the material
-#		+mesh		{ <mesh location>  s }
+#		+mesh		{ <mesh location> }
 #			- specifies a mesh .obj that will be loaded for the object
 #			- if a mesh is expected, but no mesh is given, a cube will be used as default.
-#			- "s"					= the scale of the mesh *Optional: Default is 1.0f*
 #		+shader		{ <shader type> }
 #			- These are application specific and types are specified in
 #				ShaderManager.cpp.
@@ -194,7 +192,6 @@ player {
 	0 0 0
 	+mesh {
 		models/big_dodge.obj
-		0.25
 	}
 	+material {
 		textures/tronBase.png
@@ -208,15 +205,8 @@ player {
 
 static_mesh {
 	0 0 10
-	0 10 0
-	10 0 0
-	10 10 0
-	10 0 10
-	0 10 10
-	10 10 10
 	+mesh {
 		models/bunny.obj
-		5.0
 	}
 	+material {
 		textures/fig-7c.png

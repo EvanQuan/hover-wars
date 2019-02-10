@@ -15,9 +15,14 @@ public:
 	void createDirectionalLight(vector< string > sData, int iLength);
 	void createSpotLight(vector< string > sData, int iLength);
 	void createPlayer(vector< string > sData, int iLength);
-	void createStaticMesh(vector< string > sData, unsigned int iLength);
+	void createStaticMesh(vector< string > sData, int iLength);
 
 	void loadFromFile( string sFileName );
+	// .dll for freetype?
+	// no, for glfw3
+
+	// Where's the .dll?
+
 
 private:
 	// Singleton Implementation
@@ -25,7 +30,6 @@ private:
 	Scene_Loader( Scene_Loader* pCopy );
 	static Scene_Loader* m_pInstance;
 	string m_sMeshProperty, m_sShaderProperty;
-	float m_fMeshScaleProperty;
 	Material m_pMaterialProperty;
 
 	long m_lNextID;

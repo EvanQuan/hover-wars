@@ -20,14 +20,12 @@ EmitterEngine::EmitterEngine()
 
 }
 
-// Default Destructor for EmitterEngine, just clears all emitters for now.
+
 EmitterEngine::~EmitterEngine()
 {
 	clearAllEmitters();
 }
 
-// Clears all Emitters currently being managed.
-//	Since these are made with unique_ptrs, a simple vector.clear will clean up all memory.
 void EmitterEngine::clearAllEmitters()
 {
 	m_pEmitters.clear();
@@ -37,10 +35,10 @@ void EmitterEngine::clearAllEmitters()
 void EmitterEngine::update(float fDelta)
 {
 	// Update all Emitters
-	for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
+	/*for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
 		iter != m_pEmitters.end();
 		++iter )
-		(*iter)->update(fDelta);
+		(*iter)->update(dMilliSecondsSinceLastUpdate);*/
 
 	// Clean up any Emitters that are subject for deletion.
 	m_pEmitters.erase(
@@ -61,17 +59,11 @@ void EmitterEngine::renderEmitters()
 		(*iter)->draw();
 }
 
-// Spawns an emitter at a given location with a given normal and degree from that normal. That degree creates a spherical cone of space from which
-//	a particle can spawn; surrounding the normal.
 void EmitterEngine::generateEmitter(vec3 vPos, 
 									vec3 vNormal, 
-									float fAngleFromNormal,
-									float fParticleDuration,
-									unsigned int iNumParticles,
-									bool bExplosion,
-									float fRadius )
+									float fAngleFromNormal)
 {
 	unique_ptr<Emitter> pNewEmitter = make_unique<Emitter>(&vPos);
-	pNewEmitter->initializeEmitter(iNumParticles, vNormal, fAngleFromNormal, fParticleDuration, fRadius, bExplosion);
+	pNewEmitter->initializeEmitter(DEFAULT_NUM_PARTICLES, vNormal, fAngleFromNormal, DEFAULT_DURATION_IN_SECONDS, 2.0f, true);
 	m_pEmitters.push_back(move(pNewEmitter));
 }

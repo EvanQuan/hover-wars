@@ -20,13 +20,7 @@ public:
 	void update(float fDelta);
 	void renderEmitters();
 
-	void generateEmitter(vec3 vPos, 
-						vec3 vNormal, 
-						float fAngleFromNormal,
-						float fParticleDuration,
-						unsigned int iNumParticles,
-						bool bExplosion,
-						float fRadius);
+	void generateEmitter(vec3 vPos, vec3 vNormal, float fAngleFromNormal);
 
 private:
 	EmitterEngine();

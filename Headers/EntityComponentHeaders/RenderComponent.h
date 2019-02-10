@@ -27,8 +27,16 @@ public:
 	void update(duration<float> fTimeDelta);
 	void updateCount(GLsizei iNewCount) { m_iCount = iNewCount; }
 
+	void generateDiffuseTexture(const vec4* vColor);
+
 	// Initializes the proper buffers on the GPU for rendering.
-	void initializeComponent( Mesh const  * pMesh );
+	void initializeComponent( Mesh const  * pMesh, 
+							  const Material* pMaterial = nullptr);
+
+	void getDiffuseTextureDimensions(int* iHeight, int* iWidth);
+
+	// Function to load Material for Render Component
+	void loadMaterial(const Material* pMaterial);
 
 private: 
 	// Private Copy Constructor and Assignment operator overload.
@@ -45,4 +53,12 @@ private:
 	bool m_bUsingIndices, m_bUsingInstanced;
 	ShaderManager* m_pShdrMngr;
 	ShaderManager::eShaderType m_eShaderType;
+
+	// Material Struct for setting uniform in Lighting Shaders
+	struct sRenderMaterial
+	{
+		Texture* m_pDiffuseMap;
+		Texture* m_pSpecularMap;
+		float fShininess;
+	} m_sRenderMaterial;
 };

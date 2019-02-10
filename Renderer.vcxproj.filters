@@ -40,6 +40,12 @@
     <Filter Include="Source Files\DataStructures">
       <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\snippetvehiclecommon">
+      <UniqueIdentifier>{18c6a556-d17d-436c-911d-559a6a6ec6ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\snippetvehiclecommon">
+      <UniqueIdentifier>{d048e2f4-49d0-47bf-9469-5329cf1881c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -162,6 +168,24 @@
     <ClInclude Include="Headers\DataStructures\Bag.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleConcurrency.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleCreate.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleFilterShader.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -268,6 +292,27 @@
     </ClCompile>
     <ClCompile Include="Source\DataStructures\Bag.cpp">
       <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicle4WCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleFilterShader.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleNoDriveCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

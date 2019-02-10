@@ -18,7 +18,7 @@ public:
 	void update(float fTimeInMilliseconds);
 
 	// Function to Initialize the Light.
-	void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "", float m_fMeshScale = 1.0f );
+	void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "" );
 
 	// Light Manipulation
 	void move(vec3 pMoveVec) { m_vPosition += pMoveVec; m_pLightingComponent->updatePosition(&m_vPosition); }

@@ -25,14 +25,14 @@ public:
 	void update(duration<float> fTimeDelta); // Overloading Parent's virtual update function
 
 	// Various initialization functions as needed.
-	void initializeComponent(bool bStatic, Mesh const* pMeshReference /*Potentially required. Add any getter functions to the Mesh class as needed,
-														 but make sure they're const functions as physics manager is not intended to modify the mesh. Maybe it needs to?*/);
+	void initializeComponent(bool bStatic, Mesh const* pMeshReference,float x, float y, float z, float size);
 	/*void initializeAsSpherical(); Maybe this style is required for different initialization types based on type of bounding mesh desired?*/
 
 	// this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
 	void getTransformMatrix(mat4* pReturnTransformMatrix);
 
 private:
+	physx::PxRigidDynamic *body;
 	bool m_bStatic;						// Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.
 	PhysicsManager* m_pPhysicsManager;	// Reference to Physics Manager for calling for any updates necessary.
 	mat4 m_pTransformationMatrix;		// Stored Locally, maybe pulled from PhysicsManager on update?

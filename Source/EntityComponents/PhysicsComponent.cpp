@@ -1,5 +1,6 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "stdafx.h"
+#include <iostream>
 
 // Default Constructor: Requires necessary information to pass to Parent Constructor
 //	Parameters: iEntityID - ID reference for Entity that initializes this Component.
@@ -7,9 +8,10 @@
 //							as needed.
 //				iComponentID - ID reference for this Component to identify it within the
 //								Entity Manager if needed.
-PhysicsComponent::PhysicsComponent( int iEntityID, int iComponentID )
-	: EntityComponent( iEntityID, iComponentID )
+PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
+	: EntityComponent(iEntityID, iComponentID)
 {
+	std::cout << "Physics Component constructor 2 vars" << std::endl;
 	m_bStatic = false;	// Set a default
 	m_pPhysicsManager = PHYSICS_MANAGER;	// Grab reference to Physics Manager
 	m_pTransformationMatrix = mat4(1.0f);
@@ -40,10 +42,12 @@ void PhysicsComponent::update(duration<float> fTimeDelta)
 
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //	the scene.
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference)
+void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
 {
 	// Set up Internal Static qualifier.
 	m_bStatic = bStatic;
+	body = NULL;
+	m_pPhysicsManager->createPlayerEntity();
 
 	// PHYSICSTODO: Initialize Component with how the Entity wants it set up.
 	//	multiple versions of these Initialze functions may need to be employed to allow
@@ -59,5 +63,11 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 {
 	// Return the Transformation Matrix to the caller, most likely will be the Entity to
 	//	update their mesh.
-	*pReturnTransformMatrix = m_pTransformationMatrix;
+	// Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
+	if (body != NULL) {
+		m_pTransformationMatrix = m_pPhysicsManager->getMat4(body->getGlobalPose());
+		//TODO maybe move getMat4 to physicsComponent?
+
+		*pReturnTransformMatrix = m_pTransformationMatrix;
+	}
 }

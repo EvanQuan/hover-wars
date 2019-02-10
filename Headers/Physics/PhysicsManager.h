@@ -1,8 +1,14 @@
 #pragma once
-//#include "characterkinematic/PxControllerManager.h"
-//#include "PxFoundation.h"
+#include "characterkinematic/PxControllerManager.h"
+#include "PxPhysicsAPI.h"
+#include "PxFoundation.h"
 #include "stdafx.h"
 
+#include "vehicle/PxVehicleUtil.h"
+#include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
+#include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
+#include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
+#include "snippetvehiclecommon/SnippetVehicleCreate.h"
 
 /***************************************************************
  * Name: PhysicsManager
@@ -24,6 +30,10 @@ public:
 	static PhysicsManager* getInstance();	
 	virtual ~PhysicsManager();
 
+	void forwardKey();
+	void stopKey();
+	void leftKey();
+	void rightKey();
 	// Update function for Physics, technically called every frame, but
 	//	internally can stall its update until a certain tick time.
 	//	fTimeDelta is given in seconds and is usually a fraction of a second.
@@ -38,10 +48,42 @@ public:
 								// the destructor before doing final clean up in the destructor.
 
 	// Scene Setting Functions
-	void createSphereObject();	// This is probably called by Physics Components as necessary to set themselves up within
+	//void createSphereObject();	// This is probably called by Physics Components as necessary to set themselves up within
 								// the physics scene. Additional specific functions could be generated as neccessary.
+	physx::PxRigidDynamic *createCubeObject(float x, float y, float z, float size);
+	void createPlayerEntity();
+	glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
+	void stepPhysics(); // This probably functions within the update function to be used as necessary.
 
 private:
+	snippetvehicle::VehicleSceneQueryData*	gVehicleSceneQueryData = NULL;
+	physx::PxBatchQuery*			gBatchQuery = NULL;
+
+	physx::PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = NULL;
+
+	physx::PxVehicleNoDrive*		gVehicleNoDrive = NULL;
+
+	physx::PxF32					gVehicleModeLifetime = 4.0f;
+	physx::PxF32					gVehicleModeTimer = 0.0f;
+	bool					gVehicleOrderComplete = false;
+	physx::PxU32					gVehicleOrderProgress = 0;
+
+	snippetvehicle::VehicleDesc initVehicleDesc();
+
+	void startAccelerateForwardsMode();
+
+	void startAccelerateReverseMode();
+
+	void startBrakeMode();
+
+	void startTurnHardLeftMode();
+
+	void startTurnHardRightMode();
+
+	void startHandbrakeTurnLeftMode();
+
+	void startHandbrakeTurnRightMode();
+	void releaseAllControls();
 	// Singleton Implementation: make all possible constructors private and inaccessable
 	//		to disallow multiple instance of the physics manager.
 	static PhysicsManager *m_pInstance;
@@ -55,44 +97,22 @@ private:
 	float m_fTimeSinceLastUpdate;	// Increments every update to track how long since last Physics Update.
 	// Moving these from Constructor to Here to privatize these variables used by the Physics
 	//	manager
-	PxDefaultAllocator gAllocator;
-	PxDefaultErrorCallback	gErrorCallback;
-	PxFoundation*			gFoundation = NULL;
-	PxPhysics*				gPhysics = NULL;
+	physx::PxDefaultAllocator		gAllocator;
+	physx::PxDefaultErrorCallback	gErrorCallback;
+	physx::PxFoundation*			gFoundation = NULL;
+	physx::PxPhysics*				gPhysics = NULL;
+	physx::PxRigidStatic*			gGroundPlane = NULL;
 
-	PxDefaultCpuDispatcher*	gDispatcher = NULL;
-	PxScene*				gScene = NULL;
-	PxControllerManager*	manager = NULL;
+	physx::PxDefaultCpuDispatcher*	gDispatcher = NULL;
+	physx::PxScene*				gScene = NULL;
+	physx::PxControllerManager*	manager = NULL;
 
-	PxMaterial*				gMaterial = NULL;
+	physx::PxMaterial*				gMaterial = NULL;
 
-	PxPvd*                  gPvd = NULL;
-	PxCooking *				gCook;
-	PxReal stackZ = -3.0f;
+	physx::PxPvd*                  gPvd = NULL;
+	physx::PxCooking *				gCook;
+	physx::PxReal stackZ = -3.0f;
 
 	// Private Functions - Not necessary for outside classes to have access to these, they don't need to know about them.
-	void createStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
-	void stepPhysics(); // This probably functions within the update function to be used as necessary.
+	void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent);
 };
-
-
-// If These are necessary internally for the Physics Manager, make these private structs that can be maintained
-//	within the Physics Manager as needed. Look at EntityManager for using unique_ptrs to avoid potential memory
-//	leaks of raw pointers. If they're internal though, you probably don't need to store them as pointers and could probably
-//	maintain them on the stack in a vector. But if heap makes more sense, please use unique_ptrs.
-//	Privatising these maintains an Object Oriented Design in protecting information within the class.
-//class physicsDynamicObject {
-//private: 
-//	PxRigidDynamic* body;
-//public:
-//	physicsDynamicObject(float x, float y, float z, float cubeSize);
-//	void addForce(float x, float y, float z);
-//	glm::mat4 getTransformMatrix();
-//};
-//class physicsStaticObject {
-//private:
-//	PxRigidStatic* body;
-//public:
-//	physicsStaticObject(float x, float y, float z, float cubeSize);
-//	glm::mat4 getTransformMatrix();
-//};

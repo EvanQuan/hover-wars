@@ -16,6 +16,7 @@
 
 *.vcxproj.user
 *.sdf
+*.aps
 
 # This file was generated on build from Blend. Should be using Visual Studio
 # 2017 if on Windows, but we can ignore this anyways.

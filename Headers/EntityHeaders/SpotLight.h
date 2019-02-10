@@ -21,7 +21,7 @@ public:
 	void update(float fTimeInMilliseconds);
 
 	// Function to Initialize the Light.
-	void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial = nullptr, float m_fMeshScale = 1.0f);
+	void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial = nullptr);
 
 	const LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
 

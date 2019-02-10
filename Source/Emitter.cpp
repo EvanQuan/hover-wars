@@ -81,10 +81,11 @@ void Emitter::initializeEmitter(unsigned int iMaxParticles,
 
 // Integrate Particle Positions, velocities and forces as well as updating the remaining duration for
 //	all particles.
-void Emitter::update(float fDelta)
+void Emitter::update(duration<float> dTimeInMilliseconds)
 {
 	// Store Time as float
 	m_bReadyToDelete = true;
+	float fDelta = static_cast<float>(dTimeInMilliseconds.count());
 	m_pPositions.resize(m_pParticleList.size(), vec3(0.f));
 
 	// Integrate Particles
@@ -125,9 +126,9 @@ void Emitter::draw()
 	glBindVertexArray(m_iVertexArray);
 	glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_pPositions.size() * sizeof(vec3), m_pPositions.data(), GL_DYNAMIC_DRAW);
-	glUseProgram(SHADER_MANAGER->getProgram(ShaderManager::eShaderType::PARTICLE_SHDR));
+	glUseProgram(SHADER_MANAGER->getProgram(ShaderManager::eShaderType::LIGHT_SHDR));
 
-	m_pDiffuseTexture->bindTexture(ShaderManager::eShaderType::PARTICLE_SHDR, "sMaterial.vDiffuse");
+	m_pDiffuseTexture->bindTexture(ShaderManager::eShaderType::LIGHT_SHDR, "sMaterial.vDiffuse");
 
 	glPointSize(10.f);
 	glDrawArrays(GL_POINTS, 0, m_pPositions.size());

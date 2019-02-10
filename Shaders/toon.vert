@@ -3,8 +3,9 @@ layout (std140, binding = 0) uniform Matrices
 {
 	mat4 projection;
 	mat4 modelview;
-	mat4 modelviewInv;
 };
+
+uniform float fScale;
 
 layout (location = 0) in vec3 vertex;
 layout (location = 1) in vec3 normal;
@@ -18,7 +19,9 @@ out vec3 vFragPos;
 
 void main(void)
 {
-	vec3 positionModelSpace = ( translate * vec4(vertex, 1.0) ).xyz;
+	vec3 vScaledVertex = vertex * fScale;
+    vec3 positionModelSpace = ( vec4( vScaledVertex, 0.0 )).xyz;
+	positionModelSpace = ( translate * vec4(positionModelSpace, 1.0) ).xyz;
     vec4 positionCameraSpace = modelview * vec4(positionModelSpace, 1.0);
 	vFragPos = positionCameraSpace.xyz/positionCameraSpace.w;
 	

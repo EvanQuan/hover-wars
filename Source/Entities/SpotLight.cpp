@@ -31,19 +31,25 @@ void SpotLight::update(float fTimeInMilliseconds)
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //	If "" is provided for the Mesh name, a generic cube will be generated.
-void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial, float m_fMeshScale)
+void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial)
 {
 	// Set the color of the Light
 	m_pColor = (*vColor);
 
 	// Load Mesh
 	if ("" == sMeshLocation)
-		m_pMesh = MESH_MANAGER->generateSphereMesh(bStatic, 0.25f, sMaterial, m_vPosition);
+		m_pMesh = MESH_MANAGER->generateSphereMesh(bStatic, 0.25f, m_vPosition);
 	else
-		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshLocation, sMaterial, m_fMeshScale, m_vPosition, bStatic);
+		m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshLocation, m_vPosition, bStatic);
 
 	// Create a Render Component
-	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLE_STRIP);
+	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLE_STRIP);
+
+	// Initialize Render Component
+	assert(m_pRenderComponent != nullptr);
+	m_pRenderComponent->initializeComponent(m_pMesh, sMaterial);
+	vec4 pPoweredColor = vec4( m_pColor, 1.0);
+	m_pRenderComponent->generateDiffuseTexture(&pPoweredColor); // Generates a Texture for the light based on the light color.
 
 	// Create and Initialize the Lighting Component.
 	m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);

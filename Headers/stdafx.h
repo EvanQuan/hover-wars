@@ -28,10 +28,8 @@
 #include <glew.h>
 #endif
 #include <glfw3.h>
-
-// PhysX
-#include "PxPhysicsAPI.h"
-using namespace physx;
+// so, when we changed / added checked fundimentally what changed. 
+// will it make a difference if one of them doesn't have a 3? pretty sure it will
 
 // FreeType
 #include <ft2build.h>
@@ -60,6 +58,7 @@ using namespace physx;
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
+#include "PxPhysicsAPI.h"
 using namespace physx;
 
 /* DEFINES */
@@ -115,7 +114,6 @@ using namespace physx;
 struct Material
 {
 	string sDiffuseMap;
-	vec4 vOptionalDiffuseColor;
 	string sOptionalSpecMap;
 	vec4 vOptionalSpecShade;
 	float fShininess;
