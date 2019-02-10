@@ -21,16 +21,7 @@
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
 #include "GameTime.h"
-
-#ifdef USING_WINDOWS
-#include <string>
-#include <glew.h>
-#endif
-#include <glfw3.h>
-
-// PhysX
-#include "PxPhysicsAPI.h"
-using namespace physx;
+#include "Physics/PhysicsManager.h"
 
 // FreeType
 #include <ft2build.h>
@@ -45,7 +36,11 @@ using namespace physx;
 #define GLFW_INCLUDE_GLCOREARB
 #define GL_GLEXT_PROTOTYPES
 #endif
-
+#ifdef USING_WINDOWS
+#include <string>
+#include <glew.h>
+#endif
+#include <glfw3.h>
 
 #define ERR_CODE -1
 
@@ -106,7 +101,6 @@ using namespace physx;
 struct Material
 {
 	string sDiffuseMap;
-	vec4 vOptionalDiffuseColor;
 	string sOptionalSpecMap;
 	vec4 vOptionalSpecShade;
 	float fShininess;

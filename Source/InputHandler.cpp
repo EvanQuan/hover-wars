@@ -80,6 +80,18 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
 		case GLFW_KEY_F:
 			debugToggleWireframe();
 			break;
+		case GLFW_KEY_W:
+			PHYSICS_MANAGER->forwardKey();
+			break;
+		case GLFW_KEY_S:
+			PHYSICS_MANAGER->stopKey();
+			break;
+		case GLFW_KEY_A:
+			PHYSICS_MANAGER->leftKey();
+			break;
+		case GLFW_KEY_D:
+			PHYSICS_MANAGER->rightKey();
+			break;
 		}
 	}
 }

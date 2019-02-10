@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Entities">
       <UniqueIdentifier>{72755986-b017-4af1-8d3f-016b67399074}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\snippetvehiclecommon">
+      <UniqueIdentifier>{9d0748b2-14fb-4a3f-8a46-0d357c8a12d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\snippetvehiclecommon">
+      <UniqueIdentifier>{551b07e5-0f31-4733-9253-e9cad36f8f6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -60,7 +66,13 @@
     <ClInclude Include="Headers\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Anim_Track.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\MeshManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\BoidEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h">
@@ -135,8 +147,23 @@
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleConcurrency.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleCreate.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleFilterShader.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h">
+      <Filter>Header Files\snippetvehiclecommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,14 +191,17 @@
     <ClCompile Include="Source\TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Anim_Track.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\MeshManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BoidEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityManager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
@@ -239,10 +269,26 @@
     <ClCompile Include="Source\Entities\StaticEntity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Renderer.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicle4WCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleFilterShader.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleNoDriveCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp">
+      <Filter>Source Files\snippetvehiclecommon</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

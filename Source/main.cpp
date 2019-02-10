@@ -57,7 +57,10 @@ int main()
 
 		if (iRunning)
 		{
-			
+			// Initialize Physics
+			m_pPhysicsManager = PHYSICS_MANAGER;
+			m_pPhysicsManager->initPhysics(true);
+
 			// Bind window to Game Manager
 			m_gameManager = GameManager::getInstance(m_window);
 			m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
@@ -69,9 +72,7 @@ int main()
 			iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
 			m_shaderManager = SHADER_MANAGER;
 
-			// Initialize Physics
-			m_pPhysicsManager = PHYSICS_MANAGER;
-			m_pPhysicsManager->initPhysics(true);
+
 
 		#ifdef USING_WINDOWS
 			m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
@@ -82,6 +83,7 @@ int main()
 			{
 				// do Graphics Loop
 				iRunning = m_gameManager->renderGraphics();
+				m_pPhysicsManager->stepPhysics();
 			}
 		}
 

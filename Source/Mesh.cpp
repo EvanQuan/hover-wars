@@ -1,12 +1,5 @@
 #include "Mesh.h"
 #include <sstream>
-#include "TextureManager.h"
-
-/****************************\
- * Constants: For Materials *
-\****************************/
-const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
-const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 
 /************************************\
  * Defines: For Sphere Construction *
@@ -28,14 +21,15 @@ const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 #define DIMENSION_OFFSET	((sizeof(vec3) << 1) + (sizeof(vec2) << 1))
 
 // Basic Constructor
-Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, const Material* pMaterial, manager_cookie )
+Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, manager_cookie )
 {
 	m_sManagerKey = sManagerKey;
 	m_bStaticMesh = bStaticMesh;
+	m_m4DefaultInstance =  mat4(1.0f);
+	m_iNumInstances = 1;
+	m_fScale = 0.25f;
 	m_pShdrMngr = SHADER_MANAGER;
 	glGenVertexArrays(1, &m_iVertexArray);
-
-	loadMaterial(pMaterial);
 }
 
 // Delete any buffers that we initialized
@@ -50,7 +44,7 @@ Mesh::~Mesh()
 
 // Load the Mesh from a given file name
 //  Result: Stores the mesh variables into a set of vertices
-bool Mesh::genMesh( const string& sFileName, vec3 vPosition, float fScale )
+bool Mesh::genMesh( const string& sFileName, vec3 vPosition )
 {
 	// Return Value
 	bool bReturnValue = true;
@@ -62,17 +56,15 @@ bool Mesh::genMesh( const string& sFileName, vec3 vPosition, float fScale )
 	// Store Mesh in GPU
 	if (bReturnValue)
 	{
-		// Apply Scale before Translation
-		mat4 m4Transformation = scale(vec3(fScale)) * mat4(1.0f);
+		if (m_bStaticMesh)
+		{
+			Mesh::scale(20.0f);
 
-		// Translation
-		if (vec3(0.f) != vPosition)
-			m4Transformation = translate(vPosition) * m4Transformation;
-
-		// Store initial transformation
-		m_m4ListOfInstances.push_back(m4Transformation);
-
-		// Initialize VBOs
+			if (vec3(0.f) != vPosition)
+			{
+				Mesh::translate(vPosition);
+			}
+		}
 		initalizeVBOs();
 	}
 
@@ -109,15 +101,23 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 	// Generate Indices
 	m_pIndices = { 0, 1, 2, 1, 2, 3 };
 
-	// Translation Matrix
-	mat4 m4TranslationMatrix = getRotationMat4ToNormal(&vNormal);
+	float d = dot(vNormal, vec3(0.f, 1.f, 0.f) );
+	if (d < 1.f) // If d >= 1.f, Vectors are the same.
+	{
+		// create Rotation quaternion to rotate plane.
+		vec3 vCross = cross(vNormal, vec3(0.f, 1.f, 0.f));// *invs;
+		quat q = angleAxis(acos(d), vCross);
+		normalize(q);
 	
+		// Rotate Plane
+		Mesh::rotate(q);
+	}
+
 	// If translation is necessary, translate plane.
 	if (vec3(0.f) != vPosition)
-		m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
-
-	// Store Initial Transformation Matrix
-	m_m4ListOfInstances.push_back(m4TranslationMatrix);
+	{
+		Mesh::translate(vPosition);
+	}
 
 	// Load Mesh into GPU
 	initalizeVBOs();
@@ -170,15 +170,11 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 		*i++ = ((r + 1) * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
 	}
 
-	// Initial Transformation Matrix
-	mat4 m4InitialTransformation = mat4(1.0f);
-
 	// Translate to Position if Sphere is a Static Mesh.
-	if (vec3(0.f) != vPosition)
-		m4InitialTransformation = translate(vPosition) * m4InitialTransformation;
-
-	// Store Initial Transformation Matrix
-	m_m4ListOfInstances.push_back(m4InitialTransformation);
+	if (m_bStaticMesh && vec3(0.f) != vPosition)
+	{
+		Mesh::translate(vPosition);
+	}
 
 	// Store Mesh in GPU
 	initalizeVBOs();
@@ -314,15 +310,10 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 		22, 21, 23, 22, 20, 21
 	};
 
-	// Initial Transformation Matrix
-	mat4 m4InitialTransformationMatrix = mat4(1.0f);
-
-	// Translation
-	if (vec3(0.0f) != vPosition)
-		m4InitialTransformationMatrix = translate(vPosition);
-
-	// Store Initial Transformation Matrix in Transformation vector
-	m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
+	if (m_bStaticMesh)
+	{
+		Mesh::translate(vPosition);
+	}
 
 	initalizeVBOs();
 }
@@ -330,6 +321,7 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 // This will store the position as a vertex with a given normal as the direction to draw the billboard in.
 //	the height and width will be set up and stored in the VBO as well.
 //	The billboard functionality of a Mesh will set up the VBOs in a very different manner:
+//		- Still instanced, a translation matrix will be specified for each vertex
 //		- For each data entry:
 //			* Vertex (vec3)
 //			* Normal (vec3)
@@ -496,6 +488,7 @@ void Mesh::initalizeVBOs()
 			m_pIndices.data(),
 			m_pIndices.size() * sizeof(unsigned int),
 			GL_STATIC_DRAW);
+
 	}
 }
 
@@ -503,8 +496,8 @@ void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
 {
 	// Set up Instanced Buffer for Instance Rendering
 	m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-		m_iVertexArray, (void*)m_m4ListOfInstances.data(),
-		sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
+		m_iVertexArray, (void*)&m_m4DefaultInstance,
+		sizeof(mat4), GL_DYNAMIC_DRAW);
 
 	// Instance Rendering Attributes
 	//	Set up openGL for referencing the InstancedBuffer as a Mat4
@@ -657,111 +650,54 @@ void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
 	if (nullptr != pData)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-		glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_STREAM_DRAW);
+		m_iNumInstances = iSize;
 	}
 }
 
-// Taking in a new Position a Rotation Quaternion and a Scale, add a new transformation matrix to the internal list and updates the VBO.
-void Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale)
+/****************************************************************************\
+ * Static Mesh Manipulation													*
+\****************************************************************************/
+
+// Translates a Mesh from the origin to the given position.
+//	Should only be used for static objects to set their static positions once.
+void Mesh::translate(vec3 vPosition)
 {
-	// Order as Scale -> Rotation -> Translation
-	mat4 m4NewTransform = scale(vec3(fScale));
-	m4NewTransform = getRotationMat4ToNormal(vNormal) * m4NewTransform;
-	m4NewTransform = translate(*vPosition) * m4NewTransform;
+	// Generate translation matrix to translate plane to new position.
+	mat4 m4TranslationMat = glm::translate(vPosition - vec3(0.f));
 
-	// Utilize Overloaded Function for functionality.
-	addInstance(&m4NewTransform);
-}
-
-// Take in a new Transformation Matrix, update the internal transform list as well as the VBO
-//	Dynamic Meshes will replace their old transformation and Static Meshes will add a transformation.
-void Mesh::addInstance(const mat4* m4Transform)
-{
-	// If Dynamic, clear previous position.
-	if (!m_bStaticMesh)
-		m_m4ListOfInstances.clear();
-
-	// Add new Transformation
-	m_m4ListOfInstances.push_back(*m4Transform);
-
-	// Load VBO with new Data.
-	loadInstanceData(m_m4ListOfInstances.data(), m_m4ListOfInstances.size());
-}
-
-// Returns a Rotation Matrix to rotate an object from a World Coordinate System to a Local
-//	coordinate system with a given y-axis normal.
-mat4 Mesh::getRotationMat4ToNormal(const vec3* vNormal)
-{
-	// Initial Translation Matrix
-	mat4 m4ReturnMatrix = mat4(1.0f);
-	vec3 vYAxis(0.0f, 1.0f, 0.0f);
-
-	float d = dot(*vNormal, vYAxis);
-	if (d < 1.f) // If d >= 1.f, Vectors are the same.
+	// translate all vertices to new positions
+	for (vector<vec3>::iterator iter = m_pVertices.begin();
+		iter != m_pVertices.end();
+		++iter)
 	{
-		// create Rotation quaternion.
-		vec3 vCross = cross(*vNormal, vYAxis);
-		quat q = angleAxis(acos(d), vCross);
-		normalize(q);
-
-		// Create Rotation Matrix from Quaternion
-		m4ReturnMatrix = toMat4(q) * m4ReturnMatrix;
+		(*iter) = m4TranslationMat * vec4((*iter), 1.f);
 	}
-
-	// Return Rotation Matrix
-	return m4ReturnMatrix;
 }
 
-/************************************************************************************\
- * Texture Functionality															*
-\************************************************************************************/
-
-// Function to Bind the Mesh Material to the Shader for Rendering
-//	To be called before the render function
-void Mesh::bindTextures(ShaderManager::eShaderType eShaderType) const
+// Given a Quaternion, rotate all vertices of mesh by quaternion value.
+void Mesh::rotate(quat qRotationQuatern)
 {
-	// Bind the Diffuse and Specular Maps
-	m_sRenderMaterial.m_pDiffuseMap->bindTexture(eShaderType, "sMaterial.vDiffuse");
-	m_sRenderMaterial.m_pSpecularMap->bindTexture(eShaderType, "sMaterial.vSpecular");
-
-	// Set the Material's Shininess in the Material Uniform in the shader.
-	m_pShdrMngr->setUniformFloat(eShaderType, "sMaterial.fShininess", m_sRenderMaterial.fShininess);
-}
-
-// Funtion to unbind textures. To be called after a render call on this mesh.
-void Mesh::unbindTextures() const
-{
-	m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
-	m_sRenderMaterial.m_pSpecularMap->unbindTexture();
-}
-
-// Function to Load a given material to the internal Render Material struct.
-//	This defines a specular and diffuse map as well as a shininess factor
-//	for this mesh that is used for rendering.
-void Mesh::loadMaterial(const Material* pMaterial)
-{
-	if (nullptr != pMaterial)
+	// Rotate all Vertices by quaternion
+	for (vector<vec3>::iterator iter = m_pVertices.begin();
+		iter != m_pVertices.end();
+		++iter)
 	{
-		// Load Diffuse Texture if applicable
-		if ("" != pMaterial->sDiffuseMap)
-			m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(pMaterial->sDiffuseMap);
-		else if (vec4(0.0f) != pMaterial->vOptionalDiffuseColor)	// No diffuse Texture applicable? then check if there's a specified diffuse color for the material.
-			m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->genTexture(&pMaterial->vOptionalDiffuseColor);
-
-		// Load Texture if applicable
-		if ("" != pMaterial->sOptionalSpecMap)
-			m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->loadTexture(pMaterial->sOptionalSpecMap);
-		else	// "" as Spec Map Location? just generate a texture from whatever the Spec Shade is.
-			m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&pMaterial->vOptionalSpecShade);
-
-		// Store Shininess
-		m_sRenderMaterial.fShininess = pMaterial->fShininess;
+		(*iter) = vec3(qRotationQuatern * vec4((*iter), 1.f));
 	}
-
-	// Set some defaults if no Maps were specified.
-	if (nullptr == m_sRenderMaterial.m_pDiffuseMap)
-		m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
-	if (nullptr == m_sRenderMaterial.m_pSpecularMap)
-		m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
 }
 
+// Uniformally scales a mesh by a given float. Float should be represented as 1.0f == 100%
+void Mesh::scale(float fScale)
+{
+	// Utilize GLM to generate a scale matrix
+	mat4 m4ScaleMatrix = glm::scale(vec3(fScale));
+
+	// Scale all Vertices by scale matrix.
+	for (vector<vec3>::iterator iter = m_pVertices.begin();
+		iter != m_pVertices.end();
+		++iter)
+	{
+		(*iter) = vec4((*iter), 1.f) * m4ScaleMatrix;
+	}
+}

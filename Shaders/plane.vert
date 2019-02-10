@@ -3,7 +3,6 @@ layout (std140, binding = 0) uniform Matrices
 {
 	mat4 projection;
 	mat4 modelview;
-	mat4 modelviewInv;
 };
 
 layout (location = 0) in vec3 position;

@@ -6,6 +6,10 @@ out vec4 FragColor;
 in vec3 NormalVector;
 in vec3 vFragPosition;
 in vec3 ToCamera;
+//in vec2 TexCoords;
+
+uniform bool bTextureLoaded = true;
+uniform vec3 vLightColor = vec3( 1.0 );
 
 void main (void)
 {
