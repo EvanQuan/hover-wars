@@ -12,13 +12,25 @@
 Stores and calculates all in-game stats.
 
 Player:
-Score
-Killstreak
-Ability cooldowns ?
-Active powerups ?
+	Score:
+		Current score
+		Total score
+	Kills:
+		Total kills
+		Total kills against players
+		Total kills against each player
+		Total kills against bots
+	Dominations:
+		Current dominations between players
+		Largest dominations between players
+	Killstreaks:
+		Current killstreak
+		Largest killstreak
+	Powerups:
+		Total powerups picked up
+		Total powerups picked up of each type
 
 Map:
-?
 
 Gets values from EntityManager to update stats as the game progresses.
 Gives information to UserInterface to display the correct values.
@@ -57,15 +69,26 @@ private:
 	GameStats();
 	static GameStats* m_pInstance;
 
-	void addKillstreak(ePlayer playerToAdd, ePlayer playerHit);
-	void resetKillstreak(ePlayer playerToReset, ePlayer playerHit);
-	bool isDominating(ePlayer playerToCheck, ePlayer playerHit);
+	void hitBot(ePlayer playerAttacker);
+	void hitPlayer(ePlayer playerAttacker, ePlayer playerHit);
+	void updateHitScore(ePlayer playerAttacker, ePlayer playerHit);
+	void addDomination(ePlayer playerAttacker, ePlayer playerHit);
+	void resetDomination(ePlayer playerAttacker, ePlayer playerHit);
+	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
 
 	void initializePowerUpStatus();
 
 	Bag<ePlayer> scores;
-	Bag<pair<ePlayer, ePlayer>> killstreaks;
+	Bag<pair<ePlayer, ePlayer>> dominations;
 	unordered_map<ePlayer, ePowerup> powerupStatus;
+
+	unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
+	{
+		{HIT_PLAYER_1, PLAYER_1},
+		{HIT_PLAYER_2, PLAYER_2},
+		{HIT_PLAYER_3, PLAYER_3},
+		{HIT_PLAYER_4, PLAYER_4},
+	};
 };
 
 
