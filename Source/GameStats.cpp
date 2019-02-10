@@ -54,8 +54,35 @@ void GameStats::addScore(ePlayer player, eAddScoreReason reason)
 		hitPlayer(player, scoreReasonToPlayer.at(reason));
 		break;
 	case PICKUP_POWERUP:
+		pickupPowerup(player);
 		break;
 	}
+}
+
+/*
+Track that the player used an ability.
+*/
+void GameStats::useAbility(ePlayer player, eAbility ability)
+{
+	switch (ability)
+	{
+	case ABILITY_ROCKET:
+		stats[player][ABILITY_ROCKET_USED]++;
+		break;
+	case ABILITY_SPIKES:
+		stats[player][ABILITY_SPIKES_USED]++;
+		break;
+	case ABILITY_TRAIL:
+		stats[player][ABILITY_TRAIL_USED]++;
+		break;
+	case ABILITY_DASH_BACK:
+	case ABILITY_DASH_FORWARD:
+	case ABILITY_DASH_LEFT:
+	case ABILITY_DASH_RIGHT:
+		stats[player][ABILITY_DASH_USED]++;
+		break;
+	}
+	stats[player][TOTAL_ABILITIES_USED]++;
 }
 
 /*
@@ -72,7 +99,7 @@ Updates killstreaks and scores.
 */
 void GameStats::hitPlayer(ePlayer playerAttacker, ePlayer playerHit)
 {
-	addDomination(playerAttacker, playerHit);
+	updateAttackerAndHitKillstreak(playerAttacker, playerHit);
 	updateAttackerAndHitScore(playerAttacker, playerHit);
 }
 
@@ -117,21 +144,40 @@ void GameStats::addScore(ePlayer playerAttacker, int points)
 }
 
 /*
-Add to a playerAttacker's domination streak against playerHit.
-playerHit's domination streak against playerAttacker ends.
+Update the killstreaks from the results of playerAttacker hitting playerHit
 */
-void GameStats::addDomination(ePlayer playerAttacker, ePlayer playerHit)
+void GameStats::updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit)
 {
-	stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit]++;
-	resetDomination(playerHit, playerAttacker);
+	addKillstreak(playerAttacker, playerHit);
+	resetKillstreak(playerHit, playerAttacker);
+}
+/*
+Add to a playerAttacker's  killstreak against playerHit.
+playerHit's domination streak against playerAttacker ends.
+NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
+*/
+void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
+{
+	int currentTotalKillstreak = ++stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK];
+	int currentKillstreakAgainstPlayer = ++stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit];
+	if (currentTotalKillstreak > stats[playerAttacker][LARGEST_TOTAL_KILLSTREAK])
+	{
+		stats[playerAttacker][LARGEST_TOTAL_KILLSTREAK] = currentTotalKillstreak;
+	}
+	if (currentKillstreakAgainstPlayer >= DOMINATION_COUNT)
+	{
+		stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = 1;
+	}
 }
 
 /*
-Reset a playerHit's domination streak against playerAttacker.
+Reset a playerHit's killstreak against playerAttacker.
 NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
 */
-void GameStats::resetDomination(ePlayer playerHit, ePlayer playerAttacker)
+void GameStats::resetKillstreak(ePlayer playerHit, ePlayer playerAttacker)
 {
+	stats[playerHit][CURRENT_TOTAL_KILLSTREAK + playerAttacker] = 0;
+	stats[playerHit][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerAttacker] = 0;
 	stats[playerHit][IS_DOMINATING_PLAYER_1 + playerAttacker] = 0;
 }
 
@@ -146,4 +192,22 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
 {
 	return stats[playerToCheck][IS_DOMINATING_PLAYER_1 + playerHit];
+}
+
+
+/*
+Denotes a player has picked up a power up
+*/
+void GameStats::pickupPowerup(ePlayer player)
+{
+	addScore(player, POINTS_GAINED_PICKUP_POWERUP);
+	addPowerupCount(player);
+}
+
+/*
+Add to the player's total power up count
+*/
+void GameStats::addPowerupCount(ePlayer player)
+{
+	stats[player][TOTAL_POWERUPS_PICKED_UP]++;
 }
