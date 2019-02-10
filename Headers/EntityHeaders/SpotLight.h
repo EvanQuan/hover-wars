@@ -17,6 +17,9 @@ public:
 	SpotLight(int iID, const vec3* vPosition);
 	virtual ~SpotLight();
 
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
+
 	// Function to Initialize the Light.
 	void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial = nullptr, float m_fMeshScale = 1.0f);
 

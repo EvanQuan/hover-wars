@@ -34,11 +34,8 @@ void EmitterEngine::clearAllEmitters()
 }
 
 // Function to update all Emitters in the Engine.
-void EmitterEngine::update(duration<float> dMilliSecondsSinceLastUpdate)
+void EmitterEngine::update(float fDelta)
 {
-	// Do this cast once here instead of every emitter.
-	float fDelta = static_cast<float>(dMilliSecondsSinceLastUpdate.count());
-
 	// Update all Emitters
 	for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
 		iter != m_pEmitters.end();

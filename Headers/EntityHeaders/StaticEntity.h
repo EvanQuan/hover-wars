@@ -15,8 +15,10 @@ class StaticEntity
 {
 public:
 	StaticEntity(int iID, const vec3* vPosition);
-
 	virtual ~StaticEntity();
+
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
 
 	void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const string& sShaderType);
 	void loadAsSphere(float fRadius, const Material* pMaterial, const string& sShaderType);

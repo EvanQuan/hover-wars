@@ -91,15 +91,12 @@ physicsDynamicObject::physicsDynamicObject(float x, float y, float z, float cube
 // Name: Update
 // Description: Provides Frame by Frame update functionality for Physics.
 //		Updates on a different interval than standard framerate.
-void PhysicsManager::update(duration<float> fTimeDelta)
+void PhysicsManager::update(float fTimeDelta)
 {
-	// Grab the timeDelta as a float instead of the templated duration type.
-	float fDelta = static_cast<float>(fTimeDelta.count());
-
 	// Increment Time since last update and check to see if an update is ready.
 	//	if an update is ready, decrement the internal timer to reset it accurately
 	//	then perform the update.
-	if ((m_fTimeSinceLastUpdate += fDelta) >= UPDATE_TIME_IN_SECONDS)
+	if ((m_fTimeSinceLastUpdate += fTimeDelta) >= UPDATE_TIME_IN_SECONDS)
 	{
 		// Don't reset to 0.0f as it's probably not at the Update Time Exactly.
 		//	this preserves an accuracy w.r.t. the game timer.

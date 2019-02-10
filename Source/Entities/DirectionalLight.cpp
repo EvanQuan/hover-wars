@@ -20,6 +20,15 @@ DirectionalLight::~DirectionalLight()
 	// Nothing to Destruct
 }
 
+/****************************************************************\
+ * Inherited Pure Virtual Functions								*
+\****************************************************************/
+
+void DirectionalLight::update(float fTimeInMilliseconds)
+{
+	/* Not Implemented */
+}
+
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //	If "" is provided for the Mesh name, a generic cube will be generated.
 void DirectionalLight::initialize(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor)

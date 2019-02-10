@@ -12,6 +12,7 @@ PhysicsComponent::PhysicsComponent( int iEntityID, int iComponentID )
 {
 	m_bStatic = false;	// Set a default
 	m_pPhysicsManager = PHYSICS_MANAGER;	// Grab reference to Physics Manager
+	m_pTransformationMatrix = mat4(1.0f);
 }
 
 // Virtual Destructor, clean up any memory necessary here.
