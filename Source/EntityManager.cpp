@@ -313,23 +313,17 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 	{
 		// Get the Delta of this time step <= 1/60th of a second (60 fps)
 		// Interpolate on steps < 1/60th of a second
-		auto pDeltaTime = 
+		duration<float> pDeltaTime = 
 			std::min<common_type<decltype(pFrameTime),decltype(pMaxDeltaTime)>::type>(pFrameTime, pMaxDeltaTime);
 
 		pFrameTime -= pDeltaTime;
+		float fDeltaTime = static_cast<float>(pDeltaTime.count());
 		
 		// UPDATES GO HERE
-		m_pEmtrEngn->update(pDeltaTime);
+		m_pEmtrEngn->update(fDeltaTime);
 
 
-		m_pPhysxMngr->update(pDeltaTime);
-		for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
-			iter != m_pMasterEntityList.end();
-			++iter)
-		{
-			//(*iter)->updateEntityPosition();
-		}
-
+		m_pPhysxMngr->update(fDeltaTime);
 
 		// PHYSICSTODO: Maybe this needs to happen? perhaps the Physics Manager just takes care
 		//	of the update and the Physics component can just fetch information as the Entity
@@ -338,8 +332,11 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 			iter != m_pPhysicsComponents.end();
 			++iter)
 			(*iter)->update(pDeltaTime);
-
-
+		// Iterate through all Entities and call their update with the current time.
+		for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
+			iter != m_pMasterEntityList.end();
+			++iter)
+			(*iter)->update(fDeltaTime);
 	}
 }
 

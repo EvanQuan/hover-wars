@@ -14,9 +14,9 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
 	std::cout << "Physics Component constructor 2 vars" << std::endl;
 	m_bStatic = false;	// Set a default
 	m_pPhysicsManager = PHYSICS_MANAGER;	// Grab reference to Physics Manager
-
-
+	m_pTransformationMatrix = mat4(1.0f);
 }
+
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
 {
@@ -64,9 +64,10 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 	// Return the Transformation Matrix to the caller, most likely will be the Entity to
 	//	update their mesh.
 	// Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
+	if (body != NULL) {
+		m_pTransformationMatrix = m_pPhysicsManager->getMat4(body->getGlobalPose());
+		//TODO maybe move getMat4 to physicsComponent?
 
-	m_pTransformationMatrix = m_pPhysicsManager->getMat4(body->getGlobalPose()); 
-	//TODO maybe move getMat4 to physicsComponent?
-
-	*pReturnTransformMatrix = m_pTransformationMatrix;
+		*pReturnTransformMatrix = m_pTransformationMatrix;
+	}
 }

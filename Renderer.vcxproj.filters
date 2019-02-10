@@ -36,6 +36,14 @@
     </Filter>
     <Filter Include="Header Files\snippetvehiclecommon">
       <UniqueIdentifier>{551b07e5-0f31-4733-9253-e9cad36f8f6c}</UniqueIdentifier>
+    <Filter Include="Header Files\Enums">
+      <UniqueIdentifier>{5379aecf-b417-4d72-bec9-ad8dc26d2c44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataStructures">
+      <UniqueIdentifier>{0c184211-2636-40c9-ae34-b8311e961dab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataStructures">
+      <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +173,21 @@
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h">
       <Filter>Header Files\snippetvehiclecommon</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\ePlayer.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\eAbility.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\ePowerup.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DataStructures\Bag.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -290,5 +313,16 @@
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp">
       <Filter>Source Files\snippetvehiclecommon</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GameStats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataStructures\Bag.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Renderer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

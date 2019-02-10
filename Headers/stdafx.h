@@ -12,6 +12,7 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -36,11 +37,20 @@
 #define GLFW_INCLUDE_GLCOREARB
 #define GL_GLEXT_PROTOTYPES
 #endif
+
 #ifdef USING_WINDOWS
 #include <string>
 #include <glew.h>
 #endif
 #include <glfw3.h>
+
+// Game Enums
+#include "Enums/eAbility.h"
+#include "Enums/ePlayer.h"
+#include "Enums/ePowerup.h"
+
+// Custom Data Structures
+#include "DataStructures/Bag.h"
 
 #define ERR_CODE -1
 
@@ -60,7 +70,8 @@ using namespace physx;
 #define PI_OVER_180			0.01745f
 
 #define KEYS 349
-#define MAX_PLAYER_COUNT GLFW_JOYSTICK_4
+#define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
+#define MAX_PLAYER_COUNT 4
 #define XBOX_CONTROLLER "Xbox"
 #define EMPTY_CONTROLLER "Empty Controller"
 // m_pJoystickAxes

@@ -94,7 +94,7 @@ Axes values are normalized and follow Cartesian coordinates:
 			              v
                         y = -1
 */
-void CommandHandler::execute(int joystickID, VariableCommand command, const float x, const float y)
+void CommandHandler::execute(int joystickID, VariableCommand command, float x, float y)
 {
 	switch (command)
 	{
@@ -228,7 +228,7 @@ void CommandHandler::executeJoystickCommands()
 {
 	m_pInputHandler->updateJoysticks();
 
-	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
+	for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_JOYSTICK; joystickID++)
 	{
 		int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
 		if (joystickIsPresent)
@@ -237,7 +237,7 @@ void CommandHandler::executeJoystickCommands()
 			const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
 
 			// Check buttons
-			for (int button = BUTTON_A; button < BUTTON_LEFT; button++)
+			for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
 			{
 				if (buttonsPressed[button])
 				{

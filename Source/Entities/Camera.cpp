@@ -53,6 +53,15 @@ Camera::~Camera()
 	m_pCmraCmp = NULL;
 }
 
+/****************************************************************\
+ * Inherited Pure Virtual Functions								*
+\****************************************************************/
+
+void Camera::update(float fTimeInMilliseconds)
+{
+	/* Not Implemented */
+}
+
 /// Camera Manipulation Functions
 // Rotatable 360 degrees around.  Laps if it goes over that limit.
 void Camera::orbit(vec2 pDelta)

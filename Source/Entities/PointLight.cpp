@@ -20,6 +20,15 @@ PointLight::~PointLight()
 	// Nothing to Destruct
 }
 
+/****************************************************************\
+ * Inherited Pure Virtual Functions								*
+\****************************************************************/
+
+void PointLight::update(float fTimeInMilliseconds)
+{
+	/* Not Implemented */
+}
+
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //	If "" is provided for the Mesh name, a generic cube will be generated.
 void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial, const string& sMeshName )

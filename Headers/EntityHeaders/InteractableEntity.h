@@ -19,6 +19,9 @@ public:
 	InteractableEntity(int iID, const vec3* vPosition);
 	virtual ~InteractableEntity();
 
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
+
 	void loadAsBillboard(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial);
 
 private:

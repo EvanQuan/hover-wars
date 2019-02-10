@@ -11,6 +11,9 @@ public:
 	PlayerEntity(int iID, const vec3* vPosition);
 	virtual ~PlayerEntity();
 
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
+
 	void initializePlayer(const string& sFileName, 
 							const Material* pMaterial, 
 							const string& sShaderType);

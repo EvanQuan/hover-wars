@@ -14,6 +14,9 @@ public:
 	PointLight(int iID, const vec3* vPosition);
 	virtual ~PointLight();
 
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
+
 	// Function to Initialize the Light.
 	void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "" );
 

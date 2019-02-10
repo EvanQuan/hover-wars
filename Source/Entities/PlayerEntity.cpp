@@ -13,6 +13,24 @@ PlayerEntity::~PlayerEntity()
 
 }
 
+/****************************************************************\
+ * Inherited Pure Virtual Functions								*
+\****************************************************************/
+
+void PlayerEntity::update(float fTimeInMilliseconds)
+{
+	// New Transformation Matrix
+	mat4 m4NewTransform = mat4(1.0f);
+
+	// Get the Transformation from the Physics component
+	m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
+
+	// If there's a new Transformation, apply it to the Mesh.
+//	if (mat4(1.0f) != m4NewTransform)
+//		m_pMesh->addInstance(&m4NewTransform);	// TODO: Mesh doesn't remember the scale it had, this will reset the scale since the physics won't know it. 
+												//		I'll have to change this to make sure the Mesh remembers its scale.
+}
+
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
 									const Material* pMaterial,

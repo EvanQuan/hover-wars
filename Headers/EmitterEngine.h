@@ -17,7 +17,7 @@ public:
 	virtual ~EmitterEngine();
 	void clearAllEmitters();
 
-	void update(duration<float> dMilliSecondsSinceLastUpdate);
+	void update(float fDelta);
 	void renderEmitters();
 
 	void generateEmitter(vec3 vPos, vec3 vNormal, float fAngleFromNormal);

@@ -15,6 +15,15 @@ InteractableEntity::~InteractableEntity()
 }
 
 /****************************************************************\
+ * Inherited Pure Virtual Functions								*
+\****************************************************************/
+
+void InteractableEntity::update(float fTimeInMilliseconds)
+{
+	/* Not Implemented */
+}
+
+/****************************************************************\
  * Load Functions												*
 \****************************************************************/
 

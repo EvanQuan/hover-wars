@@ -16,6 +16,9 @@ public:
 	Camera(const Camera& pCopy);	// Copy Constructor
 	virtual ~Camera();
 
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
+
 	// Camera Manipulation Functions
 	void orbit(vec2 pDelta);
 	void zoom(float fDelta);

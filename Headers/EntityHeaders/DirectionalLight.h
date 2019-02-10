@@ -16,6 +16,9 @@ public:
 	DirectionalLight(int iID);
 	virtual ~DirectionalLight();
 
+	// Implementation of inherited functionality
+	void update(float fTimeInMilliseconds);
+
 	// Function to Initialize the Light.
 	void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor);
 
