@@ -33,10 +33,10 @@ Player:
 		Largest total killstreak
 		Largest total killstreak between players
 	Powerups:
-		Total powerups picked up TODO
+		Total powerups picked up
 	Abilities:
-		Total abilities used TODO
-		Count of each ability used TODO
+		Total abilities used
+		Count of each ability used
 
 Map:
 
@@ -76,6 +76,11 @@ public:
 		LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_3,
 		LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_4,
 		TOTAL_POWERUPS_PICKED_UP,
+		TOTAL_ABILITIES_USED,
+		ABILITY_ROCKET_USED,
+		ABILITY_SPIKES_USED,
+		ABILITY_TRAIL_USED,
+		ABILITY_DASH_USED,
 		STAT_COUNT,
 	};
 
@@ -100,6 +105,7 @@ public:
 	void initializeStats();
 
 	void addScore(ePlayer player, eAddScoreReason reason);
+	void useAbility(ePlayer player, eAbility ability);
 
 	/*
 	Overall game stats

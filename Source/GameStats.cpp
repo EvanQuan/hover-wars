@@ -60,6 +60,32 @@ void GameStats::addScore(ePlayer player, eAddScoreReason reason)
 }
 
 /*
+Track that the player used an ability.
+*/
+void GameStats::useAbility(ePlayer player, eAbility ability)
+{
+	switch (ability)
+	{
+	case ABILITY_ROCKET:
+		stats[player][ABILITY_ROCKET_USED]++;
+		break;
+	case ABILITY_SPIKES:
+		stats[player][ABILITY_SPIKES_USED]++;
+		break;
+	case ABILITY_TRAIL:
+		stats[player][ABILITY_TRAIL_USED]++;
+		break;
+	case ABILITY_DASH_BACK:
+	case ABILITY_DASH_FORWARD:
+	case ABILITY_DASH_LEFT:
+	case ABILITY_DASH_RIGHT:
+		stats[player][ABILITY_DASH_USED]++;
+		break;
+	}
+	stats[player][TOTAL_ABILITIES_USED]++;
+}
+
+/*
 Signifies that playerAttacker hit a bot.
 */
 void GameStats::hitBot(ePlayer playerAttacker)
