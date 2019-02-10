@@ -105,14 +105,14 @@ Update the scores from the result of playerAttacker hitting playerHit
 */
 void GameStats::updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit)
 {
-	stats[playerAttacker][CURRENT_SCORE] += getScoreForAttacker(playerAttacker, playerHit);
-	stats[playerHit][CURRENT_SCORE] -= getScoreForHit(playerAttacker, playerHit);
+	stats[playerAttacker][CURRENT_SCORE] += getScoreGainedForAttacker(playerAttacker, playerHit);
+	stats[playerHit][CURRENT_SCORE] -= getScoreLostForHit(playerAttacker, playerHit);
 }
 
 /*
 Get the score for playerAtacker to gain if they hit playerHit
 */
-int GameStats::getScoreForAttacker(ePlayer playerAttacker, ePlayer playerHit)
+int GameStats::getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit)
 {
 	int basePoints = POINTS_GAINED_HIT_PLAYER;
 	int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK];
@@ -123,7 +123,7 @@ int GameStats::getScoreForAttacker(ePlayer playerAttacker, ePlayer playerHit)
 Get the score for playerHit to lose if hit by playerAttacker
 playerHit cannot lose more points than they have.
 */
-int GameStats::getScoreForHit(ePlayer playerAttacker, ePlayer playerHit)
+int GameStats::getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit)
 {
 	int basePoints = POINTS_LOST_GOT_HIT;
 	int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[playerHit][CURRENT_TOTAL_KILLSTREAK];

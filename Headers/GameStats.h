@@ -126,8 +126,8 @@ private:
 	void hitBot(ePlayer playerAttacker);
 	void hitPlayer(ePlayer playerAttacker, ePlayer playerHit);
 	void updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit);
-	int getScoreForAttacker(ePlayer playerAttacker, ePlayer playerHit);
-	int getScoreForHit(ePlayer playerAttacker, ePlayer playerHit);
+	int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
+	int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
 	void addDomination(ePlayer playerAttacker, ePlayer playerHit);
 	void resetDomination(ePlayer playerAttacker, ePlayer playerHit);
 	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
