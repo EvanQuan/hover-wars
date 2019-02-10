@@ -54,6 +54,7 @@ void GameStats::addScore(ePlayer player, eAddScoreReason reason)
 		hitPlayer(player, scoreReasonToPlayer.at(reason));
 		break;
 	case PICKUP_POWERUP:
+		addPowerupCount(player);
 		break;
 	}
 }
@@ -165,4 +166,12 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
 {
 	return stats[playerToCheck][IS_DOMINATING_PLAYER_1 + playerHit];
+}
+
+/*
+Add to the player's total power up count
+*/
+void GameStats::addPowerupCount(ePlayer player)
+{
+	stats[player][TOTAL_POWERUPS_PICKED_UP]++;
 }
