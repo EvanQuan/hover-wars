@@ -1,5 +1,6 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
+#include "Physics/PhysicsManager.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
@@ -99,13 +100,30 @@ void CommandHandler::execute(int joystickID, VariableCommand command, float x, f
 	switch (command)
 	{
 	case MOVE:
+		if (y > 0)
+		{
+			PHYSICS_MANAGER->forwardKey();
+		}
+		else if (y < 0)
+		{
+			PHYSICS_MANAGER->stopKey();
+		}
+		break;
 	case TURN:
-		std::cout << "Player " << joystickID << ": "
-		          << m_pVariableCommandToString.at(command) << std::endl
-		          << "\tx: " << x << std::endl
-		          << "\ty: " << y << std::endl;
+		if (x > 0)
+		{
+			PHYSICS_MANAGER->rightKey();
+		}
+		else if (x < 0)
+		{
+			PHYSICS_MANAGER->leftKey();
+		}
 		break;
 	}
+	std::cout << "Player " << joystickID << ": "
+		      << m_pVariableCommandToString.at(command) << std::endl
+		      << "\tx: " << x << std::endl
+		      << "\ty: " << y << std::endl;
 }
 
 /*
