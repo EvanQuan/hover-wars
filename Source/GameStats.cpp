@@ -87,7 +87,7 @@ Signifies that playerAttacker hit a bot.
 */
 void GameStats::hitBot(ePlayer playerAttacker)
 {
-	scores.add(playerAttacker, POINTS_GAINED_HIT_BOT);
+	addScore(playerAttacker, POINTS_GAINED_HIT_BOT);
 }
 /*
 Signifies that playerAttacker hit playerHit
@@ -105,7 +105,7 @@ Update the scores from the result of playerAttacker hitting playerHit
 */
 void GameStats::updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit)
 {
-	stats[playerAttacker][CURRENT_SCORE] += getScoreGainedForAttacker(playerAttacker, playerHit);
+	addScore(playerAttacker, getScoreGainedForAttacker(playerAttacker, playerHit));
 	stats[playerHit][CURRENT_SCORE] -= getScoreLostForHit(playerAttacker, playerHit);
 }
 
@@ -129,6 +129,15 @@ int GameStats::getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit)
 	int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[playerHit][CURRENT_TOTAL_KILLSTREAK];
 	int totalPointsLost = basePoints + killstreakBonus;
 	return stats[playerHit][CURRENT_SCORE] > totalPointsLost ? totalPointsLost : stats[playerHit][CURRENT_SCORE];
+}
+
+/*
+Add to a player's score.
+*/
+void GameStats::addScore(ePlayer playerAttacker, int points)
+{
+	stats[playerAttacker][CURRENT_SCORE] += points;
+	stats[playerAttacker][TOTAL_SCORE] += points;
 }
 
 /*
