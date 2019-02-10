@@ -48,8 +48,10 @@ public:
 	void initializeStats();
 
 	void addScore(ePlayer player, eAddScoreReason reason);
+	int getScore(ePlayer player);
 
-	void pickup(ePlayer player, ePowerup powerup);
+	void setPowerupStatus(ePlayer player, ePowerup powerup);
+	ePowerup getPowerupStatus(ePlayer player);
 
 private:
 	GameStats();
@@ -57,10 +59,13 @@ private:
 
 	void addKillstreak(ePlayer playerToAdd, ePlayer playerHit);
 	void resetKillstreak(ePlayer playerToReset, ePlayer playerHit);
+	bool isDominating(ePlayer playerToCheck, ePlayer playerHit);
+
+	void initializePowerUpStatus();
 
 	Bag<ePlayer> scores;
 	Bag<pair<ePlayer, ePlayer>> killstreaks;
-	unordered_map<ePlayer, eAbility> powerupStatus;
+	unordered_map<ePlayer, ePowerup> powerupStatus;
 };
 
 
