@@ -104,30 +104,23 @@ public:
 
 	void initializeStats();
 
+	int get(ePlayer player, eStat stat);
+
 	void addScore(ePlayer player, eAddScoreReason reason);
 	void useAbility(ePlayer player, eAbility ability);
+
+
+private:
+	GameStats();
+	static GameStats* m_pInstance;
 
 	/*
 	Overall game stats
 
 	Everything is stored in a singular 2D int array for setting and querying
 	efficiency.
-
-	This is public so other classes, such as UserInterface may retrive values
-	from it. Use the ePlayer first index, and eStat as the second.
-	For example:
-
-		int results = stats[PLAYER_1][CURRENT_KILLSTREAKS_AGAINST_PLAYER_2];
-
-	will retrieve Player 1's current killstreaks against player 2.
-
-	Please do not alter these values externally from other classes.
 	*/
 	int stats[MAX_PLAYER_COUNT][STAT_COUNT];
-
-private:
-	GameStats();
-	static GameStats* m_pInstance;
 
 	// Actions
 	void hitBot(ePlayer playerAttacker);

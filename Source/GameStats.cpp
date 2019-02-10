@@ -38,6 +38,18 @@ void GameStats::initializeStats()
 }
 
 /*
+Get a stat. For example:
+
+	int killstreak = get(PLAYER_1, CURRENT_KILLSTREAKS_AGAINST_PLAYER_2);
+
+will retrieve Player 1's current killstreaks against player 2.
+*/
+int GameStats::get(ePlayer player, eStat stat)
+{
+	return stats[player][stat];
+}
+
+/*
 Add score to the specified player for the specified reason.
 */
 void GameStats::addScore(ePlayer player, eAddScoreReason reason)
