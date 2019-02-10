@@ -143,6 +143,7 @@ private:
 	void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
 	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
 	// Powerups
+	void pickupPowerup(ePlayer player);
 	void addPowerupCount(ePlayer player);
 
 	unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
