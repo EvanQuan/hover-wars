@@ -132,28 +132,28 @@ int GameStats::getScoreForHit(ePlayer playerAttacker, ePlayer playerHit)
 /*
 Add to a playerAttacker's domination streak against playerHit.
 playerHit's domination streak against playerAttacker ends.
-Players cannot have a domination streak against themselves.
 */
 void GameStats::addDomination(ePlayer playerAttacker, ePlayer playerHit)
 {
-	if (playerAttacker != playerHit)
-	{
-		dominations.add(make_pair(playerAttacker, playerHit), 1);
-		resetDomination(playerHit, playerAttacker);
-	}
+	stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit]++;
+	resetDomination(playerHit, playerAttacker);
 }
 
 /*
 Reset a playerHit's domination streak against playerAttacker.
+NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
 */
 void GameStats::resetDomination(ePlayer playerHit, ePlayer playerAttacker)
 {
-	
+	stats[playerHit][IS_DOMINATING_PLAYER_1 + playerAttacker] = 0;
 }
 
 /*
 Check whether playerToCheck has a large enough killstreak against playerHit to
 count as dominating.
+
+NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
+
 @return true if playerToCheck is dominating playerHit
 */
 bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
