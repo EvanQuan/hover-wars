@@ -1,6 +1,5 @@
 #include <iostream> // debug
 #include "stdafx.h"
-#include "Physics/PhysicsManager.h"
 #include "InputHandler.h"
 #include "GameManager.h"
 
@@ -43,7 +42,11 @@ InputHandler::~InputHandler()
 }
 
 
-// handles keyboard input events
+/*
+Receives input from keyborad and updates the key status in pressed.
+NOTE: Keyboard input is read from CommandHandler. All keyboard input processing
+should be done in the CommandHandler, not here.
+*/
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (GLFW_KEY_UNKNOWN == key)
@@ -66,6 +69,10 @@ Special keys handled differently than the rest. Since key updates occur at a
 slower rate than frame updates, we cannot rely on GLFW_PRESS checks for commands,
 as that may execute multiple commands (for multiple frames) before the action
 goes from GLFW_PRESS to GLFW_REPEAT.
+
+In other words, this is useful for debug commands on the keyboard that need to
+reliably  distinguish between pressing and repeating keys, such as toggling
+wireframe mode.
  */
 void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
 {
@@ -81,18 +88,18 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
 		case GLFW_KEY_F:
 			debugToggleWireframe();
 			break;
-		case GLFW_KEY_W:
-			PHYSICS_MANAGER->forwardKey();
-			break;
-		case GLFW_KEY_S:
-			PHYSICS_MANAGER->stopKey();
-			break;
-		case GLFW_KEY_A:
-			PHYSICS_MANAGER->leftKey();
-			break;
-		case GLFW_KEY_D:
-			PHYSICS_MANAGER->rightKey();
-			break;
+		//case GLFW_KEY_W:
+			//PHYSICS_MANAGER->forwardKey();
+			//break;
+		//case GLFW_KEY_S:
+			//PHYSICS_MANAGER->stopKey();
+			//break;
+		//case GLFW_KEY_A:
+			//PHYSICS_MANAGER->leftKey();
+			//break;
+		//case GLFW_KEY_D:
+			//PHYSICS_MANAGER->rightKey();
+			//break;
 		}
 	}
 }
