@@ -1,11 +1,14 @@
 # Object files in Debug directory will cause merge conflicts when
 # compiling. No need to store on repo when they are generated on build.
-Debug
+/Debug
 
 # Similarly to the Debug directory, building in release mode will cause
 # merge conflicts. 
-Release
-Checked
+/Release
+/Checked
+/UnitTests/Release
+/UnitTests/Debug
+/UnitTests/Checked
 
 # Visual studio files are generated on build. No need to store, and may be
 # different between computers.
