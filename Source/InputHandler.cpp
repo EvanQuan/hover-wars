@@ -1,5 +1,6 @@
 #include <iostream> // debug
 #include "stdafx.h"
+#include "Physics/PhysicsManager.h"
 #include "InputHandler.h"
 #include "GameManager.h"
 

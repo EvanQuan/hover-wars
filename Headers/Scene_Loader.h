@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "Anim_Track.h"
 
 // Solely Generates Objects and assigns IDs to them.
 class Scene_Loader
@@ -19,6 +18,11 @@ public:
 	void createStaticMesh(vector< string > sData, int iLength);
 
 	void loadFromFile( string sFileName );
+	// .dll for freetype?
+	// no, for glfw3
+
+	// Where's the .dll?
+
 
 private:
 	// Singleton Implementation
@@ -26,7 +30,6 @@ private:
 	Scene_Loader( Scene_Loader* pCopy );
 	static Scene_Loader* m_pInstance;
 	string m_sMeshProperty, m_sShaderProperty;
-	Anim_Track* m_pAnimProperty;
 	Material m_pMaterialProperty;
 
 	long m_lNextID;

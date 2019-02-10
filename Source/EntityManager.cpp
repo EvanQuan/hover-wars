@@ -38,10 +38,6 @@ EntityManager::~EntityManager()
 {
 	purgeEnvironment();
 
-	// Delete Boid Engine
-	if (nullptr != m_pBoidEngine)
-		delete m_pBoidEngine;
-
 	// Delete Mesh Manager
 	if (nullptr != m_pMshMngr)
 		delete m_pMshMngr;
@@ -49,6 +45,7 @@ EntityManager::~EntityManager()
 	// Delete Texture Manager
 	if (nullptr != m_pTxtMngr)
 		delete m_pTxtMngr;
+	// ok nm
 
 	if (nullptr != m_pScnLdr)
 		delete m_pScnLdr;
@@ -164,21 +161,6 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 
 	if (nullptr != m_pEmtrEngn)
 		m_pEmtrEngn->renderEmitters();
-
-	// Draw Boid Engine
-	if( nullptr != m_pBoidEngine )
-		m_pBoidEngine->draw( m_bPause );
-}
-
-/*******************************************************************************\
-* Boid Manipulation														   *
-\*******************************************************************************/
-void EntityManager::initializeBoidEngine(vector< string >& sData)
-{
-	if (nullptr != m_pBoidEngine)
-		delete m_pBoidEngine;
-
-	m_pBoidEngine = new BoidEngine(sData);
 }
 
 /*********************************************************************************\

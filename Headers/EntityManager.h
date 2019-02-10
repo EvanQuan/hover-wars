@@ -4,11 +4,11 @@
 #include "EntityHeaders/DirectionalLight.h"
 #include "EntityHeaders/SpotLight.h"
 #include "Scene_Loader.h"
-#include "BoidEngine.h"
 #include "EmitterEngine.h"
 #include "EntityHeaders/InteractableEntity.h"
 #include "EntityHeaders/Entity.h"
 #include "EntityHeaders/Camera.h"
+#include "Physics/PhysicsManager.h"
 #include "EntityComponentHeaders/EntityComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/RenderComponent.h"
@@ -67,16 +67,10 @@ public:
 	void setMaxThreshold( float fMax ) { m_fMaxEdgeThreshold = fMax; }
 	float getMaxThreshold() { return m_fMaxEdgeThreshold; }
 
-	// Boid Methods
-	void initializeBoidEngine(vector< string >& sData);
-
 private:
 	EntityManager();
 	EntityManager(const EntityManager* pCopy);
 	static EntityManager* m_pInstance;
-
-	// Object Managing
-	BoidEngine* m_pBoidEngine;
 
 	// Entity Managing
 	int m_iEntityIDPool, m_iComponentIDPool;

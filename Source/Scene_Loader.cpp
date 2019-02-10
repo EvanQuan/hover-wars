@@ -54,10 +54,7 @@ Scene_Loader* Scene_Loader::getInstance()
 
 Scene_Loader::~Scene_Loader()
 {
-	if (nullptr != m_pAnimProperty)
-	{
-		delete m_pAnimProperty;
-	}
+
 }
 
 // Creation Functions
@@ -270,7 +267,6 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 {
 	string sBuffer, sParser;
 	string sTexturePropPH, sMeshPropPH;
-	Anim_Track* pAnimTrackPropPH = nullptr;
 	vector< string > sPropertyData;
 	string sPropertyIndicator;
 	stringstream sStream( sBuffer );
@@ -321,8 +317,6 @@ void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator
 		createPlayer(sData, sData.size());
 	else if (STATIC_MESH == sIndicator)		// Parse Static Mesh
 		createStaticMesh(sData, sData.size());
-	else if (BOIDS == sIndicator)	// Parse Mass Spring System
-		ENTITY_MANAGER->initializeBoidEngine(sData);
 
 	clearProperties();
 }
@@ -403,12 +397,6 @@ string Scene_Loader::trimString( const string& sStr )
 // Clear Any Properties that have been created on the last data parse.
 void Scene_Loader::clearProperties() // Clear any properties
 {
-	if (nullptr != m_pAnimProperty)
-	{
-		delete m_pAnimProperty;
-	}
-
-	m_pAnimProperty = nullptr;
 	m_sMeshProperty = m_sShaderProperty = "";
 
 	m_pMaterialProperty.fShininess = 0.0f;

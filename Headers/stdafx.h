@@ -22,7 +22,14 @@
 #include <glm/ext.hpp>
 #include "EnvSpec.h"
 #include "GameTime.h"
-#include "Physics/PhysicsManager.h"
+
+#ifdef USING_WINDOWS
+#include <string>
+#include <glew.h>
+#endif
+#include <glfw3.h>
+// so, when we changed / added checked fundimentally what changed. 
+// will it make a difference if one of them doesn't have a 3? pretty sure it will
 
 // FreeType
 #include <ft2build.h>
@@ -38,12 +45,6 @@
 #define GL_GLEXT_PROTOTYPES
 #endif
 
-#ifdef USING_WINDOWS
-#include <string>
-#include <glew.h>
-#endif
-#include <glfw3.h>
-
 // Game Enums
 #include "Enums/eAbility.h"
 #include "Enums/ePlayer.h"
@@ -57,6 +58,7 @@
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
+#include "PxPhysicsAPI.h"
 using namespace physx;
 
 /* DEFINES */

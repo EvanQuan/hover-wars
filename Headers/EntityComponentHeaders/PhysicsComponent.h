@@ -1,5 +1,6 @@
 #pragma once
 #include "EntityComponentHeaders/EntityComponent.h"
+#include "Physics/PhysicsManager.h"
 #include "Mesh.h"
 
 /**************************************************************
