@@ -10,8 +10,6 @@
 #define POINTS_LOST_GOT_HIT 10
 #define POINTS_LOST_PER_KILLSTREAK 10
 
-// Stat indices
-
 /*
 Stores and calculates all in-game stats.
 
@@ -26,13 +24,19 @@ Player:
 		Total kills against bots
 	Dominations:
 		Current dominations between players
+	Multikills: ? This requires some notion of time ?
+		Current multikills TODO
+		Largest multikills TODO
 	Killstreaks:
 		Current total killstreak
 		Current killstreak between players
 		Largest total killstreak
 		Largest total killstreak between players
 	Powerups:
-		Total powerups picked up
+		Total powerups picked up TODO
+	Abilities:
+		Total abilities used TODO
+		Count of each ability used TODO
 
 Map:
 

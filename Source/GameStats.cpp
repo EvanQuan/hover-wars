@@ -72,7 +72,6 @@ Updates killstreaks and scores.
 */
 void GameStats::hitPlayer(ePlayer playerAttacker, ePlayer playerHit)
 {
-	
 	updateAttackerAndHitKillstreak(playerAttacker, playerHit);
 	updateAttackerAndHitScore(playerAttacker, playerHit);
 }
