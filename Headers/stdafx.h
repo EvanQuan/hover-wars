@@ -46,6 +46,11 @@ using namespace physx;
 #define GL_GLEXT_PROTOTYPES
 #endif
 
+// Game Enums
+#include "Enums/eAbility.h"
+#include "Enums/ePlayer.h"
+#include "Enums/ePowerup.h"
+
 
 #define ERR_CODE -1
 

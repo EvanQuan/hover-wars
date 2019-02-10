@@ -32,7 +32,11 @@
     <ClInclude Include="Headers\EntityHeaders\SpotLight.h" />
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h" />
     <ClInclude Include="Headers\EntityManager.h" />
+    <ClInclude Include="Headers\Enums\eAbility.h" />
+    <ClInclude Include="Headers\Enums\ePlayer.h" />
+    <ClInclude Include="Headers\Enums\ePowerup.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
+    <ClInclude Include="Headers\GameStats.h" />
     <ClInclude Include="Headers\GameTime.h" />
     <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\ImageReader.h" />
@@ -69,6 +73,7 @@
     <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
+    <ClCompile Include="Source\GameStats.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
     <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
