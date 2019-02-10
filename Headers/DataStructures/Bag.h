@@ -15,7 +15,7 @@ public:
 	~Bag();
 
 	bool contains(K key);
-	int insert(K key, int value);
+	int add(K key, int value);
 	int erase(K key);
 	int remove(K key, int value);
 	int count(K key);

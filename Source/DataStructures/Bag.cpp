@@ -27,7 +27,7 @@ Negative values will be ignored.
 @return the value of the key after insertion
 */
 template <class K>
-int Bag<K>::insert(K key, int value)
+int Bag<K>::add(K key, int value)
 {
 	if (value > 0)
 	{
