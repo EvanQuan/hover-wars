@@ -176,14 +176,3 @@ bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
 		return false;
 	}
 }
-
-/*
-Initialize all players to not have any power ups activated.
-*/
-void GameStats::initializePowerUpStatus()
-{
-	for (int player = PLAYER_1; player <= PLAYER_4; player++)
-	{
-		powerupStatus.insert(make_pair((ePlayer)player, POWERUP_NONE));
-	}
-}

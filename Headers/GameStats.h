@@ -132,8 +132,6 @@ private:
 	void resetDomination(ePlayer playerAttacker, ePlayer playerHit);
 	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
 
-	void initializePowerUpStatus();
-
 	// Current game stats
 	Bag<ePlayer> scores;
 	Bag<ePlayer> killstreaks;
