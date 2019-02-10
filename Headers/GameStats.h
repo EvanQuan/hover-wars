@@ -10,8 +10,6 @@
 #define POINTS_LOST_GOT_HIT 10
 #define POINTS_LOST_PER_KILLSTREAK 10
 
-// Stat indices
-
 /*
 Stores and calculates all in-game stats.
 
@@ -26,6 +24,9 @@ Player:
 		Total kills against bots
 	Dominations:
 		Current dominations between players
+	Multikills: ? This requires some notion of time ?
+		Current multikills TODO
+		Largest multikills TODO
 	Killstreaks:
 		Current total killstreak
 		Current killstreak between players
@@ -33,6 +34,9 @@ Player:
 		Largest total killstreak between players
 	Powerups:
 		Total powerups picked up
+	Abilities:
+		Total abilities used
+		Count of each ability used
 
 Map:
 
@@ -72,6 +76,11 @@ public:
 		LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_3,
 		LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_4,
 		TOTAL_POWERUPS_PICKED_UP,
+		TOTAL_ABILITIES_USED,
+		ABILITY_ROCKET_USED,
+		ABILITY_SPIKES_USED,
+		ABILITY_TRAIL_USED,
+		ABILITY_DASH_USED,
 		STAT_COUNT,
 	};
 
@@ -95,39 +104,40 @@ public:
 
 	void initializeStats();
 
+	int get(ePlayer player, eStat stat);
+
 	void addScore(ePlayer player, eAddScoreReason reason);
+	void useAbility(ePlayer player, eAbility ability);
+
+
+private:
+	GameStats();
+	static GameStats* m_pInstance;
 
 	/*
 	Overall game stats
 
 	Everything is stored in a singular 2D int array for setting and querying
 	efficiency.
-
-	This is public so other classes, such as UserInterface may retrive values
-	from it. Use the ePlayer first index, and eStat as the second.
-	For example:
-
-		int results = stats[PLAYER_1][CURRENT_KILLSTREAKS_AGAINST_PLAYER_2];
-
-	will retrieve Player 1's current killstreaks against player 2.
-
-	Please do not alter these values externally from other classes.
 	*/
 	int stats[MAX_PLAYER_COUNT][STAT_COUNT];
 
-private:
-	GameStats();
-	static GameStats* m_pInstance;
-
+	// Actions
 	void hitBot(ePlayer playerAttacker);
 	void hitPlayer(ePlayer playerAttacker, ePlayer playerHit);
+	// Score
 	void updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit);
 	int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
 	int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
 	void addScore(ePlayer playerAttacker, int points);
-	void addDomination(ePlayer playerAttacker, ePlayer playerHit);
-	void resetDomination(ePlayer playerAttacker, ePlayer playerHit);
+	// Killstreaks
+	void updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+	void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+	void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
 	bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
+	// Powerups
+	void pickupPowerup(ePlayer player);
+	void addPowerupCount(ePlayer player);
 
 	unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
 	{
