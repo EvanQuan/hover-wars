@@ -49,6 +49,8 @@
 #include "Enums/eAbility.h"
 #include "Enums/ePlayer.h"
 #include "Enums/ePowerup.h"
+#include "Enums/eFixedCommand.h"
+#include "Enums/eVariableCommand.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"

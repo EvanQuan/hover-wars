@@ -28,7 +28,7 @@ public:
 
 	// void mouseZoom(float fZoomVal);
 
-	int m_keyboardPlayer;
+	ePlayer keyboardPlayer;
 
 	float x;
 	float y;

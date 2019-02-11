@@ -15,10 +15,11 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "Physics/PhysicsManager.h"
 
+#include "Physics/PhysicsManager.h"
 
 // Environment Manager
 // Manages all 3D objects in an environment
-// Written by: James Coté
+// Written by: James Coté, Evan Quan
 class EntityManager
 {
 public:
@@ -66,6 +67,10 @@ public:
 	float getMinThreshold() { return m_fMinEdgeThreshold; }
 	void setMaxThreshold( float fMax ) { m_fMaxEdgeThreshold = fMax; }
 	float getMaxThreshold() { return m_fMaxEdgeThreshold; }
+
+	// Command interface
+	void execute(ePlayer player, eFixedCommand command);
+	void execute(ePlayer player, eVariableCommand command, float x, float y);
 
 private:
 	EntityManager();

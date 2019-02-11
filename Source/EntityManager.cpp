@@ -390,3 +390,25 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
 	// Return newly created component
 	return pReturnComponent;
 }
+
+/*********************************************************************************\
+* Command Management                                                    *
+\*********************************************************************************/
+
+void EntityManager::execute(ePlayer player, eFixedCommand command)
+{
+}
+
+void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
+{
+	switch (command)
+	{
+	case COMMAND_MOVE:
+		PHYSICS_MANAGER->handleControllerInputMove(x, y);
+		break;
+	case COMMAND_TURN:
+		// TODO make this a different method
+		PHYSICS_MANAGER->handleControllerInputRotate(x, y);
+		break;
+	}
+}
