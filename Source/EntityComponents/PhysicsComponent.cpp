@@ -57,12 +57,39 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
     //    Make these as general and apparent as possible while providing as much functionality as you can. 
 }
 float PhysicsComponent::getForwardAngle() {
-    PxTransform globalTransform = body->getGlobalPose();
-    float theta;
-    PxVec3 axis;
-    globalTransform.q.toRadiansAndUnitAxis(theta, axis); //TODO make this better
-    return theta;
+
+    float fReturnAngle = 0.0f;
+    PxVec3 vAxis;
+    
+
+    
+
+    if (nullptr != body)
+    {
+        PxQuat pxQuat = body->getGlobalPose().q;
+        fReturnAngle = sign(pxQuat.w) * (2.0f * acos(pxQuat.w)) * (180.0f/PI);
+        //body->getGlobalPose().q.toRadiansAndUnitAxis(fReturnAngle, vAxis);
+        ////fReturnAngle = body->getGlobalPose().q.getAngle() * (180.0f / PI); // Convert it to Degrees; this is a bit hacky
+        //fReturnAngle = (2.0f * acos(body->getGlobalPose().q.w)) * (180.0f / PI);
+        cout << "Degrees: " << fReturnAngle << " || " << body->getGlobalPose().q.getAngle() * sign(body->getGlobalPose().q.w) * (180.0f / PI) << endl;
+        cout << "Rads: " << body->getGlobalPose().q.getAngle() << endl;
+    }
+
+    return fReturnAngle;
 }
+
+quat PhysicsComponent::getRotation()
+{
+    PxQuat pCurrRotation;
+
+    if (nullptr != body)
+    {
+        pCurrRotation = body->getGlobalPose().q;
+    }
+
+    return quat(pCurrRotation.w, pCurrRotation.x, pCurrRotation.y, pCurrRotation.z);
+}
+
 void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
 {
     // Set up Internal Static qualifier.
