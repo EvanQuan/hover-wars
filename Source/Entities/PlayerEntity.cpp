@@ -16,8 +16,8 @@ const vec3 BACK_CAMERA_START_POS = vec3(-60.f, 20.f, START_RADIUS); // (Theta, P
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition)
 {
-	m_vPositionTotal = *vPosition * MAX_NUM_POS;
-	for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
+    m_vPositionTotal = *vPosition * MAX_NUM_POS;
+    for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
 }
 
 PlayerEntity::~PlayerEntity()
@@ -55,23 +55,23 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, fScale, m_vPosition);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
-	// PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
-	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-	m_pPhysicsComponent->initializeComponent(true, m_pMesh);
-
-	// Generate Camera Components
-	//for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
-	//{
-	//	m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
-	//	m_pCmrComponents[i]->setLookAt(m_vPosition);
-	//}
-	//
-	//m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
-	//m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
+    // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
+    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pPhysicsComponent->initializeComponent(true, m_pMesh);
+    
+    // Generate Camera Components
+    //for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
+    //{
+    //  m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+    //  m_pCmrComponents[i]->setLookAt(m_vPosition);
+    //}
+    //
+    //m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
+    //m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
 }
 
 /********************************************************************************************************\
- * Private Functions																					*
+ * Private Functions                                                                                    *
 \********************************************************************************************************/
 
 // Updates an Average for this player's cameras.
