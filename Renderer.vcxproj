@@ -34,8 +34,10 @@
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\Enums\eAbility.h" />
+    <ClInclude Include="Headers\Enums\eFixedCommand.h" />
     <ClInclude Include="Headers\Enums\ePlayer.h" />
     <ClInclude Include="Headers\Enums\ePowerup.h" />
+    <ClInclude Include="Headers\Enums\eVariableCommand.h" />
     <ClInclude Include="Headers\EnvSpec.h" />
     <ClInclude Include="Headers\GameStats.h" />
     <ClInclude Include="Headers\GameTime.h" />

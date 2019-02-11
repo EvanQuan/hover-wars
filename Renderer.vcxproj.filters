@@ -186,6 +186,12 @@
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h">
       <Filter>Header Files\snippetvehiclecommon</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eFixedCommand.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\eVariableCommand.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">

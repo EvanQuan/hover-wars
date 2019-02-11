@@ -67,6 +67,9 @@ public:
 	void setMaxThreshold( float fMax ) { m_fMaxEdgeThreshold = fMax; }
 	float getMaxThreshold() { return m_fMaxEdgeThreshold; }
 
+	// Command interface
+	// void execute(ePlayer player, FixedCommand)
+
 private:
 	EntityManager();
 	EntityManager(const EntityManager* pCopy);

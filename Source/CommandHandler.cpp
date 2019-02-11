@@ -55,17 +55,17 @@ void CommandHandler::execute(ePlayer player, FixedCommand command)
 {
 	switch (command)
 	{
-	case ABILITY_ROCKET:
-	case ABILITY_SPIKES:
-	case ABILITY_TRAIL:
-	case CAMERA_CHANGE:
-	case DASH_BACK:
-	case DASH_FORWARD:
-	case DASH_LEFT:
-	case DASH_RIGHT:
-	case MENU_BACK:
-	case MENU_PAUSE:
-	case MENU_START:
+	case COMMAND_ABILITY_ROCKET:
+	case COMMAND_ABILITY_SPIKES:
+	case COMMAND_ABILITY_TRAIL:
+	case COMMAND_CAMERA_CHANGE:
+	case COMMAND_DASH_BACK:
+	case COMMAND_DASH_FORWARD:
+	case COMMAND_DASH_LEFT:
+	case COMMAND_DASH_RIGHT:
+	case COMMAND_MENU_BACK:
+	case COMMAND_MENU_PAUSE:
+	case COMMAND_MENU_START:
 		cout << "Player " << player << ": "
 		     << m_pFixedCommandToString.at(command)
 		     << endl;
@@ -99,7 +99,7 @@ void CommandHandler::execute(ePlayer player, VariableCommand command, float x, f
 {
 	switch (command)
 	{
-	case MOVE:
+	case COMMAND_MOVE:
 		if (y > 0)
 		{
 			PHYSICS_MANAGER->forwardKey();
@@ -109,7 +109,7 @@ void CommandHandler::execute(ePlayer player, VariableCommand command, float x, f
 			PHYSICS_MANAGER->stopKey();
 		}
 		break;
-	case TURN:
+	case COMMAND_TURN:
 		if (x > 0)
 		{
 			PHYSICS_MANAGER->rightKey();
@@ -189,39 +189,39 @@ void CommandHandler::executeKeyboardCommands()
 			switch (key)
 			{
 			case GLFW_KEY_K:
-				m_pFixedCommand = DASH_BACK;
+				m_pFixedCommand = COMMAND_DASH_BACK;
 				break;
 			case GLFW_KEY_I:
-				m_pFixedCommand = DASH_FORWARD;
+				m_pFixedCommand = COMMAND_DASH_FORWARD;
 				break;
 			case GLFW_KEY_H:
-				m_pFixedCommand = DASH_LEFT;
+				m_pFixedCommand = COMMAND_DASH_LEFT;
 				break;
 			case GLFW_KEY_SEMICOLON:
-				m_pFixedCommand = DASH_RIGHT;
+				m_pFixedCommand = COMMAND_DASH_RIGHT;
 				break;
 			case GLFW_KEY_SPACE:
-				m_pFixedCommand = ABILITY_ROCKET;
+				m_pFixedCommand = COMMAND_ABILITY_ROCKET;
 				break;
 			case GLFW_KEY_LEFT_SHIFT:
-				m_pFixedCommand = ABILITY_TRAIL;
+				m_pFixedCommand = COMMAND_ABILITY_TRAIL;
 				break;
 			case GLFW_KEY_APOSTROPHE:
-				m_pFixedCommand = ABILITY_SPIKES;
+				m_pFixedCommand = COMMAND_ABILITY_SPIKES;
 				break;
 			case GLFW_KEY_TAB:
-				m_pFixedCommand = MENU_BACK;
+				m_pFixedCommand = COMMAND_MENU_BACK;
 				break;
 			case GLFW_KEY_ENTER:
-				m_pFixedCommand = MENU_START;
+				m_pFixedCommand = COMMAND_MENU_START;
 				break;
 			case GLFW_KEY_P:
-				m_pFixedCommand = MENU_PAUSE;
+				m_pFixedCommand = COMMAND_MENU_PAUSE;
 				break;
 			default:
-				m_pFixedCommand = INVALID_FIXED;
+				m_pFixedCommand = COMMAND_INVALID_FIXED;
 			}
-			if (INVALID_FIXED != m_pFixedCommand) {
+			if (COMMAND_INVALID_FIXED != m_pFixedCommand) {
 				execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
 			}
 			else
@@ -253,11 +253,11 @@ void CommandHandler::executeKeyboardCommands()
 	}
 	if (!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
 	{
-		execute(m_pInputHandler->keyboardPlayer, MOVE, xMove, yMove);
+		execute(m_pInputHandler->keyboardPlayer, COMMAND_MOVE, xMove, yMove);
 	}
 	if (!magnitudeIsNeutral(getMagnitude(xTurn, yTurn)))
 	{
-		execute(m_pInputHandler->keyboardPlayer, TURN, xTurn, yTurn);
+		execute(m_pInputHandler->keyboardPlayer, COMMAND_TURN, xTurn, yTurn);
 	}
 }
 
@@ -287,8 +287,8 @@ void CommandHandler::executeJoystickCommands()
 
 			// Check axes
 			// Joystick axes will not be remappable, so no need to make code generalizable
-			execute((ePlayer) joystickID, MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-			execute((ePlayer) joystickID, TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+			execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+			execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
 
 			// NOTE: With works with the assumption that triggers are mapped to fixed commands
 			// If we decide that triggers work better for variable commands, then we will need to change this.
