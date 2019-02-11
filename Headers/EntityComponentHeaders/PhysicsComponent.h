@@ -27,9 +27,8 @@ public:
     // Various initialization functions as needed.
     void initializeComponent(bool bStatic, Mesh const* pMeshReference,float x, float y, float z, float size);
     void initializeComponent(bool bStatic, Mesh const* pMeshReference);
-    float getForwardAngle();
-    glm::vec3 getLinearVelocity();
-    /*void initializeAsSpherical(); Maybe this style is required for different initialization types based on type of bounding mesh desired?*/
+    vec3 getLinearVelocity();
+    quat getRotation();
 
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);

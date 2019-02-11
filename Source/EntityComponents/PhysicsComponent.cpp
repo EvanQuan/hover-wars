@@ -11,7 +11,9 @@
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     : EntityComponent(iEntityID, iComponentID)
 {
+#ifdef _DEBUG
     std::cout << "Physics Component constructor 2 vars" << std::endl;
+#endif
     m_bStatic = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
@@ -56,13 +58,20 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
     //            wants a cylindrical bounding box and will set it up as it needs it.
     //    Make these as general and apparent as possible while providing as much functionality as you can. 
 }
-float PhysicsComponent::getForwardAngle() {
-    PxTransform globalTransform = body->getGlobalPose();
-    float theta;
-    PxVec3 axis;
-    globalTransform.q.toRadiansAndUnitAxis(theta, axis); //TODO make this better
-    return theta;
+
+// Returns the Rotation Quaternion for the Entity's body.
+quat PhysicsComponent::getRotation()
+{
+    PxQuat pCurrRotation;
+
+    if (nullptr != body)
+    {
+        pCurrRotation = body->getGlobalPose().q;
+    }
+
+    return quat(pCurrRotation.w, pCurrRotation.x, pCurrRotation.y, pCurrRotation.z);
 }
+
 void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
 {
     // Set up Internal Static qualifier.

@@ -115,9 +115,11 @@ bool GameManager::renderGraphics()
 // Will be replaced with functions in Graphic objects.
 void GameManager::RenderScene()
 {
-    // HACK: For following Car on Roller Coaster Assignment, Remove
-    //mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEntMngr->getFrenetFrame();
+    // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
+    //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
     m_pCamera->setLookAt(m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getPosition());
+    quat pQuat = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getRotation();
+    m_pCamera->setRotationQuat(pQuat);
     const CameraComponent* pCamera = m_pEntityManager->getActiveCamera();
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
@@ -134,7 +136,7 @@ void GameManager::RenderScene()
     // Set camera information in Shaders before rendering
     m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
 
-    //renderAxis();
+    renderAxis();
     m_pEntityManager->renderEnvironment( vCamLookAt );
     glDisable(GL_DEPTH_TEST);
 }

@@ -27,7 +27,7 @@
 #define Y_LOOK              m_vPosition[I_Y]
 #define Z_LOOK              m_vPosition[I_Z]
 
-const vec3 DEFAULT_POS = vec3(90.f, 8.5308f, START_RADIUS); // (Theta, Phi, Radius)
+const vec3 DEFAULT_POS = vec3(-90.0f, 60.0f, START_RADIUS); // (Theta, Phi, Radius)
 
 // Constructor
 Camera::Camera( int iID )
@@ -39,7 +39,7 @@ Camera::Camera( int iID )
     //m_pPhysicsCmp = pEntMngr->generatePhysicsComponent(iID); // PHYSICSTODO: Set this up for a camera to test Camera Physics.
     assert(m_pCmraCmp != NULL);
     m_vPosition = DEFAULT_POS;
-    m_vWorldLookAt = vec3(0.f, 0.f, 0.f);    // (X,Y,Z)
+    m_vWorldLookAt = vec3(1.f, 0.f, 0.f);    // (X,Y,Z)
     updateCameraComponent();
 }
 

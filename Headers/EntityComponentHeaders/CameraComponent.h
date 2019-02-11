@@ -34,6 +34,7 @@ public:
     void setSphericalPos(vec3 vSPos) { m_vPos = vSPos; }
     void setCartesianPos(vec3 vCPos) { m_vPos = vCPos; }
     void setFOV_Y(float fFOVY) { m_fFOV_Y = fFOVY; }
+    void setRotationQuat(quat pRotation) { m_pRotation = pRotation; }
     void setZRange(float fClose, float fFar) 
     { 
         m_fZClose = fClose;
@@ -45,6 +46,7 @@ private:
     CameraComponent& operator=(const CameraComponent* pCopy);
     vec3 m_vPos, m_vWorldLookAt;
     mat4 m_m4Frame;
+    quat m_pRotation;
 
     int m_iHeight, m_iWidth;
     float m_fAspectRatio;

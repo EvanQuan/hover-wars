@@ -7,5 +7,5 @@ in vec3 vVert;
 
 void main(void)
 {    
-    color = vec4( vColor, 1.0 );
+    color = vec4( vVert, 1.0 );
 }

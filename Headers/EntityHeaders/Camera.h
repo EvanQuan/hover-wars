@@ -24,7 +24,9 @@ public:
     void zoom(float fDelta);
     void setLookAt(vec3 fLookAt) { m_vWorldLookAt = fLookAt; updateCameraComponent(); }
     void positionCamera(mat4 m4FreNetFrame) { m_pCmraCmp->positionCamera(m4FreNetFrame); }
+    void setSphericalPos(vec3 vPosition) { m_pCmraCmp->setSphericalPos(vPosition); }
     void setSteady(bool bSteady) { m_bSteadyCam = bSteady; }
+    void setRotationQuat(quat pRotation) { m_pCmraCmp->setRotationQuat(pRotation); }
 
 private:
     CameraComponent* m_pCmraCmp;

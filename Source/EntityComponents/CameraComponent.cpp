@@ -119,7 +119,7 @@ vec3 CameraComponent::getCartesianPos() const
         vReturn.y = abs(vReturn.y) < FLT_EPSILON ? 0.f : vReturn.y;
 
         mat4 mLookAtTranslation = translate(mat4(1.f), m_vWorldLookAt);
-        vec4 mTranslatedPos = mLookAtTranslation * vec4(vReturn, 1.f);
+        vec4 mTranslatedPos = mLookAtTranslation * (m_pRotation * vec4(vReturn, 1.f));
         vReturn = vec3(mTranslatedPos);
     }
     else // Defined for a specific camera behaviour, needs to be revised.
