@@ -21,6 +21,7 @@
 /***********\
  * DEFINES *
 \***********/
+#define MOVEMENTPER_NEWTON_METER 1000.0f
 #define PVD_HOST "127.0.0.1"
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
 
@@ -45,23 +46,16 @@ bool hasStarted = false;
 //	Initializes all default settings for Physics Manager
 PhysicsManager::PhysicsManager()
 {
-	// Not sure why these would be global as you had them.
-	//	Make these private within the PhysicsManager header and maintain
-	//	them throughout the lifespan of the Physics Manager.
-	/*PxDefaultAllocator		*/gAllocator;
-	/*PxDefaultErrorCallback	*/gErrorCallback;
-	/*PxFoundation*				*/gFoundation = NULL;
-	/*PxPhysics*				*/gPhysics = NULL;
-	/*							*/
-	/*PxDefaultCpuDispatcher*	*/gDispatcher = NULL;
-	/*PxScene*					*/gScene = NULL;
-	/*PxControllerManager*		*/manager = NULL;
-	/*							*/
-	/*PxMaterial*				*/gMaterial = NULL;
-	/*							*/
-	/*PxPvd*					*/gPvd = NULL;
-	/*PxCooking *				*/gCook;
-	/*PxReal					*/stackZ = -3.0f;
+	// basic variable init
+	gFoundation = NULL;
+	gPhysics = NULL;
+	gDispatcher = NULL;
+	gScene = NULL;
+	manager = NULL;
+	gMaterial = NULL;
+	
+	gPvd = NULL;
+	stackZ = -3.0f;// distance between stacks, Only used for stack demo creation
 	/*Left these here to show change made by moving these to PhysicsManager Private Variables*/
 }
 
@@ -254,7 +248,7 @@ void PhysicsManager::initPhysics(bool interactive)
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	gMaterial = gPhysics->createMaterial(0.15f, 0.15f, 0.2f);
+	gMaterial = gPhysics->createMaterial(0.35f, 0.35f, 0.2f);
 
 	gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 	if (!gCook)
@@ -301,8 +295,8 @@ void PhysicsManager::initPhysics(bool interactive)
 	//PxController* c = manager->createController(desc);
 	//std::cout << c << std::endl;
 	//initWall(gPhysics);
-	for (PxU32 i = 0; i < 1; i++)
-		createStack(PxTransform(PxVec3(0, 0, stackZ += 3.0f)), 2, 0.1f);
+	//for (PxU32 i = 0; i < 1; i++)
+	//	createStack(PxTransform(PxVec3(0, 0, stackZ += 3.0f)), 2, 0.1f);
 
 	//createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
 //createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
@@ -310,51 +304,71 @@ void PhysicsManager::initPhysics(bool interactive)
 void PhysicsManager::forwardKey() {
 	if (currentState != 1) {
 		releaseAllControls();
-		startAccelerateForwardsMode();
+		//startAccelerateForwardsMode();
 		currentState = 1;
 	}
 }
 void PhysicsManager::handleControllerInputMove(float x, float y) {
-	if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
+	std::cout << "Physics Manager handleControllerInput x: " << x << "   y: " << y << std::endl;
+	/*if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
+		std::cout << "here" << std::endl;
 		gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
 		gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
 		gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
 		gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
 	}else
-	{
-		float angle = atan(y/x);
-		gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-		gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-		gVehicleNoDrive->setDriveTorque(2, 1000.0f);
-		gVehicleNoDrive->setDriveTorque(3, 1000.0f);
-		gVehicleNoDrive->setSteerAngle(0, angle);
-		gVehicleNoDrive->setSteerAngle(1, angle);
-		gVehicleNoDrive->setSteerAngle(2, angle);
-		gVehicleNoDrive->setSteerAngle(3, angle);
-	}
+	{*/
+		float angle = atan(x/y);
+		float distance = sqrt(x*x + y*y);
+		if (y > 0) {
+			distance = -distance;
+		}
+		std::cout << "angle to use" << angle << std::endl;
+		if (x !=0 && y != 0) {
+			releaseAllControls();
+			gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
+			gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
+			gVehicleNoDrive->setDriveTorque(2, distance * 1000.0f);
+			gVehicleNoDrive->setDriveTorque(3, distance * 1000.0f);
+			gVehicleNoDrive->setSteerAngle(0, angle);
+			gVehicleNoDrive->setSteerAngle(1, angle);
+			gVehicleNoDrive->setSteerAngle(2, angle);
+			gVehicleNoDrive->setSteerAngle(3, angle);
+		}
+		else {
+			std::cout << "movement" << std::endl;
+			releaseAllControls();
+			gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
+			gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
+			gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
+			gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
+		}
+
+	//}
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
 	
+
 }
 void PhysicsManager::stopKey() {
 	if (currentState != 2) {
-		releaseAllControls();
-		startAccelerateReverseMode();
+		//releaseAllControls();
+		//startAccelerateReverseMode();
 		currentState = 2;
 	}
 }
 void PhysicsManager::leftKey() {
 	if (currentState != 3) {
 
-	releaseAllControls();
-	startTurnHardLeftMode();
+		//releaseAllControls();
+	//startTurnHardLeftMode();
 	currentState = 3;
 	}
 }
 void PhysicsManager::rightKey() {
 	if (currentState != 4) {
-		releaseAllControls();
-		startTurnHardRightMode();
+		//releaseAllControls();
+		//startTurnHardRightMode();
 		currentState = 4;
 	}
 }

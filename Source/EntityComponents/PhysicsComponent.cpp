@@ -78,6 +78,7 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 	// Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
 	if (body != NULL) {
 		m_pTransformationMatrix = m_pPhysicsManager->getMat4(body->getGlobalPose());
+		std::cout << "here: " << m_pTransformationMatrix.length() << std::endl;
 		//TODO maybe move getMat4 to physicsComponent?
 
 		*pReturnTransformMatrix = m_pTransformationMatrix;
