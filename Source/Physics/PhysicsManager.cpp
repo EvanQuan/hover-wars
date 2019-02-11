@@ -16,7 +16,7 @@
 /***********\
  * DEFINES *
 \***********/
-#define ANGULAR_MO_RATE 2.0f
+#define ANGULAR_MO_RATE 1.0f
 #define MOVEMENTPER_NEWTON_METER 1000.0f
 #define PVD_HOST "127.0.0.1"
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
@@ -370,8 +370,8 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
             //gVehicleNoDrive->setDriveTorque(3, distance * 1000.0f);
             PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
             PxTransform globalTransform = carBody->getGlobalPose();
-            float theta;
             PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+            cout << "x: " << x << " | y: " << y << endl;
             carBody->addForce(vForce * 10000);
 
             //std::cout << "angle: " << angleTransform << "x: " << memeCity.x << " y:" << memeCity.y << " z:" << memeCity.z <<  std::endl;
