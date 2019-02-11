@@ -35,10 +35,10 @@ void EmitterEngine::clearAllEmitters()
 void EmitterEngine::update(float fDelta)
 {
 	// Update all Emitters
-	/*for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
+	for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
 		iter != m_pEmitters.end();
 		++iter )
-		(*iter)->update(dMilliSecondsSinceLastUpdate);*/
+		(*iter)->update(fDelta);
 
 	// Clean up any Emitters that are subject for deletion.
 	m_pEmitters.erase(

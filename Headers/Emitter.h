@@ -16,7 +16,7 @@ public:
 
 	// Functions to initialize and update Emitter.
 	void initializeEmitter(unsigned int iMaxParticles, vec3 vEmitterNormal, float fAngleFromNormal, float fDefaultDuration, float fRadius, bool bExplosion);
-	void update(duration<float> dTimeInMilliseconds);
+	void update(float fDelta);
 	void draw();
 
 	// Function to signal EmitterEngine that Emitter is finished.
