@@ -21,8 +21,10 @@
 
 /*
 Angular momementum.
+
+The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MO_RATE 5.0f
+#define ANGULAR_MO_RATE 3.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
@@ -63,10 +65,14 @@ make it feel like a hovercraft.
 */
 #define DYNAMIC_FRICTION 2.00f // 0.35f
 /*
-Restitution
-*/
-#define RESTITUTION 0.2f
+Car Restitution
 
+Affects how elastic collisions are. The greater this value, the more colliding
+objects bounce away.
+
+This should be relatively high to make car collisions satisfying.
+*/
+#define CAR_RESTITUTION 0.2f
 /*
 Acceleration of gravity downwards
 
@@ -77,7 +83,6 @@ Typically in games, this value is much greater than the real world value.
 Acceleration : m/s^2
 */
 #define GRAVITY -9.81f
-
 /*
 This affects the momentum of the vehicle.
 The greater it is, the slow the car will take to accelerate, either from
@@ -88,7 +93,7 @@ explosions or collisions.
 
 Mass : kilograms
 */
-#define CHASSIS_MASS = 100.0f
+#define CHASSIS_MASS = 1000.0f
 
 
 /****************************************************************************\
@@ -321,7 +326,7 @@ void PhysicsManager::initPhysics(bool interactive)
         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
     }
-    gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+    gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, CAR_RESTITUTION);
 
     gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
     if (!gCook)
