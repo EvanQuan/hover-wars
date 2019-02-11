@@ -63,7 +63,8 @@ bool Mesh::genMesh( const string& sFileName, vec3 vPosition, float fScale )
 	if (bReturnValue)
 	{
 		// Apply Scale before Translation
-		mat4 m4Transformation = scale(vec3(fScale)) * mat4(1.0f);
+		m_m4ScaleMatrix = scale(vec3(fScale));
+		mat4 m4Transformation = m_m4ScaleMatrix * mat4(1.0f);
 
 		// Translation
 		if (vec3(0.f) != vPosition)
@@ -677,12 +678,18 @@ void Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale)
 //	Dynamic Meshes will replace their old transformation and Static Meshes will add a transformation.
 void Mesh::addInstance(const mat4* m4Transform)
 {
+	// Local Variables
+	mat4 m4ScaledTransform = *m4Transform;
+
 	// If Dynamic, clear previous position.
 	if (!m_bStaticMesh)
+	{
 		m_m4ListOfInstances.clear();
+		m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;
+	}
 
 	// Add new Transformation
-	m_m4ListOfInstances.push_back(*m4Transform);
+	m_m4ListOfInstances.push_back(m4ScaledTransform);
 
 	// Load VBO with new Data.
 	loadInstanceData(m_m4ListOfInstances.data(), m_m4ListOfInstances.size());

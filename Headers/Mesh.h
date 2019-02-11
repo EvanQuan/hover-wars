@@ -52,6 +52,7 @@ private:
 	ShaderManager* m_pShdrMngr;
 	vector<mat4> m_m4ListOfInstances;
 	bool m_bStaticMesh;
+	mat4 m_m4ScaleMatrix;
 
 	// Billboard Information
 	struct sBillboardInfo
