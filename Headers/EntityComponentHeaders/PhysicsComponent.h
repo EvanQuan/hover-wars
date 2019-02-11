@@ -36,8 +36,8 @@ public:
 private:
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;
-    bool m_bStatic;                        // Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.
-    PhysicsManager* m_pPhysicsManager;    // Reference to Physics Manager for calling for any updates necessary.
-    mat4 m_pTransformationMatrix;        // Stored Locally, maybe pulled from PhysicsManager on update?
+    bool m_bStatic;                         // Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.
+    PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.
+    mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
 };
 
