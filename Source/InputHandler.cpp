@@ -265,8 +265,8 @@ void InputHandler::debugPrintJoystickInformation(int joystickID)
 		<< " is " <<  (m_pJoystickIsPresent[joystickID] ? "" : "dis" ) << "connected"
 		<< std::endl;
 
-	debugPrintJoystickAxes(joystickID);
-	debugPrintJoystickButtons(joystickID);
+	// debugPrintJoystickAxes(joystickID);
+	// debugPrintJoystickButtons(joystickID);
 }
 
 void InputHandler::debugPrintJoystickAxes(int joystickID)
@@ -326,7 +326,7 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
 void InputHandler::disconnectJoystick(int joystickID)
 {
 	m_pJoystickIsPresent[joystickID] = false;
-	debugPrintJoystickInformation(joystickID);
+	// debugPrintJoystickInformation(joystickID);
 
 }
 

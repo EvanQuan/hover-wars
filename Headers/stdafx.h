@@ -130,7 +130,7 @@ struct Material
 #define SHADER_MANAGER	ShaderManager::getInstance()
 #define TEXTURE_MANAGER TextureManager::getInstance()
 #define PHYSICS_MANAGER PhysicsManager::getInstance()
-#define SCENE_LOADER	Scene_Loader::getInstance()
+#define SCENE_LOADER	SceneLoader::getInstance()
 #define EMITTER_ENGINE	EmitterEngine::getInstance()
 
 // From Boilerplate code,

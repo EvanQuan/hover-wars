@@ -1,7 +1,7 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "CommandHandler.h"
-#include "Scene_Loader.h"
+#include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "UserInterface.h"
 

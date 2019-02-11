@@ -26,6 +26,41 @@
 #define PVD_HOST "127.0.0.1"
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
 
+/*
+This determines the amount of force applied to the car when movement is intiated.
+The greater the force, the faster it will accelerate.
+*/
+#define NEWTONS_MOVEMENT 2000.0f
+/*
+This determines the rate of decceleration when the car input movement is in neutral.
+A braking force is applied when this is the case to help combat drifting.
+*/
+#define NEWTONS_BRAKE 1000.0f
+
+/*
+Hovercraft material properties
+*/
+/*
+Coefficient of static friction
+*/
+#define STATIC_FRICTION 0.35f
+/*
+Coefficient of dynamic friction
+*/
+#define DYNAMIC_FRICTION 0.35f
+/*
+Restitution
+*/
+#define RESTITUTION 0.2f
+
+/*
+Force of gravity downwards
+
+m/s^2
+*/
+#define GRAVITY -9.81f
+
+
 /****************************************************************************\
  * Singleton Implementation													*
 \****************************************************************************/
@@ -112,18 +147,21 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
 	return vehicleDesc;
 }
 
+// DEPRECATED
 void PhysicsManager::startAccelerateForwardsMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, 1000.0f);
 	gVehicleNoDrive->setDriveTorque(1, 1000.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startAccelerateReverseMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, -1000.0f);
 	gVehicleNoDrive->setDriveTorque(1, -1000.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startBrakeMode()
 {
 	gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
@@ -132,6 +170,7 @@ void PhysicsManager::startBrakeMode()
 	gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startTurnHardLeftMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, 1000.0f);
@@ -140,6 +179,7 @@ void PhysicsManager::startTurnHardLeftMode()
 	gVehicleNoDrive->setSteerAngle(1, 1.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startTurnHardRightMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, 1000.0f);
@@ -148,6 +188,7 @@ void PhysicsManager::startTurnHardRightMode()
 	gVehicleNoDrive->setSteerAngle(1, -1.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startHandbrakeTurnLeftMode()
 {
 	gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
@@ -158,6 +199,7 @@ void PhysicsManager::startHandbrakeTurnLeftMode()
 	gVehicleNoDrive->setSteerAngle(1, 1.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startHandbrakeTurnRightMode()
 {
 	gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
@@ -236,7 +278,7 @@ void PhysicsManager::initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
@@ -249,7 +291,7 @@ void PhysicsManager::initPhysics(bool interactive)
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	gMaterial = gPhysics->createMaterial(0.35f, 0.35f, 0.2f);
+	gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
 
 	gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 	if (!gCook)
@@ -349,10 +391,10 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
 		}
 		else {
 			releaseAllControls();
-			gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
-			gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
-			gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-			gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
+			gVehicleNoDrive->setBrakeTorque(0, NEWTONS_BRAKE);
+			gVehicleNoDrive->setBrakeTorque(1, NEWTONS_BRAKE);
+			gVehicleNoDrive->setBrakeTorque(2, NEWTONS_BRAKE);
+			gVehicleNoDrive->setBrakeTorque(3, NEWTONS_BRAKE);
 		}
 
 	//}
