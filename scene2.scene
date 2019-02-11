@@ -84,28 +84,28 @@ spotlight {
 }
 
 point_light {
-	7.5 0 0
-	0.0 1.0 1.0
+	0 10 0
+	0.0 1.0 0.0
 	5.0
 }
 
 point_light {
-	-7.5 0 0
+	10 0 0
 	1.0 0.0 0.0
 	5.0
 }
 
 point_light {
-	0 0 7.5
+	0 0 10
 	0.0 0.0 1.0
 	5.0
 }
 
-point_light {
-  0 0 -7.5
-  1.0 1.0 1.0
-  5.0
-}
+#point_light {
+#  0 0 -7.5
+#  1.0 1.0 1.0
+#  5.0
+#}
 
 #Indices:
 #		0 - Num_Boids
@@ -193,8 +193,8 @@ plane {
 player {
 	0 0 0
 	+mesh {
-		models/big_dodge.obj
-		0.25
+		models/low.obj
+		1
 	}
 	+material {
 		textures/tronBase.png

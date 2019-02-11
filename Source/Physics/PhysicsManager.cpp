@@ -362,7 +362,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
         if (distance > 1) {
             distance = 1;
         }
-        if (x !=0 && y != 0) {
+        if (x !=0 || y != 0) {
             releaseAllControls();
             //gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
         //    gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
@@ -371,11 +371,10 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
             PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
             PxTransform globalTransform = carBody->getGlobalPose();
             float theta;
-            PxVec3 axis;
-            globalTransform.q.toRadiansAndUnitAxis(theta, axis); //TODO make this better
+            theta = globalTransform.q.getAngle();
             float newX = x*cos(theta) - y*sin(theta);
             float newY = x * sin(theta) + y * cos(theta);
-            carBody->addForce(PxVec3(newX *10000,0, newY*-10000));
+            carBody->addForce(PxVec3(newX *10000,0, newY*10000));
 
             //std::cout << "angle: " << angleTransform << "x: " << memeCity.x << " y:" << memeCity.y << " z:" << memeCity.z <<  std::endl;
             gVehicleNoDrive->setSteerAngle(0, angle);

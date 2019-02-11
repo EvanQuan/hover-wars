@@ -134,7 +134,7 @@ void GameManager::RenderScene()
     // Set camera information in Shaders before rendering
     m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
 
-    //renderAxis();
+    renderAxis();
     m_pEntityManager->renderEnvironment( vCamLookAt );
     glDisable(GL_DEPTH_TEST);
 }
