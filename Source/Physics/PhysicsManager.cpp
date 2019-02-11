@@ -21,6 +21,7 @@
 /***********\
  * DEFINES *
 \***********/
+#define ANGULAR_MO_RATE 2.0f
 #define MOVEMENTPER_NEWTON_METER 1000.0f
 #define PVD_HOST "127.0.0.1"
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
@@ -75,13 +76,13 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
 	//Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
 	//The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
 	//Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
-	const PxF32 chassisMass = 100.0f;
+	const PxF32 chassisMass = 300.0f;
 	const PxVec3 chassisDims(2.5f, 2.0f, 5.0f);
 	const PxVec3 chassisMOI
 	((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
 		(chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
 		(chassisDims.x*chassisDims.x + chassisDims.y*chassisDims.y)*chassisMass / 12.0f);
-	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*0.5f + 0.65f, 0.25f);
+	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*1.5f + 0.65f, 0.25f);
 
 	//Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
 	//Moment of inertia is just the moment of inertia of a cylinder.
@@ -318,18 +319,22 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
 		gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
 	}else
 	{*/
-		float angle = atan(x/y);
+		float angle =-1* atan(x/y);
 		float distance = sqrt(x*x + y*y);
 		if (y > 0) {
 			distance = -distance;
 		}
 		std::cout << "angle to use" << angle << std::endl;
+		if (distance > 1) {
+			distance = 1;
+		}
 		if (x !=0 && y != 0) {
 			releaseAllControls();
-			gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
-			gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
-			gVehicleNoDrive->setDriveTorque(2, distance * 1000.0f);
-			gVehicleNoDrive->setDriveTorque(3, distance * 1000.0f);
+			//gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
+		//	gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
+			//gVehicleNoDrive->setDriveTorque(2, distance * 1000.0f);
+			//gVehicleNoDrive->setDriveTorque(3, distance * 1000.0f);
+			gVehicleNoDrive->getRigidDynamicActor()->addForce(PxVec3(x*10000,0,y*-10000));
 			gVehicleNoDrive->setSteerAngle(0, angle);
 			gVehicleNoDrive->setSteerAngle(1, angle);
 			gVehicleNoDrive->setSteerAngle(2, angle);
@@ -348,10 +353,10 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
 	if (x > 0) {
-		gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0,1,0));
+		gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, ANGULAR_MO_RATE,0));
 	}
 	else if (x < 0) {
-		gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -1, 0));
+		gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -1 * ANGULAR_MO_RATE, 0));
 	}
 }
 void PhysicsManager::stopKey() {
