@@ -304,16 +304,9 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 		// UPDATES GO HERE
 		m_pEmtrEngn->update(fDeltaTime);
 
-
+		// Update Physics
 		m_pPhysxMngr->update(fDeltaTime);
 
-		// PHYSICSTODO: Maybe this needs to happen? perhaps the Physics Manager just takes care
-		//	of the update and the Physics component can just fetch information as the Entity
-		//	needs it on their update? How should this be done?
-		for (vector<PhysicsComponent*>::const_iterator iter = m_pPhysicsComponents.begin();
-			iter != m_pPhysicsComponents.end();
-			++iter)
-			(*iter)->update(pDeltaTime);
 		// Iterate through all Entities and call their update with the current time.
 		for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
 			iter != m_pMasterEntityList.end();

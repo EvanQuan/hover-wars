@@ -83,7 +83,6 @@ int main()
 			{
 				// do Graphics Loop
 				iRunning = m_gameManager->renderGraphics();
-				m_pPhysicsManager->stepPhysics();
 			}
 		}
 
