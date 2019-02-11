@@ -308,20 +308,52 @@ void PhysicsManager::initPhysics(bool interactive)
 //createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
 }
 void PhysicsManager::forwardKey() {
-	releaseAllControls();
-	startAccelerateForwardsMode();
+	if (currentState != 1) {
+		releaseAllControls();
+		startAccelerateForwardsMode();
+		currentState = 1;
+	}
+}
+void PhysicsManager::handleControllerInput(float x, float y) {
+	if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
+		gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
+		gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
+		gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
+		gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
+	}else
+	{
+		float angle = atan(y/x);
+		gVehicleNoDrive->setDriveTorque(0, 1000.0f);
+		gVehicleNoDrive->setDriveTorque(1, 1000.0f);
+		gVehicleNoDrive->setDriveTorque(2, 1000.0f);
+		gVehicleNoDrive->setDriveTorque(3, 1000.0f);
+		gVehicleNoDrive->setSteerAngle(0, angle);
+		gVehicleNoDrive->setSteerAngle(1, angle);
+		gVehicleNoDrive->setSteerAngle(2, angle);
+		gVehicleNoDrive->setSteerAngle(3, angle);
+	}
 }
 void PhysicsManager::stopKey() {
-	releaseAllControls();
-	startAccelerateReverseMode();
+	if (currentState != 2) {
+		releaseAllControls();
+		startAccelerateReverseMode();
+		currentState = 2;
+	}
 }
 void PhysicsManager::leftKey() {
+	if (currentState != 3) {
+
 	releaseAllControls();
 	startTurnHardLeftMode();
+	currentState = 3;
+	}
 }
 void PhysicsManager::rightKey() {
-	releaseAllControls();
-	startTurnHardRightMode();
+	if (currentState != 4) {
+		releaseAllControls();
+		startTurnHardRightMode();
+		currentState = 4;
+	}
 }
 // This function is public. Probably intended as a sort of soft reset at the end of a match
 //	that will set up Physics to be restarted as everything gets loaded in for a new match

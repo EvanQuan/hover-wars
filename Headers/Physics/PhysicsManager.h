@@ -34,6 +34,7 @@ public:
 	void stopKey();
 	void leftKey();
 	void rightKey();
+	void handleControllerInput(float x, float y);
 	// Update function for Physics, technically called every frame, but
 	//	internally can stall its update until a certain tick time.
 	//	fTimeDelta is given in seconds and is usually a fraction of a second.
@@ -57,6 +58,7 @@ public:
 	void stepPhysics(); // This probably functions within the update function to be used as necessary.
 
 private:
+	int currentState = 0;
 	snippetvehicle::VehicleSceneQueryData*	gVehicleSceneQueryData = NULL;
 	physx::PxBatchQuery*			gBatchQuery = NULL;
 
