@@ -48,6 +48,12 @@ void StaticEntity::loadAsSphere(float fRadius, const Material* pMaterial, const 
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
     //m_pPhysicsComponent->initializeComponent(true, m_pMesh); // PHYSICSTODO
 }
+void StaticEntity::loadAsCube(float size, const Material* pMaterial, const string& sShaderType) {
+   // m_pMesh = MESH_MANAGER->generateCubeMesh(true,size,size,size,pMaterial,m_vPosition);
+    //m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
+
+    PHYSICS_MANAGER->createCubeObject(m_vPosition.x, m_vPosition.y, m_vPosition.z,size);
+}
 
 // Load a Static Mesh from a given file
 void StaticEntity::loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType, float fScale)

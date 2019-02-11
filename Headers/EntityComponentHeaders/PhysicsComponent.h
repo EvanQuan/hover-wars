@@ -25,7 +25,6 @@ public:
     void update(duration<float> fTimeDelta); // Overloading Parent's virtual update function
 
     // Various initialization functions as needed.
-    void initializeComponent(bool bStatic, Mesh const* pMeshReference,float x, float y, float z, float size);
     void initializeComponent(bool bStatic, Mesh const* pMeshReference);
     vec3 getLinearVelocity();
     quat getRotation();

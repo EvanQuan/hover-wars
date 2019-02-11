@@ -141,70 +141,6 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
 
     return vehicleDesc;
 }
-
-// DEPRECATED
-void PhysicsManager::startAccelerateForwardsMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startAccelerateReverseMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, -1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, -1000.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startBrakeMode()
-{
-    gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startTurnHardLeftMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, 1.0f);
-    gVehicleNoDrive->setSteerAngle(1, 1.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startTurnHardRightMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, -1.0f);
-    gVehicleNoDrive->setSteerAngle(1, -1.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startHandbrakeTurnLeftMode()
-{
-    gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, 1.0f);
-    gVehicleNoDrive->setSteerAngle(1, 1.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startHandbrakeTurnRightMode()
-{
-    gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, -1.0f);
-    gVehicleNoDrive->setSteerAngle(1, -1.0f);
-}
-
 void PhysicsManager::releaseAllControls()
 {
     gVehicleNoDrive->setDriveTorque(0, 0.0f);
@@ -338,13 +274,6 @@ void PhysicsManager::initPhysics(bool interactive)
     //createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
 //createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
 }
-void PhysicsManager::forwardKey() {
-    if (currentState != 1) {
-        releaseAllControls();
-        //startAccelerateForwardsMode();
-        currentState = 1;
-    }
-}
 void PhysicsManager::handleControllerInputMove(float x, float y) {
     /*if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
         std::cout << "here" << std::endl;
@@ -363,6 +292,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
             distance = 1;
         }
         if (x !=0 || y != 0) {
+
             releaseAllControls();
             //gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
         //    gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
@@ -394,28 +324,6 @@ void PhysicsManager::handleControllerInputRotate(float x, float y) {
     }
     else if (x < 0) {
         gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, ANGULAR_MO_RATE, 0));
-    }
-}
-void PhysicsManager::stopKey() {
-    if (currentState != 2) {
-        //releaseAllControls();
-        //startAccelerateReverseMode();
-        currentState = 2;
-    }
-}
-void PhysicsManager::leftKey() {
-    if (currentState != 3) {
-
-        //releaseAllControls();
-    //startTurnHardLeftMode();
-    currentState = 3;
-    }
-}
-void PhysicsManager::rightKey() {
-    if (currentState != 4) {
-        //releaseAllControls();
-        //startTurnHardRightMode();
-        currentState = 4;
     }
 }
 // This function is public. Probably intended as a sort of soft reset at the end of a match
@@ -463,18 +371,15 @@ void PhysicsManager::cleanupPhysics()
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
 
-PxRigidDynamic *PhysicsManager::createCubeObject(float x,float y, float z, float size) {
+PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float size) {
     PxShape* shape = gPhysics->createShape(PxBoxGeometry(size, size, size), *gMaterial);
     PxTransform localTm(PxVec3(x, y, z));
-    PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
-    PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
     gScene->addActor(*body);
     return body;
-    //physicsDynamicObject *sphere = new physicsDynamicObject();
-    //dynamicObjects.push_back(sphere);
 }
-PxRigidDynamic *PhysicsManager::createCubeObjectPlayer(float x, float y, float z, float size) {
+PxRigidDynamic *PhysicsManager::createCubeDynamicCubePlayer(float x, float y, float z, float size) {
     PxShape* shape = gPhysics->createShape(PxBoxGeometry(0.05f, 0.05f, 0.05f), *gMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
@@ -482,8 +387,6 @@ PxRigidDynamic *PhysicsManager::createCubeObjectPlayer(float x, float y, float z
     PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
     gScene->addActor(*body);
     return body;
-    //physicsDynamicObject *sphere = new physicsDynamicObject();
-    //dynamicObjects.push_back(sphere);
 }
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
     //Create a vehicle that will drive on the plane.
@@ -501,9 +404,6 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
     gVehicleOrderProgress = 0;
 
     return gVehicleNoDrive;
-    //startBrakeMode();
-    //physicsDynamicObject *sphere = new physicsDynamicObject();
-    //dynamicObjects.push_back(sphere);
 }
 
 /********************************************************************************\

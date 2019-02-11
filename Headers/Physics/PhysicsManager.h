@@ -30,10 +30,6 @@ public:
     static PhysicsManager* getInstance();    
     virtual ~PhysicsManager();
 
-    void forwardKey();
-    void stopKey();
-    void leftKey();
-    void rightKey();
     void handleControllerInputMove(float x, float y);
     void handleControllerInputRotate(float x, float y);
 
@@ -53,8 +49,8 @@ public:
     // Scene Setting Functions
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
-    physx::PxRigidDynamic *createCubeObject(float x, float y, float z, float size);
-    physx::PxRigidDynamic *createCubeObjectPlayer(float x, float y, float z, float size);
+    physx::PxRigidStatic *createCubeObject(float x, float y, float z, float size);
+    physx::PxRigidDynamic *createCubeDynamicCubePlayer(float x, float y, float z, float size);
     physx::PxVehicleNoDrive *createPlayerEntity();
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(); // This probably functions within the update function to be used as necessary.
@@ -75,19 +71,6 @@ private:
 
     snippetvehicle::VehicleDesc initVehicleDesc();
 
-    void startAccelerateForwardsMode();
-
-    void startAccelerateReverseMode();
-
-    void startBrakeMode();
-
-    void startTurnHardLeftMode();
-
-    void startTurnHardRightMode();
-
-    void startHandbrakeTurnLeftMode();
-
-    void startHandbrakeTurnRightMode();
     void releaseAllControls();
     // Singleton Implementation: make all possible constructors private and inaccessable
     //        to disallow multiple instance of the physics manager.

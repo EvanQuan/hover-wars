@@ -16,7 +16,7 @@ public:
     void createSpotLight(vector< string > sData, int iLength);
     void createPlayer(vector< string > sData, int iLength);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
-
+    void createStaticCube(vector< string > sData, int iLength);
     void loadFromFile( string sFileName );
 
 private:

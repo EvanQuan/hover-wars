@@ -27,7 +27,7 @@
 #define MATERIAL               "material"
 #define MESH                   "mesh"
 #define SHADER                 "shader"
-
+#define CUBE                   "cube"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -186,7 +186,11 @@ void SceneLoader::createPlayer(vector< string > sData, int iLength)
 
     ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty );
 }
-
+void SceneLoader::createStaticCube(vector< string > sData, int iLength)
+{
+    vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
+    ENTITY_MANAGER->generateStaticCube(&vPosition, &m_pMaterialProperty, stof(sData[3]), m_sShaderProperty);
+}
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
@@ -330,7 +334,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createPlayer(sData, sData.size());
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
-
+    else if (CUBE == sIndicator)
+        createStaticCube(sData, sData.size());
     clearProperties();
 }
 

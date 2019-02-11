@@ -229,6 +229,12 @@ void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sM
     m_pPlayerEntityList.push_back(pNewPlayer.get()); // TODO this retrieves a raw pointer from the unique pointer. Is this okay?
     m_pMasterEntityList.push_back(move(pNewPlayer));
 }
+void EntityManager::generateStaticCube(const vec3* vPosition, const Material* sMaterial, float fScale, const string& sShaderType)
+{
+    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
+    pNewMesh->loadAsCube(fScale,sMaterial, sShaderType);
+    m_pMasterEntityList.push_back(move(pNewMesh));
+}
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
 void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation, float m_fMeshScale)
