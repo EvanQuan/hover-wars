@@ -53,6 +53,12 @@ Restitution
 */
 #define RESTITUTION 0.2f
 
+/*
+Force of gravity downwards
+
+m/s^2
+*/
+#define GRAVITY -9.81f
 
 
 /****************************************************************************\
@@ -265,7 +271,7 @@ void PhysicsManager::initPhysics(bool interactive)
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
 	gDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = gDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
