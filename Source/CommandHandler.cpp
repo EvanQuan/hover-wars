@@ -267,11 +267,6 @@ void CommandHandler::executeJoystickCommands()
                 }
             }
 
-            // Check axes
-            // Joystick axes will not be remappable, so no need to make code generalizable
-            execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-            execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
-
             // NOTE: With works with the assumption that triggers are mapped to fixed commands
             // If we decide that triggers work better for variable commands, then we will need to change this.
             if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_NETURAL)
@@ -282,6 +277,11 @@ void CommandHandler::executeJoystickCommands()
             {
                 execute((ePlayer) joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
             }
+
+            // Check axes
+            // Joystick axes will not be remappable, so no need to make code generalizable
+            execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+            execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
         }
     }
 }
