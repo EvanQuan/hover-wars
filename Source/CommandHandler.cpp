@@ -43,7 +43,7 @@ CommandHandler::~CommandHandler()
 }
 
 /*
-Make a player of given joystickID execute a FixedCommand.
+Make a player of given joystickID execute a eFixedCommand.
 FixedCommands are binary in that either they are executed or they are not, with
 no extra parameters.
 
@@ -51,7 +51,7 @@ For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
 that is all the information the program needs to know for that player to
 execute that command.
 */
-void CommandHandler::execute(ePlayer player, FixedCommand command)
+void CommandHandler::execute(ePlayer player, eFixedCommand command)
 {
 	switch (command)
 	{

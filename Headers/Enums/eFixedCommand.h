@@ -4,7 +4,7 @@
 Represents a fixed command. Their actions are binary (they either
 are executed or not), and do not require any extra parameters.
 */
-enum FixedCommand
+enum eFixedCommand
 {
 	COMMAND_ABILITY_ROCKET,
 	COMMAND_ABILITY_SPIKES,

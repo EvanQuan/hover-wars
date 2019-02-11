@@ -68,7 +68,7 @@ public:
 	float getMaxThreshold() { return m_fMaxEdgeThreshold; }
 
 	// Command interface
-	// void execute(ePlayer player, FixedCommand)
+	// void execute(ePlayer player, eFixedCommand)
 
 private:
 	EntityManager();

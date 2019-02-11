@@ -20,7 +20,7 @@ public:
 	static CommandHandler* getInstance(GLFWwindow *rWindow);
 	~CommandHandler();
 
-	void execute(ePlayer player, FixedCommand command);
+	void execute(ePlayer player, eFixedCommand command);
 	void execute(ePlayer player, eVariableCommand command, float x, float y);
 	/*
 	Execute all commands for a given frame.
@@ -41,7 +41,7 @@ private:
 
 	// Internal variables
 	// For keyboard command handling
-	FixedCommand m_pFixedCommand;
+	eFixedCommand m_pFixedCommand;
 	eVariableCommand m_pVariableCommand;
 	float xMove;
 	float yMove;
@@ -57,7 +57,7 @@ private:
 
 
 	// For input debugging
-	std::map<FixedCommand, const char*> m_pFixedCommandToString =
+	std::map<eFixedCommand, const char*> m_pFixedCommandToString =
 	{
 		{COMMAND_ABILITY_ROCKET,         "Rocket"},
 		{COMMAND_ABILITY_SPIKES,         "Spikes"},
@@ -82,9 +82,9 @@ private:
 	};
 
 	/*
-	Convert a key to its corresponding FixedCommand
+	Convert a key to its corresponding eFixedCommand
 	*/
-	static FixedCommand keyToFixedCommand(int key)
+	static eFixedCommand keyToFixedCommand(int key)
 	{
 		try
 		{
@@ -110,9 +110,9 @@ private:
 		}
 	};
 	/*
-	Convert a joystick button to its corresponding FixedCommand
+	Convert a joystick button to its corresponding eFixedCommand
 	*/
-	static FixedCommand buttonToFixedCommand(int button)
+	static eFixedCommand buttonToFixedCommand(int button)
 	{
 		try
 		{
@@ -124,9 +124,9 @@ private:
 		}
 	};
 	/*
-	Convert a joystick axis to its corresponding FixedCommand
+	Convert a joystick axis to its corresponding eFixedCommand
 	*/
-	static FixedCommand axisToFixedCommand(int axis)
+	static eFixedCommand axisToFixedCommand(int axis)
 	{
 		try
 		{
@@ -139,7 +139,7 @@ private:
 	};
 
 
-	std::map<int, FixedCommand> m_keyToFixedCommand =
+	std::map<int, eFixedCommand> m_keyToFixedCommand =
 	{
 		{GLFW_KEY_SPACE,       COMMAND_ABILITY_ROCKET},
 		{GLFW_KEY_APOSTROPHE,  COMMAND_ABILITY_SPIKES},
@@ -165,7 +165,7 @@ private:
 		{GLFW_KEY_L, COMMAND_TURN},
 	};
 
-	std::map<int, FixedCommand> m_buttonToFixedCommand =
+	std::map<int, eFixedCommand> m_buttonToFixedCommand =
 	{
 		{BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
 		{BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_CHANGE},
@@ -187,7 +187,7 @@ private:
 		{BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
 	};
 
-	std::map<int, FixedCommand> m_axisToFixedCommand =
+	std::map<int, eFixedCommand> m_axisToFixedCommand =
 	{
 		{AXIS_LEFT_TRIGGER,  COMMAND_ABILITY_TRAIL},
 		{AXIS_RIGHT_TRIGGER, COMMAND_ABILITY_ROCKET},
