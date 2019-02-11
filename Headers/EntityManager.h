@@ -15,6 +15,7 @@
 #include "EntityComponentHeaders/LightingComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 
+#include "Physics/PhysicsManager.h"
 
 // Environment Manager
 // Manages all 3D objects in an environment

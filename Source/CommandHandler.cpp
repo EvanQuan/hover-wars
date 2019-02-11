@@ -1,6 +1,5 @@
 #include "CommandHandler.h"
 #include "Scene_Loader.h"
-#include "Physics/PhysicsManager.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
@@ -99,29 +98,6 @@ Axes values are normalized and follow Cartesian coordinates:
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
 	m_pEntityManager->execute(player, command, x, y);
-	switch (command)
-	{
-	case COMMAND_MOVE:
-		if (y > 0)
-		{
-			PHYSICS_MANAGER->forwardKey();
-		}
-		else if (y < 0)
-		{
-			PHYSICS_MANAGER->stopKey();
-		}
-		break;
-	case COMMAND_TURN:
-		if (x > 0)
-		{
-			PHYSICS_MANAGER->rightKey();
-		}
-		else if (x < 0)
-		{
-			PHYSICS_MANAGER->leftKey();
-		}
-		break;
-	}
 	std::cout << "Player " << player << ": "
 		      << eVariableCommandToString.at(command) << std::endl
 		      << "\tx: " << x << std::endl

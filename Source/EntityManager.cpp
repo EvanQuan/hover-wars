@@ -387,11 +387,31 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID, float x
 
 void EntityManager::execute(ePlayer player, eFixedCommand command)
 {
-	cout << "EntityManager received: ePlayer " << player << " | eFixedCommand: " << command << endl;
 }
 
 void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
-
-	cout << "EntityManager received: ePlayer " << player << " | eVariableCommand: " << command  << " x: " << x << " y: " << y << endl;
+	switch (command)
+	{
+	case COMMAND_MOVE:
+		if (y > 0)
+		{
+			PHYSICS_MANAGER->forwardKey();
+		}
+		else if (y < 0)
+		{
+			PHYSICS_MANAGER->stopKey();
+		}
+		break;
+	case COMMAND_TURN:
+		if (x > 0)
+		{
+			PHYSICS_MANAGER->rightKey();
+		}
+		else if (x < 0)
+		{
+			PHYSICS_MANAGER->leftKey();
+		}
+		break;
+	}
 }
