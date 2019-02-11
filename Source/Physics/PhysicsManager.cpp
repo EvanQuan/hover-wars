@@ -22,14 +22,14 @@
 /*
 Angular momementum.
 */
-#define ANGULAR_MO_RATE 1.0f
+#define ANGULAR_MO_RATE 5.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 100000.0f // 10000.0f
+#define MOVEMENT_FORCE 50000.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -61,7 +61,7 @@ stop and change directions in a reasonably responsive manner.
 We want this to be low enough that there some amount of drifting can be done to
 make it feel like a hovercraft.
 */
-#define DYNAMIC_FRICTION 1.00f // 0.35f
+#define DYNAMIC_FRICTION 2.00f // 0.35f
 /*
 Restitution
 */
@@ -424,12 +424,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
     //}
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
-    if (x > 0) {
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -1 * ANGULAR_MO_RATE,0));
-    }
-    else if (x < 0) {
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, ANGULAR_MO_RATE, 0));
-    }
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MO_RATE,0));
 }
 void PhysicsManager::stopKey() {
     if (currentState != 2) {
