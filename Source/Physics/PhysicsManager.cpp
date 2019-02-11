@@ -147,18 +147,21 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
 	return vehicleDesc;
 }
 
+// DEPRECATED
 void PhysicsManager::startAccelerateForwardsMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, 1000.0f);
 	gVehicleNoDrive->setDriveTorque(1, 1000.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startAccelerateReverseMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, -1000.0f);
 	gVehicleNoDrive->setDriveTorque(1, -1000.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startBrakeMode()
 {
 	gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
@@ -167,6 +170,7 @@ void PhysicsManager::startBrakeMode()
 	gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startTurnHardLeftMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, 1000.0f);
@@ -175,6 +179,7 @@ void PhysicsManager::startTurnHardLeftMode()
 	gVehicleNoDrive->setSteerAngle(1, 1.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startTurnHardRightMode()
 {
 	gVehicleNoDrive->setDriveTorque(0, 1000.0f);
@@ -183,6 +188,7 @@ void PhysicsManager::startTurnHardRightMode()
 	gVehicleNoDrive->setSteerAngle(1, -1.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startHandbrakeTurnLeftMode()
 {
 	gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
@@ -193,6 +199,7 @@ void PhysicsManager::startHandbrakeTurnLeftMode()
 	gVehicleNoDrive->setSteerAngle(1, 1.0f);
 }
 
+// DEPRECATED
 void PhysicsManager::startHandbrakeTurnRightMode()
 {
 	gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
