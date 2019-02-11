@@ -3,6 +3,10 @@
 #include "Mesh.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
+#include "EntityComponentHeaders/CameraComponent.h"
+#include <queue>
+
+#define MAX_NUM_CAMERAS 2 
 
 class PlayerEntity :
     public Entity
@@ -22,10 +26,18 @@ public:
     void useAbility(eAbility ability);
 
 private:
-    Mesh* m_pMesh;
-    RenderComponent* m_pRenderComponent;
-    PhysicsComponent* m_pPhysicsComponent;
+	// Private Variables
+	Mesh* m_pMesh;
+	RenderComponent* m_pRenderComponent;
+	PhysicsComponent* m_pPhysicsComponent;
+	CameraComponent* m_pCmrComponents[MAX_NUM_CAMERAS];
+	vec3 m_vPositionTotal;
+	queue<vec3> m_vPastPositions;
 
+	// Private Functions
+	void updateCameraLookAts();
+
+    // Abilities
     void shootRocket();
     void activateSpikes();
     void activateTrail();
