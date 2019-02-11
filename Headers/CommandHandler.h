@@ -44,8 +44,8 @@ public:
 		INVALID_VARIABLE,
 	};
 
-	void execute(int joystickID, FixedCommand command);
-	void execute(int joystickID, VariableCommand command, float x, float y);
+	void execute(ePlayer player, FixedCommand command);
+	void execute(ePlayer player, VariableCommand command, float x, float y);
 	/*
 	Execute all commands for a given frame.
 	*/

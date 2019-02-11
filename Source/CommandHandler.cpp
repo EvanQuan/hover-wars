@@ -51,7 +51,7 @@ For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
 that is all the information the program needs to know for that player to
 execute that command.
 */
-void CommandHandler::execute(int joystickID, FixedCommand command)
+void CommandHandler::execute(ePlayer player, FixedCommand command)
 {
 	switch (command)
 	{
@@ -66,12 +66,12 @@ void CommandHandler::execute(int joystickID, FixedCommand command)
 	case MENU_BACK:
 	case MENU_PAUSE:
 	case MENU_START:
-		cout << "Player " << joystickID << ": "
+		cout << "Player " << player << ": "
 		     << m_pFixedCommandToString.at(command)
 		     << endl;
 		break;
 	default:
-		cout << "Player " << joystickID << ": "
+		cout << "Player " << player << ": "
 		     << m_pFixedCommandToString.at(command)
 		     << " not implemented yet." << endl;
 	}
@@ -95,7 +95,7 @@ Axes values are normalized and follow Cartesian coordinates:
 			              v
                         y = -1
 */
-void CommandHandler::execute(int joystickID, VariableCommand command, float x, float y)
+void CommandHandler::execute(ePlayer player, VariableCommand command, float x, float y)
 {
 	switch (command)
 	{
@@ -120,7 +120,7 @@ void CommandHandler::execute(int joystickID, VariableCommand command, float x, f
 		}
 		break;
 	}
-	std::cout << "Player " << joystickID << ": "
+	std::cout << "Player " << player << ": "
 		      << m_pVariableCommandToString.at(command) << std::endl
 		      << "\tx: " << x << std::endl
 		      << "\ty: " << y << std::endl;
@@ -222,7 +222,7 @@ void CommandHandler::executeKeyboardCommands()
 				m_pFixedCommand = INVALID_FIXED;
 			}
 			if (INVALID_FIXED != m_pFixedCommand) {
-				execute(m_pInputHandler->m_keyboardPlayer, m_pFixedCommand);
+				execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
 			}
 			else
 			{
@@ -253,11 +253,11 @@ void CommandHandler::executeKeyboardCommands()
 	}
 	if (!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
 	{
-		execute(m_pInputHandler->m_keyboardPlayer, MOVE, xMove, yMove);
+		execute(m_pInputHandler->keyboardPlayer, MOVE, xMove, yMove);
 	}
 	if (!magnitudeIsNeutral(getMagnitude(xTurn, yTurn)))
 	{
-		execute(m_pInputHandler->m_keyboardPlayer, TURN, xTurn, yTurn);
+		execute(m_pInputHandler->keyboardPlayer, TURN, xTurn, yTurn);
 	}
 }
 
@@ -281,24 +281,24 @@ void CommandHandler::executeJoystickCommands()
 			{
 				if (buttonsPressed[button])
 				{
-					execute(joystickID, buttonToFixedCommand(button));
+					execute((ePlayer) joystickID, buttonToFixedCommand(button));
 				}
 			}
 
 			// Check axes
 			// Joystick axes will not be remappable, so no need to make code generalizable
-			execute(joystickID, MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-			execute(joystickID, TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+			execute((ePlayer) joystickID, MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+			execute((ePlayer) joystickID, TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
 
 			// NOTE: With works with the assumption that triggers are mapped to fixed commands
 			// If we decide that triggers work better for variable commands, then we will need to change this.
 			if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_NETURAL)
 			{
-				execute(joystickID, axisToFixedCommand(AXIS_LEFT_TRIGGER));
+				execute((ePlayer) joystickID, axisToFixedCommand(AXIS_LEFT_TRIGGER));
 			}
 			if (axes[AXIS_RIGHT_TRIGGER] > TRIGGER_NETURAL)
 			{
-				execute(joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
+				execute((ePlayer) joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
 			}
 		}
 	}
