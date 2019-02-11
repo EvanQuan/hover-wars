@@ -55,6 +55,15 @@ void PlayerEntity::useAbility(eAbility ability)
     case ABILITY_SPIKES:
         activateSpikes();
         break;
+    case ABILITY_TRAIL:
+        activateTrail();
+        break;
+    case ABILITY_DASH_BACK:
+    case ABILITY_DASH_FORWARD:
+    case ABILITY_DASH_LEFT:
+    case ABILITY_DASH_RIGHT:
+        dash(ability);
+        break;
     }
 }
 
@@ -65,5 +74,26 @@ void PlayerEntity::shootRocket()
 
 void PlayerEntity::activateSpikes()
 {
+
+}
+
+void PlayerEntity::activateTrail()
+{
+
+}
+
+void PlayerEntity::dash(eAbility direction)
+{
+    switch (direction)
+    {
+    case ABILITY_DASH_BACK:
+        break;
+    case ABILITY_DASH_FORWARD:
+        break;
+    case ABILITY_DASH_LEFT:
+        break;
+    case ABILITY_DASH_RIGHT:
+        break;
+    }
 
 }

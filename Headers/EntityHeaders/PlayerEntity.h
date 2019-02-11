@@ -28,5 +28,7 @@ private:
 
     void shootRocket();
     void activateSpikes();
+    void activateTrail();
+    void dash(eAbility direction);
 };
 
