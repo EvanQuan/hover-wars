@@ -56,6 +56,13 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
 	//			wants a cylindrical bounding box and will set it up as it needs it.
 	//	Make these as general and apparent as possible while providing as much functionality as you can. 
 }
+float PhysicsComponent::getForwardAngle() {
+	PxTransform globalTransform = body->getGlobalPose();
+	float theta;
+	PxVec3 axis;
+	globalTransform.q.toRadiansAndUnitAxis(theta, axis); //TODO make this better
+	return theta;
+}
 void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
 {
 	// Set up Internal Static qualifier.
