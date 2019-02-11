@@ -26,6 +26,35 @@
 #define PVD_HOST "127.0.0.1"
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
 
+/*
+This determines the amount of force applied to the car when movement is intiated.
+The greater the force, the faster it will accelerate.
+*/
+#define NEWTONS_MOVEMENT 2000.0f
+/*
+This determines the rate of decceleration when the car input movement is in neutral.
+A braking force is applied when this is the case to help combat drifting.
+*/
+#define NEWTONS_BRAKE 1000.0f
+
+/*
+Hovercraft material properties
+*/
+/*
+Coefficient of static friction
+*/
+#define STATIC_FRICTION 0.35f
+/*
+Coefficient of dynamic friction
+*/
+#define DYNAMIC_FRICTION 0.35f
+/*
+Restitution
+*/
+#define RESTITUTION 0.2f
+
+
+
 /****************************************************************************\
  * Singleton Implementation													*
 \****************************************************************************/
@@ -249,7 +278,7 @@ void PhysicsManager::initPhysics(bool interactive)
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 	}
-	gMaterial = gPhysics->createMaterial(0.35f, 0.35f, 0.2f);
+	gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
 
 	gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
 	if (!gCook)
@@ -310,7 +339,6 @@ void PhysicsManager::forwardKey() {
 	}
 }
 void PhysicsManager::handleControllerInputMove(float x, float y) {
-	std::cout << "Physics Manager handleControllerInput x: " << x << "   y: " << y << std::endl;
 	/*if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
 		std::cout << "here" << std::endl;
 		gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
@@ -324,7 +352,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
 		if (y > 0) {
 			distance = -distance;
 		}
-		std::cout << "angle to use" << angle << std::endl;
+		// std::cout << "angle to use" << angle << std::endl;
 		if (distance > 1) {
 			distance = 1;
 		}
@@ -334,19 +362,19 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
 		//	gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
 			//gVehicleNoDrive->setDriveTorque(2, distance * 1000.0f);
 			//gVehicleNoDrive->setDriveTorque(3, distance * 1000.0f);
-			gVehicleNoDrive->getRigidDynamicActor()->addForce(PxVec3(x*10000,0,y*-10000));
+			gVehicleNoDrive->getRigidDynamicActor()->addForce(PxVec3(x*NEWTONS_MOVEMENT,0,y*-NEWTONS_MOVEMENT));
 			gVehicleNoDrive->setSteerAngle(0, angle);
 			gVehicleNoDrive->setSteerAngle(1, angle);
 			gVehicleNoDrive->setSteerAngle(2, angle);
 			gVehicleNoDrive->setSteerAngle(3, angle);
 		}
 		else {
-			std::cout << "movement" << std::endl;
+			// std::cout << "movement" << std::endl;
 			releaseAllControls();
-			gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
-			gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
-			gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-			gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
+			gVehicleNoDrive->setBrakeTorque(0, NEWTONS_BRAKE);
+			gVehicleNoDrive->setBrakeTorque(1, NEWTONS_BRAKE);
+			gVehicleNoDrive->setBrakeTorque(2, NEWTONS_BRAKE);
+			gVehicleNoDrive->setBrakeTorque(3, NEWTONS_BRAKE);
 		}
 
 	//}
