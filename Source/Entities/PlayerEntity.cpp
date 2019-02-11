@@ -36,7 +36,7 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
 	// Get the Transformation from the Physics component
 	m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
-
+	
 	// If there's a new Transformation, apply it to the Mesh.
 	m_pMesh->addInstance(&m4NewTransform);				
 
