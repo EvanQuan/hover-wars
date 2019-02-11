@@ -30,7 +30,7 @@ using namespace std;
 bool InitializeTexture(Texture *texture, const string &imageFileName)
 {
     Magick::Image myImage;
-	GLuint width, height;
+    GLuint width, height;
     
     // try to read the provided image file
     try {
@@ -42,8 +42,8 @@ bool InitializeTexture(Texture *texture, const string &imageFileName)
         return false;
     }
 
-	width	= myImage.columns();
-	height	= myImage.rows();
+    width    = myImage.columns();
+    height    = myImage.rows();
 
     // create a Magick++ pixel cache from the image for direct access to data
     Magick::Pixels pixelCache(myImage);
@@ -58,7 +58,7 @@ bool InitializeTexture(Texture *texture, const string &imageFileName)
         default:    channelDataType = GL_UNSIGNED_BYTE;
     }
 
-	texture->genTexture( pixels, width, height, GL_BGRA, channelDataType );
+    texture->genTexture( pixels, width, height, GL_BGRA, channelDataType );
 
     return true;
 }
@@ -70,42 +70,42 @@ bool InitializeTexture(Texture *texture, const string &imageFileName)
 
 bool InitializeTexture(Texture *mytex, const string &imageFileName)
 {
-	// Local Variables
-	int iWidth, iHeight, nrComponents;
-	bool bReturnValue = false;
-	unsigned char* data = stbi_load(imageFileName.data(), &iWidth, &iHeight, &nrComponents, 0);
+    // Local Variables
+    int iWidth, iHeight, nrComponents;
+    bool bReturnValue = false;
+    unsigned char* data = stbi_load(imageFileName.data(), &iWidth, &iHeight, &nrComponents, 0);
 
-	// Ensure that data was properly loaded.
-	if (nullptr != data)
-	{
-		// Get the format of the Texture
-		GLenum eFormat;
-		switch (nrComponents)
-		{
-		case 1:
-			eFormat = GL_RED;
-			break;
-		case 3:
-			eFormat = GL_RGB;
-			break;
-		case 4:
-			eFormat = GL_RGBA;
-			break;
-		}
+    // Ensure that data was properly loaded.
+    if (nullptr != data)
+    {
+        // Get the format of the Texture
+        GLenum eFormat;
+        switch (nrComponents)
+        {
+        case 1:
+            eFormat = GL_RED;
+            break;
+        case 3:
+            eFormat = GL_RGB;
+            break;
+        case 4:
+            eFormat = GL_RGBA;
+            break;
+        }
 
-		// Generate Texture in GPU
-		mytex->genTexture(data, iWidth, iHeight, eFormat, GL_UNSIGNED_BYTE);
-		
-		bReturnValue = true;
-	}
-	else
-		cout << "Failed to load Texture at path: " << imageFileName << endl;
-		
+        // Generate Texture in GPU
+        mytex->genTexture(data, iWidth, iHeight, eFormat, GL_UNSIGNED_BYTE);
+        
+        bReturnValue = true;
+    }
+    else
+        cout << "Failed to load Texture at path: " << imageFileName << endl;
+        
 
-	// Free the data that was loaded.
-	stbi_image_free(data);
+    // Free the data that was loaded.
+    stbi_image_free(data);
 
-	return bReturnValue;
+    return bReturnValue;
 }
 
 #endif

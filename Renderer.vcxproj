@@ -92,7 +92,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
-    <ClCompile Include="Source\Scene_Loader.cpp" />
+    <ClCompile Include="Source\SceneLoader.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicle4WCreate.cpp" />

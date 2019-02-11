@@ -19,7 +19,7 @@
 
 // Environment Manager
 // Manages all 3D objects in an environment
-// Written by: James Coté, Evan Quan
+// Written by: James CotÃ©, Evan Quan
 class EntityManager
 {
 public:
@@ -87,9 +87,9 @@ private:
     int m_iHeight, m_iWidth;
     inline int getNewEntityID() { return ++m_iEntityIDPool; }
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
-    vector<PhysicsComponent*>                       m_pPhysicsComponents; // PHYSICSTODO: If this isn't necessary, remove it.
+    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
     vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
-    vector<PlayerEntity*>                           m_pPlayerEntityList; // TODO store these as raw pointer?
+    vector<PlayerEntity*>                           m_pPlayerEntityList;    // TODO store these as raw pointer?
  
     vector<unique_ptr<Entity>>                      m_pMasterEntityList;
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
@@ -98,7 +98,7 @@ private:
     CameraComponent*                                m_pActiveCamera;
     DirectionalLight*                               m_pDirectionalLight;
     InteractableEntity*                             m_pBillboardTesting;
-    PointLight*                                     m_pTestingLight; // Temporary, Needs to be removed.
+    PointLight*                                     m_pTestingLight;        // Temporary, Needs to be removed.
 
     // Manage Pointers for Deletion.
     MeshManager*                m_pMshMngr;

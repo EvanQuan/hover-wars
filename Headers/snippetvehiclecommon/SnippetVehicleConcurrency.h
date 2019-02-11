@@ -42,79 +42,79 @@ class VehicleConcurrency
 {
 public:
 
-	VehicleConcurrency()
-		: mMaxNumVehicles(0),
-		  mMaxNumWheelsPerVehicle(0),
-		  mVehicleConcurrentUpdates(NULL)
-	{
-	}
+    VehicleConcurrency()
+        : mMaxNumVehicles(0),
+          mMaxNumWheelsPerVehicle(0),
+          mVehicleConcurrentUpdates(NULL)
+    {
+    }
 
-	~VehicleConcurrency()
-	{
-	}
+    ~VehicleConcurrency()
+    {
+    }
 
-	static VehicleConcurrency* allocate(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, PxAllocatorCallback& allocator)
-	{
-		const PxU32 byteSize = 
-			sizeof(VehicleConcurrency) + 
-			sizeof(PxVehicleConcurrentUpdateData)*maxNumVehicles + 
-			sizeof(PxVehicleWheelConcurrentUpdateData)*maxNumWheelsPerVehicle*maxNumVehicles;
+    static VehicleConcurrency* allocate(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, PxAllocatorCallback& allocator)
+    {
+        const PxU32 byteSize = 
+            sizeof(VehicleConcurrency) + 
+            sizeof(PxVehicleConcurrentUpdateData)*maxNumVehicles + 
+            sizeof(PxVehicleWheelConcurrentUpdateData)*maxNumWheelsPerVehicle*maxNumVehicles;
 
-		PxU8* buffer = static_cast<PxU8*>(allocator.allocate(byteSize, NULL, NULL, 0));
+        PxU8* buffer = static_cast<PxU8*>(allocator.allocate(byteSize, NULL, NULL, 0));
 
-		VehicleConcurrency* vc = reinterpret_cast<VehicleConcurrency*>(buffer);
-		new(vc) VehicleConcurrency();
-		buffer += sizeof(VehicleConcurrency);
+        VehicleConcurrency* vc = reinterpret_cast<VehicleConcurrency*>(buffer);
+        new(vc) VehicleConcurrency();
+        buffer += sizeof(VehicleConcurrency);
 
-		vc->mMaxNumVehicles = maxNumVehicles;
-		vc->mMaxNumWheelsPerVehicle = maxNumWheelsPerVehicle;
+        vc->mMaxNumVehicles = maxNumVehicles;
+        vc->mMaxNumWheelsPerVehicle = maxNumWheelsPerVehicle;
 
-		vc->mVehicleConcurrentUpdates = reinterpret_cast<PxVehicleConcurrentUpdateData*>(buffer);
-		buffer += sizeof(PxVehicleConcurrentUpdateData)*maxNumVehicles;
+        vc->mVehicleConcurrentUpdates = reinterpret_cast<PxVehicleConcurrentUpdateData*>(buffer);
+        buffer += sizeof(PxVehicleConcurrentUpdateData)*maxNumVehicles;
 
-		for(PxU32 i=0;i<maxNumVehicles;i++)
-		{
-			new(vc->mVehicleConcurrentUpdates + i) PxVehicleConcurrentUpdateData();
-			
-			vc->mVehicleConcurrentUpdates[i].nbConcurrentWheelUpdates = maxNumWheelsPerVehicle;
-			
-			vc->mVehicleConcurrentUpdates[i].concurrentWheelUpdates = reinterpret_cast<PxVehicleWheelConcurrentUpdateData*>(buffer);
-			buffer += sizeof(PxVehicleWheelConcurrentUpdateData)*maxNumWheelsPerVehicle;
+        for(PxU32 i=0;i<maxNumVehicles;i++)
+        {
+            new(vc->mVehicleConcurrentUpdates + i) PxVehicleConcurrentUpdateData();
+            
+            vc->mVehicleConcurrentUpdates[i].nbConcurrentWheelUpdates = maxNumWheelsPerVehicle;
+            
+            vc->mVehicleConcurrentUpdates[i].concurrentWheelUpdates = reinterpret_cast<PxVehicleWheelConcurrentUpdateData*>(buffer);
+            buffer += sizeof(PxVehicleWheelConcurrentUpdateData)*maxNumWheelsPerVehicle;
 
-			for(PxU32 j = 0; j < maxNumWheelsPerVehicle; j++)
-			{
-				new(vc->mVehicleConcurrentUpdates[i].concurrentWheelUpdates + j) PxVehicleWheelConcurrentUpdateData();
-			}
+            for(PxU32 j = 0; j < maxNumWheelsPerVehicle; j++)
+            {
+                new(vc->mVehicleConcurrentUpdates[i].concurrentWheelUpdates + j) PxVehicleWheelConcurrentUpdateData();
+            }
 
-		}
+        }
 
 
-		return vc;
-	}
+        return vc;
+    }
 
-	//Free allocated buffer for scene queries of suspension raycasts.
-	void free(PxAllocatorCallback& allocator)
-	{
-		allocator.deallocate(this);
-	}
+    //Free allocated buffer for scene queries of suspension raycasts.
+    void free(PxAllocatorCallback& allocator)
+    {
+        allocator.deallocate(this);
+    }
 
-	//Return the PxVehicleConcurrentUpdate for a vehicle specified by an index.
-	PxVehicleConcurrentUpdateData* getVehicleConcurrentUpdate(const PxU32 id)
-	{
-		return (mVehicleConcurrentUpdates + id);
-	}
+    //Return the PxVehicleConcurrentUpdate for a vehicle specified by an index.
+    PxVehicleConcurrentUpdateData* getVehicleConcurrentUpdate(const PxU32 id)
+    {
+        return (mVehicleConcurrentUpdates + id);
+    }
 
-	//Return the entire array of PxVehicleConcurrentUpdates
-	PxVehicleConcurrentUpdateData* getVehicleConcurrentUpdateBuffer()
-	{
-		return mVehicleConcurrentUpdates;
-	}
+    //Return the entire array of PxVehicleConcurrentUpdates
+    PxVehicleConcurrentUpdateData* getVehicleConcurrentUpdateBuffer()
+    {
+        return mVehicleConcurrentUpdates;
+    }
 
 private:
 
-	PxU32 mMaxNumVehicles;
-	PxU32 mMaxNumWheelsPerVehicle;
-	PxVehicleConcurrentUpdateData* mVehicleConcurrentUpdates;
+    PxU32 mMaxNumVehicles;
+    PxU32 mMaxNumWheelsPerVehicle;
+    PxVehicleConcurrentUpdateData* mVehicleConcurrentUpdates;
 };
 
 } // namespace snippetvehicle

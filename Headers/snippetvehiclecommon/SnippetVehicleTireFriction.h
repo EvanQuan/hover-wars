@@ -40,16 +40,16 @@ using namespace physx;
 //Drivable surface types.
 enum
 {
-	SURFACE_TYPE_TARMAC,
-	MAX_NUM_SURFACE_TYPES
+    SURFACE_TYPE_TARMAC,
+    MAX_NUM_SURFACE_TYPES
 };
 
 //Tire types.
 enum
 {
-	TIRE_TYPE_NORMAL=0,
-	TIRE_TYPE_WORN,
-	MAX_NUM_TIRE_TYPES
+    TIRE_TYPE_NORMAL=0,
+    TIRE_TYPE_WORN,
+    MAX_NUM_TIRE_TYPES
 };
 
 PxVehicleDrivableSurfaceToTireFrictionPairs* createFrictionPairs(const PxMaterial* defaultMaterial);

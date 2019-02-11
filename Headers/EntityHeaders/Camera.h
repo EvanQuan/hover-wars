@@ -4,34 +4,34 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 
-#define ZOOM_MAX			1000.f
+#define ZOOM_MAX            1000.f
 
 // Camera Class
 // Positions a Camera in the world at some spherical coordinates 
 class Camera : 
-	public Entity
+    public Entity
 {
 public:
-	Camera( int iID );				// Default Constructor
-	Camera(const Camera& pCopy);	// Copy Constructor
-	virtual ~Camera();
+    Camera( int iID );              // Default Constructor
+    Camera(const Camera& pCopy);    // Copy Constructor
+    virtual ~Camera();
 
-	// Implementation of inherited functionality
-	void update(float fTimeInMilliseconds);
+    // Implementation of inherited functionality
+    void update(float fTimeInMilliseconds);
 
-	// Camera Manipulation Functions
-	void orbit(vec2 pDelta);
-	void zoom(float fDelta);
-	void setLookAt(vec3 fLookAt) { m_vWorldLookAt = fLookAt; updateCameraComponent(); }
-	void positionCamera(mat4 m4FreNetFrame) { m_pCmraCmp->positionCamera(m4FreNetFrame); }
-	void setSteady(bool bSteady) { m_bSteadyCam = bSteady; }
+    // Camera Manipulation Functions
+    void orbit(vec2 pDelta);
+    void zoom(float fDelta);
+    void setLookAt(vec3 fLookAt) { m_vWorldLookAt = fLookAt; updateCameraComponent(); }
+    void positionCamera(mat4 m4FreNetFrame) { m_pCmraCmp->positionCamera(m4FreNetFrame); }
+    void setSteady(bool bSteady) { m_bSteadyCam = bSteady; }
 
 private:
-	CameraComponent* m_pCmraCmp;
-	PhysicsComponent* m_pPhysicsCmp;
-	void updateCameraComponent();
-	bool m_bSteadyCam; // Boolean to steady the camera so it cannot be adjusted by user input.
+    CameraComponent* m_pCmraCmp;
+    PhysicsComponent* m_pPhysicsCmp;
+    void updateCameraComponent();
+    bool m_bSteadyCam; // Boolean to steady the camera so it cannot be adjusted by user input.
 
-	vec3 m_vWorldLookAt;
+    vec3 m_vWorldLookAt;
 };
 

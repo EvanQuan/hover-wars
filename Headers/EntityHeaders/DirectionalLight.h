@@ -5,32 +5,32 @@
 #include "EntityComponentHeaders/LightingComponent.h"
 
 // Provides an Interface for a Directional Light Component.
-//	the Directional Light simulates a light that is being emitted from a source that is infinitely far away.
-//	Possible modifications might be:
-//		Simulating a Day/Night change by modifying direction, and color values.
+//    the Directional Light simulates a light that is being emitted from a source that is infinitely far away.
+//    Possible modifications might be:
+//        Simulating a Day/Night change by modifying direction, and color values.
 // Written by: James Cote
 class DirectionalLight :
-	 public Entity
+     public Entity
 {
 public:
-	DirectionalLight(int iID);
-	virtual ~DirectionalLight();
+    DirectionalLight(int iID);
+    virtual ~DirectionalLight();
 
-	// Implementation of inherited functionality
-	void update(float fTimeInMilliseconds);
+    // Implementation of inherited functionality
+    void update(float fTimeInMilliseconds);
 
-	// Function to Initialize the Light.
-	void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor);
+    // Function to Initialize the Light.
+    void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor);
 
-	const LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
+    const LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
 
 private:
-	// Private Light Copy constructor and assignment operator
-	DirectionalLight( const DirectionalLight* newLight );
-	DirectionalLight& operator=(const DirectionalLight& pCopy);
+    // Private Light Copy constructor and assignment operator
+    DirectionalLight( const DirectionalLight* newLight );
+    DirectionalLight& operator=(const DirectionalLight& pCopy);
 
-	// Private Variables
-	LightingComponent* m_pLightingComponent;
+    // Private Variables
+    LightingComponent* m_pLightingComponent;
 
 };
 
