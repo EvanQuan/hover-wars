@@ -38,7 +38,8 @@ Player:
 		Total abilities used
 		Count of each ability used
 
-Map:
+Game:
+	
 
 Gets values from EntityManager to update stats as the game progresses.
 Gives information to UserInterface to display the correct values.
