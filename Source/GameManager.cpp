@@ -238,6 +238,6 @@ void GameManager::intersectPlane(float fX, float fY)
 		if (fT >= 0)
 			vIntersection = vCameraPos + (fT*vRay);
 
-		EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 180.f);
+		EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 60.f, 5.0f, 100, false, 2.0f);
 	}
 }
