@@ -84,3 +84,7 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 		*pReturnTransformMatrix = m_pTransformationMatrix;
 	}
 }
+glm::vec3 PhysicsComponent::getLinearVelocity() {
+	physx::PxVec3 velocity = body->getLinearVelocity();
+	return glm::vec3(velocity.x, velocity.y, velocity.z);
+}
