@@ -297,7 +297,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
 
     bool resultVehicle = PxInitVehicleSDK(*gPhysics);
-    PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
+    PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(-1, 0, 0));
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
     //Create the batched scene queries for the suspension raycasts.
@@ -371,10 +371,8 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
             PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
             PxTransform globalTransform = carBody->getGlobalPose();
             float theta;
-            theta = globalTransform.q.getAngle();
-            float newX = x*cos(theta) - y*sin(theta);
-            float newY = x * sin(theta) + y * cos(theta);
-            carBody->addForce(PxVec3(newX *10000,0, newY*10000));
+            PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+            carBody->addForce(vForce * 10000);
 
             //std::cout << "angle: " << angleTransform << "x: " << memeCity.x << " y:" << memeCity.y << " z:" << memeCity.z <<  std::endl;
             gVehicleNoDrive->setSteerAngle(0, angle);
@@ -394,10 +392,10 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
     if (x > 0) {
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, ANGULAR_MO_RATE,0));
+        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -1 * ANGULAR_MO_RATE,0));
     }
     else if (x < 0) {
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -1 * ANGULAR_MO_RATE, 0));
+        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, ANGULAR_MO_RATE, 0));
     }
 }
 void PhysicsManager::stopKey() {
