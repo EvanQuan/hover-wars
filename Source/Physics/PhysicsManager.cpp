@@ -378,7 +378,18 @@ PxRigidDynamic *PhysicsManager::createCubeObject(float x,float y, float z, float
 	//physicsDynamicObject *sphere = new physicsDynamicObject();
 	//dynamicObjects.push_back(sphere);
 }
-void PhysicsManager::createPlayerEntity() {
+PxRigidDynamic *PhysicsManager::createCubeObjectPlayer(float x, float y, float z, float size) {
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(0.05, 0.05, 0.05), *gMaterial);
+	PxTransform localTm(PxVec3(x, y, z));
+	PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+	body->attachShape(*shape);
+	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+	gScene->addActor(*body);
+	return body;
+	//physicsDynamicObject *sphere = new physicsDynamicObject();
+	//dynamicObjects.push_back(sphere);
+}
+PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
 	//Create a vehicle that will drive on the plane.
 	snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc();
 	gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
@@ -392,6 +403,8 @@ void PhysicsManager::createPlayerEntity() {
 
 	gVehicleModeTimer = 0.0f;
 	gVehicleOrderProgress = 0;
+
+	return gVehicleNoDrive;
 	//startBrakeMode();
 	//physicsDynamicObject *sphere = new physicsDynamicObject();
 	//dynamicObjects.push_back(sphere);
@@ -431,25 +444,6 @@ mat4 PhysicsManager::getMat4(PxTransform transform) {
 
 	return matrix;
 }
-
-
-/** Saving this code for however you want to design it.
-glm::mat4 physicsStaticObject::getTransformMatrix() {
-	return getMat4(body->getGlobalPose());
-}
-glm::mat4 physicsDynamicObject::getTransformMatrix() {
-	return getMat4(body->getGlobalPose());
-}
-void physicsDynamicObject::addForce(float x, float y, float z) {
-	body->addForce(PxVec3(x, y, z));
-}
-physicsStaticObject::physicsStaticObject(float x, float y, float z, float cubeSize) {
-	PxShape* shape = gPhysics->createShape(PxBoxGeometry(cubeSize, cubeSize, cubeSize), *gMaterial);
-	PxTransform localTm(PxVec3(x, y, z));
-	body = gPhysics->createRigidStatic(localTm);
-	body->attachShape(*shape);
-	gScene->addActor(*body);
-}//*/
 
 // I made this a private function for PhysicsManager. As an outsider using PhysicsManager
 //	as a blackbox, I don't know what "createStack" means or why I want to call that function.

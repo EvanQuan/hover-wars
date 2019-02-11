@@ -42,12 +42,12 @@ void PhysicsComponent::update(duration<float> fTimeDelta)
 
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //	the scene.
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
+void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference)
 {
 	// Set up Internal Static qualifier.
 	m_bStatic = bStatic;
-	body = NULL;
-	m_pPhysicsManager->createPlayerEntity();
+	gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity();
+	body = gVehicleNoDrive->getRigidDynamicActor();
 
 	// PHYSICSTODO: Initialize Component with how the Entity wants it set up.
 	//	multiple versions of these Initialze functions may need to be employed to allow
@@ -56,7 +56,19 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
 	//			wants a cylindrical bounding box and will set it up as it needs it.
 	//	Make these as general and apparent as possible while providing as much functionality as you can. 
 }
+void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
+{
+	// Set up Internal Static qualifier.
+	m_bStatic = bStatic;
+	body = m_pPhysicsManager->createCubeObject(x,y,z,size);
 
+	// PHYSICSTODO: Initialize Component with how the Entity wants it set up.
+	//	multiple versions of these Initialze functions may need to be employed to allow
+	//	Entities to choose the type of initialization they want.
+	//		For example: a Plane probably wnats a Plane bounding box, but a Billboard probably
+	//			wants a cylindrical bounding box and will set it up as it needs it.
+	//	Make these as general and apparent as possible while providing as much functionality as you can. 
+}
 // Functionality provided to Entity for getting necessary information about
 //	 their physics via their physics component.
 void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
