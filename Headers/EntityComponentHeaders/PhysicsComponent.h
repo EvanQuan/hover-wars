@@ -27,7 +27,6 @@ public:
     // Various initialization functions as needed.
     void initializeComponent(bool bStatic, Mesh const* pMeshReference,float x, float y, float z, float size);
     void initializeComponent(bool bStatic, Mesh const* pMeshReference);
-    float getForwardAngle();
     vec3 getLinearVelocity();
     quat getRotation();
 

@@ -26,7 +26,6 @@ public:
     void useAbility(eAbility ability);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
-    float getAngle() { return m_pPhysicsComponent->getForwardAngle(); }
     quat getRotation() { return m_pPhysicsComponent->getRotation(); }
 
 private:

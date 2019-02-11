@@ -243,19 +243,23 @@ void InputHandler::initializeJoystick(int joystickID)
     // Names
     m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
 
+#ifdef _DEBUG
     debugPrintJoystickInformation(joystickID);
+#endif
 }
 
 // DEBUG Print information about all joysticks
 void InputHandler::debugPrintJoystickInformation()
 {
-    return; // DEBUG
+#ifdef NDEBUG
+    return;
+#else
     system("CLS");
     for (int joystickID = 0; joystickID < MAX_PLAYER_COUNT; joystickID++)
     {
         debugPrintJoystickInformation(joystickID);
     }
-
+#endif
 }
 
 // DEBUG Print information about a joystick
@@ -276,6 +280,7 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
         return;
     }
     const float* axes = m_pJoystickAxes[joystickID];
+#ifdef _DEBUG
     std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: " << std::endl
               << "\t\tLeft stick x: "  << axes[AXIS_LEFT_STICK_X]  << std::endl
               << "\t\t           y: "  << axes[AXIS_LEFT_STICK_Y]  << std::endl
@@ -289,7 +294,7 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
         std::cout << axes[i] << " ";
     }
     std::cout << "]" << std::endl;
-
+#endif
 }
 
 void InputHandler::debugPrintJoystickButtons(int joystickID)
@@ -299,6 +304,7 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
         return;
     }
     const unsigned char* buttonsPressed = m_pJoystickButtonsPressed[joystickID];
+#ifdef _DEBUG
     std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
               << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
               << "\t\tB: "            << buttonsPressed[BUTTON_B]            << std::endl
@@ -320,7 +326,7 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
         std::cout << buttonsPressed[i] << " ";
     }
     std::cout << "]" << std::endl;
-
+#endif
 }
 
 void InputHandler::disconnectJoystick(int joystickID)

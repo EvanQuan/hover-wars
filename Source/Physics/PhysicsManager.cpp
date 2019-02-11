@@ -371,10 +371,8 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
             PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
             PxTransform globalTransform = carBody->getGlobalPose();
             PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
-            cout << "x: " << x << " | y: " << y << endl;
             carBody->addForce(vForce * 10000);
 
-            //std::cout << "angle: " << angleTransform << "x: " << memeCity.x << " y:" << memeCity.y << " z:" << memeCity.z <<  std::endl;
             gVehicleNoDrive->setSteerAngle(0, angle);
             gVehicleNoDrive->setSteerAngle(1, angle);
             gVehicleNoDrive->setSteerAngle(2, angle);

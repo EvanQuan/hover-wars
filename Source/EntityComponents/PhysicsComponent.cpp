@@ -11,7 +11,9 @@
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     : EntityComponent(iEntityID, iComponentID)
 {
+#ifdef _DEBUG
     std::cout << "Physics Component constructor 2 vars" << std::endl;
+#endif
     m_bStatic = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
@@ -56,28 +58,8 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
     //            wants a cylindrical bounding box and will set it up as it needs it.
     //    Make these as general and apparent as possible while providing as much functionality as you can. 
 }
-float PhysicsComponent::getForwardAngle() {
 
-    float fReturnAngle = 0.0f;
-    PxVec3 vAxis;
-    
-
-    
-
-    if (nullptr != body)
-    {
-        PxQuat pxQuat = body->getGlobalPose().q;
-        fReturnAngle = sign(pxQuat.w) * (2.0f * acos(pxQuat.w)) * (180.0f/PI);
-        //body->getGlobalPose().q.toRadiansAndUnitAxis(fReturnAngle, vAxis);
-        ////fReturnAngle = body->getGlobalPose().q.getAngle() * (180.0f / PI); // Convert it to Degrees; this is a bit hacky
-        //fReturnAngle = (2.0f * acos(body->getGlobalPose().q.w)) * (180.0f / PI);
-        cout << "Degrees: " << fReturnAngle << " || " << body->getGlobalPose().q.getAngle() * sign(body->getGlobalPose().q.w) * (180.0f / PI) << endl;
-        cout << "Rads: " << body->getGlobalPose().q.getAngle() << endl;
-    }
-
-    return fReturnAngle;
-}
-
+// Returns the Rotation Quaternion for the Entity's body.
 quat PhysicsComponent::getRotation()
 {
     PxQuat pCurrRotation;

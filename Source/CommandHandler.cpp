@@ -102,10 +102,12 @@ Axes values are normalized and follow Cartesian coordinates:
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
     m_pEntityManager->execute(player, command, x, y);
+#ifdef _DEBUG
     std::cout << "Player " << player << ": "
               << eVariableCommandToString.at(command) << std::endl
               << "\tx: " << x << std::endl
               << "\ty: " << y << std::endl;
+#endif
 }
 
 /*
@@ -121,7 +123,9 @@ Execute all commands specified by user input from keyboard and joysticks.
 */
 void CommandHandler::executeInputCommands()
 {
+#ifdef _DEBUG
     system("CLS"); // Clear the terminal
+#endif
     executeKeyboardCommands();
     executeJoystickCommands();
 }
