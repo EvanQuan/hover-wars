@@ -10,7 +10,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 {
 	m_gameManager = GameManager::getInstance(rWindow);
 	// Keyboard
-	keyboardPlayer = PLAYER_1;
+	keyboardPlayer = PLAYER_2;
 	initializeKeysPressed();
 	glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
 	// Mouse

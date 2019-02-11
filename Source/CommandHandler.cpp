@@ -69,6 +69,7 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
 		cout << "Player " << player << ": "
 		     << eFixedCommandToString.at(command)
 		     << endl;
+		m_pEntityManager->execute(player, command);
 		break;
 	default:
 		cout << "Player " << player << ": "
@@ -97,6 +98,7 @@ Axes values are normalized and follow Cartesian coordinates:
 */
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
+	m_pEntityManager->execute(player, command, x, y);
 	switch (command)
 	{
 	case COMMAND_MOVE:
