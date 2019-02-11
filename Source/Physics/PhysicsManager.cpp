@@ -314,7 +314,7 @@ void PhysicsManager::forwardKey() {
 		currentState = 1;
 	}
 }
-void PhysicsManager::handleControllerInput(float x, float y) {
+void PhysicsManager::handleControllerInputMove(float x, float y) {
 	if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
 		gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
 		gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
@@ -332,6 +332,10 @@ void PhysicsManager::handleControllerInput(float x, float y) {
 		gVehicleNoDrive->setSteerAngle(2, angle);
 		gVehicleNoDrive->setSteerAngle(3, angle);
 	}
+}
+void PhysicsManager::handleControllerInputRotate(float x, float y) {
+	
+
 }
 void PhysicsManager::stopKey() {
 	if (currentState != 2) {
