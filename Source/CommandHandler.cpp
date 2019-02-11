@@ -145,10 +145,42 @@ void CommandHandler::executeInputCommands()
 }
 
 /*
-Execute all commands specified by the keyboard
+As key presses are binary, and multiple can be pressed to control x, y, x and y
+must be normalized to ensure the velocity is equal to that of a joystick.
+x and y as a vector should have a length of 1.
+*/
+void CommandHandler::normalize(float& x, float& y)
+{
+	float targetLength = 1;
+	float magnitude = getMagnitude(x, y);
+	x /= magnitude;
+	y /= magnitude;
+}
+
+float CommandHandler::getMagnitude(float x, float y)
+{
+	return sqrt((x * x) + (y * y));
+}
+
+/*
+Since checking for float equality can be messy, we need to introduce an epsilon
+value.
+*/
+bool CommandHandler::magnitudeIsNeutral(float magnitude)
+{
+	float epsilon = 0.001f;
+	return (magnitude < epsilon) && (-magnitude < epsilon);
+}
+
+/*
+Execute all commands specified by the keyboard.
 */
 void CommandHandler::executeKeyboardCommands()
 {
+	xMove = 0;
+	yMove = 0;
+	xTurn = 0;
+	yTurn = 0;
 	for (int key = 0; key < KEYS; key++)
 	{
 		if (m_pInputHandler->pressed[key])
@@ -198,44 +230,34 @@ void CommandHandler::executeKeyboardCommands()
 				switch (key)
 				{
 				case GLFW_KEY_W:
-					m_pVariableCommand = MOVE;
-					x = JOYSTICK_MAX;
-					y = JOYSTICK_NEUTRAL;
+					yMove += JOYSTICK_MAX;
 					break;
 				case GLFW_KEY_S:
-					m_pVariableCommand = MOVE;
-					x = JOYSTICK_MIN;
-					y = JOYSTICK_NEUTRAL;
+					yMove += JOYSTICK_MIN;
 					break;
 				case GLFW_KEY_A:
-					m_pVariableCommand = MOVE;
-					x = JOYSTICK_NEUTRAL;
-					y = JOYSTICK_MIN;
+					xMove += JOYSTICK_MIN;
 					break;
 				case GLFW_KEY_D:
-					m_pVariableCommand = MOVE;
-					x = JOYSTICK_NEUTRAL;
-					y = JOYSTICK_MAX;
+					xMove += JOYSTICK_MAX;
 					break;
 				case GLFW_KEY_J:
-					m_pVariableCommand = TURN;
-					x = JOYSTICK_MIN;
-					y = JOYSTICK_NEUTRAL;
+					xTurn += JOYSTICK_MIN;
 					break;
 				case GLFW_KEY_L:
-					m_pVariableCommand = TURN;
-					x = JOYSTICK_MAX;
-					y = JOYSTICK_NEUTRAL;
+					xTurn += JOYSTICK_MAX;
 					break;
-				default:
-					m_pVariableCommand = INVALID_VARIABLE;
-				}
-				if (INVALID_VARIABLE != m_pVariableCommand)
-				{
-					execute(m_pInputHandler->m_keyboardPlayer, m_pVariableCommand, x, y);
 				}
 			}
 		}
+	}
+	if (!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
+	{
+		execute(m_pInputHandler->m_keyboardPlayer, MOVE, xMove, yMove);
+	}
+	if (!magnitudeIsNeutral(getMagnitude(xTurn, yTurn)))
+	{
+		execute(m_pInputHandler->m_keyboardPlayer, TURN, xTurn, yTurn);
 	}
 }
 

@@ -55,7 +55,55 @@ public:
 	*/
 	void executeInputCommands();
 
-	void debugToggleWireframe();
+private:
+	// Singleton Variables
+	CommandHandler(GLFWwindow *rWindow);
+	static CommandHandler* m_pInstance;
+	EntityManager *m_pEntityManager;
+	GameManager *m_pGameManager;
+	InputHandler *m_pInputHandler;
+
+	// Internal variables
+	// For keyboard command handling
+	FixedCommand m_pFixedCommand;
+	VariableCommand m_pVariableCommand;
+	float xMove;
+	float yMove;
+	float xTurn;
+	float yTurn;
+
+	void normalize(float& x, float& y);
+	float getMagnitude(float x, float y);
+	bool magnitudeIsNeutral(float magnitude);
+
+	void executeKeyboardCommands();
+	void executeJoystickCommands();
+
+
+	// For input debugging
+	std::map<FixedCommand, const char*> m_pFixedCommandToString =
+	{
+		{ABILITY_ROCKET,         "Rocket"},
+		{ABILITY_SPIKES,         "Spikes"},
+		{ABILITY_TRAIL,          "Trail"},
+		{CAMERA_CHANGE,          "Change Camera"},
+		{DASH_BACK,              "Dash back"},
+		{DASH_FORWARD,           "Dash Forward"},
+		{DASH_LEFT,              "Dash Left"},
+		{DASH_RIGHT,             "Dash Right"},
+		{DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
+		{MENU_BACK,              "Menu Back"},
+		{MENU_PAUSE,             "Menu Pause"},
+		{MENU_START,             "Menu Start"},
+		{INVALID_FIXED,          "Invalid"},
+	};
+
+	std::map<VariableCommand, const char*> m_pVariableCommandToString =
+	{
+		{MOVE,             "Move"},
+		{TURN,             "Turn"},
+		{INVALID_VARIABLE, "Invalid"},
+	};
 
 	/*
 	Convert a key to its corresponding FixedCommand
@@ -169,50 +217,6 @@ public:
 		{AXIS_RIGHT_TRIGGER, ABILITY_ROCKET},
 	};
 
-
-private:
-	// Singleton Variables
-	CommandHandler(GLFWwindow *rWindow);
-	static CommandHandler* m_pInstance;
-	EntityManager *m_pEntityManager;
-	GameManager *m_pGameManager;
-	InputHandler *m_pInputHandler;
-
-	// Internal variables
-	// For keyboard command handling
-	FixedCommand m_pFixedCommand;
-	VariableCommand m_pVariableCommand;
-	float x;
-	float y;
-
-
-	// For input debugging
-	std::map<FixedCommand, const char*> m_pFixedCommandToString =
-	{
-		{ABILITY_ROCKET,         "Rocket"},
-		{ABILITY_SPIKES,         "Spikes"},
-		{ABILITY_TRAIL,          "Trail"},
-		{CAMERA_CHANGE,          "Change Camera"},
-		{DASH_BACK,              "Dash back"},
-		{DASH_FORWARD,           "Dash Forward"},
-		{DASH_LEFT,              "Dash Left"},
-		{DASH_RIGHT,             "Dash Right"},
-		{DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
-		{MENU_BACK,              "Menu Back"},
-		{MENU_PAUSE,             "Menu Pause"},
-		{MENU_START,             "Menu Start"},
-		{INVALID_FIXED,          "Invalid"},
-	};
-
-	std::map<VariableCommand, const char*> m_pVariableCommandToString =
-	{
-		{MOVE,             "Move"},
-		{TURN,             "Turn"},
-		{INVALID_VARIABLE, "Invalid"},
-	};
-
-	void executeKeyboardCommands();
-	void executeJoystickCommands();
 
 
 
