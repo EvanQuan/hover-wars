@@ -380,3 +380,18 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID, float x
 	// Return newly created component
 	return pReturnComponent;
 }
+
+/*********************************************************************************\
+* Command Management                                                    *
+\*********************************************************************************/
+
+void EntityManager::execute(ePlayer player, eFixedCommand command)
+{
+	cout << "EntityManager received: ePlayer " << player << " | eFixedCommand: " << command << endl;
+}
+
+void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
+{
+
+	cout << "EntityManager received: ePlayer " << player << " | eVariableCommand: " << command  << " x: " << x << " y: " << y << endl;
+}
