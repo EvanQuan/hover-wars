@@ -14,10 +14,10 @@ const vec3 FRONT_CAMERA_START_POS = vec3(60.f, 20.f, START_RADIUS); // (Theta, P
 const vec3 BACK_CAMERA_START_POS = vec3(-60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
-	: Entity(iID, *vPosition)
+    : Entity(iID, *vPosition)
 {
-	m_vPositionTotal = *vPosition * MAX_NUM_POS;
-	for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
+    m_vPositionTotal = *vPosition * MAX_NUM_POS;
+    for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
 }
 
 PlayerEntity::~PlayerEntity()
@@ -26,17 +26,17 @@ PlayerEntity::~PlayerEntity()
 }
 
 /****************************************************************\
- * Inherited Pure Virtual Functions								*
+ * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
 void PlayerEntity::update(float fTimeInMilliseconds)
 {
-	// New Transformation Matrix
-	mat4 m4NewTransform = mat4(1.0f);
+    // New Transformation Matrix
+    mat4 m4NewTransform = mat4(1.0f);
 
-	// Get the Transformation from the Physics component
-	m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
-	
+    // Get the Transformation from the Physics component
+    m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
+
 	// If there's a new Transformation, apply it to the Mesh.
 	m_pMesh->addInstance(&m4NewTransform);				
 
@@ -47,31 +47,31 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
-									const Material* pMaterial,
-									const string& sShaderType,
-									float fScale)
+                                    const Material* pMaterial,
+                                    const string& sShaderType,
+                                    float fScale)
 {
-	// Load Mesh and Rendering Component
-	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, fScale, m_vPosition);
-	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    // Load Mesh and Rendering Component
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, fScale, m_vPosition);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
-	// PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
-	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-	m_pPhysicsComponent->initializeComponent(true, m_pMesh);
-
-	// Generate Camera Components
-	//for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
-	//{
-	//	m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
-	//	m_pCmrComponents[i]->setLookAt(m_vPosition);
-	//}
-	//
-	//m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
-	//m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
+    // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
+    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pPhysicsComponent->initializeComponent(true, m_pMesh);
+    
+    // Generate Camera Components
+    //for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
+    //{
+    //  m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+    //  m_pCmrComponents[i]->setLookAt(m_vPosition);
+    //}
+    //
+    //m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
+    //m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
 }
 
 /********************************************************************************************************\
- * Private Functions																					*
+ * Private Functions                                                                                    *
 \********************************************************************************************************/
 
 // Updates an Average for this player's cameras.
@@ -99,7 +99,50 @@ void PlayerEntity::useAbility(eAbility ability)
     switch (ability)
     {
     case ABILITY_ROCKET:
-        EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
+        shootRocket();
+        break;
+    case ABILITY_SPIKES:
+        activateSpikes();
+        break;
+    case ABILITY_TRAIL:
+        activateTrail();
+        break;
+    case ABILITY_DASH_BACK:
+    case ABILITY_DASH_FORWARD:
+    case ABILITY_DASH_LEFT:
+    case ABILITY_DASH_RIGHT:
+        dash(ability);
         break;
     }
+}
+
+void PlayerEntity::shootRocket()
+{
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
+}
+
+void PlayerEntity::activateSpikes()
+{
+
+}
+
+void PlayerEntity::activateTrail()
+{
+
+}
+
+void PlayerEntity::dash(eAbility direction)
+{
+    switch (direction)
+    {
+    case ABILITY_DASH_BACK:
+        break;
+    case ABILITY_DASH_FORWARD:
+        break;
+    case ABILITY_DASH_LEFT:
+        break;
+    case ABILITY_DASH_RIGHT:
+        break;
+    }
+
 }

@@ -36,5 +36,11 @@ private:
 
 	// Private Functions
 	void updateCameraLookAts();
+
+    // Abilities
+    void shootRocket();
+    void activateSpikes();
+    void activateTrail();
+    void dash(eAbility direction);
 };
 
