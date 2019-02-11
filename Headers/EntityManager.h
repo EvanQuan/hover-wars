@@ -74,7 +74,8 @@ public:
     /*
     The command handler can get all the players to directly communicate to.
     */
-    vector<PlayerEntity*> getPlayers();
+    PlayerEntity* getPlayer(ePlayer player);
+    bool playerExists(ePlayer);
 
 private:
     EntityManager();

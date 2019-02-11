@@ -410,7 +410,12 @@ void EntityManager::execute(ePlayer player, eVariableCommand command, float x, f
 	}
 }
 
-vector<PlayerEntity*> EntityManager::getPlayers()
+bool EntityManager::playerExists(ePlayer player)
 {
-    return m_pPlayerEntityList;
+    return m_pPlayerEntityList.size() > player;
+}
+
+PlayerEntity* EntityManager::getPlayer(ePlayer player)
+{
+    return m_pPlayerEntityList.at(player);
 }

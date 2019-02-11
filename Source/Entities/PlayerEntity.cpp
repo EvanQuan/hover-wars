@@ -45,3 +45,13 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
 	m_pPhysicsComponent->initializeComponent(true, m_pMesh);
 }
+
+void PlayerEntity::useAbility(eAbility ability)
+{
+    switch (ability)
+    {
+    case ABILITY_ROCKET:
+        EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
+        break;
+    }
+}
