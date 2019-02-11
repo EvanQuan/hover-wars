@@ -110,6 +110,9 @@
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>
     <RootNamespace>Renderer</RootNamespace>
