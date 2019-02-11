@@ -25,5 +25,8 @@ private:
     Mesh* m_pMesh;
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
+
+    void shootRocket();
+    void activateSpikes();
 };
 
