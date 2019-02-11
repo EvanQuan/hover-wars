@@ -1,4 +1,4 @@
-#include "Scene_Loader.h"
+#include "SceneLoader.h"
 #include "EntityManager.h"
 #include <sstream>
 #include <iterator>
@@ -30,10 +30,10 @@
 
 
 // Singleton Declaration
-Scene_Loader* Scene_Loader::m_pInstance = nullptr;
+SceneLoader* SceneLoader::m_pInstance = nullptr;
 
 // Private Constructor
-Scene_Loader::Scene_Loader()
+SceneLoader::SceneLoader()
 {
 	m_lNextID = 0;
 
@@ -41,24 +41,24 @@ Scene_Loader::Scene_Loader()
 }
 
 // Returns the singleton instance of the Object Factory
-Scene_Loader* Scene_Loader::getInstance()
+SceneLoader* SceneLoader::getInstance()
 {
 	if (nullptr == m_pInstance)
 	{
-		m_pInstance = new Scene_Loader();
+		m_pInstance = new SceneLoader();
 	}
 
 	return m_pInstance;
 }
 
 
-Scene_Loader::~Scene_Loader()
+SceneLoader::~SceneLoader()
 {
 }
 
 // Creation Functions
 // Create a Sphere given a starting position, color and radius
-void Scene_Loader::createSphere( vector< string > sData, int iLength )
+void SceneLoader::createSphere( vector< string > sData, int iLength )
 {
 	vec3 vPosition;
 
@@ -77,7 +77,7 @@ void Scene_Loader::createSphere( vector< string > sData, int iLength )
 }
 
 // Create a Plane given a normal, a position on the plane and a color
-void Scene_Loader::createPlane( vector< string > sData, int iLength )
+void SceneLoader::createPlane( vector< string > sData, int iLength )
 {
 	// Local Parameters to pull out Plane Data.
 	vec3 pPosition, vNormal;
@@ -100,7 +100,7 @@ void Scene_Loader::createPlane( vector< string > sData, int iLength )
 // Generates a Directional Light object given some input data
 // sData -> String of inputs to parse
 // iLength -> Number of Inputer to parse.
-void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
+void SceneLoader::createDirectionalLight( vector< string > sData, int iLength )
 {
 	vec3 vDirection, vDiffuseColor, vAmbientColor, vSpecularColor;
 
@@ -122,7 +122,7 @@ void Scene_Loader::createDirectionalLight( vector< string > sData, int iLength )
 // Generates a Light object given some input data
 // sData -> String of inputs to parse
 // iLength -> Number of Inputer to parse.
-void Scene_Loader::createPointLight(vector< string > sData, int iLength)
+void SceneLoader::createPointLight(vector< string > sData, int iLength)
 {
 	// Local Variables
 	vec3 pPosition, pColor;
@@ -147,7 +147,7 @@ void Scene_Loader::createPointLight(vector< string > sData, int iLength)
 
 // Generates a SpotLight object with a Position, Direction, Color and Phi angle of the spotlight.
 //	There is also an optional soft edge cutoff able to be specified to simulate soft edges for the spotlight.
-void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
+void SceneLoader::createSpotLight(vector< string > sData, int iLength)
 {
 	vec3 vPosition, vDirection, vColor;
 	float fSoftCutoff = DEFAULT_SOFT_CUTOFF;
@@ -180,7 +180,7 @@ void Scene_Loader::createSpotLight(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //		object from a scene file.
-void Scene_Loader::createPlayer(vector< string > sData, int iLength)
+void SceneLoader::createPlayer(vector< string > sData, int iLength)
 {
 	vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);	// Position of Mesh
 
@@ -188,7 +188,7 @@ void Scene_Loader::createPlayer(vector< string > sData, int iLength)
 }
 
 // Generates a Static Mesh Object at a specified location.
-void Scene_Loader::createStaticMesh(vector< string > sData, unsigned int iLength)
+void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
 	// Local Variables
 	vec3 vPosition;
@@ -205,7 +205,7 @@ void Scene_Loader::createStaticMesh(vector< string > sData, unsigned int iLength
 * File Reading                                                           *
 \**************************************************************************/
 
-void Scene_Loader::loadFromFile( string sFileName )
+void SceneLoader::loadFromFile( string sFileName )
 {
 	ifstream inFile;
 	string sBuffer;
@@ -256,7 +256,7 @@ void Scene_Loader::loadFromFile( string sFileName )
 //					there were an incorrect number of parameters.
 // Params: sName - The Name of the Object trying to be loaded
 //		   sData - The Data read in when trying to load.
-void Scene_Loader::outputError( string sName, vector<string> sData )
+void SceneLoader::outputError( string sName, vector<string> sData )
 {
 	cout << "Error creating " << sName << " with the following data:" << endl;
 	cout << "{";
@@ -276,7 +276,7 @@ void Scene_Loader::outputError( string sName, vector<string> sData )
 }
 
 // Pull a block of parameters for an object specified in the file.
-void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
+void SceneLoader::pullData( ifstream& inFile, vector< string >& sReturnData )
 {
 	string sBuffer, sParser;
 	string sTexturePropPH, sMeshPropPH;
@@ -314,7 +314,7 @@ void Scene_Loader::pullData( ifstream& inFile, vector< string >& sReturnData )
 	sReturnData.pop_back();
 }
 
-void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator )
+void SceneLoader::handleData( vector< string >& sData, const string& sIndicator )
 {
 	if (SPHERE == sIndicator)					// Parse Sphere
 		createSphere(sData, sData.size());
@@ -335,7 +335,7 @@ void Scene_Loader::handleData( vector< string >& sData, const string& sIndicator
 }
 
 // Set up internal property storage with property to load objects with.
-void Scene_Loader::handleProperty( vector< string >& sData, const string& sIndicator )
+void SceneLoader::handleProperty( vector< string >& sData, const string& sIndicator )
 {
 	string sDataTrimmed = trimString( sData[ 0 ] );
 
@@ -360,7 +360,7 @@ void Scene_Loader::handleProperty( vector< string >& sData, const string& sIndic
 //		- 2: Diffuse Map and Shininess value. Specular Map defaults to 0.0
 //		- 3: Diffuse Map, Spec Map location, Shininess Value.
 //		- 5: Diffuse Map, Spec Map Shade, Shininess Value
-void Scene_Loader::grabMaterial(vector< string >& sData)
+void SceneLoader::grabMaterial(vector< string >& sData)
 {
 	switch (sData.size())
 	{
@@ -394,7 +394,7 @@ void Scene_Loader::grabMaterial(vector< string >& sData)
 }
 
 // Removes any tabs from the beginning or end of a given string.
-string Scene_Loader::trimString( const string& sStr )
+string SceneLoader::trimString( const string& sStr )
 {
 	string sReturnString = sStr;
 
@@ -411,7 +411,7 @@ string Scene_Loader::trimString( const string& sStr )
 }
 
 // Clear Any Properties that have been created on the last data parse.
-void Scene_Loader::clearProperties() // Clear any properties
+void SceneLoader::clearProperties() // Clear any properties
 {
 	m_sMeshProperty = m_sShaderProperty = "";
 	m_fMeshScaleProperty = 1.0f;

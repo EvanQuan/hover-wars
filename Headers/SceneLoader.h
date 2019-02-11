@@ -2,11 +2,11 @@
 #include "stdafx.h"
 
 // Solely Generates Objects and assigns IDs to them.
-class Scene_Loader
+class SceneLoader
 {
 public:
-	static Scene_Loader* getInstance();
-	~Scene_Loader();
+	static SceneLoader* getInstance();
+	~SceneLoader();
 
 	// Creation Functions
 	void createSphere( vector< string > sData, int iLength );
@@ -21,9 +21,9 @@ public:
 
 private:
 	// Singleton Implementation
-	Scene_Loader();
-	Scene_Loader( Scene_Loader* pCopy );
-	static Scene_Loader* m_pInstance;
+	SceneLoader();
+	SceneLoader( SceneLoader* pCopy );
+	static SceneLoader* m_pInstance;
 	string m_sMeshProperty, m_sShaderProperty;
 	float m_fMeshScaleProperty;
 	Material m_pMaterialProperty;

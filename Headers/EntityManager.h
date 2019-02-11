@@ -3,7 +3,7 @@
 #include "EntityHeaders/PointLight.h"
 #include "EntityHeaders/DirectionalLight.h"
 #include "EntityHeaders/SpotLight.h"
-#include "Scene_Loader.h"
+#include "SceneLoader.h"
 #include "EmitterEngine.h"
 #include "EntityHeaders/InteractableEntity.h"
 #include "EntityHeaders/Entity.h"
@@ -103,7 +103,7 @@ private:
     // Manage Pointers for Deletion.
     MeshManager*                m_pMshMngr;
     TextureManager*             m_pTxtMngr;
-    Scene_Loader*               m_pScnLdr;
+    SceneLoader*               m_pScnLdr;
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
 

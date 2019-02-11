@@ -4,7 +4,7 @@
 #include "GameManager.h"
 #include "InputHandler.h"
 #include "CommandHandler.h"
-#include "Scene_Loader.h"
+#include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "Physics/PhysicsManager.h"
 

@@ -1,5 +1,5 @@
 #include "CommandHandler.h"
-#include "Scene_Loader.h"
+#include "SceneLoader.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;

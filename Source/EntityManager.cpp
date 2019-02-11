@@ -55,7 +55,7 @@ EntityManager::~EntityManager()
 // Clears Environment and loads a new environment from specified file.
 void EntityManager::initializeEnvironment(string sFileName)
 {
-	Scene_Loader* pObjFctry = Scene_Loader::getInstance();
+	SceneLoader* pObjFctry = SceneLoader::getInstance();
 
 	purgeEnvironment();
 	pObjFctry->loadFromFile(sFileName);

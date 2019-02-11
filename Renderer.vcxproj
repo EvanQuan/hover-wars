@@ -47,7 +47,7 @@
     <ClInclude Include="Headers\Physics\PhysicsManager.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
-    <ClInclude Include="Headers\Scene_Loader.h" />
+    <ClInclude Include="Headers\SceneLoader.h" />
     <ClInclude Include="Headers\Shader.h" />
     <ClInclude Include="Headers\ShaderManager.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleConcurrency.h" />
