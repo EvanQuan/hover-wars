@@ -13,11 +13,6 @@
 #include <iostream>
 #include <vector>
 
-/**************\
- * Namespaces *
-\**************/
-/*using namespace physx; Already declared in stdafx.h**/
-
 /***********\
  * DEFINES *
 \***********/
@@ -298,7 +293,6 @@ void PhysicsManager::initPhysics(bool interactive)
         std::cout << ("PxCreateCooking failed!") << std::endl;
 
 
-
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -448,6 +442,7 @@ void PhysicsManager::cleanupPhysics()
 
 
         gMaterial->release();
+        gCook->release();
         gScene->release();
         gDispatcher->release();
         gPhysics->release();
