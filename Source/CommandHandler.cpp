@@ -68,7 +68,6 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
 		cout << "Player " << player << ": "
 		     << eFixedCommandToString.at(command)
 		     << endl;
-		m_pEntityManager->execute(player, command);
 		break;
 	default:
 		cout << "Player " << player << ": "

@@ -226,6 +226,7 @@ void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sM
 {
 	unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
 	pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType, fScale);
+	m_pPlayerEntityList.push_back(pNewPlayer.get()); // TODO this retrieves a raw pointer from the unique pointer. Is this okay?
 	m_pMasterEntityList.push_back(move(pNewPlayer));
 }
 
@@ -318,18 +319,18 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 // Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
-	// Generate new Camera Component
-	unique_ptr<CameraComponent> pNewCameraPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    // Generate new Camera Component
+    unique_ptr<CameraComponent> pNewCameraPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
 
-	// Store new Camera Component
-	m_pCameraComponents.push_back(pNewCameraPtr.get());
-	m_pMasterComponentList.push_back(move(pNewCameraPtr));
+    // Store new Camera Component
+    m_pCameraComponents.push_back(pNewCameraPtr.get());
+    m_pMasterComponentList.push_back(move(pNewCameraPtr));
 
-	// Set the active Camera if no camera is currently active.
-	if (NULL == m_pActiveCamera)
-		m_pActiveCamera = m_pCameraComponents.back();
+    // Set the active Camera if no camera is currently active.
+    if (NULL == m_pActiveCamera)
+        m_pActiveCamera = m_pCameraComponents.back();
 
-	return m_pCameraComponents.back();
+    return m_pCameraComponents.back();
 }
 
 // Generates a new Render Component, stores it in the Rendering Components list and Master Components list.
@@ -395,10 +396,6 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
 * Command Management                                                    *
 \*********************************************************************************/
 
-void EntityManager::execute(ePlayer player, eFixedCommand command)
-{
-}
-
 void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
 	switch (command)
@@ -411,4 +408,9 @@ void EntityManager::execute(ePlayer player, eVariableCommand command, float x, f
 		PHYSICS_MANAGER->handleControllerInputRotate(x, y);
 		break;
 	}
+}
+
+vector<PlayerEntity*> EntityManager::getPlayers()
+{
+    return m_pPlayerEntityList;
 }
