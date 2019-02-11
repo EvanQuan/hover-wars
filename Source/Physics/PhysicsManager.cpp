@@ -414,7 +414,7 @@ PxRigidDynamic *PhysicsManager::createCubeObject(float x,float y, float z, float
 	//dynamicObjects.push_back(sphere);
 }
 PxRigidDynamic *PhysicsManager::createCubeObjectPlayer(float x, float y, float z, float size) {
-	PxShape* shape = gPhysics->createShape(PxBoxGeometry(0.05, 0.05, 0.05), *gMaterial);
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(0.05f, 0.05f, 0.05f), *gMaterial);
 	PxTransform localTm(PxVec3(x, y, z));
 	PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
 	body->attachShape(*shape);
@@ -452,32 +452,14 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
 // This should be a private function for Physics Manager as it uses it internally to
 //	obfuscate the public interface of the Physics Manager
 mat4 PhysicsManager::getMat4(PxTransform transform) {
-	float matrixArray[16];
 	PxMat44 mat44 = PxMat44(transform);
+	mat4 returnMatrix;
 
-	matrixArray[0] = mat44.column0.x;
-	matrixArray[1] = mat44.column0.y;
-	matrixArray[2] = mat44.column0.z;
-	matrixArray[3] = mat44.column0.w;
+	// Convert the PxMat44 matrix to a glm::mat4
+	memcpy(value_ptr(returnMatrix), &mat44, sizeof(mat4));
 
-	matrixArray[4] = mat44.column1.x;
-	matrixArray[5] = mat44.column1.y;
-	matrixArray[6] = mat44.column1.z;
-	matrixArray[7] = mat44.column1.w;
-
-	matrixArray[8] = mat44.column2.x;
-	matrixArray[9] = mat44.column2.y;
-	matrixArray[10] = mat44.column2.z;
-	matrixArray[11] = mat44.column2.w;
-
-	matrixArray[12] = mat44.column3.x;
-	matrixArray[13] = mat44.column3.y;
-	matrixArray[14] = mat44.column3.z;
-	matrixArray[15] = mat44.column3.w;
-
-	glm::mat4 matrix = glm::make_mat4(matrixArray);
-
-	return matrix;
+	// Return mat4 matrix
+	return returnMatrix;
 }
 
 // I made this a private function for PhysicsManager. As an outsider using PhysicsManager
