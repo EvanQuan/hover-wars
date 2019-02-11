@@ -46,5 +46,5 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 
 	// PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
 	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID, m_vPosition.x, m_vPosition.y, m_vPosition.z,1.0f);
-	m_pPhysicsComponent->initializeComponent(true, m_pMesh,1,1,1,1); // PHYSICSTODO
+	m_pPhysicsComponent->initializeComponent(true, m_pMesh);
 }
