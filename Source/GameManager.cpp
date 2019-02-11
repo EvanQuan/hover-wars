@@ -117,6 +117,7 @@ void GameManager::RenderScene()
 {
 	// HACK: For following Car on Roller Coaster Assignment, Remove
 	//mat4 pFreNetFrame = (VIEW_SPHERICAL == m_eView) ? mat4( 1.0 ) : m_pEntMngr->getFrenetFrame();
+	m_pCamera->setLookAt(m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getPosition());
 	const CameraComponent* pCamera = m_pEntityManager->getActiveCamera();
 
 	mat4 pModelViewMatrix = pCamera->getToCameraMat();
