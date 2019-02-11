@@ -20,6 +20,11 @@
 #define Y_LOOK				m_vPos[I_Y]
 #define Z_LOOK				m_vPos[I_Z]
 
+// Default Camera Values
+#define FOV_Y				60.f
+#define Z_CLOSE				0.01f
+#define Z_FAR				10000.f
+
 /*************************************************************************\
  * Constructors															 *
 \*************************************************************************/
@@ -31,6 +36,8 @@ CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iHeight, i
 {
 	updateHxW(iHeight, iWidth);
 	m_m4Frame = mat4(1.0);
+	setFOV_Y(FOV_Y);
+	setZRange(Z_CLOSE, Z_FAR);
 }
 
 // Default Copy Constructor

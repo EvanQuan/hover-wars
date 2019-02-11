@@ -8,9 +8,7 @@
 #define VERT_UPPER_LIMIT	180.f - VERT_LOWER_LIMIT
 #define HORIZONTAL_LIMIT	360.f
 #define ZOOM_MIN			0.05f
-#define FOV_Y				60.f
-#define Z_CLOSE				0.01f
-#define Z_FAR				10000.f
+
 #define START_RADIUS		10.f
 
 // Vector Indexing
@@ -43,8 +41,6 @@ Camera::Camera( int iID )
 	m_vPosition = DEFAULT_POS;
 	m_vWorldLookAt = vec3(0.f, 0.f, 0.f);	// (X,Y,Z)
 	updateCameraComponent();
-	m_pCmraCmp->setFOV_Y(FOV_Y);
-	m_pCmraCmp->setZRange(Z_CLOSE, Z_FAR);
 }
 
 // Destructor
