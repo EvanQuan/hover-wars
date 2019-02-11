@@ -412,7 +412,7 @@ void EntityManager::execute(ePlayer player, eVariableCommand command, float x, f
 
 bool EntityManager::playerExists(ePlayer player)
 {
-    return m_pPlayerEntityList.size() > player;
+    return (int) m_pPlayerEntityList.size() > player;
 }
 
 PlayerEntity* EntityManager::getPlayer(ePlayer player)
