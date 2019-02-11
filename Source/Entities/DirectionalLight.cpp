@@ -9,31 +9,31 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 DirectionalLight::DirectionalLight(int iID) 
-	: Entity( iID, vec3( -1.0 ) )
+    : Entity( iID, vec3( -1.0 ) )
 {
-	
+    
 }
 
 // Destructor
 DirectionalLight::~DirectionalLight()
 {
-	// Nothing to Destruct
+    // Nothing to Destruct
 }
 
 /****************************************************************\
- * Inherited Pure Virtual Functions								*
+ * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
 void DirectionalLight::update(float fTimeInMilliseconds)
 {
-	/* Not Implemented */
+    /* Not Implemented */
 }
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
-//	If "" is provided for the Mesh name, a generic cube will be generated.
+//    If "" is provided for the Mesh name, a generic cube will be generated.
 void DirectionalLight::initialize(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor)
 {
-	// Create and Initialize the Lighting Component.
-	m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
-	m_pLightingComponent->initializeAsDirectionalLight(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
+    // Create and Initialize the Lighting Component.
+    m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
+    m_pLightingComponent->initializeAsDirectionalLight(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
 }

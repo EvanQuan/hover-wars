@@ -8,28 +8,28 @@
 // Name: StaticEntity
 // Written by: James Cote
 // Description: General Entity for static objects in the game world.
-//		Static objects are considered objects that don't move and don't interact
-//		with anything other than simple physics.
+//        Static objects are considered objects that don't move and don't interact
+//        with anything other than simple physics.
 class StaticEntity
-	: public Entity
+    : public Entity
 {
 public:
-	StaticEntity(int iID, const vec3* vPosition);
-	virtual ~StaticEntity();
+    StaticEntity(int iID, const vec3* vPosition);
+    virtual ~StaticEntity();
 
-	// Implementation of inherited functionality
-	void update(float fTimeInMilliseconds);
+    // Implementation of inherited functionality
+    void update(float fTimeInMilliseconds);
 
-	void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const string& sShaderType);
-	void loadAsSphere(float fRadius, const Material* pMaterial, const string& sShaderType);
-	void loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType, float fScale);
+    void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const string& sShaderType);
+    void loadAsSphere(float fRadius, const Material* pMaterial, const string& sShaderType);
+    void loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType, float fScale);
 
 private:
-	// Private Copy Constructor and Assignment Operator
-	StaticEntity(const StaticEntity& pCopy);
-	StaticEntity& operator=(const StaticEntity& pCopy);
+    // Private Copy Constructor and Assignment Operator
+    StaticEntity(const StaticEntity& pCopy);
+    StaticEntity& operator=(const StaticEntity& pCopy);
 
-	Mesh* m_pMesh; // Contains Vertex information about the mesh.
-	RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
-	PhysicsComponent* m_pPhysicsComponent; // Component for Handling Physics for the Entity
+    Mesh* m_pMesh; // Contains Vertex information about the mesh.
+    RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
+    PhysicsComponent* m_pPhysicsComponent; // Component for Handling Physics for the Entity
 };

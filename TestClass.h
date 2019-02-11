@@ -4,14 +4,14 @@
 class TestClass
 {
 public:
-	TestClass();
-	~TestClass();
+    TestClass();
+    ~TestClass();
 
-	int add(int x, int y);
+    int add(int x, int y);
 
-	void setValue(int value);
-	int getValue();
+    void setValue(int value);
+    int getValue();
 
 private:
-	int value;
+    int value;
 };

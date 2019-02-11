@@ -42,54 +42,54 @@ class VehicleWheelQueryResults
 {
 public:
 
-	VehicleWheelQueryResults()
-		: mVehicleWheelQueryResults(NULL)
-	{
-	}
+    VehicleWheelQueryResults()
+        : mVehicleWheelQueryResults(NULL)
+    {
+    }
 
-	~VehicleWheelQueryResults()
-	{
-	}
+    ~VehicleWheelQueryResults()
+    {
+    }
 
-	//Allocate wheel results for up to maxNumVehicles with up to maxNumWheelsPerVehicle.
-	static VehicleWheelQueryResults* allocate(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, PxAllocatorCallback& allocator)
-	{
-		const PxU32 byteSize = sizeof(VehicleWheelQueryResults) + sizeof(PxVehicleWheelQueryResult)*maxNumVehicles + sizeof(PxWheelQueryResult)*maxNumWheelsPerVehicle*maxNumVehicles;
+    //Allocate wheel results for up to maxNumVehicles with up to maxNumWheelsPerVehicle.
+    static VehicleWheelQueryResults* allocate(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, PxAllocatorCallback& allocator)
+    {
+        const PxU32 byteSize = sizeof(VehicleWheelQueryResults) + sizeof(PxVehicleWheelQueryResult)*maxNumVehicles + sizeof(PxWheelQueryResult)*maxNumWheelsPerVehicle*maxNumVehicles;
 
-		PxU8* buffer = static_cast<PxU8*>(allocator.allocate(byteSize, NULL, NULL, 0));
+        PxU8* buffer = static_cast<PxU8*>(allocator.allocate(byteSize, NULL, NULL, 0));
 
-		VehicleWheelQueryResults* vwqr = reinterpret_cast<VehicleWheelQueryResults*>(buffer);
-		buffer += sizeof(VehicleWheelQueryResults);
+        VehicleWheelQueryResults* vwqr = reinterpret_cast<VehicleWheelQueryResults*>(buffer);
+        buffer += sizeof(VehicleWheelQueryResults);
 
-		vwqr->mVehicleWheelQueryResults = reinterpret_cast<PxVehicleWheelQueryResult*>(buffer);
-		buffer+=sizeof(PxVehicleWheelQueryResult)*maxNumVehicles;
+        vwqr->mVehicleWheelQueryResults = reinterpret_cast<PxVehicleWheelQueryResult*>(buffer);
+        buffer+=sizeof(PxVehicleWheelQueryResult)*maxNumVehicles;
 
-		for(PxU32 i=0;i<maxNumVehicles;i++)
-		{
-			new(buffer) PxWheelQueryResult();
-			vwqr->mVehicleWheelQueryResults[i].wheelQueryResults = reinterpret_cast<PxWheelQueryResult*>(buffer);
-			vwqr->mVehicleWheelQueryResults[i].nbWheelQueryResults = maxNumWheelsPerVehicle;
-			buffer += sizeof(PxWheelQueryResult)*maxNumWheelsPerVehicle;
-		}
+        for(PxU32 i=0;i<maxNumVehicles;i++)
+        {
+            new(buffer) PxWheelQueryResult();
+            vwqr->mVehicleWheelQueryResults[i].wheelQueryResults = reinterpret_cast<PxWheelQueryResult*>(buffer);
+            vwqr->mVehicleWheelQueryResults[i].nbWheelQueryResults = maxNumWheelsPerVehicle;
+            buffer += sizeof(PxWheelQueryResult)*maxNumWheelsPerVehicle;
+        }
 
-		return vwqr;
-	}
+        return vwqr;
+    }
 
-	//Free allocated buffer for scene queries of suspension raycasts.
-	void free(PxAllocatorCallback& allocator)
-	{
-		allocator.deallocate(this);
-	}
+    //Free allocated buffer for scene queries of suspension raycasts.
+    void free(PxAllocatorCallback& allocator)
+    {
+        allocator.deallocate(this);
+    }
 
-	//Return the PxVehicleWheelQueryResult for a vehicle specified by an index.
-	PxVehicleWheelQueryResult* getVehicleWheelQueryResults(const PxU32 id)
-	{
-		return (mVehicleWheelQueryResults + id);
-	}
+    //Return the PxVehicleWheelQueryResult for a vehicle specified by an index.
+    PxVehicleWheelQueryResult* getVehicleWheelQueryResults(const PxU32 id)
+    {
+        return (mVehicleWheelQueryResults + id);
+    }
 
 private:
 
-	PxVehicleWheelQueryResult* mVehicleWheelQueryResults;
+    PxVehicleWheelQueryResult* mVehicleWheelQueryResults;
 };
 
 } // namespace snippetvehicle

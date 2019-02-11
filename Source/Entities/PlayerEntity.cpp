@@ -37,12 +37,12 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     // Get the Transformation from the Physics component
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
 
-	// If there's a new Transformation, apply it to the Mesh.
-	m_pMesh->addInstance(&m4NewTransform);				
+    // If there's a new Transformation, apply it to the Mesh.
+    m_pMesh->addInstance(&m4NewTransform);                
 
-	// Calculate Position Averages for Camera
-	m_vPosition = m4NewTransform[3];
-	//updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
+    // Calculate Position Averages for Camera
+    m_vPosition = m4NewTransform[3];
+    //updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
 
 // Initializes Player Entity information
@@ -77,21 +77,21 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 // Updates an Average for this player's cameras.
 void PlayerEntity::updateCameraLookAts()
 {
-	// Queue new position and add to total
-	m_vPastPositions.push(m_vPosition);
-	m_vPositionTotal += m_vPosition;
+    // Queue new position and add to total
+    m_vPastPositions.push(m_vPosition);
+    m_vPositionTotal += m_vPosition;
 
-	// Keep Queue within limits of Average
-	if (m_vPastPositions.size() > MAX_NUM_POS)
-	{
-		m_vPositionTotal -= m_vPastPositions.front();
-		m_vPastPositions.pop();
-	}
+    // Keep Queue within limits of Average
+    if (m_vPastPositions.size() > MAX_NUM_POS)
+    {
+        m_vPositionTotal -= m_vPastPositions.front();
+        m_vPastPositions.pop();
+    }
 
-	// Calculate Average Position and set new look at for Camera Components
-	vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
-	for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
-		m_pCmrComponents[i]->setLookAt(vAveragedPos);
+    // Calculate Average Position and set new look at for Camera Components
+    vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
+    for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
+        m_pCmrComponents[i]->setLookAt(vAveragedPos);
 }
 
 void PlayerEntity::useAbility(eAbility ability)

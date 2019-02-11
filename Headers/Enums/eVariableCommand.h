@@ -6,7 +6,7 @@ to complete the commands.
 */
 enum eVariableCommand
 {
-	COMMAND_MOVE,
-	COMMAND_TURN,
-	COMMAND_INVALID_VARIABLE,
+    COMMAND_MOVE,
+    COMMAND_TURN,
+    COMMAND_INVALID_VARIABLE,
 };

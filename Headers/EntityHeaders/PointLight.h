@@ -6,33 +6,33 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 
 // Infinitely small point that emits a light source.
-//	Managed by the Environment Manager.
+//    Managed by the Environment Manager.
 class PointLight :
-	 public Entity
+     public Entity
 {
 public:
-	PointLight(int iID, const vec3* vPosition);
-	virtual ~PointLight();
+    PointLight(int iID, const vec3* vPosition);
+    virtual ~PointLight();
 
-	// Implementation of inherited functionality
-	void update(float fTimeInMilliseconds);
+    // Implementation of inherited functionality
+    void update(float fTimeInMilliseconds);
 
-	// Function to Initialize the Light.
-	void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "", float m_fMeshScale = 1.0f );
+    // Function to Initialize the Light.
+    void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "", float m_fMeshScale = 1.0f );
 
-	// Light Manipulation
-	void move(vec3 pMoveVec) { m_vPosition += pMoveVec; m_pLightingComponent->updatePosition(&m_vPosition); }
+    // Light Manipulation
+    void move(vec3 pMoveVec) { m_vPosition += pMoveVec; m_pLightingComponent->updatePosition(&m_vPosition); }
 
 private:
-	// Private Light Copy constructor and assignment operator
-	PointLight( const PointLight* newLight );
-	PointLight& operator=(const PointLight& pCopy);
+    // Private Light Copy constructor and assignment operator
+    PointLight( const PointLight* newLight );
+    PointLight& operator=(const PointLight& pCopy);
 
-	// Private Variables
-	vec3 m_pColor;
-	Mesh* m_pMesh;
-	RenderComponent* m_pRenderComponent;
-	LightingComponent* m_pLightingComponent;
+    // Private Variables
+    vec3 m_pColor;
+    Mesh* m_pMesh;
+    RenderComponent* m_pRenderComponent;
+    LightingComponent* m_pLightingComponent;
 
 };
 

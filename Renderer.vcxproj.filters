@@ -242,9 +242,6 @@
     <ClCompile Include="Source\GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scene_Loader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\CommandHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -320,10 +317,16 @@
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp">
       <Filter>Source Files\snippetvehiclecommon</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SceneLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
 </Project>

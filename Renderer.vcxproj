@@ -92,7 +92,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
-    <ClCompile Include="Source\Scene_Loader.cpp" />
+    <ClCompile Include="Source\SceneLoader.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicle4WCreate.cpp" />
@@ -109,6 +109,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>

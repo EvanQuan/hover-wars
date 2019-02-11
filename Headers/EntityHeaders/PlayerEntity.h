@@ -26,16 +26,16 @@ public:
     void useAbility(eAbility ability);
 
 private:
-	// Private Variables
-	Mesh* m_pMesh;
-	RenderComponent* m_pRenderComponent;
-	PhysicsComponent* m_pPhysicsComponent;
-	CameraComponent* m_pCmrComponents[MAX_NUM_CAMERAS];
-	vec3 m_vPositionTotal;
-	queue<vec3> m_vPastPositions;
+    // Private Variables
+    Mesh* m_pMesh;
+    RenderComponent* m_pRenderComponent;
+    PhysicsComponent* m_pPhysicsComponent;
+    CameraComponent* m_pCmrComponents[MAX_NUM_CAMERAS];
+    vec3 m_vPositionTotal;
+    queue<vec3> m_vPastPositions;
 
-	// Private Functions
-	void updateCameraLookAts();
+    // Private Functions
+    void updateCameraLookAts();
 
     // Abilities
     void shootRocket();
