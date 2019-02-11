@@ -3,9 +3,6 @@
 #include "EntityHeaders/StaticEntity.h"
 #include "EntityHeaders/PlayerEntity.h"
 
-#define INTERSECTION_EPSILON 1e-4	// Minimum intersect distance (so we don't intersect with ourselves)
-#define MAX_REFLECTIONS	800
-
 // Initialize Static Instance Variable
 EntityManager* EntityManager::m_pInstance = nullptr;
 
@@ -45,11 +42,12 @@ EntityManager::~EntityManager()
 	// Delete Texture Manager
 	if (nullptr != m_pTxtMngr)
 		delete m_pTxtMngr;
-	// ok nm
 
+	// Delete Scene Loader
 	if (nullptr != m_pScnLdr)
 		delete m_pScnLdr;
 
+	// Delete Emitter Engine
 	if (nullptr != m_pEmtrEngn)
 		delete m_pEmtrEngn;
 }
@@ -154,10 +152,10 @@ void EntityManager::renderEnvironment( const vec3& vCamLookAt )
 	// Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
 	pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
-	for (vector<RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
+	for (unordered_map<Mesh const*, RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
 		pIter != m_pRenderingComponents.end();
 		++pIter)
-		(*pIter)->render();
+		(*pIter).second->render();
 
 	if (nullptr != m_pEmtrEngn)
 		m_pEmtrEngn->renderEmitters();
@@ -217,25 +215,25 @@ void EntityManager::generateStaticSphere(float fRadius, const vec3* vPosition, c
 }
 
 // Generates a Static Mesh at a given location
-void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const string& sShaderType )
+void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, float fScale, const string& sShaderType )
 {
 	unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-	pNewMesh->loadFromFile(sMeshLocation, sMaterial, sShaderType);
+	pNewMesh->loadFromFile(sMeshLocation, sMaterial, sShaderType, fScale);
 	m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
-void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, const string& sShaderType)
+void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const string& sShaderType)
 {
 	unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
-	pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType);
+	pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType, fScale);
 	m_pMasterEntityList.push_back(move(pNewPlayer));
 }
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
-void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation)
+void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation, float m_fMeshScale)
 {
 	unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), vPosition);
-	pNewLight->initialize(fPower, vColor, true, sMaterial, sMeshLocation);
+	pNewLight->initialize(fPower, vColor, true, sMaterial, sMeshLocation, m_fMeshScale);
 
 	if (nullptr == m_pTestingLight)
 		m_pTestingLight = pNewLight.get();
@@ -259,10 +257,10 @@ void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3*
 }
 
 // Generates a new Spot Light Entity and stores it in the Entity Manager.
-void EntityManager::generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation)
+void EntityManager::generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation, float m_fMeshScale)
 {
 	unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), vPosition);
-	pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, sMaterial);
+	pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, sMaterial, m_fMeshScale);
 	m_pMasterEntityList.push_back(move(pNewLight));
 }
 
@@ -303,9 +301,15 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 		
 		// UPDATES GO HERE
 		m_pEmtrEngn->update(fDeltaTime);
+		m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
 
-		// Update Physics
-		m_pPhysxMngr->update(fDeltaTime);
+		// PHYSICSTODO: Maybe this needs to happen? perhaps the Physics Manager just takes care
+		//	of the update and the Physics component can just fetch information as the Entity
+		//	needs it on their update? How should this be done?
+		for (vector<PhysicsComponent*>::const_iterator iter = m_pPhysicsComponents.begin();
+			iter != m_pPhysicsComponents.end();
+			++iter)
+			(*iter)->update(pDeltaTime);
 
 		// Iterate through all Entities and call their update with the current time.
 		for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
@@ -338,13 +342,27 @@ CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 
 // Generates a new Render Component, stores it in the Rendering Components list and Master Components list.
 //	Manages component with a unique pointer stored internally in the Master Components list.
-RenderComponent* EntityManager::generateRenderComponent(int iEntityID, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode)
+RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode)
 {
 	// Generate new Render Component
-	unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bStaticDraw, eType, eMode);
-	RenderComponent* pReturnComponent = pNewRenderComponent.get();	// Return pointer
-	m_pRenderingComponents.push_back(pReturnComponent);				// store in Rendering components list
-	m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
+	RenderComponent* pReturnComponent;
+
+	// Since Meshes are more static with their material, if there is a rendering component
+	//	for that mesh already, return that instead since that Mesh will probably have multiple instances
+	//	per render.
+	if (m_pRenderingComponents.end() != m_pRenderingComponents.find(pMeshKey))
+		pReturnComponent = m_pRenderingComponents[pMeshKey];
+	else	// Otherwise, if it hasn't been found, create the new render component and associate it with that Mesh Pointer.
+	{
+		// Initialize new Unique_Ptr for Render Component.
+		unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bStaticDraw, eType, eMode);
+		pNewRenderComponent->initializeComponent(pMeshKey);	// Initialize Render Component
+
+		// Grab return Pointer and store Component within Entity Manager.
+		pReturnComponent = pNewRenderComponent.get();	// Return pointer
+		m_pRenderingComponents.insert(make_pair(pMeshKey, pReturnComponent));
+		m_pMasterComponentList.push_back(move(pNewRenderComponent));	// move to Master Components list.
+	}
 
 	// Return newly created component.
 	return pReturnComponent;
@@ -369,7 +387,7 @@ LightingComponent* EntityManager::generateLightingComponent(int iEntityID)
 //	managed by the Entity Manager. PHYSICSTODO: Maybe the separate list isn't necessary
 //												and only the Physics Manager needs to be updated
 //												or modified on a frame by frame basis?
-PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID, float x, float y, float z, float size)
+PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
 {
 	// Generate new Physics Component
 	unique_ptr<PhysicsComponent> pNewComponent = make_unique<PhysicsComponent>(iEntityID, getNewComponentID());

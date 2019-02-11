@@ -114,6 +114,7 @@ using namespace physx;
 struct Material
 {
 	string sDiffuseMap;
+	vec4 vOptionalDiffuseColor;
 	string sOptionalSpecMap;
 	vec4 vOptionalSpecShade;
 	float fShininess;
