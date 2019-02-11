@@ -31,6 +31,32 @@ public:
 	*/
 	void executeInputCommands();
 
+
+	// For input debugging
+	std::map<eFixedCommand, const char*> eFixedCommandToString =
+	{
+		{COMMAND_ABILITY_ROCKET,         "Rocket"},
+		{COMMAND_ABILITY_SPIKES,         "Spikes"},
+		{COMMAND_ABILITY_TRAIL,          "Trail"},
+		{COMMAND_CAMERA_CHANGE,          "Change Camera"},
+		{COMMAND_DASH_BACK,              "Dash back"},
+		{COMMAND_DASH_FORWARD,           "Dash Forward"},
+		{COMMAND_DASH_LEFT,              "Dash Left"},
+		{COMMAND_DASH_RIGHT,             "Dash Right"},
+		{COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
+		{COMMAND_MENU_BACK,              "Menu Back"},
+		{COMMAND_MENU_PAUSE,             "Menu Pause"},
+		{COMMAND_MENU_START,             "Menu Start"},
+		{COMMAND_INVALID_FIXED,          "Invalid"},
+	};
+
+	std::map<eVariableCommand, const char*> eVariableCommandToString =
+	{
+		{COMMAND_MOVE,             "Move"},
+		{COMMAND_TURN,             "Turn"},
+		{COMMAND_INVALID_VARIABLE, "Invalid"},
+	};
+
 private:
 	// Singleton Variables
 	CommandHandler(GLFWwindow *rWindow);
@@ -54,32 +80,6 @@ private:
 
 	void executeKeyboardCommands();
 	void executeJoystickCommands();
-
-
-	// For input debugging
-	std::map<eFixedCommand, const char*> m_pFixedCommandToString =
-	{
-		{COMMAND_ABILITY_ROCKET,         "Rocket"},
-		{COMMAND_ABILITY_SPIKES,         "Spikes"},
-		{COMMAND_ABILITY_TRAIL,          "Trail"},
-		{COMMAND_CAMERA_CHANGE,          "Change Camera"},
-		{COMMAND_DASH_BACK,              "Dash back"},
-		{COMMAND_DASH_FORWARD,           "Dash Forward"},
-		{COMMAND_DASH_LEFT,              "Dash Left"},
-		{COMMAND_DASH_RIGHT,             "Dash Right"},
-		{COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
-		{COMMAND_MENU_BACK,              "Menu Back"},
-		{COMMAND_MENU_PAUSE,             "Menu Pause"},
-		{COMMAND_MENU_START,             "Menu Start"},
-		{COMMAND_INVALID_FIXED,          "Invalid"},
-	};
-
-	std::map<eVariableCommand, const char*> m_pVariableCommandToString =
-	{
-		{COMMAND_MOVE,             "Move"},
-		{COMMAND_TURN,             "Turn"},
-		{COMMAND_INVALID_VARIABLE, "Invalid"},
-	};
 
 	/*
 	Convert a key to its corresponding eFixedCommand

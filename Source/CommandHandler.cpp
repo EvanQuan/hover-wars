@@ -67,12 +67,12 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
 	case COMMAND_MENU_PAUSE:
 	case COMMAND_MENU_START:
 		cout << "Player " << player << ": "
-		     << m_pFixedCommandToString.at(command)
+		     << eFixedCommandToString.at(command)
 		     << endl;
 		break;
 	default:
 		cout << "Player " << player << ": "
-		     << m_pFixedCommandToString.at(command)
+		     << eFixedCommandToString.at(command)
 		     << " not implemented yet." << endl;
 	}
 }
@@ -121,7 +121,7 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
 		break;
 	}
 	std::cout << "Player " << player << ": "
-		      << m_pVariableCommandToString.at(command) << std::endl
+		      << eVariableCommandToString.at(command) << std::endl
 		      << "\tx: " << x << std::endl
 		      << "\ty: " << y << std::endl;
 }
