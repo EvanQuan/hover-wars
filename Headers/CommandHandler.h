@@ -21,7 +21,7 @@ public:
 	~CommandHandler();
 
 	void execute(ePlayer player, FixedCommand command);
-	void execute(ePlayer player, VariableCommand command, float x, float y);
+	void execute(ePlayer player, eVariableCommand command, float x, float y);
 	/*
 	Execute all commands for a given frame.
 	*/
@@ -42,7 +42,7 @@ private:
 	// Internal variables
 	// For keyboard command handling
 	FixedCommand m_pFixedCommand;
-	VariableCommand m_pVariableCommand;
+	eVariableCommand m_pVariableCommand;
 	float xMove;
 	float yMove;
 	float xTurn;
@@ -74,7 +74,7 @@ private:
 		{COMMAND_INVALID_FIXED,          "Invalid"},
 	};
 
-	std::map<VariableCommand, const char*> m_pVariableCommandToString =
+	std::map<eVariableCommand, const char*> m_pVariableCommandToString =
 	{
 		{COMMAND_MOVE,             "Move"},
 		{COMMAND_TURN,             "Turn"},
@@ -96,9 +96,9 @@ private:
 		}
 	};
 	/*
-	Convert a key to its corresponding VariableCommand
+	Convert a key to its corresponding eVariableCommand
 	*/
-	static VariableCommand keyToVariableCommand(int key)
+	static eVariableCommand keyToVariableCommand(int key)
 	{
 		try
 		{
@@ -155,7 +155,7 @@ private:
 		{GLFW_KEY_ENTER,       COMMAND_MENU_START},
 	};
 
-	std::map<int, VariableCommand> m_keyToVariableCommand =
+	std::map<int, eVariableCommand> m_keyToVariableCommand =
 	{
 		{GLFW_KEY_W, COMMAND_MOVE},
 		{GLFW_KEY_A, COMMAND_MOVE},

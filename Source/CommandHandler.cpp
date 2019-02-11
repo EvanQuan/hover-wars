@@ -78,7 +78,7 @@ void CommandHandler::execute(ePlayer player, FixedCommand command)
 }
 
 /*
-Make a player of given joystickID execute a VariableCommand.
+Make a player of given joystickID execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
 Specifically, they require an axis or axes to make sense of the command.
 
@@ -95,7 +95,7 @@ Axes values are normalized and follow Cartesian coordinates:
 			              v
                         y = -1
 */
-void CommandHandler::execute(ePlayer player, VariableCommand command, float x, float y)
+void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
 	switch (command)
 	{
