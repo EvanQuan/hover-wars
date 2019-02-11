@@ -35,10 +35,10 @@ void EmitterEngine::clearAllEmitters()
 void EmitterEngine::update(float fDelta)
 {
 	// Update all Emitters
-	/*for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
+	for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
 		iter != m_pEmitters.end();
 		++iter )
-		(*iter)->update(dMilliSecondsSinceLastUpdate);*/
+		(*iter)->update(fDelta);
 
 	// Clean up any Emitters that are subject for deletion.
 	m_pEmitters.erase(
@@ -59,11 +59,15 @@ void EmitterEngine::renderEmitters()
 		(*iter)->draw();
 }
 
-void EmitterEngine::generateEmitter(vec3 vPos, 
-									vec3 vNormal, 
-									float fAngleFromNormal)
+void EmitterEngine::generateEmitter(vec3 vPos,
+									vec3 vNormal,
+									float fAngleFromNormal,
+									float fParticleDuration,
+									unsigned int iNumParticles,
+									bool bExplosion,
+									float fRadius)
 {
 	unique_ptr<Emitter> pNewEmitter = make_unique<Emitter>(&vPos);
-	pNewEmitter->initializeEmitter(DEFAULT_NUM_PARTICLES, vNormal, fAngleFromNormal, DEFAULT_DURATION_IN_SECONDS, 2.0f, true);
+	pNewEmitter->initializeEmitter(iNumParticles, vNormal, fAngleFromNormal, fParticleDuration, fRadius, bExplosion);
 	m_pEmitters.push_back(move(pNewEmitter));
 }

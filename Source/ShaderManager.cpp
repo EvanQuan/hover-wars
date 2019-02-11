@@ -44,13 +44,13 @@ ShaderManager::ShaderManager()
 	glGenBuffers(1, &m_iMatricesBuffer);
 	glGenBuffers(1, &m_iLightsBuffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
-	glBufferData(GL_UNIFORM_BUFFER, 152, NULL, GL_STATIC_DRAW);	// Allocate 150 bytes of memory
+	glBufferData(GL_UNIFORM_BUFFER, (sizeof(mat4) * 3), NULL, GL_STATIC_DRAW);	// Allocate 150 bytes of memory
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iLightsBuffer);
 	glBufferData(GL_UNIFORM_BUFFER, LIGHT_BUFFER_SIZE, NULL, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	// Bind the Uniform Buffer to a base of size 2 * sizeof(mat4) => (Projection and Model View Matrix)
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_iMatricesBuffer, 0, (sizeof(mat4) << 1));	// Bind this buffer base to 0; this is for general Matrices.
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, m_iMatricesBuffer, 0, (sizeof(mat4) * 3));	// Bind this buffer base to 0; this is for general Matrices.
 	glBindBufferRange(GL_UNIFORM_BUFFER, 2, m_iLightsBuffer, 0, LIGHT_BUFFER_SIZE);
 
 	glEnable(GL_BLEND);
@@ -58,25 +58,28 @@ ShaderManager::ShaderManager()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set Edge Shader Locations
-	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/light.vert" );
-	m_pShader[ eShaderType::LIGHT_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/light.frag" );
+	m_pShader[eShaderType::LIGHT_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/light.vert");
+	m_pShader[eShaderType::LIGHT_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/light.frag");
 
-	m_pShader[ eShaderType::TOON_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/toon.vert" );
-	m_pShader[ eShaderType::TOON_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/toon.frag" );
+	m_pShader[eShaderType::PARTICLE_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/particle.vert");
+	m_pShader[eShaderType::PARTICLE_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/particle.frag");
+
+	m_pShader[eShaderType::TOON_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/toon.vert");
+	m_pShader[eShaderType::TOON_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/toon.frag");
 
 	m_pShader[eShaderType::BLINN_PHONG_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/phong.vert");
 	m_pShader[eShaderType::BLINN_PHONG_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/phong.frag");
 
-	m_pShader[ eShaderType::PLANE_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/plane.vert" );
-	m_pShader[ eShaderType::PLANE_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/plane.frag" );
+	m_pShader[eShaderType::PLANE_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/plane.vert");
+	m_pShader[eShaderType::PLANE_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/plane.frag");
 
-	m_pShader[ eShaderType::WORLD_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,   "Shaders/world.vert" );
-	m_pShader[ eShaderType::WORLD_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT, "Shaders/world.frag" );
+	m_pShader[eShaderType::WORLD_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/world.vert");
+	m_pShader[eShaderType::WORLD_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/world.frag");
 
 	// RC_Track Shaders
-	m_pShader[ eShaderType::BILLBOARD_SHDR ].storeShadrLoc( Shader::eShader::VERTEX,	"Shaders/billboard.vert" );
-	m_pShader[ eShaderType::BILLBOARD_SHDR ].storeShadrLoc( Shader::eShader::GEOMETRY,	"Shaders/billboard.geo" );
-	m_pShader[ eShaderType::BILLBOARD_SHDR ].storeShadrLoc( Shader::eShader::FRAGMENT,	"Shaders/billboard.frag" );
+	m_pShader[eShaderType::BILLBOARD_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/billboard.vert");
+	m_pShader[eShaderType::BILLBOARD_SHDR].storeShadrLoc(Shader::eShader::GEOMETRY, "Shaders/billboard.geo");
+	m_pShader[eShaderType::BILLBOARD_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/billboard.frag");
 
 	m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/boid.vert");
 	m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/boid.frag");
@@ -129,7 +132,7 @@ bool ShaderManager::initializeShaders()
 	m_bInitialized = true;
 	for (int eIndex = LIGHT_SHDR; eIndex < MAX_SHDRS; eIndex++)
 	{
-		m_bInitialized &= m_pShader[eIndex].initializeShader( );
+		m_bInitialized &= m_pShader[eIndex].initializeShader();
 	}
 
 	// return False if not all Shaders Initialized Properly
@@ -142,11 +145,13 @@ bool ShaderManager::initializeShaders()
 \*******************************************************************************/
 
 // Set Projection Matrix for all Shaders
-void ShaderManager::setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat )
+void ShaderManager::setProjectionModelViewMatrix(const mat4* pProjMat, const mat4* pModelViewMat)
 {
+	mat4 pInvModelViewMat = inverse(*pModelViewMat);
 	glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), pProjMat); // Set the Projection Matrix Data to the uniform Buffer.
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), pModelViewMat); // Set the Model View Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(mat4), pProjMat);								// Set the Projection Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(mat4), sizeof(mat4), pModelViewMat);				// Set the Model View Matrix Data to the uniform Buffer.
+	glBufferSubData(GL_UNIFORM_BUFFER, (sizeof(mat4) * 2), sizeof(mat4), &pInvModelViewMat);	// Set the Inverse Model View Matrix Data for getting Camera Position.
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -157,20 +162,20 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 	unsigned int iNumPointLights = 0, iNumSpotLights = 0;
 	vector< vec4 > vPointLightData, vSpotLightData;
 	const vector< vec4 > *pDirectionalLightData = nullptr, *pPointLightData = nullptr, *pSpotLightData = nullptr;
-	
+
 	if (bUsingDirectionalLight)
 	{
 		pDirectionalLightData = pDirectionalLight->getLightInformation();
 		assert(pDirectionalLightData->size() == NUM_DIRECTIONAL_LIGHT_PARAMS);
 	}
-	
+
 	// Pull the data from the Lighting Components
 	for (vector< LightingComponent* >::const_iterator iter = pPointLights->begin();
 		iter != pPointLights->end();
 		++iter)
 	{
 		// POINT_LIGHT - Limited by a maximum number of Point Lights to store in the buffer.
-		if (MAX_NUM_POINT_LIGHTS > iNumPointLights && 
+		if (MAX_NUM_POINT_LIGHTS > iNumPointLights &&
 			LightingComponent::eLightType::POINT_LIGHT == (*iter)->getType())
 		{
 			// Get Information
@@ -182,7 +187,7 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 			++iNumPointLights;		// count this as an added Point Light
 		}
 		else if (MAX_NUM_SPOT_LIGHTS > iNumSpotLights &&
-				 LightingComponent::eLightType::SPOTLIGHT == (*iter)->getType())
+			LightingComponent::eLightType::SPOTLIGHT == (*iter)->getType())
 		{
 			// Get Information
 			pSpotLightData = (*iter)->getLightInformation();
@@ -191,7 +196,7 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 			assert(pSpotLightData->size() == NUM_SPOT_LIGHT_PARAMS);
 			vSpotLightData.insert(vSpotLightData.end(), pSpotLightData->begin(), pSpotLightData->end());
 			++iNumSpotLights;
-			
+
 		}
 	}
 
@@ -217,13 +222,13 @@ void ShaderManager::setLightsInUniformBuffer(const LightingComponent* pDirection
 }
 
 // Binds and creates a buffer on the GPU.  Sets the data into the buffer and returns the location of the buffer.
-GLuint ShaderManager::genVertexBuffer(GLuint iVertArray, const void* pData, GLsizeiptr pSize, GLenum usage )
+GLuint ShaderManager::genVertexBuffer(GLuint iVertArray, const void* pData, GLsizeiptr pSize, GLenum usage)
 {
 	GLuint iVertexBufferLoc;
-	glBindVertexArray( iVertArray );
-	glGenBuffers( 1, &iVertexBufferLoc );
-	glBindBuffer( GL_ARRAY_BUFFER, iVertexBufferLoc );
-	glBufferData( GL_ARRAY_BUFFER, pSize, pData, usage );
+	glBindVertexArray(iVertArray);
+	glGenBuffers(1, &iVertexBufferLoc);
+	glBindBuffer(GL_ARRAY_BUFFER, iVertexBufferLoc);
+	glBufferData(GL_ARRAY_BUFFER, pSize, pData, usage);
 
 	//glBindVertexArray( 0 );
 	return iVertexBufferLoc;
@@ -240,16 +245,16 @@ void ShaderManager::setAttrib(GLuint iVertArray, GLuint iSpecifiedIndex, GLint i
 }
 
 // Binds and creates an Element Array Buffer on the GPU.  Sets the data into the buffer and returns the location.
-GLuint ShaderManager::genIndicesBuffer( GLuint iVertArray, 
-										const void* pData, GLsizeiptr pSize, GLenum usage )
+GLuint ShaderManager::genIndicesBuffer(GLuint iVertArray,
+	const void* pData, GLsizeiptr pSize, GLenum usage)
 {
 	GLuint iIndicesBufferLoc;
 
-	glBindVertexArray( iVertArray );
+	glBindVertexArray(iVertArray);
 
-	glGenBuffers( 1, &iIndicesBufferLoc );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, iIndicesBufferLoc );
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER, pSize, pData, usage );
+	glGenBuffers(1, &iIndicesBufferLoc);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iIndicesBufferLoc);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, pSize, pData, usage);
 
 	//glBindVertexArray( 0 );
 
@@ -257,52 +262,52 @@ GLuint ShaderManager::genIndicesBuffer( GLuint iVertArray,
 }
 
 // given a glm 4x4 Matrix, a specifed shader and a variablename, attempt to set the given matrix into that uniform variable.
-void ShaderManager::setUnifromMatrix4x4( eShaderType eType, string sVarName, const mat4* pResultingMatrix )
+void ShaderManager::setUnifromMatrix4x4(eShaderType eType, string sVarName, const mat4* pResultingMatrix)
 {
 	GLint iVariableLocation;
 	GLint iProgram, iCurrProgram;
-	
-	if ( eType < eShaderType::MAX_SHDRS && eType >= 0 )
-	{
-		iProgram = getProgram( eType );
 
-		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
-		glUseProgram( iProgram );
-		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
+	if (eType < eShaderType::MAX_SHDRS && eType >= 0)
+	{
+		iProgram = getProgram(eType);
+
+		glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+		glUseProgram(iProgram);
+		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 		if (ERR_CODE != iVariableLocation)
 		{
-			glUniformMatrix4fv( iVariableLocation, 1, GL_FALSE, value_ptr( *pResultingMatrix ) );
+			glUniformMatrix4fv(iVariableLocation, 1, GL_FALSE, value_ptr(*pResultingMatrix));
 		}
-		glUseProgram( iCurrProgram );
+		glUseProgram(iCurrProgram);
 
-		#ifdef DEBUG
-			CheckGLErrors();
-		#endif // DEBUG
+#ifdef DEBUG
+		CheckGLErrors();
+#endif // DEBUG
 	}
 }
 
 // given a glm vec3 set it as the unifrom light position in the mesh shader
-void ShaderManager::setUniformVec3( eShaderType eType, string sVarName, const glm::vec3* pResultingVector )
+void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm::vec3* pResultingVector)
 {
 	GLint iVariableLocation;
 	GLint iProgram, iCurrProgram;
-	
-	if ( eType < eShaderType::MAX_SHDRS && eType >= 0 )
-	{
-		iProgram = getProgram( eType );
 
-		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
-		glUseProgram( iProgram );
-		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
+	if (eType < eShaderType::MAX_SHDRS && eType >= 0)
+	{
+		iProgram = getProgram(eType);
+
+		glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+		glUseProgram(iProgram);
+		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 		if (ERR_CODE != iVariableLocation)
 		{
-			glUniform3fv( iVariableLocation, 1, glm::value_ptr( *pResultingVector ) );
+			glUniform3fv(iVariableLocation, 1, glm::value_ptr(*pResultingVector));
 		}
-		glUseProgram( iCurrProgram );
+		glUseProgram(iCurrProgram);
 
-		#ifdef DEBUG
-			CheckGLErrors();
-		#endif // DEBUG
+#ifdef DEBUG
+		CheckGLErrors();
+#endif // DEBUG
 	}
 }
 
@@ -316,7 +321,7 @@ void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fV
 	{
 		iProgram = getProgram(eType);
 
-		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
+		glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
 		glUseProgram(iProgram);
 		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 		if (ERR_CODE != iVariableLocation)
@@ -324,81 +329,81 @@ void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fV
 			glUniform1f(iVariableLocation, fVal);
 		}
 		glUseProgram(iCurrProgram);
-		
-		#ifdef DEBUG
-			CheckGLErrors();
-		#endif // DEBUG
+
+#ifdef DEBUG
+		CheckGLErrors();
+#endif // DEBUG
 	}
 }
 
 // Sets a uniform integer value in the specified shader program to the given value.
-void ShaderManager::setUniformInt( eShaderType eType, string sVarName, int iVal )
+void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal)
 {
 	GLint iVariableLocation;
 	GLint iProgram, iCurrProgram;
 
-	if ( eType < eShaderType::MAX_SHDRS && eType >= 0 )
+	if (eType < eShaderType::MAX_SHDRS && eType >= 0)
 	{
-		iProgram = getProgram( eType );
+		iProgram = getProgram(eType);
 
-		glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
-		glUseProgram( iProgram );
-		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
+		glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+		glUseProgram(iProgram);
+		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 		if (ERR_CODE != iVariableLocation)
 		{
 			glUniform1i(iVariableLocation, iVal);
 		}
-		glUseProgram( iCurrProgram );
+		glUseProgram(iCurrProgram);
 
-	#ifdef DEBUG
+#ifdef DEBUG
 		CheckGLErrors();
-	#endif // DEBUG
+#endif // DEBUG
 	}
 }
 
 // Set a Uniform Boolean Value within a given Shader.
-void ShaderManager::setUniformBool( eShaderType eType, string sVarName, bool bVal )
+void ShaderManager::setUniformBool(eShaderType eType, string sVarName, bool bVal)
 {
 	GLint iVariableLocation;
 	GLint iProgram, iCurrProgram;
 
-	if ( eType < eShaderType::MAX_SHDRS && eType >= 0 )
+	if (eType < eShaderType::MAX_SHDRS && eType >= 0)
 	{
-		iProgram = getProgram( eType );
-		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
+		iProgram = getProgram(eType);
+		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 
-		if ( ERR_CODE != iVariableLocation )
+		if (ERR_CODE != iVariableLocation)
 		{
-			glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
-			glUseProgram( iProgram );
-			glUniform1i( iVariableLocation, bVal );
-			glUseProgram( iCurrProgram );
+			glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+			glUseProgram(iProgram);
+			glUniform1i(iVariableLocation, bVal);
+			glUseProgram(iCurrProgram);
 		}
 	}
 }
 
 // Toggles a Boolean Value in the given shader.
-void ShaderManager::toggleUniformBool( eShaderType eType, string sVarName )
+void ShaderManager::toggleUniformBool(eShaderType eType, string sVarName)
 {
 	GLint iVariableLocation;
 	GLint iProgram, iCurrProgram;
 	GLint bCurrSetting;
 
-	if ( eType < eShaderType::MAX_SHDRS && eType >= 0 )
+	if (eType < eShaderType::MAX_SHDRS && eType >= 0)
 	{
-		iProgram = getProgram( eType );
-		iVariableLocation = glGetUniformLocation( iProgram, sVarName.c_str() );
+		iProgram = getProgram(eType);
+		iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
 
-		if ( ERR_CODE != iVariableLocation )
+		if (ERR_CODE != iVariableLocation)
 		{
-			glGetUniformiv( iProgram, iVariableLocation, &bCurrSetting );
+			glGetUniformiv(iProgram, iVariableLocation, &bCurrSetting);
 
 			bCurrSetting = !bCurrSetting;
 
-			glGetIntegerv( GL_CURRENT_PROGRAM, &iCurrProgram );
-			glUseProgram( iProgram );
-			glUniform1i( iVariableLocation, bCurrSetting );
-			glUseProgram( iCurrProgram );
+			glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+			glUseProgram(iProgram);
+			glUniform1i(iVariableLocation, bCurrSetting);
+			glUseProgram(iCurrProgram);
 		}
 	}
 }
