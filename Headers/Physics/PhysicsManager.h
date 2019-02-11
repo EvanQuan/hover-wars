@@ -34,6 +34,7 @@ public:
 	void stopKey();
 	void leftKey();
 	void rightKey();
+	void handleControllerInput(float x, float y);
 	// Update function for Physics, technically called every frame, but
 	//	internally can stall its update until a certain tick time.
 	//	fTimeDelta is given in seconds and is usually a fraction of a second.
@@ -51,11 +52,13 @@ public:
 	//void createSphereObject();	// This is probably called by Physics Components as necessary to set themselves up within
 								// the physics scene. Additional specific functions could be generated as neccessary.
 	physx::PxRigidDynamic *createCubeObject(float x, float y, float z, float size);
-	void createPlayerEntity();
+	physx::PxRigidDynamic *createCubeObjectPlayer(float x, float y, float z, float size);
+	physx::PxVehicleNoDrive *createPlayerEntity();
 	glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
 	void stepPhysics(); // This probably functions within the update function to be used as necessary.
 
 private:
+	int currentState = 0;
 	snippetvehicle::VehicleSceneQueryData*	gVehicleSceneQueryData = NULL;
 	physx::PxBatchQuery*			gBatchQuery = NULL;
 

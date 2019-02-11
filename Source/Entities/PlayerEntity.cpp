@@ -26,25 +26,22 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 	m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
 
 	// If there's a new Transformation, apply it to the Mesh.
-//	if (mat4(1.0f) != m4NewTransform)
-//		m_pMesh->addInstance(&m4NewTransform);	// TODO: Mesh doesn't remember the scale it had, this will reset the scale since the physics won't know it. 
+	if (mat4(1.0f) != m4NewTransform)
+		m_pMesh->addInstance(&m4NewTransform);	// TODO: Mesh doesn't remember the scale it had, this will reset the scale since the physics won't know it. 
 												//		I'll have to change this to make sure the Mesh remembers its scale.
 }
 
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
 									const Material* pMaterial,
-									const string& sShaderType)
+									const string& sShaderType,
+									float fScale)
 {
 	// Load Mesh and Rendering Component
-	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, m_vPosition);
-	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
-
-	// Ensure that the Entity Manager returned a Render Component and Initialize it.
-	assert(nullptr != m_pRenderComponent);
-	m_pRenderComponent->initializeComponent(m_pMesh, pMaterial);
+	m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, fScale, m_vPosition);
+	m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
 	// PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
-	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID, m_vPosition.x, m_vPosition.y, m_vPosition.z,1.0f);
-	m_pPhysicsComponent->initializeComponent(true, m_pMesh,1,1,1,1); // PHYSICSTODO
+	m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+	m_pPhysicsComponent->initializeComponent(true, m_pMesh);
 }

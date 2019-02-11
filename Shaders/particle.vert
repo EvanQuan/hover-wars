@@ -6,13 +6,14 @@ layout (std140, binding = 0) uniform Matrices
 	mat4 modelviewInv;
 };
 
-
 layout (location = 0) in vec3 vertex;
+layout (location = 2) in vec2 uv;
 
-out vec3 vVert;
+out vec2 TexCoords;
 
 void main(void)
 {
-	vVert = vertex;
+	TexCoords = uv;
+	
     gl_Position = projection * modelview * vec4(vertex, 1.0);
 }

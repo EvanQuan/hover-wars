@@ -308,20 +308,52 @@ void PhysicsManager::initPhysics(bool interactive)
 //createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
 }
 void PhysicsManager::forwardKey() {
-	releaseAllControls();
-	startAccelerateForwardsMode();
+	if (currentState != 1) {
+		releaseAllControls();
+		startAccelerateForwardsMode();
+		currentState = 1;
+	}
+}
+void PhysicsManager::handleControllerInput(float x, float y) {
+	if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
+		gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
+		gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
+		gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
+		gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
+	}else
+	{
+		float angle = atan(y/x);
+		gVehicleNoDrive->setDriveTorque(0, 1000.0f);
+		gVehicleNoDrive->setDriveTorque(1, 1000.0f);
+		gVehicleNoDrive->setDriveTorque(2, 1000.0f);
+		gVehicleNoDrive->setDriveTorque(3, 1000.0f);
+		gVehicleNoDrive->setSteerAngle(0, angle);
+		gVehicleNoDrive->setSteerAngle(1, angle);
+		gVehicleNoDrive->setSteerAngle(2, angle);
+		gVehicleNoDrive->setSteerAngle(3, angle);
+	}
 }
 void PhysicsManager::stopKey() {
-	releaseAllControls();
-	startAccelerateReverseMode();
+	if (currentState != 2) {
+		releaseAllControls();
+		startAccelerateReverseMode();
+		currentState = 2;
+	}
 }
 void PhysicsManager::leftKey() {
+	if (currentState != 3) {
+
 	releaseAllControls();
 	startTurnHardLeftMode();
+	currentState = 3;
+	}
 }
 void PhysicsManager::rightKey() {
-	releaseAllControls();
-	startTurnHardRightMode();
+	if (currentState != 4) {
+		releaseAllControls();
+		startTurnHardRightMode();
+		currentState = 4;
+	}
 }
 // This function is public. Probably intended as a sort of soft reset at the end of a match
 //	that will set up Physics to be restarted as everything gets loaded in for a new match
@@ -378,7 +410,18 @@ PxRigidDynamic *PhysicsManager::createCubeObject(float x,float y, float z, float
 	//physicsDynamicObject *sphere = new physicsDynamicObject();
 	//dynamicObjects.push_back(sphere);
 }
-void PhysicsManager::createPlayerEntity() {
+PxRigidDynamic *PhysicsManager::createCubeObjectPlayer(float x, float y, float z, float size) {
+	PxShape* shape = gPhysics->createShape(PxBoxGeometry(0.05, 0.05, 0.05), *gMaterial);
+	PxTransform localTm(PxVec3(x, y, z));
+	PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+	body->attachShape(*shape);
+	PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
+	gScene->addActor(*body);
+	return body;
+	//physicsDynamicObject *sphere = new physicsDynamicObject();
+	//dynamicObjects.push_back(sphere);
+}
+PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
 	//Create a vehicle that will drive on the plane.
 	snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc();
 	gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
@@ -392,6 +435,8 @@ void PhysicsManager::createPlayerEntity() {
 
 	gVehicleModeTimer = 0.0f;
 	gVehicleOrderProgress = 0;
+
+	return gVehicleNoDrive;
 	//startBrakeMode();
 	//physicsDynamicObject *sphere = new physicsDynamicObject();
 	//dynamicObjects.push_back(sphere);
@@ -431,25 +476,6 @@ mat4 PhysicsManager::getMat4(PxTransform transform) {
 
 	return matrix;
 }
-
-
-/** Saving this code for however you want to design it.
-glm::mat4 physicsStaticObject::getTransformMatrix() {
-	return getMat4(body->getGlobalPose());
-}
-glm::mat4 physicsDynamicObject::getTransformMatrix() {
-	return getMat4(body->getGlobalPose());
-}
-void physicsDynamicObject::addForce(float x, float y, float z) {
-	body->addForce(PxVec3(x, y, z));
-}
-physicsStaticObject::physicsStaticObject(float x, float y, float z, float cubeSize) {
-	PxShape* shape = gPhysics->createShape(PxBoxGeometry(cubeSize, cubeSize, cubeSize), *gMaterial);
-	PxTransform localTm(PxVec3(x, y, z));
-	body = gPhysics->createRigidStatic(localTm);
-	body->attachShape(*shape);
-	gScene->addActor(*body);
-}//*/
 
 // I made this a private function for PhysicsManager. As an outsider using PhysicsManager
 //	as a blackbox, I don't know what "createStack" means or why I want to call that function.
