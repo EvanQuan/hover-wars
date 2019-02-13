@@ -28,7 +28,7 @@ void InteractableEntity::update(float fTimeInMilliseconds)
 \****************************************************************/
 
 // Load a Plane with a given Normal, Height and Width
-void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial)
+void InteractableEntity::loadAsBillboard(const vec3* vNormal, float fHeight, float fWidth, const Material* pMaterial)
 {
     // Load Render Component and get Texture Dimensions
     vec2 vUVStart = vec2(0.035f, 0.035f);
@@ -39,7 +39,7 @@ void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int i
     pBillboardMaterial.sDiffuseMap = "textures/matty-wyett-simmonds-flamevfxlooping.jpg";
 
     // Generate the Mesh
-    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(m_vPosition, *vNormal, vUVStart, vUVEnd, iHeight, iWidth, &pBillboardMaterial, this);
+    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(m_vPosition, *vNormal, vUVStart, vUVEnd, fHeight, fWidth, &pBillboardMaterial, this);
 
     // Generate the Render Component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pBillboardMesh, true, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
