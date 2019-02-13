@@ -3,7 +3,6 @@
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
-
 /*
 Constructor
 */
@@ -74,10 +73,10 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
             // << eFixedCommandToString.at(command)
             // << endl;
        break;
-    default:
-        cout << "Player " << player << ": "
-             << eFixedCommandToString.at(command)
-             << " not implemented yet." << endl;
+    // default:
+        // cout << "Player " << player << ": "
+             // << eFixedCommandToString.at(command)
+             // << " not implemented yet." << endl;
     }
 }
 

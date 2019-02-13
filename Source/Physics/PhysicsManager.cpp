@@ -63,7 +63,7 @@ stop and change directions in a reasonably responsive manner.
 We want this to be low enough that there some amount of drifting can be done to
 make it feel like a hovercraft.
 */
-#define DYNAMIC_FRICTION 2.00f // 0.35f
+#define DYNAMIC_FRICTION 0.35f // 0.35f
 /*
 Car Restitution
 

@@ -28,8 +28,15 @@ public:
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
     quat getRotation() { return m_pPhysicsComponent->getRotation(); }
 
+    const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCamera]; }
+
+    // The player has a front and back camera, which can be toggled as the
+    // active camera
+    void toggleActiveCamera() { activeCamera = !activeCamera; }
+
 private:
     // Private Variables
+    int activeCamera;
     Mesh* m_pMesh;
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;

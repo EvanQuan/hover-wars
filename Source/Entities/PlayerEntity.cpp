@@ -11,11 +11,13 @@
 #define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(MAX_NUM_POS))
 #define START_RADIUS 10.0f
 const vec3 FRONT_CAMERA_START_POS = vec3(60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
+// const vec3 FRONT_CAMERA_START_POS = vec3(-90.0f, 60.0f, START_RADIUS); // (Theta, Phi, Radius)
 const vec3 BACK_CAMERA_START_POS = vec3(-60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition)
 {
+    activeCamera = FRONT_CAMERA;
     m_vPositionTotal = *vPosition * MAX_NUM_POS;
     for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
 }
@@ -60,14 +62,14 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     m_pPhysicsComponent->initializeComponent(true, m_pMesh);
     
     // Generate Camera Components
-    //for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
-    //{
-    //  m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
-    //  m_pCmrComponents[i]->setLookAt(m_vPosition);
-    //}
-    //
-    //m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
-    //m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
+    // for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
+    // {
+        // m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+        // m_pCmrComponents[i]->setLookAt(m_vPosition);
+    // }
+    // 
+    // m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
+    // m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
 }
 
 /********************************************************************************************************\

@@ -44,7 +44,7 @@ CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iHeight, i
 CameraComponent::CameraComponent(const CameraComponent* pCopy)
     : EntityComponent(pCopy)
 {
-    
+    // m_pRotation = quat();
 }
 
 // Default = operator overload; Private function
