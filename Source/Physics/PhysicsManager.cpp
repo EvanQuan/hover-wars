@@ -24,14 +24,14 @@ Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MO_RATE 3.0f
+#define ANGULAR_MOMENTUM 3.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 50000.0f // 10000.0f
+#define MOVEMENT_FORCE 20000.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -429,7 +429,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
     //}
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
-    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MO_RATE,0));
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM,0));
 }
 void PhysicsManager::stopKey() {
     if (currentState != 2) {

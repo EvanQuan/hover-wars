@@ -60,7 +60,7 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     m_pPhysicsComponent->initializeComponent(true, m_pMesh);
     
     // Generate Camera Components
-    //for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
+    //for (unsigned int i = 0; i < CAMERA_PER_PLAYER_COUNT; ++i)
     //{
     //  m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
     //  m_pCmrComponents[i]->setLookAt(m_vPosition);
@@ -90,7 +90,7 @@ void PlayerEntity::updateCameraLookAts()
 
     // Calculate Average Position and set new look at for Camera Components
     vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
-    for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
+    for (unsigned int i = 0; i < CAMERA_PER_PLAYER_COUNT; ++i)
         m_pCmrComponents[i]->setLookAt(vAveragedPos);
 }
 
