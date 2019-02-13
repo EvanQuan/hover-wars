@@ -6,7 +6,7 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include <queue>
 
-#define CAMERA_PER_PLAYER_COUNT 2 
+#define MAX_CAMERAS_PER_PLAYER 2 
 
 class PlayerEntity :
     public Entity
@@ -33,7 +33,7 @@ private:
     Mesh* m_pMesh;
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
-    CameraComponent* m_pCmrComponents[CAMERA_PER_PLAYER_COUNT];
+    CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     vec3 m_vPositionTotal;
     queue<vec3> m_vPastPositions;
 
