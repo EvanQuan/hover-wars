@@ -338,7 +338,7 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 //            * UVEnd    (vec2)
 //            * Height (unsigned int)
 //            * Width (unsigned int)
-void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth)
 {
     // Generate VBO
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, 0, GL_STATIC_DRAW);
@@ -351,7 +351,7 @@ void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* 
     m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);/*Height/Width*/
 
     // Add first Billboard
-    addBillboard(vPosition, vNormal, vUVStart, vUVEnd, iHeight, iWidth);
+    addBillboard(vPosition, vNormal, vUVStart, vUVEnd, fHeight, fWidth);
 }
 
 /****************************************************************************************\
@@ -359,7 +359,7 @@ void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* 
 \****************************************************************************************/
 
 // Adds a Billboard object to the Mesh.
-unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth)
 {
     // Create new Billboard
     sBillboardInfo sNewBillboard;
@@ -367,7 +367,7 @@ unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, cons
     sNewBillboard.vNormal = *vNormal;
     sNewBillboard.vUVStart = *vUVStart;
     sNewBillboard.vUVEnd = *vUVEnd;
-    sNewBillboard.vDimensions = vec2(static_cast<float>(iHeight), static_cast<float>(iWidth));
+    sNewBillboard.vDimensions = vec2(fHeight, fWidth);
 
     // add to main list
     m_pBillboardList.push_back(sNewBillboard);

@@ -192,6 +192,9 @@
     <ClInclude Include="Headers\SceneLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -319,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="Source\SceneLoader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
