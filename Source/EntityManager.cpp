@@ -62,7 +62,7 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     // TESTING: To Be Removed
     vec3 vNormal(0.0f, 1.0f, 0.0f);
-    vec3 vPosition(10.0f, 10.0f, 5.0f);
+    vec3 vPosition(5.0f, 5.0f, 5.0f);
     unique_ptr<InteractableEntity> pTestingEntity = make_unique<InteractableEntity>(getNewEntityID(), &vPosition);
     pTestingEntity->loadAsBillboard(&vNormal, 2, 1, nullptr);
     m_pBillboardTesting = pTestingEntity.get();
