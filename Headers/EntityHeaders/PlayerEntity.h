@@ -34,6 +34,14 @@ public:
     // active camera
     void toggleActiveCamera() { activeCamera = !activeCamera; }
 
+    /*
+    Return the position that the camera is to look at.
+
+    This value should be close to the position of the player to ensure the camera
+    looks at the player.
+    */
+    vec3 getCameraPosition() { return m_vCameraPosition; }
+
 private:
     // Private Variables
     int activeCamera;
@@ -41,6 +49,8 @@ private:
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
+
+    vec3 m_vCameraPosition;
     vec3 m_vPositionTotal;
     queue<vec3> m_vPastPositions;
 

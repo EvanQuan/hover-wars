@@ -7,19 +7,30 @@
 \***********/
 #define FRONT_CAMERA 0
 #define BACK_CAMERA 1
-#define MAX_NUM_POS 30
-#define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(MAX_NUM_POS))
+#define PAST_CAMERA_POSITIONS 10
+#define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
 #define START_RADIUS 10.0f
-const vec3 FRONT_CAMERA_START_POS = vec3(60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
-// const vec3 FRONT_CAMERA_START_POS = vec3(-90.0f, 60.0f, START_RADIUS); // (Theta, Phi, Radius)
-const vec3 BACK_CAMERA_START_POS = vec3(-60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
+/*
+
+*/
+const vec3 FRONT_CAMERA_START_VIEW = vec3(-90.0f, 60.0f, START_RADIUS); // (Theta, Phi, Radius)
+const vec3 BACK_CAMERA_START_VIEW = vec3(90.f, 60.f, START_RADIUS); // (Theta, Phi, Radius)
+/*
+The position of the camera relative to the position of the player. Both vectors
+will be added together to form the final camera position.
+*/
+const vec3 CAMERA_POSITION_OFFSET = vec3(-10, 0, 0);
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition)
 {
     activeCamera = FRONT_CAMERA;
-    m_vPositionTotal = *vPosition * MAX_NUM_POS;
-    for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
+    m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
+    for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
+    {
+        m_vPastPositions.push(*vPosition);
+    }
+    m_vCameraPosition = m_vPosition + CAMERA_POSITION_OFFSET;
 }
 
 PlayerEntity::~PlayerEntity()
@@ -44,7 +55,7 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = m4NewTransform[3];
-    //updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
+    updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
 
 // Initializes Player Entity information
@@ -62,14 +73,14 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     m_pPhysicsComponent->initializeComponent(true, m_pMesh);
     
     // Generate Camera Components
-    // for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
-    // {
-        // m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
-        // m_pCmrComponents[i]->setLookAt(m_vPosition);
-    // }
-    // 
-    // m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
-    // m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
+    for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
+    {
+        m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+        m_pCmrComponents[i]->setLookAt(m_vPosition);
+    }
+    
+    m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
+    m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
 }
 
 /********************************************************************************************************\
@@ -79,12 +90,13 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 // Updates an Average for this player's cameras.
 void PlayerEntity::updateCameraLookAts()
 {
+    m_vCameraPosition = m_vPosition + CAMERA_POSITION_OFFSET;
     // Queue new position and add to total
-    m_vPastPositions.push(m_vPosition);
-    m_vPositionTotal += m_vPosition;
+    m_vPastPositions.push(m_vCameraPosition);
+    m_vPositionTotal += m_vCameraPosition;
 
     // Keep Queue within limits of Average
-    if (m_vPastPositions.size() > MAX_NUM_POS)
+    if (m_vPastPositions.size() > PAST_CAMERA_POSITIONS)
     {
         m_vPositionTotal -= m_vPastPositions.front();
         m_vPastPositions.pop();
@@ -93,7 +105,11 @@ void PlayerEntity::updateCameraLookAts()
     // Calculate Average Position and set new look at for Camera Components
     vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
+    {
         m_pCmrComponents[i]->setLookAt(vAveragedPos);
+        m_pCmrComponents[i]->setRotationQuat(m_pPhysicsComponent->getRotation());
+    }
+
 }
 
 void PlayerEntity::useAbility(eAbility ability)
