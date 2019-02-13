@@ -104,8 +104,9 @@ void PlayerEntity::updateCameraLookAts()
     vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
-        m_pCmrComponents[i]->setLookAt(vAveragedPos + CAMERA_POSITION_OFFSET);
-        m_pCmrComponents[i]->setRotationQuat(m_pPhysicsComponent->getRotation());
+        quat rotation = m_pPhysicsComponent->getRotation();
+        m_pCmrComponents[i]->setLookAt(vAveragedPos + rotation * CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[i]->setRotationQuat(rotation);
     }
 
 }
