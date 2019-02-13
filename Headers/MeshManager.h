@@ -15,7 +15,7 @@ public:
     Mesh* generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const Material* pMaterial, vec3 vPosition = vec3(0.f), vec3 vNormal = vec3(0.f, 1.f, 0.f));
     Mesh* generateSphereMesh(bool bStaticMesh, float fRadius, const Material* pMaterial, vec3 vPosition = vec3(0.f));
     Mesh* generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, int iDepth, const Material* pMaterial, vec3 vPosition = vec3(0.f));
-    Mesh* generateBillboardMesh(vec3 vPosition, vec3 vNormal, vec2 vUVStart, vec2 vUVEnd, int iHeight, int iWidth, const Material* pMaterial);
+    Mesh* generateBillboardMesh(vec3 vPosition, vec3 vNormal, vec2 vUVStart, vec2 vUVEnd, int iHeight, int iWidth, const Material* pMaterial, const void* pOwnerHandle );
     void unloadAllMeshes();
 
 private:

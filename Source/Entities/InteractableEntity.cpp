@@ -35,7 +35,7 @@ void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int i
     vec2 vUVEnd = vec2(1.0f);
 
     // Generate the Mesh
-    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(m_vPosition, *vNormal, vUVStart, vUVEnd, iHeight, iWidth, pMaterial);
+    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(m_vPosition, *vNormal, vUVStart, vUVEnd, iHeight, iWidth, pMaterial, this);
 
     // Generate the Render Component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pBillboardMesh, true, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
