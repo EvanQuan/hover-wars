@@ -126,8 +126,8 @@ void GameManager::RenderScene()
     // each with their own camera components. The game will render 4 times, each switching
     // the player to retrieve the active camera.
     // That will be done here?
-    // const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCamera();
-    const CameraComponent* pCamera = m_pEntityManager->getActiveCameraComponent();
+    const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
+    // const CameraComponent* pCamera = m_pEntityManager->getActiveCameraComponent();
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();

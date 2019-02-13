@@ -7,6 +7,8 @@
 #include <queue>
 
 #define MAX_CAMERAS_PER_PLAYER 2 
+#define FRONT_CAMERA 0
+#define BACK_CAMERA 1
 
 class PlayerEntity :
     public Entity
@@ -28,18 +30,23 @@ public:
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
     quat getRotation() { return m_pPhysicsComponent->getRotation(); }
 
-    const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCamera]; }
+    const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCameraIndex]; }
 
     // The player has a front and back camera, which can be toggled as the
     // active camera
-    void toggleActiveCamera() { activeCamera = !activeCamera; }
+    void setActiveCameraToBack() { activeCameraIndex = BACK_CAMERA; }
+    // void setActiveCameraToBack() { m_pActiveCameraComponent = m_pCmrComponents[BACK_CAMERA]; }
+    void setActiveCameraToFront() { activeCameraIndex = FRONT_CAMERA; }
+    // void setActiveCameraToFront() { m_pActiveCameraComponent = m_pCmrComponents[FRONT_CAMERA]; }
+    void toggleActiveCamera() { activeCameraIndex = !activeCameraIndex; }
 
 private:
     // Private Variables
-    int activeCamera;
+    int activeCameraIndex;
     Mesh* m_pMesh;
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
+    CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
 
     vec3 m_vPositionTotal;

@@ -39,7 +39,8 @@ public:
         {COMMAND_ABILITY_ROCKET,         "Rocket"},
         {COMMAND_ABILITY_SPIKES,         "Spikes"},
         {COMMAND_ABILITY_TRAIL,          "Trail"},
-        {COMMAND_CAMERA_CHANGE,          "Change Camera"},
+        {COMMAND_CAMERA_BACK,            "Camera Back"},
+        {COMMAND_CAMERA_FRONT,           "Camera Front"},
         {COMMAND_DASH_BACK,              "Dash back"},
         {COMMAND_DASH_FORWARD,           "Dash Forward"},
         {COMMAND_DASH_LEFT,              "Dash Left"},
@@ -151,7 +152,7 @@ private:
         {GLFW_KEY_I,           COMMAND_DASH_FORWARD},
         {GLFW_KEY_H,           COMMAND_DASH_LEFT},
         {GLFW_KEY_SEMICOLON,   COMMAND_DASH_RIGHT},
-        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_CHANGE},
+        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_FRONT},
         {GLFW_KEY_F,           COMMAND_DEBUG_TOGGLE_WIREFRAME},
         {GLFW_KEY_TAB,         COMMAND_MENU_BACK},
         {GLFW_KEY_P,           COMMAND_MENU_PAUSE},
@@ -171,7 +172,7 @@ private:
     std::map<int, eFixedCommand> m_buttonToFixedCommand =
     {
         {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
-        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_CHANGE},
+        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_BACK},
         {BUTTON_A,            COMMAND_DASH_BACK},
         {BUTTON_Y,            COMMAND_DASH_FORWARD},
         {BUTTON_X,            COMMAND_DASH_LEFT},

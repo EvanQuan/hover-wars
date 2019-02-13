@@ -5,8 +5,6 @@
 /***********\
  * Defines *
 \***********/
-#define FRONT_CAMERA 0
-#define BACK_CAMERA 1
 #define PAST_CAMERA_POSITIONS 10
 #define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
 #define START_RADIUS 10.0f
@@ -23,12 +21,12 @@ The position of the camera relative to the position of the player. Both vectors
 will be added together to form the final camera position.
 */
 const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
-const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-7, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(5, 0, 0);
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition)
 {
-    activeCamera = FRONT_CAMERA;
+    activeCameraIndex = FRONT_CAMERA;
     m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
     for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
     {
