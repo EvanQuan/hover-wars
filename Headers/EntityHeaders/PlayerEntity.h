@@ -41,6 +41,7 @@ public:
     looks at the player.
     */
     vec3 getCameraPosition() { return m_vCameraPosition; }
+    quat getCameraRotation() { return m_pPhysicsComponent->getRotation(); }
 
 private:
     // Private Variables

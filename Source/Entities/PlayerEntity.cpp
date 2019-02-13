@@ -30,7 +30,6 @@ PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     {
         m_vPastPositions.push(*vPosition);
     }
-    m_vCameraPosition = m_vPosition + CAMERA_POSITION_OFFSET;
 }
 
 PlayerEntity::~PlayerEntity()
@@ -90,10 +89,9 @@ void PlayerEntity::initializePlayer(const string& sFileName,
 // Updates an Average for this player's cameras.
 void PlayerEntity::updateCameraLookAts()
 {
-    m_vCameraPosition = m_vPosition + CAMERA_POSITION_OFFSET;
     // Queue new position and add to total
-    m_vPastPositions.push(m_vCameraPosition);
-    m_vPositionTotal += m_vCameraPosition;
+    m_vPastPositions.push(m_vPosition);
+    m_vPositionTotal += m_vPosition;
 
     // Keep Queue within limits of Average
     if (m_vPastPositions.size() > PAST_CAMERA_POSITIONS)
@@ -106,7 +104,7 @@ void PlayerEntity::updateCameraLookAts()
     vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
-        m_pCmrComponents[i]->setLookAt(vAveragedPos);
+        m_pCmrComponents[i]->setLookAt(vAveragedPos + CAMERA_POSITION_OFFSET);
         m_pCmrComponents[i]->setRotationQuat(m_pPhysicsComponent->getRotation());
     }
 

@@ -118,7 +118,7 @@ void GameManager::RenderScene()
     // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
     //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
     m_pCamera->setLookAt(m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getCameraPosition());
-    quat pQuat = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getRotation();
+    quat pQuat = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getCameraRotation();
     m_pCamera->setRotationQuat(pQuat);
 
     // Get player 1's active camera to show
