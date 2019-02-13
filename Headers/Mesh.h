@@ -62,8 +62,9 @@ private:
     };
     vector<sBillboardInfo> m_pBillboardList;
 
-    // Friend Class: Object_Factory to create Meshes.
+    // Friend Class: MeshManager to create Meshes.
     friend class MeshManager;
+    friend class AnimationComponent;    // Friend class: Animation Component to manipulate Mesh information
     // Private Manager Cookie so only MeshManager can construct a Mesh, 
     //    but make_unique<Mesh> still has access to the constructor which it needs.
     struct manager_cookie {};
@@ -93,7 +94,7 @@ public:
     void addInstance(const mat4* m4Transform);                                    // Specify a previously generated transformation matrix
 
     // Billboard Usage
-    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth);
+    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth);
     void updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd);
     void flushBillboards();
 

@@ -31,8 +31,8 @@ void InteractableEntity::update(float fTimeInMilliseconds)
 void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial)
 {
     // Load Render Component and get Texture Dimensions
-    vec2 vUVStart = vec2(0.0f);
-    vec2 vUVEnd = vec2(0.125f);
+    vec2 vUVStart = vec2(0.035f, 0.035f);
+    vec2 vUVEnd = vec2(0.09f, 0.125f);
 
     Material pBillboardMaterial;
     pBillboardMaterial.fShininess = 0.0f;

@@ -359,7 +359,7 @@ void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* 
 \****************************************************************************************/
 
 // Adds a Billboard object to the Mesh.
-unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth)
 {
     // Create new Billboard
     sBillboardInfo sNewBillboard;
@@ -367,7 +367,7 @@ unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, cons
     sNewBillboard.vNormal = *vNormal;
     sNewBillboard.vUVStart = *vUVStart;
     sNewBillboard.vUVEnd = *vUVEnd;
-    sNewBillboard.vDimensions = vec2(static_cast<float>(iHeight), static_cast<float>(iWidth));
+    sNewBillboard.vDimensions = vec2(fHeight, fWidth);
 
     // add to main list
     m_pBillboardList.push_back(sNewBillboard);
