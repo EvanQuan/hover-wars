@@ -23,15 +23,20 @@ public:
     void update(duration<float> fTimeDelta);
 
     // Initializes the proper buffers on the GPU for rendering.
-    void initializeComponent( Mesh  * pMesh, vec2 vSpriteHxW, vec2 vSpriteHxWBuffer);
+    void initializeComponent( Mesh  * pMesh, vec2 vSpriteHxW, vec2 vSpriteHxWBuffer, int iNumSpritesX, int iNumSpritesY);
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
     AnimationComponent(const AnimationComponent* pCopy);
     AnimationComponent& operator=(const AnimationComponent& pRHS);
 
+    void pickRandomSprite(vec2* vReturnUV);
+
     // Private Variables
     Mesh * m_pMesh;
     vector<Mesh::sBillboardInfo>* m_pBillboardListPtr;
-    vec2 m_vSpriteHxW, m_vSpriteHxWBuffer;
+
+    // Sprite HxW is specified as the full sprite width (texture width / num sprites per
+    vec2 m_vSpriteHxW, m_vSpriteHxWBorder;
+    int m_iNumSpritesX, m_iNumSpritesY;
 };
