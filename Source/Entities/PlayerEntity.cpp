@@ -22,7 +22,8 @@ const vec3 BACK_CAMERA_START_VIEW = vec3(CAMERA_THETA, CAMERA_PHI, START_RADIUS)
 The position of the camera relative to the position of the player. Both vectors
 will be added together to form the final camera position.
 */
-const vec3 CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-7, 0, 0);
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition)
@@ -107,13 +108,11 @@ void PlayerEntity::updateCameraLookAts()
     vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
-    for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
-    {
-        quat rotation = m_pPhysicsComponent->getRotation();
-        m_pCmrComponents[i]->setLookAt(vAveragedPos + rotation * CAMERA_POSITION_OFFSET);
-        m_pCmrComponents[i]->setRotationQuat(rotation);
-    }
-
+    quat rotation = m_pPhysicsComponent->getRotation();
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragedPos + rotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(rotation);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragedPos + rotation * BACK_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(rotation);
 }
 
 void PlayerEntity::useAbility(eAbility ability)
