@@ -355,6 +355,19 @@ void InputHandler::joystickCallback(int joystickID, int event)
 // TODO more efficient iteration algorithm?
 void InputHandler::updateJoysticks()
 {
+    // Update last values
+    for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
+    {
+        if (m_pJoystickIsPresent[joystickID])
+        {
+            // Axis states
+            m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
+
+            // Button states
+            m_pJoystickButtonsPressedLast[joystickID] = m_pJoystickButtonsPressed[joystickID];
+        }
+    }
+    // Update current values
     for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
     {
         if (m_pJoystickIsPresent[joystickID])

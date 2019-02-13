@@ -40,6 +40,7 @@ public:
     int pressed[KEYS];
 
     // Joysticks
+    bool justPressed(int joystickID, int joystickButton) { return m_pJoystickButtonsPressed[joystickID][joystickButton] != m_pJoystickButtonsPressedLast[joystickID][joystickButton]; }
     // List of joysticks that are present (detected) by the game.
     // Only present controllers are initialized
     // 1 - present
@@ -49,6 +50,7 @@ public:
     const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
     int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
     const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
+    const unsigned char* m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT];
     const char* m_pJoystickNames[MAX_PLAYER_COUNT];
 
     // The only reason this needed is for mouse input, which may not actually
