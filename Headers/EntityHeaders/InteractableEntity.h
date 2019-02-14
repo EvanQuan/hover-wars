@@ -34,4 +34,5 @@ private:
     Mesh* m_pBillboardMesh;
     RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
     PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
+    AnimationComponent* m_pAnimationComponent;
 };

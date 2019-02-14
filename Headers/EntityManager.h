@@ -14,6 +14,7 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
+#include "EntityComponentHeaders/AnimationComponent.h"
 
 #include "Physics/PhysicsManager.h"
 
@@ -45,6 +46,7 @@ public:
     RenderComponent* generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode);
     LightingComponent* generateLightingComponent(int iEntityID);
     PhysicsComponent* generatePhysicsComponent(int iEntityID);
+    AnimationComponent* generateAnimationComponent(int iEntityID);
 
     // Camera Management
     void updateHxW(int iHeight, int iWidth);
@@ -95,6 +97,7 @@ private:
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
     vector<CameraComponent*>                        m_pCameraComponents;
     vector<LightingComponent*>                      m_pLights;
+    vector<AnimationComponent*>                     m_pAnimationComponents;
     CameraComponent*                                m_pActiveCamera;
     DirectionalLight*                               m_pDirectionalLight;
     InteractableEntity*                             m_pBillboardTesting;

@@ -378,16 +378,11 @@ unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, cons
 }
 
 // Updates the UVs of a specified billboard, used for sprite animation.
-void Mesh::updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd)
+void Mesh::updateBillboardUVs()
 {
-    // Update in Billboard List
-    m_pBillboardList[iIndex].vUVStart = *vNewUVStart;
-    m_pBillboardList[iIndex].vUVEnd = *vNewUVEnd;
-    vec2 pDataArray[] = { *vNewUVStart, *vNewUVEnd };
-
     // Update in VBO
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, ((iIndex * BILLBOARD_STRIDE) + UV_START_OFFSET), sizeof(vec2) << 1, pDataArray);
+    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
 }
 
 // Clear VBO data and Clear the Billboard data internally.

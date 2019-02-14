@@ -58,6 +58,9 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
                 }
             }
         }
+
+        // Update VBOs for Mesh.
+        m_pMesh->updateBillboardUVs();
     }
 }
 
