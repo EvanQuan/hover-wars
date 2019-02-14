@@ -288,10 +288,10 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 {
     // Get Total Frame Time and Benchmark for 60 fps
     duration<float> pFrameTime = pTimer.getFrameTime();
-    constexpr auto pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+    duration<float> pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
     // Loop updates to maintain 60 fps
-    while (pFrameTime > pMaxDeltaTime)
+    while (pFrameTime >= milliseconds{ 0 })  // TODO > or >= ?
     {
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second
