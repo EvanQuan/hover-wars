@@ -81,8 +81,6 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
         switch (key)
         {
         case GLFW_KEY_ESCAPE:
-            // TODO Later should escape no longer close window, as there may need
-            // to be some tear down steps before the game exits?
             glfwSetWindowShouldClose(window, GL_TRUE);
             break;
         case GLFW_KEY_F:
