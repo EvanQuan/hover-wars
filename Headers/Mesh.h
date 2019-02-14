@@ -59,12 +59,13 @@ private:
     {
         vec3 vPosition, vNormal;
         vec2 vUVStart, vUVEnd, vDimensions;
+        float fDuration;
     };
     vector<sBillboardInfo> m_pBillboardList;
 
     // Billboard Functionality -> Only accessable within AnimationComponent
-    void updateBillboardUVs();
-    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth);
+    void updateBillboardVBO();
+    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration);
     void flushBillboards();
 
     // Friend Class: MeshManager to create Meshes.

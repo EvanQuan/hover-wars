@@ -39,6 +39,7 @@ public:
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
     void generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const string& sShaderType = "");
+    InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
 
     // Entity Component functions

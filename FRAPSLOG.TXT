@@ -1,0 +1,27 @@
+2019-02-13 22:39:01 - Renderer
+Frames: 954 - Time: 16594ms - Avg: 57.491 - Min: 49 - Max: 62
+
+2019-02-13 22:45:18 - Renderer
+Frames: 3445 - Time: 60000ms - Avg: 57.417 - Min: 49 - Max: 62
+
+2019-02-13 22:47:45 - Renderer
+Frames: 3428 - Time: 60000ms - Avg: 57.133 - Min: 49 - Max: 62
+
+2019-02-13 22:49:48 - Renderer
+Frames: 3432 - Time: 60000ms - Avg: 57.200 - Min: 49 - Max: 62
+
+2019-02-13 22:51:43 - Renderer
+Frames: 3413 - Time: 60000ms - Avg: 56.883 - Min: 49 - Max: 62
+
+2019-02-13 22:53:14 - Renderer
+Frames: 3399 - Time: 60000ms - Avg: 56.650 - Min: 46 - Max: 62
+
+2019-02-13 22:55:25 - Renderer
+Frames: 3424 - Time: 60000ms - Avg: 57.067 - Min: 49 - Max: 62
+
+2019-02-13 22:57:14 - Renderer
+Frames: 3439 - Time: 60000ms - Avg: 57.317 - Min: 50 - Max: 62
+
+2019-02-13 22:58:52 - Renderer
+Frames: 3437 - Time: 60000ms - Avg: 57.283 - Min: 47 - Max: 62
+
