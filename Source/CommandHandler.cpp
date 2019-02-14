@@ -57,6 +57,9 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_ABILITY_ROCKET:
     case COMMAND_ABILITY_SPIKES:
     case COMMAND_ABILITY_TRAIL:
+        if (ENTITY_MANAGER->playerExists(player))
+            ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
+        break;
     case COMMAND_DASH_BACK:
     case COMMAND_DASH_FORWARD:
     case COMMAND_DASH_LEFT:

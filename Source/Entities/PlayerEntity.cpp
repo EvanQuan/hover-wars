@@ -5,6 +5,11 @@
 /***********\
  * Defines *
 \***********/
+// Fire Defines
+#define FIRE_HEIGHT 2.0
+#define FIRE_WIDTH 2.0
+
+// Camera Defines
 #define FRONT_CAMERA 0
 #define BACK_CAMERA 1
 #define MAX_NUM_POS 30
@@ -58,6 +63,9 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeComponent(true, m_pMesh);
+
+    m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
+    m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
     
     // Generate Camera Components
     //for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
@@ -128,7 +136,11 @@ void PlayerEntity::activateSpikes()
 
 void PlayerEntity::activateTrail()
 {
-
+    mat4 m4TransformMat;
+    vec3 vNormal;
+    m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
+    vNormal = m4TransformMat[1];
+    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
 }
 
 void PlayerEntity::dash(eAbility direction)

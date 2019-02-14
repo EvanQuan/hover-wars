@@ -4,6 +4,9 @@
 #include "ShaderManager.h"
 #include "MeshManager.h"
 #include "TextureManager.h"
+#include "DataStructures/SpriteSheetDatabase.h"
+
+using namespace SpriteSheetDatabase;
 
 /************************************************************
 * Name: AnimationComponent
@@ -26,8 +29,7 @@ public:
     void addBillboard(const vec3* vPosition, const vec3* vNormal);
 
     // Initializes the proper buffers on the GPU for rendering.
-    void initializeComponentAsBillboard( Mesh * pMesh, vec2 vSpriteHxW, vec2 vSpriteHxWBuffer,
-                                int iNumSpritesX, int iNumSpritesY, float fBillboardHeight, float fBillboardWidth );
+    void initializeComponentAsBillboard( Mesh * pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth );
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
@@ -45,5 +47,5 @@ private:
     vec2 m_vSpriteHxW, m_vSpriteHxWBorder;
     int m_iNumSpritesX, m_iNumSpritesY;
     float m_fBillboardHeight, m_fBillboardWidth;
-    float m_fAnimTime;
+    float m_fAnimTime, m_fDuration;
 };

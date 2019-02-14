@@ -59,14 +59,6 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     purgeEnvironment();
     pObjFctry->loadFromFile(sFileName);
-
-    // TESTING: To Be Removed
-    vec3 vNormal(0.0f, 1.0f, 0.0f);
-    vec3 vPosition(5.0f, 5.0f, 5.0f);
-    unique_ptr<InteractableEntity> pTestingEntity = make_unique<InteractableEntity>(getNewEntityID(), &vPosition);
-    pTestingEntity->loadAsBillboard(&vNormal, 2.0f, 1.5f, nullptr);
-    m_pBillboardTesting = pTestingEntity.get();
-    m_pMasterEntityList.push_back(move(pTestingEntity));
 }
 
 // Remove Object from List with given ID
@@ -228,6 +220,15 @@ void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sM
     pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType, fScale);
     m_pPlayerEntityList.push_back(pNewPlayer.get()); // TODO this retrieves a raw pointer from the unique pointer. Is this okay?
     m_pMasterEntityList.push_back(move(pNewPlayer));
+}
+
+InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)
+{
+    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(getNewEntityID(), vPosition);
+    InteractableEntity* pReturnEntity = pNewEntity.get();
+    m_pMasterEntityList.push_back(move(pNewEntity));
+
+    return pReturnEntity;
 }
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.

@@ -14,6 +14,7 @@ in vec2 vDimensions[];
 in vec3 vToCamera[];
 in vec2 vUVStart[];
 in vec2 vUVEnd[];
+in float fDuration[];
 
 out vec2 TexCoords;
 
@@ -22,6 +23,13 @@ void main(void)
 	vec3 vRightVector = normalize( cross( vNormal[0], vToCamera[0]) );
 	vRightVector *= (vDimensions[0].y * 0.5);
 	vec3 vUpVector = vNormal[0] * vDimensions[0].x;
+	
+	// Shrink Billboard after a certain duration
+	if( fDuration[0] < 1.0f )
+	{
+		vRightVector *= fDuration[0];
+		vUpVector *= fDuration[0];
+	}
 	
 	/* Create a Track:
 			P3---------------------------------P4
