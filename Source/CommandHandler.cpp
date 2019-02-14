@@ -285,14 +285,23 @@ void CommandHandler::executeJoystickCommands()
         if (joystickIsPresent)
         {
             const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-            const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
+            unsigned char* buttons = m_pInputHandler->m_pJoystickButtons[joystickID];
 
             // Check buttons
             for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
             {
-                if (buttonsPressed[button])
+                if (buttons[GLFW_REPEAT])
                 {
-                    execute((ePlayer) joystickID, buttonToFixedCommand(button));
+                    execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
+                }
+                else if (buttons[GLFW_PRESS])
+                {
+                    execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
+                }
+                else
+                if (buttonsPressed[button] == BUTTON_RIGHT_BUMPER && m_pInputHandler->justPressed(joystickID, buttonsPressed[button]))
+                {
+                    execute((ePlayer)joystickID, repeatButtonToFixedCommand(button));
                 }
             }
 
