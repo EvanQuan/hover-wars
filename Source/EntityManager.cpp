@@ -309,6 +309,12 @@ void EntityManager::updateEnvironment(const Time& pTimer)
             iter != m_pMasterEntityList.end();
             ++iter)
             (*iter)->update(fDeltaTime);
+
+        // Iteratre through all Animation Components to update their animations
+        for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
+            iter != m_pAnimationComponents.end();
+            ++iter)
+            (*iter)->update(fDeltaTime);
     }
 }
 
@@ -387,6 +393,21 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
     PhysicsComponent* pReturnComponent = pNewComponent.get();
     m_pPhysicsComponents.push_back(pReturnComponent);
     m_pMasterComponentList.push_back(move(pNewComponent));
+
+    // Return newly created component
+    return pReturnComponent;
+}
+
+// This function will generate a new Animation Component, store it within the internal
+//      Master Component list as well as a separate AnimationComponent* list that can be
+//      managed by the Entity Manager and prompted for updates separate from other Components.
+AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
+{
+    // Generate and store new Animation Component
+    unique_ptr<AnimationComponent> pNewAnimCmp = make_unique<AnimationComponent>(iEntityID, getNewComponentID());
+    AnimationComponent* pReturnComponent = pNewAnimCmp.get();
+    m_pAnimationComponents.push_back(pReturnComponent);
+    m_pMasterComponentList.push_back(move(pNewAnimCmp));
 
     // Return newly created component
     return pReturnComponent;

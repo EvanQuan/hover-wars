@@ -65,7 +65,7 @@ CameraComponent::~CameraComponent()
  * Inherited Functions                                                     *
 \*************************************************************************/
 // Inherited update function, not yet implemented.
-void CameraComponent::update(duration<float> fTimeDelta)
+void CameraComponent::update(float fTimeDeltaInMilliseconds)
 {
     /* Not Implemented */
 }

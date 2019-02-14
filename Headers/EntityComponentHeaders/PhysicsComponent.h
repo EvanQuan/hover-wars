@@ -22,7 +22,7 @@ public:
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 
     //    moreso for it to hold and manage the physics information for the entity while providing functions that allow
     //    the entity to query their physics component for desired information.
-    void update(duration<float> fTimeDelta); // Overloading Parent's virtual update function
+    void update(float fTimeDeltaInMilliseconds); // Overloading Parent's virtual update function
 
     // Various initialization functions as needed.
     void initializeComponent(bool bStatic, Mesh const* pMeshReference,float x, float y, float z, float size);

@@ -21,7 +21,7 @@ private:
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
     void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
-    void genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth);
+    void genBillboard();
     void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
     void initalizeVBOs();
     bool loadObj(const string& sFileName);
@@ -62,6 +62,11 @@ private:
     };
     vector<sBillboardInfo> m_pBillboardList;
 
+    // Billboard Functionality -> Only accessable within AnimationComponent
+    void updateBillboardUVs();
+    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth);
+    void flushBillboards();
+
     // Friend Class: MeshManager to create Meshes.
     friend class MeshManager;
     friend class AnimationComponent;    // Friend class: Animation Component to manipulate Mesh information
@@ -92,11 +97,6 @@ public:
     // Function to add a new Instance Matrix for the Mesh. If the Mesh is dynamic, it will replace the current instance, static will add a new instance.
     void addInstance(const vec3* vPosition, const vec3* vNormal, float fScale);    // Specify particular components and a transformation matrix will be generated
     void addInstance(const mat4* m4Transform);                                    // Specify a previously generated transformation matrix
-
-    // Billboard Usage
-    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth);
-    void updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd);
-    void flushBillboards();
 
     // Getters for Mesh Data
     const vector<vec3>& getVertices() const { return m_pVertices; }

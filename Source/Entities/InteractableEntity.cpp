@@ -39,7 +39,10 @@ void InteractableEntity::loadAsBillboard(const vec3* vNormal, float fHeight, flo
     pBillboardMaterial.sDiffuseMap = "textures/matty-wyett-simmonds-flamevfxlooping.jpg";
 
     // Generate the Mesh
-    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(m_vPosition, *vNormal, vUVStart, vUVEnd, fHeight, fWidth, &pBillboardMaterial, this);
+    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(&pBillboardMaterial, this);
+    m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
+    m_pAnimationComponent->initializeComponentAsBillboard(m_pBillboardMesh, vec2(0.125f), vec2(0.03f, 0.005f), 8, 8, fHeight, fWidth);
+    m_pAnimationComponent->addBillboard(&m_vPosition, vNormal);
 
     // Generate the Render Component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pBillboardMesh, true, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
