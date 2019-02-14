@@ -20,10 +20,14 @@ public:
     virtual ~AnimationComponent();
 
     // Inherited update frunction from EntityComponent
-    void update(duration<float> fTimeDelta);
+    void update(float fTimeDeltaInMilliseconds);
+
+    // Allows the user to add a billboard at a given position.
+    void addBillboard(const vec3* vPosition, const vec3* vNormal);
 
     // Initializes the proper buffers on the GPU for rendering.
-    void initializeComponent( Mesh  * pMesh, vec2 vSpriteHxW, vec2 vSpriteHxWBuffer, int iNumSpritesX, int iNumSpritesY);
+    void initializeComponentAsBillboard( Mesh * pMesh, vec2 vSpriteHxW, vec2 vSpriteHxWBuffer,
+                                int iNumSpritesX, int iNumSpritesY, float fBillboardHeight, float fBillboardWidth );
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
@@ -36,7 +40,10 @@ private:
     Mesh * m_pMesh;
     vector<Mesh::sBillboardInfo>* m_pBillboardListPtr;
 
+
     // Sprite HxW is specified as the full sprite width (texture width / num sprites per
     vec2 m_vSpriteHxW, m_vSpriteHxWBorder;
     int m_iNumSpritesX, m_iNumSpritesY;
+    float m_fBillboardHeight, m_fBillboardWidth;
+    float m_fAnimTime;
 };

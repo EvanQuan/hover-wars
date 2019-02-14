@@ -21,7 +21,7 @@ private:
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
     void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
-    void genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth);
+    void genBillboard();
     void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
     void initalizeVBOs();
     bool loadObj(const string& sFileName);

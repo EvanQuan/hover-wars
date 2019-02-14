@@ -28,8 +28,6 @@
 #include <glew.h>
 #endif
 #include <glfw3.h>
-// so, when we changed / added checked fundimentally what changed. 
-// will it make a difference if one of them doesn't have a 3? pretty sure it will
 
 // FreeType
 #include <ft2build.h>

@@ -338,20 +338,17 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 //            * UVEnd    (vec2)
 //            * Height (unsigned int)
 //            * Width (unsigned int)
-void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth)
+void Mesh::genBillboard()
 {
     // Generate VBO
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, 0, GL_STATIC_DRAW);
 
     // Set up VBO Attributes
-    m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, BILLBOARD_STRIDE, (void*)VERTEX_OFFSET);    /*Vertex*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, BILLBOARD_STRIDE, (void*)NORMAL_OFFSET);    /*Normal*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, BILLBOARD_STRIDE, (void*)UV_START_OFFSET);    /*UVStart*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 3, 2, BILLBOARD_STRIDE, (void*)UV_END_OFFSET);    /*UVEnd*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);/*Height/Width*/
-
-    // Add first Billboard
-    addBillboard(vPosition, vNormal, vUVStart, vUVEnd, fHeight, fWidth);
+    m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, BILLBOARD_STRIDE, (void*)VERTEX_OFFSET);       /*Vertex*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, BILLBOARD_STRIDE, (void*)NORMAL_OFFSET);       /*Normal*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, BILLBOARD_STRIDE, (void*)UV_START_OFFSET);     /*UVStart*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 3, 2, BILLBOARD_STRIDE, (void*)UV_END_OFFSET);       /*UVEnd*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);    /*Height/Width*/
 }
 
 /****************************************************************************************\

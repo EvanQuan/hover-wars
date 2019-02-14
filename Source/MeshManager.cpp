@@ -164,8 +164,7 @@ Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, i
 }
 
 // Provides a Generated Mesh as a Billboard Mesh
-Mesh* MeshManager::generateBillboardMesh(vec3 vPosition, vec3 vNormal, vec2 vUVStart, vec2 vUVEnd, 
-                                        float fHeight, float fWidth, const Material* pMaterial, const void* pOwnerHandle)
+Mesh* MeshManager::generateBillboardMesh(const Material* pMaterial, const void* pOwnerHandle)
 {
     // Local Variables
     string sHashHandle = "Billboard" + materialToString(pMaterial) + to_string(reinterpret_cast<intptr_t>(pOwnerHandle));  // This reinterpret_cast is used to make the billboard wholly unique to its owner.
@@ -180,7 +179,7 @@ Mesh* MeshManager::generateBillboardMesh(vec3 vPosition, vec3 vNormal, vec2 vUVS
     else // generate a new Billboard Mesh
     {
         unique_ptr<Mesh> pNewMesh = make_unique<Mesh>(sHashHandle, false, pMaterial, Mesh::manager_cookie());
-        pNewMesh->genBillboard(&vPosition, &vNormal, &vUVStart, &vUVEnd, fHeight, fWidth);
+        pNewMesh->genBillboard();
         pReturnMesh = pNewMesh.get();
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewMesh)));
     }
