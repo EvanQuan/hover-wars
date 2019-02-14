@@ -120,6 +120,11 @@ struct Material
     float fShininess;
 };
 
+struct BoundingBox
+{
+    string sType;
+};
+
 
 /* Manager Defines */
 #define ENTITY_MANAGER    EntityManager::getInstance()

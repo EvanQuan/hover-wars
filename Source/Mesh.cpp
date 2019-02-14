@@ -35,8 +35,11 @@ Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, const Material* pMateri
     m_bStaticMesh = bStaticMesh;
     m_pShdrMngr = SHADER_MANAGER;
     glGenVertexArrays(1, &m_iVertexArray);
-
     loadMaterial(pMaterial);
+
+#ifdef _DEBUG   // Set up Bounding Box information
+    glGenVertexArrays(1, &m_iBoundingVertexArray);
+#endif
 }
 
 // Delete any buffers that we initialized
@@ -47,6 +50,13 @@ Mesh::~Mesh()
     glDeleteBuffers(1, &m_iInstancedBuffer);
     glDeleteBuffers(1, &m_iScaleBuffer);
     glDeleteVertexArrays( 1, &m_iVertexArray );
+
+#ifdef _DEBUG
+    glDeleteBuffers(1, &m_iBoundingVertexBuffer);
+    glDeleteBuffers(1, &m_iBoundingInstancedBuffer);
+    glDeleteVertexArrays(1, &m_iBoundingVertexArray);
+#endif // _DEBUG
+
 }
 
 // Load the Mesh from a given file name
@@ -75,7 +85,7 @@ bool Mesh::genMesh( const string& sFileName, vec3 vPosition, float fScale )
         m_m4ListOfInstances.push_back(m4Transformation);
 
         // Initialize VBOs
-        initalizeVBOs();
+        initalizeVBOs(false);
     }
 
     // Return result
@@ -122,24 +132,30 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
     m_m4ListOfInstances.push_back(m4TranslationMatrix);
 
     // Load Mesh into GPU
-    initalizeVBOs();
+    initalizeVBOs(false);
 }
 
 // Generates a Sphere Mesh
-void Mesh::genSphere(float fRadius, vec3 vPosition)
+void Mesh::genSphere(float fRadius, vec3 vPosition, bool bBounding)
 {
     // Algorithm pulled from: https://goo.gl/k9Q4mh
     float const R = 1.f / static_cast<float>(MAX_THETA_CUTS - 1);
     float const S = 1.f / static_cast<float>(MAX_PHI_CUTS - 1);
     int r, s;
+    vector< vec3 >* pTargetVerts = (bBounding ? &m_pBoundingVerts : &m_pVertices);
+    vector< unsigned int >* pTargetIndices = (bBounding ? &m_pBoundingIndices : &m_pIndices);
 
     // Calculate Sizes of vectors ahead of time to avoid resize calls during loop
-    m_pVertices.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
-    m_pNormals.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
-    m_pUVs.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
+    pTargetVerts->resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
+
+    if (!bBounding)
+    {
+        m_pNormals.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
+        m_pUVs.resize(MAX_THETA_CUTS * MAX_PHI_CUTS);
+    }
 
     // Populate Iterators as loop progresses
-    vector<vec3>::iterator v = m_pVertices.begin();
+    vector<vec3>::iterator v = pTargetVerts->begin();
     vector<vec3>::iterator n = m_pNormals.begin();
     vector<vec2>::iterator t = m_pUVs.begin();
 
@@ -150,19 +166,21 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
         float const z = sinf(2 * PI * s * S) * sinf(PI * r * R);
 
         // UVs are inverted.
-        *t++ = vec2( (MAX_PHI_CUTS-s) * S, (MAX_THETA_CUTS-r) * R);
+        if( !bBounding )
+            *t++ = vec2( (MAX_PHI_CUTS-s) * S, (MAX_THETA_CUTS-r) * R);
 
         // Scale Sphere to Radius.
         *v++ = vec3(x * fRadius, y * fRadius, z * fRadius);
 
         // Store normal in Local space.
-        *n++ = vec3(x, y, z);
+        if( !bBounding )
+            *n++ = vec3(x, y, z);
     }
 
     // Generate indices
-    m_pIndices.resize(MAX_THETA_CUTS * MAX_PHI_CUTS * 4);
-    vector<unsigned int>::iterator i = m_pIndices.begin();
-    unsigned int iWrapAroundMask = m_pVertices.size();
+    pTargetIndices->resize(MAX_THETA_CUTS * MAX_PHI_CUTS * 4);
+    vector<unsigned int>::iterator i = pTargetIndices->begin();
+    unsigned int iWrapAroundMask = pTargetIndices->size();
 
     // Ensure index storage creates counter clockwise pattern for back-face culling.
     for (r = 0; r < MAX_THETA_CUTS; r++) for (s = 0; s < MAX_PHI_CUTS; s++) {
@@ -183,22 +201,30 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
     m_m4ListOfInstances.push_back(m4InitialTransformation);
 
     // Store Mesh in GPU
-    initalizeVBOs();
+    initalizeVBOs(bBounding);
 }
 
 // Generates a Cube object given a Height, Width and Depth dimension as well as a position.
-void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
+void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition, bool bBounding)
 {
+    // Get Target information
+    vector< vec3 >* pTargetVerts = (bBounding ? &m_pBoundingVerts : &m_pVertices);
+    vector< unsigned int >* pTargetIndices = (bBounding ? &m_pBoundingIndices : &m_pIndices);
+
     // Get half sizes of dimensions to set vertices wrt to origin.
     float iHalfHeight    = static_cast<float>(iHeight) * 0.5f;
     float iHalfWidth    = static_cast<float>(iWidth) * 0.5f;
     float iHalfDepth    = static_cast<float>(iDepth) * 0.5f;
 
     // Reserve Sizes ahead of time to speed up computation
-    m_pVertices.reserve(24);
-    m_pNormals.reserve(24);
-    m_pUVs.reserve(24);
-    m_pIndices.reserve(36);
+    pTargetVerts->reserve(24);
+    pTargetIndices->reserve(36);
+
+    if (!bBounding)
+    {
+        m_pNormals.reserve(24);
+        m_pUVs.reserve(24);
+    }
 
     vec3 vIndexes[8] = {
         vec3(-iHalfWidth, iHalfHeight, iHalfDepth),
@@ -224,90 +250,106 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 
     // Generate 24 vertices for all corners per face of the cube.
     // Face 1 - Front
-    m_pVertices.push_back(vIndexes[0]);        // Index 0
-    m_pVertices.push_back(vIndexes[1]);        // Index 1
-    m_pVertices.push_back(vIndexes[2]);        // Index 2
-    m_pVertices.push_back(vIndexes[3]);        // Index 3
-    m_pNormals.push_back(vNormals[0]);
-    m_pNormals.push_back(vNormals[1]);
-    m_pNormals.push_back(vNormals[2]);
-    m_pNormals.push_back(vNormals[3]);
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
-    m_pUVs.push_back(vec2(1.f));
+    pTargetVerts->push_back(vIndexes[0]);      // Index 0
+    pTargetVerts->push_back(vIndexes[1]);      // Index 1
+    pTargetVerts->push_back(vIndexes[2]);      // Index 2
+    pTargetVerts->push_back(vIndexes[3]);      // Index 3
 
     // Face 2 - Back
     m_pVertices.push_back(vIndexes[4]);        // Index 4
     m_pVertices.push_back(vIndexes[5]);        // Index 5
     m_pVertices.push_back(vIndexes[6]);        // Index 6
     m_pVertices.push_back(vIndexes[7]);        // Index 7
-    m_pNormals.push_back(vNormals[4]);
-    m_pNormals.push_back(vNormals[5]);
-    m_pNormals.push_back(vNormals[6]);
-    m_pNormals.push_back(vNormals[7]);
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(1.f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
 
     // Face 3 - Left
     m_pVertices.push_back(vIndexes[0]);        // Index 1
     m_pVertices.push_back(vIndexes[3]);        // Index 2
     m_pVertices.push_back(vIndexes[4]);        // Index 5
     m_pVertices.push_back(vIndexes[6]);        // Index 7
-    m_pNormals.push_back(vNormals[0]);
-    m_pNormals.push_back(vNormals[3]);
-    m_pNormals.push_back(vNormals[4]);
-    m_pNormals.push_back(vNormals[6]);
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(1.f));
 
     // Face 4 - Right
     m_pVertices.push_back(vIndexes[1]);        // Index 0
     m_pVertices.push_back(vIndexes[2]);        // Index 3
     m_pVertices.push_back(vIndexes[5]);        // Index 4
     m_pVertices.push_back(vIndexes[7]);        // Index 6
-    m_pNormals.push_back(vNormals[1]);
-    m_pNormals.push_back(vNormals[2]);
-    m_pNormals.push_back(vNormals[5]);
-    m_pNormals.push_back(vNormals[7]);
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(1.f));
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
 
     // Face 5 - Bottom
     m_pVertices.push_back(vIndexes[2]);        // Index 2
     m_pVertices.push_back(vIndexes[3]);        // Index 3
     m_pVertices.push_back(vIndexes[6]);        // Index 6
     m_pVertices.push_back(vIndexes[7]);        // Index 7
-    m_pNormals.push_back(vNormals[2]);
-    m_pNormals.push_back(vNormals[3]);
-    m_pNormals.push_back(vNormals[6]);
-    m_pNormals.push_back(vNormals[7]);
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
-    m_pUVs.push_back(vec2(1.f));
 
     // Face 6 - Top
     m_pVertices.push_back(vIndexes[0]);        // Index 0
     m_pVertices.push_back(vIndexes[1]);        // Index 1
     m_pVertices.push_back(vIndexes[4]);        // Index 4
     m_pVertices.push_back(vIndexes[5]);        // Index 5
-    m_pNormals.push_back(vNormals[0]);
-    m_pNormals.push_back(vNormals[1]);
-    m_pNormals.push_back(vNormals[4]);
-    m_pNormals.push_back(vNormals[5]);
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(1.f));
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
 
-    m_pIndices = {
+    // Store Normals and UVs for Non Bounding Box Cubes
+    if (!bBounding)
+    {
+        // Face 1 - Front
+        m_pNormals.push_back(vNormals[0]);
+        m_pNormals.push_back(vNormals[1]);
+        m_pNormals.push_back(vNormals[2]);
+        m_pNormals.push_back(vNormals[3]);
+        m_pUVs.push_back(vec2(0.0f));
+        m_pUVs.push_back(vec2(1.0f, 0.f));
+        m_pUVs.push_back(vec2(0.0f, 1.0f));
+        m_pUVs.push_back(vec2(1.f));
+
+        // Face 2 - Back
+        m_pNormals.push_back(vNormals[4]);
+        m_pNormals.push_back(vNormals[5]);
+        m_pNormals.push_back(vNormals[6]);
+        m_pNormals.push_back(vNormals[7]);
+        m_pUVs.push_back(vec2(1.0f, 0.f));
+        m_pUVs.push_back(vec2(0.0f));
+        m_pUVs.push_back(vec2(1.f));
+        m_pUVs.push_back(vec2(0.0f, 1.0f));
+
+        // Face 3 - Left
+        m_pNormals.push_back(vNormals[0]);
+        m_pNormals.push_back(vNormals[3]);
+        m_pNormals.push_back(vNormals[4]);
+        m_pNormals.push_back(vNormals[6]);
+        m_pUVs.push_back(vec2(0.0f));
+        m_pUVs.push_back(vec2(0.0f, 1.0f));
+        m_pUVs.push_back(vec2(1.0f, 0.f));
+        m_pUVs.push_back(vec2(1.f));
+
+        // Face 4 - Right
+        m_pNormals.push_back(vNormals[1]);
+        m_pNormals.push_back(vNormals[2]);
+        m_pNormals.push_back(vNormals[5]);
+        m_pNormals.push_back(vNormals[7]);
+        m_pUVs.push_back(vec2(1.0f, 0.f));
+        m_pUVs.push_back(vec2(1.f));
+        m_pUVs.push_back(vec2(0.0f));
+        m_pUVs.push_back(vec2(0.0f, 1.0f));
+
+        // Face 5 - Bottom
+        m_pNormals.push_back(vNormals[2]);
+        m_pNormals.push_back(vNormals[3]);
+        m_pNormals.push_back(vNormals[6]);
+        m_pNormals.push_back(vNormals[7]);
+        m_pUVs.push_back(vec2(1.0f, 0.f));
+        m_pUVs.push_back(vec2(0.0f));
+        m_pUVs.push_back(vec2(0.0f, 1.0f));
+        m_pUVs.push_back(vec2(1.f));
+
+        // Face 6 - Top
+        m_pNormals.push_back(vNormals[0]);
+        m_pNormals.push_back(vNormals[1]);
+        m_pNormals.push_back(vNormals[4]);
+        m_pNormals.push_back(vNormals[5]);
+        m_pUVs.push_back(vec2(1.0f, 0.f));
+        m_pUVs.push_back(vec2(1.f));
+        m_pUVs.push_back(vec2(0.0f));
+        m_pUVs.push_back(vec2(0.0f, 1.0f));
+    }    
+
+    (*pTargetIndices) = {
         0, 2, 1, 0, 3, 2,
         5, 6, 4, 5, 7, 6,
         10, 9, 8, 10, 11, 9,
@@ -326,7 +368,7 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
     // Store Initial Transformation Matrix in Transformation vector
     m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
 
-    initalizeVBOs();
+    initalizeVBOs(bBounding);
 }
 
 // This will store the position as a vertex with a given normal as the direction to draw the billboard in.
@@ -353,85 +395,30 @@ void Mesh::genBillboard()
     m_pShdrMngr->setAttrib(m_iVertexArray, 5, 1, BILLBOARD_STRIDE, (void*)DURATION_OFFSET);     /*Duration*/
 }
 
-/****************************************************************************************\
- * Billboard Usage                                                                        *
-\****************************************************************************************/
-
-// Adds a Billboard object to the Mesh.
-unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration)
-{
-    // Create new Billboard
-    sBillboardInfo sNewBillboard;
-    sNewBillboard.vPosition     = *vPosition;
-    sNewBillboard.vNormal       = *vNormal;
-    sNewBillboard.vUVStart      = *vUVStart;
-    sNewBillboard.vUVEnd        = *vUVEnd;
-    sNewBillboard.vDimensions   = vec2(fHeight, fWidth);
-    sNewBillboard.fDuration     = fDuration;
-
-    // add to main list
-    m_pBillboardList.push_back(sNewBillboard);
-
-    // Update data in GPU
-    updateBillboardVBO();
-
-    // Return the index for this billboard for later reference.
-    return m_pBillboardList.size() - 1;
-}
-
-// Updates the UVs of a specified billboard, used for sprite animation.
-void Mesh::updateBillboardVBO()
-{
-    // Update in VBO
-    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
-}
-
-// Clear VBO data and Clear the Billboard data internally.
-void Mesh::flushBillboards()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 0, (void*)0, GL_DYNAMIC_DRAW);
-
-    m_pBillboardList.clear();
-}
-
-// Generates a Caresean point and normal for that point based on a given spherical coord
-void Mesh::addCarteseanPoint(float fPhi, float fTheta, float fRadius)
-{
-    // Local Variables
-    float fPhi_Rads = fPhi;
-    float fTheta_Rads = fTheta;
-    vec3 pPoint;
-
-    // Generate the Cartesian Point
-    pPoint.x = fRadius * sin(fPhi_Rads);
-    pPoint.y = pPoint.x * sin(fTheta_Rads);
-    pPoint.x *= cos(fTheta_Rads);
-    pPoint.z = fRadius * cos(fPhi_Rads);
-
-    // Store Vertex and Normal
-    m_pVertices.push_back(pPoint);
-    m_pNormals.push_back(normalize( pPoint ) );
-}
-
 // Initialize the GPU with Mesh Data and tell it how to read it.
-void Mesh::initalizeVBOs()
+void Mesh::initalizeVBOs(bool bBounding)
 {
+    // Get proper Target Verts
+    vector< vec3 >* vTargetVerts = (bBounding ? &m_pBoundingVerts : &m_pVertices);
+    vector< unsigned int >* pTargetIndices = (bBounding ? &m_pBoundingIndices : &m_pIndices);
+    GLuint iVAOTarget = (bBounding ? m_iBoundingVertexArray : m_iVertexArray);
+    GLuint iIndicesBufferTarget = (bBounding ? m_iBoundingIndicesBuffer : m_iIndicesBuffer);
+
     // This function shouldn't be called without passing in Vertex Data.
-    assert(!m_pVertices.empty());
+    assert(!vTargetVerts->empty());
 
     // We can use just one VBO since it's assumed that the geometry won't update as often.
     //    Therefore, we'll combine all data into one VBO and set openGL to address the data accordingly.
     // Create a Vector to hold the combined data.
     vector<float> vVNdata;
-    vVNdata.reserve(m_pVertices.size() * 3 +
-        m_pNormals.size() * 3 +
-        (m_pUVs.size() << 1));
+    size_t uiSize = vTargetVerts->size() * 3 + (bBounding ? 0 :
+        (m_pNormals.size() * 3 +
+        (m_pUVs.size() << 1)));
+    vVNdata.reserve(uiSize);
 
     // Boolean values to determine if additional data exists.
-    bool bHaveNormals = !m_pNormals.empty();
-    bool bHaveUVs = !m_pUVs.empty();
+    bool bHaveNormals   = (!bBounding && !m_pNormals.empty());
+    bool bHaveUVs       = (!bBounding && !m_pUVs.empty());
 
     // Calculate Stride for setting up Attributes
     GLsizei iStride = sizeof(vec3) +
@@ -439,12 +426,12 @@ void Mesh::initalizeVBOs()
         (bHaveUVs ? sizeof(vec2) : 0);
 
     // Loop through the received input and set up the array of data for the VBO
-    for (unsigned int i = 0; i < m_pVertices.size(); ++i)
+    for (unsigned int i = 0; i < vTargetVerts->size(); ++i)
     {
         // Vertex Data
-        vVNdata.push_back(m_pVertices[i].x);
-        vVNdata.push_back(m_pVertices[i].y);
-        vVNdata.push_back(m_pVertices[i].z);
+        vVNdata.push_back((*vTargetVerts)[i].x);
+        vVNdata.push_back((*vTargetVerts)[i].y);
+        vVNdata.push_back((*vTargetVerts)[i].z);
 
         // Normal Data
         if (bHaveNormals)
@@ -463,61 +450,65 @@ void Mesh::initalizeVBOs()
     }
 
     // Generate VBO
-    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
+    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(iVAOTarget, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
 
     // Set-up Attributes
     // Vertices
-    m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, iStride, (void*)0);
+    m_pShdrMngr->setAttrib(iVAOTarget, 0, 3, iStride, (void*)0);
     // Normals
     if (bHaveNormals)
     {
-        m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, iStride, (void*)sizeof(vec3));
+        m_pShdrMngr->setAttrib(iVAOTarget, 1, 3, iStride, (void*)sizeof(vec3));
     }
     // UVs
     if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
     {
-        m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
+        m_pShdrMngr->setAttrib(iVAOTarget, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
     }
 
     // Initialize Instance Buffer
-    setupInstanceBuffer(3);
+    setupInstanceBuffer(3, bBounding);
 
     // Set up Indices if applicable
-    if (!m_pIndices.empty())
+    if (!pTargetIndices->empty())
     {
         // Set up Index Buffer
-        m_iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(
-            m_iVertexArray,
-            m_pIndices.data(),
-            m_pIndices.size() * sizeof(unsigned int),
+        iIndicesBufferTarget = SHADER_MANAGER->genIndicesBuffer(
+            iVAOTarget,
+            pTargetIndices->data(),
+            pTargetIndices->size() * sizeof(unsigned int),
             GL_STATIC_DRAW);
     }
 }
 
-void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
+void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex, bool bBounding)
 {
+    // Set target handles based on Bounding Box or regular mesh initialization
+    GLuint iTargetVAO = (bBounding ? m_iBoundingVertexArray : m_iVertexArray);
+    GLuint iTargetIBO = (bBounding ? m_iBoundingInstancedBuffer : m_iInstancedBuffer);
+
     // Set up Instanced Buffer for Instance Rendering
-    m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-        m_iVertexArray, (void*)m_m4ListOfInstances.data(),
+    iTargetIBO = SHADER_MANAGER->genVertexBuffer(
+        iTargetVAO, (void*)m_m4ListOfInstances.data(),
         sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
 
     // Instance Rendering Attributes
     //    Set up openGL for referencing the InstancedBuffer as a Mat4
     // column 0
-    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, iTargetIBO);
     SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
+        iTargetVAO, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
     // column 1
     SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
+        iTargetVAO, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
     // column 2
     SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
+        iTargetVAO, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
     // column 3
     SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
+        iTargetVAO, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
 
-    glBindVertexArray(m_iVertexArray);
+    glBindVertexArray(iTargetVAO);
     glVertexAttribDivisor(iStartSpecifiedIndex, 1);
     glVertexAttribDivisor(iStartSpecifiedIndex + 1, 1);
     glVertexAttribDivisor(iStartSpecifiedIndex + 2, 1);
@@ -653,6 +644,11 @@ void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
     {
         glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
         glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_DYNAMIC_DRAW);
+
+#ifdef _DEBUG   // Load Instanced Data for Bounding box as well.
+        glBindBuffer(GL_ARRAY_BUFFER, m_iBoundingInstancedBuffer);
+        glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_DYNAMIC_DRAW);
+#endif
     }
 }
 
@@ -766,3 +762,45 @@ void Mesh::loadMaterial(const Material* pMaterial)
         m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
 }
 
+/****************************************************************************************\
+ * Billboard Usage                                                                        *
+\****************************************************************************************/
+
+// Adds a Billboard object to the Mesh.
+unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration)
+{
+    // Create new Billboard
+    sBillboardInfo sNewBillboard;
+    sNewBillboard.vPosition = *vPosition;
+    sNewBillboard.vNormal = *vNormal;
+    sNewBillboard.vUVStart = *vUVStart;
+    sNewBillboard.vUVEnd = *vUVEnd;
+    sNewBillboard.vDimensions = vec2(fHeight, fWidth);
+    sNewBillboard.fDuration = fDuration;
+
+    // add to main list
+    m_pBillboardList.push_back(sNewBillboard);
+
+    // Update data in GPU
+    updateBillboardVBO();
+
+    // Return the index for this billboard for later reference.
+    return m_pBillboardList.size() - 1;
+}
+
+// Updates the UVs of a specified billboard, used for sprite animation.
+void Mesh::updateBillboardVBO()
+{
+    // Update in VBO
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
+}
+
+// Clear VBO data and Clear the Billboard data internally.
+void Mesh::flushBillboards()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, 0, (void*)0, GL_DYNAMIC_DRAW);
+
+    m_pBillboardList.clear();
+}
