@@ -24,35 +24,29 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
 {
     // Add Timestep to Animation Time.
     m_fAnimTime += fTimeDeltaInMilliseconds;
+    bool bUpdateAnimation = m_fAnimTime >= ANIMATION_SPEED;
+    bool bDeletionFlag = false;
 
-    // Evaluate Current Animation time.
-    while (m_fAnimTime >= ANIMATION_SPEED)
-    {
-        // Subtract Animation Speed.
+    if (bUpdateAnimation)
         m_fAnimTime -= ANIMATION_SPEED;
 
-        if (!m_pBillboardListPtr->empty())
+    if (!m_pBillboardListPtr->empty())
+    {
+        // Update Billboards
+        for( vector<Mesh::sBillboardInfo>::iterator iter = m_pMesh->m_pBillboardList.begin();
+             iter != m_pMesh->m_pBillboardList.end();
+             ++iter)
         {
-            // Clean up any Billboards that are subject for deletion.
-            m_pBillboardListPtr->erase(
-                remove_if(
-                    m_pBillboardListPtr->begin(),
-                    m_pBillboardListPtr->end(),
-                    [](Mesh::sBillboardInfo const & p) { return p.fDuration <= 0.f; }
-                ),
-                m_pBillboardListPtr->end());
-
-            // Update Billboards
-            for (vector<Mesh::sBillboardInfo>::iterator iter = m_pBillboardListPtr->begin();
-                iter != m_pBillboardListPtr->end();
-                ++iter)
+            // Only compute Animation if it has duration remaining.
+            if (iter->fDuration > 0.0f)
             {
-                // Only compute Animation if it has duration remaining.
-                if (iter->fDuration > 0.0f)
-                {
-                    // Decrement Duration
-                    iter->fDuration -= fTimeDeltaInMilliseconds;
+                // Decrement Duration
+                iter->fDuration -= fTimeDeltaInMilliseconds;
+                bDeletionFlag |= iter->fDuration <= 0;
 
+                // Animate the Sprite on the Animation Speed.
+                if (bUpdateAnimation)
+                {
                     // Move Sprite UVs right.
                     iter->vUVStart.x += m_vSpriteHxW.x;
 
@@ -79,10 +73,22 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
                         iter->vUVEnd.x += m_vSpriteHxW.x;
                 }
             }
-
-            // Update VBOs for Mesh.
-            m_pMesh->updateBillboardVBO();
         }
+
+        if (bDeletionFlag)
+        {
+            // Clean up any Billboards that are subject for deletion.
+            m_pBillboardListPtr->erase(
+                remove_if(
+                    m_pBillboardListPtr->begin(),
+                    m_pBillboardListPtr->end(),
+                    [](Mesh::sBillboardInfo const & p) { return p.fDuration <= 0.f; }
+                ),
+                m_pBillboardListPtr->end());
+        }
+
+        // Update VBOs with Animated Sprite
+        m_pMesh->updateBillboardVBO();
     }
 }
 
@@ -98,6 +104,7 @@ void AnimationComponent::addBillboard(const vec3* vPosition, const vec3* vNormal
     vUVRandStart += m_vSpriteHxWBorder;                                 // Calculate the Beginning UV coordinates of the random sprite
 
     m_pMesh->addBillboard(vPosition, vNormal, &vUVRandStart, &vUVRandEnd, m_fBillboardHeight, m_fBillboardWidth, m_fDuration);
+    cout << "Added Billboard: " << m_pBillboardListPtr->size() << endl;
 }
 
 void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth)

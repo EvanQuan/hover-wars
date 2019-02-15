@@ -24,23 +24,26 @@ RenderComponent::~RenderComponent()
 // Loads the GPU and calls openGL to render.
 void RenderComponent::render()
 {
-    // Set up OpenGL state
-    glBindVertexArray(m_iVertexArray);
-    glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
+    if (m_pMesh->getCount() > 0)
+    {
+        // Set up OpenGL state
+        glBindVertexArray(m_pMesh->getVertexArray());
+        glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
 
-    // Bind Texture(s) HERE
-    m_pMesh->bindTextures(m_eShaderType);
+        // Bind Texture(s) HERE
+        m_pMesh->bindTextures(m_eShaderType);
 
-    // Call related glDraw function.
-    if (m_bUsingInstanced)
-        glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
-    else if (m_bUsingIndices)
-        glDrawElements(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, nullptr);
-    else
-        glDrawArrays(m_eMode, 0, m_pMesh->getCount());
+        // Call related glDraw function.
+        if (m_bUsingInstanced)
+            glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
+        else if (m_bUsingIndices)
+            glDrawElements(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, nullptr);
+        else
+            glDrawArrays(m_eMode, 0, m_pMesh->getCount());
 
-    // Unbind Texture(s) HERE
-    m_pMesh->unbindTextures();
+        // Unbind Texture(s) HERE
+        m_pMesh->unbindTextures();
+    }
 }
 
 // Overloaded Update Function
