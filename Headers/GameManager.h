@@ -37,6 +37,14 @@ public:
     void moveCamera( vec3 pDirection );
     void intersectPlane(float fX, float fY);
     void switchView();
+    void toggleDebugCamera()
+    {
+        m_bUseDebugCamera = !m_bUseDebugCamera;
+        if (m_bUseDebugCamera)
+            glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else 
+            glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
 
     // Helper Enum for RGB Values
     enum eRGB
@@ -70,6 +78,7 @@ private:
     duration<float> m_fMaxDeltaTime;
 
     // Camera
+    bool m_bUseDebugCamera;
     Camera* m_pCamera;
     enum cView
     {

@@ -30,7 +30,6 @@ public:
     static void mouseMoveCallback(GLFWwindow* window, double x, double y);
     static void mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-    void updateMouse(float fX, float fY);
     void updateJoysticks();
 
     // Flag the Mouse for Rotations or Translations (Cannot do both at the same time).
@@ -40,11 +39,8 @@ public:
     void mouseREnd() { m_bRotateFlag = false; }
 
     // void mouseZoom(float fZoomVal);
-
+    // TODO This may need to be moved elsewhere. GameManager?
     ePlayer keyboardPlayer;
-
-    float x;
-    float y;
 
     // Keyboard
     // Tracks all keys if they are pressed
@@ -53,17 +49,43 @@ public:
     int pressed[KEYS];
 
     // Joysticks
-    bool justPressed(int joystickID, int joystickButton) { return m_pJoystickButtonsPressed[joystickID][joystickButton] && !m_pJoystickButtonsPressedLast[joystickID][joystickButton]; }
-    bool justReleased(int joystickID, int joystickButton) { return m_pJoystickButtonsPressed[joystickID][joystickButton] && !m_pJoystickButtonsPressedLast[joystickID][joystickButton]; }
-    // List of joysticks that are present (detected) by the game.
-    // Only present controllers are initialized
-    // 1 - present
-    // 0 - not present
+    bool justPressed(int joystickID, int joystickButton)
+    {
+        return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_PRESS
+            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == GLFW_RELEASE;
+    }
+    bool justReleased(int joystickID, int joystickButton)
+    {
+        return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_RELEASE
+            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == GLFW_PRESS;
+    }
+    /*
+    List of joysticks that are present (detected) by the game.
+    Only present controllers are initialized
+    1 - present
+    0 - not present
+    */
     int m_pJoystickIsPresent[MAX_PLAYER_COUNT];
+    /*
+    The number of axes each joystick has. Ideally, every joystick has 4 axes.
+    */
     int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
+    /*
+    The value of each axis for each player.
+    */
     const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
+    /*
+    The number of buttons that each joystick has. Ideally, every joystick would have the
+    same number of buttons, but we can never be too sure.
+    */
     int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
+    /*
+    The input states of each button for each joystick.
+    */
     eInputState m_joystickButtons[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
+    /*
+    The names of each joystick. This is only important for debugging purposes.
+    */
     const char* m_pJoystickNames[MAX_PLAYER_COUNT];
 
     // The only reason this needed is for mouse input, which may not actually
@@ -87,7 +109,15 @@ private:
 
     static InputHandler* m_pInstance;
 
+    /*
+    Raw input values retrieved from glfwGetJoystickButtons()
+    The values are either GLFW_PRESS or GLFW_RELEASE
+    */
     const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
+    /*
+    Raw input values stored as last frame's m_pJoystickButtonsPressed values.
+    This helps determines if a button has just been pressed or released.
+    */
     const unsigned char* m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT];
 
 
