@@ -19,7 +19,7 @@ namespace SpriteSheetDatabase
     // Database
     const vector<sSpriteSheetInfo> vSpriteInformation{
         { "textures/matty-wyett-simmonds-flamevfxlooping.jpg",  // FIRE_SPRITE
-           vec2(0.125f, 0.125f), vec2(0.005f, 0.0f), 8, 8, 30.0f },
+           vec2(0.125f, 0.125f), vec2(0.005f, 0.0f), 8, 8, 3.0f },
         { "textures/Smoke15Frames.png",                         // SMOKE_SPRITE
            vec2(0.2f, 0.3333333f), vec2(0.0f), 5, 3, 15.0f }
     };

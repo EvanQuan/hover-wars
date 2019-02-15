@@ -25,7 +25,7 @@ RenderComponent::~RenderComponent()
 void RenderComponent::render()
 {
     // Set up OpenGL state
-    glBindVertexArray(m_iVertexArray);
+    glBindVertexArray(m_pMesh->getVertexArray());
     glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
 
     // Bind Texture(s) HERE

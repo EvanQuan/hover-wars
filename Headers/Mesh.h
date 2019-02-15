@@ -19,10 +19,10 @@ private:
     // Private Methods
     bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
-    void genSphere(float fRadius, vec3 vPosition, bool bBounding);
-    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition, bool bBounding);
+    void genSphere(float fRadius, vec3 vPosition);
+    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
     void genBillboard();
-    void initalizeVBOs( bool bBounding );
+    void initalizeVBOs();
     bool loadObj(const string& sFileName);
     void loadMaterial(const Material* pMaterial);
 
@@ -30,7 +30,7 @@ private:
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
 
     // VBO Initialization
-    void setupInstanceBuffer(GLuint iStartSpecifiedIndex, bool bBounding);
+    void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
 
     // Material Struct for setting uniform in Lighting Shaders
     struct sRenderMaterial
@@ -46,12 +46,6 @@ private:
     vector< vec2 > m_pUVs;
     GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
     GLuint m_iVertexArray;
-
-    // Bounding Box Information and GPU VAO/VBOs
-    vector<unsigned int> m_pBoundingIndices;
-    vector< vec3 > m_pBoundingVerts;
-    GLuint m_iBoundingVertexBuffer, m_iBoundingInstancedBuffer, m_iBoundingIndicesBuffer;
-    GLuint m_iBoundingVertexArray;
 
     string m_sManagerKey; // Used as key for finding Mesh in MeshManager
     ShaderManager* m_pShdrMngr;
@@ -70,6 +64,7 @@ private:
 
     // Billboard Functionality -> Only accessable within AnimationComponent
     void updateBillboardVBO();
+    void updateBillboardVBO(unsigned int iIndex);
     unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration);
     void flushBillboards();
 
@@ -109,7 +104,6 @@ public:
     const vector<vec3>& getNormals() const { return m_pNormals; }
     const vector<vec2>& getUVs() const { return m_pUVs; }
     GLuint getVertexArray() const { return m_iVertexArray; }
-    GLuint getBoundingVertexArray() const { return m_iBoundingVertexArray; }
 
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;
