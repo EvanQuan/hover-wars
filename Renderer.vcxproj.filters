@@ -195,6 +195,9 @@
     <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">

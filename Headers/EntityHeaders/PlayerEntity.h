@@ -4,6 +4,7 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
+#include "InteractableEntity.h"
 #include <queue>
 
 #define MAX_NUM_CAMERAS 2 
@@ -34,6 +35,7 @@ private:
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pCmrComponents[MAX_NUM_CAMERAS];
+    InteractableEntity* m_pFireTrail;
     vec3 m_vPositionTotal;
     queue<vec3> m_vPastPositions;
 

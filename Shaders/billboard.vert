@@ -11,12 +11,14 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uvStart;
 layout (location = 3) in vec2 uvEnd;
 layout (location = 4) in vec2 Dimensions;
+layout (location = 5) in float Duration;
 
 out vec3 vNormal;
 out vec2 vDimensions;
 out vec3 vToCamera;
 out vec2 vUVStart;
 out vec2 vUVEnd;
+out float fDuration;
 
 void main(void)
 {
@@ -29,6 +31,9 @@ void main(void)
 	// create the Normal Matrix to correct Normal into camera space
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
 	vNormal = normal;
+	
+	// Send Duration to the geometry shader.
+	fDuration = Duration;
 	
 	// Pass Dimensions to Geometry Shader
 	vDimensions = Dimensions;

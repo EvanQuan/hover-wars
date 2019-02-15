@@ -1,11 +1,10 @@
 #include "EntityManager.h"
-#include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityHeaders/StaticEntity.h"
-#include "EntityHeaders/PlayerEntity.h"
 
 // Initialize Static Instance Variable
 EntityManager* EntityManager::m_pInstance = nullptr;
 
+// Default Constructor
 EntityManager::EntityManager()
 {
     // Initialize ID Pools
@@ -59,50 +58,7 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     purgeEnvironment();
     pObjFctry->loadFromFile(sFileName);
-
-    // TESTING: To Be Removed
-    vec3 vNormal(0.0f, 1.0f, 0.0f);
-    vec3 vPosition(5.0f, 5.0f, 5.0f);
-    unique_ptr<InteractableEntity> pTestingEntity = make_unique<InteractableEntity>(getNewEntityID(), &vPosition);
-    pTestingEntity->loadAsBillboard(&vNormal, 2.0f, 1.5f, nullptr);
-    m_pBillboardTesting = pTestingEntity.get();
-    m_pMasterEntityList.push_back(move(pTestingEntity));
 }
-
-// Remove Object from List with given ID
-//void EntityManager::killObject( long lID )
-//{
-//    unsigned int i = 0;
-//
-//    // Iterate to find Object
-//    while ( i < m_pObjects.size() && nullptr != m_pObjects[i] && lID != m_pObjects[i]->ID() )
-//        ++i;
-//
-//    // Delete Object and remove it from list.
-//    if ( i < m_pObjects.size() )
-//    {
-//        swap( m_pObjects[i], m_pObjects.back() );
-//        delete m_pObjects.back();
-//        m_pObjects.pop_back();
-//    }
-//}
-
-// Outputs all the objects in the environment for debugging.
-//void EntityManager::listEnvironment()
-//{
-//    cout << "Environment:" << endl;
-//    for ( vector<Object3D*>::iterator pIter = m_pObjects.begin();
-//          pIter != m_pObjects.end();
-//          ++pIter )
-//        cout << "\t" << (*pIter)->getDebugOutput() << endl;
-//
-//    for ( vector<Light*>::iterator pIter = m_pLights.begin();
-//          pIter != m_pLights.end();
-//          ++pIter )
-//        cout << "\t" << (*pIter)->getDebugOutput() << endl;
-//
-//    cout << endl;
-//}
 
 // Clears out the entire environment
 void EntityManager::purgeEnvironment()
@@ -112,6 +68,9 @@ void EntityManager::purgeEnvironment()
     m_pMasterEntityList.clear();
     m_pEmtrEngn->clearAllEmitters();
 
+    // Reset ID Pools
+    m_iComponentIDPool = m_iEntityIDPool = 0;
+
     m_pMshMngr->unloadAllMeshes();
     m_pTxtMngr->unloadAllTextures();
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
@@ -120,43 +79,31 @@ void EntityManager::purgeEnvironment()
     m_pActiveCamera = nullptr;
 }
 
-// Fetch the Frenet Frame of the first MeshObject found (Hack for assignment)
-//mat4 EntityManager::getFrenetFrame()
-//{ 
-//    mat4 pReturnVal = mat4( 1.0 );    // Default: return Identity Matrix
-//
-//    for ( vector<Object3D*>::iterator pObjIter = m_pObjects.begin();
-//         pObjIter != m_pObjects.end();
-//         ++pObjIter )
-//    {
-//        if ( !(*pObjIter)->getType().compare( "MeshObject" ) )
-//        {
-//            pReturnVal = (*pObjIter)->getFreNetFrames();
-//            break;
-//        }
-//    }
-//
-//    // Return
-//    return pReturnVal;
-//}
-
-void EntityManager::renderEnvironment( const vec3& vCamLookAt )
+// Name: renderEnvironment
+// Written by: James Coté
+// Description: Sets necessary lights into Shader Uniform Buffers and Renders
+//      all active Render Components.
+// TODO: Have Lighting load based on Spatial Data Structure
+void EntityManager::renderEnvironment( )
 {
     // Local Variables
     ShaderManager* pShdrMngr = SHADER_MANAGER;
     const LightingComponent* pDirectionalLightComponent = nullptr;
 
+    // Get Directional Light
     if (nullptr != m_pDirectionalLight)
         pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
     pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
+    // Render all render components
     for (unordered_map<Mesh const*, RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
         pIter != m_pRenderingComponents.end();
         ++pIter)
         (*pIter).second->render();
 
+    // Render Emitters
     if (nullptr != m_pEmtrEngn)
         m_pEmtrEngn->renderEmitters();
 }
@@ -222,12 +169,24 @@ void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* 
     m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
+// Generate a Player Entity at a starting position with a given Material, scale, mesh location and shader type.
 void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const string& sShaderType)
 {
     unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
     pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType, fScale);
-    m_pPlayerEntityList.push_back(pNewPlayer.get()); // TODO this retrieves a raw pointer from the unique pointer. Is this okay?
+    m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
+}
+
+// Generates and Returns an Interactable Entity with a specified Position.
+InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)
+{
+    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(getNewEntityID(), vPosition);
+    InteractableEntity* pReturnEntity = pNewEntity.get();
+    m_pMasterEntityList.push_back(move(pNewEntity));
+
+    // Return InteractableEntity
+    return pReturnEntity;
 }
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
@@ -295,7 +254,6 @@ void EntityManager::updateEnvironment(const Time& pTimer)
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second
         duration<float> pDeltaTime = pMaxDeltaTime;
-
         pFrameTime -= pDeltaTime;
         float fDeltaTime = static_cast<float>(pDeltaTime.count());
         
@@ -416,6 +374,7 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 * Command Management                                                    *
 \*********************************************************************************/
 
+// TODO: Make these Commands work through the PlayerEntity->PhysicsManager
 void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
     switch (command)
@@ -430,9 +389,11 @@ void EntityManager::execute(ePlayer player, eVariableCommand command, float x, f
     }
 }
 
+// Checks to see if the Player exists in this game.
+// EVANTODO: Maybe make this a value within Command Handler upon game start?
 bool EntityManager::playerExists(ePlayer player)
 {
-    return (int) m_pPlayerEntityList.size() > player;
+    return m_pPlayerEntityList.size() > static_cast<int>(player);
 }
 
 PlayerEntity* EntityManager::getPlayer(ePlayer player)

@@ -66,6 +66,14 @@
 #			- if shader type is incorrect, or shader not specified, a simple
 #				diffuse shader will be used (PLANE_SHADER internally).
 #			- TODO: list valid <shader type> inputs here.
+#		+bounding	{ <bounding type> <bounding data> }
+#			- <bounding type> possible values:
+#				- "box" :> specifies a cubic box to bound the object 
+#						:> <bounding data> - height length width as floats
+#				- "sphere"	:> specifies a sphere as a bounding box
+#							:> <bounding data> - radius as floats
+#				- "capsule"	:> specifies a capsule as a bounding box
+#							:> <bounding data> - height radius as floats
 # ============================================================
 
 directional_light {

@@ -124,9 +124,8 @@ void GameManager::RenderScene()
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
-    vec3 vCamLookAt = pCamera->getLookAt();
 
-    GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
+    const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
     const GLfloat zero = 1.0f;
 
     glClearBufferfv(GL_COLOR, 0, color);
@@ -136,8 +135,11 @@ void GameManager::RenderScene()
     // Set camera information in Shaders before rendering
     m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
 
+#ifdef _DEBUG
     renderAxis();
-    m_pEntityManager->renderEnvironment( vCamLookAt );
+#endif
+
+    m_pEntityManager->renderEnvironment( );
     glDisable(GL_DEPTH_TEST);
 }
 

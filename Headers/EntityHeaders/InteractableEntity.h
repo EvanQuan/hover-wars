@@ -22,7 +22,8 @@ public:
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
 
-    void loadAsBillboard(const vec3* vNormal, float fHeight, float fWidth, const Material* pMaterial);
+    void loadAsBillboard(float fHeight, float fWidth);
+    void addBillboard(const vec3* vNormal, const vec3* vPosition);
 
 private:
     // Private Copy Constructor and Assignment Operator

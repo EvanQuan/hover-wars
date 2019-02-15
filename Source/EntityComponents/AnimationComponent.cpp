@@ -31,36 +31,58 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
         // Subtract Animation Speed.
         m_fAnimTime -= ANIMATION_SPEED;
 
-        for (vector<Mesh::sBillboardInfo>::iterator iter = m_pBillboardListPtr->begin();
-            iter != m_pBillboardListPtr->end();
-            ++iter)
+        if (!m_pBillboardListPtr->empty())
         {
-            // Move Sprite UVs right.
-            iter->vUVStart.x += m_vSpriteHxW.x;
-            iter->vUVEnd.x += m_vSpriteHxW.x;
+            // Clean up any Billboards that are subject for deletion.
+            m_pBillboardListPtr->erase(
+                remove_if(
+                    m_pBillboardListPtr->begin(),
+                    m_pBillboardListPtr->end(),
+                    [](Mesh::sBillboardInfo const & p) { return p.fDuration <= 0.f; }
+                ),
+                m_pBillboardListPtr->end());
 
-            // If overstepped past, reset back to beginning and evaluate v constraints
-            if (iter->vUVStart.x >= 1.0f)
+            // Update Billboards
+            for (vector<Mesh::sBillboardInfo>::iterator iter = m_pBillboardListPtr->begin();
+                iter != m_pBillboardListPtr->end();
+                ++iter)
             {
-                // Reset u back to beginning.
-                iter->vUVStart.x -= 1.0f;
-                iter->vUVEnd.x -= 1.0f;
-
-                // Evaluate v
-                iter->vUVStart.y += m_vSpriteHxW.y;
-                iter->vUVEnd.y += m_vSpriteHxW.y;
-
-                // If gone past bottom of sprite sheet, return back to beginning.
-                if (iter->vUVStart.y >= 1.0f)
+                // Only compute Animation if it has duration remaining.
+                if (iter->fDuration > 0.0f)
                 {
-                    iter->vUVStart.y -= 1.0f;
-                    iter->vUVEnd.y -= 1.0f;
+                    // Decrement Duration
+                    iter->fDuration -= fTimeDeltaInMilliseconds;
+
+                    // Move Sprite UVs right.
+                    iter->vUVStart.x += m_vSpriteHxW.x;
+
+                    // If overstepped past, reset back to beginning and evaluate v constraints
+                    if (iter->vUVStart.x >= 1.0f)
+                    {
+                        // Reset u back to beginning.
+                        iter->vUVStart.x = m_vSpriteHxWBorder.x;
+                        iter->vUVEnd.x = m_vSpriteHxW.x - m_vSpriteHxWBorder.x;
+
+                        // Evaluate v
+                        iter->vUVStart.y += m_vSpriteHxW.y;
+
+                        // If gone past bottom of sprite sheet, return back to beginning.
+                        if (iter->vUVStart.y >= 1.0f)
+                        {
+                            iter->vUVStart.y = m_vSpriteHxWBorder.y;
+                            iter->vUVEnd.y = m_vSpriteHxW.y - m_vSpriteHxWBorder.y;
+                        }
+                        else // No reset? update the end of the UV
+                            iter->vUVEnd.y += m_vSpriteHxW.y;
+                    }
+                    else    // No reset? update the end of the UV
+                        iter->vUVEnd.x += m_vSpriteHxW.x;
                 }
             }
-        }
 
-        // Update VBOs for Mesh.
-        m_pMesh->updateBillboardUVs();
+            // Update VBOs for Mesh.
+            m_pMesh->updateBillboardVBO();
+        }
     }
 }
 
@@ -75,11 +97,10 @@ void AnimationComponent::addBillboard(const vec3* vPosition, const vec3* vNormal
     vUVRandEnd = vUVRandStart + (m_vSpriteHxW - m_vSpriteHxWBorder);    // Calculate the End UV Coordinates of the random sprite
     vUVRandStart += m_vSpriteHxWBorder;                                 // Calculate the Beginning UV coordinates of the random sprite
 
-    m_pMesh->addBillboard(vPosition, vNormal, &vUVRandStart, &vUVRandEnd, m_fBillboardHeight, m_fBillboardWidth);
+    m_pMesh->addBillboard(vPosition, vNormal, &vUVRandStart, &vUVRandEnd, m_fBillboardHeight, m_fBillboardWidth, m_fDuration);
 }
 
-void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, vec2 vSpriteHxW, vec2 vSpriteHxWBorder,
-                                            int iNumSpritesX, int iNumSpritesY, float fBillboardHeight, float fBillboardWidth)
+void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth)
 {
     // Ensure the Mesh passed in is valid.
     assert(nullptr != pMesh);
@@ -89,10 +110,11 @@ void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, vec2 vSpri
     m_pMesh = pMesh;
 
     // Store information about the sprite sheet and Billboard
-    m_vSpriteHxW        = vSpriteHxW;
-    m_vSpriteHxWBorder  = vSpriteHxWBorder;
-    m_iNumSpritesX      = iNumSpritesX;
-    m_iNumSpritesY      = iNumSpritesY;
+    m_vSpriteHxW        = pSpriteInfo->vUVSpriteSize;
+    m_vSpriteHxWBorder  = pSpriteInfo->vUVBorderSize;
+    m_iNumSpritesX      = pSpriteInfo->iNumSpritesX;
+    m_iNumSpritesY      = pSpriteInfo->iNumSpritesY;
+    m_fDuration         = pSpriteInfo->fDuration;
     m_fBillboardHeight  = fBillboardHeight;
     m_fBillboardWidth   = fBillboardWidth;
 
