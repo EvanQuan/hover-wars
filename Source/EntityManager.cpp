@@ -291,7 +291,7 @@ void EntityManager::updateEnvironment(const Time& pTimer)
     duration<float> pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
     // Loop updates to maintain 60 fps
-    while (pFrameTime >= milliseconds{ 0 })  // TODO > or >= ?
+    while (pFrameTime > milliseconds(0))
     {
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second
