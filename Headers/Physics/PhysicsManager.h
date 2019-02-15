@@ -61,16 +61,16 @@ public:
 
 private:
     int currentState = 0;
-    snippetvehicle::VehicleSceneQueryData*    gVehicleSceneQueryData = NULL;
-    physx::PxBatchQuery*            gBatchQuery = NULL;
+    snippetvehicle::VehicleSceneQueryData*      gVehicleSceneQueryData = NULL;
+    physx::PxBatchQuery*                        gBatchQuery            = NULL;
 
     physx::PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = NULL;
 
-    physx::PxVehicleNoDrive*        gVehicleNoDrive = NULL;
+    physx::PxVehicleNoDrive*        gVehicleNoDrive       = NULL;
 
-    physx::PxF32                    gVehicleModeLifetime = 4.0f;
-    physx::PxF32                    gVehicleModeTimer = 0.0f;
-    bool                    gVehicleOrderComplete = false;
+    physx::PxF32                    gVehicleModeLifetime  = 4.0f;
+    physx::PxF32                    gVehicleModeTimer     = 0.0f;
+    bool                            gVehicleOrderComplete = false;
     physx::PxU32                    gVehicleOrderProgress = 0;
 
     snippetvehicle::VehicleDesc initVehicleDesc();
@@ -79,30 +79,30 @@ private:
     // Singleton Implementation: make all possible constructors private and inaccessable
     //        to disallow multiple instance of the physics manager.
     static PhysicsManager *m_pInstance;
-    PhysicsManager();    // Private Constructor for Singleton Implementation
-    PhysicsManager(const PhysicsManager* pCopy); // Overloaded Private Copy Constructor for Singleton Implementation
-    PhysicsManager* operator=(const PhysicsManager* pCopy);    // Overloaded assignment operator for Singleton Implementation
+    PhysicsManager();                                           // Private Constructor for Singleton Implementation
+    PhysicsManager(const PhysicsManager* pCopy);                // Overloaded Private Copy Constructor for Singleton Implementation
+    PhysicsManager* operator=(const PhysicsManager* pCopy);     // Overloaded assignment operator for Singleton Implementation
 
     // Private Variables
     bool m_bInteractive;            // Not sure what this is for, but maybe set it on initialization and maintain it over
                                     // the longevity of the Physics Manager? 
-    float m_fTimeSinceLastUpdate;    // Increments every update to track how long since last Physics Update.
+    float m_fTimeSinceLastUpdate;   // Increments every update to track how long since last Physics Update.
     // Moving these from Constructor to Here to privatize these variables used by the Physics
     //    manager
-    physx::PxDefaultAllocator        gAllocator;
-    physx::PxDefaultErrorCallback    gErrorCallback;
-    physx::PxFoundation*            gFoundation = NULL;
-    physx::PxPhysics*                gPhysics = NULL;
-    physx::PxRigidStatic*            gGroundPlane = NULL;
+    physx::PxDefaultAllocator       gAllocator;
+    physx::PxDefaultErrorCallback   gErrorCallback;
+    physx::PxFoundation*            gFoundation     = NULL;
+    physx::PxPhysics*               gPhysics        = NULL;
+    physx::PxRigidStatic*           gGroundPlane    = NULL;
 
-    physx::PxDefaultCpuDispatcher*    gDispatcher = NULL;
-    physx::PxScene*                gScene = NULL;
-    physx::PxControllerManager*    manager = NULL;
+    physx::PxDefaultCpuDispatcher*  gDispatcher     = NULL;
+    physx::PxScene*                 gScene          = NULL;
+    physx::PxControllerManager*     manager         = NULL;
 
-    physx::PxMaterial*                gMaterial = NULL;
+    physx::PxMaterial*              gMaterial       = NULL;
 
-    physx::PxPvd*                  gPvd = NULL;
-    physx::PxCooking *                gCook;
+    physx::PxPvd*                   gPvd            = NULL;
+    physx::PxCooking *              gCook;
     physx::PxReal stackZ = -3.0f;
 
     // Private Functions - Not necessary for outside classes to have access to these, they don't need to know about them.
