@@ -287,11 +287,11 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
     // Get Total Frame Time and Benchmark for 60 fps
-    duration<float> pFrameTime = pTimer.getFrameTime();
+    pFrameTime += pTimer.getFrameTime();
     duration<float> pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
     // Loop updates to maintain 60 fps
-    while (pFrameTime > milliseconds(0))
+    while (pFrameTime > pMaxDeltaTime)
     {
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second

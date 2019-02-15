@@ -110,12 +110,18 @@ private:
     // Manage Pointers for Deletion.
     MeshManager*                m_pMshMngr;
     TextureManager*             m_pTxtMngr;
-    SceneLoader*               m_pScnLdr;
+    SceneLoader*                m_pScnLdr;
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
 
     // Edge Threshold Implementation
     float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;
     bool m_bPause;
+
+    /*
+    Represents the time of the current frame
+    This value should be changed every time the environment is updated.
+    */
+    duration<float> pFrameTime;
 };
 
