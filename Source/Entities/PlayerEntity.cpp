@@ -147,7 +147,7 @@ void PlayerEntity::useAbility(eAbility ability)
 
 void PlayerEntity::move(float x, float y)
 {
-    PHYSICS_MANAGER->handleControllerInputMove(x, y);
+    PHYSICS_MANAGER->movePlayer(x, y);
 }
 
 void PlayerEntity::turn(float x)

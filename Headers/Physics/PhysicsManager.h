@@ -34,7 +34,7 @@ public:
     void stopKey();
     void leftKey();
     void rightKey();
-    void handleControllerInputMove(float x, float y);
+    void movePlayer(float x, float y);
     void rotatePlayer(float x, float y);
 
     // Update function for Physics, technically called every frame, but

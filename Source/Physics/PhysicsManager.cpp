@@ -324,7 +324,7 @@ void PhysicsManager::forwardKey() {
         currentState = 1;
     }
 }
-void PhysicsManager::handleControllerInputMove(float x, float y) {
+void PhysicsManager::movePlayer(float x, float y) {
     /*if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
         std::cout << "here" << std::endl;
         gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
