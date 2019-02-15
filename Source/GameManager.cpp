@@ -126,14 +126,13 @@ void GameManager::RenderScene()
     // each with their own camera components. The game will render 4 times, each switching
     // the player to retrieve the active camera.
     // That will be done here?
-    const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
-    // const CameraComponent* pCamera = m_pEntityManager->getActiveCameraComponent();
+    //const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
+    const CameraComponent* pCamera = m_pCamera->getCameraComponent();
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
-    vec3 vCamLookAt = pCamera->getLookAt();
 
-    GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
+    const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
     const GLfloat zero = 1.0f;
 
     glClearBufferfv(GL_COLOR, 0, color);
@@ -144,17 +143,16 @@ void GameManager::RenderScene()
     m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
 
 #ifdef _DEBUG
-    renderAxis();
+    renderAxis();   
 #endif
 
-    m_pEntityManager->renderEnvironment( vCamLookAt );
+    m_pEntityManager->renderEnvironment( );
     glDisable(GL_DEPTH_TEST);
 }
 
 void GameManager::renderAxis()
 {
     glPointSize( 10.f );
-    CheckGLErrors();
 
     glBindVertexArray( m_pVertexArray );
     glUseProgram( m_pShaderManager->getProgram( ShaderManager::eShaderType::WORLD_SHDR ) );

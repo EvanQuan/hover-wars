@@ -129,7 +129,7 @@ Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, const Mat
     else // Generate a new Sphere Mesh of given Radius
     {
         unique_ptr<Mesh> pNewSphere = make_unique<Mesh>(sHashHandle, bStaticMesh, pMaterial, Mesh::manager_cookie());
-        pNewSphere->genSphere(fRadius, vPosition);    // Generate Sphere
+        pNewSphere->genSphere(fRadius, vPosition, false);    // Generate Sphere
         pReturnMesh = pNewSphere.get();                            // Return raw pointer to managed Mesh
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewSphere)));    // Move Mesh to Cache
     }
@@ -155,7 +155,7 @@ Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, i
     else // Generate a new Cube Mesh with given dimensions
     {
         unique_ptr<Mesh> pNewCube = make_unique<Mesh>(sHashHandle, bStaticMesh, pMaterial, Mesh::manager_cookie());
-        pNewCube->genCube(iHeight, iWidth, iDepth, vPosition);
+        pNewCube->genCube(iHeight, iWidth, iDepth, vPosition, false);
         pReturnMesh = pNewCube.get();
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewCube)));
     }

@@ -28,6 +28,9 @@ public:
     void setSteady(bool bSteady) { m_bSteadyCam = bSteady; }
     void setRotationQuat(quat pRotation) { m_pCmraCmp->setRotationQuat(pRotation); }
 
+    // Get the Camera Component
+    const CameraComponent* getCameraComponent() { return m_pCmraCmp; }
+
 private:
     CameraComponent* m_pCmraCmp;
     PhysicsComponent* m_pPhysicsCmp;
