@@ -31,7 +31,7 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 2500.0f // 10000.0f
+#define MOVEMENT_FORCE 1000.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -63,7 +63,7 @@ stop and change directions in a reasonably responsive manner.
 We want this to be low enough that there some amount of drifting can be done to
 make it feel like a hovercraft.
 */
-#define DYNAMIC_FRICTION 0.35f // 0.35f
+#define DYNAMIC_FRICTION 1.00f // 0.35f
 /*
 Car Restitution
 
@@ -182,69 +182,6 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
     return vehicleDesc;
 }
 
-// DEPRECATED
-void PhysicsManager::startAccelerateForwardsMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startAccelerateReverseMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, -1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, -1000.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startBrakeMode()
-{
-    gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startTurnHardLeftMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, 1.0f);
-    gVehicleNoDrive->setSteerAngle(1, 1.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startTurnHardRightMode()
-{
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, -1.0f);
-    gVehicleNoDrive->setSteerAngle(1, -1.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startHandbrakeTurnLeftMode()
-{
-    gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, 1.0f);
-    gVehicleNoDrive->setSteerAngle(1, 1.0f);
-}
-
-// DEPRECATED
-void PhysicsManager::startHandbrakeTurnRightMode()
-{
-    gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(0, 1000.0f);
-    gVehicleNoDrive->setDriveTorque(1, 1000.0f);
-    gVehicleNoDrive->setSteerAngle(0, -1.0f);
-    gVehicleNoDrive->setSteerAngle(1, -1.0f);
-}
-
 void PhysicsManager::releaseAllControls()
 {
     gVehicleNoDrive->setDriveTorque(0, 0.0f);
@@ -307,8 +244,10 @@ void PhysicsManager::initPhysics(bool interactive)
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
     gPvd = PxCreatePvd(*gFoundation);
+#ifdef _DEBUG
     PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
     gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+#endif
 
     gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
@@ -478,7 +417,9 @@ void PhysicsManager::cleanupPhysics()
         gPhysics->release();
         PxPvdTransport* transport = gPvd->getTransport();
         gPvd->release();
+#ifdef _DEBUG
         transport->release();
+#endif
         //manager->release();
         gFoundation->release();
 
