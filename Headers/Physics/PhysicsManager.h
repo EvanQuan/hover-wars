@@ -75,19 +75,6 @@ private:
 
     snippetvehicle::VehicleDesc initVehicleDesc();
 
-    void startAccelerateForwardsMode();
-
-    void startAccelerateReverseMode();
-
-    void startBrakeMode();
-
-    void startTurnHardLeftMode();
-
-    void startTurnHardRightMode();
-
-    void startHandbrakeTurnLeftMode();
-
-    void startHandbrakeTurnRightMode();
     void releaseAllControls();
     // Singleton Implementation: make all possible constructors private and inaccessable
     //        to disallow multiple instance of the physics manager.
