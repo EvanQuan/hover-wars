@@ -152,7 +152,6 @@ void PlayerEntity::move(float x, float y)
 
 void PlayerEntity::turn(float x)
 {
-    float y = 0;
     PHYSICS_MANAGER->rotatePlayer(m_iID, x);
 }
 
