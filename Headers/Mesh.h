@@ -44,7 +44,7 @@ private:
     vector<unsigned int> m_pIndices;
     vector< vec3 > m_pVertices, m_pNormals;
     vector< vec2 > m_pUVs;
-    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer, m_iScaleBuffer;
+    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
     GLuint m_iVertexArray;
 
     // Bounding Box Information and GPU VAO/VBOs
@@ -109,6 +109,7 @@ public:
     const vector<vec3>& getNormals() const { return m_pNormals; }
     const vector<vec2>& getUVs() const { return m_pUVs; }
     GLuint getVertexArray() const { return m_iVertexArray; }
+    GLuint getBoundingVertexArray() const { return m_iBoundingVertexArray; }
 
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;

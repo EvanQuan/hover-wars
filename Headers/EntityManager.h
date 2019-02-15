@@ -61,6 +61,7 @@ public:
     void purgeEnvironment();
     void renderEnvironment( );
     void updateEnvironment(const Time& pTimer);
+    void changeFrameRate(duration<float> pNewFrameRate) { m_pMaxDeltaTime = pNewFrameRate; }
     
     /*
     The command handler can get all the players to directly communicate to.
@@ -108,12 +109,12 @@ private:
 
     Unit: second
     */
-    duration<float> pFrameTime;
+    duration<float> m_pFrameTime;
     /*
     This determines the environment update, and thus the frame rate.
 
     Unit: second
     */
-    duration<float> pMaxDeltaTime;
+    duration<float> m_pMaxDeltaTime;
 };
 

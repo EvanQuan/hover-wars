@@ -20,7 +20,7 @@ EntityManager::EntityManager()
     m_pEmtrEngn = EMITTER_ENGINE;
     m_pPhysxMngr = PHYSICS_MANAGER;
 
-    pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+    m_pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 }
 
 // Gets the instance of the environment manager.
@@ -196,10 +196,6 @@ void EntityManager::generateStaticPointLight( float fPower, const vec3* vPositio
 {
     unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), vPosition);
     pNewLight->initialize(fPower, vColor, true, sMaterial, sMeshLocation, m_fMeshScale);
-
-    if (nullptr == m_pTestingLight)
-        m_pTestingLight = pNewLight.get();
-
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
@@ -246,17 +242,16 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 //    in the game world. No rendering is done here.
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
-    // Get Total Frame Time and Benchmark for 60 fps
-    pFrameTime += pTimer.getFrameTime();
+    // Increment Frame
+    m_pFrameTime += pTimer.getFrameTime();
 
     // Loop updates to maintain 60 fps
-    while (pFrameTime >= pMaxDeltaTime)
+    while (m_pFrameTime >= m_pMaxDeltaTime)
     {
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second
-        duration<float> pDeltaTime = pMaxDeltaTime;
-        pFrameTime -= pDeltaTime;
-        float fDeltaTime = static_cast<float>(pDeltaTime.count());
+        m_pFrameTime -= m_pMaxDeltaTime;
+        float fDeltaTime = static_cast<float>(m_pMaxDeltaTime.count());
         
         // UPDATES GO HERE
         m_pEmtrEngn->update(fDeltaTime);
@@ -383,7 +378,7 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 
 bool EntityManager::playerExists(ePlayer player)
 {
-    return m_pPlayerEntityList.size() > static_cast<int>(player);
+    return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
 PlayerEntity* EntityManager::getPlayer(ePlayer player)

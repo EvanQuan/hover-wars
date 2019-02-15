@@ -48,7 +48,6 @@ Mesh::~Mesh()
     glDeleteBuffers( 1, &m_iVertexBuffer );
     glDeleteBuffers( 1, &m_iIndicesBuffer );
     glDeleteBuffers(1, &m_iInstancedBuffer);
-    glDeleteBuffers(1, &m_iScaleBuffer);
     glDeleteVertexArrays( 1, &m_iVertexArray );
 
 #ifdef _DEBUG
@@ -166,15 +165,14 @@ void Mesh::genSphere(float fRadius, vec3 vPosition, bool bBounding)
         float const z = sinf(2 * PI * s * S) * sinf(PI * r * R);
 
         // UVs are inverted.
-        if( !bBounding )
-            *t++ = vec2( (MAX_PHI_CUTS-s) * S, (MAX_THETA_CUTS-r) * R);
+        if (!bBounding)
+        {
+            *t++ = vec2((MAX_PHI_CUTS - s) * S, (MAX_THETA_CUTS - r) * R);
+            *n++ = vec3(x, y, z);   // Store normal in Local space.
+        }
 
         // Scale Sphere to Radius.
         *v++ = vec3(x * fRadius, y * fRadius, z * fRadius);
-
-        // Store normal in Local space.
-        if( !bBounding )
-            *n++ = vec3(x, y, z);
     }
 
     // Generate indices
@@ -256,34 +254,34 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition, bool bBo
     pTargetVerts->push_back(vIndexes[3]);      // Index 3
 
     // Face 2 - Back
-    m_pVertices.push_back(vIndexes[4]);        // Index 4
-    m_pVertices.push_back(vIndexes[5]);        // Index 5
-    m_pVertices.push_back(vIndexes[6]);        // Index 6
-    m_pVertices.push_back(vIndexes[7]);        // Index 7
+    pTargetVerts->push_back(vIndexes[4]);        // Index 4
+    pTargetVerts->push_back(vIndexes[5]);        // Index 5
+    pTargetVerts->push_back(vIndexes[6]);        // Index 6
+    pTargetVerts->push_back(vIndexes[7]);        // Index 7
 
     // Face 3 - Left
-    m_pVertices.push_back(vIndexes[0]);        // Index 1
-    m_pVertices.push_back(vIndexes[3]);        // Index 2
-    m_pVertices.push_back(vIndexes[4]);        // Index 5
-    m_pVertices.push_back(vIndexes[6]);        // Index 7
+    pTargetVerts->push_back(vIndexes[0]);        // Index 1
+    pTargetVerts->push_back(vIndexes[3]);        // Index 2
+    pTargetVerts->push_back(vIndexes[4]);        // Index 5
+    pTargetVerts->push_back(vIndexes[6]);        // Index 7
 
     // Face 4 - Right
-    m_pVertices.push_back(vIndexes[1]);        // Index 0
-    m_pVertices.push_back(vIndexes[2]);        // Index 3
-    m_pVertices.push_back(vIndexes[5]);        // Index 4
-    m_pVertices.push_back(vIndexes[7]);        // Index 6
+    pTargetVerts->push_back(vIndexes[1]);        // Index 0
+    pTargetVerts->push_back(vIndexes[2]);        // Index 3
+    pTargetVerts->push_back(vIndexes[5]);        // Index 4
+    pTargetVerts->push_back(vIndexes[7]);        // Index 6
 
     // Face 5 - Bottom
-    m_pVertices.push_back(vIndexes[2]);        // Index 2
-    m_pVertices.push_back(vIndexes[3]);        // Index 3
-    m_pVertices.push_back(vIndexes[6]);        // Index 6
-    m_pVertices.push_back(vIndexes[7]);        // Index 7
+    pTargetVerts->push_back(vIndexes[2]);        // Index 2
+    pTargetVerts->push_back(vIndexes[3]);        // Index 3
+    pTargetVerts->push_back(vIndexes[6]);        // Index 6
+    pTargetVerts->push_back(vIndexes[7]);        // Index 7
 
     // Face 6 - Top
-    m_pVertices.push_back(vIndexes[0]);        // Index 0
-    m_pVertices.push_back(vIndexes[1]);        // Index 1
-    m_pVertices.push_back(vIndexes[4]);        // Index 4
-    m_pVertices.push_back(vIndexes[5]);        // Index 5
+    pTargetVerts->push_back(vIndexes[0]);        // Index 0
+    pTargetVerts->push_back(vIndexes[1]);        // Index 1
+    pTargetVerts->push_back(vIndexes[4]);        // Index 4
+    pTargetVerts->push_back(vIndexes[5]);        // Index 5
 
     // Store Normals and UVs for Non Bounding Box Cubes
     if (!bBounding)
@@ -401,8 +399,9 @@ void Mesh::initalizeVBOs(bool bBounding)
     // Get proper Target Verts
     vector< vec3 >* vTargetVerts = (bBounding ? &m_pBoundingVerts : &m_pVertices);
     vector< unsigned int >* pTargetIndices = (bBounding ? &m_pBoundingIndices : &m_pIndices);
-    GLuint iVAOTarget = (bBounding ? m_iBoundingVertexArray : m_iVertexArray);
-    GLuint iIndicesBufferTarget = (bBounding ? m_iBoundingIndicesBuffer : m_iIndicesBuffer);
+    GLuint* iVAOTarget = (bBounding ? &m_iBoundingVertexArray : &m_iVertexArray);
+    GLuint* iVBOTarget = (bBounding ? &m_iBoundingVertexBuffer : &m_iVertexBuffer);
+    GLuint* iIndicesBufferTarget = (bBounding ? &m_iBoundingIndicesBuffer : &m_iIndicesBuffer);
 
     // This function shouldn't be called without passing in Vertex Data.
     assert(!vTargetVerts->empty());
@@ -450,20 +449,20 @@ void Mesh::initalizeVBOs(bool bBounding)
     }
 
     // Generate VBO
-    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(iVAOTarget, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
+    *iVBOTarget = m_pShdrMngr->genVertexBuffer(*iVAOTarget, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
 
     // Set-up Attributes
     // Vertices
-    m_pShdrMngr->setAttrib(iVAOTarget, 0, 3, iStride, (void*)0);
+    m_pShdrMngr->setAttrib(*iVAOTarget, 0, 3, iStride, (void*)0);
     // Normals
     if (bHaveNormals)
     {
-        m_pShdrMngr->setAttrib(iVAOTarget, 1, 3, iStride, (void*)sizeof(vec3));
+        m_pShdrMngr->setAttrib(*iVAOTarget, 1, 3, iStride, (void*)sizeof(vec3));
     }
     // UVs
     if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
     {
-        m_pShdrMngr->setAttrib(iVAOTarget, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
+        m_pShdrMngr->setAttrib(*iVAOTarget, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
     }
 
     // Initialize Instance Buffer
@@ -473,8 +472,8 @@ void Mesh::initalizeVBOs(bool bBounding)
     if (!pTargetIndices->empty())
     {
         // Set up Index Buffer
-        iIndicesBufferTarget = SHADER_MANAGER->genIndicesBuffer(
-            iVAOTarget,
+        *iIndicesBufferTarget = SHADER_MANAGER->genIndicesBuffer(
+            *iVAOTarget,
             pTargetIndices->data(),
             pTargetIndices->size() * sizeof(unsigned int),
             GL_STATIC_DRAW);
@@ -484,31 +483,31 @@ void Mesh::initalizeVBOs(bool bBounding)
 void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex, bool bBounding)
 {
     // Set target handles based on Bounding Box or regular mesh initialization
-    GLuint iTargetVAO = (bBounding ? m_iBoundingVertexArray : m_iVertexArray);
-    GLuint iTargetIBO = (bBounding ? m_iBoundingInstancedBuffer : m_iInstancedBuffer);
+    GLuint* iTargetVAO = (bBounding ? &m_iBoundingVertexArray : &m_iVertexArray);
+    GLuint* iTargetIBO = (bBounding ? &m_iBoundingInstancedBuffer : &m_iInstancedBuffer);
 
     // Set up Instanced Buffer for Instance Rendering
-    iTargetIBO = SHADER_MANAGER->genVertexBuffer(
-        iTargetVAO, (void*)m_m4ListOfInstances.data(),
+    *iTargetIBO = SHADER_MANAGER->genVertexBuffer(
+        *iTargetVAO, (void*)m_m4ListOfInstances.data(),
         sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
 
     // Instance Rendering Attributes
     //    Set up openGL for referencing the InstancedBuffer as a Mat4
     // column 0
-    glBindBuffer(GL_ARRAY_BUFFER, iTargetIBO);
+    glBindBuffer(GL_ARRAY_BUFFER, *iTargetIBO);
     SHADER_MANAGER->setAttrib(
-        iTargetVAO, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
+        *iTargetVAO, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
     // column 1
     SHADER_MANAGER->setAttrib(
-        iTargetVAO, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
+        *iTargetVAO, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
     // column 2
     SHADER_MANAGER->setAttrib(
-        iTargetVAO, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
+        *iTargetVAO, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
     // column 3
     SHADER_MANAGER->setAttrib(
-        iTargetVAO, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
+        *iTargetVAO, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
 
-    glBindVertexArray(iTargetVAO);
+    glBindVertexArray(*iTargetVAO);
     glVertexAttribDivisor(iStartSpecifiedIndex, 1);
     glVertexAttribDivisor(iStartSpecifiedIndex + 1, 1);
     glVertexAttribDivisor(iStartSpecifiedIndex + 2, 1);
