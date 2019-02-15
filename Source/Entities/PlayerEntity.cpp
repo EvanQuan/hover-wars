@@ -145,6 +145,17 @@ void PlayerEntity::useAbility(eAbility ability)
     }
 }
 
+void PlayerEntity::move(float x, float y)
+{
+    PHYSICS_MANAGER->handleControllerInputMove(x, y);
+}
+
+void PlayerEntity::turn(float x)
+{
+    float y = 0;
+    PHYSICS_MANAGER->handleControllerInputRotate(x, y);
+}
+
 void PlayerEntity::shootRocket()
 {
     EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
