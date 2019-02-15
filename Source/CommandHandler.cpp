@@ -3,7 +3,6 @@
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
-
 /*
 Constructor
 */
@@ -42,16 +41,20 @@ CommandHandler::~CommandHandler()
 }
 
 /*
-Make a player of given joystickID execute a eFixedCommand.
+Make a player execute a eFixedCommand.
 FixedCommands are binary in that either they are executed or they are not, with
 no extra parameters.
 
-For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
+For example: if a player PLAYER_2 executes the ABILITY_ROCKET command,
 that is all the information the program needs to know for that player to
 execute that command.
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
 {
+    if (!ENTITY_MANAGER->playerExists(player))
+    {
+        return;
+    }
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
@@ -64,12 +67,14 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DASH_FORWARD:
     case COMMAND_DASH_LEFT:
     case COMMAND_DASH_RIGHT:
-        if (ENTITY_MANAGER->playerExists(player))
-        {
-            ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
-        }
+        ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
         break;
-    case COMMAND_CAMERA_CHANGE:
+    case COMMAND_CAMERA_FRONT:
+        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
+        break;
+    case COMMAND_CAMERA_BACK:
+        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
+        break;
     case COMMAND_MENU_BACK:
     case COMMAND_MENU_PAUSE:
     case COMMAND_MENU_START:
@@ -77,10 +82,10 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
             // << eFixedCommandToString.at(command)
             // << endl;
        break;
-    default:
-        cout << "Player " << player << ": "
-             << eFixedCommandToString.at(command)
-             << " not implemented yet." << endl;
+    // default:
+        // cout << "Player " << player << ": "
+             // << eFixedCommandToString.at(command)
+             // << " not implemented yet." << endl;
     }
 }
 
@@ -104,12 +109,24 @@ Axes values are normalized and follow Cartesian coordinates:
 */
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
-    m_pEntityManager->execute(player, command, x, y);
+    if (ENTITY_MANAGER->playerExists(player))
+    {
+        switch (command)
+        {
+        case COMMAND_MOVE:
+            ENTITY_MANAGER->getPlayer(player)->move(x, y);
+            break;
+        case COMMAND_TURN:
+            ENTITY_MANAGER->getPlayer(player)->turn(x);
+            break;
+        }
+    }
+
 #ifdef _DEBUG
-    std::cout << "Player " << player << ": "
-              << eVariableCommandToString.at(command) << std::endl
-              << "\tx: " << x << std::endl
-              << "\ty: " << y << std::endl;
+    // std::cout << "Player " << player << ": "
+    //           << eVariableCommandToString.at(command) << std::endl
+    //           << "\tx: " << x << std::endl
+    //           << "\ty: " << y << std::endl;
 #endif
 }
 
@@ -127,10 +144,10 @@ Execute all commands specified by user input from keyboard and joysticks.
 void CommandHandler::executeInputCommands()
 {
 #ifdef _DEBUG
-    system("CLS"); // Clear the terminal
+    // system("CLS"); // Clear the terminal
 #endif
-    executeKeyboardCommands();
     executeJoystickCommands();
+    executeKeyboardCommands();
 }
 
 /*
@@ -167,6 +184,7 @@ Execute all commands specified by the keyboard.
 void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
+    bool bTurnNeutral = true;
     xMove = 0;
     yMove = 0;
     xTurn = 0;
@@ -211,7 +229,8 @@ void CommandHandler::executeKeyboardCommands()
             default:
                 m_pFixedCommand = COMMAND_INVALID_FIXED;
             }
-            if (COMMAND_INVALID_FIXED != m_pFixedCommand) {
+            if (COMMAND_INVALID_FIXED != m_pFixedCommand)
+            {
                 execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
             }
             else
@@ -237,9 +256,11 @@ void CommandHandler::executeKeyboardCommands()
                     break;
                 case GLFW_KEY_J:
                     xTurn += JOYSTICK_MIN;
+                    bTurnNeutral = false;
                     break;
                 case GLFW_KEY_L:
                     xTurn += JOYSTICK_MAX;
+                    bTurnNeutral = false;
                     break;
                 }
             }
@@ -247,18 +268,18 @@ void CommandHandler::executeKeyboardCommands()
     }
 
     // This is where keys are handled, it's assumed that xMove and yMove will be binary on/off.
-    //  Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
+    // Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
     if (xMove != 0.0f && yMove != 0.0f)
     {
         xMove *= 0.5f;
         yMove *= 0.5f;
     }
-    
+
     if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
     {
         execute(m_pInputHandler->keyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
-    if (!magnitudeIsNeutral(getMagnitude(xTurn, yTurn)))
+    if (!bTurnNeutral)
     {
         execute(m_pInputHandler->keyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
@@ -277,14 +298,24 @@ void CommandHandler::executeJoystickCommands()
         if (joystickIsPresent)
         {
             const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-            const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
+            InputHandler::eInputState *buttons = m_pInputHandler->m_joystickButtons[joystickID];
 
             // Check buttons
             for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
             {
-                if (buttonsPressed[button])
+                switch (buttons[button])
                 {
-                    execute((ePlayer) joystickID, buttonToFixedCommand(button));
+                case InputHandler::JUST_PRESSED:
+                    cout << "JUST_PRESSED" << endl;
+                    execute((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
+                    break;
+                case InputHandler::PRESSED:
+                    execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
+                    break;
+                case InputHandler::JUST_RELEASED:
+                    cout << "JUST_RELEASED" << endl;
+                    execute((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
+                    break;
                 }
             }
 

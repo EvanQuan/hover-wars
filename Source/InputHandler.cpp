@@ -23,7 +23,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     glfwSetJoystickCallback(InputHandler::joystickCallback);
 
     bWireFrame = false;
-
 }
 
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
@@ -350,19 +349,46 @@ void InputHandler::joystickCallback(int joystickID, int event)
 
 // Get the input status of all the present controllers and store it.
 // Buttons and axes
-// TODO more efficient iteration algorithm?
 void InputHandler::updateJoysticks()
 {
     for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
     {
         if (m_pJoystickIsPresent[joystickID])
         {
-            // Axis states
+            // Last Button states
+            m_pJoystickButtonsPressedLast[joystickID] = m_pJoystickButtonsPressed[joystickID];
+            // Current axis states
             m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
-
-            // Button states
+            // Current button states
             m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+
+            // Final button states
+            updateJoystickButtonStates(joystickID);
+
         }
     }
+}
 
+void InputHandler::updateJoystickButtonStates(int joystickID)
+{
+    for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
+    {
+        if (justPressed(joystickID, button))
+        {
+            m_joystickButtons[joystickID][button] = JUST_PRESSED;
+        }
+        else if (justReleased(joystickID, button))
+        {
+            m_joystickButtons[joystickID][button] = JUST_RELEASED;
+        }
+        else if (m_pJoystickButtonsPressed[joystickID][button])
+        {
+            m_joystickButtons[joystickID][button] = PRESSED;
+        }
+        else
+        {
+            m_joystickButtons[joystickID][button] = RELEASED;
+        }
+
+    }
 }

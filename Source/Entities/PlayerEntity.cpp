@@ -12,17 +12,33 @@
 // Camera Defines
 #define FRONT_CAMERA 0
 #define BACK_CAMERA 1
-#define MAX_NUM_POS 30
-#define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(MAX_NUM_POS))
+#define PAST_CAMERA_POSITIONS 10
+#define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
 #define START_RADIUS 10.0f
-const vec3 FRONT_CAMERA_START_POS = vec3(60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
-const vec3 BACK_CAMERA_START_POS = vec3(-60.f, 20.f, START_RADIUS); // (Theta, Phi, Radius)
+/*
+
+*/
+#define CAMERA_THETA 90.0f
+#define CAMERA_PHI 60.0f
+
+const vec3 FRONT_CAMERA_START_VIEW = vec3(-CAMERA_THETA, CAMERA_PHI, START_RADIUS); // (Theta, Phi, Radius)
+const vec3 BACK_CAMERA_START_VIEW = vec3(CAMERA_THETA, CAMERA_PHI, START_RADIUS); // (Theta, Phi, Radius)
+/*
+The position of the camera relative to the position of the player. Both vectors
+will be added together to form the final camera position.
+*/
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(5, 0, 0);
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition)
 {
-    m_vPositionTotal = *vPosition * MAX_NUM_POS;
-    for (unsigned int i = 0; i < MAX_NUM_POS; ++i) m_vPastPositions.push(*vPosition);
+    activeCameraIndex = FRONT_CAMERA;
+    m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
+    for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
+    {
+        m_vPastPositions.push(*vPosition);
+    }
 }
 
 PlayerEntity::~PlayerEntity()
@@ -47,7 +63,7 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = m4NewTransform[3];
-    //updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
+    updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
 
 // Initializes Player Entity information
@@ -68,14 +84,14 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
     
     // Generate Camera Components
-    //for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
-    //{
-    //  m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
-    //  m_pCmrComponents[i]->setLookAt(m_vPosition);
-    //}
-    //
-    //m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_POS);
-    //m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_POS);
+    for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
+    {
+        m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+        m_pCmrComponents[i]->setLookAt(m_vPosition);
+    }
+    
+    m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
+    m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
 }
 
 /********************************************************************************************************\
@@ -90,7 +106,7 @@ void PlayerEntity::updateCameraLookAts()
     m_vPositionTotal += m_vPosition;
 
     // Keep Queue within limits of Average
-    if (m_vPastPositions.size() > MAX_NUM_POS)
+    if (m_vPastPositions.size() > PAST_CAMERA_POSITIONS)
     {
         m_vPositionTotal -= m_vPastPositions.front();
         m_vPastPositions.pop();
@@ -98,8 +114,13 @@ void PlayerEntity::updateCameraLookAts()
 
     // Calculate Average Position and set new look at for Camera Components
     vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
-    for (unsigned int i = 0; i < MAX_NUM_CAMERAS; ++i)
-        m_pCmrComponents[i]->setLookAt(vAveragedPos);
+
+    // Update all the camera look at and rotation values based on the averaging calculations.
+    quat rotation = m_pPhysicsComponent->getRotation();
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragedPos + rotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(rotation);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragedPos + rotation * BACK_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(rotation);
 }
 
 void PlayerEntity::useAbility(eAbility ability)
@@ -122,6 +143,16 @@ void PlayerEntity::useAbility(eAbility ability)
         dash(ability);
         break;
     }
+}
+
+void PlayerEntity::move(float x, float y)
+{
+    PHYSICS_MANAGER->movePlayer(m_iID, x, y);
+}
+
+void PlayerEntity::turn(float x)
+{
+    PHYSICS_MANAGER->rotatePlayer(m_iID, x);
 }
 
 void PlayerEntity::shootRocket()

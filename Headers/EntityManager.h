@@ -52,15 +52,15 @@ public:
 
     // Camera Management
     void updateHxW(int iHeight, int iWidth);
-    const CameraComponent* getActiveCamera() { return m_pActiveCamera; }
+
+    // The GameManager instead retrieves the camera components from the player
+    // entities to set as its active cameras
+    const CameraComponent* getActiveCameraComponent() { return m_pActiveCameraComponent; }
 
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
     void renderEnvironment( );
     void updateEnvironment(const Time& pTimer);
-    
-    // Command interface
-    void execute(ePlayer player, eVariableCommand command, float x, float y);
     
     /*
     The command handler can get all the players to directly communicate to.
@@ -85,8 +85,8 @@ private:
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
     vector<CameraComponent*>                        m_pCameraComponents;
     vector<LightingComponent*>                      m_pLights;
+    CameraComponent*                                m_pActiveCameraComponent;
     vector<AnimationComponent*>                     m_pAnimationComponents;
-    CameraComponent*                                m_pActiveCamera;
     DirectionalLight*                               m_pDirectionalLight;
     InteractableEntity*                             m_pBillboardTesting;
     PointLight*                                     m_pTestingLight;        // Temporary, Needs to be removed.
@@ -101,5 +101,19 @@ private:
     // Edge Threshold Implementation
     float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;
     bool m_bPause;
+
+    /*
+    Represents the time of the current frame
+    This value should be changed every time the environment is updated.
+
+    Unit: second
+    */
+    duration<float> pFrameTime;
+    /*
+    This determines the environment update, and thus the frame rate.
+
+    Unit: second
+    */
+    duration<float> pMaxDeltaTime;
 };
 

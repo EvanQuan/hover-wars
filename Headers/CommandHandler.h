@@ -39,7 +39,8 @@ public:
         {COMMAND_ABILITY_ROCKET,         "Rocket"},
         {COMMAND_ABILITY_SPIKES,         "Spikes"},
         {COMMAND_ABILITY_TRAIL,          "Trail"},
-        {COMMAND_CAMERA_CHANGE,          "Change Camera"},
+        {COMMAND_CAMERA_BACK,            "Camera Back"},
+        {COMMAND_CAMERA_FRONT,           "Camera Front"},
         {COMMAND_DASH_BACK,              "Dash back"},
         {COMMAND_DASH_FORWARD,           "Dash Forward"},
         {COMMAND_DASH_LEFT,              "Dash Left"},
@@ -114,12 +115,43 @@ private:
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
+    if it is PRESSED OR REPEATED
     */
-    static eFixedCommand buttonToFixedCommand(int button)
+    static eFixedCommand repeatButtonToFixedCommand(int button)
     {
         try
         {
-            return m_pInstance->m_buttonToFixedCommand.at(button);
+            return m_pInstance->m_repeatButtonToFixedCommand.at(button);
+        }
+        catch (...)
+        {
+            return COMMAND_INVALID_FIXED;
+        }
+    };
+    /*
+    Convert a joystick button to its corresponding eFixedCommand
+    if it was just pressed.
+    */
+    static eFixedCommand justPressedButtonToFixedCommand(int button)
+    {
+        try
+        {
+            return m_pInstance->m_justPressedButtonToFixedCommand.at(button);
+        }
+        catch (...)
+        {
+            return COMMAND_INVALID_FIXED;
+        }
+    };
+    /*
+    Convert a joystick button to its corresponding eFixedCommand
+    if it was just released.
+    */
+    static eFixedCommand justReleasedButtonToFixedCommand(int button)
+    {
+        try
+        {
+            return m_pInstance->m_justReleasedButtonToFixedCommand.at(button);
         }
         catch (...)
         {
@@ -151,7 +183,7 @@ private:
         {GLFW_KEY_I,           COMMAND_DASH_FORWARD},
         {GLFW_KEY_H,           COMMAND_DASH_LEFT},
         {GLFW_KEY_SEMICOLON,   COMMAND_DASH_RIGHT},
-        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_CHANGE},
+        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_FRONT},
         {GLFW_KEY_F,           COMMAND_DEBUG_TOGGLE_WIREFRAME},
         {GLFW_KEY_TAB,         COMMAND_MENU_BACK},
         {GLFW_KEY_P,           COMMAND_MENU_PAUSE},
@@ -168,18 +200,15 @@ private:
         {GLFW_KEY_L, COMMAND_TURN},
     };
 
-    std::map<int, eFixedCommand> m_buttonToFixedCommand =
+    std::map<int, eFixedCommand> m_repeatButtonToFixedCommand =
     {
         {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
-        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_CHANGE},
         {BUTTON_A,            COMMAND_DASH_BACK},
         {BUTTON_Y,            COMMAND_DASH_FORWARD},
         {BUTTON_X,            COMMAND_DASH_LEFT},
         {BUTTON_B,            COMMAND_DASH_RIGHT},
         {BUTTON_START,        COMMAND_DEBUG_TOGGLE_WIREFRAME},
         {BUTTON_BACK,         COMMAND_MENU_BACK},
-        {BUTTON_BACK,         COMMAND_MENU_PAUSE},
-        {BUTTON_START,        COMMAND_MENU_START},
         {BUTTON_LEFT_STICK,   COMMAND_INVALID_FIXED},
         {BUTTON_RIGHT_STICK,  COMMAND_INVALID_FIXED},
         {BUTTON_UP,           COMMAND_INVALID_FIXED},
@@ -188,6 +217,34 @@ private:
         {BUTTON_LEFT,         COMMAND_INVALID_FIXED},
         {BUTTON_UNKNOWN1,     COMMAND_INVALID_FIXED},
         {BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
+    };
+
+    std::map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
+    {
+        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_BACK},
+        {BUTTON_BACK,         COMMAND_MENU_PAUSE},
+        {BUTTON_START,        COMMAND_MENU_START},
+        // 
+        {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
+        {BUTTON_A,            COMMAND_DASH_BACK},
+        {BUTTON_Y,            COMMAND_DASH_FORWARD},
+        {BUTTON_X,            COMMAND_DASH_LEFT},
+        {BUTTON_B,            COMMAND_DASH_RIGHT},
+        {BUTTON_START,        COMMAND_DEBUG_TOGGLE_WIREFRAME},
+        {BUTTON_BACK,         COMMAND_MENU_BACK},
+        {BUTTON_LEFT_STICK,   COMMAND_INVALID_FIXED},
+        {BUTTON_RIGHT_STICK,  COMMAND_INVALID_FIXED},
+        {BUTTON_UP,           COMMAND_INVALID_FIXED},
+        {BUTTON_RIGHT,        COMMAND_INVALID_FIXED},
+        {BUTTON_DOWN,         COMMAND_INVALID_FIXED},
+        {BUTTON_LEFT,         COMMAND_INVALID_FIXED},
+        {BUTTON_UNKNOWN1,     COMMAND_INVALID_FIXED},
+        {BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
+    };
+
+    std::map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
+    {
+        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_FRONT},
     };
 
     std::map<int, eFixedCommand> m_axisToFixedCommand =

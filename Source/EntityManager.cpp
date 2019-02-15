@@ -19,6 +19,8 @@ EntityManager::EntityManager()
     m_pScnLdr = SCENE_LOADER;
     m_pEmtrEngn = EMITTER_ENGINE;
     m_pPhysxMngr = PHYSICS_MANAGER;
+
+    pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 }
 
 // Gets the instance of the environment manager.
@@ -76,7 +78,7 @@ void EntityManager::purgeEnvironment()
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
     m_pDirectionalLight = nullptr;
     m_pTestingLight = nullptr;
-    m_pActiveCamera = nullptr;
+    m_pActiveCameraComponent = nullptr;
 }
 
 // Name: renderEnvironment
@@ -245,8 +247,7 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
     // Get Total Frame Time and Benchmark for 60 fps
-    duration<float> pFrameTime = pTimer.getFrameTime();
-    constexpr auto pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+    pFrameTime += pTimer.getFrameTime();
 
     // Loop updates to maintain 60 fps
     while (pFrameTime >= pMaxDeltaTime)
@@ -279,19 +280,25 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 * Entity Component Management                                                    *
 \*********************************************************************************/
 
-// Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
+/*
+Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
+@param int iEntityID the ID of the entity for which this component corresponds. This allows us
+to correspond camera components to their "owner" entity.
+*/
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
     // Generate new Camera Component
-    unique_ptr<CameraComponent> pNewCameraPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
 
     // Store new Camera Component
-    m_pCameraComponents.push_back(pNewCameraPtr.get());
-    m_pMasterComponentList.push_back(move(pNewCameraPtr));
+    m_pCameraComponents.push_back(pNewCameraComponentPtr.get());
+    m_pMasterComponentList.push_back(move(pNewCameraComponentPtr));
 
     // Set the active Camera if no camera is currently active.
-    if (NULL == m_pActiveCamera)
-        m_pActiveCamera = m_pCameraComponents.back();
+    if (NULL == m_pActiveCameraComponent)
+    {
+        m_pActiveCameraComponent = m_pCameraComponents.back();
+    }
 
     return m_pCameraComponents.back();
 }
@@ -374,23 +381,6 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 * Command Management                                                    *
 \*********************************************************************************/
 
-// TODO: Make these Commands work through the PlayerEntity->PhysicsManager
-void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
-{
-    switch (command)
-    {
-    case COMMAND_MOVE:
-        PHYSICS_MANAGER->handleControllerInputMove(x, y);
-        break;
-    case COMMAND_TURN:
-        // TODO make this a different method
-        PHYSICS_MANAGER->handleControllerInputRotate(x, y);
-        break;
-    }
-}
-
-// Checks to see if the Player exists in this game.
-// EVANTODO: Maybe make this a value within Command Handler upon game start?
 bool EntityManager::playerExists(ePlayer player)
 {
     return m_pPlayerEntityList.size() > static_cast<int>(player);

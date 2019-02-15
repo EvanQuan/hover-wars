@@ -120,7 +120,14 @@ void GameManager::RenderScene()
     m_pCamera->setLookAt(m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getPosition());
     quat pQuat = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getRotation();
     m_pCamera->setRotationQuat(pQuat);
-    const CameraComponent* pCamera = m_pEntityManager->getActiveCamera();
+
+    // Get player 1's active camera to show
+    // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
+    // each with their own camera components. The game will render 4 times, each switching
+    // the player to retrieve the active camera.
+    // That will be done here?
+    const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
+    // const CameraComponent* pCamera = m_pEntityManager->getActiveCameraComponent();
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
@@ -170,16 +177,18 @@ bool GameManager::initializeGraphics( string sFileName )
     // Shaders
     if (!m_pShaderManager->initializeShaders())
     {
-        cout
-            << "Couldn't initialize shaders." << endl;
+        cout << "Couldn't initialize shaders." << endl;
         bError = true;
     }
     else
+    {
         m_pEntityManager->initializeEnvironment(sFileName);
+    }
 
     // Set up Camera
+    // TODO This is the first time a camera is generated.
     m_pCamera = m_pEntityManager->generateCameraEntity();
-    m_eView = VIEW_SPHERICAL;
+    // m_eView = VIEW_SPHERICAL;
 
     return bError; 
 }
@@ -224,12 +233,16 @@ void GameManager::resizedWindow( int iHeight, int iWidth )
 }
 
 // Calculates an intersection given screen coordinates.
+// This is used for testing the particle emitter by spawning an emitter where
+// the mouse clicks the floor plane.
 void GameManager::intersectPlane(float fX, float fY)
 {
     // Local Variables
-    vec3 vRay = m_pEntityManager->getActiveCamera()->getRay(fX, fY);
+    vec3 vRay = m_pEntityManager->getActiveCameraComponent()->getRay(fX, fY);
+    // vec3 vRay = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getActiveCameraComponent()->getRay(fX, fY);
     vec3 vNormal = vec3(0.0, 1.0, 0.0); // normal of xz-plane
-    vec3 vCameraPos = m_pEntityManager->getActiveCamera()->getCameraWorldPos();
+    vec3 vCameraPos = m_pEntityManager->getActiveCameraComponent()->getCameraWorldPos();
+    // vec3 vCameraPos = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getActiveCameraComponent()->getCameraWorldPos();
     vec3 vIntersection = vec3(-1.0f);
     float fT = dot(vRay, vNormal);
 
