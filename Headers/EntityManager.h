@@ -74,9 +74,6 @@ public:
     void setMaxThreshold( float fMax ) { m_fMaxEdgeThreshold = fMax; }
     float getMaxThreshold() { return m_fMaxEdgeThreshold; }
     
-    // Command interface
-    void execute(ePlayer player, eVariableCommand command, float x, float y);
-    
     /*
     The command handler can get all the players to directly communicate to.
     */

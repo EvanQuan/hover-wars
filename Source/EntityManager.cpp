@@ -423,19 +423,6 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 * Command Management                                                    *
 \*********************************************************************************/
 
-void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
-{
-    switch (command)
-    {
-    case COMMAND_MOVE:
-        PHYSICS_MANAGER->handleControllerInputMove(x, y);
-        break;
-    case COMMAND_TURN:
-        PHYSICS_MANAGER->handleControllerInputRotate(x, y);
-        break;
-    }
-}
-
 bool EntityManager::playerExists(ePlayer player)
 {
     return (int) m_pPlayerEntityList.size() > player;
