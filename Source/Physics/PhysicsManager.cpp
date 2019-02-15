@@ -367,7 +367,7 @@ void PhysicsManager::movePlayer(float x, float y) {
 
     //}
 }
-void PhysicsManager::rotatePlayer(float x, float y) {
+void PhysicsManager::rotatePlayer(float x) {
     gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
 }
 void PhysicsManager::stopKey() {
