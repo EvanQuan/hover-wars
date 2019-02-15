@@ -19,11 +19,10 @@ private:
     // Private Methods
     bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
-    void genSphere(float fRadius, vec3 vPosition);
-    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
+    void genSphere(float fRadius, vec3 vPosition, bool bBounding);
+    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition, bool bBounding);
     void genBillboard();
-    void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
-    void initalizeVBOs();
+    void initalizeVBOs( bool bBounding );
     bool loadObj(const string& sFileName);
     void loadMaterial(const Material* pMaterial);
 
@@ -31,7 +30,7 @@ private:
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
 
     // VBO Initialization
-    void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
+    void setupInstanceBuffer(GLuint iStartSpecifiedIndex, bool bBounding);
 
     // Material Struct for setting uniform in Lighting Shaders
     struct sRenderMaterial
@@ -41,13 +40,19 @@ private:
         float fShininess;
     } m_sRenderMaterial;
 
-    // Indices for Faces of Mesh and Additional Buffer Addresses on the GPU for
-    //    Indices and Normals
+    // Mesh Information and GPU VAO/VBOs
     vector<unsigned int> m_pIndices;
     vector< vec3 > m_pVertices, m_pNormals;
     vector< vec2 > m_pUVs;
-    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer, m_iScaleBuffer;
+    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
     GLuint m_iVertexArray;
+
+    // Bounding Box Information and GPU VAO/VBOs
+    vector<unsigned int> m_pBoundingIndices;
+    vector< vec3 > m_pBoundingVerts;
+    GLuint m_iBoundingVertexBuffer, m_iBoundingInstancedBuffer, m_iBoundingIndicesBuffer;
+    GLuint m_iBoundingVertexArray;
+
     string m_sManagerKey; // Used as key for finding Mesh in MeshManager
     ShaderManager* m_pShdrMngr;
     vector<mat4> m_m4ListOfInstances;
@@ -104,6 +109,7 @@ public:
     const vector<vec3>& getNormals() const { return m_pNormals; }
     const vector<vec2>& getUVs() const { return m_pUVs; }
     GLuint getVertexArray() const { return m_iVertexArray; }
+    GLuint getBoundingVertexArray() const { return m_iBoundingVertexArray; }
 
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;

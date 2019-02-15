@@ -15,18 +15,19 @@
 #include "EntityComponentHeaders/LightingComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/AnimationComponent.h"
-
 #include "Physics/PhysicsManager.h"
 
 // Environment Manager
-// Manages all 3D objects in an environment
+// Manages all objects in an environment
 // Written by: James Coté, Evan Quan
 class EntityManager
 {
 public:
+    // Singleton instance retrieval and Destructor
     static EntityManager* getInstance();
     ~EntityManager();
 
+    // Init and Pause Functionality
     void initializeEnvironment(string sFileName);
     void pause() { m_bPause = !m_bPause; }
 
@@ -58,21 +59,9 @@ public:
 
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
-    void renderEnvironment( const vec3& vCamLookAt );
+    void renderEnvironment( );
     void updateEnvironment(const Time& pTimer);
-
-    // Light Manipulation - TEMPORARY, Needs to be replaced
-    void moveLight(vec3 pMoveVec)
-    {
-        if (nullptr != m_pTestingLight)
-            m_pTestingLight->move(pMoveVec);
-    }
-    
-    // Edge Threshold Getters/Setters
-    void setMinThreshold( float fMin ) { m_fMinEdgeThreshold = fMin; }
-    float getMinThreshold() { return m_fMinEdgeThreshold; }
-    void setMaxThreshold( float fMax ) { m_fMaxEdgeThreshold = fMax; }
-    float getMaxThreshold() { return m_fMaxEdgeThreshold; }
+    void changeFrameRate(duration<float> pNewFrameRate) { m_pMaxDeltaTime = pNewFrameRate; }
     
     /*
     The command handler can get all the players to directly communicate to.
@@ -92,8 +81,7 @@ private:
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
     vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
     vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
-    vector<PlayerEntity*>                           m_pPlayerEntityList;    // TODO store these as raw pointer?
- 
+    vector<PlayerEntity*>                           m_pPlayerEntityList;    
     vector<unique_ptr<Entity>>                      m_pMasterEntityList;
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
     vector<CameraComponent*>                        m_pCameraComponents;
@@ -121,12 +109,12 @@ private:
 
     Unit: second
     */
-    duration<float> pFrameTime;
+    duration<float> m_pFrameTime;
     /*
     This determines the environment update, and thus the frame rate.
 
     Unit: second
     */
-    duration<float> pMaxDeltaTime;
+    duration<float> m_pMaxDeltaTime;
 };
 

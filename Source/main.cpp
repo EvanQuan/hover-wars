@@ -16,12 +16,13 @@
 // Function Prototypes
 void ErrorCallback(int error, const char* description);
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight);
-bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char* cTitle);
+bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const char* cTitle);
 
 // Main entry point for the Graphics System
 int main()
 {
 	int iRunning = glfwInit();
+    int iHeight, iWidth;
 	GLFWwindow* m_window = 0;
 	GameManager* m_gameManager = 0;
 	ShaderManager* m_shaderManager = 0;
@@ -37,7 +38,7 @@ int main()
 	{
 		// Set Error Callback and init window
 		glfwSetErrorCallback( ErrorCallback );
-		iRunning = initializeWindow( &m_window, START_HEIGHT, START_WIDTH, "Animation" );
+		iRunning = initializeWindow( &m_window, &iHeight, &iWidth, "Hover Wars" );
 
 		#ifdef USING_LINUX
 				Magick::InitializeMagick("");	// Initializing Magick for Linux Only.
@@ -123,14 +124,32 @@ void ErrorCallback(int error, const char* description)
 /*
  * @return true if window successfully initialized
  */
-bool initializeWindow(GLFWwindow** rWindow, int iHeight, int iWidth, const char* cTitle)
+bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const char* cTitle)
 {
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	(*rWindow) = glfwCreateWindow(iWidth, iHeight, cTitle, nullptr, nullptr);
+    GLFWmonitor* pMonitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(pMonitor);
 
+    // Set Window Hints based on 
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+    // return the Monitor's Height and Width
+    *iHeight = mode->height;
+    *iWidth = mode->width;
+
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef NDEBUG
+    (*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, pMonitor, nullptr);
+#else
+    (*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, nullptr, nullptr);
+#endif
 	if (!*rWindow)
 	{
 		cout << "Program failed to create GLFW window" << endl;
@@ -147,5 +166,6 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 	// Update the viewport information
 	glViewport(0, 0, iWidth, iHeight);
 
-	GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
+    if( iWidth != 0 && iHeight != 0)
+	    GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
 }
