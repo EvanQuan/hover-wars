@@ -34,8 +34,8 @@ public:
     void stopKey();
     void leftKey();
     void rightKey();
-    void handleControllerInputMove(float x, float y);
-    void handleControllerInputRotate(float x, float y);
+    void movePlayer(int entityID, float x, float y);
+    void rotatePlayer(int entityID, float x);
 
     // Update function for Physics, technically called every frame, but
     //    internally can stall its update until a certain tick time.

@@ -27,6 +27,8 @@ public:
                           float fScale);
 
     void useAbility(eAbility ability);
+    void move(float x, float y);
+    void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
     quat getRotation() { return m_pPhysicsComponent->getRotation(); }

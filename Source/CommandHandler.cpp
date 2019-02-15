@@ -109,7 +109,18 @@ Axes values are normalized and follow Cartesian coordinates:
 */
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
-    m_pEntityManager->execute(player, command, x, y);
+    if (ENTITY_MANAGER->playerExists(player))
+    {
+        switch (command)
+        {
+        case COMMAND_MOVE:
+            ENTITY_MANAGER->getPlayer(player)->move(x, y);
+            break;
+        case COMMAND_TURN:
+            ENTITY_MANAGER->getPlayer(player)->turn(x);
+            break;
+        }
+    }
 
 #ifdef _DEBUG
     // std::cout << "Player " << player << ": "
