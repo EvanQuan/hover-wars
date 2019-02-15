@@ -450,28 +450,19 @@ void Mesh::initalizeVBOs(bool bBounding)
 
     // Generate VBO
     *iVBOTarget = m_pShdrMngr->genVertexBuffer(*iVAOTarget, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
-    CheckGLErrors();
 
     // Set-up Attributes
     // Vertices
     m_pShdrMngr->setAttrib(*iVAOTarget, 0, 3, iStride, (void*)0);
-    CheckGLErrors();
     // Normals
     if (bHaveNormals)
-    {
         m_pShdrMngr->setAttrib(*iVAOTarget, 1, 3, iStride, (void*)sizeof(vec3));
-        CheckGLErrors();
-    }
     // UVs
     if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
-    {
         m_pShdrMngr->setAttrib(*iVAOTarget, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
-        CheckGLErrors();
-    }
 
     // Initialize Instance Buffer
     setupInstanceBuffer(3, bBounding);
-    CheckGLErrors();
 
     // Set up Indices if applicable
     if (!pTargetIndices->empty())
@@ -482,7 +473,6 @@ void Mesh::initalizeVBOs(bool bBounding)
             pTargetIndices->data(),
             pTargetIndices->size() * sizeof(unsigned int),
             GL_STATIC_DRAW);
-        CheckGLErrors();
     }
 }
 

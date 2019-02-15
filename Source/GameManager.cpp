@@ -138,21 +138,16 @@ void GameManager::RenderScene()
     glClearBufferfv(GL_COLOR, 0, color);
     glClearBufferfv(GL_DEPTH, 0, &zero);
     glEnable(GL_DEPTH_TEST);
-    CheckGLErrors();
     
     // Set camera information in Shaders before rendering
     m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
-    CheckGLErrors();
 
 #ifdef _DEBUG
-    renderAxis();
-    CheckGLErrors();
+    renderAxis();   
 #endif
 
     m_pEntityManager->renderEnvironment( );
-    CheckGLErrors();
     glDisable(GL_DEPTH_TEST);
-    CheckGLErrors();
 }
 
 void GameManager::renderAxis()
