@@ -147,13 +147,13 @@ void PlayerEntity::useAbility(eAbility ability)
 
 void PlayerEntity::move(float x, float y)
 {
-    PHYSICS_MANAGER->movePlayer(x, y);
+    PHYSICS_MANAGER->movePlayer(m_iID, x, y);
 }
 
 void PlayerEntity::turn(float x)
 {
     float y = 0;
-    PHYSICS_MANAGER->rotatePlayer(x, y);
+    PHYSICS_MANAGER->rotatePlayer(m_iID, x);
 }
 
 void PlayerEntity::shootRocket()

@@ -324,7 +324,7 @@ void PhysicsManager::forwardKey() {
         currentState = 1;
     }
 }
-void PhysicsManager::movePlayer(float x, float y) {
+void PhysicsManager::movePlayer(int entityID, float x, float y) {
     /*if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
         std::cout << "here" << std::endl;
         gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
@@ -367,7 +367,7 @@ void PhysicsManager::movePlayer(float x, float y) {
 
     //}
 }
-void PhysicsManager::rotatePlayer(float x) {
+void PhysicsManager::rotatePlayer(int entityID, float x) {
     gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
 }
 void PhysicsManager::stopKey() {
