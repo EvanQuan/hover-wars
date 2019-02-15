@@ -140,12 +140,16 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
     *iWidth = mode->width;
 
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	(*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, pMonitor, nullptr);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+#ifdef NDEBUG
+    (*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, pMonitor, nullptr);
+#else
+    (*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, nullptr, nullptr);
+#endif
 	if (!*rWindow)
 	{
 		cout << "Program failed to create GLFW window" << endl;
