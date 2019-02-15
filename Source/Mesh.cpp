@@ -186,12 +186,12 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 }
 
 // Generates a Cube object given a Height, Width and Depth dimension as well as a position.
-void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
+void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
 {
     // Get half sizes of dimensions to set vertices wrt to origin.
-    float iHalfHeight = static_cast<float>(iHeight) * 0.5f;
-    float iHalfWidth = static_cast<float>(iWidth) * 0.5f;
-    float iHalfDepth = static_cast<float>(iDepth) * 0.5f;
+    float iHalfHeight = fHeight * 0.5f;
+    float iHalfWidth =  fWidth * 0.5f;
+    float iHalfDepth =  fDepth * 0.5f;
 
     // Reserve Sizes ahead of time to speed up computation
     m_pVertices.reserve(24);

@@ -20,7 +20,8 @@ private:
     bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
-    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
+    void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition);
+    void genCubicVerts(vector< vec3 >* vReturnVerts, float fHeight, float fWidth, float fDepth, const vec3* vPosition);
     void genBoundingBox(vec3 vDimensions, vec3 vPosition);
     void genBillboard();
     void initalizeVBOs();

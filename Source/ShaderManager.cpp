@@ -266,6 +266,7 @@ GLuint ShaderManager::genIndicesBuffer(GLuint iVertArray,
     return iIndicesBufferLoc;
 }
 
+// Function to Generate an Instance Buffer for Instanced Rendering.
 GLuint ShaderManager::genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage)
 {
     // Set up Instanced Buffer for Instance Rendering
