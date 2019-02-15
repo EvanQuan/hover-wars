@@ -41,11 +41,11 @@ CommandHandler::~CommandHandler()
 }
 
 /*
-Make a player of given joystickID execute a eFixedCommand.
+Make a player execute a eFixedCommand.
 FixedCommands are binary in that either they are executed or they are not, with
 no extra parameters.
 
-For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
+For example: if a player PLAYER_2 executes the ABILITY_ROCKET command,
 that is all the information the program needs to know for that player to
 execute that command.
 */
@@ -107,6 +107,8 @@ Axes values are normalized and follow Cartesian coordinates:
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
     m_pEntityManager->execute(player, command, x, y);
+    return;
+
 #ifdef _DEBUG
     std::cout << "Player " << player << ": "
               << eVariableCommandToString.at(command) << std::endl
@@ -129,7 +131,7 @@ Execute all commands specified by user input from keyboard and joysticks.
 void CommandHandler::executeInputCommands()
 {
 #ifdef _DEBUG
-    system("CLS"); // Clear the terminal
+    // system("CLS"); // Clear the terminal
 #endif
     executeKeyboardCommands();
     executeJoystickCommands();
@@ -287,12 +289,14 @@ void CommandHandler::executeJoystickCommands()
                 switch (buttons[button])
                 {
                 case InputHandler::JUST_PRESSED:
+                    cout << "JUST_PRESSED" << endl;
                     execute((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
                     break;
                 case InputHandler::PRESSED:
                     execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
                     break;
                 case InputHandler::JUST_RELEASED:
+                    cout << "JUST_RELEASED" << endl;
                     execute((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
                     break;
                 }
