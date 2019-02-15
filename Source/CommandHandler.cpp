@@ -51,6 +51,10 @@ execute that command.
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
 {
+    if (!ENTITY_MANAGER->playerExists(player))
+    {
+        return;
+    }
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
@@ -60,23 +64,13 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DASH_FORWARD:
     case COMMAND_DASH_LEFT:
     case COMMAND_DASH_RIGHT:
-        if (ENTITY_MANAGER->playerExists(player))
-        {
-            ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
-        }
+        ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        if (ENTITY_MANAGER->playerExists(player))
-        {
-            ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
-        }
+        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        cout << "BACK" << endl;
-        if (ENTITY_MANAGER->playerExists(player))
-        {
-            ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
-        }
+        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
     case COMMAND_MENU_PAUSE:
