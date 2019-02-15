@@ -122,10 +122,8 @@ private:
     bool m_bRotateFlag;
     glm::vec2 m_pInitialPos;
 
-    bool bWireFrame;
+    bool bWireFrameEnabled;
 
     // Joysticks
     void updateJoystickButtonStates(int joystick);
 };
-
-

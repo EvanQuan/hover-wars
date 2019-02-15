@@ -259,10 +259,8 @@ void GameManager::intersectPlane(float fX, float fY)
 {
     // Local Variables
     vec3 vRay = m_pCamera->getCameraComponent()->getRay(fX, fY);
-    // vec3 vRay = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getActiveCameraComponent()->getRay(fX, fY);
     vec3 vNormal = vec3(0.0, 1.0, 0.0); // normal of xz-plane
     vec3 vCameraPos = m_pCamera->getCameraComponent()->getCameraWorldPos();
-    // vec3 vCameraPos = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getActiveCameraComponent()->getCameraWorldPos();
     vec3 vIntersection = vec3(-1.0f);
     float fT = dot(vRay, vNormal);
 

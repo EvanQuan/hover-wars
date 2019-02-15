@@ -21,7 +21,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     initializeJoysticksAtStart();
     glfwSetJoystickCallback(InputHandler::joystickCallback);
 
-    bWireFrame = false;
+    bWireFrameEnabled = false;
 }
 
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
@@ -105,8 +105,8 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
 
 void InputHandler::debugToggleWireframe()
 {
-    bWireFrame = !bWireFrame;
-    if (bWireFrame)
+    bWireFrameEnabled = !bWireFrameEnabled;
+    if (bWireFrameEnabled)
     {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     }
