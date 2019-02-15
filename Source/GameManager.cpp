@@ -102,9 +102,9 @@ bool GameManager::renderGraphics()
     m_pEntityManager->updateEnvironment(m_pTimer);
 
     // call function to draw our scene
-    while (m_fFrameTime >= m_fMaxDeltaTime) // This locks the framerate to 60 fps
+    if (m_fFrameTime >= m_fMaxDeltaTime) // This locks the framerate to 60 fps
     {
-        m_fFrameTime -= m_fMaxDeltaTime;
+        m_fFrameTime = duration<float>(0.0f);
         RenderScene();
 
         // scene is rendered to the back buffer, so swap to front for display
