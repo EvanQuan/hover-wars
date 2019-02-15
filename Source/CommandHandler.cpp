@@ -132,8 +132,8 @@ void CommandHandler::executeInputCommands()
 #ifdef _DEBUG
     // system("CLS"); // Clear the terminal
 #endif
-    executeKeyboardCommands();
     executeJoystickCommands();
+    executeKeyboardCommands();
 }
 
 /*
