@@ -85,6 +85,9 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
         case GLFW_KEY_F:
             debugToggleWireframe();
             break;
+        case GLFW_KEY_1:
+            m_gameManager->toggleDebugCamera();
+            break;
         //case GLFW_KEY_W:
             //PHYSICS_MANAGER->forwardKey();
             //break;

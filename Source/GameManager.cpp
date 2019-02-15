@@ -40,6 +40,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_fFrameTime = duration<float>(0.0f);
     m_fMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+
+    m_bUseDebugCamera = false;
 }
 
 // Singleton Implementations
@@ -134,15 +136,17 @@ void GameManager::RenderScene()
     // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
     // each with their own camera components. The game will render 4 times, each switching
     // the player to retrieve the active camera.
-    // That will be done here?
-#ifdef NDEBUG
-    // Mouse cannot be used, and camera has moving lag
-    const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
-#else
-    // Camera locks to player and can use the mouse, no moving lag
-    const CameraComponent* pCamera = m_pCamera->getCameraComponent();
-#endif
-
+    const CameraComponent* pCamera;
+    if (m_bUseDebugCamera)
+    {
+        // Camera locks to player and can use the mouse, no moving lag
+        pCamera = m_pCamera->getCameraComponent();
+    }
+    else
+    {
+        // Mouse cannot be used, and camera has moving lag
+        pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
+    }
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
 
@@ -252,10 +256,10 @@ void GameManager::resizedWindow( int iHeight, int iWidth )
 void GameManager::intersectPlane(float fX, float fY)
 {
     // Local Variables
-    vec3 vRay = m_pEntityManager->getActiveCameraComponent()->getRay(fX, fY);
+    vec3 vRay = m_pCamera->getCameraComponent()->getRay(fX, fY);
     // vec3 vRay = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getActiveCameraComponent()->getRay(fX, fY);
     vec3 vNormal = vec3(0.0, 1.0, 0.0); // normal of xz-plane
-    vec3 vCameraPos = m_pEntityManager->getActiveCameraComponent()->getCameraWorldPos();
+    vec3 vCameraPos = m_pCamera->getCameraComponent()->getCameraWorldPos();
     // vec3 vCameraPos = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getActiveCameraComponent()->getCameraWorldPos();
     vec3 vIntersection = vec3(-1.0f);
     float fT = dot(vRay, vNormal);
