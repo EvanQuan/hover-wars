@@ -14,6 +14,7 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
+#include "EntityComponentHeaders/AnimationComponent.h"
 
 #include "Physics/PhysicsManager.h"
 
@@ -38,6 +39,7 @@ public:
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
     void generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const string& sShaderType = "");
+    InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
 
     // Entity Component functions
@@ -45,6 +47,7 @@ public:
     RenderComponent* generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode);
     LightingComponent* generateLightingComponent(int iEntityID);
     PhysicsComponent* generatePhysicsComponent(int iEntityID);
+    AnimationComponent* generateAnimationComponent(int iEntityID);
 
     // Camera Management
     void updateHxW(int iHeight, int iWidth);
@@ -99,6 +102,7 @@ private:
     vector<CameraComponent*>                        m_pCameraComponents;
     vector<LightingComponent*>                      m_pLights;
     CameraComponent*                                m_pActiveCameraComponent;
+    vector<AnimationComponent*>                     m_pAnimationComponents;
     DirectionalLight*                               m_pDirectionalLight;
     InteractableEntity*                             m_pBillboardTesting;
     PointLight*                                     m_pTestingLight;        // Temporary, Needs to be removed.

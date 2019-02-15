@@ -20,12 +20,13 @@ const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 /**********************************************\
  * Defines: For Billboard Buffer Manipulation *
 \**********************************************/
-#define BILLBOARD_STRIDE    (sizeof(vec3) + /*Vertex*/ sizeof(vec3) + /*Normal*/ sizeof(vec2) + /*UVStart*/ sizeof(vec2) + /*UVEnd*/ sizeof(vec2) /*Height/Width*/ )
+#define BILLBOARD_STRIDE    (sizeof(vec3) + /*Vertex*/ sizeof(vec3) + /*Normal*/ sizeof(vec2) + /*UVStart*/ sizeof(vec2) + /*UVEnd*/ sizeof(vec2) /*Height/Width*/ + sizeof(float))
 #define VERTEX_OFFSET       0
 #define NORMAL_OFFSET       sizeof(vec3)
 #define UV_START_OFFSET     (sizeof(vec3) << 1)
 #define UV_END_OFFSET       ((sizeof(vec3) << 1) + sizeof(vec2))
 #define DIMENSION_OFFSET    ((sizeof(vec3) << 1) + (sizeof(vec2) << 1))
+#define DURATION_OFFSET     (DIMENSION_OFFSET + sizeof(vec2))
 
 // Basic Constructor
 Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, const Material* pMaterial, manager_cookie )
@@ -338,20 +339,18 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 //            * UVEnd    (vec2)
 //            * Height (unsigned int)
 //            * Width (unsigned int)
-void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+void Mesh::genBillboard()
 {
     // Generate VBO
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, 0, GL_STATIC_DRAW);
 
     // Set up VBO Attributes
-    m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, BILLBOARD_STRIDE, (void*)VERTEX_OFFSET);    /*Vertex*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, BILLBOARD_STRIDE, (void*)NORMAL_OFFSET);    /*Normal*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, BILLBOARD_STRIDE, (void*)UV_START_OFFSET);    /*UVStart*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 3, 2, BILLBOARD_STRIDE, (void*)UV_END_OFFSET);    /*UVEnd*/
-    m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);/*Height/Width*/
-
-    // Add first Billboard
-    addBillboard(vPosition, vNormal, vUVStart, vUVEnd, iHeight, iWidth);
+    m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, BILLBOARD_STRIDE, (void*)VERTEX_OFFSET);       /*Vertex*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, BILLBOARD_STRIDE, (void*)NORMAL_OFFSET);       /*Normal*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, BILLBOARD_STRIDE, (void*)UV_START_OFFSET);     /*UVStart*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 3, 2, BILLBOARD_STRIDE, (void*)UV_END_OFFSET);       /*UVEnd*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);    /*Height/Width*/
+    m_pShdrMngr->setAttrib(m_iVertexArray, 5, 1, BILLBOARD_STRIDE, (void*)DURATION_OFFSET);     /*Duration*/
 }
 
 /****************************************************************************************\
@@ -359,38 +358,33 @@ void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* 
 \****************************************************************************************/
 
 // Adds a Billboard object to the Mesh.
-unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration)
 {
     // Create new Billboard
     sBillboardInfo sNewBillboard;
-    sNewBillboard.vPosition = *vPosition;
-    sNewBillboard.vNormal = *vNormal;
-    sNewBillboard.vUVStart = *vUVStart;
-    sNewBillboard.vUVEnd = *vUVEnd;
-    sNewBillboard.vDimensions = vec2(static_cast<float>(iHeight), static_cast<float>(iWidth));
+    sNewBillboard.vPosition     = *vPosition;
+    sNewBillboard.vNormal       = *vNormal;
+    sNewBillboard.vUVStart      = *vUVStart;
+    sNewBillboard.vUVEnd        = *vUVEnd;
+    sNewBillboard.vDimensions   = vec2(fHeight, fWidth);
+    sNewBillboard.fDuration     = fDuration;
 
     // add to main list
     m_pBillboardList.push_back(sNewBillboard);
 
-    // Reload Data in GPU.
-    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
+    // Update data in GPU
+    updateBillboardVBO();
 
     // Return the index for this billboard for later reference.
     return m_pBillboardList.size() - 1;
 }
 
 // Updates the UVs of a specified billboard, used for sprite animation.
-void Mesh::updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd)
+void Mesh::updateBillboardVBO()
 {
-    // Update in Billboard List
-    m_pBillboardList[iIndex].vUVStart = *vNewUVStart;
-    m_pBillboardList[iIndex].vUVEnd = *vNewUVEnd;
-    vec2 pDataArray[] = { *vNewUVStart, *vNewUVEnd };
-
     // Update in VBO
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, ((iIndex * BILLBOARD_STRIDE) + UV_START_OFFSET), sizeof(vec2) << 1, pDataArray);
+    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
 }
 
 // Clear VBO data and Clear the Billboard data internally.

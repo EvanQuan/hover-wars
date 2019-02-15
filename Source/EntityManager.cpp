@@ -59,14 +59,6 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     purgeEnvironment();
     pObjFctry->loadFromFile(sFileName);
-
-    // TESTING: To Be Removed
-    vec3 vNormal(0.0f, 1.0f, 0.0f);
-    vec3 vPosition(10.0f, 10.0f, 5.0f);
-    unique_ptr<InteractableEntity> pTestingEntity = make_unique<InteractableEntity>(getNewEntityID(), &vPosition);
-    pTestingEntity->loadAsBillboard(&vNormal, 2, 1, nullptr);
-    m_pBillboardTesting = pTestingEntity.get();
-    m_pMasterEntityList.push_back(move(pTestingEntity));
 }
 
 // Remove Object from List with given ID
@@ -230,6 +222,15 @@ void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sM
     m_pMasterEntityList.push_back(move(pNewPlayer));
 }
 
+InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)
+{
+    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(getNewEntityID(), vPosition);
+    InteractableEntity* pReturnEntity = pNewEntity.get();
+    m_pMasterEntityList.push_back(move(pNewEntity));
+
+    return pReturnEntity;
+}
+
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
 void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation, float m_fMeshScale)
 {
@@ -287,16 +288,14 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 {
     // Get Total Frame Time and Benchmark for 60 fps
     duration<float> pFrameTime = pTimer.getFrameTime();
-    constexpr auto pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+    duration<float> pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
     // Loop updates to maintain 60 fps
     while (pFrameTime > milliseconds(0))
     {
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second
-        duration<float> pDeltaTime = 
-            std::min<common_type<decltype(pFrameTime),decltype(pMaxDeltaTime)>::type>(pFrameTime, pMaxDeltaTime);
-
+        duration<float> pDeltaTime = pMaxDeltaTime;
         pFrameTime -= pDeltaTime;
         float fDeltaTime = static_cast<float>(pDeltaTime.count());
         
@@ -307,6 +306,12 @@ void EntityManager::updateEnvironment(const Time& pTimer)
         // Iterate through all Entities and call their update with the current time.
         for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
             iter != m_pMasterEntityList.end();
+            ++iter)
+            (*iter)->update(fDeltaTime);
+
+        // Iteratre through all Animation Components to update their animations
+        for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
+            iter != m_pAnimationComponents.end();
             ++iter)
             (*iter)->update(fDeltaTime);
     }
@@ -393,6 +398,21 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
     PhysicsComponent* pReturnComponent = pNewComponent.get();
     m_pPhysicsComponents.push_back(pReturnComponent);
     m_pMasterComponentList.push_back(move(pNewComponent));
+
+    // Return newly created component
+    return pReturnComponent;
+}
+
+// This function will generate a new Animation Component, store it within the internal
+//      Master Component list as well as a separate AnimationComponent* list that can be
+//      managed by the Entity Manager and prompted for updates separate from other Components.
+AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
+{
+    // Generate and store new Animation Component
+    unique_ptr<AnimationComponent> pNewAnimCmp = make_unique<AnimationComponent>(iEntityID, getNewComponentID());
+    AnimationComponent* pReturnComponent = pNewAnimCmp.get();
+    m_pAnimationComponents.push_back(pReturnComponent);
+    m_pMasterComponentList.push_back(move(pNewAnimCmp));
 
     // Return newly created component
     return pReturnComponent;

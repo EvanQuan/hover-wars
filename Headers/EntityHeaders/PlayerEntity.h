@@ -4,6 +4,7 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
+#include "InteractableEntity.h"
 #include <queue>
 
 #define MAX_CAMERAS_PER_PLAYER 2 
@@ -48,7 +49,7 @@ private:
     PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
-
+    InteractableEntity* m_pFireTrail;
     vec3 m_vPositionTotal;
     queue<vec3> m_vPastPositions;
 

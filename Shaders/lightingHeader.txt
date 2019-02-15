@@ -26,7 +26,7 @@ vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
 	float lambertian = max(dot(vToLight, vNormal), 0.0);
 	float specular = 0.0;
 	
-	if( lambertian < 0.0 )
+	if( lambertian > 0.0 )
 	{
 		// Blinn-Phong Calculation
 		vec3 vHalfDir = normalize( vToLight + vToCamera );
@@ -60,7 +60,7 @@ vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	float lambertian = max(dot(vToLight, vNormal), 0.0);
 	float specular = 0.0;
 	
-	if( lambertian < 0.0 )
+	if( lambertian > 0.0 )
 	{
 		// Blinn-Phong Calculation
 		vec3 vHalfDir = normalize( vToLight + vToCamera );

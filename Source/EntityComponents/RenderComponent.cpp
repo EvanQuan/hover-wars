@@ -35,16 +35,16 @@ void RenderComponent::render()
     if (m_bUsingInstanced)
         glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
     else if (m_bUsingIndices)
-        glDrawElements(m_eMode, m_iCount, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, nullptr);
     else
-        glDrawArrays(m_eMode, 0, m_iCount);
+        glDrawArrays(m_eMode, 0, m_pMesh->getCount());
 
     // Unbind Texture(s) HERE
     m_pMesh->unbindTextures();
 }
 
 // Overloaded Update Function
-void RenderComponent::update(duration<float> fTimeDelta)
+void RenderComponent::update(float fTimeDeltaInMilliseconds)
 {
     /* Not Implemented */
 }

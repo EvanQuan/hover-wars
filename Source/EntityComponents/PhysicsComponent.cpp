@@ -34,11 +34,8 @@ PhysicsComponent::~PhysicsComponent()
 //    Maybe this needs to update aspects of the particular physics related to its entity?
 //    Maybe this just needs to communicate to the Physics Manager to grab and store updated 
 //    information that will be gathered by the Entity when they need it?
-void PhysicsComponent::update(duration<float> fTimeDelta)
+void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
 {
-    // Grab the timeDelta as a float instead of the templated duration type.
-    float fDelta = static_cast<float>(fTimeDelta.count());
-
     // PHYSICSTODO: Provide Component Update functionality here.
 }
 
