@@ -85,20 +85,20 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
             debugToggleWireframe();
             break;
         case GLFW_KEY_1:
+            m_gameManager->m_eKeyboardPlayer = PLAYER_1;
+            break;
+        case GLFW_KEY_2:
+            m_gameManager->m_eKeyboardPlayer = PLAYER_2;
+            break;
+        case GLFW_KEY_3:
+            m_gameManager->m_eKeyboardPlayer = PLAYER_3;
+            break;
+        case GLFW_KEY_4:
+            m_gameManager->m_eKeyboardPlayer = PLAYER_4;
+            break;
+        case GLFW_KEY_C:
             m_gameManager->toggleDebugCamera();
             break;
-        //case GLFW_KEY_W:
-            //PHYSICS_MANAGER->forwardKey();
-            //break;
-        //case GLFW_KEY_S:
-            //PHYSICS_MANAGER->stopKey();
-            //break;
-        //case GLFW_KEY_A:
-            //PHYSICS_MANAGER->leftKey();
-            //break;
-        //case GLFW_KEY_D:
-            //PHYSICS_MANAGER->rightKey();
-            //break;
         }
     }
 }
