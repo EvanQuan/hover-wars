@@ -107,13 +107,12 @@ Axes values are normalized and follow Cartesian coordinates:
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
     m_pEntityManager->execute(player, command, x, y);
-    return;
 
 #ifdef _DEBUG
-    std::cout << "Player " << player << ": "
-              << eVariableCommandToString.at(command) << std::endl
-              << "\tx: " << x << std::endl
-              << "\ty: " << y << std::endl;
+    // std::cout << "Player " << player << ": "
+    //           << eVariableCommandToString.at(command) << std::endl
+    //           << "\tx: " << x << std::endl
+    //           << "\ty: " << y << std::endl;
 #endif
 }
 
@@ -171,6 +170,7 @@ Execute all commands specified by the keyboard.
 void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
+    bool bTurnNeutral = true;
     xMove = 0;
     yMove = 0;
     xTurn = 0;
@@ -215,7 +215,8 @@ void CommandHandler::executeKeyboardCommands()
             default:
                 m_pFixedCommand = COMMAND_INVALID_FIXED;
             }
-            if (COMMAND_INVALID_FIXED != m_pFixedCommand) {
+            if (COMMAND_INVALID_FIXED != m_pFixedCommand)
+            {
                 execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
             }
             else
@@ -241,9 +242,11 @@ void CommandHandler::executeKeyboardCommands()
                     break;
                 case GLFW_KEY_J:
                     xTurn += JOYSTICK_MIN;
+                    bTurnNeutral = false;
                     break;
                 case GLFW_KEY_L:
                     xTurn += JOYSTICK_MAX;
+                    bTurnNeutral = false;
                     break;
                 }
             }
@@ -251,18 +254,18 @@ void CommandHandler::executeKeyboardCommands()
     }
 
     // This is where keys are handled, it's assumed that xMove and yMove will be binary on/off.
-    //  Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
+    // Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
     if (xMove != 0.0f && yMove != 0.0f)
     {
         xMove *= 0.5f;
         yMove *= 0.5f;
     }
-    
+
     if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
     {
         execute(m_pInputHandler->keyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
-    if (!magnitudeIsNeutral(getMagnitude(xTurn, yTurn)))
+    if (!bTurnNeutral)
     {
         execute(m_pInputHandler->keyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
