@@ -8,6 +8,19 @@ Receives and stores user input (mouse, keyboard and controller).
 class InputHandler
 {
 public:
+
+    /*
+    The states of joystick buttons. This is for expanding on joystick states,
+    as GLFW does not give this information.
+    */
+    enum eInputState
+    {
+        RELEASED,
+        JUST_RELEASED,
+        PRESSED,
+        JUST_PRESSED,
+    };
+
     static InputHandler* getInstance(GLFWwindow *rWindow);
     ~InputHandler();
 
@@ -40,6 +53,8 @@ public:
     int pressed[KEYS];
 
     // Joysticks
+    bool justPressed(int joystickID, int joystickButton) { return m_pJoystickButtonsPressed[joystickID][joystickButton] && !m_pJoystickButtonsPressedLast[joystickID][joystickButton]; }
+    bool justReleased(int joystickID, int joystickButton) { return m_pJoystickButtonsPressed[joystickID][joystickButton] && !m_pJoystickButtonsPressedLast[joystickID][joystickButton]; }
     // List of joysticks that are present (detected) by the game.
     // Only present controllers are initialized
     // 1 - present
@@ -48,7 +63,7 @@ public:
     int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
     const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
     int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
-    const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
+    eInputState m_joystickButtons[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
     const char* m_pJoystickNames[MAX_PLAYER_COUNT];
 
     // The only reason this needed is for mouse input, which may not actually
@@ -72,6 +87,9 @@ private:
 
     static InputHandler* m_pInstance;
 
+    const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
+    const unsigned char* m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT];
+
 
     // Mouse
     bool m_bTranslateFlag;
@@ -79,6 +97,9 @@ private:
     glm::vec2 m_pInitialPos;
 
     bool bWireFrame;
+
+    // Joysticks
+    void updateJoystickButtonStates(int joystick);
 };
 
 

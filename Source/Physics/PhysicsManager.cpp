@@ -16,44 +16,84 @@
 /***********\
  * DEFINES *
 \***********/
-#define ANGULAR_MO_RATE 1.0f
-#define MOVEMENTPER_NEWTON_METER 1000.0f
 #define PVD_HOST "127.0.0.1"
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
 
 /*
+Angular momementum.
+
+The greater this value, the faster the maximum turning rate.
+*/
+#define ANGULAR_MOMENTUM 3.0f
+/*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
+
+Force : Newtons
 */
-#define NEWTONS_MOVEMENT 2000.0f
+#define MOVEMENT_FORCE 1500.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
+
+NOTE: This may not actually do anything a the moment.
+
+Force : Newtons
 */
-#define NEWTONS_BRAKE 1000.0f
+#define BRAKE_FORCE 100000.0f // 1000.0f
 
 /*
 Hovercraft material properties
 */
 /*
 Coefficient of static friction
+
+This determines the threshold for a force to begin moving the car from neutral
+(stantionary).
+We want this to be relatively small or even 0 since whenever we apply a force
+to the car, we typically would want it to move.
 */
-#define STATIC_FRICTION 0.35f
+#define STATIC_FRICTION 0.0f // 0.35f
 /*
 Coefficient of dynamic friction
-*/
-#define DYNAMIC_FRICTION 0.35f
-/*
-Restitution
-*/
-#define RESTITUTION 0.2f
 
+This determines the resistance to force when the car is already moving.
+We want this to be high enough to prevent infinite drifting, and so players can
+stop and change directions in a reasonably responsive manner.
+We want this to be low enough that there some amount of drifting can be done to
+make it feel like a hovercraft.
+*/
+#define DYNAMIC_FRICTION 0.35f // 0.35f
 /*
-Force of gravity downwards
+Car Restitution
 
-m/s^2
+Affects how elastic collisions are. The greater this value, the more colliding
+objects bounce away.
+
+This should be relatively high to make car collisions satisfying.
+*/
+#define CAR_RESTITUTION 0.2f
+/*
+Acceleration of gravity downwards
+
+This affects how "floaty" objects feel when they are in the air.
+Real world value is -9.81
+Typically in games, this value is much greater than the real world value.
+
+Acceleration : m/s^2
 */
 #define GRAVITY -9.81f
+/*
+This affects the momentum of the vehicle.
+The greater it is, the slow the car will take to accelerate, either from
+neutral or in changing directions. To increase player input responsiveness,
+decrease this.
+The greater this value, the less responsive cars will be to forces such as
+explosions or collisions.
+
+Mass : kilograms
+*/
+#define CHASSIS_MASS = 1000.0f
 
 
 /****************************************************************************\
@@ -286,7 +326,7 @@ void PhysicsManager::initPhysics(bool interactive)
         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
     }
-    gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, RESTITUTION);
+    gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, CAR_RESTITUTION);
 
     gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
     if (!gCook)
@@ -371,7 +411,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
             PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
             PxTransform globalTransform = carBody->getGlobalPose();
             PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
-            carBody->addForce(vForce * 10000);
+            carBody->addForce(vForce * MOVEMENT_FORCE);
 
             gVehicleNoDrive->setSteerAngle(0, angle);
             gVehicleNoDrive->setSteerAngle(1, angle);
@@ -380,21 +420,16 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
         }
         else {
             releaseAllControls();
-            gVehicleNoDrive->setBrakeTorque(0, NEWTONS_BRAKE);
-            gVehicleNoDrive->setBrakeTorque(1, NEWTONS_BRAKE);
-            gVehicleNoDrive->setBrakeTorque(2, NEWTONS_BRAKE);
-            gVehicleNoDrive->setBrakeTorque(3, NEWTONS_BRAKE);
+            gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
+            gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
+            gVehicleNoDrive->setBrakeTorque(2, BRAKE_FORCE);
+            gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
         }
 
     //}
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
-    if (x > 0) {
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -1 * ANGULAR_MO_RATE,0));
-    }
-    else if (x < 0) {
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, ANGULAR_MO_RATE, 0));
-    }
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
 }
 void PhysicsManager::stopKey() {
     if (currentState != 2) {

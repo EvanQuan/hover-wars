@@ -109,7 +109,7 @@ void EntityManager::purgeEnvironment()
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
     m_pDirectionalLight = nullptr;
     m_pTestingLight = nullptr;
-    m_pActiveCamera = nullptr;
+    m_pActiveCameraComponent = nullptr;
 }
 
 // Fetch the Frenet Frame of the first MeshObject found (Hack for assignment)
@@ -321,19 +321,25 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 * Entity Component Management                                                    *
 \*********************************************************************************/
 
-// Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
+/*
+Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
+@param int iEntityID the ID of the entity for which this component corresponds. This allows us
+to correspond camera components to their "owner" entity.
+*/
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
     // Generate new Camera Component
-    unique_ptr<CameraComponent> pNewCameraPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
 
     // Store new Camera Component
-    m_pCameraComponents.push_back(pNewCameraPtr.get());
-    m_pMasterComponentList.push_back(move(pNewCameraPtr));
+    m_pCameraComponents.push_back(pNewCameraComponentPtr.get());
+    m_pMasterComponentList.push_back(move(pNewCameraComponentPtr));
 
     // Set the active Camera if no camera is currently active.
-    if (NULL == m_pActiveCamera)
-        m_pActiveCamera = m_pCameraComponents.back();
+    if (NULL == m_pActiveCameraComponent)
+    {
+        m_pActiveCameraComponent = m_pCameraComponents.back();
+    }
 
     return m_pCameraComponents.back();
 }
@@ -424,7 +430,6 @@ void EntityManager::execute(ePlayer player, eVariableCommand command, float x, f
         PHYSICS_MANAGER->handleControllerInputMove(x, y);
         break;
     case COMMAND_TURN:
-        // TODO make this a different method
         PHYSICS_MANAGER->handleControllerInputRotate(x, y);
         break;
     }

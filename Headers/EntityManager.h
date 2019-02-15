@@ -51,7 +51,10 @@ public:
 
     // Camera Management
     void updateHxW(int iHeight, int iWidth);
-    const CameraComponent* getActiveCamera() { return m_pActiveCamera; }
+
+    // The GameManager instead retrieves the camera components from the player
+    // entities to set as its active cameras
+    const CameraComponent* getActiveCameraComponent() { return m_pActiveCameraComponent; }
 
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
@@ -98,8 +101,8 @@ private:
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
     vector<CameraComponent*>                        m_pCameraComponents;
     vector<LightingComponent*>                      m_pLights;
+    CameraComponent*                                m_pActiveCameraComponent;
     vector<AnimationComponent*>                     m_pAnimationComponents;
-    CameraComponent*                                m_pActiveCamera;
     DirectionalLight*                               m_pDirectionalLight;
     InteractableEntity*                             m_pBillboardTesting;
     PointLight*                                     m_pTestingLight;        // Temporary, Needs to be removed.
