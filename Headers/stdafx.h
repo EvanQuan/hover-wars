@@ -66,16 +66,16 @@ using namespace physx;
 #define START_HEIGHT        1080
 #define START_WIDTH         1920
 #define STARTING_ENV        "scene2.scene"
-#define LIGHT_MOVE_FACTOR    0.05f
-#define PI                    3.14159265f
+#define LIGHT_MOVE_FACTOR   0.05f
+#define PI                  3.14159265f
 #define PI_2                6.28318530718f
-#define PI_OVER_180            0.01745f
+#define PI_OVER_180         0.01745f
 
-#define KEYS 349
+#define KEYS                349
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
-#define MAX_PLAYER_COUNT 4
-#define XBOX_CONTROLLER "Xbox"
-#define EMPTY_CONTROLLER "Empty Controller"
+#define MAX_PLAYER_COUNT    4
+#define XBOX_CONTROLLER     "Xbox"
+#define EMPTY_CONTROLLER    "Empty Controller"
 // m_pJoystickAxes
 #define AXIS_LEFT_STICK_X   0
 #define AXIS_LEFT_STICK_Y   1
@@ -128,14 +128,14 @@ struct BoundingBox
 
 
 /* Manager Defines */
-#define ENTITY_MANAGER    EntityManager::getInstance()
-#define GAME_MANAGER    GameManager::getInstance()
-#define MESH_MANAGER    MeshManager::getInstance()
-#define SHADER_MANAGER    ShaderManager::getInstance()
-#define TEXTURE_MANAGER TextureManager::getInstance()
-#define PHYSICS_MANAGER PhysicsManager::getInstance()
-#define SCENE_LOADER    SceneLoader::getInstance()
-#define EMITTER_ENGINE    EmitterEngine::getInstance()
+#define ENTITY_MANAGER      EntityManager::getInstance()
+#define GAME_MANAGER        GameManager::getInstance()
+#define MESH_MANAGER        MeshManager::getInstance()
+#define SHADER_MANAGER      ShaderManager::getInstance()
+#define TEXTURE_MANAGER     TextureManager::getInstance()
+#define PHYSICS_MANAGER     PhysicsManager::getInstance()
+#define SCENE_LOADER        SceneLoader::getInstance()
+#define EMITTER_ENGINE      EmitterEngine::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
