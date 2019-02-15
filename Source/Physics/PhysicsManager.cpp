@@ -31,7 +31,7 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 2500.0f // 10000.0f
+#define MOVEMENT_FORCE 1000.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -63,7 +63,7 @@ stop and change directions in a reasonably responsive manner.
 We want this to be low enough that there some amount of drifting can be done to
 make it feel like a hovercraft.
 */
-#define DYNAMIC_FRICTION 0.35f // 0.35f
+#define DYNAMIC_FRICTION 1.00f // 0.35f
 /*
 Car Restitution
 
