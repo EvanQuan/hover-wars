@@ -153,7 +153,7 @@ void PlayerEntity::move(float x, float y)
 void PlayerEntity::turn(float x)
 {
     float y = 0;
-    PHYSICS_MANAGER->handleControllerInputRotate(x, y);
+    PHYSICS_MANAGER->rotatePlayer(x, y);
 }
 
 void PlayerEntity::shootRocket()

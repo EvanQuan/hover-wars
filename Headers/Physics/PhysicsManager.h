@@ -35,7 +35,7 @@ public:
     void leftKey();
     void rightKey();
     void handleControllerInputMove(float x, float y);
-    void handleControllerInputRotate(float x, float y);
+    void rotatePlayer(float x, float y);
 
     // Update function for Physics, technically called every frame, but
     //    internally can stall its update until a certain tick time.
