@@ -429,7 +429,7 @@ void PhysicsManager::handleControllerInputMove(float x, float y) {
     //}
 }
 void PhysicsManager::handleControllerInputRotate(float x, float y) {
-    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM,0));
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
 }
 void PhysicsManager::stopKey() {
     if (currentState != 2) {
