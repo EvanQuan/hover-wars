@@ -61,7 +61,6 @@ public:
     void purgeEnvironment();
     void renderEnvironment( );
     void updateEnvironment(const Time& pTimer);
-    void changeFrameRate(duration<float> pNewFrameRate) { m_pMaxDeltaTime = pNewFrameRate; }
     
     /*
     The command handler can get all the players to directly communicate to.
@@ -90,7 +89,6 @@ private:
     vector<AnimationComponent*>                     m_pAnimationComponents;
     DirectionalLight*                               m_pDirectionalLight;
     InteractableEntity*                             m_pBillboardTesting;
-    PointLight*                                     m_pTestingLight;        // Temporary, Needs to be removed.
 
     // Manage Pointers for Deletion.
     MeshManager*                m_pMshMngr;
@@ -100,21 +98,6 @@ private:
     PhysicsManager*             m_pPhysxMngr;
 
     // Edge Threshold Implementation
-    float m_fMinEdgeThreshold, m_fMaxEdgeThreshold;
     bool m_bPause;
-
-    /*
-    Represents the time of the current frame
-    This value should be changed every time the environment is updated.
-
-    Unit: second
-    */
-    duration<float> m_pFrameTime;
-    /*
-    This determines the environment update, and thus the frame rate.
-
-    Unit: second
-    */
-    duration<float> m_pMaxDeltaTime;
 };
 

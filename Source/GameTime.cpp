@@ -21,3 +21,8 @@ void Time::updateTime()
     m_pFrameTime = pCurrTick - m_pLastTick;    // get new frame time.
     m_pLastTick = pCurrTick;    // Store new last tick
 }
+
+void Time::resetTimer()
+{
+    m_pLastTick = Clock::now();
+}
