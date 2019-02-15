@@ -13,7 +13,7 @@ public:
     The states of joystick buttons. This is for expanding on joystick states,
     as GLFW does not give this information.
     */
-    enum eButtonStates
+    enum eInputState
     {
         RELEASED,
         JUST_RELEASED,
@@ -63,7 +63,7 @@ public:
     int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
     const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
     int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
-    unsigned char* m_pJoystickButtons[MAX_PLAYER_COUNT];
+    eInputState m_joystickButtons[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
     const char* m_pJoystickNames[MAX_PLAYER_COUNT];
 
     // The only reason this needed is for mouse input, which may not actually

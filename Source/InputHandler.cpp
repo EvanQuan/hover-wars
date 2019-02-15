@@ -365,6 +365,7 @@ void InputHandler::updateJoysticks()
             m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
             // Final button states
+            updateJoystickButtonStates(joystickID);
 
         }
     }
@@ -372,9 +373,24 @@ void InputHandler::updateJoysticks()
 
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
-    for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; i++)
+    for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
     {
-        if (justPressed())
-        m_pJoystickButtons[joystickID][button] = justPressed(button)
+        if (justPressed(joystickID, button))
+        {
+            m_joystickButtons[joystickID][button] = JUST_PRESSED;
+        }
+        else if (justReleased(joystickID, button))
+        {
+            m_joystickButtons[joystickID][button] = JUST_RELEASED;
+        }
+        else if (m_pJoystickButtonsPressed[joystickID][button])
+        {
+            m_joystickButtons[joystickID][button] = PRESSED;
+        }
+        else
+        {
+            m_joystickButtons[joystickID][button] = RELEASED;
+        }
+
     }
 }

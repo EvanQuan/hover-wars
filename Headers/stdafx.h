@@ -85,7 +85,7 @@ using namespace physx;
 #define AXIS_RIGHT_STICK_Y  3
 #define AXIS_LEFT_TRIGGER   4
 #define AXIS_RIGHT_TRIGGER  5
-// m_pJoystickButtons
+// m_joystickButtons
 #define BUTTON_A            0
 #define BUTTON_B            1
 #define BUTTON_X            2
@@ -102,6 +102,7 @@ using namespace physx;
 #define BUTTON_LEFT         13
 #define BUTTON_UNKNOWN1     14
 #define BUTTON_UNKNOWN2     15
+#define MAX_BUTTON_COUNT    16
 // TODO What are buttons 14, 15?
 // Is it the centre xbox button (home)?
 // Joystick/trigger values
