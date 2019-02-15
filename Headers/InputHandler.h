@@ -15,10 +15,10 @@ public:
     */
     enum eInputState
     {
-        RELEASED,
-        JUST_RELEASED,
-        PRESSED,
-        JUST_PRESSED,
+        INPUT_RELEASED,
+        INPUT_JUST_RELEASED,
+        INPUT_JUST_PRESSED,
+        INPUT_PRESSED,
     };
 
     static InputHandler* getInstance(GLFWwindow *rWindow);
@@ -45,15 +45,16 @@ public:
     int pressed[KEYS];
 
     // Joysticks
+    void updateJoystickButtonsPressedLast(int joystickID);
     bool justPressed(int joystickID, int joystickButton)
     {
         return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_PRESS
-            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == GLFW_RELEASE;
+            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_RELEASED;
     }
     bool justReleased(int joystickID, int joystickButton)
     {
         return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_RELEASE
-            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == GLFW_PRESS;
+            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_PRESSED;
     }
     /*
     List of joysticks that are present (detected) by the game.
@@ -114,7 +115,7 @@ private:
     Raw input values stored as last frame's m_pJoystickButtonsPressed values.
     This helps determines if a button has just been pressed or released.
     */
-    const unsigned char* m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT];
+    eInputState m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
 
 
     // Mouse

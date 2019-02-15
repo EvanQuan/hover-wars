@@ -359,11 +359,9 @@ void InputHandler::updateJoysticks()
         {
             // Current axis states
             m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
-
             // Last Button states
             // This is important for tracking if a button has just been pressed or released.
-            m_pJoystickButtonsPressedLast[joystickID] = m_pJoystickButtonsPressed[joystickID];
-            assert(m_pJoystickButtonsPressedLast[joystickID] == m_pJoystickButtonsPressed[joystickID]);
+            updateJoystickButtonsPressedLast(joystickID);
             // Current button states
             m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
@@ -374,29 +372,36 @@ void InputHandler::updateJoysticks()
     }
 }
 
+void InputHandler::updateJoystickButtonsPressedLast(int joystickID)
+{
+    for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
+    {
+        m_pJoystickButtonsPressedLast[joystickID][button] = m_pJoystickButtonsPressed[joystickID][button] == GLFW_PRESS ? INPUT_PRESSED : INPUT_RELEASED;
+    }
+}
+
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
     for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
     {
         if (justPressed(joystickID, button))
         {
-            m_joystickButtons[joystickID][button] = JUST_PRESSED;
+            cout << "JUST PRESSED " << button << endl;
+            m_joystickButtons[joystickID][button] = INPUT_JUST_PRESSED;
         }
         else if (justReleased(joystickID, button))
         {
-            m_joystickButtons[joystickID][button] = JUST_RELEASED;
+            cout << "JUST RELEASED " << button << endl;
+            m_joystickButtons[joystickID][button] = INPUT_JUST_RELEASED;
         }
         else if (m_pJoystickButtonsPressed[joystickID][button] == GLFW_PRESS)
         {
-            m_joystickButtons[joystickID][button] = PRESSED;
+            cout << "PRESSED " << button << endl;
+            m_joystickButtons[joystickID][button] = INPUT_PRESSED;
         }
-        else if (m_pJoystickButtonsPressed[joystickID][button] == GLFW_RELEASE)
+        else
         {
-            m_joystickButtons[joystickID][button] = RELEASED;
+            m_joystickButtons[joystickID][button] = INPUT_RELEASED;
         }
-        else {
-            cout << "WTF BOOOOM" << endl;
-        }
-
     }
 }
