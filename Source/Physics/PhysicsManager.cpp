@@ -244,8 +244,10 @@ void PhysicsManager::initPhysics(bool interactive)
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 
     gPvd = PxCreatePvd(*gFoundation);
+#ifdef _DEBUG
     PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
     gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+#endif
 
     gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
@@ -415,7 +417,9 @@ void PhysicsManager::cleanupPhysics()
         gPhysics->release();
         PxPvdTransport* transport = gPvd->getTransport();
         gPvd->release();
+#ifdef _DEBUG
         transport->release();
+#endif
         //manager->release();
         gFoundation->release();
 

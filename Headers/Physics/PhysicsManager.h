@@ -12,16 +12,16 @@
 
 /***************************************************************
  * Name: PhysicsManager
- * Written by: James Cote and Austin Eaton
+ * Written by: James Cote, Austin Eaton, Evan Quan
  * Description: Provides overlaying framework for PhysX implementation.
  *        Maintains PhysX updating, initialization and clean up for entire
  *        program. Initialization and Deconstruction happens in main and
  *        updates are called in Entity Manager. Callbacks for collisions should
  *        probably be set up in Entity Manager so that the Entity Manager can
- *        form a message and forward it onto the necessary Entities. Beyond that,
- *        Physics Manager shouldn't maintain a reference to Entity Manager, but
- *        Entity Manager should know about Physics Manager for running that aspect of
- *        the engine.
+ *        form a message and forward it onto the necessary Entities. Beyond
+ *        that, Physics Manager shouldn't maintain a reference to Entity
+ *        Manager, but Entity Manager should know about Physics Manager for
+ *        running that aspect of the engine.
 \************************************************************************************/
 class PhysicsManager {
 public:
