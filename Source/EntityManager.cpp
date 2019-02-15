@@ -19,8 +19,6 @@ EntityManager::EntityManager()
     m_pScnLdr = SCENE_LOADER;
     m_pEmtrEngn = EMITTER_ENGINE;
     m_pPhysxMngr = PHYSICS_MANAGER;
-
-    m_pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 }
 
 // Gets the instance of the environment manager.
@@ -242,33 +240,24 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 //    in the game world. No rendering is done here.
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
-    // Increment Frame
-    m_pFrameTime += pTimer.getFrameTime();
-
-    // Loop updates to maintain 60 fps
-    while (m_pFrameTime >= m_pMaxDeltaTime)
-    {
-        // Get the Delta of this time step <= 1/60th of a second (60 fps)
-        // Interpolate on steps < 1/60th of a second
-        m_pFrameTime -= m_pMaxDeltaTime;
-        float fDeltaTime = static_cast<float>(m_pMaxDeltaTime.count());
+    // Get the delta since the last frame and update based on that delta.
+    float fDeltaTime = static_cast<float>(pTimer.getFrameTime().count());
         
-        // UPDATES GO HERE
-        m_pEmtrEngn->update(fDeltaTime);
-        m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
+    // UPDATES GO HERE
+    m_pEmtrEngn->update(fDeltaTime);
+    m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
 
-        // Iterate through all Entities and call their update with the current time.
-        for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
-            iter != m_pMasterEntityList.end();
-            ++iter)
-            (*iter)->update(fDeltaTime);
+    // Iterate through all Entities and call their update with the current time.
+    for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
+        iter != m_pMasterEntityList.end();
+        ++iter)
+        (*iter)->update(fDeltaTime);
 
-        // Iteratre through all Animation Components to update their animations
-        for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
-            iter != m_pAnimationComponents.end();
-            ++iter)
-            (*iter)->update(fDeltaTime);
-    }
+    // Iteratre through all Animation Components to update their animations
+    for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
+        iter != m_pAnimationComponents.end();
+        ++iter)
+        (*iter)->update(fDeltaTime);
 }
 
 /*********************************************************************************\

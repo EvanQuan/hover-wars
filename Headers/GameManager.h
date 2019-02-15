@@ -65,6 +65,10 @@ private:
     GLuint m_pVertexArray;
     GLuint m_pVertexBuffer;
 
+    // Update Variables
+    duration<float> m_fFrameTime;
+    duration<float> m_fMaxDeltaTime;
+
     // Camera
     Camera* m_pCamera;
     enum cView
