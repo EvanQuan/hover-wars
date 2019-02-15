@@ -240,7 +240,7 @@ void CommandHandler::executeKeyboardCommands()
             }
             if (COMMAND_INVALID_FIXED != m_pFixedCommand)
             {
-                execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
+                execute(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
             }
             else
             {
@@ -286,11 +286,11 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
     {
-        execute(m_pInputHandler->keyboardPlayer, COMMAND_MOVE, xMove, yMove);
+        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        execute(m_pInputHandler->keyboardPlayer, COMMAND_TURN, xTurn, yTurn);
+        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
 }
 

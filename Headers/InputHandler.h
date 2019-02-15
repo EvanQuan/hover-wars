@@ -38,10 +38,6 @@ public:
     void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
     void mouseREnd() { m_bRotateFlag = false; }
 
-    // void mouseZoom(float fZoomVal);
-    // TODO This may need to be moved elsewhere. GameManager?
-    ePlayer keyboardPlayer;
-
     // Keyboard
     // Tracks all keys if they are pressed
     // Allows for multiple key input

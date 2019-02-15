@@ -59,6 +59,9 @@ public:
     // with CommandHandler
     CommandHandler* m_commandHandler;
 
+
+    ePlayer m_eKeyboardPlayer;
+
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 
@@ -96,6 +99,5 @@ private:
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
     UserInterface* m_pUserInterface;
-
 };
 

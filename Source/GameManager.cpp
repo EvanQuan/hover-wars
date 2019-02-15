@@ -42,6 +42,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
     m_bUseDebugCamera = false;
+
+    m_eKeyboardPlayer = PLAYER_1;
 }
 
 // Singleton Implementations
