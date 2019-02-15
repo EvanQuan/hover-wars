@@ -24,14 +24,56 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
 {
     // Add Timestep to Animation Time.
     m_fAnimTime += fTimeDeltaInMilliseconds;
+    bool bDeletionFlag = false;
 
-    // Evaluate Current Animation time.
-    while (m_fAnimTime >= ANIMATION_SPEED)
+    if (!m_pBillboardListPtr->empty())
     {
-        // Subtract Animation Speed.
-        m_fAnimTime -= ANIMATION_SPEED;
+        // Update Billboards
+        for( unsigned int i = 0; i < m_pBillboardListPtr->size(); ++i )
+        {
+            // Only compute Animation if it has duration remaining.
+            if ((*m_pBillboardListPtr)[i].fDuration > 0.0f)
+            {
+                // Decrement Duration
+                (*m_pBillboardListPtr)[i].fDuration -= fTimeDeltaInMilliseconds;
+                bDeletionFlag |= (*m_pBillboardListPtr)[i].fDuration <= 0;
 
-        if (!m_pBillboardListPtr->empty())
+                // Animate the Sprite on the Animation Speed.
+                if (m_fAnimTime >= ANIMATION_SPEED)
+                {
+                    m_fAnimTime -= ANIMATION_SPEED;
+
+                    // Move Sprite UVs right.
+                    (*m_pBillboardListPtr)[i].vUVStart.x += m_vSpriteHxW.x;
+
+                    // If overstepped past, reset back to beginning and evaluate v constraints
+                    if ((*m_pBillboardListPtr)[i].vUVStart.x >= 1.0f)
+                    {
+                        // Reset u back to beginning.
+                        (*m_pBillboardListPtr)[i].vUVStart.x = m_vSpriteHxWBorder.x;
+                        (*m_pBillboardListPtr)[i].vUVEnd.x = m_vSpriteHxW.x - m_vSpriteHxWBorder.x;
+
+                        // Evaluate v
+                        (*m_pBillboardListPtr)[i].vUVStart.y += m_vSpriteHxW.y;
+
+                        // If gone past bottom of sprite sheet, return back to beginning.
+                        if ((*m_pBillboardListPtr)[i].vUVStart.y >= 1.0f)
+                        {
+                            (*m_pBillboardListPtr)[i].vUVStart.y = m_vSpriteHxWBorder.y;
+                            (*m_pBillboardListPtr)[i].vUVEnd.y = m_vSpriteHxW.y - m_vSpriteHxWBorder.y;
+                        }
+                        else // No reset? update the end of the UV
+                            (*m_pBillboardListPtr)[i].vUVEnd.y += m_vSpriteHxW.y;
+                    }
+                    else    // No reset? update the end of the UV
+                        (*m_pBillboardListPtr)[i].vUVEnd.x += m_vSpriteHxW.x;
+                }
+
+                m_pMesh->updateBillboardVBO(i);
+            }
+        }
+
+        if (bDeletionFlag)
         {
             // Clean up any Billboards that are subject for deletion.
             m_pBillboardListPtr->erase(
@@ -42,45 +84,6 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
                 ),
                 m_pBillboardListPtr->end());
 
-            // Update Billboards
-            for (vector<Mesh::sBillboardInfo>::iterator iter = m_pBillboardListPtr->begin();
-                iter != m_pBillboardListPtr->end();
-                ++iter)
-            {
-                // Only compute Animation if it has duration remaining.
-                if (iter->fDuration > 0.0f)
-                {
-                    // Decrement Duration
-                    iter->fDuration -= fTimeDeltaInMilliseconds;
-
-                    // Move Sprite UVs right.
-                    iter->vUVStart.x += m_vSpriteHxW.x;
-
-                    // If overstepped past, reset back to beginning and evaluate v constraints
-                    if (iter->vUVStart.x >= 1.0f)
-                    {
-                        // Reset u back to beginning.
-                        iter->vUVStart.x = m_vSpriteHxWBorder.x;
-                        iter->vUVEnd.x = m_vSpriteHxW.x - m_vSpriteHxWBorder.x;
-
-                        // Evaluate v
-                        iter->vUVStart.y += m_vSpriteHxW.y;
-
-                        // If gone past bottom of sprite sheet, return back to beginning.
-                        if (iter->vUVStart.y >= 1.0f)
-                        {
-                            iter->vUVStart.y = m_vSpriteHxWBorder.y;
-                            iter->vUVEnd.y = m_vSpriteHxW.y - m_vSpriteHxWBorder.y;
-                        }
-                        else // No reset? update the end of the UV
-                            iter->vUVEnd.y += m_vSpriteHxW.y;
-                    }
-                    else    // No reset? update the end of the UV
-                        iter->vUVEnd.x += m_vSpriteHxW.x;
-                }
-            }
-
-            // Update VBOs for Mesh.
             m_pMesh->updateBillboardVBO();
         }
     }
