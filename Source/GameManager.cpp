@@ -135,8 +135,13 @@ void GameManager::RenderScene()
     // each with their own camera components. The game will render 4 times, each switching
     // the player to retrieve the active camera.
     // That will be done here?
-    //const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
+#ifdef NDEBUG
+    // Mouse cannot be used, and camera has moving lag
+    const CameraComponent* pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
+#else
+    // Camera locks to player and can use the mouse, no moving lag
     const CameraComponent* pCamera = m_pCamera->getCameraComponent();
+#endif
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
