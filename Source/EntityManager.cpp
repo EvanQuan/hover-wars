@@ -410,7 +410,6 @@ void EntityManager::execute(ePlayer player, eVariableCommand command, float x, f
         PHYSICS_MANAGER->handleControllerInputMove(x, y);
         break;
     case COMMAND_TURN:
-        // TODO make this a different method
         PHYSICS_MANAGER->handleControllerInputRotate(x, y);
         break;
     }
