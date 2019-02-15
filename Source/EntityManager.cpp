@@ -75,7 +75,6 @@ void EntityManager::purgeEnvironment()
     m_pTxtMngr->unloadAllTextures();
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
     m_pDirectionalLight = nullptr;
-    m_pTestingLight = nullptr;
     m_pActiveCameraComponent = nullptr;
 }
 
