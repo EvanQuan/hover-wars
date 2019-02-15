@@ -17,6 +17,11 @@
 #define LIGHT_BUFFER_SIZE               (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2) + (SPOT_LIGHT_SIZE << 2))
 #define MAX_NUM_SPOT_LIGHTS             4
 
+///////////////
+// Constants //
+///////////////
+const GLsizei INSTANCE_STRIDE = (sizeof(mat4) << 2);
+
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
 
@@ -259,6 +264,36 @@ GLuint ShaderManager::genIndicesBuffer(GLuint iVertArray,
     //glBindVertexArray( 0 );
 
     return iIndicesBufferLoc;
+}
+
+GLuint ShaderManager::genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage)
+{
+    // Set up Instanced Buffer for Instance Rendering
+    GLuint iReturnIBO = genVertexBuffer(iVertArray, pData, pSize, usage);
+
+    // Instance Rendering Attributes
+    //    Set up openGL for referencing the InstancedBuffer as a Mat4
+    // column 0
+    glBindBuffer(GL_ARRAY_BUFFER, iReturnIBO);
+    setAttrib(
+        iVertArray, iStartIndex, 4, INSTANCE_STRIDE, (void*)0);
+    // column 1
+    setAttrib(
+        iVertArray, iStartIndex + 1, 4, INSTANCE_STRIDE, (void*)sizeof(vec4));
+    // column 2
+    SHADER_MANAGER->setAttrib(
+        iVertArray, iStartIndex + 2, 4, INSTANCE_STRIDE, (void*)(sizeof(vec4) << 1));
+    // column 3
+    SHADER_MANAGER->setAttrib(
+        iVertArray, iStartIndex + 3, 4, INSTANCE_STRIDE, (void*)(3 * sizeof(vec4)));
+
+    glBindVertexArray(iVertArray);
+    glVertexAttribDivisor(iStartIndex, 1);
+    glVertexAttribDivisor(iStartIndex + 1, 1);
+    glVertexAttribDivisor(iStartIndex + 2, 1);
+    glVertexAttribDivisor(iStartIndex + 3, 1);
+
+    return iReturnIBO;
 }
 
 // given a glm 4x4 Matrix, a specifed shader and a variablename, attempt to set the given matrix into that uniform variable.

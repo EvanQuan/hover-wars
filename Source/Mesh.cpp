@@ -460,7 +460,8 @@ void Mesh::initalizeVBOs()
     }
 
     // Initialize Instance Buffer
-    setupInstanceBuffer(3);
+    m_iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(m_iVertexArray, 3, m_m4ListOfInstances.data(),
+                                                        m_m4ListOfInstances.size() * sizeof(mat4), GL_DYNAMIC_DRAW);
 
     // Set up Indices if applicable
     if (!m_pIndices.empty())
@@ -472,36 +473,6 @@ void Mesh::initalizeVBOs()
             m_pIndices.size() * sizeof(unsigned int),
             GL_STATIC_DRAW);
     }
-}
-
-void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
-{
-    // Set up Instanced Buffer for Instance Rendering
-    m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-        m_iVertexArray, (void*)m_m4ListOfInstances.data(),
-        sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
-
-    // Instance Rendering Attributes
-    //    Set up openGL for referencing the InstancedBuffer as a Mat4
-    // column 0
-    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
-    // column 1
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
-    // column 2
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
-    // column 3
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
-
-    glBindVertexArray(m_iVertexArray);
-    glVertexAttribDivisor(iStartSpecifiedIndex, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 1, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 2, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 3, 1);
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any

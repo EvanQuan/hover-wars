@@ -124,6 +124,7 @@ struct Material
 struct BoundingBox
 {
     string sType;
+    vec3 vDimensions;
 };
 
 

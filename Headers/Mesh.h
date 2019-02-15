@@ -21,6 +21,7 @@ private:
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
     void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
+    void genBoundingBox(vec3 vDimensions, vec3 vPosition);
     void genBillboard();
     void initalizeVBOs();
     bool loadObj(const string& sFileName);
@@ -29,9 +30,6 @@ private:
     // function to generate a quaternion to rotate from y-axis normal to specified normal
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
 
-    // VBO Initialization
-    void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
-
     // Material Struct for setting uniform in Lighting Shaders
     struct sRenderMaterial
     {
@@ -39,6 +37,50 @@ private:
         Texture* m_pSpecularMap;
         float fShininess;
     } m_sRenderMaterial;
+
+    // The Bounding Box Drawing information
+    struct sBoundingBox
+    {
+        vector<vec3> pVertices;
+        vector< unsigned int> pIndices;
+        GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
+
+        void deleteBuffers()
+        {
+            glDeleteBuffers(1, &iIndicesBuffer);
+            glDeleteBuffers(1, &iVertexBuffer);
+            glDeleteBuffers(1, &iInstancedBuffer);
+            glDeleteVertexArrays(1, &iVertexArray);
+        }
+
+        // Loads a new transformation Instance into the Instance buffer
+        void loadInstance(const mat4* pTransform)
+        {
+            assert(nullptr != pTransform);
+            glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(mat4), pTransform, GL_DYNAMIC_DRAW);
+        }
+
+        // Initializes VBOs for the Bounding Box.
+        void initVBOs()
+        {
+            // Ensure that the Bounding Box was initialized with necessary data
+            assert(!pVertices.empty());
+
+            // Generate new vertex array for this Bounding Box
+            glGenVertexArrays(1, &iVertexArray);
+
+            // Generate Vertex Buffer
+            iVertexBuffer = SHADER_MANAGER->genVertexBuffer(iVertexArray, pVertices.data(), pVertices.size() * sizeof(vec3), GL_STATIC_DRAW);
+            SHADER_MANAGER->setAttrib(iVertexArray, 0, 3, sizeof(vec3), (void*)0);
+
+            // Generate Indices Buffer
+            iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
+
+            // Set up Instance Buffer
+            iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)0, 0, GL_DYNAMIC_DRAW);
+        }
+    } m_sBoundingBox;
 
     // Mesh Information and GPU VAO/VBOs
     vector<unsigned int> m_pIndices;
