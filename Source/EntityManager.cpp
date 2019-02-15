@@ -20,6 +20,8 @@ EntityManager::EntityManager()
     m_pScnLdr = SCENE_LOADER;
     m_pEmtrEngn = EMITTER_ENGINE;
     m_pPhysxMngr = PHYSICS_MANAGER;
+
+    pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 }
 
 // Gets the instance of the environment manager.
@@ -288,7 +290,6 @@ void EntityManager::updateEnvironment(const Time& pTimer)
 {
     // Get Total Frame Time and Benchmark for 60 fps
     pFrameTime += pTimer.getFrameTime();
-    duration<float> pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
     // Loop updates to maintain 60 fps
     while (pFrameTime > pMaxDeltaTime)

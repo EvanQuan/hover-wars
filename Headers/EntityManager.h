@@ -121,7 +121,15 @@ private:
     /*
     Represents the time of the current frame
     This value should be changed every time the environment is updated.
+
+    Unit: second
     */
     duration<float> pFrameTime;
+    /*
+    This determines the environment update, and thus the frame rate.
+
+    Unit: second
+    */
+    duration<float> pMaxDeltaTime;
 };
 
