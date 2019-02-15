@@ -19,6 +19,7 @@ public:
 
     // Gets the current FrameTime
     duration<double> getFrameTime() const { return m_pFrameTime;  }
+    void resetTimer();
 
 private:
     // Time Recording Variables

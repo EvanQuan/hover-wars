@@ -37,6 +37,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
     // Generate Buffer and Set Attribute
     m_pVertexBuffer = m_pShaderManager->genVertexBuffer( m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof( vec3 ), GL_STATIC_DRAW );
     SHADER_MANAGER->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
+
+    m_fFrameTime = duration<float>(0.0f);
+    m_fMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 }
 
 // Singleton Implementations
@@ -90,6 +93,7 @@ bool GameManager::renderGraphics()
 {
     // Update Timer
     m_pTimer.updateTime();
+    m_fFrameTime += m_pTimer.getFrameTime();
 
     // Execute all commands for this frame
     m_commandHandler->executeAllCommands();
@@ -98,10 +102,15 @@ bool GameManager::renderGraphics()
     m_pEntityManager->updateEnvironment(m_pTimer);
 
     // call function to draw our scene
-    RenderScene();
+    while (m_fFrameTime >= m_fMaxDeltaTime) // This locks the framerate to 60 fps
+    {
+        m_fFrameTime -= m_fMaxDeltaTime;
+        RenderScene();
 
-    // scene is rendered to the back buffer, so swap to front for display
-    glfwSwapBuffers(m_pWindow);
+        // scene is rendered to the back buffer, so swap to front for display
+        glfwSwapBuffers(m_pWindow);
+    }
+    
 
     // check for Window events
     glfwPollEvents();
@@ -189,6 +198,7 @@ bool GameManager::initializeGraphics( string sFileName )
     m_pCamera = m_pEntityManager->generateCameraEntity();
     // m_eView = VIEW_SPHERICAL;
 
+    m_pTimer.resetTimer();
     return bError; 
 }
 
