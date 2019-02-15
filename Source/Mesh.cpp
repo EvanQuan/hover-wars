@@ -386,19 +386,6 @@ void Mesh::updateBillboardVBO()
     glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
 }
 
-// Updates the UVs of a specified billboard, used for sprite animation.
-void Mesh::updateBillboardVBO(unsigned int iIndex)
-{
-    // Update in Billboard List
-    vec2 pDataArray[] = { m_pBillboardList[iIndex].vUVStart, m_pBillboardList[iIndex].vUVEnd };
-    GLintptr iIndexOffset = (iIndex * BILLBOARD_STRIDE);
-
-    // Update in VBO
-    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, (iIndexOffset + UV_START_OFFSET), sizeof(vec2) << 1, pDataArray);
-    glBufferSubData(GL_ARRAY_BUFFER, (iIndexOffset + DURATION_OFFSET), sizeof(float), &m_pBillboardList[iIndex].fDuration);
-}
-
 // Clear VBO data and Clear the Billboard data internally.
 void Mesh::flushBillboards()
 {
