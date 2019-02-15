@@ -224,6 +224,22 @@ private:
         {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_BACK},
         {BUTTON_BACK,         COMMAND_MENU_PAUSE},
         {BUTTON_START,        COMMAND_MENU_START},
+        // 
+        {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
+        {BUTTON_A,            COMMAND_DASH_BACK},
+        {BUTTON_Y,            COMMAND_DASH_FORWARD},
+        {BUTTON_X,            COMMAND_DASH_LEFT},
+        {BUTTON_B,            COMMAND_DASH_RIGHT},
+        {BUTTON_START,        COMMAND_DEBUG_TOGGLE_WIREFRAME},
+        {BUTTON_BACK,         COMMAND_MENU_BACK},
+        {BUTTON_LEFT_STICK,   COMMAND_INVALID_FIXED},
+        {BUTTON_RIGHT_STICK,  COMMAND_INVALID_FIXED},
+        {BUTTON_UP,           COMMAND_INVALID_FIXED},
+        {BUTTON_RIGHT,        COMMAND_INVALID_FIXED},
+        {BUTTON_DOWN,         COMMAND_INVALID_FIXED},
+        {BUTTON_LEFT,         COMMAND_INVALID_FIXED},
+        {BUTTON_UNKNOWN1,     COMMAND_INVALID_FIXED},
+        {BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
     };
 
     std::map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
