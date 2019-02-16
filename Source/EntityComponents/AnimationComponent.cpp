@@ -104,6 +104,7 @@ void AnimationComponent::addBillboard(const vec3* vPosition, const vec3* vNormal
     vUVRandStart += m_vSpriteHxWBorder;                                 // Calculate the Beginning UV coordinates of the random sprite
 
     m_pMesh->addBillboard(vPosition, vNormal, &vUVRandStart, &vUVRandEnd, m_fBillboardHeight, m_fBillboardWidth, m_fDuration);
+    // cout << "Added Billboard: " << m_pBillboardListPtr->size() << endl;
 }
 
 void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth)

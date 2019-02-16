@@ -64,15 +64,24 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
             ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_DASH_BACK:
+        cout << "Dash back" << endl;
+        break;
     case COMMAND_DASH_FORWARD:
+        cout << "Dash forward" << endl;
+        break;
     case COMMAND_DASH_LEFT:
+        cout << "Dash left" << endl;
+        break;
     case COMMAND_DASH_RIGHT:
+        cout << "Dash right" << endl;
         ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
+        cout << "FRONT" << endl;
         ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
+        cout << "BACK" << endl;
         ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:

@@ -39,9 +39,7 @@ public:
     // The player has a front and back camera, which can be toggled as the
     // active camera
     void setActiveCameraToBack() { activeCameraIndex = BACK_CAMERA; }
-    // void setActiveCameraToBack() { m_pActiveCameraComponent = m_pCmrComponents[BACK_CAMERA]; }
     void setActiveCameraToFront() { activeCameraIndex = FRONT_CAMERA; }
-    // void setActiveCameraToFront() { m_pActiveCameraComponent = m_pCmrComponents[FRONT_CAMERA]; }
     void toggleActiveCamera() { activeCameraIndex = !activeCameraIndex; }
 
 private:

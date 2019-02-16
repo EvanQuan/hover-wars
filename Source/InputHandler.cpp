@@ -86,6 +86,9 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
         case GLFW_KEY_F:
             debugToggleWireframe();
             break;
+        case GLFW_KEY_1:
+            m_gameManager->toggleDebugCamera();
+            break;
         case GLFW_KEY_B:
             ENTITY_MANAGER->toggleBBDrawing();
             break;
@@ -244,7 +247,7 @@ void InputHandler::initializeJoystick(int joystickID)
     // Names
     m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
 
-#ifdef _DEBUG
+#ifdef NDEBUG
     debugPrintJoystickInformation(joystickID);
 #endif
 }
@@ -359,10 +362,13 @@ void InputHandler::updateJoysticks()
     {
         if (m_pJoystickIsPresent[joystickID])
         {
-            // Last Button states
-            m_pJoystickButtonsPressedLast[joystickID] = m_pJoystickButtonsPressed[joystickID];
             // Current axis states
             m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
+
+            // Last Button states
+            // This is important for tracking if a button has just been pressed or released.
+            m_pJoystickButtonsPressedLast[joystickID] = m_pJoystickButtonsPressed[joystickID];
+            assert(m_pJoystickButtonsPressedLast[joystickID] == m_pJoystickButtonsPressed[joystickID]);
             // Current button states
             m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
@@ -385,13 +391,16 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
         {
             m_joystickButtons[joystickID][button] = JUST_RELEASED;
         }
-        else if (m_pJoystickButtonsPressed[joystickID][button])
+        else if (m_pJoystickButtonsPressed[joystickID][button] == GLFW_PRESS)
         {
             m_joystickButtons[joystickID][button] = PRESSED;
         }
-        else
+        else if (m_pJoystickButtonsPressed[joystickID][button] == GLFW_RELEASE)
         {
             m_joystickButtons[joystickID][button] = RELEASED;
+        }
+        else {
+            cout << "WTF BOOOOM" << endl;
         }
 
     }

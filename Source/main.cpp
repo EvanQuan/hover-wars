@@ -146,7 +146,9 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef NDEBUG
+    // Full screen with cursor hidden
     (*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, pMonitor, nullptr);
+    glfwSetInputMode(*rWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // Hide cursor in full screen
 #else
     (*rWindow) = glfwCreateWindow(mode->width, mode->height, cTitle, nullptr, nullptr);
 #endif
