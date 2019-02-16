@@ -27,6 +27,7 @@ private:
     string m_sMeshProperty, m_sShaderProperty;
     float m_fMeshScaleProperty;
     Material m_pMaterialProperty;
+    BoundingBox m_pBBProperty;
 
     long m_lNextID;
     long getNewID() { return ++m_lNextID; }
@@ -35,6 +36,7 @@ private:
     void handleData( vector< string >& sData, const string& sIndicator );
     void handleProperty( vector< string >& sData, const string& sIndicator );
     void grabMaterial(vector< string >& sData);
+    void grabBoundingBox(vector< string >& sData);
     void clearProperties(); // Clear any properties
     
     string trimString( const string& sStr );

@@ -25,6 +25,7 @@
 #define STATIC_MESH            "static_mesh"
 #define BOIDS                  "boids"
 #define MATERIAL               "material"
+#define BOUNDING               "bounding"
 #define MESH                   "mesh"
 #define SHADER                 "shader"
 
@@ -68,7 +69,7 @@ void SceneLoader::createSphere( vector< string > sData, int iLength )
         vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );    // Position of Sphere
 
         ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), &vPosition, 
-                                             &m_pMaterialProperty, m_sShaderProperty);
+                                             &m_pMaterialProperty, &m_pBBProperty, m_sShaderProperty);
     }
     else
     {
@@ -89,7 +90,7 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
         vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
         iHeight = stoi(sData[6]);
         iWidth = stoi(sData[7]);
-        ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, &m_pBBProperty, m_sShaderProperty);
     }
     else
     {
@@ -137,7 +138,7 @@ void SceneLoader::createPointLight(vector< string > sData, int iLength)
         // Set the Diffuse Color of the Material
         m_pMaterialProperty.vOptionalDiffuseColor = vec4(pColor * fPower, 1.0);
 
-        ENTITY_MANAGER->generateStaticPointLight( fPower, &pPosition, &pColor, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
+        ENTITY_MANAGER->generateStaticPointLight( fPower, &pPosition, &pColor, &m_pMaterialProperty, &m_pBBProperty, m_sMeshProperty, m_fMeshScaleProperty);
     }
     else
     {
@@ -169,7 +170,7 @@ void SceneLoader::createSpotLight(vector< string > sData, int iLength)
         // Set the Diffuse color of the material.
         m_pMaterialProperty.vOptionalDiffuseColor = vec4(vColor, 1.0);
 
-        ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, m_sMeshProperty, m_fMeshScaleProperty);
+        ENTITY_MANAGER->generateStaticSpotLight(stof(sData[9]), fSoftCutoff, &vPosition, &vColor, &vDirection, &m_pMaterialProperty, &m_pBBProperty, m_sMeshProperty, m_fMeshScaleProperty);
     }
     else
     {
@@ -184,7 +185,7 @@ void SceneLoader::createPlayer(vector< string > sData, int iLength)
 {
     vec3 vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
 
-    ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty );
+    ENTITY_MANAGER->generatePlayerEntity(&vPosition, m_sMeshProperty, &m_pMaterialProperty, m_fMeshScaleProperty, &m_pBBProperty, m_sShaderProperty );
 }
 
 // Generates a Static Mesh Object at a specified location.
@@ -197,7 +198,7 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
     for (unsigned int i = 0; i + 3 <= iLength; i += 3)
     {
         vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);    // Position of Mesh
-        ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, m_fMeshScaleProperty, m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticMesh(m_sMeshProperty, &vPosition, &m_pMaterialProperty, &m_pBBProperty, m_fMeshScaleProperty, m_sShaderProperty);
     }
 }
 
@@ -341,6 +342,8 @@ void SceneLoader::handleProperty( vector< string >& sData, const string& sIndica
 
     if (MATERIAL == sIndicator)
         grabMaterial(sData);
+    else if (BOUNDING == sIndicator)
+        grabBoundingBox(sData);
     else if (MESH == sIndicator)
     {
         m_sMeshProperty = sDataTrimmed;
@@ -393,6 +396,42 @@ void SceneLoader::grabMaterial(vector< string >& sData)
         
 }
 
+// Grabs the Bounding Box information from the string of data
+//  Order of data (index):
+//      0 - string identifier ("box")
+//      1 - height  <float>
+//      2 - width   <float>
+//      3 - depth   <float>
+void SceneLoader::grabBoundingBox(vector< string >& sData)
+{
+    // If no corresponding identifier is found, output Error
+    if (BOUNDING_BOX_MAP.end() == BOUNDING_BOX_MAP.find(sData[0]))
+        cout << "Error: \"" << sData[0] << "\" is not a valid Bounding Box type.\n";
+    else
+    {
+        // Grab eNum via the string identifier read in from scene file.
+        m_pBBProperty.eType = BOUNDING_BOX_MAP.at(sData[0]);
+
+        // Handle Bounding Box Type
+        switch (m_pBBProperty.eType)
+        {
+        case CUBIC_BOX:
+            m_pBBProperty.vDimensions = vec3(stof(sData[1]), stof(sData[2]), stof(sData[3]));   // Dimensions of a Cubic Box
+            break;
+        default:    // Unsure how this happened, output an error message.
+            cout << "Error: Double Check Bounding Box parameters:{ \n";
+            for (vector<string>::iterator iter = sData.begin();
+                iter != sData.end();
+                ++iter)
+            {
+                cout << (*iter) << " ";
+            }
+            cout << "}\n";
+            break;
+        }
+    }
+}
+
 // Removes any tabs from the beginning or end of a given string.
 string SceneLoader::trimString( const string& sStr )
 {
@@ -413,11 +452,17 @@ string SceneLoader::trimString( const string& sStr )
 // Clear Any Properties that have been created on the last data parse.
 void SceneLoader::clearProperties() // Clear any properties
 {
+    // Clear Basic Properties
     m_sMeshProperty = m_sShaderProperty = "";
     m_fMeshScaleProperty = 1.0f;
 
+    // Clear Material Properties
     m_pMaterialProperty.fShininess = 0.0f;
     m_pMaterialProperty.sDiffuseMap = m_pMaterialProperty.sOptionalSpecMap = "";
     m_pMaterialProperty.vOptionalDiffuseColor = vec4(0.0f);
     m_pMaterialProperty.vOptionalSpecShade = vec4(0.0f);
+
+    // Clear Bounding Box Properties
+    m_pBBProperty.eType = DEFAULT_TYPE;
+    m_pBBProperty.vDimensions = vec3(0.0f);
 }

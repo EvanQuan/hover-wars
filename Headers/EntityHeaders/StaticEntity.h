@@ -20,9 +20,9 @@ public:
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
 
-    void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const string& sShaderType);
-    void loadAsSphere(float fRadius, const Material* pMaterial, const string& sShaderType);
-    void loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType, float fScale);
+    void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const BoundingBox* pBoundingBox, const string& sShaderType);
+    void loadAsSphere(float fRadius, const Material* pMaterial, const BoundingBox* pBoundingBox, const string& sShaderType);
+    void loadFromFile(const string& sFileName, const Material* pMaterial, const BoundingBox* pBoundingBox, const string& sShaderType, float fScale);
 
 private:
     // Private Copy Constructor and Assignment Operator

@@ -24,7 +24,8 @@ public:
     void initializePlayer(const string& sFileName, 
                           const Material* pMaterial, 
                           const string& sShaderType,
-                          float fScale);
+                          float fScale,
+                          const BoundingBox* pBoundingBox);
 
     void useAbility(eAbility ability);
     void move(float x, float y);

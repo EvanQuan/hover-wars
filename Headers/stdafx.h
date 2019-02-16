@@ -36,6 +36,9 @@
 // FTGL
 // #include <FTGL/ftgl.h>
 
+// PhysX
+#include "PxPhysicsAPI.h"
+
 #ifdef USING_LINUX
 #include <string.h>
 #include <memory>
@@ -49,6 +52,7 @@
 #include "Enums/ePowerup.h"
 #include "Enums/eFixedCommand.h"
 #include "Enums/eVariableCommand.h"
+#include "Enums/eBoundingBoxTypes.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"
@@ -58,7 +62,6 @@
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
-#include "PxPhysicsAPI.h"
 using namespace physx;
 
 /* DEFINES */
@@ -110,7 +113,6 @@ using namespace physx;
 #define TRIGGER_NETURAL     -1.0f
 #define TRIGGER_FULL        1.0f
 
-
 /* GLOBAL STRUCTS */
 struct Material
 {
@@ -121,22 +123,28 @@ struct Material
     float fShininess;
 };
 
+/* Bounding Box Structure */
 struct BoundingBox
 {
-    string sType;
+    eBoundingBoxTypes eType;
     vec3 vDimensions;
 };
 
+// Mapping potential types from the scene loader to corresponding enums
+const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
+{
+    make_pair("box", CUBIC_BOX)
+};
 
 /* Manager Defines */
-#define ENTITY_MANAGER    EntityManager::getInstance()
-#define GAME_MANAGER    GameManager::getInstance()
-#define MESH_MANAGER    MeshManager::getInstance()
-#define SHADER_MANAGER    ShaderManager::getInstance()
-#define TEXTURE_MANAGER TextureManager::getInstance()
-#define PHYSICS_MANAGER PhysicsManager::getInstance()
-#define SCENE_LOADER    SceneLoader::getInstance()
-#define EMITTER_ENGINE    EmitterEngine::getInstance()
+#define ENTITY_MANAGER      EntityManager::getInstance()
+#define GAME_MANAGER        GameManager::getInstance()
+#define MESH_MANAGER        MeshManager::getInstance()
+#define SHADER_MANAGER      ShaderManager::getInstance()
+#define TEXTURE_MANAGER     TextureManager::getInstance()
+#define PHYSICS_MANAGER     PhysicsManager::getInstance()
+#define SCENE_LOADER        SceneLoader::getInstance()
+#define EMITTER_ENGINE      EmitterEngine::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

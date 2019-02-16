@@ -21,7 +21,6 @@ private:
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
     void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition);
-    void genCubicVerts(vector< vec3 >* vReturnVerts, float fHeight, float fWidth, float fDepth, const vec3* vPosition);
     void genBoundingBox(vec3 vDimensions, vec3 vPosition);
     void genBillboard();
     void initalizeVBOs();
@@ -42,45 +41,23 @@ private:
     // The Bounding Box Drawing information
     struct sBoundingBox
     {
+        vector<mat4> pInstances;
         vector<vec3> pVertices;
         vector< unsigned int> pIndices;
         GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
 
-        void deleteBuffers()
-        {
-            glDeleteBuffers(1, &iIndicesBuffer);
-            glDeleteBuffers(1, &iVertexBuffer);
-            glDeleteBuffers(1, &iInstancedBuffer);
-            glDeleteVertexArrays(1, &iVertexArray);
-        }
+        // Check to see if the Bounding Box is loaded.
+        bool isLoaded() { return 0 != iVertexArray; }
+
+        // Initialization and cleaning of Buffers
+        void deleteBuffers();   // Deletes the VAO and VBOs used by the Mesh's Bounding Box
+        void initVBOs();        // Initializes VBOs for the Bounding Box.
 
         // Loads a new transformation Instance into the Instance buffer
-        void loadInstance(const mat4* pTransform)
-        {
-            assert(nullptr != pTransform);
-            glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(mat4), pTransform, GL_DYNAMIC_DRAW);
-        }
+        void loadInstance(const mat4* pTransform);
 
-        // Initializes VBOs for the Bounding Box.
-        void initVBOs()
-        {
-            // Ensure that the Bounding Box was initialized with necessary data
-            assert(!pVertices.empty());
-
-            // Generate new vertex array for this Bounding Box
-            glGenVertexArrays(1, &iVertexArray);
-
-            // Generate Vertex Buffer
-            iVertexBuffer = SHADER_MANAGER->genVertexBuffer(iVertexArray, pVertices.data(), pVertices.size() * sizeof(vec3), GL_STATIC_DRAW);
-            SHADER_MANAGER->setAttrib(iVertexArray, 0, 3, sizeof(vec3), (void*)0);
-
-            // Generate Indices Buffer
-            iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
-
-            // Set up Instance Buffer
-            iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)0, 0, GL_DYNAMIC_DRAW);
-        }
+        // Generation Functions
+        void generateCubicBox(float fHeight, float fWidth, float fDepth);
     } m_sBoundingBox;
 
     // Mesh Information and GPU VAO/VBOs
@@ -151,6 +128,10 @@ public:
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;
     void unbindTextures() const;
+
+    // Bounding Box Functionality
+    void generateCubicBoundingBox(float fHeight, float fWidth, float fDepth) { m_sBoundingBox.generateCubicBox(fHeight, fWidth, fDepth); }
+    void addBBInstance(const mat4* m4Transformation);
 
     // Gets the file name, only the MeshManager can set this variable.
     const string& getManagerKey() { return m_sManagerKey; }

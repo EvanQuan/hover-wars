@@ -46,6 +46,9 @@ Mesh::~Mesh()
     glDeleteBuffers(1, &m_iIndicesBuffer);
     glDeleteBuffers(1, &m_iInstancedBuffer);
     glDeleteVertexArrays(1, &m_iVertexArray);
+
+    // Delete the Buffers of the Bounding Box
+    m_sBoundingBox.deleteBuffers();
 }
 
 // Load the Mesh from a given file name
@@ -718,4 +721,101 @@ void Mesh::loadMaterial(const Material* pMaterial)
         m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
     if (nullptr == m_sRenderMaterial.m_pSpecularMap)
         m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
+}
+
+/************************************************************************************\
+ * Bounding Box Functionality                                                       *
+\************************************************************************************/
+
+// Deletes The VAO and VBOs used by the Mesh's Bounding Box.
+void Mesh::sBoundingBox::deleteBuffers()
+{
+    glDeleteBuffers(1, &iIndicesBuffer);
+    glDeleteBuffers(1, &iVertexBuffer);
+    glDeleteBuffers(1, &iInstancedBuffer);
+    glDeleteVertexArrays(1, &iVertexArray);
+}
+
+// Loads a new transformation Instance into the Instance buffer
+void Mesh::sBoundingBox::loadInstance(const mat4* pTransform)
+{
+    // Ensure a valid transformation is passed in and that the InstancedBuffer is generated
+    assert(nullptr != pTransform && 0 != iInstancedBuffer);
+
+    // Add the Transformation to the Instance Vector and load the Instance Vector into the Instance VBO
+    pInstances.push_back(*pTransform);
+    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
+}
+
+// Initializes VBOs for the Bounding Box.
+void Mesh::sBoundingBox::initVBOs()
+{
+    // Ensure that the Bounding Box was initialized with necessary data
+    assert(!pVertices.empty());
+
+    // Delete Current Buffers if they have already been initialized
+    if (isLoaded())
+        deleteBuffers();
+
+    // Generate new vertex array for this Bounding Box
+    glGenVertexArrays(1, &iVertexArray);
+
+    // Generate Vertex Buffer
+    iVertexBuffer = SHADER_MANAGER->genVertexBuffer(iVertexArray, pVertices.data(), pVertices.size() * sizeof(vec3), GL_STATIC_DRAW);
+    SHADER_MANAGER->setAttrib(iVertexArray, 0, 3, sizeof(vec3), (void*)0);
+
+    // Generate Indices Buffer
+    iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
+
+    // Generate Instance Buffer
+    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)0, 0, GL_DYNAMIC_DRAW);
+}
+
+// Generates a Cubic Bounding Box.
+void Mesh::sBoundingBox::generateCubicBox(float fHeight, float fWidth, float fDepth)
+{
+    // Get half sizes of dimensions to set vertices wrt to origin.
+    float iHalfHeight = fHeight * 0.5f;
+    float iHalfWidth = fWidth * 0.5f;
+    float iHalfDepth = fDepth * 0.5f;
+
+    // Store all 8 Vertices for the Cubic Box
+    pVertices = {
+        vec3(-iHalfWidth, iHalfHeight, iHalfDepth),
+        vec3(iHalfWidth, iHalfHeight, iHalfDepth),
+        vec3(iHalfWidth, -iHalfHeight, iHalfDepth),
+        vec3(-iHalfWidth, -iHalfHeight, iHalfDepth),
+        vec3(-iHalfWidth, iHalfHeight, -iHalfDepth),
+        vec3(iHalfWidth, iHalfHeight, -iHalfDepth),
+        vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth),
+        vec3(iHalfWidth, -iHalfHeight, -iHalfDepth)
+    };
+
+    // Set up the Indices for Drawing lines
+    pIndices = {
+        0, 1, 0, 3, 0, 4, // Top Left Front Corner
+        1, 2, 1, 5, 2, 3,
+        2, 7, 3, 6, 4, 5,
+        6, 7, 4, 6, 5, 7
+    };
+
+    // Initialize Bounding Box VBOs
+    initVBOs();
+}
+
+// Set the Bounding Box Instance Matrix
+//  If the Mesh is static, add multiple instances
+//  dynamic? replace the current instance
+void Mesh::addBBInstance(const mat4* m4Transformation)
+{
+    if (m_sBoundingBox.isLoaded())
+    {
+        // If the Mesh is dynamic, clear the current Instance loaded
+        if (!m_bStaticMesh)
+            m_sBoundingBox.pInstances.clear();
+
+        // Load the new instance
+        m_sBoundingBox.loadInstance(m4Transformation);
+    }
 }
