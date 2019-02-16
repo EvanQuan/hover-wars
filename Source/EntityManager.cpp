@@ -14,6 +14,7 @@ EntityManager::EntityManager()
     m_iHeight = START_HEIGHT;
     m_iWidth = START_WIDTH;
     m_bPause = false;
+    m_bDrawBoundingBoxes = false;
     m_pMshMngr = MESH_MANAGER;
     m_pTxtMngr = TEXTURE_MANAGER;
     m_pScnLdr = SCENE_LOADER;

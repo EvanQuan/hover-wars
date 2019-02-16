@@ -59,7 +59,8 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
-    m_pMesh->addInstance(&m4NewTransform);                
+    m_pMesh->addInstance(&m4NewTransform);
+    m_pMesh->addBBInstance(&m4NewTransform);
 
     // Calculate Position Averages for Camera
     m_vPosition = m4NewTransform[3];

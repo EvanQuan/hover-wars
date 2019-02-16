@@ -88,6 +88,10 @@ ShaderManager::ShaderManager()
 
     m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/boid.vert");
     m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/boid.frag");
+
+    // Bounding Box Shader
+    m_pShader[eShaderType::BB_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/bounding_box.vert");
+    m_pShader[eShaderType::BB_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/bounding_box.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

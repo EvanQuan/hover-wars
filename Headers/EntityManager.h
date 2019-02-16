@@ -29,7 +29,11 @@ public:
 
     // Init and Pause Functionality
     void initializeEnvironment(string sFileName);
+
+    // Scene Management Functionality
     void pause() { m_bPause = !m_bPause; }
+    void toggleBBDrawing() { m_bDrawBoundingBoxes = !m_bDrawBoundingBoxes; }
+    bool doBoundingBoxDrawing() { return m_bDrawBoundingBoxes; }
 
     // Entity Functions
     Camera* generateCameraEntity();
@@ -97,7 +101,7 @@ private:
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
 
-    // Edge Threshold Implementation
-    bool m_bPause;
+    // Scene Management toggling
+    bool m_bPause, m_bDrawBoundingBoxes;
 };
 

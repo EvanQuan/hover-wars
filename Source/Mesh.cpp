@@ -769,7 +769,8 @@ void Mesh::sBoundingBox::initVBOs()
     iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
 
     // Generate Instance Buffer
-    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)0, 0, GL_DYNAMIC_DRAW);
+    mat4 m4DefaultInstance(1.0f);
+    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)&m4DefaultInstance, sizeof(mat4), GL_DYNAMIC_DRAW);
 }
 
 // Generates a Cubic Bounding Box.

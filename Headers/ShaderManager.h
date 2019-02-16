@@ -25,6 +25,7 @@ public:
         WORLD_SHDR,
         BILLBOARD_SHDR,
         BOID_SHDR,
+        BB_SHDR,
         MAX_SHDRS
     };
     const static unordered_map<string, eShaderType> pShaderTypeMap;

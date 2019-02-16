@@ -228,6 +228,7 @@ void CommandHandler::executeKeyboardCommands()
                 break;
             default:
                 m_pFixedCommand = COMMAND_INVALID_FIXED;
+                break;
             }
             if (COMMAND_INVALID_FIXED != m_pFixedCommand)
             {
