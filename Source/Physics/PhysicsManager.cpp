@@ -214,14 +214,14 @@ void PhysicsManager::update(float fTimeDelta)
     // Increment Time since last update and check to see if an update is ready.
     //    if an update is ready, decrement the internal timer to reset it accurately
     //    then perform the update.
-    while (m_fTimeSinceLastUpdate >= UPDATE_TIME_IN_SECONDS)
+    if (m_fTimeSinceLastUpdate >= UPDATE_TIME_IN_SECONDS)
     {
         // Don't reset to 0.0f as it's probably not at the Update Time Exactly.
         //    this preserves an accuracy w.r.t. the game timer.
-        m_fTimeSinceLastUpdate -= UPDATE_TIME_IN_SECONDS;
+        m_fTimeSinceLastUpdate = 0;
 
         // Step Physics at 1/60th of a second.
-        stepPhysics(); 
+        stepPhysics(UPDATE_TIME_IN_SECONDS); 
     }
 }
 
@@ -523,12 +523,12 @@ void PhysicsManager::createStack(const PxTransform& t, PxU32 size, PxReal halfEx
 // Made this function private, externally this makes sense, but when and why it should
 //    be called it up to the PhysicsManager. I added an update function that will be called
 //    every frame, but you can decide how often to call this function and how it works under the hood.
-void PhysicsManager::stepPhysics()
+void PhysicsManager::stepPhysics(float fTimeDelta)
 {
     hasStarted = true;
     PX_UNUSED(m_bInteractive
         /*Private Variable, lasts lifetime of PhysicsManager since initialization, may need to be redesigned as needed?*/);
-    const PxF32 timestep = UPDATE_TIME_IN_SECONDS;
+    const PxF32 timestep = fTimeDelta;
 
     //Cycle through the driving modes to demonstrate how to accelerate/reverse/brake/turn etc.
     //incrementDrivingMode(timestep);

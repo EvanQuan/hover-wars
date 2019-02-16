@@ -46,6 +46,9 @@ Mesh::~Mesh()
     glDeleteBuffers(1, &m_iIndicesBuffer);
     glDeleteBuffers(1, &m_iInstancedBuffer);
     glDeleteVertexArrays(1, &m_iVertexArray);
+
+    // Delete the Buffers of the Bounding Box
+    m_sBoundingBox.deleteBuffers();
 }
 
 // Load the Mesh from a given file name
@@ -186,12 +189,12 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 }
 
 // Generates a Cube object given a Height, Width and Depth dimension as well as a position.
-void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
+void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
 {
     // Get half sizes of dimensions to set vertices wrt to origin.
-    float iHalfHeight = static_cast<float>(iHeight) * 0.5f;
-    float iHalfWidth = static_cast<float>(iWidth) * 0.5f;
-    float iHalfDepth = static_cast<float>(iDepth) * 0.5f;
+    float iHalfHeight = fHeight * 0.5f;
+    float iHalfWidth =  fWidth * 0.5f;
+    float iHalfDepth =  fDepth * 0.5f;
 
     // Reserve Sizes ahead of time to speed up computation
     m_pVertices.reserve(24);
@@ -460,7 +463,8 @@ void Mesh::initalizeVBOs()
     }
 
     // Initialize Instance Buffer
-    setupInstanceBuffer(3);
+    m_iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(m_iVertexArray, 3, m_m4ListOfInstances.data(),
+                                                        m_m4ListOfInstances.size() * sizeof(mat4), GL_DYNAMIC_DRAW);
 
     // Set up Indices if applicable
     if (!m_pIndices.empty())
@@ -472,36 +476,6 @@ void Mesh::initalizeVBOs()
             m_pIndices.size() * sizeof(unsigned int),
             GL_STATIC_DRAW);
     }
-}
-
-void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
-{
-    // Set up Instanced Buffer for Instance Rendering
-    m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-        m_iVertexArray, (void*)m_m4ListOfInstances.data(),
-        sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
-
-    // Instance Rendering Attributes
-    //    Set up openGL for referencing the InstancedBuffer as a Mat4
-    // column 0
-    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
-    // column 1
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
-    // column 2
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
-    // column 3
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
-
-    glBindVertexArray(m_iVertexArray);
-    glVertexAttribDivisor(iStartSpecifiedIndex, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 1, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 2, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 3, 1);
 }
 
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any
@@ -747,4 +721,102 @@ void Mesh::loadMaterial(const Material* pMaterial)
         m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
     if (nullptr == m_sRenderMaterial.m_pSpecularMap)
         m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
+}
+
+/************************************************************************************\
+ * Bounding Box Functionality                                                       *
+\************************************************************************************/
+
+// Deletes The VAO and VBOs used by the Mesh's Bounding Box.
+void Mesh::sBoundingBox::deleteBuffers()
+{
+    glDeleteBuffers(1, &iIndicesBuffer);
+    glDeleteBuffers(1, &iVertexBuffer);
+    glDeleteBuffers(1, &iInstancedBuffer);
+    glDeleteVertexArrays(1, &iVertexArray);
+}
+
+// Loads a new transformation Instance into the Instance buffer
+void Mesh::sBoundingBox::loadInstance(const mat4* pTransform)
+{
+    // Ensure a valid transformation is passed in and that the InstancedBuffer is generated
+    assert(nullptr != pTransform && 0 != iInstancedBuffer);
+
+    // Add the Transformation to the Instance Vector and load the Instance Vector into the Instance VBO
+    pInstances.push_back(*pTransform);
+    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
+}
+
+// Initializes VBOs for the Bounding Box.
+void Mesh::sBoundingBox::initVBOs()
+{
+    // Ensure that the Bounding Box was initialized with necessary data
+    assert(!pVertices.empty());
+
+    // Delete Current Buffers if they have already been initialized
+    if (isLoaded())
+        deleteBuffers();
+
+    // Generate new vertex array for this Bounding Box
+    glGenVertexArrays(1, &iVertexArray);
+
+    // Generate Vertex Buffer
+    iVertexBuffer = SHADER_MANAGER->genVertexBuffer(iVertexArray, pVertices.data(), pVertices.size() * sizeof(vec3), GL_STATIC_DRAW);
+    SHADER_MANAGER->setAttrib(iVertexArray, 0, 3, sizeof(vec3), (void*)0);
+
+    // Generate Indices Buffer
+    iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
+
+    // Generate Instance Buffer
+    mat4 m4DefaultInstance(1.0f);
+    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)&m4DefaultInstance, sizeof(mat4), GL_DYNAMIC_DRAW);
+}
+
+// Generates a Cubic Bounding Box.
+void Mesh::sBoundingBox::generateCubicBox(float fHeight, float fWidth, float fDepth)
+{
+    // Get half sizes of dimensions to set vertices wrt to origin.
+    float iHalfHeight = fHeight * 0.5f;
+    float iHalfWidth = fWidth * 0.5f;
+    float iHalfDepth = fDepth * 0.5f;
+
+    // Store all 8 Vertices for the Cubic Box
+    pVertices = {
+        vec3(-iHalfWidth, iHalfHeight, iHalfDepth),
+        vec3(iHalfWidth, iHalfHeight, iHalfDepth),
+        vec3(iHalfWidth, -iHalfHeight, iHalfDepth),
+        vec3(-iHalfWidth, -iHalfHeight, iHalfDepth),
+        vec3(-iHalfWidth, iHalfHeight, -iHalfDepth),
+        vec3(iHalfWidth, iHalfHeight, -iHalfDepth),
+        vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth),
+        vec3(iHalfWidth, -iHalfHeight, -iHalfDepth)
+    };
+
+    // Set up the Indices for Drawing lines
+    pIndices = {
+        0, 1, 0, 3, 0, 4, // Top Left Front Corner
+        1, 2, 1, 5, 2, 3,
+        2, 7, 3, 6, 4, 5,
+        6, 7, 4, 6, 5, 7
+    };
+
+    // Initialize Bounding Box VBOs
+    initVBOs();
+}
+
+// Set the Bounding Box Instance Matrix
+//  If the Mesh is static, add multiple instances
+//  dynamic? replace the current instance
+void Mesh::addBBInstance(const mat4* m4Transformation)
+{
+    if (m_sBoundingBox.isLoaded())
+    {
+        // If the Mesh is dynamic, clear the current Instance loaded
+        if (!m_bStaticMesh)
+            m_sBoundingBox.pInstances.clear();
+
+        // Load the new instance
+        m_sBoundingBox.loadInstance(m4Transformation);
+    }
 }

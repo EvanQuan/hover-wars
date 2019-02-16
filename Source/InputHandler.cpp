@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "InputHandler.h"
 #include "GameManager.h"
+#include "EntityManager.h"
 
 // Single Singleton instance
 InputHandler* InputHandler::m_pInstance = nullptr;
@@ -98,6 +99,9 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
             break;
         case GLFW_KEY_C:
             m_gameManager->toggleDebugCamera();
+            break;
+        case GLFW_KEY_B:
+            ENTITY_MANAGER->toggleBBDrawing();
             break;
         }
     }

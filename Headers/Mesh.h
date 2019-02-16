@@ -20,7 +20,7 @@ private:
     bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
-    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
+    void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition);
     void genBillboard();
     void initalizeVBOs();
     bool loadObj(const string& sFileName);
@@ -29,9 +29,6 @@ private:
     // function to generate a quaternion to rotate from y-axis normal to specified normal
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
 
-    // VBO Initialization
-    void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
-
     // Material Struct for setting uniform in Lighting Shaders
     struct sRenderMaterial
     {
@@ -39,6 +36,28 @@ private:
         Texture* m_pSpecularMap;
         float fShininess;
     } m_sRenderMaterial;
+
+    // The Bounding Box Drawing information
+    struct sBoundingBox
+    {
+        vector<mat4> pInstances;
+        vector<vec3> pVertices;
+        vector< unsigned int> pIndices;
+        GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
+
+        // Check to see if the Bounding Box is loaded.
+        bool isLoaded() const { return 0 != iVertexArray; }
+
+        // Initialization and cleaning of Buffers
+        void deleteBuffers();   // Deletes the VAO and VBOs used by the Mesh's Bounding Box
+        void initVBOs();        // Initializes VBOs for the Bounding Box.
+
+        // Loads a new transformation Instance into the Instance buffer
+        void loadInstance(const mat4* pTransform);
+
+        // Generation Functions
+        void generateCubicBox(float fHeight, float fWidth, float fDepth);
+    } m_sBoundingBox;
 
     // Mesh Information and GPU VAO/VBOs
     vector<unsigned int> m_pIndices;
@@ -64,7 +83,6 @@ private:
 
     // Billboard Functionality -> Only accessable within AnimationComponent
     void updateBillboardVBO();
-    void updateBillboardVBO(unsigned int iIndex);
     unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration);
     void flushBillboards();
 
@@ -108,6 +126,13 @@ public:
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;
     void unbindTextures() const;
+
+    // Bounding Box Functionality
+    void generateCubicBoundingBox(float fHeight, float fWidth, float fDepth) { m_sBoundingBox.generateCubicBox(fHeight, fWidth, fDepth); }
+    void addBBInstance(const mat4* m4Transformation);
+    bool usingBoundingBox() const { return m_sBoundingBox.isLoaded(); }
+    GLuint getBBVertexArray() const { return m_sBoundingBox.iVertexArray; }
+    GLuint getBBCount() const { return m_sBoundingBox.pIndices.size(); }
 
     // Gets the file name, only the MeshManager can set this variable.
     const string& getManagerKey() { return m_sManagerKey; }

@@ -198,6 +198,9 @@
     <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
