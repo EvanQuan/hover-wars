@@ -57,7 +57,7 @@ public:
     physx::PxRigidDynamic *createCubeObjectPlayer(float x, float y, float z, float size);
     physx::PxVehicleNoDrive *createPlayerEntity();
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
-    void stepPhysics(); // This probably functions within the update function to be used as necessary.
+    void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
 
 private:
     int currentState = 0;

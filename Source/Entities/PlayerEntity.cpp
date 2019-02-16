@@ -59,7 +59,8 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
-    m_pMesh->addInstance(&m4NewTransform);                
+    m_pMesh->addInstance(&m4NewTransform);
+    m_pMesh->addBBInstance(&m4NewTransform);
 
     // Calculate Position Averages for Camera
     m_vPosition = m4NewTransform[3];
@@ -70,10 +71,11 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 void PlayerEntity::initializePlayer(const string& sFileName,
                                     const Material* pMaterial,
                                     const string& sShaderType,
-                                    float fScale)
+                                    float fScale,
+                                    const BoundingBox* pBoundingBox)
 {
     // Load Mesh and Rendering Component
-    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, fScale, m_vPosition);
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, pBoundingBox, fScale, m_vPosition);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player

@@ -25,6 +25,7 @@ public:
         WORLD_SHDR,
         BILLBOARD_SHDR,
         BOID_SHDR,
+        BB_SHDR,
         MAX_SHDRS
     };
     const static unordered_map<string, eShaderType> pShaderTypeMap;
@@ -49,6 +50,7 @@ public:
                      GLint iChunkSize, GLsizei iStride, const void *pOffset);
     GLuint genIndicesBuffer( GLuint iVertArray, 
                              const void* pData, GLsizeiptr pSize, GLenum usage );
+    GLuint genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage);
 
     // Shader Uniform Variable Manipulation 
     void setUnifromMatrix4x4( eShaderType eType, string sVarName, const mat4* pResultingMatrix );

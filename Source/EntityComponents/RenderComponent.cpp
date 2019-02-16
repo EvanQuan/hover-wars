@@ -43,6 +43,17 @@ void RenderComponent::render()
 
         // Unbind Texture(s) HERE
         m_pMesh->unbindTextures();
+
+        // Render The Bounding Box for the mesh.
+        if (ENTITY_MANAGER->doBoundingBoxDrawing() && m_pMesh->usingBoundingBox() )
+        {
+            // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
+            glBindVertexArray(m_pMesh->getBBVertexArray());
+            glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::BB_SHDR));
+
+            // Draw Bounding Box
+            glDrawElements(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr);
+        }
     }
 }
 

@@ -40,7 +40,7 @@ void MeshManager::unloadAllMeshes()
 // Return:                Returns a pointer to the desired mesh from the specified file.
 // Parameters:            sFileName - The location of the file to load.
 // Written by:            James Cote
-Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const Material* pMaterial, float fScale, vec3 vPosition, bool bStaticMesh)
+Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const Material* pMaterial, const BoundingBox* pBoundingBox, float fScale, vec3 vPosition, bool bStaticMesh)
 {
     // Attempt to grab it from the texture cache if it already exists
     Mesh* pReturnMesh = nullptr;
@@ -53,8 +53,10 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const Material* pM
         pReturnMesh = m_pMeshCache[ sHashKey ].get();
 
         // Add the new instance to the mesh.
-        mat4 m4NewTransformInstance = translate(vPosition) * scale(vec3(fScale)) * mat4(1.0f);
-        pReturnMesh->addInstance(&m4NewTransformInstance);
+        mat4 m4TranslationMat4 = translate(vPosition);
+        mat4 m4NewTransformInstance = m4TranslationMat4 * scale(vec3(fScale)) * mat4(1.0f);
+        pReturnMesh->addInstance(&m4NewTransformInstance);      // Add new Position for the Mesh
+        pReturnMesh->addBBInstance(&m4TranslationMat4);         // Add Translation for the Bounding Box, this shouldn't be scaled.
     }
     else // Create the New Texture in the Texture Cache, attach the User to the Texture and return the newly created texture.
     {
@@ -73,6 +75,8 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const Material* pM
         {
             // Return Newly Created Mesh.
             pReturnMesh = pNewMesh.get();
+            evaluateBoundingBox(pReturnMesh, pBoundingBox); // Handle Bounding Box information
+
             // Attach Mesh to the Cache
             m_pMeshCache.insert(make_pair( sHashKey, move(pNewMesh) ));
         }
@@ -85,7 +89,7 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const Material* pM
 //                            or creates a new Plane Mesh if one hasn't been created yet.
 // Returns:                Generated plane mesh or nullptr if no mesh was able to be generated.
 // Written by:            James Cote
-Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const Material* pMaterial, 
+Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const Material* pMaterial, const BoundingBox* pBoundingBox,
                                      vec3 vPosition, vec3 vNormal)
 {
     // Local Variables
@@ -112,7 +116,7 @@ Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, 
     return pReturnMesh;
 }
 
-Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, const Material* pMaterial, vec3 vPosition)
+Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, const Material* pMaterial, const BoundingBox* pBoundingBox, vec3 vPosition)
 {
     // Local Variables
     string sHashHandle = "Sphere" + to_string(fRadius) + materialToString(pMaterial);
@@ -137,10 +141,10 @@ Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, const Mat
     return pReturnMesh;
 }
 
-Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, int iDepth, const Material* pMaterial, vec3 vPosition)
+Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, float fHeight, float fWidth, float fDepth, const Material* pMaterial, const BoundingBox* pBoundingBox, vec3 vPosition)
 {
     // Local Variables
-    string sHashHandle = "Cube" + to_string(iHeight) + to_string(iWidth) + to_string(iDepth) + 
+    string sHashHandle = "Cube" + to_string(fHeight) + to_string(fWidth) + to_string(fDepth) +
                             materialToString(pMaterial);
     Mesh* pReturnMesh = nullptr;
 
@@ -155,7 +159,7 @@ Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, int iHeight, int iWidth, i
     else // Generate a new Cube Mesh with given dimensions
     {
         unique_ptr<Mesh> pNewCube = make_unique<Mesh>(sHashHandle, bStaticMesh, pMaterial, Mesh::manager_cookie());
-        pNewCube->genCube(iHeight, iWidth, iDepth, vPosition);
+        pNewCube->genCube(fHeight, fWidth, fDepth, vPosition);
         pReturnMesh = pNewCube.get();
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewCube)));
     }
@@ -187,6 +191,9 @@ Mesh* MeshManager::generateBillboardMesh(const Material* pMaterial, const void* 
     return pReturnMesh;
 }
 
+/****************************************************************************************************************\
+ * Private Functions                                                                                            *
+\****************************************************************************************************************/
 
 // Generates a Hash string for the given material
 // returns a default if pointer is a nullptr.
@@ -217,4 +224,20 @@ string MeshManager::materialToString(const Material* sMaterial)
     
     // Return the Hash String for the material
     return sReturnString;
+}
+
+// Evaluates the contents of the Bounding Box structure
+//  tells the Mesh to build a designated Bounding Box based on the given structure.
+void MeshManager::evaluateBoundingBox(Mesh* pTarget, const BoundingBox* pBoundingBox)
+{
+    // Nothing Set in the Bounding Box type? Don't evaluate further
+    switch (pBoundingBox->eType)
+    {
+    case CUBIC_BOX:
+        pTarget->generateCubicBoundingBox(pBoundingBox->vDimensions.x, pBoundingBox->vDimensions.y, pBoundingBox->vDimensions.z);
+        break;
+    default:    // No Bounding Box specified
+        return;
+        break;
+    }    
 }

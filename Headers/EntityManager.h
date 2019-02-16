@@ -29,17 +29,21 @@ public:
 
     // Init and Pause Functionality
     void initializeEnvironment(string sFileName);
+
+    // Scene Management Functionality
     void pause() { m_bPause = !m_bPause; }
+    void toggleBBDrawing() { m_bDrawBoundingBoxes = !m_bDrawBoundingBoxes; }
+    bool doBoundingBoxDrawing() { return m_bDrawBoundingBoxes; }
 
     // Entity Functions
     Camera* generateCameraEntity();
-    void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const string& sShaderType = "");
-    void generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const string& sShaderType = "");
-    void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, float fScale, const string& sShaderType = "" );
-    void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
+    void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType = "");
+    void generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType = "");
+    void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, float fScale, const string& sShaderType = "" );
+    void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
-    void generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
-    void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const string& sShaderType = "");
+    void generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
+    void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const BoundingBox* pBoundingBox, const string& sShaderType = "");
     InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
 
@@ -97,7 +101,7 @@ private:
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
 
-    // Edge Threshold Implementation
-    bool m_bPause;
+    // Scene Management toggling
+    bool m_bPause, m_bDrawBoundingBoxes;
 };
 
