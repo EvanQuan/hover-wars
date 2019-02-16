@@ -52,9 +52,7 @@ void RenderComponent::render()
             glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::BB_SHDR));
 
             // Draw Bounding Box
-            glLineWidth(10.0f);
             glDrawElements(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr);
-            glLineWidth(1.0f);
         }
     }
 }
