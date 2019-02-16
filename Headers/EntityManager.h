@@ -37,13 +37,13 @@ public:
 
     // Entity Functions
     Camera* generateCameraEntity();
-    void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType = "");
-    void generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType = "");
-    void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, float fScale, const string& sShaderType = "" );
-    void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
+    void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
+    void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
+    void generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );
+    void generateStaticPointLight(const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
-    void generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
-    void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const BoundingBox* pBoundingBox, const string& sShaderType = "");
+    void generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
+    void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
 

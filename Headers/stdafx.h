@@ -113,23 +113,6 @@ using namespace physx;
 #define TRIGGER_NETURAL     -1.0f
 #define TRIGGER_FULL        1.0f
 
-/* GLOBAL STRUCTS */
-struct Material
-{
-    string sDiffuseMap;
-    vec4 vOptionalDiffuseColor;
-    string sOptionalSpecMap;
-    vec4 vOptionalSpecShade;
-    float fShininess;
-};
-
-/* Bounding Box Structure */
-struct BoundingBox
-{
-    eBoundingBoxTypes eType;
-    vec3 vDimensions;
-};
-
 // Mapping potential types from the scene loader to corresponding enums
 const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 {

@@ -31,7 +31,7 @@ void SpotLight::update(float fTimeInMilliseconds)
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //    If "" is provided for the Mesh name, a generic cube will be generated.
-void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const Material* sMaterial, const BoundingBox* pBoundingBox, float m_fMeshScale)
+void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, const ObjectInfo* pObjectProperties, float m_fMeshScale)
 {
     // Set the color of the Light
     m_pColor = (*vColor);

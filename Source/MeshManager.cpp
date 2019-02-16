@@ -225,19 +225,3 @@ string MeshManager::materialToString(const Material* sMaterial)
     // Return the Hash String for the material
     return sReturnString;
 }
-
-// Evaluates the contents of the Bounding Box structure
-//  tells the Mesh to build a designated Bounding Box based on the given structure.
-void MeshManager::evaluateBoundingBox(Mesh* pTarget, const BoundingBox* pBoundingBox)
-{
-    // Nothing Set in the Bounding Box type? Don't evaluate further
-    switch (pBoundingBox->eType)
-    {
-    case CUBIC_BOX:
-        pTarget->generateCubicBoundingBox(pBoundingBox->vDimensions.x, pBoundingBox->vDimensions.y, pBoundingBox->vDimensions.z);
-        break;
-    default:    // No Bounding Box specified
-        return;
-        break;
-    }    
-}

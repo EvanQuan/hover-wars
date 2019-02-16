@@ -146,34 +146,34 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType)
+void EntityManager::generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sMaterial, pBoundingBox, sShaderType);
+    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewPlane));
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType)
+void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewSphere->loadAsSphere(fRadius, sMaterial, pBoundingBox, sShaderType);
+    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewSphere->loadAsSphere(fRadius, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
 // Generates a Static Mesh at a given location
-void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, float fScale, const string& sShaderType )
+void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {
-    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewMesh->loadFromFile(sMeshLocation, sMaterial, pBoundingBox, sShaderType, fScale);
+    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewMesh->loadFromFile(sMeshLocation, pObjectProperties, sShaderType, fScale);
     m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
 // Generate a Player Entity at a starting position with a given Material, scale, mesh location and shader type.
-void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const BoundingBox* pBoundingBox, const string& sShaderType)
+void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
-    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
-    pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType, fScale, pBoundingBox);
+    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale);
     m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
 }
@@ -190,10 +190,10 @@ InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosit
 }
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
-void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation, float m_fMeshScale)
+void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation, float m_fMeshScale)
 {
-    unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), vPosition);
-    pNewLight->initialize(fPower, vColor, true, sMaterial, pBoundingBox, sMeshLocation, m_fMeshScale);
+    unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewLight->initialize(fPower, vColor, true, pObjectProperties, sMeshLocation, m_fMeshScale);
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
@@ -213,10 +213,10 @@ void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3*
 }
 
 // Generates a new Spot Light Entity and stores it in the Entity Manager.
-void EntityManager::generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation, float m_fMeshScale)
+void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, float m_fMeshScale)
 {
-    unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), vPosition);
-    pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, sMaterial, pBoundingBox, m_fMeshScale);
+    unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, pObjectProperties, m_fMeshScale);
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 

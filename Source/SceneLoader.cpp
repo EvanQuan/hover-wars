@@ -69,7 +69,7 @@ void SceneLoader::createSphere( vector< string > sData, int iLength )
         vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );    // Position of Sphere
 
         ENTITY_MANAGER->generateStaticSphere(stof(sData[3]), &vPosition, 
-                                             &m_pMaterialProperty, &m_pBBProperty, m_sShaderProperty);
+                                             & m_pObjectProperties.sObjMaterial, &m_pBBProperty, m_sShaderProperty);
     }
     else
     {
@@ -90,7 +90,7 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
         vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
         iHeight = stoi(sData[6]);
         iWidth = stoi(sData[7]);
-        ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, &m_pMaterialProperty, &m_pBBProperty, m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticPlane(iHeight, iWidth, &pPosition, &vNormal, & m_pObjectProperties.sObjMaterial, &m_pBBProperty, m_sShaderProperty);
     }
     else
     {
@@ -138,7 +138,7 @@ void SceneLoader::createPointLight(vector< string > sData, int iLength)
         // Set the Diffuse Color of the Material
         m_pMaterialProperty.vOptionalDiffuseColor = vec4(pColor * fPower, 1.0);
 
-        ENTITY_MANAGER->generateStaticPointLight( fPower, &pPosition, &pColor, &m_pMaterialProperty, &m_pBBProperty, m_sMeshProperty, m_fMeshScaleProperty);
+        ENTITY_MANAGER->generateStaticPointLight( &m_pObjectProperties, fPower, &pColor, m_sMeshProperty, m_fMeshScaleProperty);
     }
     else
     {
@@ -457,10 +457,10 @@ void SceneLoader::clearProperties() // Clear any properties
     m_fMeshScaleProperty = 1.0f;
 
     // Clear Material Properties
-    m_pMaterialProperty.fShininess = 0.0f;
-    m_pMaterialProperty.sDiffuseMap = m_pMaterialProperty.sOptionalSpecMap = "";
-    m_pMaterialProperty.vOptionalDiffuseColor = vec4(0.0f);
-    m_pMaterialProperty.vOptionalSpecShade = vec4(0.0f);
+    m_pObjectProperties.sObjMaterial.fShininess = 0.0f;
+     m_pObjectProperties.sObjMaterial.sDiffuseMap =  m_pObjectProperties.sObjMaterial.sOptionalSpecMap = "";
+     m_pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(0.0f);
+     m_pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(0.0f);
 
     // Clear Bounding Box Properties
     m_pBBProperty.eType = DEFAULT_TYPE;

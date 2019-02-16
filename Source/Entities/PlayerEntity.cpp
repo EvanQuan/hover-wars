@@ -69,10 +69,9 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
-                                    const Material* pMaterial,
+                                    const ObjectInfo* pObjectProperties,
                                     const string& sShaderType,
-                                    float fScale,
-                                    const BoundingBox* pBoundingBox)
+                                    float fScale)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, pBoundingBox, fScale, m_vPosition);

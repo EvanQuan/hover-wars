@@ -31,7 +31,7 @@ void PointLight::update(float fTimeInMilliseconds)
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //    If "" is provided for the Mesh name, a generic cube will be generated.
-void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial, const BoundingBox* pBoundingBox, const string& sMeshName, float m_fMeshScale)
+void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const ObjectInfo* pObjectProperties, const string& sMeshName, float m_fMeshScale)
 {
     // Set the color of the Light
     m_pColor = (*vColor);

@@ -29,14 +29,14 @@ const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 #define DURATION_OFFSET     (DIMENSION_OFFSET + sizeof(vec2))
 
 // Basic Constructor
-Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, const Material* pMaterial, manager_cookie)
+Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, const ObjectInfo* pObjectProperties, manager_cookie)
 {
     m_sManagerKey = sManagerKey;
     m_bStaticMesh = bStaticMesh;
     m_pShdrMngr = SHADER_MANAGER;
     glGenVertexArrays(1, &m_iVertexArray);
 
-    loadMaterial(pMaterial);
+    loadObjectInfo(pObjectProperties);
 }
 
 // Delete any buffers that we initialized
@@ -671,32 +671,22 @@ mat4 Mesh::getRotationMat4ToNormal(const vec3* vNormal)
 }
 
 /************************************************************************************\
- * Texture Functionality                                                            *
+ * Object Properties Information                                                    *
 \************************************************************************************/
 
-// Function to Bind the Mesh Material to the Shader for Rendering
-//    To be called before the render function
-void Mesh::bindTextures(ShaderManager::eShaderType eShaderType) const
+// Function to Load Mesh Properties from a given ObjectInfo structure
+void Mesh::loadObjectInfo(const ObjectInfo* pObjectProperties)
 {
-    // Bind the Diffuse and Specular Maps
-    m_sRenderMaterial.m_pDiffuseMap->bindTexture(eShaderType, "sMaterial.vDiffuse");
-    m_sRenderMaterial.m_pSpecularMap->bindTexture(eShaderType, "sMaterial.vSpecular");
-
-    // Set the Material's Shininess in the Material Uniform in the shader.
-    m_pShdrMngr->setUniformFloat(eShaderType, "sMaterial.fShininess", m_sRenderMaterial.fShininess);
+    // Ensure the Object Properties pointer is valid
+    if (nullptr != pObjectProperties)
+    {
+        loadMaterial(&pObjectProperties->sObjMaterial);         // Load Mesh Material
+        loadBoundingBox(&pObjectProperties->sObjBoundingBox);   // Load Bounding Box
+    }
 }
 
-// Funtion to unbind textures. To be called after a render call on this mesh.
-void Mesh::unbindTextures() const
-{
-    m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
-    m_sRenderMaterial.m_pSpecularMap->unbindTexture();
-}
-
-// Function to Load a given material to the internal Render Material struct.
-//    This defines a specular and diffuse map as well as a shininess factor
-//    for this mesh that is used for rendering.
-void Mesh::loadMaterial(const Material* pMaterial)
+// Load the Material for the Mesh
+void Mesh::loadMaterial(const ObjectInfo::Material* pMaterial)
 {
     if (nullptr != pMaterial)
     {
@@ -721,6 +711,47 @@ void Mesh::loadMaterial(const Material* pMaterial)
         m_sRenderMaterial.m_pDiffuseMap = TEXTURE_MANAGER->loadTexture(DEFAULT_DIFFUSE_MAP);
     if (nullptr == m_sRenderMaterial.m_pSpecularMap)
         m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
+}
+
+// Load the Bounding Box for the Mesh
+void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox)
+{
+    if (nullptr != pBoundingBox)
+    {
+        // Nothing Set in the Bounding Box type? Don't evaluate further
+        switch (pBoundingBox->eType)
+        {
+        case CUBIC_BOX:
+            generateCubicBoundingBox(pBoundingBox->vDimensions.x, pBoundingBox->vDimensions.y, pBoundingBox->vDimensions.z);
+            break;
+        default:    // No Bounding Box specified
+            return;
+            break;
+        }
+    }
+}
+
+/************************************************************************************\
+ * Texture Functionality                                                            *
+\************************************************************************************/
+
+// Function to Bind the Mesh Material to the Shader for Rendering
+//    To be called before the render function
+void Mesh::bindTextures(ShaderManager::eShaderType eShaderType) const
+{
+    // Bind the Diffuse and Specular Maps
+    m_sRenderMaterial.m_pDiffuseMap->bindTexture(eShaderType, "sMaterial.vDiffuse");
+    m_sRenderMaterial.m_pSpecularMap->bindTexture(eShaderType, "sMaterial.vSpecular");
+
+    // Set the Material's Shininess in the Material Uniform in the shader.
+    m_pShdrMngr->setUniformFloat(eShaderType, "sMaterial.fShininess", m_sRenderMaterial.fShininess);
+}
+
+// Funtion to unbind textures. To be called after a render call on this mesh.
+void Mesh::unbindTextures() const
+{
+    m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
+    m_sRenderMaterial.m_pSpecularMap->unbindTexture();
 }
 
 /************************************************************************************\
