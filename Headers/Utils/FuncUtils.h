@@ -9,6 +9,7 @@ Provides non-class specific functions for data manipulation.
 
 @author Evan Quan
 */
+using namespace std;
 template <class K, class V>
 class FuncUtils
 {
