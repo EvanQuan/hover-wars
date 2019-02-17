@@ -48,11 +48,11 @@ public:
     GLuint genVertexBuffer( GLuint iVertArray, const void* pData, GLsizeiptr pSize, GLenum usage );
     void setAttrib(GLuint iVertArray, GLuint iSpecifiedIndex,
                      GLint iChunkSize, GLsizei iStride, const void *pOffset);
-    GLuint genIndicesBuffer( GLuint iVertArray, 
+    GLuint genIndicesBuffer( GLuint iVertArray,
                              const void* pData, GLsizeiptr pSize, GLenum usage );
     GLuint genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage);
 
-    // Shader Uniform Variable Manipulation 
+    // Shader Uniform Variable Manipulation
     void setUnifromMatrix4x4( eShaderType eType, string sVarName, const mat4* pResultingMatrix );
     void setUniformVec3( eShaderType eType, string sVarName, const glm::vec3* pValue );
     void setUniformFloat(eShaderType eType, string sVarName, float fVal);
@@ -74,4 +74,3 @@ private:
     // Shader Variables
     Shader m_pShader[MAX_SHDRS];
 };
-

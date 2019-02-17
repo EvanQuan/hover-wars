@@ -41,7 +41,7 @@ Texture* TextureManager::loadTexture(const string& sFileName )
 {
     // Attempt to grab it from the texture cache if it already exists
     Texture* pReturnTexture = nullptr;
-    
+
     if (m_pTextureCache.end() != m_pTextureCache.find(sFileName))
     {
         // Grab the Texture Container from the Cache
@@ -56,7 +56,7 @@ Texture* TextureManager::loadTexture(const string& sFileName )
         {
             // Return the raw pointer to the caller
             pReturnTexture = pNewTexture.get();
-            
+
             // Attach Texture to the Cache
             m_pTextureCache.insert(make_pair(sFileName, move(pNewTexture)));
         }
@@ -90,5 +90,3 @@ Texture* TextureManager::genTexture(const vec4* vColor)
 
     return pReturnTexture;
 }
-
-

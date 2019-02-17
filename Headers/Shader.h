@@ -20,10 +20,10 @@ public:
     Shader();
     ~Shader();
 
-    // Initialize Shaders, will fail if Vertex or Fragment Shader 
+    // Initialize Shaders, will fail if Vertex or Fragment Shader
     // don't have locations set yet.
     bool initializeShader( );
-    
+
     // Set Shader Location
     void storeShadrLoc( eShader shaderType, const string& sShaderLoc );
 
@@ -44,4 +44,3 @@ private:
     GLuint CompileShader(GLenum shaderType, const string &source, bool* bError);
     GLuint LinkProgram( bool* bError);
 };
-

@@ -52,7 +52,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 {
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
-    It is fastest to exit early while we can. 
+    It is fastest to exit early while we can.
     */
     if (GLFW_KEY_UNKNOWN == key)
     {

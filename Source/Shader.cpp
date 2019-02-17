@@ -55,7 +55,7 @@ bool Shader::initializeShader( )
         // Load from Source
         for ( int i = 0; i < MAX_PARTS; ++i )
             sSources[ i ] = LoadSource( i, &bError );
-        
+
         // Ensure at least the Vertex and Fragment Shaders are loaded.
         if ( sSources[ VERTEX ].empty() || sSources[ FRAGMENT ].empty() )
             return false;
@@ -97,12 +97,12 @@ string Shader::LoadSource( int iShaderType, bool* bError)
 
             if ( iShaderType == FRAGMENT)
             {
-                
+
                 ifstream uniformLight(UNIFORM_LIGHTING_LOC);
                 copy(istreambuf_iterator<char>(uniformLight),
                     istreambuf_iterator<char>(),
                     back_inserter(source));
-            
+
                 ifstream lightingHead(LIGHTING_HEADER_LOC);
                 copy(istreambuf_iterator<char>(lightingHead),
                     istreambuf_iterator<char>(),
