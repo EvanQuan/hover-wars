@@ -341,7 +341,7 @@ void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm
         iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
         if (ERR_CODE != iVariableLocation)
         {
-            glUniform3fv(iVariableLocation, 1, glm::value_ptr(*pResultingVector));
+            glUniform3fv(iVariableLocation, 1, glm::value_ptr(*pValue));
         }
         glUseProgram(iCurrProgram);
 

@@ -92,6 +92,9 @@ void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
         case GLFW_KEY_B:
             ENTITY_MANAGER->toggleBBDrawing();
             break;
+        case GLFW_KEY_M:
+            ENTITY_MANAGER->toggleSpatialMapDrawing();
+            break;
         //case GLFW_KEY_W:
             //PHYSICS_MANAGER->forwardKey();
             //break;

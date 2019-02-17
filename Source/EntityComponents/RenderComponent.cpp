@@ -1,6 +1,11 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityManager.h"
 
+/*************\
+ * Constants *
+\*************/
+const vec3 BOUNDING_BOX_COLOR = vec3(0.2235294117647059, 1.0, 0.0784313725490196); // Neon Green
+
 // Default Constructor:
 //        Requires an EntityID for the Entity that the component is a part of
 //            and a ComponentID issued by the EntityManager.
@@ -50,6 +55,7 @@ void RenderComponent::render()
             // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
             glBindVertexArray(m_pMesh->getBBVertexArray());
             glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
+            m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &BOUNDING_BOX_COLOR);
 
             // Draw Bounding Box
             glDrawElementsInstanced(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr, m_pMesh->getNumInstances());

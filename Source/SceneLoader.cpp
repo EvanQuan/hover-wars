@@ -197,7 +197,7 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 // Initializes the Spatial Data Map for the scene
 void SceneLoader::initializeSpatialMap(vector< string > sData, unsigned int iLength)
 {
-    if (MAX_SPATIAL_MAP_PARAMS != iLength)
+    if (MAX_SPATIAL_MAP_PARAMS == iLength)
         ENTITY_MANAGER->initializeSpatialMap(stof(sData[0]) /*Length*/, stof(sData[1]) /*Width*/, stof(sData[2]) /*Tile Size*/);
     else
         outputError(SPATIAL_MAP, sData);

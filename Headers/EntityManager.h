@@ -34,6 +34,7 @@ public:
     // Scene Management Functionality
     void pause() { m_bPause = !m_bPause; }
     void toggleBBDrawing() { m_bDrawBoundingBoxes = !m_bDrawBoundingBoxes; }
+    void toggleSpatialMapDrawing() { m_bDrawSpatialMap = !m_bDrawSpatialMap; }
     bool doBoundingBoxDrawing() { return m_bDrawBoundingBoxes; }
     void initializeSpatialMap(float fLength, float fWidth, float fTileSize);
 

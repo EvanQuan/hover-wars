@@ -26,8 +26,8 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
     float fHalfLength = fLength * 0.5f;
     float fHalfWidth = fWidth * 0.5f;
     m_fTileSize = fTileSize;
-    m_iMaxX = floor(fWidth / fTileSize);
-    m_iMaxY = floor(fLength / fTileSize);
+    m_iMaxX = static_cast<unsigned int>(floor(fWidth / fTileSize));
+    m_iMaxY = static_cast<unsigned int>(floor(fLength / fTileSize));
 
     // Set the Origin position for reference wrt world coordinates as well as the maximum limit of the map.
     m_vOriginPos = vec2(-fHalfWidth, -fHalfLength);
@@ -66,15 +66,20 @@ void SpatialDataMap::clearMap()
 // Draw the Data Map for Debugging
 void SpatialDataMap::drawMap()
 {
-    // Bind Vertex Array and set Program
-    glBindVertexArray(m_iMapVertexArray);
-    glUseProgram(SHADER_MANAGER->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
+    if (m_bIsInitialized)
+    {
+        // Bind Vertex Array and set Program
+        glBindVertexArray(m_iMapVertexArray);
+        glUseProgram(SHADER_MANAGER->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
 
-    // Set the color for the Spacial Map Outline
-    SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &MAP_COLOR);
+        // Set the color for the Spacial Map Outline
+        SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &MAP_COLOR);
 
-    // Draw the Map
-    glDrawElementsInstanced(GL_LINES, m_pIndices.size(), GL_UNSIGNED_INT, 0, 1);
+        // Draw the Map
+        glPointSize(15.0f);
+        glDrawElementsInstanced(GL_LINES, m_pIndices.size(), GL_UNSIGNED_INT, 0, 1);
+        glPointSize(1.0f);
+    }
 }
 
 /*********************************************************************************\
@@ -83,29 +88,44 @@ void SpatialDataMap::drawMap()
 
 void SpatialDataMap::generateVBOs()
 {
+    // Local Variables
+    unsigned int iCurrXIndex, iCurrIndex;
+
+    // Pre-compute sizes of the arrays for Vertices and Indices
+    m_pVertices.reserve((m_iMaxX + 1) * (m_iMaxY + 1));
+    m_pIndices.reserve((m_iMaxX * (m_iMaxY + 1)) * 4);
+
     // Iterate through all possible vertices and populate the vertices and indices for rendering.
-    for( unsigned int x = 0; x <= m_iMaxX; ++x )
+    for (unsigned int x = 0; x <= m_iMaxX; ++x)
+    {
+        iCurrXIndex = x * (m_iMaxX + 1);    // Set current Row Index;
+
+        // Evaluate Row
         for (unsigned int y = 0; y <= m_iMaxY; ++y)
         {
             // Push back Vertex for this point.
             m_pVertices.push_back(vec3(m_vOriginPos.x + (x * m_fTileSize),
-                                       0.0f,
-                                       m_vOriginPos.y + (y * m_fTileSize)));
+                0.0f,
+                m_vOriginPos.y + (y * m_fTileSize)));
+
+            // Store Current Index
+            iCurrIndex = iCurrXIndex + y;
 
             // Line from current row to next row.
             if (m_iMaxX != x)
             {
-                m_pIndices.push_back((x * m_iMaxX) + y);
-                m_pIndices.push_back(m_pIndices.back() + m_iMaxX);
+                m_pIndices.push_back(iCurrIndex);
+                m_pIndices.push_back(m_pIndices.back() + m_iMaxX + 1);
             }
 
             // Line along this row.
             if (m_iMaxY != y)
             {
-                m_pIndices.push_back((x * m_iMaxX) + y);
+                m_pIndices.push_back(iCurrIndex);
                 m_pIndices.push_back(m_pIndices.back() + 1);
             }
         }
+    }
 
     // Generate Vertex Array
     glGenVertexArrays(1, &m_iMapVertexArray);
