@@ -362,7 +362,6 @@ void InputHandler::updateJoysticks()
 
             // Final button states
             updateJoystickButtonStates(joystickID);
-
         }
     }
 }
