@@ -216,11 +216,15 @@ void CommandHandler::executeKeyboardCommands()
     xTurn = 0;
     yTurn = 0;
     /*
-    Copy the keys at current snapshot so they can be iterated over while m_keys continues
-    to be updated.
+    Copy the keys at the current snapshot so they can be iterated over while
+    m_keys continues to be updated.
+
     NOTE: Unless there is some other better way of doing this, directly using
-    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to update through
-    key callbacks as it is being iterated through.
+    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to
+    update through key callbacks as it is being iterated through.
+
+    Considering that keys will typically contain 0-4 elements, this should be
+    fairly cheap.
     */
     map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
     for (auto it : keys)
@@ -302,6 +306,8 @@ void CommandHandler::executeKeyboardCommands()
 
 /*
 Execute all commands specified by the controllers
+
+@TODO this needs to be changed to factor in keyboard input rework.
 */
 void CommandHandler::executeJoystickCommands()
 {

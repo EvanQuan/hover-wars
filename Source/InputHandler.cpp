@@ -24,6 +24,9 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     bWireFrameEnabled = false;
 }
 
+/*
+@return singleton instance
+*/
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
@@ -338,8 +341,11 @@ void InputHandler::joystickCallback(int joystickID, int event)
     }
 }
 
-// Get the input status of all the present controllers and store it.
-// Buttons and axes
+/*
+Get the input status of all the present controllers and stores it.
+
+@TODO last update state is broken. Should be easier if reworked like with keyboard.
+*/
 void InputHandler::updateJoysticks()
 {
     for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
@@ -356,7 +362,6 @@ void InputHandler::updateJoysticks()
 
             // Final button states
             updateJoystickButtonStates(joystickID);
-
         }
     }
 }
