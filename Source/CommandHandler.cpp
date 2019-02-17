@@ -106,7 +106,7 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         GAME_MANAGER->toggleDebugCamera();
         break;
-    case COMMAND_DEBUG_TOGGLE_SHOW_BOUNDING_BOXES:
+    case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
         ENTITY_MANAGER->toggleBBDrawing();
         break;
     case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
