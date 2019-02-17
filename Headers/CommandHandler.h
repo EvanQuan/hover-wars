@@ -141,7 +141,7 @@ private:
         return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_axisToFixedCommand, axis, COMMAND_INVALID_FIXED);
     };
 
-    std::map<int, eFixedCommand> m_pressedKeyToFixedCommand =
+    map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_APOSTROPHE,   COMMAND_ABILITY_SPIKES},
@@ -161,7 +161,7 @@ private:
         {GLFW_KEY_L,            COMMAND_TURN_RIGHT},
     };
 
-    std::map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
+    map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
         {GLFW_KEY_ESCAPE,       COMMAND_CLOSE_WINDOW},
         {GLFW_KEY_F,            COMMAND_DEBUG_TOGGLE_WIREFRAME},
@@ -194,12 +194,12 @@ private:
         {GLFW_KEY_L,            COMMAND_TURN_RIGHT},
     };
 
-    std::map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
+    map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
     {
         {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_FRONT},
     };
 
-    std::map<int, eFixedCommand> m_repeatButtonToFixedCommand =
+    map<int, eFixedCommand> m_repeatButtonToFixedCommand =
     {
         {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
         {BUTTON_A,            COMMAND_DASH_BACK},
@@ -218,7 +218,7 @@ private:
         {BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
     };
 
-    std::map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
+    map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
     {
         {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_BACK},
         {BUTTON_BACK,         COMMAND_MENU_PAUSE},
@@ -241,18 +241,18 @@ private:
         {BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
     };
 
-    std::map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
+    map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
     {
         {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_FRONT},
     };
 
-    std::map<int, eFixedCommand> m_axisToFixedCommand =
+    map<int, eFixedCommand> m_axisToFixedCommand =
     {
         {AXIS_LEFT_TRIGGER,  COMMAND_ABILITY_TRAIL},
         {AXIS_RIGHT_TRIGGER, COMMAND_ABILITY_ROCKET},
     };
 
-    std::map<eFixedCommand, eAbility> m_fixedCommandToAbility =
+    map<eFixedCommand, eAbility> m_fixedCommandToAbility =
     {
         {COMMAND_ABILITY_ROCKET,    ABILITY_ROCKET},
         {COMMAND_ABILITY_SPIKES,    ABILITY_SPIKES},

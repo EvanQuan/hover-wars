@@ -260,9 +260,6 @@
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\CommandHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -345,6 +342,9 @@
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\SpatialDataMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
