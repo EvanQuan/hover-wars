@@ -239,7 +239,7 @@ static_mesh {
 }
 
 sphere {
-	-4 4 -4 .5
+	-40 4 -40 .5
 	+material {
 		textures/nightSpherical.jpg
 		textures/nightSphericalSpecMap.png

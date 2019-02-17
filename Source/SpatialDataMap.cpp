@@ -121,8 +121,9 @@ void SpatialDataMap::populateMap(const vector<unique_ptr<Entity>>* pMasterEntity
                 */
                 iXIndex = iX * (m_iMaxX + 1);
                 m_pPopulatedIndices.push_back(iXIndex + iY);                // 1
-                m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 1);  // 2
                 m_pPopulatedIndices.push_back(iXIndex + iY + 1);            // 3
+                m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 1);  // 2
+                
                 m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 2);  // 4
             }
         }
@@ -152,8 +153,10 @@ void SpatialDataMap::drawMap()
         // Draw the Populated Squares
         SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &POP_COLOR);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
-        for( unsigned int i = 0; i < m_pPopulatedIndices.size(); i += 4 )
-            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)i, 1);
+        for (unsigned int i = 0; i < m_pPopulatedIndices.size(); i += 4)
+        {
+            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)(i * sizeof(unsigned int)), 1);
+        }
 
     }
 }
