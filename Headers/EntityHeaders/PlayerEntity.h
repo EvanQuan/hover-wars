@@ -21,11 +21,10 @@ public:
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
 
-    void initializePlayer(const string& sFileName, 
-                          const Material* pMaterial, 
+    void initializePlayer(const string& sFileName,
+                          const ObjectInfo* pObjectProperties,
                           const string& sShaderType,
-                          float fScale,
-                          const BoundingBox* pBoundingBox);
+                          float fScale);
 
     void useAbility(eAbility ability);
     void move(float x, float y);

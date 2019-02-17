@@ -69,13 +69,12 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
-                                    const Material* pMaterial,
+                                    const ObjectInfo* pObjectProperties,
                                     const string& sShaderType,
-                                    float fScale,
-                                    const BoundingBox* pBoundingBox)
+                                    float fScale)
 {
     // Load Mesh and Rendering Component
-    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, pBoundingBox, fScale, m_vPosition);
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player

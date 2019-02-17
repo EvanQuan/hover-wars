@@ -16,6 +16,7 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "Physics/PhysicsManager.h"
+#include "SpatialDataMap.h"
 
 // Environment Manager
 // Manages all objects in an environment
@@ -33,17 +34,19 @@ public:
     // Scene Management Functionality
     void pause() { m_bPause = !m_bPause; }
     void toggleBBDrawing() { m_bDrawBoundingBoxes = !m_bDrawBoundingBoxes; }
+    void toggleSpatialMapDrawing() { m_bDrawSpatialMap = !m_bDrawSpatialMap; }
     bool doBoundingBoxDrawing() { return m_bDrawBoundingBoxes; }
+    void initializeSpatialMap(float fLength, float fWidth, float fTileSize);
 
     // Entity Functions
     Camera* generateCameraEntity();
-    void generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType = "");
-    void generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sShaderType = "");
-    void generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, const BoundingBox* pBoundingBox, float fScale, const string& sShaderType = "" );
-    void generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
+    void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
+    void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
+    void generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );
+    void generateStaticPointLight(const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
-    void generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const BoundingBox* pBoundingBox, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
-    void generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const BoundingBox* pBoundingBox, const string& sShaderType = "");
+    void generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
+    void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
 
@@ -101,7 +104,10 @@ private:
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
 
+    // Spatial Map
+    SpatialDataMap m_pSpatialMap;
+
     // Scene Management toggling
-    bool m_bPause, m_bDrawBoundingBoxes;
+    bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap;
 };
 

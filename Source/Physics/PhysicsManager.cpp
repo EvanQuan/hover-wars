@@ -332,15 +332,7 @@ void PhysicsManager::movePlayer(int entityID, float x, float y) {
         gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
         gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
     }else
-    {*/
-        float angle =-1* atan(x/y);
-        float distance = sqrt(x*x + y*y);
-        if (y > 0) {
-            distance = -distance;
-        }
-        if (distance > 1) {
-            distance = 1;
-        }
+    {*/        
         if (x !=0 || y != 0) {
             releaseAllControls();
             //gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
@@ -352,6 +344,7 @@ void PhysicsManager::movePlayer(int entityID, float x, float y) {
             PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
             carBody->addForce(vForce * MOVEMENT_FORCE);
 
+            float angle = -1 * atan(x / y);
             gVehicleNoDrive->setSteerAngle(0, angle);
             gVehicleNoDrive->setSteerAngle(1, angle);
             gVehicleNoDrive->setSteerAngle(2, angle);

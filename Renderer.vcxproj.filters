@@ -201,6 +201,12 @@
     <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\DataStructures\ObjectInfo.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\SpatialDataMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -331,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpatialDataMap.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

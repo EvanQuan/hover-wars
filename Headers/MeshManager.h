@@ -11,11 +11,11 @@ public:
     ~MeshManager();
 
     // Methods:
-    Mesh* loadMeshFromFile( const string &sFileName, const Material* pMaterial, const BoundingBox* pBoundingBox, float fScale = 1.0f, vec3 vPosition = vec3(0.f), bool bStaticMesh = false);
-    Mesh* generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const Material* pMaterial, const BoundingBox* pBoundingBox, vec3 vPosition = vec3(0.f), vec3 vNormal = vec3(0.f, 1.f, 0.f));
-    Mesh* generateSphereMesh(bool bStaticMesh, float fRadius, const Material* pMaterial, const BoundingBox* pBoundingBox, vec3 vPosition = vec3(0.f));
-    Mesh* generateCubeMesh(bool bStaticMesh, float fHeight, float fWidth, float fDepth, const Material* pMaterial, const BoundingBox* pBoundingBox, vec3 vPosition = vec3(0.f));
-    Mesh* generateBillboardMesh(const Material* pMaterial, const void* pOwnerHandle );
+    Mesh* loadMeshFromFile( const string &sFileName, const ObjectInfo* pObjectProperties, float fScale = 1.0f, bool bStaticMesh = false);
+    Mesh* generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, vec3 vNormal = vec3(0.f, 1.f, 0.f));
+    Mesh* generateSphereMesh(bool bStaticMesh, float fRadius, const ObjectInfo* pObjectProperties);
+    Mesh* generateCubeMesh(bool bStaticMesh, float fHeight, float fWidth, float fDepth, const ObjectInfo* pObjectProperties);
+    Mesh* generateBillboardMesh(const ObjectInfo* pObjectProperties, const void* pOwnerHandle );
     void unloadAllMeshes();
 
 private:
@@ -26,8 +26,7 @@ private:
     MeshManager& operator=( const MeshManager& pRHS ) {}
     
     // Private Functions
-    string materialToString( const Material* sMaterial );
-    void evaluateBoundingBox(Mesh* pTarget, const BoundingBox* pBoundingBox);
+    string materialToString( const ObjectInfo::Material* sMaterial );
 
     // Hash Map
     unordered_map<string, unique_ptr<Mesh>> m_pMeshCache;

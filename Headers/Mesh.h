@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "ShaderManager.h"
 #include "Texture.h"
+#include "DataStructures/ObjectInfo.h"
 
 //////////////////////////////////////////////////////////////////
 // Name: Mesh.h
@@ -24,7 +25,9 @@ private:
     void genBillboard();
     void initalizeVBOs();
     bool loadObj(const string& sFileName);
-    void loadMaterial(const Material* pMaterial);
+    void loadObjectInfo(const ObjectInfo* pObjectProperties);
+    void loadMaterial(const ObjectInfo::Material* pMaterial);
+    void loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition);
 
     // function to generate a quaternion to rotate from y-axis normal to specified normal
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
@@ -94,7 +97,7 @@ private:
     struct manager_cookie {};
 
 public:
-    explicit Mesh(const string &sFileName, bool bStaticMesh, const Material* pMaterial, manager_cookie);
+    explicit Mesh(const string &sFileName, bool bStaticMesh, const ObjectInfo* pObjectProperties, manager_cookie);
     virtual ~Mesh();
     void loadInstanceData(const void* pData, unsigned int iSize);
 

@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
+    <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
     <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
     <ClInclude Include="Headers\Emitter.h" />
     <ClInclude Include="Headers\EmitterEngine.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
+    <ClInclude Include="Headers\SpatialDataMap.h" />
     <ClInclude Include="Headers\stb_image.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
@@ -106,6 +108,7 @@
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
+    <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\UserInterface.cpp" />
