@@ -20,7 +20,7 @@
 ///////////////
 // Constants //
 ///////////////
-const GLsizei INSTANCE_STRIDE = (sizeof(mat4) << 2);
+const GLsizei INSTANCE_STRIDE = sizeof(mat4);
 
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
