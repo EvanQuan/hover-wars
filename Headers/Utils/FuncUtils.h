@@ -31,8 +31,12 @@ public:
     /*
     Check if a map contains a specified key.
 
-    This is a method of map in C++20. 
+    This is a standard method of map in C++20. I can feel the disapointment as
+    you look over this James, since this is such a trivially unnecessary
+    function.
 
+    @param map<K, V>    m to check if the key exists
+    @param K            key to check in map
     @return true if the specified map contains the specified key.
     */
     static bool contains(map<K, V> m, K key)
@@ -40,6 +44,13 @@ public:
         return m.find(key) != m.end();
     }
 
+    /*
+    Get the magnitude of a vector represented by its x and y coordinates
+
+    @param float    x coordinate
+    @param float    y coordinate
+    @return the magnitude of the <x, y> vector
+    */
     static float magnitude(float x, float y)
     {
         return sqrt((x * x) + (y * y));
