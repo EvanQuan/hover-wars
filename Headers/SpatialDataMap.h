@@ -14,6 +14,7 @@ public:
 
     // Initialization/Deconstruction of Data Map
     void initializeMap(float fLength, float fWidth, float fTileSize);
+    void populateMap(const vector<unique_ptr<Entity>>* pMasterEntityList);
     void clearMap();
 
     // Draw Map for Debugging.
@@ -27,6 +28,7 @@ private:
     //  TODO: add different lists for different static objects (lights, pickups, etc.)
     struct sSpatialCell
     {
+        vec2 vOriginPos;
         vector< Entity* > pLocalEntities;
     };
 
@@ -43,11 +45,12 @@ private:
                         unsigned int>> m_pEntityMap;
 
     // Private Functions
-    void generateVBOs();
+    void generateGridVBOs();
+    bool getMapIndices(const vec3* vPosition, unsigned int* iX, unsigned int* iY); // Returns the Map Indices from a given Position.
 
     // data for debug rendering
     vector< vec3 > m_pVertices;
-    vector< unsigned int > m_pIndices;
-    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iMapInstanceBuffer;
+    vector< unsigned int > m_pGridIndices, m_pPopulatedIndices;
+    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iMapInstanceBuffer;
 };
 

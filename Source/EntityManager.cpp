@@ -62,6 +62,7 @@ void EntityManager::initializeEnvironment(string sFileName)
     pObjFctry->loadFromFile(sFileName);
 
     // Populate the Spatial Data Map now that everything has been loaded.
+    m_pSpatialMap.populateMap(&m_pMasterEntityList);
 }
 
 // Initializes the SpatialDataMap with a given length, width and tilesize
