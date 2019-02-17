@@ -58,6 +58,9 @@
 // Custom Data Structures
 #include "DataStructures/Bag.h"
 
+// Function Utilities
+#include "Utils/FuncUtils.h"
+
 #define ERR_CODE -1
 
 /* NAMESPACES */

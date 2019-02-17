@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include <iterator>
+#include <Utils/FuncUtils.h>
 
 using namespace std;
 
@@ -20,6 +20,8 @@ https://www.techiedelight.com/use-std-pair-key-std-unordered_map-cpp/
 The exercise of reimplementing this from Java to C++ has made me learn just
 how different Java's generics are from C++'s templates. Holy hell this was
 a pain in the ass for something that looks so simple.
+
+@author Evan Quan
 */
 template <class K>
 class Bag
@@ -31,8 +33,7 @@ public:
 */
 bool contains(K key)
 {
-	map<K, int>::iterator it = inventory.find(key);
-	return it == inventory.end();
+    return FuncUtils<K, int>::contains(inventory, key);
 }
 
 /*
@@ -43,18 +44,18 @@ Negative values will be ignored.
 */
 int add(K key, int value)
 {
-	if (value > 0)
-	{
-		if (this->contains(key))
-		{
-			inventory.at(key) += value;
-		}
-		else
-		{
-			inventory.insert(make_pair(key, value));
-		}
-	}
-	return this->count(key);
+    if (value > 0)
+    {
+        if (this->contains(key))
+        {
+            inventory.at(key) += value;
+        }
+        else
+        {
+            inventory.insert(make_pair(key, value));
+        }
+    }
+    return this->count(key);
 }
 
 /*
@@ -64,7 +65,7 @@ Remove the key entirely.
 */
 int erase(K key)
 {
-	return inventory.erase(key);
+    return inventory.erase(key);
 }
 
 /*
@@ -76,20 +77,20 @@ If the quantity after removal is 0 or less, the key is removed.
 */
 int remove(K key, int value)
 {
-	if (value > 0 && this->contains(key))
-	{
-		int newValue = this->count(key) - value;
+    if (value > 0 && this->contains(key))
+    {
+        int newValue = this->count(key) - value;
 
-		if (newValue > 0)
-		{
-			inventory.insert(make_pair(key, newValue));
-		}
-		else
-		{
-			this->erase(key);
-		}
-	}
-	return this->count(key);
+        if (newValue > 0)
+        {
+            inventory.insert(make_pair(key, newValue));
+        }
+        else
+        {
+            this->erase(key);
+        }
+    }
+    return this->count(key);
 
 }
 
@@ -98,14 +99,14 @@ int remove(K key, int value)
 */
 int count(K key)
 {
-	if (this->contains(key))
-	{
-		return inventory.at(key);
-	}
-	else
-	{
-		return 0;
-	}
+    if (this->contains(key))
+    {
+        return inventory.at(key);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 /*
@@ -115,7 +116,7 @@ Get the number of all keys contained.
 */
 int size()
 {
-	return inventory.size();
+    return inventory.size();
 }
 
 /*
@@ -123,12 +124,12 @@ Empty all keys
 */
 void Bag<K>::clear()
 {
-	inventory.clear();
+    inventory.clear();
 }
 
 private:
 
-	map<K, int> inventory;
+    map<K, int> inventory;
 
 };
 

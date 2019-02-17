@@ -46,6 +46,9 @@
     <Filter Include="Source Files\snippetvehiclecommon">
       <UniqueIdentifier>{d048e2f4-49d0-47bf-9469-5329cf1881c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{1d4bb0d4-b1c7-4d1c-9923-2d742cdcdeca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -210,6 +213,9 @@
     <ClInclude Include="Headers\Enums\eEntityTypes.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Utils\FuncUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -256,9 +262,6 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameManager.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\CommandHandler.cpp">
       <Filter>Source Files</Filter>
@@ -342,6 +345,9 @@
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\SpatialDataMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

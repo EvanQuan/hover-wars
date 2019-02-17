@@ -38,13 +38,9 @@ public:
     void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
     void mouseREnd() { m_bRotateFlag = false; }
 
-    // Keyboard
-    // Tracks all keys if they are pressed
-    // Allows for multiple key input
-    // https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
-    // int pressed[KEYS];
-    // Keyboard
     /*
+    Keyboard
+
     Hold the states of pressed, just pressed, and just released keys.
     Valid input states:
         INPUT_PRESSED
@@ -117,7 +113,6 @@ private:
     void initializeJoystick(int joystickID);
     void initializeJoystickVariables();
     void initializeJoysticksAtStart();
-    void initializeKeysPressed();
 
     static InputHandler* m_pInstance;
 

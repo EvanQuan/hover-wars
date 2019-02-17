@@ -7,8 +7,8 @@
 #define ZOOM_MAX            1000.f
 
 // Camera Class
-// Positions a Camera in the world at some spherical coordinates 
-class Camera : 
+// Positions a Camera in the world at some spherical coordinates
+class Camera :
     public Entity
 {
 public:
@@ -39,4 +39,3 @@ private:
 
     vec3 m_vWorldLookAt;
 };
-

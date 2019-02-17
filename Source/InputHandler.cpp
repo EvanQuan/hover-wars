@@ -11,7 +11,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 {
     m_gameManager = GameManager::getInstance(rWindow);
     // Keyboard
-    // initializeKeysPressed();
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
     m_bRotateFlag = m_bTranslateFlag = false;
@@ -25,6 +24,9 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     bWireFrameEnabled = false;
 }
 
+/*
+@return singleton instance
+*/
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
@@ -53,7 +55,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 {
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
-    It is fastest to exit early while we can. 
+    It is fastest to exit early while we can.
     */
     if (GLFW_KEY_UNKNOWN == key)
     {
@@ -161,18 +163,6 @@ void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
-}
-
-/*
-Keys begin not pressed until notified that they are by keyCallback.
-@Deprecated
-*/
-void InputHandler::initializeKeysPressed()
-{
-    // for (int key = 0; key < KEYS; key++)
-    // {
-        // pressed[key] = false;
-    // }
 }
 
 /*
@@ -351,8 +341,11 @@ void InputHandler::joystickCallback(int joystickID, int event)
     }
 }
 
-// Get the input status of all the present controllers and store it.
-// Buttons and axes
+/*
+Get the input status of all the present controllers and stores it.
+
+@TODO last update state is broken. Should be easier if reworked like with keyboard.
+*/
 void InputHandler::updateJoysticks()
 {
     for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
@@ -369,7 +362,6 @@ void InputHandler::updateJoysticks()
 
             // Final button states
             updateJoystickButtonStates(joystickID);
-
         }
     }
 }

@@ -48,8 +48,9 @@ public:
     GLuint genVertexBuffer( GLuint iVertArray, const void* pData, GLsizeiptr pSize, GLenum usage );
     void setAttrib(GLuint iVertArray, GLuint iSpecifiedIndex,
                      GLint iChunkSize, GLsizei iStride, const void *pOffset);
-    GLuint genIndicesBuffer( GLuint iVertArray, 
+    GLuint genIndicesBuffer( GLuint iVertArray,
                              const void* pData, GLsizeiptr pSize, GLenum usage );
+  
     GLuint genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage);
 
     // Shader Uniform Variable Manipulation 

@@ -106,7 +106,7 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         GAME_MANAGER->toggleDebugCamera();
         break;
-    case COMMAND_DEBUG_TOGGLE_SHOW_BOUNDING_BOXES:
+    case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
         ENTITY_MANAGER->toggleBBDrawing();
         break;
     case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
@@ -216,11 +216,15 @@ void CommandHandler::executeKeyboardCommands()
     xTurn = 0;
     yTurn = 0;
     /*
-    Copy the keys at current snapshot so they can be iterated over while m_keys continues
-    to be updated.
+    Copy the keys at the current snapshot so they can be iterated over while
+    m_keys continues to be updated.
+
     NOTE: Unless there is some other better way of doing this, directly using
-    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to update through
-    key callbacks as it is being iterated through.
+    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to
+    update through key callbacks as it is being iterated through.
+
+    Considering that keys will typically contain 0-4 elements, this should be
+    fairly cheap.
     */
     map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
     for (auto it : keys)
@@ -290,7 +294,7 @@ void CommandHandler::executeKeyboardCommands()
         yMove *= 0.5f;
     }
 
-    if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
+    if (!bMovementNeutral)
     {
         execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
@@ -302,6 +306,8 @@ void CommandHandler::executeKeyboardCommands()
 
 /*
 Execute all commands specified by the controllers
+
+@TODO this needs to be changed to factor in keyboard input rework.
 */
 void CommandHandler::executeJoystickCommands()
 {

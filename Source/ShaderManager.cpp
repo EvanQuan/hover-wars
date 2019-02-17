@@ -40,7 +40,7 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
 };
 
 // Public - Not a singleton
-// Designed mainly to manage different shaders between assignments.  
+// Designed mainly to manage different shaders between assignments.
 ShaderManager::ShaderManager()
 {
     m_bInitialized = false;
@@ -134,7 +134,7 @@ shader_Type ShaderManager::getShaderType(const string& sKey)
  * Set up Shaders                                                  *
 \*******************************************************************/
 
-// Inializes shaders. 
+// Inializes shaders.
 bool ShaderManager::initializeShaders()
 {
     // Initialize Shaders

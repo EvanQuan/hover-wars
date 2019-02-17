@@ -31,7 +31,8 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 40.0f // 10000.0f // 40.0f
+#define MOVEMENT_FORCE 100.0f // 10000.0f // 40.0f
+
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.

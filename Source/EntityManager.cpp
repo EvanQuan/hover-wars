@@ -314,7 +314,9 @@ RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh cons
     //    for that mesh already, return that instead since that Mesh will probably have multiple instances
     //    per render.
     if (m_pRenderingComponents.end() != m_pRenderingComponents.find(pMeshKey))
+    {
         pReturnComponent = m_pRenderingComponents[pMeshKey];
+    }
     else    // Otherwise, if it hasn't been found, create the new render component and associate it with that Mesh Pointer.
     {
         // Initialize new Unique_Ptr for Render Component.
