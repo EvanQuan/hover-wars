@@ -11,7 +11,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 {
     m_gameManager = GameManager::getInstance(rWindow);
     // Keyboard
-    // initializeKeysPressed();
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
     m_bRotateFlag = m_bTranslateFlag = false;
@@ -161,18 +160,6 @@ void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
-}
-
-/*
-Keys begin not pressed until notified that they are by keyCallback.
-@Deprecated
-*/
-void InputHandler::initializeKeysPressed()
-{
-    // for (int key = 0; key < KEYS; key++)
-    // {
-        // pressed[key] = false;
-    // }
 }
 
 /*
