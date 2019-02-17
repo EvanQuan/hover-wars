@@ -20,6 +20,8 @@ https://www.techiedelight.com/use-std-pair-key-std-unordered_map-cpp/
 The exercise of reimplementing this from Java to C++ has made me learn just
 how different Java's generics are from C++'s templates. Holy hell this was
 a pain in the ass for something that looks so simple.
+
+@author Evan Quan
 */
 template <class K>
 class Bag
