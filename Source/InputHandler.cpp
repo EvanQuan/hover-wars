@@ -11,7 +11,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 {
     m_gameManager = GameManager::getInstance(rWindow);
     // Keyboard
-    initializeKeysPressed();
+    // initializeKeysPressed();
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
     m_bRotateFlag = m_bTranslateFlag = false;
@@ -42,25 +42,58 @@ InputHandler::~InputHandler()
 
 
 /*
-Receives input from keyborad and updates the key status in pressed.
+Receives input from keyborad and updates the key status in pressed. Since keys
+are updated through call backs, which may be faster than every frame update,
+we may have multiple key callbacks per frame update. This means, we cannot reliably
+check for just pressed or just released key statuses here.
 NOTE: Keyboard input is read from CommandHandler. All keyboard input processing
 should be done in the CommandHandler, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    /*
+    Reject unknown keys. We only want to process keys available to standard keyboards.
+    It is fastest to exit early while we can. 
+    */
     if (GLFW_KEY_UNKNOWN == key)
     {
         return;
     }
+    /*
+    Possible actions:
+           GLFW_RELEASE = 0
+           GLFW_PRESS   = 1
+           GLFW_REPEAT  = 2
 
-    // Possible actions:
-    //        GLFW_RELEASE = 0
-    //        GLFW_PRESS   = 1
-    //        GLFW_REPEAT  = 2
-    // Note that any time a key is pressed, it will count as TRUE
-    m_pInstance->pressed[key] = action;
+    We can save time by ignoring all GLFW_REPEAT callbacks, as these can be set
+    during input processing.
+    */
+    switch (action)
+    {
+    case GLFW_PRESS:
+        /*
+        Since key callbacks occur at a faster rate than frame updates, both
+        initial key presses and repeated key pressed will be viewed as just
+        pressed until the input is processed for that fram. Only after it is
+        processed, it can be changed to INPUT_PRESSED if the key remains
+        pressed.
 
-    m_pInstance->debugKeyCommands(window, key, action);
+        We want to make sure that if the key is already pressed and is repeated
+        (ie. the state is INPUT_PRESSED), that we do not override it with
+        INPUT_JUST_PRESSED.
+        */
+        m_pInstance->m_keys[key] = INPUT_JUST_PRESSED;
+    case GLFW_RELEASE:
+        /*
+        As the key has just be released, we keep the key in the map, but note
+        it as just released. This allows us to parse for "just released"
+        commands, such as returning to the default camera, after holding the
+        camera swtich key. Once this key has been read has just released, it
+        will be removed from the map.
+        */
+        m_pInstance->m_keys[key] = INPUT_JUST_RELEASED;
+        break;
+    }
 }
 
 /*
@@ -173,13 +206,16 @@ void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, doubl
     m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
 }
 
-// Keys begin not pressed until notified that they are by keyCallback.
+/*
+Keys begin not pressed until notified that they are by keyCallback.
+@Deprecated
+*/
 void InputHandler::initializeKeysPressed()
 {
-    for (int key = 0; key < KEYS; key++)
-    {
-        pressed[key] = false;
-    }
+    // for (int key = 0; key < KEYS; key++)
+    // {
+        // pressed[key] = false;
+    // }
 }
 
 /*
@@ -206,12 +242,17 @@ void InputHandler::initializeJoysticksAtStart()
 // Initialize joystick variables before they are set
 void InputHandler::initializeJoystickVariables()
 {
-    for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+    for (int player = 0; player < MAX_PLAYER_COUNT; player++)
     {
-        m_pJoystickIsPresent[i] = false;
-        m_pJoystickAxesCount[i] = 0;
-        m_pJoystickButtonCount[i] = 0;
-        m_pJoystickNames[i] = EMPTY_CONTROLLER;
+        m_pJoystickIsPresent[player] = false;
+        m_pJoystickAxesCount[player] = 0;
+        m_pJoystickButtonCount[player] = 0;
+        m_pJoystickNames[player] = EMPTY_CONTROLLER;
+
+        for (int button = 0; button < MAX_BUTTON_COUNT; button++)
+        {
+
+        }
     }
 }
 

@@ -192,87 +192,80 @@ void CommandHandler::executeKeyboardCommands()
     yMove = 0;
     xTurn = 0;
     yTurn = 0;
-    for (int key = 0; key < KEYS; key++)
+    //for (map<int, InputHandler::eInputState>::iterator it = m_pInputHandler->m_keys.begin();
+        //it != m_pInputHandler->m_keys.end();
+        //it++)
+    // TODO test
+    /*
+    Copy the keys at current snapshot so they can be iterated over while m_keys continues
+    to be updated.
+    */
+    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
+    if (keys.size() > 0) {
+        cout << "start" << endl;
+    }
+    for (auto it : keys)
     {
-        if (m_pInputHandler->pressed[key])
+        cout << "\t" << it.first << " : " << it.second << endl;
+        /*
+        Divide the key states into the 3 types of fixed commands
+        */
+        switch (it.second) // value - input state
         {
-            // Fixed
-            switch (key)
-            {
-            case GLFW_KEY_K:
-                m_pFixedCommand = COMMAND_DASH_BACK;
-                break;
-            case GLFW_KEY_I:
-                m_pFixedCommand = COMMAND_DASH_FORWARD;
-                break;
-            case GLFW_KEY_H:
-                m_pFixedCommand = COMMAND_DASH_LEFT;
-                break;
-            case GLFW_KEY_SEMICOLON:
-                m_pFixedCommand = COMMAND_DASH_RIGHT;
-                break;
-            case GLFW_KEY_SPACE:
-                m_pFixedCommand = COMMAND_ABILITY_ROCKET;
-                break;
-            case GLFW_KEY_LEFT_SHIFT:
-                m_pFixedCommand = COMMAND_ABILITY_TRAIL;
-                break;
-            case GLFW_KEY_APOSTROPHE:
-                m_pFixedCommand = COMMAND_ABILITY_SPIKES;
-                break;
-            case GLFW_KEY_TAB:
-                m_pFixedCommand = COMMAND_MENU_BACK;
-                break;
-            case GLFW_KEY_ENTER:
-                m_pFixedCommand = COMMAND_MENU_START;
-                break;
-            case GLFW_KEY_P:
-                m_pFixedCommand = COMMAND_MENU_PAUSE;
-                break;
-            default:
-                m_pFixedCommand = COMMAND_INVALID_FIXED;
-                break;
-            }
-            if (COMMAND_INVALID_FIXED != m_pFixedCommand)
-            {
-                execute(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
-            }
-            else
-            {
-                // Variable commands
-                switch (key)
-                {
-                case GLFW_KEY_W:
-                    yMove += JOYSTICK_MAX;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_S:
-                    yMove += JOYSTICK_MIN;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_A:
-                    xMove += JOYSTICK_MIN;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_D:
-                    xMove += JOYSTICK_MAX;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_J:
-                    xTurn += JOYSTICK_MIN;
-                    bTurnNeutral = false;
-                    break;
-                case GLFW_KEY_L:
-                    xTurn += JOYSTICK_MAX;
-                    bTurnNeutral = false;
-                    break;
-                }
-            }
+        case InputHandler::INPUT_JUST_PRESSED:
+            /*
+            Just pressed now changed to pressed, as if the key is continued to
+            be pressed next frame, it should read as a key repeat.
+            */
+            m_pInputHandler->m_keys[it.first] = InputHandler::INPUT_PRESSED;
+            m_pFixedCommand = justPressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_PRESSED:
+            m_pFixedCommand = pressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_JUST_RELEASED:
+            /*
+            Now that the key ha been read as just released, we can now remove
+            it, so it doesn't need to be iterated over again next frame.
+            */
+            m_pInputHandler->m_keys.erase(it.first);
+            m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
+            break;
+        }
+        execute(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
+        // Check for cummulative movement commands, which are only executed once
+        // all movement keys are checked.
+        switch (m_pFixedCommand)
+        {
+        case COMMAND_MOVE_FORWARD:
+            bMovementNeutral = false;
+            yMove += JOYSTICK_MAX;
+            break;
+        case COMMAND_MOVE_LEFT:
+            bMovementNeutral = false;
+            yMove += JOYSTICK_MIN;
+            break;
+        case COMMAND_MOVE_RIGHT:
+            bMovementNeutral = false;
+            xMove += JOYSTICK_MIN;
+            break;
+        case COMMAND_MOVE_BACK:
+            bMovementNeutral = false;
+            xMove += JOYSTICK_MAX;
+            break;
+        case COMMAND_TURN_LEFT:
+            bTurnNeutral = false;
+            xTurn += JOYSTICK_MIN;
+            break;
+        case COMMAND_TURN_RIGHT:
+            bTurnNeutral = false;
+            xTurn += JOYSTICK_MAX;
+            break;
         }
     }
-
-    // This is where keys are handled, it's assumed that xMove and yMove will be binary on/off.
-    // Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
+    // This is where keys are handled, it's assumed that xMove and yMove will
+    // be binary on/off. Let's use this assumption to our advantage and we can
+    // simply if them to the proper size instead of doing a sqrt calculation.
     if (xMove != 0.0f && yMove != 0.0f)
     {
         xMove *= 0.5f;

@@ -42,19 +42,35 @@ public:
     // Tracks all keys if they are pressed
     // Allows for multiple key input
     // https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
-    int pressed[KEYS];
+    // int pressed[KEYS];
+    // Keyboard
+    /*
+    Hold the states of pressed, just pressed, and just released keys.
+    Valid input states:
+        INPUT_PRESSED
+        INPUT_JUST_PRESSED
+        INPUT_JUST_RELEASED
+
+    Keys that are INPUT_RELEASED will not be present in the map.
+
+    Key: glfw key values
+    Value: state of the key
+    */
+    map<int, eInputState> m_keys;
 
     // Joysticks
     void updateJoystickButtonsPressedLast(int joystickID);
     bool justPressed(int joystickID, int joystickButton)
     {
         return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_PRESS
-            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_RELEASED;
+            && (m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_RELEASED
+                || m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_JUST_RELEASED);
     }
     bool justReleased(int joystickID, int joystickButton)
     {
         return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_RELEASE
-            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_PRESSED;
+            && (m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_PRESSED
+                || m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_JUST_PRESSED);
     }
     /*
     List of joysticks that are present (detected) by the game.
@@ -106,6 +122,16 @@ private:
 
     static InputHandler* m_pInstance;
 
+    bool bWireFrameEnabled;
+
+    // Mouse
+    bool m_bTranslateFlag;
+    bool m_bRotateFlag;
+    glm::vec2 m_pInitialPos;
+
+
+    // Joysticks
+    void updateJoystickButtonStates(int joystick);
     /*
     Raw input values retrieved from glfwGetJoystickButtons()
     The values are either GLFW_PRESS or GLFW_RELEASE
@@ -116,15 +142,4 @@ private:
     This helps determines if a button has just been pressed or released.
     */
     eInputState m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
-
-
-    // Mouse
-    bool m_bTranslateFlag;
-    bool m_bRotateFlag;
-    glm::vec2 m_pInitialPos;
-
-    bool bWireFrameEnabled;
-
-    // Joysticks
-    void updateJoystickButtonStates(int joystick);
 };
