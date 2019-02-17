@@ -117,7 +117,6 @@ private:
     void initializeJoystick(int joystickID);
     void initializeJoystickVariables();
     void initializeJoysticksAtStart();
-    void initializeKeysPressed();
 
     static InputHandler* m_pInstance;
 

@@ -94,42 +94,21 @@ private:
     */
     static eFixedCommand pressedKeyToFixedCommand(int key)
     {
-        try
-        {
-            return m_pInstance->m_pressedKeyToFixedCommand.at(key);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_pressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a just pressed key to its corresponding eFixedCommand
     */
     static eFixedCommand justPressedKeyToFixedCommand(int key)
     {
-        try
-        {
-            return m_pInstance->m_justPressedKeyToFixedCommand.at(key);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a pressed key to its corresponding eFixedCommand
     */
     static eFixedCommand justReleasedKeyToFixedCommand(int key)
     {
-        try
-        {
-            return m_pInstance->m_justReleasedKeyToFixedCommand.at(key);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justReleasedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
@@ -137,14 +116,7 @@ private:
     */
     static eFixedCommand repeatButtonToFixedCommand(int button)
     {
-        try
-        {
-            return m_pInstance->m_repeatButtonToFixedCommand.at(button);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_repeatButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
@@ -152,14 +124,7 @@ private:
     */
     static eFixedCommand justPressedButtonToFixedCommand(int button)
     {
-        try
-        {
-            return m_pInstance->m_justPressedButtonToFixedCommand.at(button);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
@@ -167,28 +132,14 @@ private:
     */
     static eFixedCommand justReleasedButtonToFixedCommand(int button)
     {
-        try
-        {
-            return m_pInstance->m_justReleasedButtonToFixedCommand.at(button);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick axis to its corresponding eFixedCommand
     */
     static eFixedCommand axisToFixedCommand(int axis)
     {
-        try
-        {
-            return m_pInstance->m_axisToFixedCommand.at(axis);
-        }
-        catch (...)
-        {
-            return COMMAND_INVALID_FIXED;
-        }
+        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_axisToFixedCommand, axis, COMMAND_INVALID_FIXED);
     };
 
     std::map<int, eFixedCommand> m_pressedKeyToFixedCommand =
@@ -220,7 +171,7 @@ private:
         {GLFW_KEY_3,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3},
         {GLFW_KEY_4,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4},
         {GLFW_KEY_C,            COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA},
-        {GLFW_KEY_B,            COMMAND_DEBUG_TOGGLE_SHOW_BOUNDING_BOXES},
+        {GLFW_KEY_B,            COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES},
         {GLFW_KEY_M,            COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP},
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
         {GLFW_KEY_RIGHT_SHIFT,  COMMAND_CAMERA_BACK},
