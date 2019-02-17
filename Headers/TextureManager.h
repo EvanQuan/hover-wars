@@ -14,7 +14,7 @@ class Object;
 //            if the texture already exists, it will add a new userID to it and return
 //            the already loaded texture. This avoids duplicate loads of a texture.
 //        - unloadTexture:
-//            Removes a user reference to the texture.  If there are no users left 
+//            Removes a user reference to the texture.  If there are no users left
 //            that reference the texture, it will unload the texture from memory.
 //    Functionality:
 //        Stores textures in a hash map of TextureContainer structures.  Each TextureContainer
@@ -44,4 +44,3 @@ private:
     // Hash Map
     unordered_map<string, unique_ptr<Texture>> m_pTextureCache;
 };
-

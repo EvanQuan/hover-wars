@@ -10,7 +10,7 @@
 //        and indices.
 // Written by: James Cote
 //////////////////////////////////
-class Mesh 
+class Mesh
 {
 private:
     // Private Constructor and Copy Constructor to restrict usage to Object_Factory
@@ -92,7 +92,7 @@ private:
     // Friend Class: MeshManager to create Meshes.
     friend class MeshManager;
     friend class AnimationComponent;    // Friend class: Animation Component to manipulate Mesh information
-    // Private Manager Cookie so only MeshManager can construct a Mesh, 
+    // Private Manager Cookie so only MeshManager can construct a Mesh,
     //    but make_unique<Mesh> still has access to the constructor which it needs.
     struct manager_cookie {};
 
@@ -140,4 +140,3 @@ public:
     // Gets the file name, only the MeshManager can set this variable.
     const string& getManagerKey() { return m_sManagerKey; }
 };
-

@@ -12,11 +12,11 @@
 *    for the GPU to render to the screen.
 ***************************************************************/
 
-class RenderComponent 
+class RenderComponent
     : public EntityComponent
 {
 public:
-    RenderComponent(int iEntityID, int iComponentID, bool bStaticDraw, 
+    RenderComponent(int iEntityID, int iComponentID, bool bStaticDraw,
                     ShaderManager::eShaderType eType, GLenum eMode);
     virtual ~RenderComponent();
 
@@ -30,7 +30,7 @@ public:
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponent( Mesh const  * pMesh );
 
-private: 
+private:
     // Private Copy Constructor and Assignment operator overload.
     RenderComponent(const RenderComponent* pCopy);
     RenderComponent& operator=(const RenderComponent& pRHS);

@@ -91,7 +91,7 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const ObjectInfo* 
 Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, vec3 vNormal)
 {
     // Local Variables
-    string sHashHandle = "Plane" + to_string(iHeight) + to_string(iWidth) + 
+    string sHashHandle = "Plane" + to_string(iHeight) + to_string(iWidth) +
                             materialToString(&pObjectProperties->sObjMaterial);
     Mesh* pReturnMesh = nullptr;
 
@@ -219,7 +219,7 @@ string MeshManager::materialToString(const ObjectInfo::Material* sMaterial)
     }
     else    // No material specified, just return a default hash string.
         sReturnString = "NoMaterial";
-    
+
     // Return the Hash String for the material
     return sReturnString;
 }

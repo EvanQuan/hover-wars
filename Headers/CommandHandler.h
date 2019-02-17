@@ -8,7 +8,6 @@
 
 /* CLASS */
 /*
-
 Receives user command initiates appropriate actions that correspond to that command.
 Usually these commands would come from InputHandler (user input), but may come
 from other means for test purposes.
@@ -20,7 +19,7 @@ class CommandHandler
 public:
     static CommandHandler* getInstance(GLFWwindow *rWindow);
     ~CommandHandler();
- 
+
     void execute(ePlayer player, eFixedCommand command);
     void execute(ePlayer player, eVariableCommand command, float x, float y);
     /*
@@ -175,7 +174,7 @@ private:
         {GLFW_KEY_M,            COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP},
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
         {GLFW_KEY_RIGHT_SHIFT,  COMMAND_CAMERA_BACK},
-        // 
+        //
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_APOSTROPHE,   COMMAND_ABILITY_SPIKES},
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL},
@@ -224,7 +223,7 @@ private:
         {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_BACK},
         {BUTTON_BACK,         COMMAND_MENU_PAUSE},
         {BUTTON_START,        COMMAND_MENU_START},
-        // 
+        //
         {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
         {BUTTON_A,            COMMAND_DASH_BACK},
         {BUTTON_Y,            COMMAND_DASH_FORWARD},
@@ -264,4 +263,3 @@ private:
         {COMMAND_DASH_RIGHT,        ABILITY_DASH_RIGHT},
     };
 };
-
