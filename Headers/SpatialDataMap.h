@@ -1,6 +1,9 @@
 #pragma once
 #include "stdafx.h"
-#include "EntityHeaders/Entity.h"
+#include "EntityHeaders/StaticEntity.h"
+#include "EntityHeaders/InteractableEntity.h"
+#include "EntityHeaders/SpotLight.h"
+#include "EntityHeaders/PointLight.h"
 
 // Name: SpatialDataMap
 // Written By: James Coté
@@ -14,7 +17,7 @@ public:
 
     // Initialization/Deconstruction of Data Map
     void initializeMap(float fLength, float fWidth, float fTileSize);
-    void populateMap(const vector<unique_ptr<Entity>>* pMasterEntityList);
+    void populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList);
     void clearMap();
 
     // Draw Map for Debugging.
@@ -29,7 +32,11 @@ private:
     struct sSpatialCell
     {
         vec2 vOriginPos;
-        vector< Entity* > pLocalEntities;
+        vector< StaticEntity* > pLocalEntities;
+        vector< SpotLight* > pLocalSpotLights;
+        vector< PointLight* > pLocalPointLights;
+        vector< InteractableEntity* > pLocalInteractableEntities;
+        unsigned int iStaticSize;
     };
 
     // Mapping of Cells in 2D array.
@@ -51,6 +58,7 @@ private:
     // data for debug rendering
     vector< vec3 > m_pVertices;
     vector< unsigned int > m_pGridIndices, m_pPopulatedIndices;
+    vector< pair<unsigned int, unsigned int>> m_pPopulatedSquareReference;
     GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iMapInstanceBuffer;
 };
 

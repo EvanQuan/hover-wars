@@ -351,6 +351,31 @@ void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm
     }
 }
 
+// sets a uniform vec4 value in the specified shader to the given value.
+void ShaderManager::setUniformVec4(eShaderType eType, string sVarName, const vec4* pValue)
+{
+    GLint iVariableLocation;
+    GLint iProgram, iCurrProgram;
+
+    if (eType < eShaderType::MAX_SHDRS && eType >= 0)
+    {
+        iProgram = getProgram(eType);
+
+        glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+        glUseProgram(iProgram);
+        iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
+        if (ERR_CODE != iVariableLocation)
+        {
+            glUniform4fv(iVariableLocation, 1, glm::value_ptr(*pValue));
+        }
+        glUseProgram(iCurrProgram);
+
+#ifdef DEBUG
+        CheckGLErrors();
+#endif // DEBUG
+    }
+}
+
 // Sets a single uniform floating value in the specified shader to the given value.
 void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fVal)
 {
