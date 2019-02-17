@@ -66,6 +66,7 @@ private:
     EntityManager *m_pEntityManager;
     GameManager *m_pGameManager;
     InputHandler *m_pInputHandler;
+    GLFWwindow* m_pWindow;
 
     // Internal variables
     // For keyboard command handling
@@ -85,14 +86,17 @@ private:
     void executeKeyboardCommands();
     void executeJoystickCommands();
 
+    void debugToggleWireframe();
+    bool bWireFrameEnabled;
+
     /*
-    Convert a key to its corresponding eFixedCommand
+    Convert a pressed key to its corresponding eFixedCommand
     */
-    static eFixedCommand keyToFixedCommand(int key)
+    static eFixedCommand pressedKeyToFixedCommand(int key)
     {
         try
         {
-            return m_pInstance->m_keyToFixedCommand.at(key);
+            return m_pInstance->m_pressedKeyToFixedCommand.at(key);
         }
         catch (...)
         {
@@ -100,17 +104,31 @@ private:
         }
     };
     /*
-    Convert a key to its corresponding eVariableCommand
+    Convert a just pressed key to its corresponding eFixedCommand
     */
-    static eVariableCommand keyToVariableCommand(int key)
+    static eFixedCommand justPressedKeyToFixedCommand(int key)
     {
         try
         {
-            return m_pInstance->m_keyToVariableCommand.at(key);
+            return m_pInstance->m_justPressedKeyToFixedCommand.at(key);
         }
         catch (...)
         {
-            return COMMAND_INVALID_VARIABLE;
+            return COMMAND_INVALID_FIXED;
+        }
+    };
+    /*
+    Convert a pressed key to its corresponding eFixedCommand
+    */
+    static eFixedCommand justReleasedKeyToFixedCommand(int key)
+    {
+        try
+        {
+            return m_pInstance->m_justReleasedKeyToFixedCommand.at(key);
+        }
+        catch (...)
+        {
+            return COMMAND_INVALID_FIXED;
         }
     };
     /*
@@ -173,31 +191,61 @@ private:
         }
     };
 
-
-    std::map<int, eFixedCommand> m_keyToFixedCommand =
+    std::map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
-        {GLFW_KEY_SPACE,       COMMAND_ABILITY_ROCKET},
-        {GLFW_KEY_APOSTROPHE,  COMMAND_ABILITY_SPIKES},
-        {GLFW_KEY_LEFT_SHIFT,  COMMAND_ABILITY_TRAIL},
-        {GLFW_KEY_K,           COMMAND_DASH_BACK},
-        {GLFW_KEY_I,           COMMAND_DASH_FORWARD},
-        {GLFW_KEY_H,           COMMAND_DASH_LEFT},
-        {GLFW_KEY_SEMICOLON,   COMMAND_DASH_RIGHT},
-        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_FRONT},
-        {GLFW_KEY_F,           COMMAND_DEBUG_TOGGLE_WIREFRAME},
-        {GLFW_KEY_TAB,         COMMAND_MENU_BACK},
-        {GLFW_KEY_P,           COMMAND_MENU_PAUSE},
-        {GLFW_KEY_ENTER,       COMMAND_MENU_START},
+        {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
+        {GLFW_KEY_APOSTROPHE,   COMMAND_ABILITY_SPIKES},
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL},
+        {GLFW_KEY_K,            COMMAND_DASH_BACK},
+        {GLFW_KEY_I,            COMMAND_DASH_FORWARD},
+        {GLFW_KEY_H,            COMMAND_DASH_LEFT},
+        {GLFW_KEY_SEMICOLON,    COMMAND_DASH_RIGHT},
+        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
+        {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
+        {GLFW_KEY_ENTER,        COMMAND_MENU_START},
+        {GLFW_KEY_W,            COMMAND_MOVE_FORWARD},
+        {GLFW_KEY_A,            COMMAND_MOVE_LEFT},
+        {GLFW_KEY_S,            COMMAND_MOVE_BACK},
+        {GLFW_KEY_D,            COMMAND_MOVE_RIGHT},
+        {GLFW_KEY_J,            COMMAND_TURN_LEFT},
+        {GLFW_KEY_L,            COMMAND_TURN_RIGHT},
     };
 
-    std::map<int, eVariableCommand> m_keyToVariableCommand =
+    std::map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
-        {GLFW_KEY_W, COMMAND_MOVE},
-        {GLFW_KEY_A, COMMAND_MOVE},
-        {GLFW_KEY_S, COMMAND_MOVE},
-        {GLFW_KEY_D, COMMAND_MOVE},
-        {GLFW_KEY_J, COMMAND_TURN},
-        {GLFW_KEY_L, COMMAND_TURN},
+        {GLFW_KEY_ESCAPE,       COMMAND_CLOSE_WINDOW},
+        {GLFW_KEY_F,            COMMAND_DEBUG_TOGGLE_WIREFRAME},
+        {GLFW_KEY_1,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1},
+        {GLFW_KEY_2,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2},
+        {GLFW_KEY_3,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3},
+        {GLFW_KEY_4,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4},
+        {GLFW_KEY_C,            COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA},
+        {GLFW_KEY_B,            COMMAND_DEBUG_TOGGLE_SHOW_BOUNDING_BOXES},
+        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
+        {GLFW_KEY_RIGHT_SHIFT,  COMMAND_CAMERA_BACK},
+        // 
+        {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
+        {GLFW_KEY_APOSTROPHE,   COMMAND_ABILITY_SPIKES},
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL},
+        {GLFW_KEY_K,            COMMAND_DASH_BACK},
+        {GLFW_KEY_I,            COMMAND_DASH_FORWARD},
+        {GLFW_KEY_H,            COMMAND_DASH_LEFT},
+        {GLFW_KEY_SEMICOLON,    COMMAND_DASH_RIGHT},
+        {GLFW_KEY_F,            COMMAND_DEBUG_TOGGLE_WIREFRAME},
+        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
+        {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
+        {GLFW_KEY_ENTER,        COMMAND_MENU_START},
+        {GLFW_KEY_W,            COMMAND_MOVE_FORWARD},
+        {GLFW_KEY_A,            COMMAND_MOVE_LEFT},
+        {GLFW_KEY_S,            COMMAND_MOVE_BACK},
+        {GLFW_KEY_D,            COMMAND_MOVE_RIGHT},
+        {GLFW_KEY_J,            COMMAND_TURN_LEFT},
+        {GLFW_KEY_L,            COMMAND_TURN_RIGHT},
+    };
+
+    std::map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
+    {
+        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_FRONT},
     };
 
     std::map<int, eFixedCommand> m_repeatButtonToFixedCommand =

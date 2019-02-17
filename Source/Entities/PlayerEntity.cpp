@@ -12,7 +12,7 @@
 // Camera Defines
 #define FRONT_CAMERA 0
 #define BACK_CAMERA 1
-#define PAST_CAMERA_POSITIONS 10
+#define PAST_CAMERA_POSITIONS 150
 #define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
 #define START_RADIUS 10.0f
 /*

@@ -11,9 +11,9 @@ CommandHandler::CommandHandler(GLFWwindow *rWindow)
     // Initializing Base Class
     // NOTE: Do not get an instance of GameManager here or there will be
     // infinite mutual recursion and a call stack overflow
-    // m_pGameManager = GameManager::getInstance();
-    // m_pEntityManger = ENTITY_MANAGER;
+    m_pWindow = rWindow;
     m_pInputHandler = InputHandler::getInstance(rWindow);
+    bWireFrameEnabled = false;
 }
 
 /*
@@ -64,37 +64,52 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
             ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_DASH_BACK:
-        cout << "Dash back" << endl;
         break;
     case COMMAND_DASH_FORWARD:
-        cout << "Dash forward" << endl;
         break;
     case COMMAND_DASH_LEFT:
-        cout << "Dash left" << endl;
         break;
     case COMMAND_DASH_RIGHT:
-        cout << "Dash right" << endl;
         ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        cout << "FRONT" << endl;
         ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        cout << "BACK" << endl;
         ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
-    case COMMAND_MENU_PAUSE:
-    case COMMAND_MENU_START:
-        // cout << "Player " << player << ": "
-            // << eFixedCommandToString.at(command)
-            // << endl;
        break;
-    // default:
-        // cout << "Player " << player << ": "
-             // << eFixedCommandToString.at(command)
-             // << " not implemented yet." << endl;
+    case COMMAND_MENU_PAUSE:
+       break;
+    case COMMAND_MENU_START:
+       break;
+
+    case COMMAND_CLOSE_WINDOW:
+        glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
+        break;
+    case COMMAND_DEBUG_TOGGLE_WIREFRAME:
+        debugToggleWireframe();
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_1;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_2;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_3;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
+        break;
+    case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
+        GAME_MANAGER->toggleDebugCamera();
+        break;
+    case COMMAND_DEBUG_TOGGLE_SHOW_BOUNDING_BOXES:
+        ENTITY_MANAGER->toggleBBDrawing();
+        break;
+
     }
 }
 
@@ -198,87 +213,75 @@ void CommandHandler::executeKeyboardCommands()
     yMove = 0;
     xTurn = 0;
     yTurn = 0;
-    for (int key = 0; key < KEYS; key++)
+    /*
+    Copy the keys at current snapshot so they can be iterated over while m_keys continues
+    to be updated.
+    NOTE: Unless there is some other better way of doing this, directly using
+    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to update through
+    key callbacks as it is being iterated through.
+    */
+    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
+    for (auto it : keys)
     {
-        if (m_pInputHandler->pressed[key])
+        /*
+        Divide the key states into the 3 types of fixed commands
+        */
+        switch (it.second) // value - input state
         {
-            // Fixed
-            switch (key)
-            {
-            case GLFW_KEY_K:
-                m_pFixedCommand = COMMAND_DASH_BACK;
-                break;
-            case GLFW_KEY_I:
-                m_pFixedCommand = COMMAND_DASH_FORWARD;
-                break;
-            case GLFW_KEY_H:
-                m_pFixedCommand = COMMAND_DASH_LEFT;
-                break;
-            case GLFW_KEY_SEMICOLON:
-                m_pFixedCommand = COMMAND_DASH_RIGHT;
-                break;
-            case GLFW_KEY_SPACE:
-                m_pFixedCommand = COMMAND_ABILITY_ROCKET;
-                break;
-            case GLFW_KEY_LEFT_SHIFT:
-                m_pFixedCommand = COMMAND_ABILITY_TRAIL;
-                break;
-            case GLFW_KEY_APOSTROPHE:
-                m_pFixedCommand = COMMAND_ABILITY_SPIKES;
-                break;
-            case GLFW_KEY_TAB:
-                m_pFixedCommand = COMMAND_MENU_BACK;
-                break;
-            case GLFW_KEY_ENTER:
-                m_pFixedCommand = COMMAND_MENU_START;
-                break;
-            case GLFW_KEY_P:
-                m_pFixedCommand = COMMAND_MENU_PAUSE;
-                break;
-            default:
-                m_pFixedCommand = COMMAND_INVALID_FIXED;
-                break;
-            }
-            if (COMMAND_INVALID_FIXED != m_pFixedCommand)
-            {
-                execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
-            }
-            else
-            {
-                // Variable commands
-                switch (key)
-                {
-                case GLFW_KEY_W:
-                    yMove += JOYSTICK_MAX;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_S:
-                    yMove += JOYSTICK_MIN;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_A:
-                    xMove += JOYSTICK_MIN;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_D:
-                    xMove += JOYSTICK_MAX;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_J:
-                    xTurn += JOYSTICK_MIN;
-                    bTurnNeutral = false;
-                    break;
-                case GLFW_KEY_L:
-                    xTurn += JOYSTICK_MAX;
-                    bTurnNeutral = false;
-                    break;
-                }
-            }
+        case InputHandler::INPUT_JUST_PRESSED:
+            /*
+            Just pressed now changed to pressed, as if the key is continued to
+            be pressed next frame, it should read as a key repeat.
+            */
+            m_pInputHandler->m_keys[it.first] = InputHandler::INPUT_PRESSED;
+            m_pFixedCommand = justPressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_PRESSED:
+            m_pFixedCommand = pressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_JUST_RELEASED:
+            /*
+            Now that the key ha been read as just released, we can now remove
+            it, so it doesn't need to be iterated over again next frame.
+            */
+            m_pInputHandler->m_keys.erase(it.first);
+            m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
+            break;
+        }
+        execute(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
+        // Check for cummulative movement commands, which are only executed once
+        // all movement keys are checked.
+        switch (m_pFixedCommand)
+        {
+        case COMMAND_MOVE_FORWARD:
+            bMovementNeutral = false;
+            yMove += JOYSTICK_MAX;
+            break;
+        case COMMAND_MOVE_BACK:
+            bMovementNeutral = false;
+            yMove += JOYSTICK_MIN;
+            break;
+        case COMMAND_MOVE_LEFT:
+            bMovementNeutral = false;
+            xMove += JOYSTICK_MIN;
+            break;
+        case COMMAND_MOVE_RIGHT:
+            bMovementNeutral = false;
+            xMove += JOYSTICK_MAX;
+            break;
+        case COMMAND_TURN_LEFT:
+            bTurnNeutral = false;
+            xTurn += JOYSTICK_MIN;
+            break;
+        case COMMAND_TURN_RIGHT:
+            bTurnNeutral = false;
+            xTurn += JOYSTICK_MAX;
+            break;
         }
     }
-
-    // This is where keys are handled, it's assumed that xMove and yMove will be binary on/off.
-    // Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
+    // This is where keys are handled, it's assumed that xMove and yMove will
+    // be binary on/off. Let's use this assumption to our advantage and we can
+    // simply if them to the proper size instead of doing a sqrt calculation.
     if (xMove != 0.0f && yMove != 0.0f)
     {
         xMove *= 0.5f;
@@ -287,11 +290,11 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
     {
-        execute(m_pInputHandler->keyboardPlayer, COMMAND_MOVE, xMove, yMove);
+        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        execute(m_pInputHandler->keyboardPlayer, COMMAND_TURN, xTurn, yTurn);
+        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
 }
 
@@ -315,14 +318,14 @@ void CommandHandler::executeJoystickCommands()
             {
                 switch (buttons[button])
                 {
-                case InputHandler::JUST_PRESSED:
+                case InputHandler::INPUT_JUST_PRESSED:
                     cout << "JUST_PRESSED" << endl;
                     execute((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
                     break;
-                case InputHandler::PRESSED:
+                case InputHandler::INPUT_PRESSED:
                     execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
                     break;
-                case InputHandler::JUST_RELEASED:
+                case InputHandler::INPUT_JUST_RELEASED:
                     cout << "JUST_RELEASED" << endl;
                     execute((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
                     break;
@@ -342,8 +345,27 @@ void CommandHandler::executeJoystickCommands()
 
             // Check axes
             // Joystick axes will not be remappable, so no need to make code generalizable
-            execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-            execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+            if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
+            {
+                execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+            }
+            if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
+            {
+                execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+            }
         }
+    }
+}
+
+void CommandHandler::debugToggleWireframe()
+{
+    bWireFrameEnabled = !bWireFrameEnabled;
+    if (bWireFrameEnabled)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    }
+    else
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 }
