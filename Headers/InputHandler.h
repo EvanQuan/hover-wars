@@ -15,10 +15,10 @@ public:
     */
     enum eInputState
     {
-        RELEASED,
-        JUST_RELEASED,
-        PRESSED,
-        JUST_PRESSED,
+        INPUT_RELEASED,
+        INPUT_JUST_PRESSED,
+        INPUT_PRESSED,
+        INPUT_JUST_RELEASED,
     };
 
     static InputHandler* getInstance(GLFWwindow *rWindow);
@@ -38,26 +38,39 @@ public:
     void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
     void mouseREnd() { m_bRotateFlag = false; }
 
-    // void mouseZoom(float fZoomVal);
-    // TODO This may need to be moved elsewhere. GameManager?
-    ePlayer keyboardPlayer;
-
     // Keyboard
     // Tracks all keys if they are pressed
     // Allows for multiple key input
     // https://stackoverflow.com/questions/46631814/handling-multiple-keys-input-at-once-with-glfw
-    int pressed[KEYS];
+    // int pressed[KEYS];
+    // Keyboard
+    /*
+    Hold the states of pressed, just pressed, and just released keys.
+    Valid input states:
+        INPUT_PRESSED
+        INPUT_JUST_PRESSED
+        INPUT_JUST_RELEASED
+
+    Keys that are INPUT_RELEASED will not be present in the map.
+
+    Key: glfw key values
+    Value: state of the key
+    */
+    map<int, eInputState> m_keys;
 
     // Joysticks
+    void updateJoystickButtonsPressedLast(int joystickID);
     bool justPressed(int joystickID, int joystickButton)
     {
         return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_PRESS
-            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == GLFW_RELEASE;
+            && (m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_RELEASED
+                || m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_JUST_RELEASED);
     }
     bool justReleased(int joystickID, int joystickButton)
     {
         return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_RELEASE
-            && m_pJoystickButtonsPressedLast[joystickID][joystickButton] == GLFW_PRESS;
+            && (m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_PRESSED
+                || m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_JUST_PRESSED);
     }
     /*
     List of joysticks that are present (detected) by the game.
@@ -95,7 +108,6 @@ private:
     // Singleton Variables
     InputHandler(GLFWwindow *rWindow);
     void checkForPresentJoysticks();
-    void debugKeyCommands(GLFWwindow* window, int key, int action);
     void debugPrintJoystickAxes(int joystickID);
     void debugPrintJoystickButtons(int joystickID);
     void debugPrintJoystickInformation();
@@ -109,6 +121,16 @@ private:
 
     static InputHandler* m_pInstance;
 
+    bool bWireFrameEnabled;
+
+    // Mouse
+    bool m_bTranslateFlag;
+    bool m_bRotateFlag;
+    glm::vec2 m_pInitialPos;
+
+
+    // Joysticks
+    void updateJoystickButtonStates(int joystick);
     /*
     Raw input values retrieved from glfwGetJoystickButtons()
     The values are either GLFW_PRESS or GLFW_RELEASE
@@ -118,18 +140,5 @@ private:
     Raw input values stored as last frame's m_pJoystickButtonsPressed values.
     This helps determines if a button has just been pressed or released.
     */
-    const unsigned char* m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT];
-
-
-    // Mouse
-    bool m_bTranslateFlag;
-    bool m_bRotateFlag;
-    glm::vec2 m_pInitialPos;
-
-    bool bWireFrame;
-
-    // Joysticks
-    void updateJoystickButtonStates(int joystick);
+    eInputState m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
 };
-
-
