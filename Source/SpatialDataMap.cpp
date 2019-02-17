@@ -152,7 +152,8 @@ void SpatialDataMap::drawMap()
         // Draw the Populated Squares
         SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &POP_COLOR);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
-        glDrawElementsInstanced(GL_TRIANGLE_STRIP, m_pPopulatedIndices.size(), GL_UNSIGNED_INT, 0, 1);
+        for( unsigned int i = 0; i < m_pPopulatedIndices.size(); i += 4 )
+            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)i, 1);
 
     }
 }
