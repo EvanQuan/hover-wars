@@ -7,7 +7,7 @@
 class Entity
 {
 public:
-    Entity(int iID, vec3 vPosition);
+    Entity(int iID, vec3 vPosition, eEntityTypes eType);
     Entity(const Entity& pCopy);
     virtual ~Entity();
 
@@ -16,8 +16,10 @@ public:
     // Getters/Setters
     vec3 getPosition() { return m_vPosition; }
     int getID() { return m_iID; }
+    eEntityTypes getType() { return m_eType; }
 
 protected:
     vec3 m_vPosition;
     int m_iID;
+    eEntityTypes m_eType;
 };

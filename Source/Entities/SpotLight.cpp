@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 SpotLight::SpotLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, SPOT_LIGHT_ENTITY )
 {
     
 }

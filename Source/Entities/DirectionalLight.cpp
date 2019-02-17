@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 DirectionalLight::DirectionalLight(int iID) 
-    : Entity( iID, vec3( -1.0 ) )
+    : Entity( iID, vec3( -1.0 ), DIRECTIONAL_LIGHT_ENTITY )
 {
     
 }

@@ -3,7 +3,7 @@
 
 // Default Constructor
 StaticEntity::StaticEntity(int iID, const vec3* vPosition)
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, STATIC_ENTITY )
 {
     
 }

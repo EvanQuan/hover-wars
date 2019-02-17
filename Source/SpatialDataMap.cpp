@@ -4,8 +4,11 @@
 /*************\
  * Constants *
 \*************/
-const vec3 GRID_COLOR = vec3(1.0f, 0.1568627450980392f, 0.0f);              // Ferrari Red
-const vec3 POP_COLOR = vec3(0.4941176470588235f, 0.9764705882352941f, 1.0f);  // Electric Blue
+const float ALPHA       = 0.5f;
+const vec4 GRID_COLOR   = vec4(1.0f, 0.1568627450980392f, 0.0f, ALPHA);                                // Ferrari Red
+const vec4 POP_COLOR    = vec4(0.4941176470588235f, 0.9764705882352941f, 1.0f, ALPHA);                 // Electric Blue
+const vec4 SPOT_COLOR   = vec4(0.3764705882352941f, 0.1843137254901961f, 0.4196078431372549f, ALPHA);  // Deep Purple
+const vec4 POINT_COLOR  = vec4(0.9411764705882353f, 1.0f, 0.9411764705882353f, ALPHA);                  // Azure White
 float OVERLAY_HEIGHT = 0.1f;
 
 // Default Constructor for Data Map
@@ -73,6 +76,7 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
         {
             // Set the Relative Position and update to the next column position.
             m_pSpatialMap[x][y].vOriginPos = vOriginOffset;
+            m_pSpatialMap[x][y].iStaticSize = 0;
             vOriginOffset.y += m_fTileSize;
         }
 
@@ -89,11 +93,12 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
 }
 
 // Populate Spatial Data Map with Entities in the scene.
-void SpatialDataMap::populateMap(const vector<unique_ptr<Entity>>* pMasterEntityList)
+void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList)
 {
     // Local Variables
     unsigned int iX, iY; // Indices for determining Entity Position.
     unsigned int iXIndex;
+    bool bValidEntity = true;
     vec3 vPosition;
 
     for (vector<unique_ptr<Entity>>::const_iterator iter = pMasterEntityList->begin();
@@ -106,26 +111,53 @@ void SpatialDataMap::populateMap(const vector<unique_ptr<Entity>>* pMasterEntity
         // Add Entity to Spatial Map
         if (getMapIndices(&vPosition, &iX, &iY)) // Verify the Indices received are valid.
         {
-            m_pEntityMap.insert(make_pair((*iter)->getID(), make_pair(iX, iY)));    // Store that the Entity Resides inside the specified cell at iX, iY
-            m_pSpatialMap[iX][iY].pLocalEntities.push_back(iter->get());            // Push the Entity into the spatial map.
-
-            // Add Indices for a populated square if this is the first Entity added to the list.
-            if (1 == m_pSpatialMap[iX][iY].pLocalEntities.size())
+            switch ((*iter)->getType())
             {
-                // Add Indices for coloring the populated square
-                /*
-                    1--3
-                    | /|
-                    |/ |
-                    2--4
-                */
-                iXIndex = iX * (m_iMaxX + 1);
-                m_pPopulatedIndices.push_back(iXIndex + iY);                // 1
-                m_pPopulatedIndices.push_back(iXIndex + iY + 1);            // 3
-                m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 1);  // 2
-                
-                m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 2);  // 4
+            case INTERACTABLE_ENTITY:
+                m_pSpatialMap[iX][iY].pLocalInteractableEntities.push_back(static_cast<InteractableEntity*>(iter->get()));  // Push the Interactable Entity into the spatial map.
+                break;
+            case POINT_LIGHT_ENTITY:
+                m_pSpatialMap[iX][iY].pLocalPointLights.push_back(static_cast<PointLight*>(iter->get()));                   // Push the Static Entity into the spatial map.
+                break;
+            case SPOT_LIGHT_ENTITY:
+                m_pSpatialMap[iX][iY].pLocalSpotLights.push_back(static_cast<SpotLight*>(iter->get()));                     // Push the Static Entity into the spatial map.
+                break;
+            case STATIC_ENTITY:
+                m_pSpatialMap[iX][iY].pLocalEntities.push_back(static_cast<StaticEntity*>(iter->get()));                    // Push the Static Entity into the spatial map.
+                break;
+            default:
+                bValidEntity = false;
+                break;
             }
+
+            if (bValidEntity)
+            {
+                m_pEntityMap.insert(make_pair((*iter)->getID(), make_pair(iX, iY)));    // Store that the Entity Resides inside the specified cell at iX, iY
+                m_pSpatialMap[iX][iY].iStaticSize++;                                    // Track Static size of the square.
+
+                // Add Indices for a populated square if this is the first Entity added to the list.
+                if (1 == m_pSpatialMap[iX][iY].iStaticSize )
+                {
+                    // Add Indices for coloring the populated square
+                    /*
+                        1--3
+                        | /|
+                        |/ |
+                        2--4
+                    */
+                    iXIndex = iX * (m_iMaxX + 1);
+                    m_pPopulatedIndices.push_back(iXIndex + iY);                // 1
+                    m_pPopulatedIndices.push_back(iXIndex + iY + 1);            // 3
+                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 1);  // 2
+                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 2);  // 4
+
+                    // Store reference for the square to determine color.
+                    m_pPopulatedSquareReference.push_back(make_pair(iX, iY));
+                }
+            }
+
+            // Reset Entity Flag for next loop
+            bValidEntity = true;
         }
     }
 
@@ -144,18 +176,27 @@ void SpatialDataMap::drawMap()
         glUseProgram(SHADER_MANAGER->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
 
         // Set the color for the Spacial Map Outline
-        SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &GRID_COLOR);
+        SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &GRID_COLOR);
 
         // Draw the Map
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iMapIndicesBuffer);
         glDrawElementsInstanced(GL_LINES, m_pGridIndices.size(), GL_UNSIGNED_INT, 0, 1);
 
         // Draw the Populated Squares
-        SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &POP_COLOR);
+        vec4 const*vColor = &POP_COLOR;
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
-        for (unsigned int i = 0; i < m_pPopulatedIndices.size(); i += 4)
+        for (unsigned int i = 0; i < m_pPopulatedSquareReference.size(); ++i)
         {
-            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)(i * sizeof(unsigned int)), 1);
+            if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalEntities.empty())
+                vColor = &GRID_COLOR;
+            else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalPointLights.empty())
+                vColor = &POINT_COLOR;
+            else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalSpotLights.empty())
+                vColor = &SPOT_COLOR;
+
+            SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", vColor);
+            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
+            vColor = &POP_COLOR;
         }
 
     }

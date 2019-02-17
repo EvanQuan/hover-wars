@@ -53,6 +53,7 @@
 #include "Enums/eFixedCommand.h"
 #include "Enums/eVariableCommand.h"
 #include "Enums/eBoundingBoxTypes.h"
+#include "Enums/eEntityTypes.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"

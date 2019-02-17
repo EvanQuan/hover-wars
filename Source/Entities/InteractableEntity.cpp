@@ -6,7 +6,7 @@ using namespace SpriteSheetDatabase;
 
 // Default Constructor
 InteractableEntity::InteractableEntity(int iID, const vec3* vPosition)
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, INTERACTABLE_ENTITY )
 {
     
 }

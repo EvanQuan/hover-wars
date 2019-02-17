@@ -31,7 +31,7 @@ const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
 const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(5, 0, 0);
 
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
-    : Entity(iID, *vPosition)
+    : Entity(iID, *vPosition, PLAYER_ENTITY)
 {
     activeCameraIndex = FRONT_CAMERA;
     m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
