@@ -6,7 +6,7 @@
 \*************/
 const vec3 GRID_COLOR = vec3(1.0f, 0.1568627450980392f, 0.0f);              // Ferrari Red
 const vec3 POP_COLOR = vec3(0.4941176470588235f, 0.9764705882352941f, 1.0f);  // Electric Blue
-
+float OVERLAY_HEIGHT = 0.1f;
 
 // Default Constructor for Data Map
 SpatialDataMap::SpatialDataMap()
@@ -197,7 +197,7 @@ void SpatialDataMap::generateGridVBOs()
         {
             // Push back Vertex for this point.
             m_pVertices.push_back(vec3(m_vOriginPos.x + (x * m_fTileSize),
-                0.0f,
+                OVERLAY_HEIGHT,
                 m_vOriginPos.y + (y * m_fTileSize)));
 
             // Store Current Index

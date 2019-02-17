@@ -131,66 +131,20 @@ point_light {
 #	models/paper_airplane.obj
 #}
 
-# box
 ## bottom
-#plane {
-#	0 0 0
-#	0 1 0
-#	100 100
-#	+material {
-#		textures/groundSeamless.jpg
-#		0 0 0
-#		0
-#	}
-#	+shader {
-#		plane_shdr
-#	}
-#}
-## Side 1
-#plane {
-#	0 0 0
-#	1.0 0.0 -1.0
-#	1.0 1.0 -1.0
-#	1.0 0.0 1.0
-#	1.0 1.0 1.0
-#	0
-#}
-## Side 2
-#plane {
-#	0 0 0
-#	-1.0 0.0 -1.0
-#	-1.0 0.0 1.0
-#	-1.0 1.0 -1.0
-#	-1.0 1.0 1.0
-#	0
-#}
-## Side 3
-#plane {
-#	0 0 0
-#	-1.0 1.0 -1.0
-#	1.0 1.0 -1.0
-#	-1.0 0.0 -1.0
-#	1.0 0.0 -1.0
-#	0
-#}
-## side 4
-#plane {
-#	0 0 0
-#	-1.0 1.0 1.0
-#	-1.0 0.0 1.0
-#	1.0 1.0 1.0
-#	1.0 0.0 1.0
-#	0
-#}
-# Top
-#plane {
-#	0 0 0
-#	-1.0 1.0 -1.0
-#	-1.0 1.0 1.0
-#	1.0 1.0 -1.0
-#	1.0 1.0 1.0
-#	1
-#}
+plane {
+	0 0 0
+	0 1 0
+	100 100
+	+material {
+		textures/groundSeamless.jpg
+		0 0 0
+		0
+	}
+	+shader {
+		plane_shdr
+	}
+}
 
 # Mesh
 player {
@@ -239,7 +193,7 @@ static_mesh {
 }
 
 sphere {
-	-40 4 -40 .5
+	3 4 -3 .5
 	+material {
 		textures/nightSpherical.jpg
 		textures/nightSphericalSpecMap.png
@@ -251,5 +205,5 @@ sphere {
 # values are: length, width and tile size in that order.
 #	This will only be evaluated once and multiple specifications of the spatial_map will ignored.
 spatial_map {
-	100 100 5
+	100 100 10
 }
