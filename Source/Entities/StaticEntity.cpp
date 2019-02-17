@@ -30,7 +30,7 @@ void StaticEntity::update(float fTimeInMilliseconds)
 // Load a Plane with a given Normal, Height and Width
 void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType)
 {
-    m_pMesh = MESH_MANAGER->generatePlaneMesh(true, iHeight, iWidth, pMaterial, pBoundingBox, m_vPosition, *vNormal);
+    m_pMesh = MESH_MANAGER->generatePlaneMesh(true, iHeight, iWidth, pObjectProperties, *vNormal);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
@@ -41,7 +41,7 @@ void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, con
 // Load a Sphere with a given Radius
 void StaticEntity::loadAsSphere(float fRadius, const ObjectInfo* pObjectProperties, const string& sShaderType)
 {
-    m_pMesh = MESH_MANAGER->generateSphereMesh(true, fRadius, pMaterial, pBoundingBox, m_vPosition);
+    m_pMesh = MESH_MANAGER->generateSphereMesh(true, fRadius, pObjectProperties);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
@@ -53,7 +53,7 @@ void StaticEntity::loadAsSphere(float fRadius, const ObjectInfo* pObjectProperti
 void StaticEntity::loadFromFile(const string& sFileName, const ObjectInfo* pObjectProperties, const string& sShaderType, float fScale)
 {
     // Grab the Mesh Object
-    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, pBoundingBox, fScale, m_vPosition, true);
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale,  true);
 
     // Set up Render component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);

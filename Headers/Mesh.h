@@ -27,7 +27,7 @@ private:
     bool loadObj(const string& sFileName);
     void loadObjectInfo(const ObjectInfo* pObjectProperties);
     void loadMaterial(const ObjectInfo::Material* pMaterial);
-    void loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox);
+    void loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition);
 
     // function to generate a quaternion to rotate from y-axis normal to specified normal
     mat4 getRotationMat4ToNormal(const vec3* vNormal);

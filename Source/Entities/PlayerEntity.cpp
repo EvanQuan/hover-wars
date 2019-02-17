@@ -74,7 +74,7 @@ void PlayerEntity::initializePlayer(const string& sFileName,
                                     float fScale)
 {
     // Load Mesh and Rendering Component
-    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pMaterial, pBoundingBox, fScale, m_vPosition);
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player

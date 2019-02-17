@@ -232,6 +232,10 @@ static_mesh {
 	+shader {
 		toon_shdr
 	}
+	+bounding {
+		box
+		2.0 2.0 2.0
+	}
 }
 
 sphere {

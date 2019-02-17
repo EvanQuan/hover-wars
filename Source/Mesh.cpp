@@ -680,8 +680,8 @@ void Mesh::loadObjectInfo(const ObjectInfo* pObjectProperties)
     // Ensure the Object Properties pointer is valid
     if (nullptr != pObjectProperties)
     {
-        loadMaterial(&pObjectProperties->sObjMaterial);         // Load Mesh Material
-        loadBoundingBox(&pObjectProperties->sObjBoundingBox);   // Load Bounding Box
+        loadMaterial(&pObjectProperties->sObjMaterial);                                         // Load Mesh Material
+        loadBoundingBox(&pObjectProperties->sObjBoundingBox, &pObjectProperties->vPosition);    // Load Bounding Box
     }
 }
 
@@ -714,10 +714,13 @@ void Mesh::loadMaterial(const ObjectInfo::Material* pMaterial)
 }
 
 // Load the Bounding Box for the Mesh
-void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox)
+void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition)
 {
-    if (nullptr != pBoundingBox)
+    if (nullptr != pBoundingBox && nullptr != vStartingPosition)
     {
+        // Generate Translation Matrix for starting position
+        mat4 m4Translation = translate(*vStartingPosition);
+
         // Nothing Set in the Bounding Box type? Don't evaluate further
         switch (pBoundingBox->eType)
         {
@@ -728,6 +731,10 @@ void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox)
             return;
             break;
         }
+
+        // Add initial translation for the Bounding Box.
+        if (DEFAULT_TYPE != pBoundingBox->eType)
+            addBBInstance(&m4Translation);
     }
 }
 
@@ -800,8 +807,7 @@ void Mesh::sBoundingBox::initVBOs()
     iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
 
     // Generate Instance Buffer
-    mat4 m4DefaultInstance(1.0f);
-    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)&m4DefaultInstance, sizeof(mat4), GL_DYNAMIC_DRAW);
+    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)0, 0, GL_DYNAMIC_DRAW);
 }
 
 // Generates a Cubic Bounding Box.
