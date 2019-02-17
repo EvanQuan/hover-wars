@@ -1,11 +1,16 @@
 #include "SpatialDataMap.h"
 #include "ShaderManager.h"
 
+/*************\
+ * Constants *
+\*************/
+const vec3 MAP_COLOR = vec3(1.0f, 0.1568627450980392f, 0.0f); // Ferrari Red
+
 
 // Default Constructor for Data Map
 SpatialDataMap::SpatialDataMap()
 {
-
+    m_bIsInitialized = false;
 }
 
 // Destructor for Data Map
@@ -27,6 +32,12 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
     // Set the Origin position for reference wrt world coordinates as well as the maximum limit of the map.
     m_vOriginPos = vec2(-fHalfWidth, -fHalfLength);
     m_vMaxDimensions = vec2(fWidth, fLength) + m_vOriginPos;
+
+    // Generate the VBOs for drawing the map.
+    generateVBOs();
+
+    // Set the Initialized Flag.
+    m_bIsInitialized = true;
 }
 
 void SpatialDataMap::clearMap()
@@ -46,7 +57,24 @@ void SpatialDataMap::clearMap()
     // Delete VBOs and VAOs
     glDeleteBuffers(1, &m_iMapIndicesBuffer);
     glDeleteBuffers(1, &m_iMapVertexBuffer);
+    glDeleteBuffers(1, &m_iMapInstanceBuffer);
     glDeleteVertexArrays(1, &m_iMapVertexArray);
+
+    m_bIsInitialized = false;
+}
+
+// Draw the Data Map for Debugging
+void SpatialDataMap::drawMap()
+{
+    // Bind Vertex Array and set Program
+    glBindVertexArray(m_iMapVertexArray);
+    glUseProgram(SHADER_MANAGER->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
+
+    // Set the color for the Spacial Map Outline
+    SHADER_MANAGER->setUniformVec3(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &MAP_COLOR);
+
+    // Draw the Map
+    glDrawElementsInstanced(GL_LINES, m_pIndices.size(), GL_UNSIGNED_INT, 0, 1);
 }
 
 /*********************************************************************************\
@@ -88,4 +116,8 @@ void SpatialDataMap::generateVBOs()
 
     // Generate Indices Buffer
     m_iMapIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pIndices.data(), m_pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
+
+    // Generate Instance Buffer for Rendering in Debug Shader
+    mat4 m4TransformationMatrix = mat4(1.0f);
+    m_iMapInstanceBuffer = SHADER_MANAGER->genInstanceBuffer(m_iMapVertexArray, 1, &m4TransformationMatrix, sizeof(mat4), GL_STATIC_DRAW);
 }

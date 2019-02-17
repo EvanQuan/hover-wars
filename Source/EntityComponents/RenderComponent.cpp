@@ -49,7 +49,7 @@ void RenderComponent::render()
         {
             // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
             glBindVertexArray(m_pMesh->getBBVertexArray());
-            glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::BB_SHDR));
+            glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
 
             // Draw Bounding Box
             glDrawElementsInstanced(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr, m_pMesh->getNumInstances());

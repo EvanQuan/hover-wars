@@ -15,6 +15,7 @@ EntityManager::EntityManager()
     m_iWidth = START_WIDTH;
     m_bPause = false;
     m_bDrawBoundingBoxes = false;
+    m_bDrawSpatialMap = false;
     m_pMshMngr = MESH_MANAGER;
     m_pTxtMngr = TEXTURE_MANAGER;
     m_pScnLdr = SCENE_LOADER;
@@ -59,6 +60,15 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     purgeEnvironment();
     pObjFctry->loadFromFile(sFileName);
+
+    // Populate the Spatial Data Map now that everything has been loaded.
+}
+
+// Initializes the SpatialDataMap with a given length, width and tilesize
+void EntityManager::initializeSpatialMap(float fLength, float fWidth, float fTileSize)
+{
+    if (!m_pSpatialMap.isInitialized())     // Only Initialize the Spatial Map once. Unload everything first to initialize again.
+        m_pSpatialMap.initializeMap(fLength, fWidth, fTileSize);
 }
 
 // Clears out the entire environment
@@ -68,6 +78,7 @@ void EntityManager::purgeEnvironment()
     m_pMasterComponentList.clear();
     m_pMasterEntityList.clear();
     m_pEmtrEngn->clearAllEmitters();
+    m_pSpatialMap.clearMap();           // Unload the Spatial Data Map
 
     // Reset ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;

@@ -246,3 +246,10 @@ sphere {
 		100.0
 	}
 }
+
+# Set Spatial Map information for the Scene
+# values are: length, width and tile size in that order.
+#	This will only be evaluated once and multiple specifications of the spatial_map will ignored.
+spatial_map {
+	100 100 25
+}

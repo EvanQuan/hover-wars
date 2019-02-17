@@ -15,6 +15,7 @@
 #define DEFAULT_SOFT_CUTOFF    5.f
 #define MAX_MESH_PARAMS        3
 #define MAX_TRACK_PARAMS       1
+#define MAX_SPATIAL_MAP_PARAMS 3
 #define COMMENT_CHAR           '#'
 #define SPHERE                 "sphere"
 #define PLANE                  "plane"
@@ -23,6 +24,7 @@
 #define SPOTLIGHT              "spotlight"
 #define PLAYER                 "player"
 #define STATIC_MESH            "static_mesh"
+#define SPATIAL_MAP            "spatial_map"
 #define BOIDS                  "boids"
 #define MATERIAL               "material"
 #define BOUNDING               "bounding"
@@ -192,6 +194,15 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
     }
 }
 
+// Initializes the Spatial Data Map for the scene
+void SceneLoader::initializeSpatialMap(vector< string > sData, unsigned int iLength)
+{
+    if (MAX_SPATIAL_MAP_PARAMS != iLength)
+        ENTITY_MANAGER->initializeSpatialMap(stof(sData[0]) /*Length*/, stof(sData[1]) /*Width*/, stof(sData[2]) /*Tile Size*/);
+    else
+        outputError(SPATIAL_MAP, sData);
+}
+
 /**************************************************************************\
 * File Reading                                                           *
 \**************************************************************************/
@@ -321,6 +332,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createPlayer(sData, sData.size());
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
+    else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information
+        initializeSpatialMap(sData, sData.size());
 
     clearProperties();
 }

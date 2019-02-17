@@ -90,8 +90,8 @@ ShaderManager::ShaderManager()
     m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/boid.frag");
 
     // Bounding Box Shader
-    m_pShader[eShaderType::BB_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/bounding_box.vert");
-    m_pShader[eShaderType::BB_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/bounding_box.frag");
+    m_pShader[eShaderType::DEBUG_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/debug.vert");
+    m_pShader[eShaderType::DEBUG_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/debug.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.
@@ -327,7 +327,7 @@ void ShaderManager::setUnifromMatrix4x4(eShaderType eType, string sVarName, cons
 }
 
 // given a glm vec3 set it as the unifrom light position in the mesh shader
-void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm::vec3* pResultingVector)
+void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm::vec3* pValue )
 {
     GLint iVariableLocation;
     GLint iProgram, iCurrProgram;

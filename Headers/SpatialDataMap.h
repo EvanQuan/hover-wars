@@ -19,6 +19,9 @@ public:
     // Draw Map for Debugging.
     void drawMap();
 
+    // Checks for SpatialMap
+    bool isInitialized() { return m_bIsInitialized; }
+
 private:
     // Data for each Cell
     //  TODO: add different lists for different static objects (lights, pickups, etc.)
@@ -31,6 +34,7 @@ private:
     vector< vector< sSpatialCell > > m_pSpatialMap;
     unsigned int m_iMaxX, m_iMaxY;
     float m_fTileSize;
+    bool m_bIsInitialized;
     vec2 m_vOriginPos, m_vMaxDimensions;
 
     // Binds each Entity to their respective cell for quick lookup.
@@ -44,6 +48,6 @@ private:
     // data for debug rendering
     vector< vec3 > m_pVertices;
     vector< unsigned int > m_pIndices;
-    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer;
+    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iMapInstanceBuffer;
 };
 

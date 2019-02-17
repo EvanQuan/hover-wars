@@ -16,6 +16,7 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "Physics/PhysicsManager.h"
+#include "SpatialDataMap.h"
 
 // Environment Manager
 // Manages all objects in an environment
@@ -34,6 +35,7 @@ public:
     void pause() { m_bPause = !m_bPause; }
     void toggleBBDrawing() { m_bDrawBoundingBoxes = !m_bDrawBoundingBoxes; }
     bool doBoundingBoxDrawing() { return m_bDrawBoundingBoxes; }
+    void initializeSpatialMap(float fLength, float fWidth, float fTileSize);
 
     // Entity Functions
     Camera* generateCameraEntity();
@@ -101,7 +103,10 @@ private:
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
 
+    // Spatial Map
+    SpatialDataMap m_pSpatialMap;
+
     // Scene Management toggling
-    bool m_bPause, m_bDrawBoundingBoxes;
+    bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap;
 };
 
