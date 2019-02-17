@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 PointLight::PointLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, POINT_LIGHT_ENTITY )
 {
     
 }

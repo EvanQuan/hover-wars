@@ -207,6 +207,9 @@
     <ClInclude Include="Headers\SpatialDataMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eEntityTypes.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">

@@ -1,10 +1,11 @@
 #include "EntityHeaders/Entity.h"
 
 // Default Constructor
-Entity::Entity(int iID, vec3 vPosition)
+Entity::Entity(int iID, vec3 vPosition, eEntityTypes eType)
 {
     m_iID = iID;
     m_vPosition = vPosition;
+    m_eType = eType;
 }
 
 // Copy Constructor
