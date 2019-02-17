@@ -290,7 +290,7 @@ void CommandHandler::executeKeyboardCommands()
         yMove *= 0.5f;
     }
 
-    if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
+    if (!bMovementNeutral)
     {
         execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }

@@ -19,19 +19,12 @@ public:
 
     @param map<K, V>    m to check if key exists
     @param K            key to check in map
-    @param V            default to return if key not present in m
+    @param V            defaultValue to return if key not present in m
     @return value to key if present, or default if not present
     */
-    static V getValueIfNotDefault(map<K, V> m, K key, V default)
+    static V getValueIfNotDefault(map<K, V> m, K key, V defaultValue)
     {
-        if (contains(m, key))
-        {
-            return m[key];
-        }
-        else
-        {
-            return default;
-        }
+        return contains(m, key) ? m[key] : defaultValue;
     }
 
     /*
@@ -45,7 +38,16 @@ public:
     {
         return m.find(key) != m.end();
     }
+
+    static float magnitude(float x, float y)
+    {
+        return sqrt((x * x) + (y * y));
+    }
+
 private:
+    /*
+    Not instantiable.
+    */
     FuncUtils() {};
     ~FuncUtils() {};
 };
