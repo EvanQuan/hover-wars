@@ -46,6 +46,9 @@
     <Filter Include="Source Files\snippetvehiclecommon">
       <UniqueIdentifier>{d048e2f4-49d0-47bf-9469-5329cf1881c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{1d4bb0d4-b1c7-4d1c-9923-2d742cdcdeca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -206,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="Headers\SpatialDataMap.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\FuncUtils.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
