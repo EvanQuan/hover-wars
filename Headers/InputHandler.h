@@ -16,9 +16,9 @@ public:
     enum eInputState
     {
         INPUT_RELEASED,
-        INPUT_JUST_RELEASED,
         INPUT_JUST_PRESSED,
         INPUT_PRESSED,
+        INPUT_JUST_RELEASED,
     };
 
     static InputHandler* getInstance(GLFWwindow *rWindow);

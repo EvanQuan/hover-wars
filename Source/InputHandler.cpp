@@ -83,6 +83,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
         INPUT_JUST_PRESSED.
         */
         m_pInstance->m_keys[key] = INPUT_JUST_PRESSED;
+        break;
     case GLFW_RELEASE:
         /*
         As the key has just be released, we keep the key in the map, but note
