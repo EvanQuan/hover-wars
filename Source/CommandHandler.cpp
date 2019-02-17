@@ -11,9 +11,9 @@ CommandHandler::CommandHandler(GLFWwindow *rWindow)
     // Initializing Base Class
     // NOTE: Do not get an instance of GameManager here or there will be
     // infinite mutual recursion and a call stack overflow
-    // m_pGameManager = GameManager::getInstance();
-    // m_pEntityManger = ENTITY_MANAGER;
+    m_pWindow = rWindow;
     m_pInputHandler = InputHandler::getInstance(rWindow);
+    bWireFrameEnabled = false;
 }
 
 /*
@@ -79,16 +79,37 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
         ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
-    case COMMAND_MENU_PAUSE:
-    case COMMAND_MENU_START:
-        // cout << "Player " << player << ": "
-            // << eFixedCommandToString.at(command)
-            // << endl;
        break;
-    // default:
-        // cout << "Player " << player << ": "
-             // << eFixedCommandToString.at(command)
-             // << " not implemented yet." << endl;
+    case COMMAND_MENU_PAUSE:
+       break;
+    case COMMAND_MENU_START:
+       break;
+
+    case COMMAND_CLOSE_WINDOW:
+        glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
+        break;
+    case COMMAND_DEBUG_TOGGLE_WIREFRAME:
+        debugToggleWireframe();
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_1;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_2;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_3;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
+        break;
+    case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
+        GAME_MANAGER->toggleDebugCamera();
+        break;
+    case COMMAND_DEBUG_TOGGLE_SHOW_BOUNDING_BOXES:
+        ENTITY_MANAGER->toggleBBDrawing();
+        break;
+
     }
 }
 
@@ -192,21 +213,16 @@ void CommandHandler::executeKeyboardCommands()
     yMove = 0;
     xTurn = 0;
     yTurn = 0;
-    //for (map<int, InputHandler::eInputState>::iterator it = m_pInputHandler->m_keys.begin();
-        //it != m_pInputHandler->m_keys.end();
-        //it++)
-    // TODO test
     /*
     Copy the keys at current snapshot so they can be iterated over while m_keys continues
     to be updated.
+    NOTE: Unless there is some other better way of doing this, directly using
+    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to update through
+    key callbacks as it is being iterated through.
     */
     map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
-    if (keys.size() > 0) {
-        cout << "start" << endl;
-    }
     for (auto it : keys)
     {
-        cout << "\t" << it.first << " : " << it.second << endl;
         /*
         Divide the key states into the 3 types of fixed commands
         */
@@ -241,15 +257,15 @@ void CommandHandler::executeKeyboardCommands()
             bMovementNeutral = false;
             yMove += JOYSTICK_MAX;
             break;
-        case COMMAND_MOVE_LEFT:
+        case COMMAND_MOVE_BACK:
             bMovementNeutral = false;
             yMove += JOYSTICK_MIN;
             break;
-        case COMMAND_MOVE_RIGHT:
+        case COMMAND_MOVE_LEFT:
             bMovementNeutral = false;
             xMove += JOYSTICK_MIN;
             break;
-        case COMMAND_MOVE_BACK:
+        case COMMAND_MOVE_RIGHT:
             bMovementNeutral = false;
             xMove += JOYSTICK_MAX;
             break;
@@ -332,5 +348,18 @@ void CommandHandler::executeJoystickCommands()
             execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
             execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
         }
+    }
+}
+
+void CommandHandler::debugToggleWireframe()
+{
+    bWireFrameEnabled = !bWireFrameEnabled;
+    if (bWireFrameEnabled)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    }
+    else
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 }

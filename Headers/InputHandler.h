@@ -108,7 +108,6 @@ private:
     // Singleton Variables
     InputHandler(GLFWwindow *rWindow);
     void checkForPresentJoysticks();
-    void debugKeyCommands(GLFWwindow* window, int key, int action);
     void debugPrintJoystickAxes(int joystickID);
     void debugPrintJoystickButtons(int joystickID);
     void debugPrintJoystickInformation();

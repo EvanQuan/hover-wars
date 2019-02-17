@@ -97,50 +97,6 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     }
 }
 
-/*
-Special keys handled differently than the rest. Since key updates occur at a
-slower rate than frame updates, we cannot rely on GLFW_PRESS checks for commands,
-as that may execute multiple commands (for multiple frames) before the action
-goes from GLFW_PRESS to GLFW_REPEAT.
-
-In other words, this is useful for debug commands on the keyboard that need to
-reliably  distinguish between pressing and repeating keys, such as toggling
-wireframe mode.
- */
-void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
-{
-    if (GLFW_PRESS == action)
-    {
-        switch (key)
-        {
-        case GLFW_KEY_ESCAPE:
-            glfwSetWindowShouldClose(window, GL_TRUE);
-            break;
-        case GLFW_KEY_F:
-            debugToggleWireframe();
-            break;
-        case GLFW_KEY_1:
-            m_gameManager->m_eKeyboardPlayer = PLAYER_1;
-            break;
-        case GLFW_KEY_2:
-            m_gameManager->m_eKeyboardPlayer = PLAYER_2;
-            break;
-        case GLFW_KEY_3:
-            m_gameManager->m_eKeyboardPlayer = PLAYER_3;
-            break;
-        case GLFW_KEY_4:
-            m_gameManager->m_eKeyboardPlayer = PLAYER_4;
-            break;
-        case GLFW_KEY_C:
-            m_gameManager->toggleDebugCamera();
-            break;
-        case GLFW_KEY_B:
-            ENTITY_MANAGER->toggleBBDrawing();
-            break;
-        }
-    }
-}
-
 void InputHandler::debugToggleWireframe()
 {
     bWireFrameEnabled = !bWireFrameEnabled;
