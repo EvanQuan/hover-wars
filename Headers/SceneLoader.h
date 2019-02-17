@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "DataStructures/ObjectInfo.h"
 
 // Solely Generates Objects and assigns IDs to them.
 class SceneLoader
@@ -26,8 +27,7 @@ private:
     static SceneLoader* m_pInstance;
     string m_sMeshProperty, m_sShaderProperty;
     float m_fMeshScaleProperty;
-    Material m_pMaterialProperty;
-    BoundingBox m_pBBProperty;
+    ObjectInfo m_pObjectProperties;
 
     long m_lNextID;
     long getNewID() { return ++m_lNextID; }

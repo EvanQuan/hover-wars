@@ -201,6 +201,9 @@
     <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\DataStructures\ObjectInfo.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">

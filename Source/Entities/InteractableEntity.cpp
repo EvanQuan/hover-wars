@@ -33,14 +33,14 @@ void InteractableEntity::update(float fTimeInMilliseconds)
 // Load a Plane with a given Normal, Height and Width
 void InteractableEntity::loadAsBillboard(float fHeight, float fWidth)
 {
-    Material pBillboardMaterial;
-    pBillboardMaterial.fShininess = 0.0f;
-    pBillboardMaterial.sDiffuseMap = vSpriteInformation[eSpriteEnum::FIRE_SPRITE].sSheetLocation;
+    ObjectInfo sBillboardObjectInfo;
+    sBillboardObjectInfo.sObjMaterial.fShininess = 0.0f;
+    sBillboardObjectInfo.sObjMaterial.sDiffuseMap = vSpriteInformation[eSpriteEnum::FIRE_SPRITE].sSheetLocation;
 
     vec3 vTempPos = vec3(5.0f);
     vec3 vTempNormal = vec3(0.0f, 1.0f, 0.0f);
     // Generate the Mesh
-    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(&pBillboardMaterial, this);
+    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(&sBillboardObjectInfo, this);
     m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
     m_pAnimationComponent->initializeComponentAsBillboard(m_pBillboardMesh, &vSpriteInformation[eSpriteEnum::FIRE_SPRITE], fHeight, fWidth);
     m_pAnimationComponent->addBillboard(&vTempPos, &vTempNormal);
