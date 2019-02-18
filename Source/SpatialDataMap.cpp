@@ -236,7 +236,7 @@ bool SpatialDataMap::getMapIndices(const Entity* vEntity, vector<unsigned int>* 
         vPositiveOffset = vPosition + vPositiveOffset;
 
         // Get Vectors wrt SpatialMap Origin
-        vec2 vVectorToNegPosition = vec2(vNegativeOffset.x, vNegativeOffset.z) - m_vOriginPos;
+        vec2 vVectorToNegPosition = vec2(std::max(vNegativeOffset.x - m_vOriginPos.x, 0.0f), std::max(vNegativeOffset.z - m_vOriginPos.y, 0.0f));
         vec2 vVectorToPosPosition = vec2(vPositiveOffset.x, vPositiveOffset.z) - m_vOriginPos;
 
         // Compute Indices
