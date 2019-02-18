@@ -65,6 +65,7 @@ private:
     void computeNewDynamicPosition(const Entity* vEntity, const vec3* vNewPos);
     void addSquareIndices(vector<unsigned int>* pIndicesBuffer, unsigned int iXIndex, unsigned int iYIndex);
 
+#ifdef _DEBUG
     // data for debug rendering
     vector< vec3 > m_pVertices;
     vector< unsigned int > m_pGridIndices, m_pPopulatedIndices;
@@ -78,6 +79,7 @@ private:
 
     unordered_map< int/*EntityID*/, sDynamicDrawInfo/*DrawInfo*/ > m_pDynamicIndicesMap;
     vector< pair<unsigned int, unsigned int>> m_pPopulatedSquareReference;
-    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iDynamicIndicesBuffer, m_iMapInstanceBuffer;
+    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iMapInstanceBuffer;
+#endif
 };
 
