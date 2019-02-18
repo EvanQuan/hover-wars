@@ -12,6 +12,12 @@ const vec4 POINT_COLOR      = vec4(0.9411764705882353f, 1.0f, 0.9411764705882353
 const vec4 DYNAMIC_COLOR = vec4(0.0f, 0.65882352941176470588235294117647f, 0.41960784313725490196078431372549f, ALPHA);    // Jade
 float OVERLAY_HEIGHT = 0.1f;
 
+/***********\
+ * Defines *
+\***********/
+#define MIN_INDEX 0
+#define MAX_INDEX 1
+
 /****************************\
  * Singleton Implementation *
 \****************************/
@@ -119,16 +125,16 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
 void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList)
 {
     // Local Variables
-    vector<unsigned int> iX, iY; // Indices for determining Entity Position.
+    unsigned int iXMin, iXMax, iYMin, iYMax; // Indices for determining Entity Position.
 
     for (vector<unique_ptr<Entity>>::const_iterator iter = pMasterEntityList->begin();
         iter != pMasterEntityList->end();
         ++iter)
     {
         // Add Entity to Spatial Map
-        if (getMapIndices(iter->get(), &iX, &iY)) // Verify the Indices received are valid.
+        if (getMapIndices(iter->get(), &iXMin, &iXMax, &iYMin, &iYMax)) // Verify the Indices received are valid.
         {
-            addEntity(iter->get(), &iX, &iY);
+            addEntity(iter->get(), iXMin, iXMax, iYMin, iYMax);
         }
     }
 
@@ -138,41 +144,43 @@ void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMaster
 }
 
 // Add The Entity to the Spatial Map as well as the EntityMap.
-void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>* iXs, const vector<unsigned int>* iYs)
+void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsigned int iXMax, unsigned int iYMin, unsigned int iYMax)
 {
     // Local Variables
     bool bValidEntity = true;
 
     if (m_pEntityMap.find(vEntity->getID()) == m_pEntityMap.end())  // Add an entry to the Entity Map if one doesn't exist already.
-        m_pEntityMap.insert(make_pair(vEntity->getID(), vector<pair<unsigned int, unsigned int>>{}));
+    {
+        m_pEntityMap.insert(make_pair(vEntity->getID(), vector<pair<unsigned int, unsigned int>>()));
+        m_pEntityMap[vEntity->getID()].push_back(make_pair(iXMin, iYMin));
+        m_pEntityMap[vEntity->getID()].push_back(make_pair(iXMax, iYMax));
+    }
 
     // Evaluate all the indices that the Entity inhabits.
-    for( vector<unsigned int>::const_iterator xIter = iXs->begin(); xIter != iXs->end(); ++xIter )
-        for (vector<unsigned int>::const_iterator yIter = iYs->begin(); yIter != iYs->end(); ++yIter)
+    for (unsigned int x = iXMin; x <= iXMax; ++x)
+        for (unsigned int y = iYMin; y <= iYMax; ++y)
         {
             switch (vEntity->getType())
             {
             case INTERACTABLE_ENTITY:
-                m_pSpatialMap[(*xIter)][(*yIter)].pLocalInteractableEntities.push_back(static_cast<const InteractableEntity*>(vEntity));  // Push the Interactable Entity into the spatial map.
+                m_pSpatialMap[x][y].pLocalInteractableEntities.push_back(static_cast<const InteractableEntity*>(vEntity));  // Push the Interactable Entity into the spatial map.
                 break;
             case POINT_LIGHT_ENTITY:
-                m_pSpatialMap[(*xIter)][(*yIter)].pLocalPointLights.push_back(static_cast<const PointLight*>(vEntity));                   // Push the Static Entity into the spatial map.
+                m_pSpatialMap[x][y].pLocalPointLights.push_back(static_cast<const PointLight*>(vEntity));                   // Push the Static Entity into the spatial map.
                 break;
             case SPOT_LIGHT_ENTITY:
-                m_pSpatialMap[(*xIter)][(*yIter)].pLocalSpotLights.push_back(static_cast<const SpotLight*>(vEntity));                     // Push the Static Entity into the spatial map.
+                m_pSpatialMap[x][y].pLocalSpotLights.push_back(static_cast<const SpotLight*>(vEntity));                     // Push the Static Entity into the spatial map.
                 break;
             case STATIC_ENTITY:
-                m_pSpatialMap[(*xIter)][(*yIter)].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
+                m_pSpatialMap[x][y].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
             case PLAYER_ENTITY:
-                m_pEntityMap[vEntity->getID()].push_back(make_pair((*xIter), (*yIter)));
-
                 // Add this entry to the Dynamic Indices Map.
                 if (m_pDynamicIndicesMap.find(vEntity->getID()) == m_pDynamicIndicesMap.end())
                     m_pDynamicIndicesMap.insert(make_pair(vEntity->getID(), sDynamicDrawInfo()));
 
                 // Add Indices for this cell.
-                addSquareIndices(&m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices, (*xIter), (*yIter));
+                addSquareIndices(&m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices, x, y);
             default: // Waterfall Dynamic Entities to not be Valid Entities for Static Map.
                 bValidEntity = false;
                 break;
@@ -181,18 +189,17 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
             // If the Entity is a Valid Entity Type, add it to the EntityMap
             if (bValidEntity)
             {
-                m_pEntityMap[vEntity->getID()].push_back(make_pair((*xIter), (*yIter)));    // Store that the Entity Resides inside the specified cell at iX, iY
-                m_pSpatialMap[(*xIter)][(*yIter)].iStaticSize++;                            // Track Static size of the square.
+                m_pSpatialMap[x][y].iStaticSize++;                            // Track Static size of the square.
 
                 // Add Indices for a populated square if this is the first Entity added to the list.
                 //  This is solely for debug drawing.
-                if (1 == m_pSpatialMap[(*xIter)][(*yIter)].iStaticSize)
+                if (1 == m_pSpatialMap[x][y].iStaticSize)
                 {
                     // Add Indices for Drawing.
-                    addSquareIndices(&m_pPopulatedIndices, (*xIter), (*yIter));
+                    addSquareIndices(&m_pPopulatedIndices, x, y);
 
                     // Store reference for the square to determine color.
-                    m_pPopulatedSquareReference.push_back(make_pair((*xIter), (*yIter)));
+                    m_pPopulatedSquareReference.push_back(make_pair(x, y));
                 }
             }
 
@@ -208,44 +215,59 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
 }
 
 // Function to Update new Dynamic Position for a given Dynamic Entity
-void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pOldPos, const vec3* pNewPos)
+void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pNewPos)
 {
-    vec2 vToOldPos, vToNewPos;
+    // Local Variables
+    unsigned int iOldXMin, iOldXMax, iOldYMin, iOldYMax;
+    vec2 vToNewNegPos, vToNewPosPos;
+    vec3 vNewNegPos, vNewPosPos;
+    vec3 vNegativeOffset, vPositiveOffset;
+    bool bChange = false;
+
+    // Get the Range of the Entity Position
+    iOldXMin = m_pEntityMap[pEntity->getID()][MIN_INDEX].first;
+    iOldXMax = m_pEntityMap[pEntity->getID()][MAX_INDEX].first;
+    iOldYMin = m_pEntityMap[pEntity->getID()][MIN_INDEX].second;
+    iOldYMax = m_pEntityMap[pEntity->getID()][MAX_INDEX].second;
+    
+    // Get Dimensions for the Entity
+    pEntity->getSpatialDimensions(&vNegativeOffset, &vPositiveOffset);
+
+    // Calculate World Dimensions for Entity
+    vNewNegPos = *pNewPos + vNegativeOffset;
+    vNewPosPos = *pNewPos + vPositiveOffset;
 
     // Get Vectors
-    getVectToPos(pOldPos, &vToOldPos);
-    getVectToPos(pNewPos, &vToNewPos);
+    getVectToPos(&vNewNegPos, &vToNewNegPos);
+    getVectToPos(&vNewPosPos, &vToNewPosPos);
 
-    unsigned int iOldX, iOldY;
-    unsigned int iNewX, iNewY;
+    // Determine if a movement happened.
+    bChange |= iOldXMin != static_cast<unsigned int>(floor(vNewNegPos.x / m_fTileSize));
+    bChange |= iOldYMin != static_cast<unsigned int>(floor(vNewNegPos.y / m_fTileSize));
+    bChange |= iOldXMax != static_cast<unsigned int>(floor(vNewPosPos.x / m_fTileSize));
+    bChange |= iOldYMax != static_cast<unsigned int>(floor(vNewPosPos.y / m_fTileSize));
 
-    // Compute Indices for each position.
-    iOldX = static_cast<unsigned int>(floor(vToOldPos.x / m_fTileSize));
-    iOldY = static_cast<unsigned int>(floor(vToOldPos.y / m_fTileSize));
-    iNewX = static_cast<unsigned int>(floor(vToNewPos.x / m_fTileSize));
-    iNewY = static_cast<unsigned int>(floor(vToNewPos.y / m_fTileSize));
-
-    if (iOldX != iNewX || iOldY != iNewY)
+    if (bChange)
         computeNewDynamicPosition(pEntity, pNewPos);
 }
 
 void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3* pNewPos)
 {
     // Local Variables
-    vector< unsigned int > iXs, iYs;
+    unsigned int iXMin, iXMax, iYMin, iYMax;
 
-    getMapIndices(pEntity, &iXs, &iYs);
+    getMapIndices(pEntity, &iXMin, &iXMax, &iYMin, &iYMax);
     m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.clear();
-    m_pEntityMap[pEntity->getID()].clear();
 
-    for (vector<unsigned int>::const_iterator xIter = iXs.begin(); xIter != iXs.end(); ++xIter)
-        for (vector<unsigned int>::const_iterator yIter = iYs.begin(); yIter != iYs.end(); ++yIter)
+    // Add new bounds for the Entity in the Entity Map
+    m_pEntityMap[pEntity->getID()][MIN_INDEX] = make_pair(iXMin, iYMin);
+    m_pEntityMap[pEntity->getID()][MAX_INDEX] = make_pair(iXMax, iYMax);
+
+    for (unsigned int x = iXMin; x <= iXMax; ++x)
+        for (unsigned int y = iYMin; y <= iYMax; ++y)
         {
-            // Add reference for the Entity within the Entity Map.
-            m_pEntityMap[pEntity->getID()].push_back(make_pair((*xIter), (*yIter)));
-
             // Add Indices for Drawing the entity.
-            addSquareIndices(&m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices, (*xIter), (*yIter));
+            addSquareIndices(&m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices, x, y);
         }
 
     // Add New Indices list to the GPU
@@ -287,28 +309,22 @@ void SpatialDataMap::drawMap()
         }
 
         // Draw the Dynamic Squares
-        
-        vColor = DYNAMIC_COLOR;
+        unsigned int i = 0;
 
         // Iterate through all Dynamic Entities' Indices
+        SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &DYNAMIC_COLOR);
         for (unordered_map<int, sDynamicDrawInfo>::iterator iter = m_pDynamicIndicesMap.begin();
             iter != m_pDynamicIndicesMap.end();
             ++iter)
         {   // Iterate through all covered cells for the entity in the entity map.
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iter->second.iDynamicIBO);
-            for (unsigned int i = 0; i < m_pEntityMap[iter->first].size(); ++i)
-            {
-                if (!m_pSpatialMap[m_pEntityMap[iter->first][i].first][m_pEntityMap[iter->first][i].second].pLocalEntities.empty())
-                    vColor = (vColor * 0.5f) + (GRID_COLOR * 0.5f);
-                else if (!m_pSpatialMap[m_pEntityMap[iter->first][i].first][m_pEntityMap[iter->first][i].second].pLocalPointLights.empty())
-                    vColor = (vColor * 0.5f) + (POINT_COLOR * 0.5f);
-                else if (!m_pSpatialMap[m_pEntityMap[iter->first][i].first][m_pEntityMap[iter->first][i].second].pLocalSpotLights.empty())
-                    vColor = (vColor * 0.5f) + (SPOT_COLOR * 0.5f);
-
-                SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
-                glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
-                vColor = DYNAMIC_COLOR;
-            }
+            for (unsigned int x = m_pEntityMap[iter->first][MIN_INDEX].first; x <= m_pEntityMap[iter->first][MAX_INDEX].first; ++x)
+                for (unsigned int y = m_pEntityMap[iter->first][MIN_INDEX].second; y <= m_pEntityMap[iter->first][MAX_INDEX].second; ++y)
+                {
+                    // Set the blended color.
+                    glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
+                    ++i;    // Increment to next set of indices in the GPU
+                }
         }
             
 
@@ -320,13 +336,12 @@ void SpatialDataMap::drawMap()
 \*********************************************************************************/
 
 // Returns the Map Indices from a given Position.
-bool SpatialDataMap::getMapIndices(const Entity* vEntity, vector<unsigned int>* iXs, vector<unsigned int>* iYs)
+bool SpatialDataMap::getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax)
 {
     // Get Spatial Dimensions from the Entity.
     vec3 vNegativeOffset(0.0f), vPositiveOffset(0.0f), vPosition = vEntity->getPosition();
     vEntity->getSpatialDimensions(&vNegativeOffset, &vPositiveOffset);
     bool bReturnValue = false;
-    iXs->clear(); iYs->clear(); // Clear the vectors to repopulate them.
 
     if (vNegativeOffset != vec3(0.0f) || vPositiveOffset != vec3(0.0f))
     {
@@ -339,19 +354,14 @@ bool SpatialDataMap::getMapIndices(const Entity* vEntity, vector<unsigned int>* 
         getVectToPos(&vNegativeOffset, &vVectorToNegPosition);
         getVectToPos(&vPositiveOffset, &vVectorToPosPosition);
 
-        // Compute Indices
-        for (unsigned int x = static_cast<unsigned int>(floor(vVectorToNegPosition.x / m_fTileSize));
-                          x <= static_cast<unsigned int>(floor(vVectorToPosPosition.x / m_fTileSize)) && x < m_iMaxX;
-                          ++x)
-            iXs->push_back(x);  // Compute the X-range
-
-        for (unsigned int y = static_cast<unsigned int>(floor(vVectorToNegPosition.y / m_fTileSize));
-                          y <= static_cast<unsigned int>(floor(vVectorToPosPosition.y / m_fTileSize)) && y < m_iMaxY;
-                          ++y)
-            iYs->push_back(y);  // Compute the Y-range
+        // Compute Indices range.
+        *iXMin = static_cast<unsigned int>(floor(vVectorToNegPosition.x / m_fTileSize));
+        *iXMax = std::min(static_cast<unsigned int>(floor(vVectorToPosPosition.x / m_fTileSize)), m_iMaxX - 1);
+        *iYMin = static_cast<unsigned int>(floor(vVectorToNegPosition.y / m_fTileSize));
+        *iYMax = std::min(static_cast<unsigned int>(floor(vVectorToPosPosition.y / m_fTileSize)), m_iMaxY - 1);
 
         // Verify that data is valid.
-        bReturnValue = !iXs->empty() && !iYs->empty();
+        bReturnValue = true;
     }
 
     return bReturnValue; // Tell the caller whether the data is valid or not (Is it out of range?)

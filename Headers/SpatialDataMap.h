@@ -21,7 +21,7 @@ public:
     void clearMap();
 
     // Update Dynamic Entities
-    void updateDynamicPosition(const Entity* pEntity, const vec3* pOldPos, const vec3* pNewPos);
+    void updateDynamicPosition(const Entity* pEntity, const vec3* pNewPos);
 
     // Draw Map for Debugging.
     void drawMap();
@@ -54,13 +54,13 @@ private:
 
     // Binds each Entity to their respective cell for quick lookup.
     unordered_map< int,                 // EntityID
-                   vector< pair<unsigned int,   // Indices for Cell Lookup
-                                unsigned int> > > m_pEntityMap;
+                   vector<pair<unsigned int,   // Indices for Cell Lookup
+                               unsigned int>> > m_pEntityMap;
 
     // Private Functions
     void generateGridVBOs();
-    bool getMapIndices(const Entity* vEntity, vector<unsigned int>* iXs, vector<unsigned int>* iYs); // Returns the Map Indices from a given Entity.
-    void addEntity(const Entity* vEntity, const vector<unsigned int>* iXs, const vector<unsigned int>* iYs); // Add The Entity to the Spatial Map as well as the EntityMap.
+    bool getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax ); // Returns the Map Indices from a given Entity.
+    void addEntity(const Entity* vEntity, unsigned int iXMin, unsigned int iXMax, unsigned int iYMin, unsigned int iYMax); // Add The Entity to the Spatial Map as well as the EntityMap.
     void getVectToPos(const vec3* vWorldPosition, vec2* vToPos);
     void computeNewDynamicPosition(const Entity* vEntity, const vec3* vNewPos);
     void addSquareIndices(vector<unsigned int>* pIndicesBuffer, unsigned int iXIndex, unsigned int iYIndex);

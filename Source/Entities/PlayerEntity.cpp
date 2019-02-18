@@ -63,9 +63,12 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     m_pMesh->addInstance(&m4NewTransform);
     m_pMesh->addBBInstance(&m4NewTransform);
 
-    // Calculate Position Averages for Camera
+    // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
-    m_pSpatialMap->updateDynamicPosition(this, &m_vPosition, &vNewPosition);
+    if( m_vPosition != vNewPosition )
+        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
+
+    // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
     updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
