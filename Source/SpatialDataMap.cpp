@@ -58,6 +58,7 @@ void SpatialDataMap::clearMap()
     // clear the base vector of its elements
     m_pSpatialMap.clear();
 
+#ifdef _DEBUG
     // Delete VBOs and VAOs
     glDeleteBuffers(1, &m_iMapIndicesBuffer);
     glDeleteBuffers(1, &m_iMapVertexBuffer);
@@ -74,6 +75,7 @@ void SpatialDataMap::clearMap()
 
     // Clear the Dynamic Indices Map.
     m_pDynamicIndicesMap.clear();
+#endif
 
     m_bIsInitialized = false;
 }
@@ -115,7 +117,9 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
     }
 
     // Generate the VBOs for drawing the map.
+#ifdef _DEBUG
     generateGridVBOs();
+#endif
 
     // Set the Initialized Flag.
     m_bIsInitialized = true;
@@ -138,9 +142,11 @@ void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMaster
         }
     }
 
+#ifdef _DEBUG // Only deal with GPU in Debug release
     // Add Populated Indices list to the GPU
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_pPopulatedIndices.size() * sizeof(unsigned int), m_pPopulatedIndices.data(), GL_STATIC_DRAW);
+#endif
 }
 
 // Add The Entity to the Spatial Map as well as the EntityMap.
@@ -174,6 +180,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
             case STATIC_ENTITY:
                 m_pSpatialMap[x][y].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
+#ifdef _DEBUG
             case PLAYER_ENTITY:
                 // Add this entry to the Dynamic Indices Map.
                 if (m_pDynamicIndicesMap.find(vEntity->getID()) == m_pDynamicIndicesMap.end())
@@ -181,16 +188,18 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
 
                 // Add Indices for this cell.
                 addSquareIndices(&m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices, x, y);
+#endif
             default: // Waterfall Dynamic Entities to not be Valid Entities for Static Map.
                 bValidEntity = false;
                 break;
             }
 
+
             // If the Entity is a Valid Entity Type, add it to the EntityMap
             if (bValidEntity)
             {
                 m_pSpatialMap[x][y].iStaticSize++;                            // Track Static size of the square.
-
+#ifdef _DEBUG
                 // Add Indices for a populated square if this is the first Entity added to the list.
                 //  This is solely for debug drawing.
                 if (1 == m_pSpatialMap[x][y].iStaticSize)
@@ -201,17 +210,21 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
                     // Store reference for the square to determine color.
                     m_pPopulatedSquareReference.push_back(make_pair(x, y));
                 }
+#endif // _DEBUG
             }
 
             // Reset boolean for next loop
             bValidEntity = true;
+
         }
 
+#ifdef _DEBUG
     // Generate IBO if the Entity was a PLAYER_ENTITY
     if (PLAYER_ENTITY == vEntity->getType())
         m_pDynamicIndicesMap[vEntity->getID()].iDynamicIBO =
         SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.data(),
                                          m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), GL_DYNAMIC_DRAW);
+#endif
 }
 
 // Function to Update new Dynamic Position for a given Dynamic Entity
@@ -257,12 +270,16 @@ void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3
     unsigned int iXMin, iXMax, iYMin, iYMax;
 
     getMapIndices(pEntity, &iXMin, &iXMax, &iYMin, &iYMax);
-    m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.clear();
 
     // Add new bounds for the Entity in the Entity Map
     m_pEntityMap[pEntity->getID()][MIN_INDEX] = make_pair(iXMin, iYMin);
     m_pEntityMap[pEntity->getID()][MAX_INDEX] = make_pair(iXMax, iYMax);
 
+#ifdef _DEBUG
+    // Clear current Indices List
+    m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.clear();
+
+    // Compute new Indices
     for (unsigned int x = iXMin; x <= iXMax; ++x)
         for (unsigned int y = iYMin; y <= iYMax; ++y)
         {
@@ -273,11 +290,13 @@ void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3
     // Add New Indices list to the GPU
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_pDynamicIndicesMap[pEntity->getID()].iDynamicIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.data(), GL_DYNAMIC_DRAW);
+#endif // _DEBUG :> for drawing
 }
 
 // Draw the Data Map for Debugging
 void SpatialDataMap::drawMap()
 {
+#ifdef _DEBUG
     if (m_bIsInitialized)
     {
         // Bind Vertex Array and set Program
@@ -329,6 +348,7 @@ void SpatialDataMap::drawMap()
             
 
     }
+#endif // _DEBUG
 }
 
 /*********************************************************************************\
@@ -367,8 +387,10 @@ bool SpatialDataMap::getMapIndices(const Entity* vEntity, unsigned int* iXMin, u
     return bReturnValue; // Tell the caller whether the data is valid or not (Is it out of range?)
 }
 
+// Generates the VBOs for the Grid outline in debug mode.
 void SpatialDataMap::generateGridVBOs()
 {
+#ifdef _DEBUG
     // Local Variables
     unsigned int iCurrXIndex, iCurrIndex;
 
@@ -418,11 +440,11 @@ void SpatialDataMap::generateGridVBOs()
     // Generate Indices Buffer
     m_iMapIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pGridIndices.data(), m_pGridIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
     m_iPopulatedIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, (void*)0, 0, GL_STATIC_DRAW);
-    m_iDynamicIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, (void*)0, 0, GL_DYNAMIC_DRAW);
 
     // Generate Instance Buffer for Rendering in Debug Shader
     mat4 m4TransformationMatrix = mat4(1.0f);
     m_iMapInstanceBuffer = SHADER_MANAGER->genInstanceBuffer(m_iMapVertexArray, 1, &m4TransformationMatrix, sizeof(mat4), GL_STATIC_DRAW);
+#endif // _DEBUG
 }
 
 /**************************************************************************************************\
