@@ -33,6 +33,7 @@ const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(5, 0, 0);
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition, PLAYER_ENTITY)
 {
+    m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
     m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
     for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
@@ -62,8 +63,13 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     m_pMesh->addInstance(&m4NewTransform);
     m_pMesh->addBBInstance(&m4NewTransform);
 
+    // Check to update Dynamic Position in Spatial Map
+    vec3 vNewPosition = m4NewTransform[3];
+    if( m_vPosition != vNewPosition )
+        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
+
     // Calculate Position Averages for Camera
-    m_vPosition = m4NewTransform[3];
+    m_vPosition = vNewPosition;
     updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
 
@@ -77,7 +83,8 @@ void PlayerEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCo
 void PlayerEntity::initializePlayer(const string& sFileName,
                                     const ObjectInfo* pObjectProperties,
                                     const string& sShaderType,
-                                    float fScale)
+                                    float fScale,
+                                    ePlayer ePlayerNumber)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
@@ -99,6 +106,8 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    m_ePlayerNumber = ePlayerNumber;
 }
 
 /********************************************************************************************************\
