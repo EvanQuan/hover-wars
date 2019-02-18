@@ -31,7 +31,7 @@ void SpotLight::update(float fTimeInMilliseconds)
 
 // Fetch the Spatial dimensions from the Lighting component for the Spatial Data Map.
 //  AKA: the data cells that this spot light covers.
-void SpotLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+void SpotLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
 {
     m_pLightingComponent->getSpatialDimensions(pNegativeOffset, pPositiveOffset);
 }

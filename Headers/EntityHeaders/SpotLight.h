@@ -19,7 +19,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Function to Initialize the Light.
     void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, 

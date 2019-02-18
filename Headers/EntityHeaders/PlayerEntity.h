@@ -20,7 +20,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void initializePlayer(const string& sFileName,
                           const ObjectInfo* pObjectProperties,

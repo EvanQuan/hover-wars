@@ -12,12 +12,12 @@ public:
     virtual ~Entity();
 
     virtual void update(float fTimeInMilliseconds) = 0;
-    virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) = 0;
+    virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const = 0;
 
     // Getters/Setters
-    vec3 getPosition() { return m_vPosition; }
-    int getID() { return m_iID; }
-    eEntityTypes getType() { return m_eType; }
+    vec3 getPosition() const { return m_vPosition; }
+    int getID() const { return m_iID; }
+    eEntityTypes getType() const { return m_eType; }
 
 protected:
     vec3 m_vPosition;

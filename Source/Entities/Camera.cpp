@@ -59,7 +59,7 @@ void Camera::update(float fTimeInMilliseconds)
 }
 
 // Shouldn't really be necessary as generally, the camera doesn't take up space in the world.
-void Camera::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+void Camera::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
 {
     /* Not Implemented */
 }
