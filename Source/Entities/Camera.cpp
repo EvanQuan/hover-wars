@@ -58,6 +58,12 @@ void Camera::update(float fTimeInMilliseconds)
     /* Not Implemented */
 }
 
+// Shouldn't really be necessary as generally, the camera doesn't take up space in the world.
+void Camera::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+{
+    /* Not Implemented */
+}
+
 /// Camera Manipulation Functions
 // Rotatable 360 degrees around.  Laps if it goes over that limit.
 void Camera::orbit(vec2 pDelta)

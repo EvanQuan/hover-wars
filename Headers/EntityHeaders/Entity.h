@@ -12,6 +12,7 @@ public:
     virtual ~Entity();
 
     virtual void update(float fTimeInMilliseconds) = 0;
+    virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) = 0;
 
     // Getters/Setters
     vec3 getPosition() { return m_vPosition; }

@@ -21,6 +21,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner);
 
     void loadAsBillboard(float fHeight, float fWidth);
     void addBillboard(const vec3* vNormal, const vec3* vPosition);

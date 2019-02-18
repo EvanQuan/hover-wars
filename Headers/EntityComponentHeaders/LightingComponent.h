@@ -46,6 +46,7 @@ public:
     vec3 getPosition() { return m_vPosition; }
     vec3 getColor() { return m_vDiffuseColor; }
     eLightType getType() { return m_eType; }
+    void getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset);
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
@@ -55,6 +56,7 @@ private:
     // Private Variables
     vec3 m_vPosition, m_vDiffuseColor;
     float m_fLightPower, m_fPhi, m_fSoftPhi;
+    float m_fSpotLightRadius;
 
     // Directional Light Variables
     vec3 m_vDirection, m_vAmbientColor, m_vSpecularColor;

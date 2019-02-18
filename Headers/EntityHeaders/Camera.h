@@ -18,6 +18,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner);
 
     // Camera Manipulation Functions
     void orbit(vec2 pDelta);
