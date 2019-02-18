@@ -43,10 +43,12 @@ private:
     // The Bounding Box Drawing information
     struct sBoundingBox
     {
+        // BoundingBox Variables
         vector<mat4> pInstances;
         vector<vec3> pVertices;
         vector< unsigned int> pIndices;
         GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
+        vec3 vNegativeOffset, vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
 
         // Check to see if the Bounding Box is loaded.
         bool isLoaded() const { return 0 != iVertexArray; }
@@ -68,6 +70,9 @@ private:
     vector< vec2 > m_pUVs;
     GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
     GLuint m_iVertexArray;
+
+    // Spatial Information for Mesh
+    vec3 m_vNegativeOffset, m_vPositiveOffset;
 
     string m_sManagerKey; // Used as key for finding Mesh in MeshManager
     ShaderManager* m_pShdrMngr;
@@ -125,6 +130,7 @@ public:
     const vector<vec3>& getNormals() const { return m_pNormals; }
     const vector<vec2>& getUVs() const { return m_pUVs; }
     GLuint getVertexArray() const { return m_iVertexArray; }
+    void getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset);    // Get Spatial Dimensions for the Mesh/BoundingBox.
 
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;

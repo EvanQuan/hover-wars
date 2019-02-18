@@ -67,6 +67,12 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
 
+// Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
+void PlayerEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner)
+{
+    m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
+}
+
 // Initializes Player Entity information
 void PlayerEntity::initializePlayer(const string& sFileName,
                                     const ObjectInfo* pObjectProperties,

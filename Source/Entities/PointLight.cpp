@@ -29,6 +29,14 @@ void PointLight::update(float fTimeInMilliseconds)
     /* Not Implemented */
 }
 
+// Fetch the Spatial dimensions from the Lighting component for the Spatial Data Map.
+//  AKA: the data cells that this point light covers.
+void PointLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+{
+    m_pLightingComponent->getSpatialDimensions(pNegativeOffset, pPositiveOffset);
+}
+
+
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //    If "" is provided for the Mesh name, a generic cube will be generated.
 void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const ObjectInfo* pObjectProperties, const string& sMeshName, float m_fMeshScale)
