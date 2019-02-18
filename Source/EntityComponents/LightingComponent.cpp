@@ -1,5 +1,7 @@
 #include "EntityComponentHeaders/LightingComponent.h"
 
+#define POINT_LIGHT_POWER_MAP_MODIFIER 1.5f
+
 // Default Constructor:
 //      Requires an EntityID for the Entity that the component is a part of
 //      and a ComponentID issued by the EntityManager.
@@ -71,7 +73,7 @@ void LightingComponent::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPosit
     assert(nullptr != pNegativeOffset && nullptr != pPositiveOffset);
 
     // Local Variables
-    float fHalfPower;
+    float fModPower;
 
     // Compute the Spaces different based on Light type
     switch (m_eType)
@@ -81,9 +83,9 @@ void LightingComponent::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPosit
         *pPositiveOffset = vec3(m_fSpotLightRadius, 0.0f, m_fSpotLightRadius);
         break;
     case POINT_LIGHT:   // Refer to the Power of the light and create a cutoff based on a sphere of power for the light.
-        fHalfPower = m_fLightPower * 0.5f;
-        *pNegativeOffset = vec3(-fHalfPower);
-        *pPositiveOffset = vec3(fHalfPower);
+        fModPower = m_fLightPower * POINT_LIGHT_POWER_MAP_MODIFIER;
+        *pNegativeOffset = vec3(-fModPower);
+        *pPositiveOffset = vec3(fModPower);
         break;
     default:    // Default to 0.0 to signify unusable dimensions.
         *pNegativeOffset = *pPositiveOffset = vec3(0.0f);
