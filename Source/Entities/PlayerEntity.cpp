@@ -33,6 +33,7 @@ const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(5, 0, 0);
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition, PLAYER_ENTITY)
 {
+    m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
     m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
     for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
@@ -63,7 +64,9 @@ void PlayerEntity::update(float fTimeInMilliseconds)
     m_pMesh->addBBInstance(&m4NewTransform);
 
     // Calculate Position Averages for Camera
-    m_vPosition = m4NewTransform[3];
+    vec3 vNewPosition = m4NewTransform[3];
+    m_pSpatialMap->updateDynamicPosition(this, &m_vPosition, &vNewPosition);
+    m_vPosition = vNewPosition;
     updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
 }
 

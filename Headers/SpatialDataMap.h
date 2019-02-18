@@ -12,13 +12,16 @@
 class SpatialDataMap
 {
 public:
-	SpatialDataMap();
-	~SpatialDataMap();
+    static SpatialDataMap* getInstance();
+	virtual ~SpatialDataMap();
 
     // Initialization/Deconstruction of Data Map
     void initializeMap(float fLength, float fWidth, float fTileSize);
     void populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList);
     void clearMap();
+
+    // Update Dynamic Entities
+    void updateDynamicPosition(const Entity* pEntity, const vec3* pOldPos, const vec3* pNewPos);
 
     // Draw Map for Debugging.
     void drawMap();
@@ -27,6 +30,10 @@ public:
     bool isInitialized() { return m_bIsInitialized; }
 
 private:
+    static SpatialDataMap* m_pInstance;
+    SpatialDataMap();                                           // Singleton Implementation
+    SpatialDataMap(const SpatialDataMap* pCopy);                // Copy Constructor Overload
+    SpatialDataMap& operator=(const SpatialDataMap* pCopy);     // Assignment Operator overload
     // Static Data for each Cell
     struct sSpatialCell
     {
@@ -54,6 +61,9 @@ private:
     void generateGridVBOs();
     bool getMapIndices(const Entity* vEntity, vector<unsigned int>* iXs, vector<unsigned int>* iYs); // Returns the Map Indices from a given Entity.
     void addEntity(const Entity* vEntity, const vector<unsigned int>* iXs, const vector<unsigned int>* iYs); // Add The Entity to the Spatial Map as well as the EntityMap.
+    void getVectToPos(const vec3* vWorldPosition, vec2* vToPos);
+    void computeNewDynamicPosition(const Entity* vEntity, const vec3* vNewPos);
+    void addSquareIndices(vector<unsigned int>* pIndicesBuffer, unsigned int iXIndex, unsigned int iYIndex);
 
     // data for debug rendering
     vector< vec3 > m_pVertices;

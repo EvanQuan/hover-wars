@@ -5,6 +5,7 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "InteractableEntity.h"
+#include "SpatialDataMap.h"
 #include <queue>
 
 #define MAX_CAMERAS_PER_PLAYER 2 
@@ -47,6 +48,7 @@ private:
     // Private Variables
     int activeCameraIndex;
     Mesh* m_pMesh;
+    SpatialDataMap* m_pSpatialMap;
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pActiveCameraComponent;

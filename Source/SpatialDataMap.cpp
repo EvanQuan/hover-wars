@@ -12,6 +12,18 @@ const vec4 POINT_COLOR      = vec4(0.9411764705882353f, 1.0f, 0.9411764705882353
 const vec4 DYNAMIC_COLOR = vec4(0.0f, 0.65882352941176470588235294117647f, 0.41960784313725490196078431372549f, ALPHA);    // Jade
 float OVERLAY_HEIGHT = 0.1f;
 
+/****************************\
+ * Singleton Implementation *
+\****************************/
+SpatialDataMap* SpatialDataMap::m_pInstance = nullptr;
+
+SpatialDataMap* SpatialDataMap::getInstance()
+{
+    if (nullptr == m_pInstance)
+        m_pInstance = new SpatialDataMap();
+    return m_pInstance;
+}
+
 // Default Constructor for Data Map
 SpatialDataMap::SpatialDataMap()
 {
@@ -130,7 +142,6 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
 {
     // Local Variables
     bool bValidEntity = true;
-    unsigned int iXIndex;
 
     if (m_pEntityMap.find(vEntity->getID()) == m_pEntityMap.end())  // Add an entry to the Entity Map if one doesn't exist already.
         m_pEntityMap.insert(make_pair(vEntity->getID(), vector<pair<unsigned int, unsigned int>>{}));
@@ -161,11 +172,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
                     m_pDynamicIndicesMap.insert(make_pair(vEntity->getID(), sDynamicDrawInfo()));
 
                 // Add Indices for this cell.
-                iXIndex = (*xIter) * (m_iMaxX + 1);
-                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + (*yIter));                // 1
-                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + (*yIter) + 1);            // 3
-                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 1);  // 2
-                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 2);  // 4
+                addSquareIndices(&m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices, (*xIter), (*yIter));
             default: // Waterfall Dynamic Entities to not be Valid Entities for Static Map.
                 bValidEntity = false;
                 break;
@@ -181,18 +188,8 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
                 //  This is solely for debug drawing.
                 if (1 == m_pSpatialMap[(*xIter)][(*yIter)].iStaticSize)
                 {
-                    // Add Indices for coloring the populated square
-                    /*
-                        1--3
-                        | /|
-                        |/ |
-                        2--4
-                    */
-                    iXIndex = (*xIter) * (m_iMaxX + 1);
-                    m_pPopulatedIndices.push_back(iXIndex + (*yIter));                // 1
-                    m_pPopulatedIndices.push_back(iXIndex + (*yIter) + 1);            // 3
-                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 1);  // 2
-                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 2);  // 4
+                    // Add Indices for Drawing.
+                    addSquareIndices(&m_pPopulatedIndices, (*xIter), (*yIter));
 
                     // Store reference for the square to determine color.
                     m_pPopulatedSquareReference.push_back(make_pair((*xIter), (*yIter)));
@@ -208,6 +205,52 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
         m_pDynamicIndicesMap[vEntity->getID()].iDynamicIBO =
         SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.data(),
                                          m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), GL_DYNAMIC_DRAW);
+}
+
+// Function to Update new Dynamic Position for a given Dynamic Entity
+void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pOldPos, const vec3* pNewPos)
+{
+    vec2 vToOldPos, vToNewPos;
+
+    // Get Vectors
+    getVectToPos(pOldPos, &vToOldPos);
+    getVectToPos(pNewPos, &vToNewPos);
+
+    unsigned int iOldX, iOldY;
+    unsigned int iNewX, iNewY;
+
+    // Compute Indices for each position.
+    iOldX = static_cast<unsigned int>(floor(vToOldPos.x / m_fTileSize));
+    iOldY = static_cast<unsigned int>(floor(vToOldPos.y / m_fTileSize));
+    iNewX = static_cast<unsigned int>(floor(vToNewPos.x / m_fTileSize));
+    iNewY = static_cast<unsigned int>(floor(vToNewPos.y / m_fTileSize));
+
+    if (iOldX != iNewX || iOldY != iNewY)
+        computeNewDynamicPosition(pEntity, pNewPos);
+}
+
+void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3* pNewPos)
+{
+    // Local Variables
+    vector< unsigned int > iXs, iYs;
+
+    getMapIndices(pEntity, &iXs, &iYs);
+    m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.clear();
+    m_pEntityMap[pEntity->getID()].clear();
+
+    for (vector<unsigned int>::const_iterator xIter = iXs.begin(); xIter != iXs.end(); ++xIter)
+        for (vector<unsigned int>::const_iterator yIter = iYs.begin(); yIter != iYs.end(); ++yIter)
+        {
+            // Add reference for the Entity within the Entity Map.
+            m_pEntityMap[pEntity->getID()].push_back(make_pair((*xIter), (*yIter)));
+
+            // Add Indices for Drawing the entity.
+            addSquareIndices(&m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices, (*xIter), (*yIter));
+        }
+
+    // Add New Indices list to the GPU
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_pDynamicIndicesMap[pEntity->getID()].iDynamicIBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), m_pDynamicIndicesMap[pEntity->getID()].pDynamicIndices.data(), GL_DYNAMIC_DRAW);
 }
 
 // Draw the Data Map for Debugging
@@ -232,11 +275,11 @@ void SpatialDataMap::drawMap()
         for (unsigned int i = 0; i < m_pPopulatedSquareReference.size(); ++i)
         {
             if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalEntities.empty())
-                vColor *= GRID_COLOR;
+                vColor = (vColor * 0.5f) + (GRID_COLOR * 0.5f);
             else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalPointLights.empty())
-                vColor *= POINT_COLOR;
+                vColor = (vColor * 0.5f) + (POINT_COLOR * 0.5f);
             else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalSpotLights.empty())
-                vColor *= SPOT_COLOR;
+                vColor = (vColor * 0.5f) + (SPOT_COLOR * 0.5f);
 
             SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
             glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
@@ -255,12 +298,12 @@ void SpatialDataMap::drawMap()
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iter->second.iDynamicIBO);
             for (unsigned int i = 0; i < m_pEntityMap[iter->first].size(); ++i)
             {
-                if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalEntities.empty())
-                    vColor *= GRID_COLOR;
-                else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalPointLights.empty())
-                    vColor *= POINT_COLOR;
-                else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalSpotLights.empty())
-                    vColor *= SPOT_COLOR;
+                if (!m_pSpatialMap[m_pEntityMap[iter->first][i].first][m_pEntityMap[iter->first][i].second].pLocalEntities.empty())
+                    vColor = (vColor * 0.5f) + (GRID_COLOR * 0.5f);
+                else if (!m_pSpatialMap[m_pEntityMap[iter->first][i].first][m_pEntityMap[iter->first][i].second].pLocalPointLights.empty())
+                    vColor = (vColor * 0.5f) + (POINT_COLOR * 0.5f);
+                else if (!m_pSpatialMap[m_pEntityMap[iter->first][i].first][m_pEntityMap[iter->first][i].second].pLocalSpotLights.empty())
+                    vColor = (vColor * 0.5f) + (SPOT_COLOR * 0.5f);
 
                 SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
                 glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
@@ -292,8 +335,9 @@ bool SpatialDataMap::getMapIndices(const Entity* vEntity, vector<unsigned int>* 
         vPositiveOffset = vPosition + vPositiveOffset;
 
         // Get Vectors wrt SpatialMap Origin
-        vec2 vVectorToNegPosition = vec2(std::max(vNegativeOffset.x - m_vOriginPos.x, 0.0f), std::max(vNegativeOffset.z - m_vOriginPos.y, 0.0f));
-        vec2 vVectorToPosPosition = vec2(vPositiveOffset.x, vPositiveOffset.z) - m_vOriginPos;
+        vec2 vVectorToNegPosition, vVectorToPosPosition;
+        getVectToPos(&vNegativeOffset, &vVectorToNegPosition);
+        getVectToPos(&vPositiveOffset, &vVectorToPosPosition);
 
         // Compute Indices
         for (unsigned int x = static_cast<unsigned int>(floor(vVectorToNegPosition.x / m_fTileSize));
@@ -369,4 +413,31 @@ void SpatialDataMap::generateGridVBOs()
     // Generate Instance Buffer for Rendering in Debug Shader
     mat4 m4TransformationMatrix = mat4(1.0f);
     m_iMapInstanceBuffer = SHADER_MANAGER->genInstanceBuffer(m_iMapVertexArray, 1, &m4TransformationMatrix, sizeof(mat4), GL_STATIC_DRAW);
+}
+
+/**************************************************************************************************\
+ * Helper Functions                                                                               *
+\**************************************************************************************************/
+
+// Finds and returns a vector from the Map origin to the World Position
+void SpatialDataMap::getVectToPos(const vec3* vWorldPosition, vec2* vToPos)
+{
+    *vToPos = vec2(std::max(vWorldPosition->x - m_vOriginPos.x, 0.0f), std::max(vWorldPosition->z - m_vOriginPos.y, 0.0f));
+}
+
+// Computes the Indices for a given Cell Index
+void SpatialDataMap::addSquareIndices(vector<unsigned int>* pIndicesBuffer, unsigned int iXIndex, unsigned int iYIndex)
+{
+    // Add Indices for coloring the populated square
+    /*
+        1--2
+        | /|
+        |/ |
+        3--4
+    */
+    iXIndex = iXIndex * (m_iMaxX + 1);
+    pIndicesBuffer->push_back(iXIndex + iYIndex);                // 1
+    pIndicesBuffer->push_back(iXIndex + iYIndex + 1);            // 2
+    pIndicesBuffer->push_back(iXIndex + m_iMaxX + iYIndex + 1);  // 3
+    pIndicesBuffer->push_back(iXIndex + m_iMaxX + iYIndex + 2);  // 4
 }
