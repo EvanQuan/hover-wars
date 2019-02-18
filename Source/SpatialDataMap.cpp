@@ -4,11 +4,12 @@
 /*************\
  * Constants *
 \*************/
-const float ALPHA       = 0.5f;
-const vec4 GRID_COLOR   = vec4(1.0f, 0.1568627450980392f, 0.0f, ALPHA);                                // Ferrari Red
-const vec4 POP_COLOR    = vec4(0.4941176470588235f, 0.9764705882352941f, 1.0f, ALPHA);                 // Electric Blue
-const vec4 SPOT_COLOR   = vec4(0.3764705882352941f, 0.1843137254901961f, 0.4196078431372549f, ALPHA);  // Deep Purple
-const vec4 POINT_COLOR  = vec4(0.9411764705882353f, 1.0f, 0.9411764705882353f, ALPHA);                  // Azure White
+const float ALPHA           = 0.5f;
+const vec4 GRID_COLOR       = vec4(1.0f, 0.1568627450980392f, 0.0f, ALPHA);                                                 // Ferrari Red
+const vec4 POP_COLOR        = vec4(0.4941176470588235f, 0.9764705882352941f, 1.0f, ALPHA);                                  // Electric Blue
+const vec4 SPOT_COLOR       = vec4(0.3764705882352941f, 0.1843137254901961f, 0.4196078431372549f, ALPHA);                   // Deep Purple
+const vec4 POINT_COLOR      = vec4(0.9411764705882353f, 1.0f, 0.9411764705882353f, ALPHA);                                  // Azure White
+const vec4 DYNAMIC_COLOR = vec4(0.0f, 0.65882352941176470588235294117647f, 0.41960784313725490196078431372549f, ALPHA);    // Jade
 float OVERLAY_HEIGHT = 0.1f;
 
 // Default Constructor for Data Map
@@ -44,7 +45,17 @@ void SpatialDataMap::clearMap()
     glDeleteBuffers(1, &m_iMapVertexBuffer);
     glDeleteBuffers(1, &m_iMapInstanceBuffer);
     glDeleteBuffers(1, &m_iPopulatedIndicesBuffer);
+
+    // Clear Dynamic IBOs
+    for (unordered_map<int, sDynamicDrawInfo>::iterator iter = m_pDynamicIndicesMap.begin();
+        iter != m_pDynamicIndicesMap.end();
+        ++iter)
+        glDeleteBuffers(1, &(iter->second.iDynamicIBO));
+
     glDeleteVertexArrays(1, &m_iMapVertexArray);
+
+    // Clear the Dynamic Indices Map.
+    m_pDynamicIndicesMap.clear();
 
     m_bIsInitialized = false;
 }
@@ -104,7 +115,9 @@ void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMaster
     {
         // Add Entity to Spatial Map
         if (getMapIndices(iter->get(), &iX, &iY)) // Verify the Indices received are valid.
+        {
             addEntity(iter->get(), &iX, &iY);
+        }
     }
 
     // Add Populated Indices list to the GPU
@@ -140,7 +153,20 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
             case STATIC_ENTITY:
                 m_pSpatialMap[(*xIter)][(*yIter)].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
-            default:
+            case PLAYER_ENTITY:
+                m_pEntityMap[vEntity->getID()].push_back(make_pair((*xIter), (*yIter)));
+
+                // Add this entry to the Dynamic Indices Map.
+                if (m_pDynamicIndicesMap.find(vEntity->getID()) == m_pDynamicIndicesMap.end())
+                    m_pDynamicIndicesMap.insert(make_pair(vEntity->getID(), sDynamicDrawInfo()));
+
+                // Add Indices for this cell.
+                iXIndex = (*xIter) * (m_iMaxX + 1);
+                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + (*yIter));                // 1
+                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + (*yIter) + 1);            // 3
+                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 1);  // 2
+                m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 2);  // 4
+            default: // Waterfall Dynamic Entities to not be Valid Entities for Static Map.
                 bValidEntity = false;
                 break;
             }
@@ -177,7 +203,11 @@ void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>
             bValidEntity = true;
         }
 
-    
+    // Generate IBO if the Entity was a PLAYER_ENTITY
+    if (PLAYER_ENTITY == vEntity->getType())
+        m_pDynamicIndicesMap[vEntity->getID()].iDynamicIBO =
+        SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.data(),
+                                         m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), GL_DYNAMIC_DRAW);
 }
 
 // Draw the Data Map for Debugging
@@ -197,21 +227,47 @@ void SpatialDataMap::drawMap()
         glDrawElementsInstanced(GL_LINES, m_pGridIndices.size(), GL_UNSIGNED_INT, 0, 1);
 
         // Draw the Populated Squares
-        vec4 const*vColor = &POP_COLOR;
+        vec4 vColor = vec4(1.0f);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
         for (unsigned int i = 0; i < m_pPopulatedSquareReference.size(); ++i)
         {
             if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalEntities.empty())
-                vColor = &GRID_COLOR;
+                vColor *= GRID_COLOR;
             else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalPointLights.empty())
-                vColor = &POINT_COLOR;
+                vColor *= POINT_COLOR;
             else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalSpotLights.empty())
-                vColor = &SPOT_COLOR;
+                vColor *= SPOT_COLOR;
 
-            SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", vColor);
+            SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
             glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
-            vColor = &POP_COLOR;
+            vColor = vec4(1.0f);
         }
+
+        // Draw the Dynamic Squares
+        
+        vColor = DYNAMIC_COLOR;
+
+        // Iterate through all Dynamic Entities' Indices
+        for (unordered_map<int, sDynamicDrawInfo>::iterator iter = m_pDynamicIndicesMap.begin();
+            iter != m_pDynamicIndicesMap.end();
+            ++iter)
+        {   // Iterate through all covered cells for the entity in the entity map.
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iter->second.iDynamicIBO);
+            for (unsigned int i = 0; i < m_pEntityMap[iter->first].size(); ++i)
+            {
+                if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalEntities.empty())
+                    vColor *= GRID_COLOR;
+                else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalPointLights.empty())
+                    vColor *= POINT_COLOR;
+                else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalSpotLights.empty())
+                    vColor *= SPOT_COLOR;
+
+                SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
+                glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
+                vColor = DYNAMIC_COLOR;
+            }
+        }
+            
 
     }
 }
@@ -308,6 +364,7 @@ void SpatialDataMap::generateGridVBOs()
     // Generate Indices Buffer
     m_iMapIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pGridIndices.data(), m_pGridIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
     m_iPopulatedIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, (void*)0, 0, GL_STATIC_DRAW);
+    m_iDynamicIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, (void*)0, 0, GL_DYNAMIC_DRAW);
 
     // Generate Instance Buffer for Rendering in Debug Shader
     mat4 m4TransformationMatrix = mat4(1.0f);

@@ -25,7 +25,8 @@ public:
     void initializePlayer(const string& sFileName,
                           const ObjectInfo* pObjectProperties,
                           const string& sShaderType,
-                          float fScale);
+                          float fScale,
+                          ePlayer ePlayerNumber);
 
     void useAbility(eAbility ability);
     void move(float x, float y);
@@ -53,6 +54,7 @@ private:
     InteractableEntity* m_pFireTrail;
     vec3 m_vPositionTotal;
     queue<vec3> m_vPastPositions;
+    ePlayer m_ePlayerNumber;
 
     // Private Functions
     void updateCameraLookAts();

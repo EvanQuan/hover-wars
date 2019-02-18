@@ -5,7 +5,7 @@ Represents a player in the game. May be a human player (PLAYER) or a bot (BOT).
 */
 enum ePlayer
 {
-    PLAYER_1,
+    PLAYER_1 = 0,
     PLAYER_2,
     PLAYER_3,
     PLAYER_4,

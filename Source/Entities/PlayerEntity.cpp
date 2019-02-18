@@ -77,7 +77,8 @@ void PlayerEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCo
 void PlayerEntity::initializePlayer(const string& sFileName,
                                     const ObjectInfo* pObjectProperties,
                                     const string& sShaderType,
-                                    float fScale)
+                                    float fScale,
+                                    ePlayer ePlayerNumber)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
@@ -99,6 +100,8 @@ void PlayerEntity::initializePlayer(const string& sFileName,
     
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    m_ePlayerNumber = ePlayerNumber;
 }
 
 /********************************************************************************************************\

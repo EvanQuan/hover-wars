@@ -27,8 +27,7 @@ public:
     bool isInitialized() { return m_bIsInitialized; }
 
 private:
-    // Data for each Cell
-    //  TODO: add different lists for different static objects (lights, pickups, etc.)
+    // Static Data for each Cell
     struct sSpatialCell
     {
         vec2 vOriginPos;
@@ -59,7 +58,16 @@ private:
     // data for debug rendering
     vector< vec3 > m_pVertices;
     vector< unsigned int > m_pGridIndices, m_pPopulatedIndices;
+
+    // Structure for Drawing each Dynamic Entity
+    struct sDynamicDrawInfo
+    {
+        vector< unsigned int > pDynamicIndices;
+        GLuint iDynamicIBO;
+    };
+
+    unordered_map< int/*EntityID*/, sDynamicDrawInfo/*DrawInfo*/ > m_pDynamicIndicesMap;
     vector< pair<unsigned int, unsigned int>> m_pPopulatedSquareReference;
-    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iMapInstanceBuffer;
+    GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iDynamicIndicesBuffer, m_iMapInstanceBuffer;
 };
 

@@ -189,7 +189,7 @@ void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, cons
 void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
     unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
-    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale);
+    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
     m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
 }
