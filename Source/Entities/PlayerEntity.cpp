@@ -68,7 +68,7 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
-void PlayerEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner)
+void PlayerEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
 {
     m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
 }

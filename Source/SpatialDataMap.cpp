@@ -96,47 +96,64 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
 void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList)
 {
     // Local Variables
-    unsigned int iX, iY; // Indices for determining Entity Position.
-    unsigned int iXIndex;
-    bool bValidEntity = true;
-    vec3 vPosition;
+    vector<unsigned int> iX, iY; // Indices for determining Entity Position.
 
     for (vector<unique_ptr<Entity>>::const_iterator iter = pMasterEntityList->begin();
         iter != pMasterEntityList->end();
         ++iter)
     {
-        // Get Entity's World Position
-        vPosition = (*iter)->getPosition();
-
         // Add Entity to Spatial Map
-        if (getMapIndices(&vPosition, &iX, &iY)) // Verify the Indices received are valid.
+        if (getMapIndices(iter->get(), &iX, &iY)) // Verify the Indices received are valid.
+            addEntity(iter->get(), &iX, &iY);
+    }
+
+    // Add Populated Indices list to the GPU
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_pPopulatedIndices.size() * sizeof(unsigned int), m_pPopulatedIndices.data(), GL_STATIC_DRAW);
+}
+
+// Add The Entity to the Spatial Map as well as the EntityMap.
+void SpatialDataMap::addEntity(const Entity* vEntity, const vector<unsigned int>* iXs, const vector<unsigned int>* iYs)
+{
+    // Local Variables
+    bool bValidEntity = true;
+    unsigned int iXIndex;
+
+    if (m_pEntityMap.find(vEntity->getID()) == m_pEntityMap.end())  // Add an entry to the Entity Map if one doesn't exist already.
+        m_pEntityMap.insert(make_pair(vEntity->getID(), vector<pair<unsigned int, unsigned int>>{}));
+
+    // Evaluate all the indices that the Entity inhabits.
+    for( vector<unsigned int>::const_iterator xIter = iXs->begin(); xIter != iXs->end(); ++xIter )
+        for (vector<unsigned int>::const_iterator yIter = iYs->begin(); yIter != iYs->end(); ++yIter)
         {
-            switch ((*iter)->getType())
+            switch (vEntity->getType())
             {
             case INTERACTABLE_ENTITY:
-                m_pSpatialMap[iX][iY].pLocalInteractableEntities.push_back(static_cast<InteractableEntity*>(iter->get()));  // Push the Interactable Entity into the spatial map.
+                m_pSpatialMap[(*xIter)][(*yIter)].pLocalInteractableEntities.push_back(static_cast<const InteractableEntity*>(vEntity));  // Push the Interactable Entity into the spatial map.
                 break;
             case POINT_LIGHT_ENTITY:
-                m_pSpatialMap[iX][iY].pLocalPointLights.push_back(static_cast<PointLight*>(iter->get()));                   // Push the Static Entity into the spatial map.
+                m_pSpatialMap[(*xIter)][(*yIter)].pLocalPointLights.push_back(static_cast<const PointLight*>(vEntity));                   // Push the Static Entity into the spatial map.
                 break;
             case SPOT_LIGHT_ENTITY:
-                m_pSpatialMap[iX][iY].pLocalSpotLights.push_back(static_cast<SpotLight*>(iter->get()));                     // Push the Static Entity into the spatial map.
+                m_pSpatialMap[(*xIter)][(*yIter)].pLocalSpotLights.push_back(static_cast<const SpotLight*>(vEntity));                     // Push the Static Entity into the spatial map.
                 break;
             case STATIC_ENTITY:
-                m_pSpatialMap[iX][iY].pLocalEntities.push_back(static_cast<StaticEntity*>(iter->get()));                    // Push the Static Entity into the spatial map.
+                m_pSpatialMap[(*xIter)][(*yIter)].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
             default:
                 bValidEntity = false;
                 break;
             }
 
+            // If the Entity is a Valid Entity Type, add it to the EntityMap
             if (bValidEntity)
             {
-                m_pEntityMap.insert(make_pair((*iter)->getID(), make_pair(iX, iY)));    // Store that the Entity Resides inside the specified cell at iX, iY
-                m_pSpatialMap[iX][iY].iStaticSize++;                                    // Track Static size of the square.
+                m_pEntityMap[vEntity->getID()].push_back(make_pair((*xIter), (*yIter)));    // Store that the Entity Resides inside the specified cell at iX, iY
+                m_pSpatialMap[(*xIter)][(*yIter)].iStaticSize++;                            // Track Static size of the square.
 
                 // Add Indices for a populated square if this is the first Entity added to the list.
-                if (1 == m_pSpatialMap[iX][iY].iStaticSize )
+                //  This is solely for debug drawing.
+                if (1 == m_pSpatialMap[(*xIter)][(*yIter)].iStaticSize)
                 {
                     // Add Indices for coloring the populated square
                     /*
@@ -145,25 +162,22 @@ void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMaster
                         |/ |
                         2--4
                     */
-                    iXIndex = iX * (m_iMaxX + 1);
-                    m_pPopulatedIndices.push_back(iXIndex + iY);                // 1
-                    m_pPopulatedIndices.push_back(iXIndex + iY + 1);            // 3
-                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 1);  // 2
-                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + iY + 2);  // 4
+                    iXIndex = (*xIter) * (m_iMaxX + 1);
+                    m_pPopulatedIndices.push_back(iXIndex + (*yIter));                // 1
+                    m_pPopulatedIndices.push_back(iXIndex + (*yIter) + 1);            // 3
+                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 1);  // 2
+                    m_pPopulatedIndices.push_back(iXIndex + m_iMaxX + (*yIter) + 2);  // 4
 
                     // Store reference for the square to determine color.
-                    m_pPopulatedSquareReference.push_back(make_pair(iX, iY));
+                    m_pPopulatedSquareReference.push_back(make_pair((*xIter), (*yIter)));
                 }
             }
 
-            // Reset Entity Flag for next loop
+            // Reset boolean for next loop
             bValidEntity = true;
         }
-    }
 
-    // Add Populated Indices list to the GPU
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_pPopulatedIndices.size() * sizeof(unsigned int), m_pPopulatedIndices.data(), GL_STATIC_DRAW);
+    
 }
 
 // Draw the Data Map for Debugging
@@ -207,16 +221,40 @@ void SpatialDataMap::drawMap()
 \*********************************************************************************/
 
 // Returns the Map Indices from a given Position.
-bool SpatialDataMap::getMapIndices(const vec3* vPosition, unsigned int* iX, unsigned int* iY)
+bool SpatialDataMap::getMapIndices(const Entity* vEntity, vector<unsigned int>* iXs, vector<unsigned int>* iYs)
 {
-    // Get Vector from Map Origin to the Position.
-    vec2 vVectorToPosition = vec2(vPosition->x, vPosition->z) - m_vOriginPos;
+    // Get Spatial Dimensions from the Entity.
+    vec3 vNegativeOffset(0.0f), vPositiveOffset(0.0f), vPosition = vEntity->getPosition();
+    vEntity->getSpatialDimensions(&vNegativeOffset, &vPositiveOffset);
+    bool bReturnValue = false;
+    iXs->clear(); iYs->clear(); // Clear the vectors to repopulate them.
 
-    // Compute Indices
-    *iX = static_cast<unsigned int>(floor(vVectorToPosition.x / m_fTileSize));
-    *iY = static_cast<unsigned int>(floor(vVectorToPosition.y / m_fTileSize));
+    if (vNegativeOffset != vec3(0.0f) || vPositiveOffset != vec3(0.0f))
+    {
+        // Move Offsets to World Coordinates
+        vNegativeOffset = vPosition + vNegativeOffset;
+        vPositiveOffset = vPosition + vPositiveOffset;
 
-    return (*iX < m_iMaxX && *iY < m_iMaxY); // Tell the caller whether the data is valid or not (Is it out of range?)
+        // Get Vectors wrt SpatialMap Origin
+        vec2 vVectorToNegPosition = vec2(vNegativeOffset.x, vNegativeOffset.z) - m_vOriginPos;
+        vec2 vVectorToPosPosition = vec2(vPositiveOffset.x, vPositiveOffset.z) - m_vOriginPos;
+
+        // Compute Indices
+        for (unsigned int x = static_cast<unsigned int>(floor(vVectorToNegPosition.x / m_fTileSize));
+                          x <= static_cast<unsigned int>(floor(vVectorToPosPosition.x / m_fTileSize)) && x < m_iMaxX;
+                          ++x)
+            iXs->push_back(x);  // Compute the X-range
+
+        for (unsigned int y = static_cast<unsigned int>(floor(vVectorToNegPosition.y / m_fTileSize));
+                          y <= static_cast<unsigned int>(floor(vVectorToPosPosition.y / m_fTileSize)) && y < m_iMaxY;
+                          ++y)
+            iYs->push_back(y);  // Compute the Y-range
+
+        // Verify that data is valid.
+        bReturnValue = !iXs->empty() && !iYs->empty();
+    }
+
+    return bReturnValue; // Tell the caller whether the data is valid or not (Is it out of range?)
 }
 
 void SpatialDataMap::generateGridVBOs()

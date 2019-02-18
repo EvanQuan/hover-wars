@@ -30,7 +30,7 @@ void DirectionalLight::update(float fTimeInMilliseconds)
 }
 
 // This function is not necessary as Directional Lights do not have a valid position in space.
-void DirectionalLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+void DirectionalLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
 {
     /* Not Implemented */
 }

@@ -25,7 +25,7 @@ void StaticEntity::update(float fTimeInMilliseconds)
 
 // Gets the Spatial Dimensions of the Mesh.
 //  The Corners are in local space and will need to be added to the Position of the mesh to convert to world coordinates.
-void StaticEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner)
+void StaticEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
 {
     m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
 }

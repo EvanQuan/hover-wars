@@ -32,10 +32,10 @@ private:
     struct sSpatialCell
     {
         vec2 vOriginPos;
-        vector< StaticEntity* > pLocalEntities;
-        vector< SpotLight* > pLocalSpotLights;
-        vector< PointLight* > pLocalPointLights;
-        vector< InteractableEntity* > pLocalInteractableEntities;
+        vector< const StaticEntity* > pLocalEntities;
+        vector< const SpotLight* > pLocalSpotLights;
+        vector< const PointLight* > pLocalPointLights;
+        vector< const InteractableEntity* > pLocalInteractableEntities;
         unsigned int iStaticSize;
     };
 
@@ -48,12 +48,13 @@ private:
 
     // Binds each Entity to their respective cell for quick lookup.
     unordered_map< int,                 // EntityID
-                   pair<unsigned int,   // Indices for Cell Lookup
-                        unsigned int>> m_pEntityMap;
+                   vector< pair<unsigned int,   // Indices for Cell Lookup
+                                unsigned int> > > m_pEntityMap;
 
     // Private Functions
     void generateGridVBOs();
-    bool getMapIndices(const vec3* vPosition, unsigned int* iX, unsigned int* iY); // Returns the Map Indices from a given Position.
+    bool getMapIndices(const Entity* vEntity, vector<unsigned int>* iXs, vector<unsigned int>* iYs); // Returns the Map Indices from a given Entity.
+    void addEntity(const Entity* vEntity, const vector<unsigned int>* iXs, const vector<unsigned int>* iYs); // Add The Entity to the Spatial Map as well as the EntityMap.
 
     // data for debug rendering
     vector< vec3 > m_pVertices;
