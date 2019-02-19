@@ -33,7 +33,11 @@ void RenderComponent::render()
     {
         // Set up OpenGL state
         glBindVertexArray(m_pMesh->getVertexArray());
-        glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
+
+        if (ENTITY_MANAGER->doShadowDraw()) // Process Shadow Drawing if Specified.
+            glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::SHADOW_SHDR));
+        else                                // Otherwise, perform regular Render
+            glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
 
         // Bind Texture(s) HERE
         m_pMesh->bindTextures(m_eShaderType);
@@ -49,16 +53,19 @@ void RenderComponent::render()
         // Unbind Texture(s) HERE
         m_pMesh->unbindTextures();
 
-        // Render The Bounding Box for the mesh.
-        if (ENTITY_MANAGER->doBoundingBoxDrawing() && m_pMesh->usingBoundingBox() )
+        if (!ENTITY_MANAGER->doShadowDraw())
         {
-            // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
-            glBindVertexArray(m_pMesh->getBBVertexArray());
-            glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
-            m_pShdrMngr->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &BOUNDING_BOX_COLOR);
+            // Render The Bounding Box for the mesh.
+            if (ENTITY_MANAGER->doBoundingBoxDrawing() && m_pMesh->usingBoundingBox())
+            {
+                // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
+                glBindVertexArray(m_pMesh->getBBVertexArray());
+                glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
+                m_pShdrMngr->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &BOUNDING_BOX_COLOR);
 
-            // Draw Bounding Box
-            glDrawElementsInstanced(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr, m_pMesh->getNumInstances());
+                // Draw Bounding Box
+                glDrawElementsInstanced(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr, m_pMesh->getNumInstances());
+            }
         }
     }
 }

@@ -1,10 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include <unordered_map>
 #include "Texture.h"
-
-// Forward Declaration
-class Object;
 
 // Texture Manager Class
 //        Manages all texture objects used by the system.
@@ -32,6 +28,7 @@ public:
     // Methods:
     Texture* loadTexture(const string &sFileName);
     Texture* genTexture(const vec4* vColor);
+    Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);
     void unloadAllTextures();
 
 private:

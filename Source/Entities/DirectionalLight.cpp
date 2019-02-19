@@ -1,7 +1,9 @@
 #include "EntityHeaders/DirectionalLight.h"
 #include "EntityManager.h"
 
-
+/*************\
+ * Constants *
+\*************/
 const float LIGHT_SIZE = 30.f;
 const int LIGHT_HEIGHT = 1;
 const int LIGHT_WIDTH = LIGHT_HEIGHT;
@@ -17,7 +19,7 @@ DirectionalLight::DirectionalLight(int iID)
 // Destructor
 DirectionalLight::~DirectionalLight()
 {
-    // Nothing to Destruct
+  
 }
 
 /****************************************************************\

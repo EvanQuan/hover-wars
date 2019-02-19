@@ -12,6 +12,8 @@ PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     {
         m_vPastPositions.push(*vPosition);
     }
+
+    initializeCameraLookAts();
 }
 
 PlayerEntity::~PlayerEntity()
@@ -37,8 +39,10 @@ void PlayerEntity::update(float fTimeInMilliseconds)
 
     // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
-    if( m_vPosition != vNewPosition )
+    if (m_vPosition != vNewPosition)
+    {
         m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
+    }
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
@@ -86,7 +90,18 @@ void PlayerEntity::initializePlayer(const string& sFileName,
  * Private Functions                                                                                    *
 \********************************************************************************************************/
 
-// Updates an Average for this player's cameras.
+/*
+For the camera to track only the horizontal rolling average, while maintaining the same
+vertical angle, it must record and use the initial horizontal 
+*/
+void PlayerEntity::initializeCameraLookAts()
+{
+    // TODO
+}
+/*
+Updates an average for this player's cameras. This is what makes the camera
+sway as the player moves.
+*/
 void PlayerEntity::updateCameraLookAts()
 {
     // Queue new position and add to total
@@ -101,13 +116,13 @@ void PlayerEntity::updateCameraLookAts()
     }
 
     // Calculate Average Position and set new look at for Camera Components
-    vec3 vAveragedPos = m_vPositionTotal * AVERAGE_MULTIPLIER;
+    vec3 vAveragePosition = m_vPositionTotal * AVERAGE_POSITION_MULTIPLIER;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
     quat rotation = m_pPhysicsComponent->getRotation();
-    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragedPos + rotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragePosition + rotation * FRONT_CAMERA_POSITION_OFFSET);
     m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(rotation);
-    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragedPos + rotation * BACK_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragePosition + rotation * BACK_CAMERA_POSITION_OFFSET);
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(rotation);
 }
 

@@ -214,7 +214,6 @@ void SceneLoader::loadFromFile( string sFileName )
     vector< string > sData;
     vector< string > sAdditionalData;
     string sIndicator, sParser;
-    Object* pResultingObject = nullptr;
 
     // Open File
     inFile.open( sFileName );

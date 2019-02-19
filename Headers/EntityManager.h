@@ -36,6 +36,8 @@ public:
     void toggleBBDrawing() { m_bDrawBoundingBoxes = !m_bDrawBoundingBoxes; }
     void toggleSpatialMapDrawing() { m_bDrawSpatialMap = !m_bDrawSpatialMap; }
     bool doBoundingBoxDrawing() { return m_bDrawBoundingBoxes; }
+    bool doShadowDraw() { return m_bShadowDraw; }
+    void toggleDebugCamera() { m_bUseDebugCamera = !m_bUseDebugCamera; }
     void initializeSpatialMap(float fLength, float fWidth, float fTileSize);
 
     // Entity Functions
@@ -59,6 +61,8 @@ public:
 
     // Camera Management
     void updateHxW(int iHeight, int iWidth);
+    void rotateCamera(vec2 pDelta); 
+    void zoomCamera(float fDelta);
 
     // The GameManager instead retrieves the camera components from the player
     // entities to set as its active cameras
@@ -103,11 +107,25 @@ private:
     SceneLoader*                m_pScnLdr;
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
-    SpatialDataMap*             m_pSpatialMap;   
+    SpatialDataMap*             m_pSpatialMap;
+    ShaderManager*              m_pShdrMngr;
     
-    
+    // Private Functions
+    void doRender();
+    void resetFBO();
+    void renderAxis();
+    void setCameraPMVMatrices();
+
+    // Camera
+    bool m_bUseDebugCamera;
+    Camera* m_pCamera;
+
+    // Rendering World Axis
+    // Axis Buffer/Array Containers
+    GLuint m_pVertexArray;
+    GLuint m_pVertexBuffer;
 
     // Scene Management toggling
-    bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap;
+    bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap, m_bShadowDraw;
 };
 

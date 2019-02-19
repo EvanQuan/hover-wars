@@ -32,6 +32,5 @@ private:
 
     // Private Variables
     LightingComponent* m_pLightingComponent;
-
 };
 

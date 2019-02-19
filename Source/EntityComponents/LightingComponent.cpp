@@ -1,5 +1,15 @@
 #include "EntityComponentHeaders/LightingComponent.h"
+#include "TextureManager.h"
 
+/***********\
+ * Defines *
+\***********/
+#define POSITION_SET 1000.0f
+#define SHADOW_HEIGHT 1024
+#define SHADOW_WIDTH 1024
+#define SHADOW_FRAME 10.0f
+#define NEAR_PLANE 1.0f
+#define FAR_PLANE 1500.0f
 #define POINT_LIGHT_POWER_MAP_MODIFIER 1.5f
 
 // Default Constructor:
@@ -8,19 +18,51 @@
 LightingComponent::LightingComponent(int iEntityID, int iComponentID)
     : EntityComponent( iEntityID, iComponentID )
 {
-    
+    glGenFramebuffers(1, &m_iFrameBuffer);
 }
 
 // Destructor
 LightingComponent::~LightingComponent()
 {
-
+    glDeleteFramebuffers(1, &m_iFrameBuffer);
 }
 
 // Overloaded Update Function
 void LightingComponent::update(float fTimeDeltaInMilliseconds)
 {
 
+}
+
+// Sets up the GPU for drawing the Shadow Map
+void LightingComponent::setupShadowFBO() const
+{
+    if (DIRECTIONAL_LIGHT == m_eType)
+    {
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_iFrameBuffer);
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+}
+
+// Setup Projection and ModelView Matrices for the Light.
+void LightingComponent::setupPMVMatrices() const
+{
+    // Local Variables
+    mat4 pModelViewMatrix, pProjectionMatrix;
+
+    switch (m_eType)
+    {
+    case DIRECTIONAL_LIGHT: // Generate ModelView Matrix and Projection Matrix for Directional Light
+        pModelViewMatrix = lookAt(m_vPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+        pProjectionMatrix = ortho(-SHADOW_FRAME, SHADOW_FRAME, -SHADOW_FRAME, SHADOW_FRAME, NEAR_PLANE, FAR_PLANE);
+        break;
+    case SPOTLIGHT:
+        // Not implemented
+        break;
+    }
+
+    // Set the Matrices as the Camera Matrices in the Shaders
+    SHADER_MANAGER->setProjectionModelViewMatrix(&pProjectionMatrix, &pModelViewMatrix);
 }
 
 // Initializes this Lighting Component as a Simple Point Light with a position and a color
@@ -43,6 +85,11 @@ void LightingComponent::initializeAsDirectionalLight(const vec3* vDirection, con
     m_vDiffuseColor         = *vDiffuse;
     m_vAmbientColor         = *vAmbient;
     m_vSpecularColor        = *vSpecular;
+    m_vPosition             = -(*vDirection) * POSITION_SET;
+
+    // Generate Shadow Map
+    m_pShadowMap = TEXTURE_MANAGER->genDepthBuffer(SHADOW_WIDTH, SHADOW_HEIGHT);
+    m_pShadowMap->bindToFrameBuffer(m_iFrameBuffer, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0); // Bind Shadow Map to Light's Framebuffer
 
     // Store Light Data for passing to Shaders :> Assumes the Light is static and won't be moving.
     m_pLightData = { vec4(m_vDirection, 0.0), vec4(m_vAmbientColor, 0.0), vec4(m_vDiffuseColor, 0.0), vec4(m_vSpecularColor, 0.0) };
