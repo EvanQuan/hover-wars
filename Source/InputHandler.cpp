@@ -198,6 +198,7 @@ void InputHandler::initializeJoystickVariables()
 
         for (int button = 0; button < MAX_BUTTON_COUNT; button++)
         {
+            m_joystickButtons[player][button] = INPUT_RELEASED;
         }
     }
 }
