@@ -16,6 +16,8 @@ public:
 
     ~UserInterface();
 
+    void update();
+
     void setDisplayCount(int count);
     void addScore(int joystickID, int score);
     void subtractScore(int joystickID, int score);

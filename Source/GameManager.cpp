@@ -3,7 +3,7 @@
 #include "CommandHandler.h"
 #include "SceneLoader.h"
 #include "ShaderManager.h"
-#include "UserInterface.h"
+#include "UserInterface/UserInterface.h"
 
 /*************\
  * Constants *
@@ -107,6 +107,10 @@ bool GameManager::renderGraphics()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
+
+    // TODO the user interface updating may need to change to account for
+    // time, similar to how the EntityManager does it.
+    m_pUserInterface->update();
 
     // check for Window events
     glfwPollEvents();

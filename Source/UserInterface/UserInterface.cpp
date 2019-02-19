@@ -1,4 +1,4 @@
-#include "UserInterface.h"
+#include "UserInterface/UserInterface.h"
 
 
 // Singleton instance
@@ -25,6 +25,16 @@ UserInterface::~UserInterface()
 {
     // Let go of Window
     m_pWindow = nullptr;
+}
+
+/*
+This visually updates the UserInterface to all value changes since last update.
+
+@TODO
+*/
+void UserInterface::update()
+{
+
 }
 
 /*
