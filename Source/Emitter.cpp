@@ -149,7 +149,7 @@ void Emitter::draw()
 void Emitter::spawnNewParticle()
 {
     // Generate Random Direction
-    float fRandPhi = linearRand(0.f, m_fAngleFromNormal * PI_OVER_180);
+    float fRandPhi = linearRand(0.f, m_fAngleFromNormal * DEGREES_TO_RADIANS);
     float fRandTheta = linearRand(0.f, PI_2);
 
     quat qRotateWRTOrthogonal    = angleAxis(fRandPhi, m_vOrthogonalVec);

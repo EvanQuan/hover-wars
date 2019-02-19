@@ -84,7 +84,7 @@ mat4 CameraComponent::getToCameraMat() const
 // Generates toCamera Matrix and updates Uniform in ShaderManager.
 mat4 CameraComponent::getPerspectiveMat() const
 {
-    return perspective(m_fFOV_Y * PI / 180.f, m_fAspectRatio, m_fZClose, m_fZFar);
+    return perspective(m_fFOV_Y * DEGREES_TO_RADIANS, m_fAspectRatio, m_fZClose, m_fZFar);
 }
 
 // fetches the World Position of the Camera
@@ -103,8 +103,8 @@ vec3 CameraComponent::getLookAt() const
 vec3 CameraComponent::getCartesianPos() const
 {
     // Locals - Fetch current position of Entity.
-    float fPhi_Rads = PHI * PI / 180.f;
-    float fTheta_Rads = THETA * PI / 180.f;
+    float fPhi_Rads = PHI * DEGREES_TO_RADIANS;
+    float fTheta_Rads = THETA * DEGREES_TO_RADIANS;
     vec3 vReturn;
 
     // Identity Matrix is a flag for basic spherical camera.
