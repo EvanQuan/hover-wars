@@ -198,7 +198,6 @@ void InputHandler::initializeJoystickVariables()
 
         for (int button = 0; button < MAX_BUTTON_COUNT; button++)
         {
-
         }
     }
 }
@@ -229,7 +228,7 @@ void InputHandler::initializeJoystick(int joystickID)
     m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
 
     // Button states
-    m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+    m_pJoystickButtonsRaw[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
     // Names
     m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
@@ -294,7 +293,7 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
     {
         return;
     }
-    const unsigned char* buttonsPressed = m_pJoystickButtonsPressed[joystickID];
+    const unsigned char* buttonsPressed = m_pJoystickButtonsRaw[joystickID];
 #ifdef _DEBUG
     std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
               << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
@@ -343,8 +342,6 @@ void InputHandler::joystickCallback(int joystickID, int event)
 
 /*
 Get the input status of all the present controllers and stores it.
-
-@TODO last update state is broken. Should be easier if reworked like with keyboard.
 */
 void InputHandler::updateJoysticks()
 {
@@ -354,11 +351,8 @@ void InputHandler::updateJoysticks()
         {
             // Current axis states
             m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
-            // Last Button states
-            // This is important for tracking if a button has just been pressed or released.
-            updateJoystickButtonsPressedLast(joystickID);
             // Current button states
-            m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+            m_pJoystickButtonsRaw[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
             // Final button states
             updateJoystickButtonStates(joystickID);
@@ -366,36 +360,27 @@ void InputHandler::updateJoysticks()
     }
 }
 
-void InputHandler::updateJoystickButtonsPressedLast(int joystickID)
-{
-    for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
-    {
-        m_pJoystickButtonsPressedLast[joystickID][button] = m_pJoystickButtonsPressed[joystickID][button] == GLFW_PRESS ? INPUT_PRESSED : INPUT_RELEASED;
-    }
-}
+/*
+Convert raw joystick input values to values that the command handler can read and
+alter after processing.
 
+Can only set values to just pressed and just released if there is a change in
+pressed/released state. Changes to pressed and released are made in the
+CommandHandler after the input has been processed.
+*/
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
     for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
     {
-        if (justPressed(joystickID, button))
+        if (m_pJoystickButtonsRaw[joystickID][button] == GLFW_PRESS
+            && m_joystickButtons[joystickID][button] != INPUT_PRESSED)
         {
-            cout << "JUST PRESSED " << button << endl;
             m_joystickButtons[joystickID][button] = INPUT_JUST_PRESSED;
         }
-        else if (justReleased(joystickID, button))
+        else if (m_pJoystickButtonsRaw[joystickID][button] == GLFW_RELEASE
+            && m_joystickButtons[joystickID][button] != INPUT_RELEASED)
         {
-            cout << "JUST RELEASED " << button << endl;
             m_joystickButtons[joystickID][button] = INPUT_JUST_RELEASED;
-        }
-        else if (m_pJoystickButtonsPressed[joystickID][button] == GLFW_PRESS)
-        {
-            cout << "PRESSED " << button << endl;
-            m_joystickButtons[joystickID][button] = INPUT_PRESSED;
-        }
-        else
-        {
-            m_joystickButtons[joystickID][button] = INPUT_RELEASED;
         }
     }
 }
