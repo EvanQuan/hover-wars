@@ -93,7 +93,7 @@ private:
     */
     static eFixedCommand pressedKeyToFixedCommand(int key)
     {
-        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_pressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_pressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
 
     };
     /*
@@ -101,7 +101,7 @@ private:
     */
     static eFixedCommand justPressedKeyToFixedCommand(int key)
     {
-        eFixedCommand result = FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
         return COMMAND_INVALID_FIXED == result ? pressedKeyToFixedCommand(key) : result;
     };
     /*
@@ -109,7 +109,7 @@ private:
     */
     static eFixedCommand justReleasedKeyToFixedCommand(int key)
     {
-        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justReleasedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
@@ -117,7 +117,7 @@ private:
     */
     static eFixedCommand repeatButtonToFixedCommand(int button)
     {
-        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_repeatButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_repeatButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
@@ -125,7 +125,7 @@ private:
     */
     static eFixedCommand justPressedButtonToFixedCommand(int button)
     {
-        eFixedCommand result = FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
         return COMMAND_INVALID_FIXED == result ? repeatButtonToFixedCommand(button) : result;
     };
     /*
@@ -134,14 +134,14 @@ private:
     */
     static eFixedCommand justReleasedButtonToFixedCommand(int button)
     {
-        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick axis to its corresponding eFixedCommand
     */
     static eFixedCommand axisToFixedCommand(int axis)
     {
-        return FuncUtils<int, eFixedCommand>::getValueIfNotDefault(m_pInstance->m_axisToFixedCommand, axis, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_axisToFixedCommand, axis, COMMAND_INVALID_FIXED);
     };
 
     map<int, eFixedCommand> m_pressedKeyToFixedCommand =
