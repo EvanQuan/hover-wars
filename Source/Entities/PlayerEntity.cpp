@@ -118,6 +118,11 @@ void PlayerEntity::updateCameraLookAts()
     // Calculate Average Position and set new look at for Camera Components
     vec3 vAveragePosition = m_vPositionTotal * AVERAGE_POSITION_MULTIPLIER;
 
+    // Iterpolate between current position and average position to prevent
+    // rough camera changes as the average changes
+    // TODO This seems to make things smoother. Will need more testing once physics rumbling is solved.
+    vAveragePosition = (vAveragePosition + m_vPosition) / 2;
+
     // Update all the camera look at and rotation values based on the averaging calculations.
     quat rotation = m_pPhysicsComponent->getRotation();
     m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragePosition + rotation * FRONT_CAMERA_POSITION_OFFSET);

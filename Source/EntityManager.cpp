@@ -215,11 +215,8 @@ void EntityManager::setCameraPMVMatrices()
     // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
     // each with their own camera components. The game will render 4 times, each switching
     // the player to retrieve the active camera.
-    const CameraComponent* pCamera;
-    if (m_bUseDebugCamera) // Camera locks to player and can use the mouse, no moving lag 
-        pCamera = m_pCamera->getCameraComponent();
-    else // Mouse cannot be used, and camera has moving lag 
-        pCamera = m_pPlayerEntityList[PLAYER_1]->getActiveCameraComponent();
+    const CameraComponent* pCamera = m_bUseDebugCamera ?
+        m_pCamera->getCameraComponent() : m_pPlayerEntityList[PLAYER_1]->getActiveCameraComponent();
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
