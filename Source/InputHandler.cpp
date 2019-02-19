@@ -343,6 +343,7 @@ void InputHandler::joystickCallback(int joystickID, int event)
 
 /*
 Get the input status of all the present controllers and stores it.
+This is called once per frame.
 */
 void InputHandler::updateJoysticks()
 {
