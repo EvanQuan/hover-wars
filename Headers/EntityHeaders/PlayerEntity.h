@@ -23,7 +23,9 @@
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 #define PAST_CAMERA_POSITIONS   200
-#define AVERAGE_MULTIPLIER      (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
+#define AVERAGE_POSITION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
+#define PAST_CAMERA_ROTATIONS   100
+#define AVERAGE_ROTATION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_ROTATIONS))
 /*
 
 */
@@ -87,11 +89,14 @@ private:
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     InteractableEntity* m_pFireTrail;
     vec3 m_vPositionTotal;
+    quat m_qRotationTotal;
     queue<vec3> m_vPastPositions;
+    queue<quat> m_qPastRotations;
     ePlayer m_ePlayerNumber;
 
     // Private Functions
     void initializeCameraLookAts();
+    // m_vPositionTotal += position;
     void updateCameraLookAts();
 
     // Abilities
