@@ -177,44 +177,13 @@ void CommandHandler::executeInputCommands()
 }
 
 /*
-As key presses are binary, and multiple can be pressed to control x, y, x and y
-must be normalized to ensure the velocity is equal to that of a joystick.
-x and y as a vector should have a length of 1.
-*/
-void CommandHandler::normalize(float& x, float& y)
-{
-    float targetLength = 1;
-    float magnitude = getMagnitude(x, y);
-    x /= magnitude;
-    y /= magnitude;
-}
-
-float CommandHandler::getMagnitude(float x, float y)
-{
-    return sqrt((x * x) + (y * y));
-}
-
-/*
-Since checking for float equality can be messy, we need to introduce an epsilon
-value.
-*/
-bool CommandHandler::magnitudeIsNeutral(float magnitude)
-{
-    float epsilon = numeric_limits<float>::epsilon(); // This is part of the Windows Library
-    return (magnitude < epsilon) && (-magnitude < epsilon);
-}
-
-/*
 Execute all commands specified by the keyboard.
 */
 void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
     bool bTurnNeutral = true;
-    xMove = 0;
-    yMove = 0;
-    xTurn = 0;
-    yTurn = 0;
+    float xMove, yMove, xTurn, yTurn = 0;
     /*
     Copy the keys at the current snapshot so they can be iterated over while
     m_keys continues to be updated.

@@ -49,6 +49,9 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{1d4bb0d4-b1c7-4d1c-9923-2d742cdcdeca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{b48e17ff-c23f-42d3-82b9-55413bff086f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -349,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\FuncUtils.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

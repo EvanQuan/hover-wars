@@ -2,6 +2,7 @@
 
 /* INCLUDES */
 #include <map>
+#include <unordered_map>
 
 /*
 Provides non-class specific functions for data manipulation.
@@ -44,6 +45,7 @@ namespace FuncUtils
     {
         return m.find(key) != m.end();
     }
+
     /*
     Retrieve the value from the specified key in a given map. If the key/value
     pair does not exist, return the default value instead.
@@ -81,8 +83,19 @@ namespace FuncUtils
     @param float    y coordinate
     @return the magnitude of the <x, y> vector
     */
-    static float magnitude(float x, float y)
-    {
-        return sqrt((x * x) + (y * y));
-    }
+    float magnitude(float x, float y);
+
+    /*
+    Check if two floats are equal. This is more accurate, but slower than using
+    the == operator as such:
+
+        bool result = x == y;
+
+    Use where accuracy is more important than speed.
+
+    @param float    x
+    @param float    y
+    @return true if x and y are equal
+    */
+    bool equals(float x, float y);
 }

@@ -22,6 +22,8 @@ public:
 
     void execute(ePlayer player, eFixedCommand command);
     void execute(ePlayer player, eVariableCommand command, float x, float y);
+    void execute(eBot bot, eFixedCommand command);
+    void execute(eBot bot, eVariableCommand command, float x, float y);
     /*
     Execute all commands for a given frame.
     */
@@ -73,14 +75,6 @@ private:
     eVariableCommand m_pVariableCommand;
 
     vector<PlayerEntity*> m_pPlayerEntityList;
-    float xMove;
-    float yMove;
-    float xTurn;
-    float yTurn;
-
-    void normalize(float& x, float& y);
-    float getMagnitude(float x, float y);
-    bool magnitudeIsNeutral(float magnitude);
 
     void executeKeyboardCommands();
     void executeJoystickCommands();
