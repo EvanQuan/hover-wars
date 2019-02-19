@@ -62,7 +62,7 @@ CameraComponent::~CameraComponent()
 }
 
 /*************************************************************************\
- * Inherited Functions                                                     *
+ * Inherited Functions                                                    *
 \*************************************************************************/
 // Inherited update function, not yet implemented.
 void CameraComponent::update(float fTimeDeltaInMilliseconds)
@@ -71,7 +71,7 @@ void CameraComponent::update(float fTimeDeltaInMilliseconds)
 }
 
 /*************************************************************************\
- * Getters                                                                 *
+ * Getters                                                                *
 \*************************************************************************/
 
 // Generates toCamera Matrix and updates Uniform in ShaderManager.
