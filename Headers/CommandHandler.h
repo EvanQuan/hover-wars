@@ -76,8 +76,6 @@ private:
 
     vector<PlayerEntity*> m_pPlayerEntityList;
 
-    bool magnitudeIsNeutral(float magnitude);
-
     void executeKeyboardCommands();
     void executeJoystickCommands();
 

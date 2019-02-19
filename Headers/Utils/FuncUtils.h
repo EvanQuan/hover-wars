@@ -85,4 +85,21 @@ namespace FuncUtils
     {
         return sqrt((x * x) + (y * y));
     }
+
+    /*
+    Check if two floats are equal. This is more precise, but slower than using
+    the == operator as such:
+
+        bool result = x == y;
+
+    @param float    x
+    @param float    y
+    @return true if x and y are equal
+    */
+    bool equals(float x, float y)
+    {
+        float difference = x - y;
+        float epsilon = numeric_limits<float>::epsilon(); // This is part of the Windows Library
+        return (-difference < epsilon) && (epsilon > difference);
+    }
 }

@@ -177,16 +177,6 @@ void CommandHandler::executeInputCommands()
 }
 
 /*
-Since checking for float equality can be messy, we need to introduce an epsilon
-value.
-*/
-bool CommandHandler::magnitudeIsNeutral(float magnitude)
-{
-    float epsilon = numeric_limits<float>::epsilon(); // This is part of the Windows Library
-    return (magnitude < epsilon) && (-magnitude < epsilon);
-}
-
-/*
 Execute all commands specified by the keyboard.
 */
 void CommandHandler::executeKeyboardCommands()
