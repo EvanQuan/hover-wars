@@ -81,7 +81,7 @@ namespace FuncUtils
     @param float    y coordinate
     @return the magnitude of the <x, y> vector
     */
-    static float magnitude(float x, float y)
+    float magnitude(float x, float y)
     {
         return sqrt((x * x) + (y * y));
     }
