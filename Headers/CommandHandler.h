@@ -76,8 +76,6 @@ private:
 
     vector<PlayerEntity*> m_pPlayerEntityList;
 
-    void normalize(float& x, float& y);
-    float getMagnitude(float x, float y);
     bool magnitudeIsNeutral(float magnitude);
 
     void executeKeyboardCommands();

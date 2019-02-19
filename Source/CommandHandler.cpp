@@ -177,24 +177,6 @@ void CommandHandler::executeInputCommands()
 }
 
 /*
-As key presses are binary, and multiple can be pressed to control x, y, x and y
-must be normalized to ensure the velocity is equal to that of a joystick.
-x and y as a vector should have a length of 1.
-*/
-void CommandHandler::normalize(float& x, float& y)
-{
-    float targetLength = 1;
-    float magnitude = getMagnitude(x, y);
-    x /= magnitude;
-    y /= magnitude;
-}
-
-float CommandHandler::getMagnitude(float x, float y)
-{
-    return sqrt((x * x) + (y * y));
-}
-
-/*
 Since checking for float equality can be messy, we need to introduce an epsilon
 value.
 */
