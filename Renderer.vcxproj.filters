@@ -225,6 +225,9 @@
     <ClInclude Include="Headers\UserInterface\UserInterface.h">
       <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\UserInterface\FontManager.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -360,6 +363,9 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\UserInterface\UserInterface.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\FontManager.cpp">
       <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
