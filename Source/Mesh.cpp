@@ -34,6 +34,7 @@ Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, const ObjectInfo* pObjec
     m_sManagerKey = sManagerKey;
     m_bStaticMesh = bStaticMesh;
     m_pShdrMngr = SHADER_MANAGER;
+    m_vNegativeOffset = m_vPositiveOffset = vec3(0.0f);
     glGenVertexArrays(1, &m_iVertexArray);
 
     loadObjectInfo(pObjectProperties);
@@ -120,6 +121,10 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
     if (vec3(0.f) != vPosition)
         m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
 
+    // Set Spatial Cube/Plane
+    m_vNegativeOffset = m_pVertices.front();
+    m_vPositiveOffset = m_pVertices.back();
+
     // Store Initial Transformation Matrix
     m_m4ListOfInstances.push_back(m4TranslationMatrix);
 
@@ -173,6 +178,10 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
         *i++ = (r * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
         *i++ = ((r + 1) * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
     }
+
+    // Compute Spatial Cube
+    m_vNegativeOffset = vec3(-fRadius, -fRadius, -fRadius);
+    m_vPositiveOffset = vec3(fRadius, fRadius, fRadius);
 
     // Initial Transformation Matrix
     mat4 m4InitialTransformation = mat4(1.0f);
@@ -317,6 +326,10 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
         17, 19, 16, 17, 18, 19,
         22, 21, 23, 22, 20, 21
     };
+
+    // Compute Spatial Cube
+    m_vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
+    m_vNegativeOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
 
     // Initial Transformation Matrix
     mat4 m4InitialTransformationMatrix = mat4(1.0f);
@@ -485,6 +498,8 @@ bool Mesh::loadObj(const string& sFileName)
     // Locals
     ifstream in(sFileName.c_str());
     bool bReturnValue = in.is_open();
+    vec2 vXRange, vYRange, vZRange;     // Compute Basic cubic convex hull for Spatial information.
+    vZRange = vYRange = vXRange = vec2(numeric_limits<float>::max(), numeric_limits<float>::min());
 
     // Failed to load file.
     if (!bReturnValue)
@@ -508,6 +523,16 @@ bool Mesh::loadObj(const string& sFileName)
             {
                 ssLine >> vTempVec.x >> vTempVec.y >> vTempVec.z;
                 m_pVertices.push_back(vTempVec);
+
+                // Evaluate cubic convex hull
+                vXRange.x = vTempVec.x < vXRange.x ? vTempVec.x : vXRange.x;    // X Range Min
+                vXRange.y = vTempVec.x > vXRange.y ? vTempVec.x : vXRange.y;    // X Range Max
+
+                vYRange.x = vTempVec.y < vYRange.x ? vTempVec.y : vYRange.x;    // Y Range Min
+                vYRange.y = vTempVec.y > vYRange.y ? vTempVec.y : vYRange.y;    // Y Range Max
+
+                vZRange.x = vTempVec.z < vZRange.x ? vTempVec.z : vZRange.x;    // Z Range Min
+                vZRange.y = vTempVec.z > vZRange.y ? vTempVec.z : vZRange.y;    // Z Range Max
             }
             else if ("vt" == sToken) // uv-coords
             {/* Ignored */
@@ -598,6 +623,10 @@ bool Mesh::loadObj(const string& sFileName)
             vNormIter != m_pNormals.end();
             ++vNormIter)
             (*vNormIter) = normalize((*vNormIter));
+
+        // Store computed Spatial Range
+        m_vNegativeOffset = vec3(vXRange.x, vYRange.x, vZRange.x);  // Min
+        m_vPositiveOffset = vec3(vXRange.y, vYRange.y, vZRange.y);  // Max
     }
 
     return bReturnValue;
@@ -738,6 +767,26 @@ void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const ve
     }
 }
 
+// Returns calculated spatial dimensions for the mesh.
+//  If the return values are vec3(0.0f), then no spatial information has been computed for
+//      the bounding box nor the mesh.
+void Mesh::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+{
+    // Ensure that proper pointers have been given.
+    assert(nullptr != pNegativeOffset && nullptr != pPositiveOffset);
+
+    if (m_sBoundingBox.isLoaded())  // Default to the Bounding Box Dimensions if available
+    {
+        *pNegativeOffset = m_sBoundingBox.vNegativeOffset;
+        *pPositiveOffset = m_sBoundingBox.vPositiveOffset;
+    }
+    else    // Otherwise return the Mesh computed Offsets.
+    {
+        *pNegativeOffset = m_vNegativeOffset;
+        *pPositiveOffset = m_vPositiveOffset;
+    }
+}
+
 /************************************************************************************\
  * Texture Functionality                                                            *
 \************************************************************************************/
@@ -837,6 +886,10 @@ void Mesh::sBoundingBox::generateCubicBox(float fHeight, float fWidth, float fDe
         2, 7, 3, 6, 4, 5,
         6, 7, 4, 6, 5, 7
     };
+
+    // Store the Spatial information
+    vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
+    vPositiveOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
 
     // Initialize Bounding Box VBOs
     initVBOs();

@@ -103,9 +103,9 @@ private:
     SceneLoader*                m_pScnLdr;
     EmitterEngine*              m_pEmtrEngn;
     PhysicsManager*             m_pPhysxMngr;
-
-    // Spatial Map
-    SpatialDataMap m_pSpatialMap;
+    SpatialDataMap*             m_pSpatialMap;   
+    
+    
 
     // Scene Management toggling
     bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap;

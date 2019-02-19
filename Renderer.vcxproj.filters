@@ -210,6 +210,9 @@
     <ClInclude Include="Headers\SpatialDataMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eEntityTypes.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\Utils\FuncUtils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>

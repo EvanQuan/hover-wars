@@ -6,7 +6,7 @@ using namespace SpriteSheetDatabase;
 
 // Default Constructor
 InteractableEntity::InteractableEntity(int iID, const vec3* vPosition)
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, INTERACTABLE_ENTITY )
 {
     
 }
@@ -22,6 +22,13 @@ InteractableEntity::~InteractableEntity()
 \****************************************************************/
 
 void InteractableEntity::update(float fTimeInMilliseconds)
+{
+    /* Not Implemented */
+}
+
+// This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
+//  Static position.
+void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
 {
     /* Not Implemented */
 }
@@ -43,7 +50,7 @@ void InteractableEntity::loadAsBillboard(float fHeight, float fWidth)
     m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(&sBillboardObjectInfo, this);
     m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
     m_pAnimationComponent->initializeComponentAsBillboard(m_pBillboardMesh, &vSpriteInformation[eSpriteEnum::FIRE_SPRITE], fHeight, fWidth);
-    m_pAnimationComponent->addBillboard(&vTempPos, &vTempNormal);
+    // TEST Billboard    m_pAnimationComponent->addBillboard(&vTempPos, &vTempNormal);
 
     // Generate the Render Component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pBillboardMesh, true, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);

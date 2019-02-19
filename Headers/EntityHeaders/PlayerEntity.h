@@ -5,6 +5,7 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "InteractableEntity.h"
+#include "SpatialDataMap.h"
 #include <queue>
 
 /***********\
@@ -54,11 +55,13 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void initializePlayer(const string& sFileName,
                           const ObjectInfo* pObjectProperties,
                           const string& sShaderType,
-                          float fScale);
+                          float fScale,
+                          ePlayer ePlayerNumber);
 
     void useAbility(eAbility ability);
     void move(float x, float y);
@@ -79,6 +82,7 @@ private:
     // Private Variables
     int activeCameraIndex;
     Mesh* m_pMesh;
+    SpatialDataMap* m_pSpatialMap;
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pActiveCameraComponent;
@@ -86,6 +90,7 @@ private:
     InteractableEntity* m_pFireTrail;
     vec3 m_vPositionTotal;
     queue<vec3> m_vPastPositions;
+    ePlayer m_ePlayerNumber;
 
     // Private Functions
     void updateCameraLookAts();

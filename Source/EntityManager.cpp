@@ -21,6 +21,7 @@ EntityManager::EntityManager()
     m_pScnLdr = SCENE_LOADER;
     m_pEmtrEngn = EMITTER_ENGINE;
     m_pPhysxMngr = PHYSICS_MANAGER;
+    m_pSpatialMap = SPATIAL_DATA_MAP;
 }
 
 // Gets the instance of the environment manager.
@@ -51,6 +52,9 @@ EntityManager::~EntityManager()
     // Delete Emitter Engine
     if (nullptr != m_pEmtrEngn)
         delete m_pEmtrEngn;
+
+    if (nullptr != m_pSpatialMap)
+        delete m_pSpatialMap;
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -62,14 +66,14 @@ void EntityManager::initializeEnvironment(string sFileName)
     pObjFctry->loadFromFile(sFileName);
 
     // Populate the Spatial Data Map now that everything has been loaded.
-    m_pSpatialMap.populateMap(&m_pMasterEntityList);
+    m_pSpatialMap->populateStaticMap(&m_pMasterEntityList);
 }
 
 // Initializes the SpatialDataMap with a given length, width and tilesize
 void EntityManager::initializeSpatialMap(float fLength, float fWidth, float fTileSize)
 {
-    if (!m_pSpatialMap.isInitialized())     // Only Initialize the Spatial Map once. Unload everything first to initialize again.
-        m_pSpatialMap.initializeMap(fLength, fWidth, fTileSize);
+    if (!m_pSpatialMap->isInitialized())     // Only Initialize the Spatial Map once. Unload everything first to initialize again.
+        m_pSpatialMap->initializeMap(fLength, fWidth, fTileSize);
 }
 
 // Clears out the entire environment
@@ -79,7 +83,7 @@ void EntityManager::purgeEnvironment()
     m_pMasterComponentList.clear();
     m_pMasterEntityList.clear();
     m_pEmtrEngn->clearAllEmitters();
-    m_pSpatialMap.clearMap();           // Unload the Spatial Data Map
+    m_pSpatialMap->clearMap();           // Unload the Spatial Data Map
 
     // Reset ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;
@@ -121,7 +125,7 @@ void EntityManager::renderEnvironment( )
 
     // Draw the Spatial Map for debuggin
     if (m_bDrawSpatialMap)
-        m_pSpatialMap.drawMap();
+        m_pSpatialMap->drawMap();
 }
 
 /*********************************************************************************\
@@ -189,7 +193,7 @@ void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, cons
 void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
     unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
-    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale);
+    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
     m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
 }

@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 SpotLight::SpotLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, SPOT_LIGHT_ENTITY )
 {
     
 }
@@ -27,6 +27,13 @@ SpotLight::~SpotLight()
 void SpotLight::update(float fTimeInMilliseconds)
 {
     /* Not Implemented */
+}
+
+// Fetch the Spatial dimensions from the Lighting component for the Spatial Data Map.
+//  AKA: the data cells that this spot light covers.
+void SpotLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
+{
+    m_pLightingComponent->getSpatialDimensions(pNegativeOffset, pPositiveOffset);
 }
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh

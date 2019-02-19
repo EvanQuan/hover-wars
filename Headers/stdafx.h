@@ -53,6 +53,7 @@
 #include "Enums/eFixedCommand.h"
 #include "Enums/eVariableCommand.h"
 #include "Enums/eBoundingBoxTypes.h"
+#include "Enums/eEntityTypes.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"
@@ -131,6 +132,7 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define PHYSICS_MANAGER     PhysicsManager::getInstance()
 #define SCENE_LOADER        SceneLoader::getInstance()
 #define EMITTER_ENGINE      EmitterEngine::getInstance()
+#define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

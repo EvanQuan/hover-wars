@@ -19,6 +19,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType);
     void loadAsSphere(float fRadius, const ObjectInfo* pObjectProperties, const string& sShaderType);

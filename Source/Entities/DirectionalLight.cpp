@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 DirectionalLight::DirectionalLight(int iID) 
-    : Entity( iID, vec3( -1.0 ) )
+    : Entity( iID, vec3( -1.0 ), DIRECTIONAL_LIGHT_ENTITY )
 {
     
 }
@@ -25,6 +25,12 @@ DirectionalLight::~DirectionalLight()
 \****************************************************************/
 
 void DirectionalLight::update(float fTimeInMilliseconds)
+{
+    /* Not Implemented */
+}
+
+// This function is not necessary as Directional Lights do not have a valid position in space.
+void DirectionalLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
 {
     /* Not Implemented */
 }

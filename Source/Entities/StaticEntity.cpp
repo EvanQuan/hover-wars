@@ -3,7 +3,7 @@
 
 // Default Constructor
 StaticEntity::StaticEntity(int iID, const vec3* vPosition)
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, STATIC_ENTITY )
 {
     
 }
@@ -23,6 +23,13 @@ void StaticEntity::update(float fTimeInMilliseconds)
     /* Not Implemented */
 }
 
+// Gets the Spatial Dimensions of the Mesh.
+//  The Corners are in local space and will need to be added to the Position of the mesh to convert to world coordinates.
+void StaticEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
+{
+    m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
+}
+
 /****************************************************************\
  * Load Functions                                                *
 \****************************************************************/
@@ -32,6 +39,8 @@ void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, con
 {
     m_pMesh = MESH_MANAGER->generatePlaneMesh(true, iHeight, iWidth, pObjectProperties, *vNormal);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
+
+    m_eType = PLANE_ENTITY; // Set the Entity Type to Plane to avoid reference within the Spatial Map.
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.

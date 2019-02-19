@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 PointLight::PointLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, POINT_LIGHT_ENTITY )
 {
     
 }
@@ -28,6 +28,14 @@ void PointLight::update(float fTimeInMilliseconds)
 {
     /* Not Implemented */
 }
+
+// Fetch the Spatial dimensions from the Lighting component for the Spatial Data Map.
+//  AKA: the data cells that this point light covers.
+void PointLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
+{
+    m_pLightingComponent->getSpatialDimensions(pNegativeOffset, pPositiveOffset);
+}
+
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //    If "" is provided for the Mesh name, a generic cube will be generated.
