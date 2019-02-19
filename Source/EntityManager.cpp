@@ -417,7 +417,8 @@ RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh cons
     // Since Meshes are more static with their material, if there is a rendering component
     //    for that mesh already, return that instead since that Mesh will probably have multiple instances
     //    per render.
-    if (m_pRenderingComponents.end() != m_pRenderingComponents.find(pMeshKey))
+    // if (m_pRenderingComponents.end() != m_pRenderingComponents.find(pMeshKey))
+    if (FuncUtils::contains(m_pRenderingComponents, pMeshKey))
     {
         pReturnComponent = m_pRenderingComponents[pMeshKey];
     }
