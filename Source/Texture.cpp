@@ -23,14 +23,25 @@ void Texture::genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GL
     glGenTextures( 1, &m_TextureName );
     glBindTexture(GL_TEXTURE_2D, m_TextureName );
     glTexImage2D( GL_TEXTURE_2D, 0, eFormat, m_uiWidth, m_uiHeight, 0, eFormat, eType, pBits );
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    // Set Texture Parameters
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
     glBindTexture( GL_TEXTURE_2D, 0 );
+}
+
+// Set Texture Parameters for more Generic Texture control.
+void Texture::setTexParameter(GLenum eTexEnum, GLint iParam)
+{
+    glBindTexture(GL_TEXTURE_2D, m_TextureName);
+    glTexParameteri(GL_TEXTURE_2D, eTexEnum, iParam);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+// Activate MipMaps for the texture. These are generated internally
+void Texture::genMipMaps()
+{
+    glBindTexture(GL_TEXTURE_2D, m_TextureName);
+    glGenerateMipmap(GL_TEXTURE_2D);        // Generate Mipmaps
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);               // set Mag Filter to Linear
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // set Min Filter to Mipmap Linear
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // Bind Texture for Drawing

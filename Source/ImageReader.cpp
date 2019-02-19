@@ -95,6 +95,9 @@ bool InitializeTexture(Texture *mytex, const string &imageFileName)
 
         // Generate Texture in GPU
         mytex->genTexture(data, iWidth, iHeight, eFormat, GL_UNSIGNED_BYTE);
+        mytex->genMipMaps();
+        mytex->setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+        mytex->setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
         
         bReturnValue = true;
     }
