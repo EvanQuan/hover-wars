@@ -2,34 +2,6 @@
 #include "MeshManager.h"
 #include "EntityManager.h"
 
-/***********\
- * Defines *
-\***********/
-// Fire Defines
-#define FIRE_HEIGHT 2.0
-#define FIRE_WIDTH 2.0
-
-// Camera Defines
-#define FRONT_CAMERA 0
-#define BACK_CAMERA 1
-#define PAST_CAMERA_POSITIONS 150
-#define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
-#define START_RADIUS 10.0f
-/*
-
-*/
-#define CAMERA_THETA 90.0f
-#define CAMERA_PHI 60.0f
-
-const vec3 FRONT_CAMERA_START_VIEW = vec3(-CAMERA_THETA, CAMERA_PHI, START_RADIUS); // (Theta, Phi, Radius)
-const vec3 BACK_CAMERA_START_VIEW = vec3(CAMERA_THETA, CAMERA_PHI, START_RADIUS); // (Theta, Phi, Radius)
-/*
-The position of the camera relative to the position of the player. Both vectors
-will be added together to form the final camera position.
-*/
-const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
-const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(5, 0, 0);
-
 PlayerEntity::PlayerEntity(int iID, const vec3* vPosition)
     : Entity(iID, *vPosition, PLAYER_ENTITY)
 {

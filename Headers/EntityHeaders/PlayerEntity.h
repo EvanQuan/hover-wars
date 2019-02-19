@@ -8,9 +8,43 @@
 #include "SpatialDataMap.h"
 #include <queue>
 
+/***********\
+ * Defines *
+\***********/
 #define MAX_CAMERAS_PER_PLAYER 2 
 #define FRONT_CAMERA 0
 #define BACK_CAMERA 1
+
+// Fire Defines
+#define FIRE_HEIGHT 2.0
+#define FIRE_WIDTH 2.0
+
+// Camera Defines
+#define FRONT_CAMERA 0
+#define BACK_CAMERA 1
+#define PAST_CAMERA_POSITIONS 150
+#define AVERAGE_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
+/*
+
+*/
+#define FRONT_CAMERA_THETA -90.0f
+#define FRONT_CAMERA_PHI 60.0f
+#define FRONT_RADIUS 10.0f
+
+// #define BACK_CAMERA_THETA 90.0f
+// #define BACK_CAMERA_PHI 60.0f
+#define BACK_CAMERA_THETA -90.0f
+#define BACK_CAMERA_PHI 45.0f
+#define BACK_RADIUS 15.0f
+
+const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_THETA, FRONT_CAMERA_PHI, FRONT_RADIUS); // (Theta, Phi, Radius)
+const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_THETA, BACK_CAMERA_PHI, BACK_RADIUS); // (Theta, Phi, Radius)
+/*
+The position of the camera relative to the position of the player. Both vectors
+will be added together to form the final camera position.
+*/
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-10, 0, 0);
 
 class PlayerEntity :
     public Entity

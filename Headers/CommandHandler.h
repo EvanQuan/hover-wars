@@ -176,49 +176,49 @@ private:
         {GLFW_KEY_B,            COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES},
         {GLFW_KEY_M,            COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP},
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
-        {GLFW_KEY_RIGHT_SHIFT,  COMMAND_CAMERA_BACK},
+        {GLFW_KEY_COMMA,        COMMAND_CAMERA_BACK},
     };
 
     map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
     {
-        {GLFW_KEY_RIGHT_SHIFT, COMMAND_CAMERA_FRONT},
+        {GLFW_KEY_COMMA,        COMMAND_CAMERA_FRONT},
     };
 
     map<int, eFixedCommand> m_repeatButtonToFixedCommand =
     {
-        {BUTTON_LEFT_BUMPER,  COMMAND_ABILITY_SPIKES},
-        {BUTTON_A,            COMMAND_DASH_BACK},
-        {BUTTON_Y,            COMMAND_DASH_FORWARD},
-        {BUTTON_X,            COMMAND_DASH_LEFT},
-        {BUTTON_B,            COMMAND_DASH_RIGHT},
-        {BUTTON_START,        COMMAND_DEBUG_TOGGLE_WIREFRAME},
-        {BUTTON_BACK,         COMMAND_MENU_BACK},
-        {BUTTON_LEFT_STICK,   COMMAND_INVALID_FIXED},
-        {BUTTON_RIGHT_STICK,  COMMAND_INVALID_FIXED},
-        {BUTTON_UP,           COMMAND_INVALID_FIXED},
-        {BUTTON_RIGHT,        COMMAND_INVALID_FIXED},
-        {BUTTON_DOWN,         COMMAND_INVALID_FIXED},
-        {BUTTON_LEFT,         COMMAND_INVALID_FIXED},
-        {BUTTON_UNKNOWN1,     COMMAND_INVALID_FIXED},
-        {BUTTON_UNKNOWN2,     COMMAND_INVALID_FIXED},
+        {BUTTON_LEFT_BUMPER,    COMMAND_ABILITY_SPIKES},
+        {BUTTON_A,              COMMAND_DASH_BACK},
+        {BUTTON_Y,              COMMAND_DASH_FORWARD},
+        {BUTTON_X,              COMMAND_DASH_LEFT},
+        {BUTTON_B,              COMMAND_DASH_RIGHT},
+        {BUTTON_START,          COMMAND_DEBUG_TOGGLE_WIREFRAME},
+        {BUTTON_BACK,           COMMAND_MENU_BACK},
+        {BUTTON_LEFT_STICK,     COMMAND_INVALID_FIXED},
+        {BUTTON_RIGHT_STICK,    COMMAND_INVALID_FIXED},
+        {BUTTON_UP,             COMMAND_INVALID_FIXED},
+        {BUTTON_RIGHT,          COMMAND_INVALID_FIXED},
+        {BUTTON_DOWN,           COMMAND_INVALID_FIXED},
+        {BUTTON_LEFT,           COMMAND_INVALID_FIXED},
+        {BUTTON_UNKNOWN1,       COMMAND_INVALID_FIXED},
+        {BUTTON_UNKNOWN2,       COMMAND_INVALID_FIXED},
     };
 
     map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
     {
-        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_BACK},
-        {BUTTON_BACK,         COMMAND_MENU_PAUSE},
-        {BUTTON_START,        COMMAND_MENU_START},
+        {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
+        {BUTTON_BACK,           COMMAND_MENU_PAUSE},
+        {BUTTON_START,          COMMAND_MENU_START},
     };
 
     map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
     {
-        {BUTTON_RIGHT_BUMPER, COMMAND_CAMERA_FRONT},
+        {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
     };
 
     map<int, eFixedCommand> m_axisToFixedCommand =
     {
-        {AXIS_LEFT_TRIGGER,  COMMAND_ABILITY_TRAIL},
-        {AXIS_RIGHT_TRIGGER, COMMAND_ABILITY_ROCKET},
+        {AXIS_LEFT_TRIGGER,     COMMAND_ABILITY_TRAIL},
+        {AXIS_RIGHT_TRIGGER,    COMMAND_ABILITY_ROCKET},
     };
 
     map<eFixedCommand, eAbility> m_fixedCommandToAbility =

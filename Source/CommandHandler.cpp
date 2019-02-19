@@ -327,15 +327,15 @@ void CommandHandler::executeJoystickCommands()
                 switch (buttons[button])
                 {
                 case InputHandler::INPUT_JUST_PRESSED:
-                    cout << "JUST_PRESSED" << endl;
                     execute((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
                     execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
-                    cout << "JUST_RELEASED" << endl;
                     execute((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_RELEASED;
                     break;
                 }
             }

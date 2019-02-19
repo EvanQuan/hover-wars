@@ -55,19 +55,6 @@ public:
     map<int, eInputState> m_keys;
 
     // Joysticks
-    void updateJoystickButtonsPressedLast(int joystickID);
-    bool justPressed(int joystickID, int joystickButton)
-    {
-        return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_PRESS
-            && (m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_RELEASED
-                || m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_JUST_RELEASED);
-    }
-    bool justReleased(int joystickID, int joystickButton)
-    {
-        return m_pJoystickButtonsPressed[joystickID][joystickButton] == GLFW_RELEASE
-            && (m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_PRESSED
-                || m_pJoystickButtonsPressedLast[joystickID][joystickButton] == INPUT_JUST_PRESSED);
-    }
     /*
     List of joysticks that are present (detected) by the game.
     Only present controllers are initialized
@@ -90,6 +77,10 @@ public:
     int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
     /*
     The input states of each button for each joystick.
+
+    Index retrieval
+    0 : int joystickID
+    1 : int button macro
     */
     eInputState m_joystickButtons[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
     /*
@@ -130,10 +121,5 @@ private:
     Raw input values retrieved from glfwGetJoystickButtons()
     The values are either GLFW_PRESS or GLFW_RELEASE
     */
-    const unsigned char* m_pJoystickButtonsPressed[MAX_PLAYER_COUNT];
-    /*
-    Raw input values stored as last frame's m_pJoystickButtonsPressed values.
-    This helps determines if a button has just been pressed or released.
-    */
-    eInputState m_pJoystickButtonsPressedLast[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
+    const unsigned char* m_pJoystickButtonsRaw[MAX_PLAYER_COUNT];
 };
