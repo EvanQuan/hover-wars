@@ -80,7 +80,6 @@ void SpatialDataMap::clearMap()
     m_bIsInitialized = false;
 }
 
-
 // Initialize the Map dimensions 
 void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
 {
@@ -310,8 +309,35 @@ void SpatialDataMap::drawMap()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iMapIndicesBuffer);
         glDrawElementsInstanced(GL_LINES, m_pGridIndices.size(), GL_UNSIGNED_INT, 0, 1);
 
+        // Draw the Dynamic Squares
+        unsigned int i = 0;
+        vec4 vColor = DYNAMIC_COLOR;
+        // Iterate through all Dynamic Entities' Indices
+        for (unordered_map<int, sDynamicDrawInfo>::iterator iter = m_pDynamicIndicesMap.begin();
+            iter != m_pDynamicIndicesMap.end();
+            ++iter)
+        {   // Iterate through all covered cells for the entity in the entity map.
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iter->second.iDynamicIBO);
+            for (unsigned int x = m_pEntityMap[iter->first][MIN_INDEX].first; x <= m_pEntityMap[iter->first][MAX_INDEX].first; ++x)
+                for (unsigned int y = m_pEntityMap[iter->first][MIN_INDEX].second; y <= m_pEntityMap[iter->first][MAX_INDEX].second; ++y)
+                {
+                    if (!m_pSpatialMap[x][y].pLocalEntities.empty())
+                        vColor = (vColor * 0.5f) + (GRID_COLOR * 0.5f);
+                    else if (!m_pSpatialMap[x][y].pLocalPointLights.empty())
+                        vColor = (vColor * 0.5f) + (POINT_COLOR * 0.5f);
+                    else if (!m_pSpatialMap[x][y].pLocalSpotLights.empty())
+                        vColor = (vColor * 0.5f) + (SPOT_COLOR * 0.5f);
+
+                    // Set the blended color.
+                    SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
+                    glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
+                    ++i;    // Increment to next set of indices in the GPU
+                    vColor = DYNAMIC_COLOR;
+                }
+        }
+
         // Draw the Populated Squares
-        vec4 vColor = vec4(1.0f);
+        vColor = vec4(1.0f);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
         for (unsigned int i = 0; i < m_pPopulatedSquareReference.size(); ++i)
         {
@@ -326,27 +352,6 @@ void SpatialDataMap::drawMap()
             glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
             vColor = vec4(1.0f);
         }
-
-        // Draw the Dynamic Squares
-        unsigned int i = 0;
-
-        // Iterate through all Dynamic Entities' Indices
-        SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &DYNAMIC_COLOR);
-        for (unordered_map<int, sDynamicDrawInfo>::iterator iter = m_pDynamicIndicesMap.begin();
-            iter != m_pDynamicIndicesMap.end();
-            ++iter)
-        {   // Iterate through all covered cells for the entity in the entity map.
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iter->second.iDynamicIBO);
-            for (unsigned int x = m_pEntityMap[iter->first][MIN_INDEX].first; x <= m_pEntityMap[iter->first][MAX_INDEX].first; ++x)
-                for (unsigned int y = m_pEntityMap[iter->first][MIN_INDEX].second; y <= m_pEntityMap[iter->first][MAX_INDEX].second; ++y)
-                {
-                    // Set the blended color.
-                    glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
-                    ++i;    // Increment to next set of indices in the GPU
-                }
-        }
-            
-
     }
 #endif // _DEBUG
 }

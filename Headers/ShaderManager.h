@@ -2,7 +2,6 @@
 
 /* INCLUDES */
 #include "stdafx.h"
-#include <unordered_map>
 #include "Shader.h"
 #include "EntityComponentHeaders/LightingComponent.h"
 
@@ -26,6 +25,7 @@ public:
         BILLBOARD_SHDR,
         BOID_SHDR,
         DEBUG_SHDR,
+        SHADOW_SHDR,
         MAX_SHDRS
     };
     const static unordered_map<string, eShaderType> pShaderTypeMap;
