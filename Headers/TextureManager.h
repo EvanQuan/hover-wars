@@ -1,10 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include <unordered_map>
 #include "Texture.h"
-
-// Forward Declaration
-class Object;
 
 // Texture Manager Class
 //        Manages all texture objects used by the system.

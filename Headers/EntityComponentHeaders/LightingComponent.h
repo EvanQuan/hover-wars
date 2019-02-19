@@ -11,6 +11,8 @@
 *    type specified by the enum eLightType
 ***************************************************************/
 
+class Texture;  // Forward Declaration to avoid include loop
+
 class LightingComponent 
     : public EntityComponent
 {
@@ -34,6 +36,10 @@ public:
     void initializeAsPointLight( const vec3* vPosition, const vec3* vColor, float fPower );
     void initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular);
     void initializeAsSpotLight(const vec3* vPosition, const vec3* vColor, const vec3* vDirection, float fPhi, float fSoftPhi);
+
+    // Shadow Map functionality
+    void setupShadowFBO() const;
+    void setupPMVMatrices() const;
 
     // Returns light information for storing in Shader
     const vector< vec4 >* getLightInformation() const { return &m_pLightData; }
@@ -65,4 +71,8 @@ private:
     vector< vec4 > m_pLightData;
     
     eLightType m_eType;
+
+    // Shadow Map Variables
+    Texture* m_pShadowMap;
+    GLuint m_iFrameBuffer;
 };

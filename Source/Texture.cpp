@@ -52,6 +52,15 @@ void Texture::bindTexture( ShaderManager::eShaderType eType, string sVarName )
     SHADER_MANAGER->setUniformInt( eType, sVarName, m_TextureName );
 }
 
+void Texture::bindToFrameBuffer(GLuint iFrameBuffer, GLenum eAttachment, GLenum eTexTarget, GLint iLevel)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, iFrameBuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, eAttachment, eTexTarget, m_TextureName, iLevel);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 // Unbind Texture when finished.
 void Texture::unbindTexture()
 {

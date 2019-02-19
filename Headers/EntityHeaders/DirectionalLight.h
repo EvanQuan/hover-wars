@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include "Entity.h"
 #include "MeshManager.h"
-#include "TextureManager.h"
 #include "EntityComponentHeaders/LightingComponent.h"
 
 // Provides an Interface for a Directional Light Component.
@@ -33,7 +32,5 @@ private:
 
     // Private Variables
     LightingComponent* m_pLightingComponent;
-    Texture* m_pShadowMap;
-    GLuint m_iFrameBuffer;
 };
 

@@ -33,6 +33,7 @@ public:
     void setTexParameter(GLenum eTexEnum, GLint iParam);
     void genMipMaps();
     void bindTexture( ShaderManager::eShaderType eType, string sVarName );
+    void bindToFrameBuffer(GLuint iFrameBuffer, GLenum eAttachment, GLenum eTexTarget, GLint iLevel);
     void unbindTexture();
 
     // Get Dimensions of Texture

@@ -5,14 +5,12 @@
 #include "ShaderManager.h"
 #include "UserInterface.h"
 
-///////////////
-// CONSTANTS //
-///////////////
-const vec3 WORLD_CENTER = vec3( 0.0 );
-const mat3 WORLD_COORDS = mat3( 1.0 );
-const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[ 0 ],
-                                  WORLD_CENTER, WORLD_COORDS[ 1 ],
-                                  WORLD_CENTER, WORLD_COORDS[ 2 ] };
+/*************\
+ * Constants *
+\*************/
+const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
+const GLfloat DEPTH_ZERO = 1.0f;
+
 
 // Singleton Variable initialization
 GameManager* GameManager::m_pInstance = nullptr;
@@ -25,18 +23,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pEntityManager       = ENTITY_MANAGER;
     m_pUserInterface = UserInterface::getInstance(rWindow);
 
-    // NOTE: Do not get an instance of InputHandler here or there will be
-    // infinite mutual recursion and a call stack overflow
-
     m_pWindow = rWindow;
     int iHeight, iWidth;
     glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-
-    glGenVertexArrays( 1, &m_pVertexArray );
-    
-    // Generate Buffer and Set Attribute
-    m_pVertexBuffer = m_pShaderManager->genVertexBuffer( m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof( vec3 ), GL_STATIC_DRAW );
-    SHADER_MANAGER->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
 
     m_fFrameTime = duration<float>(0.0f);
     m_fMaxDeltaTime = sixtieths_of_a_sec{ 1 };
@@ -87,9 +76,6 @@ GameManager::~GameManager()
     {
         delete m_pUserInterface;
     }
-
-    glDeleteBuffers(1, &m_pVertexBuffer);
-    glDeleteVertexArrays(1, &m_pVertexArray);
 }
 
 // Intended to be called every cycle, or when the graphics need to be updated
@@ -109,81 +95,23 @@ bool GameManager::renderGraphics()
     if (m_fFrameTime >= m_fMaxDeltaTime) // This locks the framerate to 60 fps
     {
         m_fFrameTime = duration<float>(0.0f);
-        RenderScene();
+
+        glClearBufferfv(GL_COLOR, 0, color);
+        glClearBufferfv(GL_DEPTH, 0, &DEPTH_ZERO);
+        glEnable(GL_DEPTH_TEST);
+
+        m_pEntityManager->renderEnvironment();
+
+        glDisable(GL_DEPTH_TEST);
 
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
-    
 
     // check for Window events
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_pWindow);
-}
-
-// --------------------------------------------------------------------------
-// Rendering function that draws our scene to the frame buffer
-// Copied from Boilercode Program
-// Will be replaced with functions in Graphic objects.
-void GameManager::RenderScene()
-{
-    // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
-    //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
-    m_pCamera->setLookAt(m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getPosition());
-    quat pQuat = m_pEntityManager->getPlayer(ePlayer::PLAYER_1)->getRotation();
-    m_pCamera->setRotationQuat(pQuat);
-
-    // Get player 1's active camera to show
-    // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
-    // each with their own camera components. The game will render 4 times, each switching
-    // the player to retrieve the active camera.
-    const CameraComponent* pCamera;
-    if (m_bUseDebugCamera)
-    {
-        // Camera locks to player and can use the mouse, no moving lag
-        pCamera = m_pCamera->getCameraComponent();
-    }
-    else
-    {
-        // Mouse cannot be used, and camera has moving lag
-        pCamera = m_pEntityManager->getPlayer(PLAYER_1)->getActiveCameraComponent();
-    }
-    mat4 pModelViewMatrix = pCamera->getToCameraMat();
-    mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
-
-    const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
-    const GLfloat zero = 1.0f;
-
-    glClearBufferfv(GL_COLOR, 0, color);
-    glClearBufferfv(GL_DEPTH, 0, &zero);
-    glEnable(GL_DEPTH_TEST);
-    
-    // Set camera information in Shaders before rendering
-    m_pShaderManager->setProjectionModelViewMatrix( &pProjectionMatrix, &pModelViewMatrix );
-
-#ifdef _DEBUG
-    renderAxis();   
-#endif
-
-    m_pEntityManager->renderEnvironment( );
-    glDisable(GL_DEPTH_TEST);
-}
-
-void GameManager::renderAxis()
-{
-    glPointSize( 10.f );
-
-    glBindVertexArray( m_pVertexArray );
-    glUseProgram( m_pShaderManager->getProgram( ShaderManager::eShaderType::WORLD_SHDR ) );
-
-    glDrawArrays( GL_LINES, 0, AXIS_VERTS.size() );
-    glDrawArrays( GL_POINTS, 0, AXIS_VERTS.size() );
-
-    glUseProgram( 0 );
-    glBindVertexArray( 0 );
-
-    glPointSize( 1.f );
 }
 
 // Function initializes shaders and geometry.
@@ -204,11 +132,6 @@ bool GameManager::initializeGraphics( string sFileName )
         m_pEntityManager->initializeEnvironment(sFileName);
     }
 
-    // Set up Camera
-    // TODO This is the first time a camera is generated.
-    m_pCamera = m_pEntityManager->generateCameraEntity();
-    // m_eView = VIEW_SPHERICAL;
-
     m_pTimer.resetTimer();
     return bError; 
 }
@@ -219,37 +142,27 @@ bool GameManager::initializeGraphics( string sFileName )
 
 void GameManager::rotateCamera(vec2 pDelta)
 {
-    m_pCamera->orbit(pDelta);
+    m_pEntityManager->rotateCamera(pDelta);
 }
 
 void GameManager::zoomCamera(float fDelta)
 {
-    m_pCamera->zoom(fDelta);
-}
-
-void GameManager::switchView()
-{
-    //m_eView = (cView) (m_eView + 1);
-    //m_eView = m_eView >= VIEW_MAX ? VIEW_SPHERICAL : m_eView;
-    //
-    //switch ( m_eView )
-    //{
-    //    default:
-    //    case VIEW_SPHERICAL:
-    //        m_pCamera->setLookAt( vec3( 0.0 ) );
-    //    case VIEW_FOLLOW:
-    //        m_pCamera->positionCamera( mat4( 1.0 ) );
-    //        m_pCamera->setSteady( false );
-    //        break;
-    //    case VIEW_FPS:
-    //        m_pCamera->setSteady( true );
-    //        break;
-    //}
+    m_pEntityManager->zoomCamera(fDelta);
 }
 
 void GameManager::resizedWindow( int iHeight, int iWidth )
 {
     m_pEntityManager->updateHxW(iHeight, iWidth);
+}
+
+void GameManager::toggleDebugCamera()
+{
+    m_bUseDebugCamera = !m_bUseDebugCamera;
+    m_pEntityManager->toggleDebugCamera();
+    if (m_bUseDebugCamera)
+        glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    else
+        glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 // Calculates an intersection given screen coordinates.
@@ -258,9 +171,9 @@ void GameManager::resizedWindow( int iHeight, int iWidth )
 void GameManager::intersectPlane(float fX, float fY)
 {
     // Local Variables
-    vec3 vRay = m_pCamera->getCameraComponent()->getRay(fX, fY);
+    vec3 vRay = m_pEntityManager->getActiveCameraComponent()->getRay(fX, fY);
     vec3 vNormal = vec3(0.0, 1.0, 0.0); // normal of xz-plane
-    vec3 vCameraPos = m_pCamera->getCameraComponent()->getCameraWorldPos();
+    vec3 vCameraPos = m_pEntityManager->getActiveCameraComponent()->getCameraWorldPos();
     vec3 vIntersection = vec3(-1.0f);
     float fT = dot(vRay, vNormal);
 

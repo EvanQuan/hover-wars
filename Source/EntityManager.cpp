@@ -1,6 +1,15 @@
 #include "EntityManager.h"
 #include "EntityHeaders/StaticEntity.h"
 
+/*************\
+ * Constants *
+\*************/
+const vec3 WORLD_CENTER = vec3(0.0);
+const mat3 WORLD_COORDS = mat3(1.0);
+const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[0],
+                                  WORLD_CENTER, WORLD_COORDS[1],
+                                  WORLD_CENTER, WORLD_COORDS[2] };
+
 // Initialize Static Instance Variable
 EntityManager* EntityManager::m_pInstance = nullptr;
 
@@ -16,12 +25,22 @@ EntityManager::EntityManager()
     m_bPause = false;
     m_bDrawBoundingBoxes = false;
     m_bDrawSpatialMap = false;
+    m_bShadowDraw = false;
+    m_bUseDebugCamera = false;
     m_pMshMngr = MESH_MANAGER;
     m_pTxtMngr = TEXTURE_MANAGER;
     m_pScnLdr = SCENE_LOADER;
     m_pEmtrEngn = EMITTER_ENGINE;
     m_pPhysxMngr = PHYSICS_MANAGER;
     m_pSpatialMap = SPATIAL_DATA_MAP;
+    m_pShdrMngr = SHADER_MANAGER;
+
+    // For Rendering the World Axis
+    glGenVertexArrays(1, &m_pVertexArray);
+
+    // Generate Buffer and Set Attribute
+    m_pVertexBuffer = m_pShdrMngr->genVertexBuffer(m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof(vec3), GL_STATIC_DRAW);
+    m_pShdrMngr->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
 }
 
 // Gets the instance of the environment manager.
@@ -36,6 +55,10 @@ EntityManager* EntityManager::getInstance()
 EntityManager::~EntityManager()
 {
     purgeEnvironment();
+
+    // Delete World Axis Buffers
+    glDeleteBuffers(1, &m_pVertexBuffer);
+    glDeleteVertexArrays(1, &m_pVertexArray);
 
     // Delete Mesh Manager
     if (nullptr != m_pMshMngr)
@@ -64,6 +87,8 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     purgeEnvironment();
     pObjFctry->loadFromFile(sFileName);
+    // Generate Debug Camera
+    m_pCamera = generateCameraEntity();
 
     // Populate the Spatial Data Map now that everything has been loaded.
     m_pSpatialMap->populateStaticMap(&m_pMasterEntityList);
@@ -95,37 +120,112 @@ void EntityManager::purgeEnvironment()
     m_pActiveCameraComponent = nullptr;
 }
 
+// Resets the FBO to the default settings for a new render.
+void EntityManager::resetFBO()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, m_iWidth, m_iHeight);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_bShadowDraw = false;
+}
+
 // Name: renderEnvironment
 // Written by: James Coté
 // Description: Sets necessary lights into Shader Uniform Buffers and Renders
 //      all active Render Components.
 // TODO: Have Lighting load based on Spatial Data Structure
 void EntityManager::renderEnvironment( )
-{
+{    
     // Local Variables
-    ShaderManager* pShdrMngr = SHADER_MANAGER;
     const LightingComponent* pDirectionalLightComponent = nullptr;
 
     // Get Directional Light
     if (nullptr != m_pDirectionalLight)
+    {
         pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
+        //pDirectionalLightComponent->setupShadowFBO();
+        //pDirectionalLightComponent->setupPMVMatrices();
+        //m_bShadowDraw = true;
+        //doRender();
+        //resetFBO();
+    }
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
-    pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
+    m_pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
+    // Perform Final Render
+    setCameraPMVMatrices();
+    doRender();
+}
+
+// Performs Rendering of scene
+void EntityManager::doRender()
+{
     // Render all render components
     for (unordered_map<Mesh const*, RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
         pIter != m_pRenderingComponents.end();
         ++pIter)
         (*pIter).second->render();
 
-    // Render Emitters
-    if (nullptr != m_pEmtrEngn)
-        m_pEmtrEngn->renderEmitters();
+    // Don't render these if only doing a shadow pass
+    if (!m_bShadowDraw)
+    {
+        // Render Emitters
+        if (nullptr != m_pEmtrEngn)
+            m_pEmtrEngn->renderEmitters();
 
-    // Draw the Spatial Map for debuggin
-    if (m_bDrawSpatialMap)
-        m_pSpatialMap->drawMap();
+        // Draw the Spatial Map for debuggin
+        if (m_bDrawSpatialMap)
+            m_pSpatialMap->drawMap();
+
+#ifdef _DEBUG
+        renderAxis();
+#endif
+    }
+}
+
+// Draw World Axis Lines
+void EntityManager::renderAxis()
+{
+    // Increase Point Size for the Axis
+    glPointSize(10.f);
+
+    // Set up Shader and Vertex Array
+    glBindVertexArray(m_pVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::WORLD_SHDR));
+
+    // Render
+    glDrawArrays(GL_LINES, 0, AXIS_VERTS.size());
+    glDrawArrays(GL_POINTS, 0, AXIS_VERTS.size());
+
+    // Reset Point size
+    glPointSize(1.f);
+}
+
+// Sets the Camera Projection, Model and View Matrices from the active camera.
+void EntityManager::setCameraPMVMatrices()
+{
+    // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
+    //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
+    m_pCamera->setLookAt(m_pPlayerEntityList[PLAYER_1]->getPosition());
+    quat pQuat = m_pPlayerEntityList[PLAYER_1]->getRotation();
+    m_pCamera->setRotationQuat(pQuat);
+
+    // Get player 1's active camera to show
+    // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
+    // each with their own camera components. The game will render 4 times, each switching
+    // the player to retrieve the active camera.
+    const CameraComponent* pCamera;
+    if (m_bUseDebugCamera) // Camera locks to player and can use the mouse, no moving lag 
+        pCamera = m_pCamera->getCameraComponent();
+    else // Mouse cannot be used, and camera has moving lag 
+        pCamera = m_pPlayerEntityList[PLAYER_1]->getActiveCameraComponent();
+
+    mat4 pModelViewMatrix = pCamera->getToCameraMat();
+    mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
+
+    // Set camera information in Shaders before rendering
+    m_pShdrMngr->setProjectionModelViewMatrix(&pProjectionMatrix, &pModelViewMatrix);
 }
 
 /*********************************************************************************\
@@ -395,4 +495,17 @@ bool EntityManager::playerExists(ePlayer player)
 PlayerEntity* EntityManager::getPlayer(ePlayer player)
 {
     return m_pPlayerEntityList.at(player);
+}
+
+/*********************************************************************************\
+* Camera Management                                                              *
+\*********************************************************************************/
+void EntityManager::rotateCamera(vec2 pDelta)
+{
+    m_pCamera->orbit(pDelta);
+}
+
+void EntityManager::zoomCamera(float fDelta)
+{
+    m_pCamera->zoom(fDelta);
 }

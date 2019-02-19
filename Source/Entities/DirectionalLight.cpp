@@ -1,13 +1,6 @@
 #include "EntityHeaders/DirectionalLight.h"
 #include "EntityManager.h"
 
-/***********\
- * Defines *
-\***********/
-#define POSITION_SET 1000.0f
-#define SHADOW_HEIGHT 1024
-#define SHADOW_WIDTH 1024
-
 /*************\
  * Constants *
 \*************/
@@ -20,13 +13,13 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 DirectionalLight::DirectionalLight(int iID) 
     : Entity( iID, vec3( -1.0 ), DIRECTIONAL_LIGHT_ENTITY )
 {
-    glGenFramebuffers(1, &m_iFrameBuffer);
+    
 }
 
 // Destructor
 DirectionalLight::~DirectionalLight()
 {
-    glDeleteFramebuffers(1, &m_iFrameBuffer);
+  
 }
 
 /****************************************************************\
@@ -51,8 +44,4 @@ void DirectionalLight::initialize(const vec3* vDirection, const vec3* vAmbientCo
     // Create and Initialize the Lighting Component.
     m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
     m_pLightingComponent->initializeAsDirectionalLight(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
-    m_vPosition = -(*vDirection) * POSITION_SET;
-
-    // Generate Shadow Map
-    m_pShadowMap = TEXTURE_MANAGER->genDepthBuffer(SHADOW_WIDTH, SHADOW_HEIGHT);
 }
