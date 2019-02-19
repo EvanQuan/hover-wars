@@ -211,10 +211,7 @@ void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
     bool bTurnNeutral = true;
-    xMove = 0;
-    yMove = 0;
-    xTurn = 0;
-    yTurn = 0;
+    float xMove, yMove, xTurn, yTurn = 0;
     /*
     Copy the keys at the current snapshot so they can be iterated over while
     m_keys continues to be updated.
