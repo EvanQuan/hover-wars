@@ -184,7 +184,7 @@ void GameManager::intersectPlane(float fX, float fY)
     float fT = dot(vRay, vNormal);
 
     // Calculate Intersection
-    if (fT > FLT_EPSILON || fT < -FLT_EPSILON)
+    if ((fT > FLT_EPSILON) || (fT < -FLT_EPSILON))
     {
         // Is intersecting.
         fT = -(dot(vCameraPos, vNormal) / fT);
