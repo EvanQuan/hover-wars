@@ -193,8 +193,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\FMod;Dependencies\PhysX\debug;Dependencies\glfw\debug;Dependencies\glew\debug;Dependencies\FTGL\debug;Dependencies\FreeType\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;fmod_vc.lib;fmodL_vc.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;glew32.lib;ftgl_D.lib;freetype.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\FMod;Dependencies\PhysX\debug;Dependencies\glfw\debug;Dependencies\glew\debug;Dependencies\FTGL\release;Dependencies\FreeType\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;fmod_vc.lib;fmodL_vc.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;glew32.lib;ftgl.lib;freetype.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>

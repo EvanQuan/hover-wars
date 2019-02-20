@@ -30,6 +30,9 @@ UserInterface::~UserInterface()
 /*
 This visually updates the UserInterface to all value changes since last update.
 
+Under the scenes, this retrieves all needed the values from GameStats and
+displays them.
+
 @TODO
 */
 void UserInterface::update()
