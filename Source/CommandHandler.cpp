@@ -50,17 +50,21 @@ execute that command.
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
 {
-    if (!ENTITY_MANAGER->playerExists(player))
+    if (ENTITY_MANAGER->playerExists(player))
     {
-        return;
+        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+        executeCommandWithValidPlayer(playerEntity, command);
     }
+}
+
+void CommandHandler::executeCommandWithValidPlayer(PlayerEntity* player, eFixedCommand command)
+{
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
     case COMMAND_ABILITY_SPIKES:
     case COMMAND_ABILITY_TRAIL:
-        if (ENTITY_MANAGER->playerExists(player))
-            ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
+        player->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_DASH_BACK:
         break;
@@ -69,13 +73,13 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DASH_LEFT:
         break;
     case COMMAND_DASH_RIGHT:
-        ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
+        player->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
+        player->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
+        player->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
        break;
@@ -132,6 +136,8 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     }
 }
 
+
+
 /*
 Make a player of given joystickID execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
@@ -154,23 +160,23 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
 {
     if (ENTITY_MANAGER->playerExists(player))
     {
-        switch (command)
-        {
-        case COMMAND_MOVE:
-            ENTITY_MANAGER->getPlayer(player)->move(x, y);
-            break;
-        case COMMAND_TURN:
-            ENTITY_MANAGER->getPlayer(player)->turn(x);
-            break;
-        }
+        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+        executeCommandWithValidPlayer(playerEntity, command, x, y);
+    }
+}
+
+void CommandHandler::executeCommandWithValidPlayer(PlayerEntity *player, eVariableCommand command, float x, float y)
+{
+    switch (command)
+    {
+    case COMMAND_MOVE:
+        player->move(x, y);
+        break;
+    case COMMAND_TURN:
+        player->turn(x);
+        break;
     }
 
-#ifdef _DEBUG
-    // std::cout << "Player " << player << ": "
-    //           << eVariableCommandToString.at(command) << std::endl
-    //           << "\tx: " << x << std::endl
-    //           << "\ty: " << y << std::endl;
-#endif
 }
 
 /*
