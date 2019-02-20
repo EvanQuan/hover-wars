@@ -372,7 +372,7 @@ CommandHandler after the input has been processed.
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
-    for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
+    for (int button = BUTTON_A; button < MAX_BUTTON_INDEX; button++)
     {
         if (m_pJoystickButtonsRaw[joystickID][button] == GLFW_PRESS
             && m_joystickButtons[joystickID][button] != INPUT_PRESSED)
