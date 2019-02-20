@@ -8,6 +8,9 @@ UserInterface::UserInterface(GLFWwindow* window)
 {
     m_pWindow = window;
     m_pDisplayCount = 0;
+
+    m_pGameStats = GameStats::getInstance();
+
     initializeUserInterface();
 
 }
@@ -25,6 +28,7 @@ UserInterface::~UserInterface()
 {
     // Let go of Window
     m_pWindow = nullptr;
+    m_pGameStats = nullptr;
 }
 
 /*
@@ -36,6 +40,17 @@ displays them.
 @TODO
 */
 void UserInterface::update()
+{
+    updateScores();
+    updateCooldowns();
+}
+
+void UserInterface::updateScores()
+{
+
+}
+
+void UserInterface::updateCooldowns()
 {
 
 }

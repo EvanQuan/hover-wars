@@ -1,11 +1,14 @@
 #pragma once
 #include "stdafx.h"
 #include "Shader.h"
+#include "GameStats.h"
 
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
 /*
 An interface to all user interface features.
+
+Retrieves its values from GameStats
 
 - Display text, images
 */
@@ -19,9 +22,6 @@ public:
     void update();
 
     void setDisplayCount(int count);
-    void addScore(int joystickID, int score);
-    void subtractScore(int joystickID, int score);
-    void resetScore(int joystickID);
 
 private:
     UserInterface(GLFWwindow* window);
@@ -29,9 +29,18 @@ private:
 
     void setScore(int joystickID, int score);
     void renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
-    void initializeScores();
     void initializeUserInterface();
+
+    // Score
+    void initializeScores();
+    void updateScores();
+    void addScore(int joystickID, int score);
+    void subtractScore(int joystickID, int score);
+    void resetScore(int joystickID);
+
+    // Cooldowns
     void initializeCooldowns();
+    void updateCooldowns();
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {
@@ -48,7 +57,9 @@ private:
     int m_pDisplayCount;
 
     // Window reference
-    GLFWwindow* m_pWindow;
+    GLFWwindow *m_pWindow;
+
+    GameStats *m_pGameStats;
 };
 
 
