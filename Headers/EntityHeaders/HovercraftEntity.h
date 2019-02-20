@@ -13,8 +13,6 @@
  * Defines *
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
-#define FRONT_CAMERA            0
-#define BACK_CAMERA             1
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -27,9 +25,7 @@
 #define AVERAGE_POSITION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
 #define PAST_CAMERA_ROTATIONS   100
 #define AVERAGE_ROTATION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_ROTATIONS))
-/*
 
-*/
 #define FRONT_CAMERA_LONGITUDE  -90.0f  // theta
 #define FRONT_CAMERA_LATITUDE   60.0f   // phi
 #define FRONT_RADIUS            10.0f   // r
@@ -37,6 +33,19 @@
 #define BACK_CAMERA_LONGITUDE   -90.0f  // theta
 #define BACK_CAMERA_LATITUDE    45.0f   // phi
 #define BACK_RADIUS             15.0f   //  r
+
+/*
+Determines the rate at the which the camera moves to catch up to player
+movement. The greater it is, the faster the camera moves (the less it lags
+behind).
+*/
+#define CAMERA_MOVEMENT_MULTIPLIER 0.004f
+/*
+Determines the rate at which the camera rotates to catch up be behind the
+player. The greater it is, the faster the camera rotates (the less it lags
+behind).
+*/
+#define CAMERA_ROTATION_MULTIPLIER 0.001f
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
 const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_RADIUS); // (Theta, Phi, Radius)
@@ -68,7 +77,8 @@ public:
     void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
-    quat getRotation() { return m_pPhysicsComponent->getRotation(); }
+    vec3 getCameraPosition() { return m_vCurrentCameraPosition; }
+    quat getCameraRotation() { return m_qCurrentCameraRotation; }
 
     const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCameraIndex]; }
 
@@ -93,10 +103,22 @@ private:
     queue<vec3> m_vPastPositions;
     queue<quat> m_qPastRotations;
 
+    /*
+    These should lag behind
+
+    m_vPostion : the desired position
+
+    m_pPhysicsComponent->getRotation() : the desired rotation
+    */
+    vec3 m_vCurrentCameraPosition;
+    quat m_qCurrentCameraRotation;
+
     // Private Functions
     void initializeCameraLookAts();
     // m_vPositionTotal += position;
-    void updateCameraLookAts();
+    void updateCameraLookAts(float fTimeInMilliseconds);
+    void updateCameraPosition(float fTimeInMilliseconds);
+    void updateCameraRotation(float fTimeInMilliseconds);
 
     // Abilities
     void shootRocket();

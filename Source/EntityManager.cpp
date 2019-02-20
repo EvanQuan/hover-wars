@@ -171,11 +171,15 @@ void EntityManager::doRender()
     {
         // Render Emitters
         if (nullptr != m_pEmtrEngn)
-            m_pEmtrEngn->renderEmitters();
+        {
+           m_pEmtrEngn->renderEmitters();
+        }
 
         // Draw the Spatial Map for debuggin
         if (m_bDrawSpatialMap)
+        {
             m_pSpatialMap->drawMap();
+        }
 
 #ifdef _DEBUG
         renderAxis();
@@ -206,8 +210,8 @@ void EntityManager::setCameraPMVMatrices()
 {
     // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
     //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
-    m_pCamera->setLookAt(m_pPlayerEntityList[PLAYER_1]->getPosition());
-    quat pQuat = m_pPlayerEntityList[PLAYER_1]->getRotation();
+    m_pCamera->setLookAt(m_pPlayerEntityList[PLAYER_1]->getCameraPosition());
+    quat pQuat = m_pPlayerEntityList[PLAYER_1]->getCameraRotation();
     m_pCamera->setRotationQuat(pQuat);
 
     // Get player 1's active camera to show
