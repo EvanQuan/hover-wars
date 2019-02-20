@@ -8,6 +8,7 @@
 #include "EntityHeaders/InteractableEntity.h"
 #include "EntityHeaders/Entity.h"
 #include "EntityHeaders/PlayerEntity.h"
+#include "EntityHeaders/BotEntity.h"
 #include "EntityHeaders/Camera.h"
 #include "EntityComponentHeaders/EntityComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
@@ -49,6 +50,7 @@ public:
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
     void generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
+    void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
 
@@ -77,7 +79,9 @@ public:
     The command handler can get all the players to directly communicate to.
     */
     PlayerEntity* getPlayer(ePlayer player);
-    bool playerExists(ePlayer);
+    bool playerExists(ePlayer player);
+    BotEntity* getBot(eBot bot);
+    bool botExists(eBot bot);
 
 private:
     EntityManager();
@@ -89,16 +93,26 @@ private:
     int m_iHeight, m_iWidth;
     inline int getNewEntityID() { return ++m_iEntityIDPool; }
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
-    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
-    vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
-    vector<PlayerEntity*>                           m_pPlayerEntityList;    
+
+    // Master
     vector<unique_ptr<Entity>>                      m_pMasterEntityList;
+    vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
+    // Phycis
+    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
+    // Players
+    vector<PlayerEntity*>                           m_pPlayerEntityList;    
+    // Bots
+    vector<BotEntity*>                              m_pBotEntityList;    
+    // Rendering
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
+    // Cameras
     vector<CameraComponent*>                        m_pCameraComponents;
-    vector<LightingComponent*>                      m_pLights;
     CameraComponent*                                m_pActiveCameraComponent;
+    //  Lighting
+    vector<LightingComponent*>                      m_pLights;
     vector<AnimationComponent*>                     m_pAnimationComponents;
     DirectionalLight*                               m_pDirectionalLight;
+    // Interactable
     InteractableEntity*                             m_pBillboardTesting;
 
     // Manage Pointers for Deletion.

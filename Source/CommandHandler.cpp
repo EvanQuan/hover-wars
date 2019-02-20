@@ -59,6 +59,11 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
 
 void CommandHandler::execute(eBot bot, eFixedCommand command)
 {
+    if (ENTITY_MANAGER->botExists(bot))
+    {
+        BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
+        execute(botEntity, command);
+    }
 }
 
 void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command)
@@ -171,7 +176,11 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
 
 void CommandHandler::execute(eBot bot, eVariableCommand command, float x, float y)
 {
-
+    if (ENTITY_MANAGER->botExists(bot))
+    {
+        BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
+        execute(botEntity, command, x, y);
+    }
 }
 
 void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
