@@ -46,8 +46,10 @@ EntityManager::EntityManager()
 // Gets the instance of the environment manager.
 EntityManager* EntityManager::getInstance()
 {
-    if ( nullptr == m_pInstance )
+    if (nullptr == m_pInstance)
+    {
         m_pInstance = new EntityManager();
+    }
     return m_pInstance;
 }
 
@@ -61,23 +63,18 @@ EntityManager::~EntityManager()
     glDeleteVertexArrays(1, &m_pVertexArray);
 
     // Delete Mesh Manager
-    if (nullptr != m_pMshMngr)
-        delete m_pMshMngr;
+    if (nullptr != m_pMshMngr) { delete m_pMshMngr; }
     
     // Delete Texture Manager
-    if (nullptr != m_pTxtMngr)
-        delete m_pTxtMngr;
+    if (nullptr != m_pTxtMngr) { delete m_pTxtMngr; }
 
     // Delete Scene Loader
-    if (nullptr != m_pScnLdr)
-        delete m_pScnLdr;
+    if (nullptr != m_pScnLdr) { delete m_pScnLdr; }
 
     // Delete Emitter Engine
-    if (nullptr != m_pEmtrEngn)
-        delete m_pEmtrEngn;
+    if (nullptr != m_pEmtrEngn) { delete m_pEmtrEngn; }
 
-    if (nullptr != m_pSpatialMap)
-        delete m_pSpatialMap;
+    if (nullptr != m_pSpatialMap) { delete m_pSpatialMap; }
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -98,7 +95,9 @@ void EntityManager::initializeEnvironment(string sFileName)
 void EntityManager::initializeSpatialMap(float fLength, float fWidth, float fTileSize)
 {
     if (!m_pSpatialMap->isInitialized())     // Only Initialize the Spatial Map once. Unload everything first to initialize again.
+    {
         m_pSpatialMap->initializeMap(fLength, fWidth, fTileSize);
+    }
 }
 
 // Clears out the entire environment
@@ -481,7 +480,7 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 }
 
 /*********************************************************************************\
-* Command Management                                                    *
+* Command Management                                                             *
 \*********************************************************************************/
 
 bool EntityManager::playerExists(ePlayer player)
@@ -493,6 +492,18 @@ PlayerEntity* EntityManager::getPlayer(ePlayer player)
 {
     return m_pPlayerEntityList.at(player);
 }
+
+bool EntityManager::botExists(eBot bot)
+{
+    return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
+}
+
+BotEntity* EntityManager::getBot(eBot bot)
+{
+    return m_pBotEntityList.at(bot);
+}
+
+
 
 /*********************************************************************************\
 * Camera Management                                                              *
