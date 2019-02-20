@@ -52,11 +52,14 @@ public:
         {COMMAND_DASH_FORWARD,           "Dash Forward"},
         {COMMAND_DASH_LEFT,              "Dash Left"},
         {COMMAND_DASH_RIGHT,             "Dash Right"},
-        {COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
         {COMMAND_MENU_BACK,              "Menu Back"},
         {COMMAND_MENU_PAUSE,             "Menu Pause"},
         {COMMAND_MENU_START,             "Menu Start"},
         {COMMAND_INVALID_FIXED,          "Invalid"},
+#ifndef NDEBUG
+
+        {COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
+#endif
     };
 
     std::map<eVariableCommand, const char*> eVariableCommandToString =
@@ -199,7 +202,6 @@ private:
         {BUTTON_Y,              COMMAND_DASH_FORWARD},
         {BUTTON_X,              COMMAND_DASH_LEFT},
         {BUTTON_B,              COMMAND_DASH_RIGHT},
-        {BUTTON_START,          COMMAND_DEBUG_TOGGLE_WIREFRAME},
         {BUTTON_BACK,           COMMAND_MENU_BACK},
         {BUTTON_LEFT_STICK,     COMMAND_INVALID_FIXED},
         {BUTTON_RIGHT_STICK,    COMMAND_INVALID_FIXED},
@@ -209,6 +211,12 @@ private:
         {BUTTON_LEFT,           COMMAND_INVALID_FIXED},
         {BUTTON_UNKNOWN1,       COMMAND_INVALID_FIXED},
         {BUTTON_UNKNOWN2,       COMMAND_INVALID_FIXED},
+#ifdef NDEBUG
+
+        {BUTTON_START,          COMMAND_INVALID_FIXED},
+#else
+        {BUTTON_START,          COMMAND_DEBUG_TOGGLE_WIREFRAME},
+#endif
     };
 
     map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
