@@ -333,7 +333,7 @@ void CommandHandler::executeJoystickCommands()
             InputHandler::eInputState *buttons = m_pInputHandler->m_joystickButtons[joystickID];
 
             // Check buttons
-            for (int button = BUTTON_A; button < MAX_BUTTON_INDEX; button++)
+            for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
             {
                 switch (buttons[button])
                 {
@@ -353,14 +353,14 @@ void CommandHandler::executeJoystickCommands()
 
             // NOTE: With works with the assumption that triggers are mapped to fixed commands
             // If we decide that triggers work better for variable commands, then we will need to change this.
-            if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_IS_NETURAL)
-            {
-                execute((ePlayer) joystickID, axisToFixedCommand(AXIS_LEFT_TRIGGER));
-            }
-            if (axes[AXIS_RIGHT_TRIGGER] > TRIGGER_IS_NETURAL)
-            {
-                execute((ePlayer) joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
-            }
+            // if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_IS_NETURAL)
+            // {
+                // execute((ePlayer) joystickID, axisToFixedCommand(AXIS_LEFT_TRIGGER));
+            // }
+            // if (axes[AXIS_RIGHT_TRIGGER] > TRIGGER_IS_NETURAL)
+            // {
+                // execute((ePlayer) joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
+            // }
 
             // Check axes
             // Joystick axes will not be remappable, so no need to make code generalizable

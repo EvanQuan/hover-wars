@@ -218,8 +218,7 @@ private:
         {BUTTON_RIGHT,          COMMAND_INVALID_FIXED},
         {BUTTON_DOWN,           COMMAND_INVALID_FIXED},
         {BUTTON_LEFT,           COMMAND_INVALID_FIXED},
-        {MAX_BUTTON_INDEX,       COMMAND_INVALID_FIXED},
-        {BUTTON_UNKNOWN2,       COMMAND_INVALID_FIXED},
+        {MAX_BUTTON_INDEX,      COMMAND_INVALID_FIXED},
 #ifdef NDEBUG
 
         {BUTTON_START,          COMMAND_INVALID_FIXED},
@@ -238,6 +237,8 @@ private:
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
         {BUTTON_BACK,           COMMAND_MENU_PAUSE},
         {BUTTON_START,          COMMAND_MENU_START},
+        {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL},
+        {TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
     };
 
     map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
@@ -245,6 +246,9 @@ private:
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
     };
 
+    /*
+    @Deprecated
+    */
     map<int, eFixedCommand> m_axisToFixedCommand =
     {
         {AXIS_LEFT_TRIGGER,     COMMAND_ABILITY_TRAIL},
