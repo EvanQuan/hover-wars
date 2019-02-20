@@ -16,7 +16,7 @@ public:
 
     ~FontManager();
 
-    FTFont* GetFont(const char *filename, int size);
+   // FTFont* GetFont(const string *filename, int size);
 
 private:
     // Hide these 'cause this is a singleton.
@@ -25,5 +25,5 @@ private:
     static FontManager* m_pInstance;
 
     // container for fonts
-    map<string, FTFont*> fonts;
+   // map<string, FTFont*> fonts;
 };

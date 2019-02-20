@@ -73,8 +73,6 @@ int main()
             iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
             m_shaderManager = SHADER_MANAGER;
 
-
-
         #ifdef USING_WINDOWS
             m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
         #endif

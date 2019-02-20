@@ -33,9 +33,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-// FTGL
-#include <FTGL/ftgl.h>
-
 // PhysX
 #include "PxPhysicsAPI.h"
 
