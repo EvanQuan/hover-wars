@@ -6,6 +6,7 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "InteractableEntity.h"
 #include "SpatialDataMap.h"
+#include "GameStats.h"
 #include <queue>
 
 /***********\
@@ -22,7 +23,7 @@
 // Camera Defines
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
-#define PAST_CAMERA_POSITIONS   200
+#define PAST_CAMERA_POSITIONS   3000 // 200
 #define AVERAGE_POSITION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
 #define PAST_CAMERA_ROTATIONS   100
 #define AVERAGE_ROTATION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_ROTATIONS))
