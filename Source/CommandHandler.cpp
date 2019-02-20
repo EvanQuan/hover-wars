@@ -50,17 +50,21 @@ execute that command.
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
 {
-    if (!ENTITY_MANAGER->playerExists(player))
+    if (ENTITY_MANAGER->playerExists(player))
     {
-        return;
+        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+        executeCommandWithValidPlayer(playerEntity, command);
     }
+}
+
+void CommandHandler::executeCommandWithValidPlayer(PlayerEntity* player, eFixedCommand command)
+{
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
     case COMMAND_ABILITY_SPIKES:
     case COMMAND_ABILITY_TRAIL:
-        if (ENTITY_MANAGER->playerExists(player))
-            ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
+        player->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_DASH_BACK:
         break;
@@ -69,13 +73,13 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DASH_LEFT:
         break;
     case COMMAND_DASH_RIGHT:
-        ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
+        player->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToFront();
+        player->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        ENTITY_MANAGER->getPlayer(player)->setActiveCameraToBack();
+        player->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
        break;
@@ -131,6 +135,8 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
 #endif
     }
 }
+
+
 
 /*
 Make a player of given joystickID execute a eVariableCommand.

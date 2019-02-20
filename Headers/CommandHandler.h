@@ -78,6 +78,7 @@ private:
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
 
+    void executeCommandWithValidPlayer(PlayerEntity *player, eFixedCommand);
     // Internal variables
     // For keyboard command handling
     eFixedCommand m_pFixedCommand;
