@@ -124,15 +124,16 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 };
 
 /* Manager Defines */
+#define EMITTER_ENGINE      EmitterEngine::getInstance()
 #define ENTITY_MANAGER      EntityManager::getInstance()
 #define GAME_MANAGER        GameManager::getInstance()
+#define GAME_STATS          GameStats::getInstance()
 #define MESH_MANAGER        MeshManager::getInstance()
-#define SHADER_MANAGER      ShaderManager::getInstance()
-#define TEXTURE_MANAGER     TextureManager::getInstance()
 #define PHYSICS_MANAGER     PhysicsManager::getInstance()
 #define SCENE_LOADER        SceneLoader::getInstance()
-#define EMITTER_ENGINE      EmitterEngine::getInstance()
+#define SHADER_MANAGER      ShaderManager::getInstance()
 #define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
+#define TEXTURE_MANAGER     TextureManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.
