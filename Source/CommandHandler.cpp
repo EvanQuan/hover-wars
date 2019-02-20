@@ -160,23 +160,23 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
 {
     if (ENTITY_MANAGER->playerExists(player))
     {
-        switch (command)
-        {
-        case COMMAND_MOVE:
-            ENTITY_MANAGER->getPlayer(player)->move(x, y);
-            break;
-        case COMMAND_TURN:
-            ENTITY_MANAGER->getPlayer(player)->turn(x);
-            break;
-        }
+        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+        executeCommandWithValidPlayer(playerEntity, command, x, y);
+    }
+}
+
+void CommandHandler::executeCommandWithValidPlayer(PlayerEntity *player, eVariableCommand command, float x, float y)
+{
+    switch (command)
+    {
+    case COMMAND_MOVE:
+        player->move(x, y);
+        break;
+    case COMMAND_TURN:
+        player->turn(x);
+        break;
     }
 
-#ifdef _DEBUG
-    // std::cout << "Player " << player << ": "
-    //           << eVariableCommandToString.at(command) << std::endl
-    //           << "\tx: " << x << std::endl
-    //           << "\ty: " << y << std::endl;
-#endif
 }
 
 /*
