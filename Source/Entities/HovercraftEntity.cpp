@@ -136,12 +136,12 @@ void HovercraftEntity::useAbility(eAbility ability)
 
 void HovercraftEntity::move(float x, float y)
 {
-    PHYSICS_MANAGER->movePlayer(m_iID, x, y);
+    m_pPhysicsComponent->movePlayer(x, y);
 }
 
 void HovercraftEntity::turn(float x)
 {
-    PHYSICS_MANAGER->rotatePlayer(m_iID, x);
+    m_pPhysicsComponent->rotatePlayer(x);
 }
 
 void HovercraftEntity::shootRocket()

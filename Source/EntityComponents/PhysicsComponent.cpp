@@ -2,12 +2,36 @@
 #include "stdafx.h"
 #include <iostream>
 
+/*
+Angular momementum.
+
+The greater this value, the faster the maximum turning rate.
+*/
+#define ANGULAR_MOMENTUM 3.0f
+/*
+This determines the amount of force applied to the car when movement is intiated.
+The greater the force, the faster it will accelerate.
+
+Force : Newtons
+*/
+#define MOVEMENT_FORCE 40.0f // 10000.0f
+/*
+This determines the rate of decceleration when the car input movement is in neutral.
+A braking force is applied when this is the case to help combat drifting.
+
+NOTE: This may not actually do anything a the moment.
+
+Force : Newtons
+*/
+#define BRAKE_FORCE 100000.0f // 1000.0f
+
 // Default Constructor: Requires necessary information to pass to Parent Constructor
 //      Parameters: iEntityID - ID reference for Entity that initializes this Component.
 //                              Necessary for messaging or associating events with this entity 
 //                              as needed.
 //                  iComponentID - ID reference for this Component to identify it within the
 //                                 Entity Manager if needed.
+
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     : EntityComponent(iEntityID, iComponentID)
 {
@@ -18,7 +42,55 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
 }
+void PhysicsComponent::releaseAllControls()
+{
+    gVehicleNoDrive->setDriveTorque(0, 0.0f);
+    gVehicleNoDrive->setDriveTorque(1, 0.0f);
+    gVehicleNoDrive->setDriveTorque(2, 0.0f);
+    gVehicleNoDrive->setDriveTorque(3, 0.0f);
 
+    gVehicleNoDrive->setBrakeTorque(0, 0.0f);
+    gVehicleNoDrive->setBrakeTorque(1, 0.0f);
+    gVehicleNoDrive->setBrakeTorque(2, 0.0f);
+    gVehicleNoDrive->setBrakeTorque(3, 0.0f);
+
+    gVehicleNoDrive->setSteerAngle(0, 0.0f);
+    gVehicleNoDrive->setSteerAngle(1, 0.0f);
+    gVehicleNoDrive->setSteerAngle(2, 0.0f);
+    gVehicleNoDrive->setSteerAngle(3, 0.0f);
+}
+void PhysicsComponent::movePlayer(float x, float y) {
+    float angle = -1 * atan(x / y);
+    float distance = sqrt(x*x + y * y);
+    if (y > 0) {
+        distance = -distance;
+    }
+    if (distance > 1) {
+        distance = 1;
+    }
+    if (x != 0 || y != 0) {
+        releaseAllControls();
+        PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
+        PxTransform globalTransform = carBody->getGlobalPose();
+        PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+        carBody->addForce(vForce * MOVEMENT_FORCE);
+
+        gVehicleNoDrive->setSteerAngle(0, angle);
+        gVehicleNoDrive->setSteerAngle(1, angle);
+        gVehicleNoDrive->setSteerAngle(2, angle);
+        gVehicleNoDrive->setSteerAngle(3, angle);
+    }
+    else {
+        releaseAllControls();
+        gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
+        gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
+        gVehicleNoDrive->setBrakeTorque(2, BRAKE_FORCE);
+        gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
+    }
+}
+void PhysicsComponent::rotatePlayer(float x) {
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
+}
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
 {

@@ -30,13 +30,6 @@ public:
     static PhysicsManager* getInstance();    
     virtual ~PhysicsManager();
 
-    void forwardKey();
-    void stopKey();
-    void leftKey();
-    void rightKey();
-    void movePlayer(int entityID, float x, float y);
-    void rotatePlayer(int entityID, float x);
-
     // Update function for Physics, technically called every frame, but
     //    internally can stall its update until a certain tick time.
     //    fTimeDelta is given in seconds and is usually a fraction of a second.
@@ -75,7 +68,6 @@ private:
 
     snippetvehicle::VehicleDesc initVehicleDesc();
 
-    void releaseAllControls();
     // Singleton Implementation: make all possible constructors private and inaccessable
     //        to disallow multiple instance of the physics manager.
     static PhysicsManager *m_pInstance;
