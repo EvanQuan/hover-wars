@@ -372,6 +372,7 @@ CommandHandler after the input has been processed.
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
+    // Update actual buttons
     for (int button = BUTTON_A; button < MAX_BUTTON_INDEX; button++)
     {
         if (m_pJoystickButtonsRaw[joystickID][button] == GLFW_PRESS
@@ -384,5 +385,16 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
         {
             m_joystickButtons[joystickID][button] = INPUT_JUST_RELEASED;
         }
+    }
+    // Update triggers as buttons
+    if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] > TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_LEFT] != INPUT_PRESSED)
+    {
+        m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_PRESSED;
+    }
+    if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] > TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_RIGHT] != INPUT_PRESSED)
+    {
+        m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_PRESSED;
     }
 }
