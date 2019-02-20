@@ -1,14 +1,13 @@
 #pragma once
 #include "EntityHeaders/HovercraftEntity.h"
 
-class PlayerEntity :
+class BotEntity :
     public HovercraftEntity
 {
 public:
-    PlayerEntity(int iID, const vec3* vPosition);
-    virtual ~PlayerEntity();
+    BotEntity(int iID, const vec3* vPosition);
+    virtual ~BotEntity();
 
 private:
-
 };
 
