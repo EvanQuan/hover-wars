@@ -165,7 +165,7 @@ plane {
 		0
 	}
 	+shader {
-		plane_shdr
+		blinn_phong_shdr
 	}
 }
 

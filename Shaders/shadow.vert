@@ -4,6 +4,8 @@ layout (std140, binding = 0) uniform Matrices
 	mat4 projection;		// LightSpaceMatrix
 	mat4 modelview;			// Model Matrix
 	mat4 modelviewInv;
+	mat4 dirLightSpaceMat;
+	mat4 spotLightSpaceMat[4];
 };
 
 // Layouts:

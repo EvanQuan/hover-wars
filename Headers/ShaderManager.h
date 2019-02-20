@@ -19,7 +19,6 @@ public:
         LIGHT_SHDR = 0,
         TOON_SHDR,
         BLINN_PHONG_SHDR,
-        PLANE_SHDR,
         PARTICLE_SHDR,
         WORLD_SHDR,
         BILLBOARD_SHDR,
@@ -38,6 +37,8 @@ public:
     bool initializeShaders();
 
     void setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat );
+    void setDirectionalModelMatrix(const mat4* pDirModelMat);
+    void setSpotLightModelMatrices(const void* pSpotLightData, GLsizeiptr iSize);
     void setLightsInUniformBuffer(const LightingComponent* pDirectionalLight, const vector< LightingComponent* >* pPointLights );
 
     // Get the specified program for using shaders for rendering
@@ -50,7 +51,6 @@ public:
                      GLint iChunkSize, GLsizei iStride, const void *pOffset);
     GLuint genIndicesBuffer( GLuint iVertArray,
                              const void* pData, GLsizeiptr pSize, GLenum usage );
-  
     GLuint genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage);
 
     // Shader Uniform Variable Manipulation 
