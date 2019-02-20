@@ -20,20 +20,20 @@ EntityManager::EntityManager()
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     // Initialize Local Variables
-    m_iHeight = START_HEIGHT;
-    m_iWidth = START_WIDTH;
-    m_bPause = false;
+    m_iHeight            = START_HEIGHT;
+    m_iWidth             = START_WIDTH;
+    m_bPause             = false;
     m_bDrawBoundingBoxes = false;
-    m_bDrawSpatialMap = false;
-    m_bShadowDraw = false;
-    m_bUseDebugCamera = false;
-    m_pMshMngr = MESH_MANAGER;
-    m_pTxtMngr = TEXTURE_MANAGER;
-    m_pScnLdr = SCENE_LOADER;
-    m_pEmtrEngn = EMITTER_ENGINE;
-    m_pPhysxMngr = PHYSICS_MANAGER;
-    m_pSpatialMap = SPATIAL_DATA_MAP;
-    m_pShdrMngr = SHADER_MANAGER;
+    m_bDrawSpatialMap    = false;
+    m_bShadowDraw        = false;
+    m_bUseDebugCamera    = false;
+    m_pMshMngr           = MESH_MANAGER;
+    m_pTxtMngr           = TEXTURE_MANAGER;
+    m_pScnLdr            = SCENE_LOADER;
+    m_pEmtrEngn          = EMITTER_ENGINE;
+    m_pPhysxMngr         = PHYSICS_MANAGER;
+    m_pSpatialMap        = SPATIAL_DATA_MAP;
+    m_pShdrMngr          = SHADER_MANAGER;
 
     // For Rendering the World Axis
     glGenVertexArrays(1, &m_pVertexArray);
@@ -285,13 +285,28 @@ void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, cons
     m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
-// Generate a Player Entity at a starting position with a given Material, scale, mesh location and shader type.
+/*
+Generate a Player Entity at a starting position with a given Material, scale,
+mesh location and shader type.
+*/
 void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
     unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
-    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
     m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
+}
+
+/*
+Generate a Bot Entity at a starting position with a given Material, scale,
+mesh location and shader type.
+*/
+void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
+{
+    unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eBot>(m_pBotEntityList.size()));
+    m_pBotEntityList.push_back(pNewBot.get()); 
+    m_pMasterEntityList.push_back(move(pNewBot));
 }
 
 // Generates and Returns an Interactable Entity with a specified Position.

@@ -9,3 +9,13 @@ PlayerEntity::~PlayerEntity()
 {
 
 }
+
+void PlayerEntity::initialize(const string& sFileName,
+                              const ObjectInfo* pObjectProperties,
+                              const string& sShaderType,
+                              float fScale,
+                              ePlayer playerID)
+{
+    HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
+    m_ePlayerID = playerID;
+}

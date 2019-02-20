@@ -55,12 +55,11 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
     m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
 }
 
-// Initializes Player Entity information
-void HovercraftEntity::initializePlayer(const string& sFileName,
-                                    const ObjectInfo* pObjectProperties,
-                                    const string& sShaderType,
-                                    float fScale,
-                                    ePlayer ePlayerNumber)
+// Initializes Entity information
+void HovercraftEntity::initialize(const string& sFileName,
+                                  const ObjectInfo* pObjectProperties,
+                                  const string& sShaderType,
+                                  float fScale)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
@@ -82,8 +81,6 @@ void HovercraftEntity::initializePlayer(const string& sFileName,
     
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
-
-    m_ePlayerNumber = ePlayerNumber;
 }
 
 /********************************************************************************************************\
