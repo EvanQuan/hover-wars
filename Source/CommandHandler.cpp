@@ -57,6 +57,10 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     }
 }
 
+void CommandHandler::execute(eBot bot, eFixedCommand command)
+{
+}
+
 void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command)
 {
     switch (command)
@@ -165,6 +169,11 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
     }
 }
 
+void CommandHandler::execute(eBot bot, eVariableCommand command, float x, float y)
+{
+
+}
+
 void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
 {
     switch (command)
@@ -185,6 +194,7 @@ Execute all the commands for a given frame. This should be called every frame up
 void CommandHandler::executeAllCommands()
 {
     executeInputCommands();
+    executeAllBotCommands();
 }
 
 /*
@@ -368,4 +378,12 @@ void CommandHandler::debugToggleWireframe()
     {
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
+}
+
+/*
+TODO
+*/
+void CommandHandler::executeAllBotCommands()
+{
+
 }

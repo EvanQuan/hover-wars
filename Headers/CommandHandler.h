@@ -39,6 +39,10 @@ public:
     */
     void executeInputCommands();
 
+    /*
+    Executre all commands from bots
+    */
+    void executeAllBotCommands();
 
     // For input debugging
     std::map<eFixedCommand, const char*> eFixedCommandToString =
