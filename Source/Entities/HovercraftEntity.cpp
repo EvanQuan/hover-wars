@@ -93,7 +93,9 @@ vertical angle, it must record and use the initial horizontal
 */
 void HovercraftEntity::initializeCameraLookAts()
 {
-    // TODO
+    m_vCurrentCameraPosition = m_vPosition;
+    // null pointer exception after this if done here
+    // m_qCurrentCameraRotation = m_pPhysicsComponent->getRotation();
 }
 /*
 Updates an average for this player's cameras. This is what makes the camera
@@ -107,35 +109,23 @@ void HovercraftEntity::updateCameraLookAts(float fTimeInMilliseconds)
 
 void HovercraftEntity::updateCameraRotation(float fTimeInMilliseconds)
 {
-    m_qCurrentCameraRotation = m_pPhysicsComponent->getRotation();
+    quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
+
+    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER;
+
     m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
 }
 
 void HovercraftEntity::updateCameraPosition(float fTimeInMilliseconds)
 {
-    // Queue new position and add to total
-    m_vPastPositions.push(m_vPosition);
-    m_vPositionTotal += m_vPosition;
+    vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
 
-    // Keep Queue within limits of Average
-    if (m_vPastPositions.size() > PAST_CAMERA_POSITIONS)
-    {
-        m_vPositionTotal -= m_vPastPositions.front();
-        m_vPastPositions.pop();
-    }
-
-    // Calculate Average Position and set new look at for Camera Components
-    vec3 vAveragePosition = m_vPositionTotal * AVERAGE_POSITION_MULTIPLIER;
-
-    // Iterpolate between current position and average position to prevent
-    // rough camera changes as the average changes
-    // TODO This seems to make things smoother. Will need more testing once physics rumbling is solved.
-    vAveragePosition = (vAveragePosition + m_vPosition) * 0.5;
+    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
-    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragePosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragePosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
 
 }
 
