@@ -356,16 +356,22 @@ void SceneLoader::handleProperty( vector< string >& sData, const string& sIndica
     string sDataTrimmed = trimString( sData[ 0 ] );
 
     if (MATERIAL == sIndicator)
+    {
         grabMaterial(sData);
+    }
     else if (BOUNDING == sIndicator)
+    {
         grabBoundingBox(sData);
+    }
     else if (MESH == sIndicator)
     {
         m_sMeshProperty = sDataTrimmed;
         m_fMeshScaleProperty = sData.size() > 1 ? stof(sData[1]) : 1.0f;
     }
     else if (SHADER == sIndicator)
+    {
         m_sShaderProperty = sDataTrimmed;
+    }
 }
 
 // Grabs a Material from the given data

@@ -22,7 +22,7 @@ HovercraftEntity::~HovercraftEntity()
 }
 
 /****************************************************************\
- * Inherited Pure Virtual Functions                                *
+ * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
 void HovercraftEntity::update(float fTimeInMilliseconds)

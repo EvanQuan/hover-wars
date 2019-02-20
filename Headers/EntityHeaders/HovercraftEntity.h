@@ -13,8 +13,6 @@
  * Defines *
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
-#define FRONT_CAMERA            0
-#define BACK_CAMERA             1
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -68,7 +66,8 @@ public:
     void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
-    quat getRotation() { return m_pPhysicsComponent->getRotation(); }
+    vec3 getCameraPosition() { return m_vPosition; }
+    quat getCameraRotation() { return m_pPhysicsComponent->getRotation(); }
 
     const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCameraIndex]; }
 
@@ -92,6 +91,9 @@ private:
     quat m_qRotationTotal;
     queue<vec3> m_vPastPositions;
     queue<quat> m_qPastRotations;
+
+    vec3 m_vCurrentCameraPosition;
+    quat m_vCurrentCameraRotation;
 
     // Private Functions
     void initializeCameraLookAts();
