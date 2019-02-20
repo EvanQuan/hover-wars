@@ -23,12 +23,12 @@
 #define BACK_CAMERA             1
 
 #define FRONT_CAMERA_LONGITUDE  -90.0f  // theta
-#define FRONT_CAMERA_LATITUDE   70.0f   // phi
+#define FRONT_CAMERA_LATITUDE   80.0f   // phi
 #define FRONT_RADIUS            10.0f   // r
 
 #define BACK_CAMERA_LONGITUDE   -90.0f  // theta
-#define BACK_CAMERA_LATITUDE    45.0f   // phi
-#define BACK_RADIUS             10.0f   // r
+#define BACK_CAMERA_LATITUDE    40.0f   // phi
+#define BACK_RADIUS             12.0f   // r
 
 /*
 Determines the rate at the which the camera moves to catch up to player
@@ -50,7 +50,7 @@ The position of the camera relative to the position of the player. Both vectors
 will be added together to form the final camera position.
 */
 const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-0, 0, 0);
-const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-15, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-10, 0, 0);
 
 class HovercraftEntity :
     public Entity
