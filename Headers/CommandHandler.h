@@ -78,8 +78,8 @@ private:
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
 
-    void executeCommandWithValidPlayer(PlayerEntity *player, eFixedCommand command);
-    void executeCommandWithValidPlayer(PlayerEntity *player, eVariableCommand command, float x, float y);
+    void execute(HovercraftEntity *player, eFixedCommand command);
+    void execute(HovercraftEntity *player, eVariableCommand command, float x, float y);
     // Internal variables
     // For keyboard command handling
     eFixedCommand m_pFixedCommand;

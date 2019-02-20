@@ -40,12 +40,12 @@ CommandHandler::~CommandHandler()
 }
 
 /*
-Make a player execute a eFixedCommand.
+Make a hovercraft execute a eFixedCommand.
 FixedCommands are binary in that either they are executed or they are not, with
 no extra parameters.
 
-For example: if a player PLAYER_2 executes the ABILITY_ROCKET command,
-that is all the information the program needs to know for that player to
+For example: if a hovercraft PLAYER_2 executes the ABILITY_ROCKET command,
+that is all the information the program needs to know for that hovercraft to
 execute that command.
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
@@ -53,18 +53,18 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     if (ENTITY_MANAGER->playerExists(player))
     {
         PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-        executeCommandWithValidPlayer(playerEntity, command);
+        execute(playerEntity, command);
     }
 }
 
-void CommandHandler::executeCommandWithValidPlayer(PlayerEntity* player, eFixedCommand command)
+void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command)
 {
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
     case COMMAND_ABILITY_SPIKES:
     case COMMAND_ABILITY_TRAIL:
-        player->useAbility(m_fixedCommandToAbility.at(command));
+        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_DASH_BACK:
         break;
@@ -73,13 +73,13 @@ void CommandHandler::executeCommandWithValidPlayer(PlayerEntity* player, eFixedC
     case COMMAND_DASH_LEFT:
         break;
     case COMMAND_DASH_RIGHT:
-        player->useAbility(m_fixedCommandToAbility.at(command));
+        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        player->setActiveCameraToFront();
+        hovercraft->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        player->setActiveCameraToBack();
+        hovercraft->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
        break;
@@ -139,11 +139,11 @@ void CommandHandler::executeCommandWithValidPlayer(PlayerEntity* player, eFixedC
 
 
 /*
-Make a player of given joystickID execute a eVariableCommand.
+Make a hovercraft of given joystickID execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
 Specifically, they require an axis or axes to make sense of the command.
 
-For example: if a player of joystickID 0 executes the MOVE command, they also
+For example: if a hovercraft of joystickID 0 executes the MOVE command, they also
 need to specify the x and y axis values to determine what direction and at what
 intensity to go at.
 
@@ -161,19 +161,19 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
     if (ENTITY_MANAGER->playerExists(player))
     {
         PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-        executeCommandWithValidPlayer(playerEntity, command, x, y);
+        execute(playerEntity, command, x, y);
     }
 }
 
-void CommandHandler::executeCommandWithValidPlayer(PlayerEntity *player, eVariableCommand command, float x, float y)
+void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
 {
     switch (command)
     {
     case COMMAND_MOVE:
-        player->move(x, y);
+        hovercraft->move(x, y);
         break;
     case COMMAND_TURN:
-        player->turn(x);
+        hovercraft->turn(x);
         break;
     }
 
