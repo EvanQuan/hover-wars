@@ -121,7 +121,7 @@ void PlayerEntity::updateCameraLookAts()
     // Iterpolate between current position and average position to prevent
     // rough camera changes as the average changes
     // TODO This seems to make things smoother. Will need more testing once physics rumbling is solved.
-    vAveragePosition = (vAveragePosition + m_vPosition) / 2;
+    vAveragePosition = (vAveragePosition + m_vPosition) * 0.5;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
     quat rotation = m_pPhysicsComponent->getRotation();
@@ -170,7 +170,7 @@ void PlayerEntity::shootRocket()
 
 void PlayerEntity::activateSpikes()
 {
-
+    GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
 }
 
 void PlayerEntity::activateTrail()

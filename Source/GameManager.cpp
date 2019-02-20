@@ -23,7 +23,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pEntityManager    = ENTITY_MANAGER;
     m_pUserInterface = UserInterface::getInstance(rWindow);
 
-    m_pUserInterface->setDisplayCount(1);
+    m_pUserInterface->setDisplayCount(0);
 
     m_pWindow = rWindow;
     int iHeight, iWidth;
@@ -184,7 +184,7 @@ void GameManager::intersectPlane(float fX, float fY)
     float fT = dot(vRay, vNormal);
 
     // Calculate Intersection
-    if (fT > FLT_EPSILON || fT < -FLT_EPSILON)
+    if ((fT > FLT_EPSILON) || (fT < -FLT_EPSILON))
     {
         // Is intersecting.
         fT = -(dot(vCameraPos, vNormal) / fT);
