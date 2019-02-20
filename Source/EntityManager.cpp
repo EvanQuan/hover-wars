@@ -136,17 +136,18 @@ void EntityManager::resetFBO()
 void EntityManager::renderEnvironment( )
 {    
     // Local Variables
-    const LightingComponent* pDirectionalLightComponent = nullptr;
+    LightingComponent* pDirectionalLightComponent = nullptr;
 
     // Get Directional Light
     if (nullptr != m_pDirectionalLight)
     {
         pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
-        //pDirectionalLightComponent->setupShadowFBO();
-        //pDirectionalLightComponent->setupPMVMatrices();
-        //m_bShadowDraw = true;
-        //doRender();
-        //resetFBO();
+        pDirectionalLightComponent->setupShadowFBO();       // Set up Frame Buffer for Shadow
+        pDirectionalLightComponent->setupPMVMatrices();     // Set the Lighting ModelView and Projection Matrices for generating a Depth Buffer from Light Position
+        m_bShadowDraw = true;                               // Render For Shadow Map
+        doRender();                                         // Do the Render
+        pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
+        resetFBO();                                         // Reset the Frame Buffer for typical rendering.
     }
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)

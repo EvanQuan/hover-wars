@@ -182,11 +182,14 @@ void ShaderManager::setDirectionalModelMatrix(const mat4* pDirModelMat)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-// Sets the Model View Matrices for the Spot Lights
-void ShaderManager::setSpotLightModelMatrices(const void* pSpotLightData, GLsizeiptr iSize)
+// Sets the Model View Matrix for a Spot Light at the specified index.
+void ShaderManager::setSpotLightModelMatrices(const mat4* pSpotLightMat, unsigned int iIndex)
 {
-    glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
-    glBufferSubData(GL_UNIFORM_BUFFER, SPOT_LIGHT_MV_MAT_OFFSET, iSize, pSpotLightData);
+    assert(iIndex < MAX_NUM_SPOT_LIGHTS);   // Ensure that the specified index is valid with respect to the maximum number of Spot Lights
+
+    // Apply the SpotLight Model View Matrix to the Matrices Buffer
+    glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);     // Set the SpotLight MV Matrix to the proper indexed offset.
+    glBufferSubData(GL_UNIFORM_BUFFER, SPOT_LIGHT_MV_MAT_OFFSET + (iIndex * sizeof(mat4)), sizeof(mat4), pSpotLightMat);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -428,7 +431,7 @@ void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fV
 }
 
 // Sets a uniform integer value in the specified shader program to the given value.
-void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal)
+void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal, unsigned int iIndex)
 {
     GLint iVariableLocation;
     GLint iProgram, iCurrProgram;
@@ -442,7 +445,7 @@ void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal)
         iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
         if (ERR_CODE != iVariableLocation)
         {
-            glUniform1i(iVariableLocation, iVal);
+            glUniform1i(iVariableLocation + iIndex, iVal);
         }
         glUseProgram(iCurrProgram);
 
@@ -450,6 +453,33 @@ void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal)
         CheckGLErrors();
 #endif // DEBUG
     }
+}
+
+// Sets a uniform integer value to all loaded shaders if applicable.
+void ShaderManager::setUniformIntAll(string sVarName, int iVal, unsigned int iIndex)
+{
+    GLint iVariableLocation;
+    GLint iProgram, iCurrProgram;
+
+    // Get the current Program to rebase program after setting uniforms
+    glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+    for( unsigned int eIndex = 0; eIndex < MAX_SHDRS; ++eIndex )
+    {
+        iProgram = getProgram(static_cast<eShaderType>(eIndex));
+        glUseProgram(iProgram);
+
+        // Get the Uniform Location
+        iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
+        if (ERR_CODE != iVariableLocation)  // If the Uniform exists, set the value
+            glUniform1i(iVariableLocation + iIndex, iVal);
+
+#ifdef DEBUG
+        CheckGLErrors();
+#endif // DEBUG
+    }
+
+    // Set the program back to the original program
+    glUseProgram(iCurrProgram);
 }
 
 // Set a Uniform Boolean Value within a given Shader.

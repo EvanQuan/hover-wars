@@ -38,7 +38,7 @@ public:
 
     void setProjectionModelViewMatrix( const mat4* pProjMat, const mat4* pModelViewMat );
     void setDirectionalModelMatrix(const mat4* pDirModelMat);
-    void setSpotLightModelMatrices(const void* pSpotLightData, GLsizeiptr iSize);
+    void setSpotLightModelMatrices(const mat4* pSpotLightMat, unsigned int iIndex);
     void setLightsInUniformBuffer(const LightingComponent* pDirectionalLight, const vector< LightingComponent* >* pPointLights );
 
     // Get the specified program for using shaders for rendering
@@ -58,7 +58,8 @@ public:
     void setUniformVec3( eShaderType eType, string sVarName, const glm::vec3* pValue );
     void setUniformVec4( eShaderType eType, string sVarName, const vec4* pValue );
     void setUniformFloat(eShaderType eType, string sVarName, float fVal);
-    void setUniformInt( eShaderType eType, string sVarName, int iVal );
+    void setUniformInt( eShaderType eType, string sVarName, int iVal, unsigned int iIndex = 0);
+    void setUniformIntAll(string sVarName, int iVal, unsigned int iIndex = 0);
     void setUniformBool( eShaderType eType, string sVarName, bool bVal );
     void toggleUniformBool( eShaderType eType, string sVarName );
 

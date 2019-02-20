@@ -23,7 +23,7 @@ public:
     // Function to Initialize the Light.
     void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor);
 
-    const LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
+    LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
 
 private:
     // Private Light Copy constructor and assignment operator

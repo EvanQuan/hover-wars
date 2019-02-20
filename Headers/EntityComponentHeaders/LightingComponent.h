@@ -39,7 +39,8 @@ public:
 
     // Shadow Map functionality
     void setupShadowFBO() const;
-    void setupPMVMatrices() const;
+    void setupPMVMatrices();
+    void setupShadowUniforms( unsigned int iSpotLightIndex = 0) const;
 
     // Returns light information for storing in Shader
     const vector< vec4 >* getLightInformation() const { return &m_pLightData; }
@@ -61,6 +62,7 @@ private:
 
     // Private Variables
     vec3 m_vPosition, m_vDiffuseColor;
+    mat4 m_m4ModelViewMatrix;
     float m_fLightPower, m_fPhi, m_fSoftPhi;
     float m_fSpotLightRadius;
 

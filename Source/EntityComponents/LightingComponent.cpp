@@ -12,6 +12,12 @@
 #define FAR_PLANE 1500.0f
 #define POINT_LIGHT_POWER_MAP_MODIFIER 1.5f
 
+/*************\
+ * Constants *
+\*************/
+const string DIRECTIONAL_UNIFORM_LOC = "DirectionalLightShadow";
+const string SPOTLIGHT_UNIFORM_LOC = "SpotLightShadows";
+
 // Default Constructor:
 //      Requires an EntityID for the Entity that the component is a part of
 //      and a ComponentID issued by the EntityManager.
@@ -45,15 +51,15 @@ void LightingComponent::setupShadowFBO() const
 }
 
 // Setup Projection and ModelView Matrices for the Light.
-void LightingComponent::setupPMVMatrices() const
+void LightingComponent::setupPMVMatrices()
 {
     // Local Variables
-    mat4 pModelViewMatrix, pProjectionMatrix;
+    mat4 pProjectionMatrix;
 
     switch (m_eType)
     {
     case DIRECTIONAL_LIGHT: // Generate ModelView Matrix and Projection Matrix for Directional Light
-        pModelViewMatrix = lookAt(m_vPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+        m_m4ModelViewMatrix = lookAt(m_vPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
         pProjectionMatrix = ortho(-SHADOW_FRAME, SHADOW_FRAME, -SHADOW_FRAME, SHADOW_FRAME, NEAR_PLANE, FAR_PLANE);
         break;
     case SPOTLIGHT:
@@ -62,7 +68,23 @@ void LightingComponent::setupPMVMatrices() const
     }
 
     // Set the Matrices as the Camera Matrices in the Shaders
-    SHADER_MANAGER->setProjectionModelViewMatrix(&pProjectionMatrix, &pModelViewMatrix);
+    SHADER_MANAGER->setProjectionModelViewMatrix(&pProjectionMatrix, &m_m4ModelViewMatrix);
+}
+
+// Bind the Texture to the GPU and set up the 
+void LightingComponent::setupShadowUniforms(unsigned int iSpotLightIndex) const
+{
+    switch (m_eType)
+    {
+    case DIRECTIONAL_LIGHT:
+        SHADER_MANAGER->setDirectionalModelMatrix(&m_m4ModelViewMatrix);
+        m_pShadowMap->bindTextureAllShaders(DIRECTIONAL_UNIFORM_LOC);
+        break;
+    case SPOTLIGHT:
+        SHADER_MANAGER->setSpotLightModelMatrices(&m_m4ModelViewMatrix, iSpotLightIndex);
+        m_pShadowMap->bindTextureAllShaders(SPOTLIGHT_UNIFORM_LOC, iSpotLightIndex);
+        break;
+    }
 }
 
 // Initializes this Lighting Component as a Simple Point Light with a position and a color

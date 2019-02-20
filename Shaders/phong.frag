@@ -20,7 +20,7 @@ void main(void)
 	
 	// add directional light's contribution
 	if( usingDirectionalLight )
-		vColorLinear += CalcDirLight( pDirectionalLight, fs_in.NormalVector, fs_in.ToCamera );
+		vColorLinear += CalcDirLight( pDirectionalLight, fs_in.NormalVector, fs_in.ToCamera, fs_in.FragPosDirLightSpace );
 		
 	// add Point Light contributions
 	for( int i = 0; i < numPointLights; i++ )
