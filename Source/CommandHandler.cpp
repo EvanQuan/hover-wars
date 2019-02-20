@@ -272,27 +272,27 @@ void CommandHandler::executeKeyboardCommands()
         {
         case COMMAND_MOVE_FORWARD:
             bMovementNeutral = false;
-            yMove += JOYSTICK_MAX;
+            yMove += JOYSTICK_IS_MAX;
             break;
         case COMMAND_MOVE_BACK:
             bMovementNeutral = false;
-            yMove += JOYSTICK_MIN;
+            yMove += JOYSTICK_IS_MIN;
             break;
         case COMMAND_MOVE_LEFT:
             bMovementNeutral = false;
-            xMove += JOYSTICK_MIN;
+            xMove += JOYSTICK_IS_MIN;
             break;
         case COMMAND_MOVE_RIGHT:
             bMovementNeutral = false;
-            xMove += JOYSTICK_MAX;
+            xMove += JOYSTICK_IS_MAX;
             break;
         case COMMAND_TURN_LEFT:
             bTurnNeutral = false;
-            xTurn += JOYSTICK_MIN;
+            xTurn += JOYSTICK_IS_MIN;
             break;
         case COMMAND_TURN_RIGHT:
             bTurnNeutral = false;
-            xTurn += JOYSTICK_MAX;
+            xTurn += JOYSTICK_IS_MAX;
             break;
         }
     }
@@ -317,8 +317,6 @@ void CommandHandler::executeKeyboardCommands()
 
 /*
 Execute all commands specified by the controllers
-
-@TODO this needs to be changed to factor in keyboard input rework.
 */
 void CommandHandler::executeJoystickCommands()
 {
@@ -333,7 +331,7 @@ void CommandHandler::executeJoystickCommands()
             InputHandler::eInputState *buttons = m_pInputHandler->m_joystickButtons[joystickID];
 
             // Check buttons
-            for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
+            for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
             {
                 switch (buttons[button])
                 {
@@ -349,17 +347,6 @@ void CommandHandler::executeJoystickCommands()
                     m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_RELEASED;
                     break;
                 }
-            }
-
-            // NOTE: With works with the assumption that triggers are mapped to fixed commands
-            // If we decide that triggers work better for variable commands, then we will need to change this.
-            if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_NETURAL)
-            {
-                execute((ePlayer) joystickID, axisToFixedCommand(AXIS_LEFT_TRIGGER));
-            }
-            if (axes[AXIS_RIGHT_TRIGGER] > TRIGGER_NETURAL)
-            {
-                execute((ePlayer) joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
             }
 
             // Check axes

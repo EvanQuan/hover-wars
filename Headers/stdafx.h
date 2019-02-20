@@ -102,17 +102,21 @@ using namespace physx;
 #define BUTTON_RIGHT        11
 #define BUTTON_DOWN         12
 #define BUTTON_LEFT         13
-#define BUTTON_UNKNOWN1     14
-#define BUTTON_UNKNOWN2     15
+#define MAX_BUTTON_INDEX    14
+// XBox controllers seem to have 2 more buttons (14, 15)
+// I have not been able to found out what these buttons actually represent.
+// Instead we will use the triggers as button states
+// so they can detect just pressed states
+#define TRIGGER_LEFT        14
+#define TRIGGER_RIGHT       15
+//
 #define MAX_BUTTON_COUNT    16
-// TODO What are buttons 14, 15?
-// Is it the centre xbox button (home)?
 // Joystick/trigger values
-#define JOYSTICK_MAX        1.0f
-#define JOYSTICK_MIN        -1.0f
-#define JOYSTICK_NEUTRAL    0.0f
-#define TRIGGER_NETURAL     -1.0f
-#define TRIGGER_FULL        1.0f
+#define JOYSTICK_IS_MAX     1.0f
+#define JOYSTICK_IS_MIN     -1.0f
+#define JOYSTICK_IS_NEUTRAL 0.0f
+#define TRIGGER_IS_NETURAL  -1.0f
+#define TRIGGER_IS_FULL     1.0f
 
 // Mapping potential types from the scene loader to corresponding enums
 const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
