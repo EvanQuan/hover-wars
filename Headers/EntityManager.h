@@ -8,6 +8,7 @@
 #include "EntityHeaders/InteractableEntity.h"
 #include "EntityHeaders/Entity.h"
 #include "EntityHeaders/PlayerEntity.h"
+#include "EntityHeaders/BotEntity.h"
 #include "EntityHeaders/Camera.h"
 #include "EntityComponentHeaders/EntityComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
@@ -89,16 +90,26 @@ private:
     int m_iHeight, m_iWidth;
     inline int getNewEntityID() { return ++m_iEntityIDPool; }
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
-    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
-    vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
-    vector<PlayerEntity*>                           m_pPlayerEntityList;    
+
+    // Master
     vector<unique_ptr<Entity>>                      m_pMasterEntityList;
+    vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
+    // Phycis
+    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
+    // Players
+    vector<PlayerEntity*>                           m_pPlayerEntityList;    
+    // Bots
+    vector<BotEntity*>                              m_pBotEntityList;    
+    // Rendering
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
+    // Cameras
     vector<CameraComponent*>                        m_pCameraComponents;
-    vector<LightingComponent*>                      m_pLights;
     CameraComponent*                                m_pActiveCameraComponent;
+    //  Lighting
+    vector<LightingComponent*>                      m_pLights;
     vector<AnimationComponent*>                     m_pAnimationComponents;
     DirectionalLight*                               m_pDirectionalLight;
+    // Interactable
     InteractableEntity*                             m_pBillboardTesting;
 
     // Manage Pointers for Deletion.
