@@ -58,11 +58,10 @@ public:
     void update(float fTimeInMilliseconds);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
-    void initializePlayer(const string& sFileName,
-                          const ObjectInfo* pObjectProperties,
-                          const string& sShaderType,
-                          float fScale,
-                          ePlayer ePlayerNumber);
+    void initialize(const string& sFileName,
+                    const ObjectInfo* pObjectProperties,
+                    const string& sShaderType,
+                    float fScale);
 
     void useAbility(eAbility ability);
     void move(float x, float y);
@@ -93,7 +92,6 @@ private:
     quat m_qRotationTotal;
     queue<vec3> m_vPastPositions;
     queue<quat> m_qPastRotations;
-    ePlayer m_ePlayerNumber;
 
     // Private Functions
     void initializeCameraLookAts();

@@ -20,20 +20,20 @@ EntityManager::EntityManager()
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     // Initialize Local Variables
-    m_iHeight = START_HEIGHT;
-    m_iWidth = START_WIDTH;
-    m_bPause = false;
+    m_iHeight            = START_HEIGHT;
+    m_iWidth             = START_WIDTH;
+    m_bPause             = false;
     m_bDrawBoundingBoxes = false;
-    m_bDrawSpatialMap = false;
-    m_bShadowDraw = false;
-    m_bUseDebugCamera = false;
-    m_pMshMngr = MESH_MANAGER;
-    m_pTxtMngr = TEXTURE_MANAGER;
-    m_pScnLdr = SCENE_LOADER;
-    m_pEmtrEngn = EMITTER_ENGINE;
-    m_pPhysxMngr = PHYSICS_MANAGER;
-    m_pSpatialMap = SPATIAL_DATA_MAP;
-    m_pShdrMngr = SHADER_MANAGER;
+    m_bDrawSpatialMap    = false;
+    m_bShadowDraw        = false;
+    m_bUseDebugCamera    = false;
+    m_pMshMngr           = MESH_MANAGER;
+    m_pTxtMngr           = TEXTURE_MANAGER;
+    m_pScnLdr            = SCENE_LOADER;
+    m_pEmtrEngn          = EMITTER_ENGINE;
+    m_pPhysxMngr         = PHYSICS_MANAGER;
+    m_pSpatialMap        = SPATIAL_DATA_MAP;
+    m_pShdrMngr          = SHADER_MANAGER;
 
     // For Rendering the World Axis
     glGenVertexArrays(1, &m_pVertexArray);
@@ -46,8 +46,10 @@ EntityManager::EntityManager()
 // Gets the instance of the environment manager.
 EntityManager* EntityManager::getInstance()
 {
-    if ( nullptr == m_pInstance )
+    if (nullptr == m_pInstance)
+    {
         m_pInstance = new EntityManager();
+    }
     return m_pInstance;
 }
 
@@ -61,23 +63,18 @@ EntityManager::~EntityManager()
     glDeleteVertexArrays(1, &m_pVertexArray);
 
     // Delete Mesh Manager
-    if (nullptr != m_pMshMngr)
-        delete m_pMshMngr;
+    if (nullptr != m_pMshMngr) { delete m_pMshMngr; }
     
     // Delete Texture Manager
-    if (nullptr != m_pTxtMngr)
-        delete m_pTxtMngr;
+    if (nullptr != m_pTxtMngr) { delete m_pTxtMngr; }
 
     // Delete Scene Loader
-    if (nullptr != m_pScnLdr)
-        delete m_pScnLdr;
+    if (nullptr != m_pScnLdr) { delete m_pScnLdr; }
 
     // Delete Emitter Engine
-    if (nullptr != m_pEmtrEngn)
-        delete m_pEmtrEngn;
+    if (nullptr != m_pEmtrEngn) { delete m_pEmtrEngn; }
 
-    if (nullptr != m_pSpatialMap)
-        delete m_pSpatialMap;
+    if (nullptr != m_pSpatialMap) { delete m_pSpatialMap; }
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -98,7 +95,9 @@ void EntityManager::initializeEnvironment(string sFileName)
 void EntityManager::initializeSpatialMap(float fLength, float fWidth, float fTileSize)
 {
     if (!m_pSpatialMap->isInitialized())     // Only Initialize the Spatial Map once. Unload everything first to initialize again.
+    {
         m_pSpatialMap->initializeMap(fLength, fWidth, fTileSize);
+    }
 }
 
 // Clears out the entire environment
@@ -286,13 +285,28 @@ void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, cons
     m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
-// Generate a Player Entity at a starting position with a given Material, scale, mesh location and shader type.
+/*
+Generate a Player Entity at a starting position with a given Material, scale,
+mesh location and shader type.
+*/
 void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
     unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
-    pNewPlayer->initializePlayer(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
     m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
+}
+
+/*
+Generate a Bot Entity at a starting position with a given Material, scale,
+mesh location and shader type.
+*/
+void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
+{
+    unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eBot>(m_pBotEntityList.size()));
+    m_pBotEntityList.push_back(pNewBot.get()); 
+    m_pMasterEntityList.push_back(move(pNewBot));
 }
 
 // Generates and Returns an Interactable Entity with a specified Position.
@@ -481,7 +495,7 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 }
 
 /*********************************************************************************\
-* Command Management                                                    *
+* Command Management                                                             *
 \*********************************************************************************/
 
 bool EntityManager::playerExists(ePlayer player)
@@ -493,6 +507,18 @@ PlayerEntity* EntityManager::getPlayer(ePlayer player)
 {
     return m_pPlayerEntityList.at(player);
 }
+
+bool EntityManager::botExists(eBot bot)
+{
+    return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
+}
+
+BotEntity* EntityManager::getBot(eBot bot)
+{
+    return m_pBotEntityList.at(bot);
+}
+
+
 
 /*********************************************************************************\
 * Camera Management                                                              *
