@@ -5,6 +5,12 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "InputHandler.h"
+#include "CommandHandler.h"
+#include "SceneLoader.h"
+
+#ifndef NDEBUG
+    #include "UserInterface/UserInterface.h"
+#endif
 
 /* CLASS */
 /*
@@ -161,16 +167,23 @@ private:
     map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
         {GLFW_KEY_ESCAPE,       COMMAND_CLOSE_WINDOW},
+        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
+        {GLFW_KEY_COMMA,        COMMAND_CAMERA_BACK},
+#ifndef NDEBUG
+
         {GLFW_KEY_F,            COMMAND_DEBUG_TOGGLE_WIREFRAME},
         {GLFW_KEY_1,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1},
         {GLFW_KEY_2,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2},
         {GLFW_KEY_3,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3},
         {GLFW_KEY_4,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4},
-        {GLFW_KEY_C,            COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA},
         {GLFW_KEY_B,            COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES},
         {GLFW_KEY_M,            COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP},
-        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
-        {GLFW_KEY_COMMA,        COMMAND_CAMERA_BACK},
+        {GLFW_KEY_KP_0,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0},
+        {GLFW_KEY_KP_1,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1},
+        {GLFW_KEY_KP_2,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2},
+        {GLFW_KEY_KP_3,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3},
+        {GLFW_KEY_KP_4,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4},
+#endif
     };
 
     map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =

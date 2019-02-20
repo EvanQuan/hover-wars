@@ -42,6 +42,9 @@ public:
     CommandHandler* m_commandHandler;
 
     ePlayer m_eKeyboardPlayer;
+#ifndef NDEBUG
+    UserInterface* m_pUserInterface;
+#endif
 
 private:
     // For Singleton Implementation
@@ -63,6 +66,8 @@ private:
     // Manager Pointers
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
+#ifdef NDEBUG
     UserInterface* m_pUserInterface;
+#endif
 };
 

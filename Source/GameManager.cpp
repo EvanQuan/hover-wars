@@ -3,7 +3,7 @@
 #include "CommandHandler.h"
 #include "SceneLoader.h"
 #include "ShaderManager.h"
-#include "UserInterface.h"
+#include "UserInterface/UserInterface.h"
 
 /*************\
  * Constants *
@@ -20,8 +20,10 @@ GameManager::GameManager(GLFWwindow* rWindow)
 {
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
-    m_pEntityManager       = ENTITY_MANAGER;
+    m_pEntityManager    = ENTITY_MANAGER;
     m_pUserInterface = UserInterface::getInstance(rWindow);
+
+    m_pUserInterface->setDisplayCount(1);
 
     m_pWindow = rWindow;
     int iHeight, iWidth;
@@ -107,6 +109,10 @@ bool GameManager::renderGraphics()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
+
+    // TODO the user interface updating may need to change to account for
+    // time, similar to how the EntityManager does it.
+    m_pUserInterface->update();
 
     // check for Window events
     glfwPollEvents();

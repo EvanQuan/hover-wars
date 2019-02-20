@@ -1,4 +1,4 @@
-#include "UserInterface.h"
+#include "UserInterface/UserInterface.h"
 
 
 // Singleton instance
@@ -7,7 +7,10 @@ UserInterface* UserInterface::m_pInstance = nullptr;
 UserInterface::UserInterface(GLFWwindow* window)
 {
     m_pWindow = window;
-    m_pDisplayCount = 0;
+    m_iDisplayCount = 0;
+
+    m_pGameStats = GameStats::getInstance();
+
     initializeUserInterface();
 
 }
@@ -25,6 +28,46 @@ UserInterface::~UserInterface()
 {
     // Let go of Window
     m_pWindow = nullptr;
+    m_pGameStats = nullptr;
+}
+
+/*
+This visually updates the UserInterface to all value changes since last update.
+
+Under the scenes, this retrieves all needed the values from GameStats and
+displays them.
+
+@TODO
+*/
+void UserInterface::update()
+{
+    if (m_iDisplayCount > 0)
+    {
+        system("CLS");
+        updateScores();
+        updateCooldowns();
+    }
+}
+
+/*
+Update the scores for all display count players
+*/
+void UserInterface::updateScores()
+{
+    for (int player = 0; player < m_iDisplayCount; player++)
+    {
+        updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
+    }
+}
+
+void UserInterface::updateScore(ePlayer player, int score)
+{
+    cout << "Player " << (player + 1) << " score: " << score << endl;
+}
+
+void UserInterface::updateCooldowns()
+{
+
 }
 
 /*
@@ -38,15 +81,15 @@ Values:
 */
 void UserInterface::setDisplayCount(int count)
 {
-    if (DISPLAY_COUNT_MIN < count)
+    if (DISPLAY_COUNT_MIN > count)
     {
         count = DISPLAY_COUNT_MIN;
     }
-    else if (DISPLAY_COUNT_MAX > count)
+    else if (DISPLAY_COUNT_MAX < count)
     {
         count = DISPLAY_COUNT_MAX;
     }
-    m_pDisplayCount = count;
+    m_iDisplayCount = count;
 
     initializeUserInterface();
 }
@@ -68,7 +111,6 @@ void UserInterface::initializeScores()
 {
     for (int i = DISPLAY_COUNT_MIN; i < DISPLAY_COUNT_MAX; i++)
     {
-        setScore(i, 0);
     }
 }
 
@@ -88,13 +130,10 @@ Set a specified player's score to the specified value.
 */
 void UserInterface::setScore(int joystickID, int score)
 {
-    scores.insert(pair<int, int>(joystickID, score));
-    // TODO
-    // make this render
 }
 
 /*
-Initialize all UI components according to the current value of m_pDisplayCount
+Initialize all UI components according to the current value of m_iDisplayCount
 */
 void initializeDisplayCount()
 {

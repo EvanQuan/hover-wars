@@ -1,5 +1,4 @@
 #include "CommandHandler.h"
-#include "SceneLoader.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
@@ -88,6 +87,8 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_CLOSE_WINDOW:
         glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
         break;
+#ifndef NDEBUG
+
     case COMMAND_DEBUG_TOGGLE_WIREFRAME:
         debugToggleWireframe();
         break;
@@ -112,6 +113,22 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
         ENTITY_MANAGER->toggleSpatialMapDrawing();
         break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
+        break;
+#endif
     }
 }
 

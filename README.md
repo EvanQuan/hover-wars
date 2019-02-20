@@ -78,6 +78,15 @@
 
 **C** - Toggle Debug Camera for current player
 
+**Keypad 0** - Set User Interface display count to 0
+
+**Keypad 1** - Set User Interface display count to 1
+
+**Keypad 2** - Set User Interface display count to 2
+
+**Keypad 3** - Set User Interface display count to 3
+
+**Keypad 4** - Set User Interface display count to 4
 
 #### XBOX Controller
 
