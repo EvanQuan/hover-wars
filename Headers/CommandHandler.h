@@ -145,13 +145,6 @@ private:
     {
         return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
-    /*
-    Convert a joystick axis to its corresponding eFixedCommand
-    */
-    static eFixedCommand axisToFixedCommand(int axis)
-    {
-        return FuncUtils::getValueIfNotDefault(m_pInstance->m_axisToFixedCommand, axis, COMMAND_INVALID_FIXED);
-    };
 
     /*
     These commands are issued if the player has just pressed, or is continuing
@@ -246,14 +239,6 @@ private:
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
     };
 
-    /*
-    @Deprecated
-    */
-    map<int, eFixedCommand> m_axisToFixedCommand =
-    {
-        {AXIS_LEFT_TRIGGER,     COMMAND_ABILITY_TRAIL},
-        {AXIS_RIGHT_TRIGGER,    COMMAND_ABILITY_ROCKET},
-    };
 
     map<eFixedCommand, eAbility> m_fixedCommandToAbility =
     {
