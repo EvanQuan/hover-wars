@@ -1,0 +1,253 @@
+#include "stdafx.h"
+#include "SoundManager.h"
+
+using namespace std;
+
+SoundManager* SoundManager::m_pInstance = nullptr;
+
+
+/*************************************************************************\
+ * Constructors                                                           *
+\*************************************************************************/
+SoundManager::SoundManager() {
+    mpStudioSystem = NULL;
+    errorCheck(FMOD::Studio::System::create(&mpStudioSystem));     // Create the studio system object.
+    errorCheck(mpStudioSystem->initialize(32, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));   // Initialize system.
+    // 32 - max channels
+    // FMOD_STUDIO_INIT_LIVEUPDATE
+    // 0 - no extra driver data
+
+    mpSystem = NULL;
+    errorCheck(mpStudioSystem->getLowLevelSystem(&mpSystem));      // Setup low level system;
+}
+
+/*************************************************************************\
+ * Destructor                                                             *
+\*************************************************************************/
+SoundManager::~SoundManager() {
+    errorCheck(mpStudioSystem->unloadAll());   // Unloads all currently loaded banks.
+    errorCheck(mpStudioSystem->release());     // Closes and frees a system object and its resources.
+}
+
+SoundManager* SoundManager::getInstance() {
+    if (nullptr == m_pInstance) {
+        m_pInstance = new SoundManager();
+    }
+    return m_pInstance;
+}
+
+void SoundManager::initSound() {
+    loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+
+    loadEvent("event:/car_start");
+    loadSound("Sound/car_satrt.wav", false);
+
+    loadEvent("event:/rocket");
+    loadSound("Soumd/rocket.wav", false);
+}
+
+void SoundManager::update() {
+    vector<ChannelMap::iterator> vStoppedChannels;
+    for (map<int, FMOD::Channel*> it = mChannels.begin(); it != mChannels.end(); ++it)
+    {
+        bool bIsPlaying = false;
+        it->second->isPlaying(&bIsPlaying);
+        if (!bIsPlaying)
+        {
+            pStoppedChannels.push_back(it);
+        }
+    }
+    for (auto& it : pStoppedChannels)
+    {
+        mChannels.erase(it);
+    }
+    errorCheck(mpStudioSystem->update());
+}
+
+void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, bool bStream) {
+    auto tFoundIt = mSounds.find(sSoundName);
+    if (tFoundIt != mSounds.end()) {       // Founded (has been loaded)
+        return;
+    }
+
+    FMOD_MODE mode = FMOD_DEFAULT;      // 0x00000000
+    mode |= b3d ? FMOD_3D : FMOD_2D;
+    mode |= bLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
+    mode |= bStream ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;      // Stream is more for background music?
+
+    FMOD::Sound* pSound = nullptr;
+    errorCheck(mpSystem->createSound(sSoundName.c_str(), mode, nullptr, &pSound));
+
+    // Store new sound
+    if (pSound) {
+        mSounds[sSoundName] = pSound;
+    }
+}
+
+void SoundManager::unloadSound(const string& sSoundName) {
+    auto tFoundIt = mSounds.find(sSoundName);
+    if (tFoundIt == mSounds.end()) {      // Not found
+        return;
+    }
+
+    errorCheck(tFoundIt->second->release());
+    mSounds.earase(tFoundIt);
+}
+
+int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, float fVolumedB) {
+    int iChannelId = mnNextChannelId++;
+    auto tFoundIt = mSounds.find(sSoundName);
+    if (tFoundIt == mSounds.end()) {       // Not found in sound map
+        loadSound(sSoundName);
+        tFoundIt = mSounds.find(sSoundName);
+        if (tFoundIt == mSounds.end()) {       // Not found after relaod
+            return iChannelId;
+        }
+    }
+
+    FMOD::Channel* pChannel = nullptr;
+    errorCheck(mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));      // Play sound and paused at the beginning
+
+    if (pChannel) {
+        FMOD_MODE currMode;
+        tFoundIt->second->getMode(&currMode);
+        if (currMode & FMOD_3D) {
+            FMOD_VECTOR position = vectorToFmod(vPosition);
+            errorCheck(pChannel->set3DAttributes(&position, nullptr));
+        }
+        errorCheck(pChannel->setVolume(dbToVolume(fVolumedB)));
+        errorCheck(pChannel->setPaused(false));
+        mChannels[iChannelId] = pChannel;
+    }
+    return iChannelId;
+}
+
+void SoundManager::setChannel3dPosition(int iChannelId, const vec3& vPosition) {
+    auto tFoundIt = mChannels.find(iChnnelId);
+    if (tFoundIt == mChannels.end()) {     // Not found
+        return;
+    }
+
+    FMOD_VECTOR position = vectorToFmod(vPosition);
+    errorCheck(tFoundIt->second->set3DAttributes(&position, NULL)));
+}
+
+void SoundManager::setChannelVolume(int iChannelId, float fVolumedB) {
+    auto tFoundIt = mChannels.find(iChannelId);
+    if (tFoundIt == >mChannels.end()) {     // Not found
+        return;
+    }
+    errorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
+}
+
+void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags) {
+    auto tFoundIt = mBanks.find(sBankName);
+    if (tFoundIt != mBanks.end()) {     // Bank already loaded
+        return;
+    }
+    FMOD::Studio::Bank* pBank;
+    errorCheck(mpStudioSystem->loadBankFile(sBankName.c_str(), flags, &pBank));
+
+    if (pBank) {
+        mBnaks[sBankName] = pBank;
+    }
+}
+
+void SoundManager::loadEvent(const string& sEventName) {
+    auto tFoundIt = mEvents.find(sEventName);
+    if (tFoundIt != mEVENTS.end()) {     // Event already loaded
+        return;
+    }
+    FMOD::Studio::EventDescription* pEventDescription = NULL;
+    errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+    if (pEventDescription) {
+        FMOD::Studio::EventInstance* pEventInstance = NULL;
+        errorCheck(createInstance(&pEventInstance));
+        if (pEventInstance) {
+            mEvents[sEventName] = pEventInstance;
+        }
+    }
+}
+
+void SoundManager::playEvent(const string& sEventName) {
+    auto tFoundIt = mEvents.find(sEventName);
+    if (tFoundIt == mEvents.end()) {
+        loadEvent(sEventName);
+        tFoundIt = mEvents.find(sEventName);
+        if (tFoundIt == mEvents.end()) {
+            return;
+        }
+    }
+    tFoundIt->second->start();
+}
+
+void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
+    auto tFoundIt = mEvents.find(sEventName);
+    if (tFoundIt == mEvents.end()) {
+        return;
+    }
+    FMOD_STUDIO_STOP_MODE mode;
+    mode = bImmediate ? FMOD_STUDIO_STOP_IMMEDIATE : FMOD_STUDIO_STOP_ALLOWFADEOUT;
+    errorCheck(tFoundIt->second->stop(mode));
+}
+
+bool SoundManager::isEventPlaying(const string& sEventName) const {
+    auto tFoundIt = mEvents.find(sEventName);
+    if (tFoundIt == mEvents.end()) {
+        return false;
+    }
+    FMOD_STUDIO_PLAYBACK_STATE* state = NULL;
+    if (tFoundIt->second->getPlaybackState(state) == FMOD_STUDIO_PLAYBACK_PLAYING) {
+        return true;
+    }
+    return false;
+}
+
+void SoundManager::getEventParameter(const string& sEventName, const string& sParameterName, float* parameter) {
+    auto tFoundIt = mEvents.find(sEventName);
+    if (tFoundIt == mEvents.end()) {
+        return;
+    }
+    FMOD::Studio::ParameterInstance* pParameter = NULL;
+    errorCheck(tFoundIt->second->getParameter(sParameterName.c_str(), &pParameter));
+    errorCheck(pParameter->getValue(parameter));
+}
+
+void SoundManager::setEventParameter(const string& sEventName, const string& sParameterName, float fValue) {
+    auto tFoundIt = mEvents.find(sEventName);
+    if (tFoundIt == mEvents.end()) {
+        return;
+    }
+    FMOD::Studio::ParameterInstance* pParameter = NULL;
+    errorCheck(tFoundIt->second->getParameter(sParameterName.c_str(), &pParameter);
+    errorCheck(pParameter->setValue(fValue));
+}
+
+FMOD_VECTOR SoundManager::vectorToFmod(const vec3& vPosition) {
+    FMOD_VECTOR fVec;
+    fVec.x = vPosition.x;
+    fVec.y = vPosition.y;
+    fVec.z = vPosition.z;
+    return fVec;
+}
+
+float SoundManager::dbToVolume(float dB) {
+    return powf(10.0f, 0.05f * dB);
+}
+
+float SoundManager::volumeTodB(float volume) {
+    return 20.0f * log10f(volume);
+}
+
+int SoundManager::errorCheck(FMOD_RESULT result) {
+    if (result != FMOD_OK) {
+        cout << "FMOD ERROR " << result << endl;
+        return 1;   // Error
+    }
+    return 0;   // No error
+}
+
+void SoundManager::shutDown() {
+    delete m_pInstance;
+}

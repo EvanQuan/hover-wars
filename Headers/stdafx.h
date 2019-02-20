@@ -133,6 +133,8 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define SCENE_LOADER        SceneLoader::getInstance()
 #define EMITTER_ENGINE      EmitterEngine::getInstance()
 #define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
+#define SOUND_MANAGER       SoundManager::getInstance()
+
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

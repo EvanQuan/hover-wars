@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "InputHandler.h"
+#include "SoundManager.h"
 
 /* CLASS */
 /*
@@ -68,6 +69,7 @@ private:
     GameManager *m_pGameManager;
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
+
 
     // Internal variables
     // For keyboard command handling
