@@ -170,7 +170,7 @@ void PlayerEntity::shootRocket()
 
 void PlayerEntity::activateSpikes()
 {
-
+    GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
 }
 
 void PlayerEntity::activateTrail()
