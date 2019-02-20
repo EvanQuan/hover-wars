@@ -34,9 +34,7 @@ private:
     // Score
     void initializeScores();
     void updateScores();
-    void addScore(int joystickID, int score);
-    void subtractScore(int joystickID, int score);
-    void resetScore(int joystickID);
+    void updateScore(ePlayer player, int score);
 
     // Cooldowns
     void initializeCooldowns();
@@ -54,7 +52,7 @@ private:
 
     map<int, int> scores;
 
-    int m_pDisplayCount;
+    int m_iDisplayCount;
 
     // Window reference
     GLFWwindow *m_pWindow;

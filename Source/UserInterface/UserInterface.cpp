@@ -7,7 +7,7 @@ UserInterface* UserInterface::m_pInstance = nullptr;
 UserInterface::UserInterface(GLFWwindow* window)
 {
     m_pWindow = window;
-    m_pDisplayCount = 0;
+    m_iDisplayCount = 0;
 
     m_pGameStats = GameStats::getInstance();
 
@@ -47,7 +47,15 @@ void UserInterface::update()
 
 void UserInterface::updateScores()
 {
+    for (int player = 0; player < m_iDisplayCount; player++)
+    {
+        updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
+    }
+}
 
+void UserInterface::updateScore(ePlayer player, int score)
+{
+    cout << "Player " << player << " score: " << score << endl;
 }
 
 void UserInterface::updateCooldowns()
@@ -66,15 +74,15 @@ Values:
 */
 void UserInterface::setDisplayCount(int count)
 {
-    if (DISPLAY_COUNT_MIN < count)
+    if (DISPLAY_COUNT_MIN > count)
     {
         count = DISPLAY_COUNT_MIN;
     }
-    else if (DISPLAY_COUNT_MAX > count)
+    else if (DISPLAY_COUNT_MAX < count)
     {
         count = DISPLAY_COUNT_MAX;
     }
-    m_pDisplayCount = count;
+    m_iDisplayCount = count;
 
     initializeUserInterface();
 }
@@ -122,7 +130,7 @@ void UserInterface::setScore(int joystickID, int score)
 }
 
 /*
-Initialize all UI components according to the current value of m_pDisplayCount
+Initialize all UI components according to the current value of m_iDisplayCount
 */
 void initializeDisplayCount()
 {

@@ -23,6 +23,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pEntityManager       = ENTITY_MANAGER;
     m_pUserInterface = UserInterface::getInstance(rWindow);
 
+    m_pUserInterface->setDisplayCount(1);
+
     m_pWindow = rWindow;
     int iHeight, iWidth;
     glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
