@@ -16,6 +16,7 @@ public:
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
     void createPlayer(vector< string > sData, int iLength);
+    void createBot(vector< string > sData, int iLength);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
 

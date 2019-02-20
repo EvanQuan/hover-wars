@@ -23,6 +23,7 @@
 #define DIRECTIONAL_LIGHT      "directional_light"
 #define SPOTLIGHT              "spotlight"
 #define PLAYER                 "player"
+#define BOT                    "bot"
 #define STATIC_MESH            "static_mesh"
 #define SPATIAL_MAP            "spatial_map"
 #define BOIDS                  "boids"
@@ -183,6 +184,16 @@ void SceneLoader::createPlayer(vector< string > sData, int iLength)
     ENTITY_MANAGER->generatePlayerEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
 }
 
+// Generates a Bot Object at a given position
+// NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
+//        object from a scene file.
+void SceneLoader::createBot(vector< string > sData, int iLength)
+{
+    m_pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
+
+    ENTITY_MANAGER->generateBotEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
+}
+
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
@@ -329,6 +340,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createSpotLight(sData, sData.size());
     else if (PLAYER == sIndicator)                      // Parse Player
         createPlayer(sData, sData.size());
+    else if (BOT == sIndicator)                         // Parse Bot
+        createBot(sData, sData.size());
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information
