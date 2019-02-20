@@ -41,11 +41,17 @@ displays them.
 */
 void UserInterface::update()
 {
-    system("CLS");
-    updateScores();
-    updateCooldowns();
+    if (m_iDisplayCount > 0)
+    {
+        system("CLS");
+        updateScores();
+        updateCooldowns();
+    }
 }
 
+/*
+Update the scores for all display count players
+*/
 void UserInterface::updateScores()
 {
     for (int player = 0; player < m_iDisplayCount; player++)
@@ -105,7 +111,6 @@ void UserInterface::initializeScores()
 {
     for (int i = DISPLAY_COUNT_MIN; i < DISPLAY_COUNT_MAX; i++)
     {
-        setScore(i, 0);
     }
 }
 
@@ -125,9 +130,6 @@ Set a specified player's score to the specified value.
 */
 void UserInterface::setScore(int joystickID, int score)
 {
-    scores.insert(pair<int, int>(joystickID, score));
-    // TODO
-    // make this render
 }
 
 /*
