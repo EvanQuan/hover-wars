@@ -20,44 +20,48 @@ const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 /**********************************************\
  * Defines: For Billboard Buffer Manipulation *
 \**********************************************/
-#define BILLBOARD_STRIDE    (sizeof(vec3) + /*Vertex*/ sizeof(vec3) + /*Normal*/ sizeof(vec2) + /*UVStart*/ sizeof(vec2) + /*UVEnd*/ sizeof(vec2) /*Height/Width*/ )
+#define BILLBOARD_STRIDE    (sizeof(vec3) + /*Vertex*/ sizeof(vec3) + /*Normal*/ sizeof(vec2) + /*UVStart*/ sizeof(vec2) + /*UVEnd*/ sizeof(vec2) /*Height/Width*/ + sizeof(float) /*Duration*/ )
 #define VERTEX_OFFSET       0
 #define NORMAL_OFFSET       sizeof(vec3)
 #define UV_START_OFFSET     (sizeof(vec3) << 1)
 #define UV_END_OFFSET       ((sizeof(vec3) << 1) + sizeof(vec2))
 #define DIMENSION_OFFSET    ((sizeof(vec3) << 1) + (sizeof(vec2) << 1))
+#define DURATION_OFFSET     (DIMENSION_OFFSET + sizeof(vec2))
 
 // Basic Constructor
-Mesh::Mesh( const string &sManagerKey, bool bStaticMesh, const Material* pMaterial, manager_cookie )
+Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, const ObjectInfo* pObjectProperties, manager_cookie)
 {
     m_sManagerKey = sManagerKey;
     m_bStaticMesh = bStaticMesh;
     m_pShdrMngr = SHADER_MANAGER;
+    m_vNegativeOffset = m_vPositiveOffset = vec3(0.0f);
     glGenVertexArrays(1, &m_iVertexArray);
 
-    loadMaterial(pMaterial);
+    loadObjectInfo(pObjectProperties);
 }
 
 // Delete any buffers that we initialized
 Mesh::~Mesh()
 {
-    glDeleteBuffers( 1, &m_iVertexBuffer );
-    glDeleteBuffers( 1, &m_iIndicesBuffer );
+    glDeleteBuffers(1, &m_iVertexBuffer);
+    glDeleteBuffers(1, &m_iIndicesBuffer);
     glDeleteBuffers(1, &m_iInstancedBuffer);
-    glDeleteBuffers(1, &m_iScaleBuffer);
-    glDeleteVertexArrays( 1, &m_iVertexArray );
+    glDeleteVertexArrays(1, &m_iVertexArray);
+
+    // Delete the Buffers of the Bounding Box
+    m_sBoundingBox.deleteBuffers();
 }
 
 // Load the Mesh from a given file name
 //  Result: Stores the mesh variables into a set of vertices
-bool Mesh::genMesh( const string& sFileName, vec3 vPosition, float fScale )
+bool Mesh::genMesh(const string& sFileName, vec3 vPosition, float fScale)
 {
     // Return Value
     bool bReturnValue = true;
 
     // Load Mesh
     if (sFileName.substr(sFileName.find_last_of(".") + 1) == "obj")
-        bReturnValue = loadObj(sFileName);        
+        bReturnValue = loadObj(sFileName);
 
     // Store Mesh in GPU
     if (bReturnValue)
@@ -112,10 +116,14 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 
     // Translation Matrix
     mat4 m4TranslationMatrix = getRotationMat4ToNormal(&vNormal);
-    
+
     // If translation is necessary, translate plane.
     if (vec3(0.f) != vPosition)
         m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
+
+    // Set Spatial Cube/Plane
+    m_vNegativeOffset = m_pVertices.front();
+    m_vPositiveOffset = m_pVertices.back();
 
     // Store Initial Transformation Matrix
     m_m4ListOfInstances.push_back(m4TranslationMatrix);
@@ -149,7 +157,7 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
         float const z = sinf(2 * PI * s * S) * sinf(PI * r * R);
 
         // UVs are inverted.
-        *t++ = vec2( (MAX_PHI_CUTS-s) * S, (MAX_THETA_CUTS-r) * R);
+        *t++ = vec2((MAX_PHI_CUTS - s) * S, (MAX_THETA_CUTS - r) * R);
 
         // Scale Sphere to Radius.
         *v++ = vec3(x * fRadius, y * fRadius, z * fRadius);
@@ -171,6 +179,10 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
         *i++ = ((r + 1) * MAX_PHI_CUTS + (s + 1)) % iWrapAroundMask;
     }
 
+    // Compute Spatial Cube
+    m_vNegativeOffset = vec3(-fRadius, -fRadius, -fRadius);
+    m_vPositiveOffset = vec3(fRadius, fRadius, fRadius);
+
     // Initial Transformation Matrix
     mat4 m4InitialTransformation = mat4(1.0f);
 
@@ -186,12 +198,12 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 }
 
 // Generates a Cube object given a Height, Width and Depth dimension as well as a position.
-void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
+void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
 {
     // Get half sizes of dimensions to set vertices wrt to origin.
-    float iHalfHeight    = static_cast<float>(iHeight) * 0.5f;
-    float iHalfWidth    = static_cast<float>(iWidth) * 0.5f;
-    float iHalfDepth    = static_cast<float>(iDepth) * 0.5f;
+    float iHalfHeight = fHeight * 0.5f;
+    float iHalfWidth =  fWidth * 0.5f;
+    float iHalfDepth =  fDepth * 0.5f;
 
     // Reserve Sizes ahead of time to speed up computation
     m_pVertices.reserve(24);
@@ -315,6 +327,10 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
         22, 21, 23, 22, 20, 21
     };
 
+    // Compute Spatial Cube
+    m_vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
+    m_vNegativeOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
+
     // Initial Transformation Matrix
     mat4 m4InitialTransformationMatrix = mat4(1.0f);
 
@@ -332,13 +348,14 @@ void Mesh::genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition)
 //    the height and width will be set up and stored in the VBO as well.
 //    The billboard functionality of a Mesh will set up the VBOs in a very different manner:
 //        - For each data entry:
-//            * Vertex (vec3)
-//            * Normal (vec3)
-//            * UVStart (vec2)
+//            * Vertex   (vec3)
+//            * Normal   (vec3)
+//            * UVStart  (vec2)
 //            * UVEnd    (vec2)
-//            * Height (unsigned int)
-//            * Width (unsigned int)
-void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+//            * Height   (float)
+//            * Width    (float)
+//            * Duration (float)
+void Mesh::genBillboard()
 {
     // Generate VBO
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, 0, GL_STATIC_DRAW);
@@ -349,9 +366,7 @@ void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* 
     m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, BILLBOARD_STRIDE, (void*)UV_START_OFFSET);    /*UVStart*/
     m_pShdrMngr->setAttrib(m_iVertexArray, 3, 2, BILLBOARD_STRIDE, (void*)UV_END_OFFSET);    /*UVEnd*/
     m_pShdrMngr->setAttrib(m_iVertexArray, 4, 2, BILLBOARD_STRIDE, (void*)DIMENSION_OFFSET);/*Height/Width*/
-
-    // Add first Billboard
-    addBillboard(vPosition, vNormal, vUVStart, vUVEnd, iHeight, iWidth);
+    m_pShdrMngr->setAttrib(m_iVertexArray, 5, 1, BILLBOARD_STRIDE, (void*)DURATION_OFFSET); /*Duration*/
 }
 
 /****************************************************************************************\
@@ -359,7 +374,7 @@ void Mesh::genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* 
 \****************************************************************************************/
 
 // Adds a Billboard object to the Mesh.
-unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth)
+unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration)
 {
     // Create new Billboard
     sBillboardInfo sNewBillboard;
@@ -367,30 +382,24 @@ unsigned int Mesh::addBillboard(const vec3* vPosition, const vec3* vNormal, cons
     sNewBillboard.vNormal = *vNormal;
     sNewBillboard.vUVStart = *vUVStart;
     sNewBillboard.vUVEnd = *vUVEnd;
-    sNewBillboard.vDimensions = vec2(static_cast<float>(iHeight), static_cast<float>(iWidth));
+    sNewBillboard.vDimensions = vec2(fHeight, fWidth);
+    sNewBillboard.fDuration = fDuration;
 
     // add to main list
     m_pBillboardList.push_back(sNewBillboard);
 
     // Reload Data in GPU.
-    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
+    updateBillboardVBO();
 
     // Return the index for this billboard for later reference.
     return m_pBillboardList.size() - 1;
 }
 
-// Updates the UVs of a specified billboard, used for sprite animation.
-void Mesh::updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd)
+void Mesh::updateBillboardVBO()
 {
-    // Update in Billboard List
-    m_pBillboardList[iIndex].vUVStart = *vNewUVStart;
-    m_pBillboardList[iIndex].vUVEnd = *vNewUVEnd;
-    vec2 pDataArray[] = { *vNewUVStart, *vNewUVEnd };
-
     // Update in VBO
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, ((iIndex * BILLBOARD_STRIDE) + UV_START_OFFSET), sizeof(vec2) << 1, pDataArray);
+    glBufferData(GL_ARRAY_BUFFER, m_pBillboardList.size() * sizeof(sBillboardInfo), m_pBillboardList.data(), GL_DYNAMIC_DRAW);
 }
 
 // Clear VBO data and Clear the Billboard data internally.
@@ -400,25 +409,6 @@ void Mesh::flushBillboards()
     glBufferData(GL_ARRAY_BUFFER, 0, (void*)0, GL_DYNAMIC_DRAW);
 
     m_pBillboardList.clear();
-}
-
-// Generates a Caresean point and normal for that point based on a given spherical coord
-void Mesh::addCarteseanPoint(float fPhi, float fTheta, float fRadius)
-{
-    // Local Variables
-    float fPhi_Rads = fPhi;
-    float fTheta_Rads = fTheta;
-    vec3 pPoint;
-
-    // Generate the Cartesian Point
-    pPoint.x = fRadius * sin(fPhi_Rads);
-    pPoint.y = pPoint.x * sin(fTheta_Rads);
-    pPoint.x *= cos(fTheta_Rads);
-    pPoint.z = fRadius * cos(fPhi_Rads);
-
-    // Store Vertex and Normal
-    m_pVertices.push_back(pPoint);
-    m_pNormals.push_back(normalize( pPoint ) );
 }
 
 // Initialize the GPU with Mesh Data and tell it how to read it.
@@ -480,13 +470,14 @@ void Mesh::initalizeVBOs()
         m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, iStride, (void*)sizeof(vec3));
     }
     // UVs
-    if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist. 
+    if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist.
     {
         m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
     }
 
     // Initialize Instance Buffer
-    setupInstanceBuffer(3);
+    m_iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(m_iVertexArray, 3, m_m4ListOfInstances.data(),
+                                                        m_m4ListOfInstances.size() * sizeof(mat4), GL_DYNAMIC_DRAW);
 
     // Set up Indices if applicable
     if (!m_pIndices.empty())
@@ -500,36 +491,6 @@ void Mesh::initalizeVBOs()
     }
 }
 
-void Mesh::setupInstanceBuffer(GLuint iStartSpecifiedIndex)
-{
-    // Set up Instanced Buffer for Instance Rendering
-    m_iInstancedBuffer = SHADER_MANAGER->genVertexBuffer(
-        m_iVertexArray, (void*)m_m4ListOfInstances.data(),
-        sizeof(mat4) * m_m4ListOfInstances.size(), GL_DYNAMIC_DRAW);
-
-    // Instance Rendering Attributes
-    //    Set up openGL for referencing the InstancedBuffer as a Mat4
-    // column 0
-    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex, 4, sizeof(vec4) * 4, (void*)0);
-    // column 1
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 1, 4, sizeof(vec4) * 4, (void*)sizeof(vec4));
-    // column 2
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 2, 4, sizeof(vec4) * 4, (void*)(2 * sizeof(vec4)));
-    // column 3
-    SHADER_MANAGER->setAttrib(
-        m_iVertexArray, iStartSpecifiedIndex + 3, 4, sizeof(vec4) * 4, (void*)(3 * sizeof(vec4)));
-
-    glBindVertexArray(m_iVertexArray);
-    glVertexAttribDivisor(iStartSpecifiedIndex, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 1, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 2, 1);
-    glVertexAttribDivisor(iStartSpecifiedIndex + 3, 1);
-}
-
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any
 //        faces that are not quads or tris. Algorithm modified from original written by Andrew Robert Owens.
 bool Mesh::loadObj(const string& sFileName)
@@ -537,6 +498,8 @@ bool Mesh::loadObj(const string& sFileName)
     // Locals
     ifstream in(sFileName.c_str());
     bool bReturnValue = in.is_open();
+    vec2 vXRange, vYRange, vZRange;     // Compute Basic cubic convex hull for Spatial information.
+    vZRange = vYRange = vXRange = vec2(numeric_limits<float>::max(), numeric_limits<float>::min());
 
     // Failed to load file.
     if (!bReturnValue)
@@ -560,13 +523,26 @@ bool Mesh::loadObj(const string& sFileName)
             {
                 ssLine >> vTempVec.x >> vTempVec.y >> vTempVec.z;
                 m_pVertices.push_back(vTempVec);
+
+                // Evaluate cubic convex hull
+                vXRange.x = vTempVec.x < vXRange.x ? vTempVec.x : vXRange.x;    // X Range Min
+                vXRange.y = vTempVec.x > vXRange.y ? vTempVec.x : vXRange.y;    // X Range Max
+
+                vYRange.x = vTempVec.y < vYRange.x ? vTempVec.y : vYRange.x;    // Y Range Min
+                vYRange.y = vTempVec.y > vYRange.y ? vTempVec.y : vYRange.y;    // Y Range Max
+
+                vZRange.x = vTempVec.z < vZRange.x ? vTempVec.z : vZRange.x;    // Z Range Min
+                vZRange.y = vTempVec.z > vZRange.y ? vTempVec.z : vZRange.y;    // Z Range Max
             }
             else if ("vt" == sToken) // uv-coords
-            {/* Ignored */}
+            {/* Ignored */
+            }
             else if ("g" == sToken) // Group
-            {/* Ignored */}
+            {/* Ignored */
+            }
             else if ("o" == sToken) // Object Name
-            {/* Ignored */}
+            {/* Ignored */
+            }
             else if ("f" == sToken) // Face
             {
                 // Local Variables for reading face.
@@ -614,7 +590,7 @@ bool Mesh::loadObj(const string& sFileName)
                             j = (j + 1) % 4;
                         }
                     }
-                    else if( 3 != vFaceVerts.size() ) // Error
+                    else if (3 != vFaceVerts.size()) // Error
                     {
                         cerr << "Invalid Object in File: " << sFileName << ".\n";
                         bReturnValue = false;
@@ -638,8 +614,8 @@ bool Mesh::loadObj(const string& sFileName)
 
             // Accumulate Normals Per Vertex;
             m_pNormals[m_pIndices[i]] += vTriNormal;
-            m_pNormals[m_pIndices[i+1]] += vTriNormal;
-            m_pNormals[m_pIndices[i+2]] += vTriNormal;
+            m_pNormals[m_pIndices[i + 1]] += vTriNormal;
+            m_pNormals[m_pIndices[i + 2]] += vTriNormal;
         }
 
         // Normalize all Accumulated Normals
@@ -647,6 +623,10 @@ bool Mesh::loadObj(const string& sFileName)
             vNormIter != m_pNormals.end();
             ++vNormIter)
             (*vNormIter) = normalize((*vNormIter));
+
+        // Store computed Spatial Range
+        m_vNegativeOffset = vec3(vXRange.x, vYRange.x, vZRange.x);  // Min
+        m_vPositiveOffset = vec3(vXRange.y, vYRange.y, vZRange.y);  // Max
     }
 
     return bReturnValue;
@@ -720,32 +700,22 @@ mat4 Mesh::getRotationMat4ToNormal(const vec3* vNormal)
 }
 
 /************************************************************************************\
- * Texture Functionality                                                            *
+ * Object Properties Information                                                    *
 \************************************************************************************/
 
-// Function to Bind the Mesh Material to the Shader for Rendering
-//    To be called before the render function
-void Mesh::bindTextures(ShaderManager::eShaderType eShaderType) const
+// Function to Load Mesh Properties from a given ObjectInfo structure
+void Mesh::loadObjectInfo(const ObjectInfo* pObjectProperties)
 {
-    // Bind the Diffuse and Specular Maps
-    m_sRenderMaterial.m_pDiffuseMap->bindTexture(eShaderType, "sMaterial.vDiffuse");
-    m_sRenderMaterial.m_pSpecularMap->bindTexture(eShaderType, "sMaterial.vSpecular");
-
-    // Set the Material's Shininess in the Material Uniform in the shader.
-    m_pShdrMngr->setUniformFloat(eShaderType, "sMaterial.fShininess", m_sRenderMaterial.fShininess);
+    // Ensure the Object Properties pointer is valid
+    if (nullptr != pObjectProperties)
+    {
+        loadMaterial(&pObjectProperties->sObjMaterial);                                         // Load Mesh Material
+        loadBoundingBox(&pObjectProperties->sObjBoundingBox, &pObjectProperties->vPosition);    // Load Bounding Box
+    }
 }
 
-// Funtion to unbind textures. To be called after a render call on this mesh.
-void Mesh::unbindTextures() const
-{
-    m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
-    m_sRenderMaterial.m_pSpecularMap->unbindTexture();
-}
-
-// Function to Load a given material to the internal Render Material struct.
-//    This defines a specular and diffuse map as well as a shininess factor
-//    for this mesh that is used for rendering.
-void Mesh::loadMaterial(const Material* pMaterial)
+// Load the Material for the Mesh
+void Mesh::loadMaterial(const ObjectInfo::Material* pMaterial)
 {
     if (nullptr != pMaterial)
     {
@@ -772,3 +742,171 @@ void Mesh::loadMaterial(const Material* pMaterial)
         m_sRenderMaterial.m_pSpecularMap = TEXTURE_MANAGER->genTexture(&DEFAULT_SPEC_COLOR);
 }
 
+// Load the Bounding Box for the Mesh
+void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition)
+{
+    if (nullptr != pBoundingBox && nullptr != vStartingPosition)
+    {
+        // Generate Translation Matrix for starting position
+        mat4 m4Translation = translate(*vStartingPosition);
+
+        // Nothing Set in the Bounding Box type? Don't evaluate further
+        switch (pBoundingBox->eType)
+        {
+        case CUBIC_BOX:
+            generateCubicBoundingBox(pBoundingBox->vDimensions.x, pBoundingBox->vDimensions.y, pBoundingBox->vDimensions.z);
+            break;
+        default:    // No Bounding Box specified
+            return;
+            break;
+        }
+
+        // Add initial translation for the Bounding Box.
+        if (DEFAULT_TYPE != pBoundingBox->eType)
+            addBBInstance(&m4Translation);
+    }
+}
+
+// Returns calculated spatial dimensions for the mesh.
+//  If the return values are vec3(0.0f), then no spatial information has been computed for
+//      the bounding box nor the mesh.
+void Mesh::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
+{
+    // Ensure that proper pointers have been given.
+    assert(nullptr != pNegativeOffset && nullptr != pPositiveOffset);
+
+    if (m_sBoundingBox.isLoaded())  // Default to the Bounding Box Dimensions if available
+    {
+        *pNegativeOffset = m_sBoundingBox.vNegativeOffset;
+        *pPositiveOffset = m_sBoundingBox.vPositiveOffset;
+    }
+    else    // Otherwise return the Mesh computed Offsets.
+    {
+        *pNegativeOffset = m_vNegativeOffset;
+        *pPositiveOffset = m_vPositiveOffset;
+    }
+}
+
+/************************************************************************************\
+ * Texture Functionality                                                            *
+\************************************************************************************/
+
+// Function to Bind the Mesh Material to the Shader for Rendering
+//    To be called before the render function
+void Mesh::bindTextures(ShaderManager::eShaderType eShaderType) const
+{
+    // Bind the Diffuse and Specular Maps
+    m_sRenderMaterial.m_pDiffuseMap->bindTexture(eShaderType, "sMaterial.vDiffuse");
+    m_sRenderMaterial.m_pSpecularMap->bindTexture(eShaderType, "sMaterial.vSpecular");
+
+    // Set the Material's Shininess in the Material Uniform in the shader.
+    m_pShdrMngr->setUniformFloat(eShaderType, "sMaterial.fShininess", m_sRenderMaterial.fShininess);
+}
+
+// Funtion to unbind textures. To be called after a render call on this mesh.
+void Mesh::unbindTextures() const
+{
+    m_sRenderMaterial.m_pDiffuseMap->unbindTexture();
+    m_sRenderMaterial.m_pSpecularMap->unbindTexture();
+}
+
+/************************************************************************************\
+ * Bounding Box Functionality                                                       *
+\************************************************************************************/
+
+// Deletes The VAO and VBOs used by the Mesh's Bounding Box.
+void Mesh::sBoundingBox::deleteBuffers()
+{
+    glDeleteBuffers(1, &iIndicesBuffer);
+    glDeleteBuffers(1, &iVertexBuffer);
+    glDeleteBuffers(1, &iInstancedBuffer);
+    glDeleteVertexArrays(1, &iVertexArray);
+}
+
+// Loads a new transformation Instance into the Instance buffer
+void Mesh::sBoundingBox::loadInstance(const mat4* pTransform)
+{
+    // Ensure a valid transformation is passed in and that the InstancedBuffer is generated
+    assert(nullptr != pTransform && 0 != iInstancedBuffer);
+
+    // Add the Transformation to the Instance Vector and load the Instance Vector into the Instance VBO
+    pInstances.push_back(*pTransform);
+    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
+}
+
+// Initializes VBOs for the Bounding Box.
+void Mesh::sBoundingBox::initVBOs()
+{
+    // Ensure that the Bounding Box was initialized with necessary data
+    assert(!pVertices.empty());
+
+    // Delete Current Buffers if they have already been initialized
+    if (isLoaded())
+        deleteBuffers();
+
+    // Generate new vertex array for this Bounding Box
+    glGenVertexArrays(1, &iVertexArray);
+
+    // Generate Vertex Buffer
+    iVertexBuffer = SHADER_MANAGER->genVertexBuffer(iVertexArray, pVertices.data(), pVertices.size() * sizeof(vec3), GL_STATIC_DRAW);
+    SHADER_MANAGER->setAttrib(iVertexArray, 0, 3, sizeof(vec3), (void*)0);
+
+    // Generate Indices Buffer
+    iIndicesBuffer = SHADER_MANAGER->genIndicesBuffer(iVertexArray, pIndices.data(), pIndices.size() * sizeof(unsigned int), GL_STATIC_DRAW);
+
+    // Generate Instance Buffer
+    iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(iVertexArray, 1, (void*)0, 0, GL_DYNAMIC_DRAW);
+}
+
+// Generates a Cubic Bounding Box.
+void Mesh::sBoundingBox::generateCubicBox(float fHeight, float fWidth, float fDepth)
+{
+    // Get half sizes of dimensions to set vertices wrt to origin.
+    float iHalfHeight = fHeight * 0.5f;
+    float iHalfWidth = fWidth * 0.5f;
+    float iHalfDepth = fDepth * 0.5f;
+
+    // Store all 8 Vertices for the Cubic Box
+    pVertices = {
+        vec3(-iHalfWidth, iHalfHeight, iHalfDepth),
+        vec3(iHalfWidth, iHalfHeight, iHalfDepth),
+        vec3(iHalfWidth, -iHalfHeight, iHalfDepth),
+        vec3(-iHalfWidth, -iHalfHeight, iHalfDepth),
+        vec3(-iHalfWidth, iHalfHeight, -iHalfDepth),
+        vec3(iHalfWidth, iHalfHeight, -iHalfDepth),
+        vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth),
+        vec3(iHalfWidth, -iHalfHeight, -iHalfDepth)
+    };
+
+    // Set up the Indices for Drawing lines
+    pIndices = {
+        0, 1, 0, 3, 0, 4, // Top Left Front Corner
+        1, 2, 1, 5, 2, 3,
+        2, 7, 3, 6, 4, 5,
+        6, 7, 4, 6, 5, 7
+    };
+
+    // Store the Spatial information
+    vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
+    vPositiveOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
+
+    // Initialize Bounding Box VBOs
+    initVBOs();
+}
+
+// Set the Bounding Box Instance Matrix
+//  If the Mesh is static, add multiple instances
+//  dynamic? replace the current instance
+void Mesh::addBBInstance(const mat4* m4Transformation)
+{
+    if (m_sBoundingBox.isLoaded())
+    {
+        // If the Mesh is dynamic, clear the current Instance loaded
+        if (!m_bStaticMesh)
+            m_sBoundingBox.pInstances.clear();
+
+        // Load the new instance
+        m_sBoundingBox.loadInstance(m4Transformation);
+    }
+}

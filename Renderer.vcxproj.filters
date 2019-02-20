@@ -46,6 +46,18 @@
     <Filter Include="Source Files\snippetvehiclecommon">
       <UniqueIdentifier>{d048e2f4-49d0-47bf-9469-5329cf1881c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{1d4bb0d4-b1c7-4d1c-9923-2d742cdcdeca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{b48e17ff-c23f-42d3-82b9-55413bff086f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UserInterface">
+      <UniqueIdentifier>{4f1e6834-0d5f-4dc3-808d-0d9f817790a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UserInterface">
+      <UniqueIdentifier>{01228060-9855-449b-87bb-94d878aa52d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\EnvSpec.h">
@@ -113,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="Headers\Physics\PhysicsManager.h">
       <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\UserInterface.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestClass.h">
       <Filter>Header Files</Filter>
@@ -192,6 +201,39 @@
     <ClInclude Include="Headers\SceneLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h">
+      <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\DataStructures\ObjectInfo.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\SpatialDataMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\eEntityTypes.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Utils\FuncUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\UserInterface.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\FontManager.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\BotEntity.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -239,9 +281,6 @@
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\CommandHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -252,9 +291,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Emitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestClass.cpp">
@@ -319,6 +355,30 @@
     </ClCompile>
     <ClCompile Include="Source\SceneLoader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp">
+      <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpatialDataMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\FuncUtils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\UserInterface.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\FontManager.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\BotEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\HovercraftEntity.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

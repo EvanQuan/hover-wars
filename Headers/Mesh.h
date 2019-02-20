@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "ShaderManager.h"
 #include "Texture.h"
+#include "DataStructures/ObjectInfo.h"
 
 //////////////////////////////////////////////////////////////////
 // Name: Mesh.h
@@ -9,7 +10,7 @@
 //        and indices.
 // Written by: James Cote
 //////////////////////////////////
-class Mesh 
+class Mesh
 {
 private:
     // Private Constructor and Copy Constructor to restrict usage to Object_Factory
@@ -20,18 +21,16 @@ private:
     bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
     void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
     void genSphere(float fRadius, vec3 vPosition);
-    void genCube(int iHeight, int iWidth, int iDepth, vec3 vPosition);
-    void genBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth );
-    void addCarteseanPoint(float fPhi, float fTheta, float fRadius);
+    void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition);
+    void genBillboard();
     void initalizeVBOs();
     bool loadObj(const string& sFileName);
-    void loadMaterial(const Material* pMaterial);
+    void loadObjectInfo(const ObjectInfo* pObjectProperties);
+    void loadMaterial(const ObjectInfo::Material* pMaterial);
+    void loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition);
 
     // function to generate a quaternion to rotate from y-axis normal to specified normal
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
-
-    // VBO Initialization
-    void setupInstanceBuffer(GLuint iStartSpecifiedIndex);
 
     // Material Struct for setting uniform in Lighting Shaders
     struct sRenderMaterial
@@ -41,13 +40,40 @@ private:
         float fShininess;
     } m_sRenderMaterial;
 
-    // Indices for Faces of Mesh and Additional Buffer Addresses on the GPU for
-    //    Indices and Normals
+    // The Bounding Box Drawing information
+    struct sBoundingBox
+    {
+        // BoundingBox Variables
+        vector<mat4> pInstances;
+        vector<vec3> pVertices;
+        vector< unsigned int> pIndices;
+        GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
+        vec3 vNegativeOffset, vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
+
+        // Check to see if the Bounding Box is loaded.
+        bool isLoaded() const { return 0 != iVertexArray; }
+
+        // Initialization and cleaning of Buffers
+        void deleteBuffers();   // Deletes the VAO and VBOs used by the Mesh's Bounding Box
+        void initVBOs();        // Initializes VBOs for the Bounding Box.
+
+        // Loads a new transformation Instance into the Instance buffer
+        void loadInstance(const mat4* pTransform);
+
+        // Generation Functions
+        void generateCubicBox(float fHeight, float fWidth, float fDepth);
+    } m_sBoundingBox;
+
+    // Mesh Information and GPU VAO/VBOs
     vector<unsigned int> m_pIndices;
     vector< vec3 > m_pVertices, m_pNormals;
     vector< vec2 > m_pUVs;
-    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer, m_iScaleBuffer;
+    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
     GLuint m_iVertexArray;
+
+    // Spatial Information for Mesh
+    vec3 m_vNegativeOffset, m_vPositiveOffset;
+
     string m_sManagerKey; // Used as key for finding Mesh in MeshManager
     ShaderManager* m_pShdrMngr;
     vector<mat4> m_m4ListOfInstances;
@@ -59,17 +85,24 @@ private:
     {
         vec3 vPosition, vNormal;
         vec2 vUVStart, vUVEnd, vDimensions;
+        float fDuration;
     };
     vector<sBillboardInfo> m_pBillboardList;
 
-    // Friend Class: Object_Factory to create Meshes.
+    // Billboard Functionality -> Only accessable within AnimationComponent
+    void updateBillboardVBO();
+    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration);
+    void flushBillboards();
+
+    // Friend Class: MeshManager to create Meshes.
     friend class MeshManager;
-    // Private Manager Cookie so only MeshManager can construct a Mesh, 
+    friend class AnimationComponent;    // Friend class: Animation Component to manipulate Mesh information
+    // Private Manager Cookie so only MeshManager can construct a Mesh,
     //    but make_unique<Mesh> still has access to the constructor which it needs.
     struct manager_cookie {};
 
 public:
-    explicit Mesh(const string &sFileName, bool bStaticMesh, const Material* pMaterial, manager_cookie);
+    explicit Mesh(const string &sFileName, bool bStaticMesh, const ObjectInfo* pObjectProperties, manager_cookie);
     virtual ~Mesh();
     void loadInstanceData(const void* pData, unsigned int iSize);
 
@@ -92,22 +125,24 @@ public:
     void addInstance(const vec3* vPosition, const vec3* vNormal, float fScale);    // Specify particular components and a transformation matrix will be generated
     void addInstance(const mat4* m4Transform);                                    // Specify a previously generated transformation matrix
 
-    // Billboard Usage
-    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, int iHeight, int iWidth);
-    void updateBillboardUVs(unsigned int iIndex, const vec2* vNewUVStart, const vec2* vNewUVEnd);
-    void flushBillboards();
-
     // Getters for Mesh Data
     const vector<vec3>& getVertices() const { return m_pVertices; }
     const vector<vec3>& getNormals() const { return m_pNormals; }
     const vector<vec2>& getUVs() const { return m_pUVs; }
     GLuint getVertexArray() const { return m_iVertexArray; }
+    void getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset);    // Get Spatial Dimensions for the Mesh/BoundingBox.
 
     // Functionality for Binding and Unbinding Textures
     void bindTextures(ShaderManager::eShaderType eShaderType) const ;
     void unbindTextures() const;
 
+    // Bounding Box Functionality
+    void generateCubicBoundingBox(float fHeight, float fWidth, float fDepth) { m_sBoundingBox.generateCubicBox(fHeight, fWidth, fDepth); }
+    void addBBInstance(const mat4* m4Transformation);
+    bool usingBoundingBox() const { return m_sBoundingBox.isLoaded(); }
+    GLuint getBBVertexArray() const { return m_sBoundingBox.iVertexArray; }
+    GLuint getBBCount() const { return m_sBoundingBox.pIndices.size(); }
+
     // Gets the file name, only the MeshManager can set this variable.
     const string& getManagerKey() { return m_sManagerKey; }
 };
-

@@ -1,32 +1,55 @@
 #include "EntityManager.h"
-#include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityHeaders/StaticEntity.h"
-#include "EntityHeaders/PlayerEntity.h"
+
+/*************\
+ * Constants *
+\*************/
+const vec3 WORLD_CENTER = vec3(0.0);
+const mat3 WORLD_COORDS = mat3(1.0);
+const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[0],
+                                  WORLD_CENTER, WORLD_COORDS[1],
+                                  WORLD_CENTER, WORLD_COORDS[2] };
 
 // Initialize Static Instance Variable
 EntityManager* EntityManager::m_pInstance = nullptr;
 
+// Default Constructor
 EntityManager::EntityManager()
 {
     // Initialize ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     // Initialize Local Variables
-    m_iHeight = START_HEIGHT;
-    m_iWidth = START_WIDTH;
-    m_bPause = false;
-    m_pMshMngr = MESH_MANAGER;
-    m_pTxtMngr = TEXTURE_MANAGER;
-    m_pScnLdr = SCENE_LOADER;
-    m_pEmtrEngn = EMITTER_ENGINE;
-    m_pPhysxMngr = PHYSICS_MANAGER;
+    m_iHeight            = START_HEIGHT;
+    m_iWidth             = START_WIDTH;
+    m_bPause             = false;
+    m_bDrawBoundingBoxes = false;
+    m_bDrawSpatialMap    = false;
+    m_bShadowDraw        = false;
+    m_bUseDebugCamera    = false;
+    m_pMshMngr           = MESH_MANAGER;
+    m_pTxtMngr           = TEXTURE_MANAGER;
+    m_pScnLdr            = SCENE_LOADER;
+    m_pEmtrEngn          = EMITTER_ENGINE;
+    m_pPhysxMngr         = PHYSICS_MANAGER;
+    m_pSpatialMap        = SPATIAL_DATA_MAP;
+    m_pShdrMngr          = SHADER_MANAGER;
+
+    // For Rendering the World Axis
+    glGenVertexArrays(1, &m_pVertexArray);
+
+    // Generate Buffer and Set Attribute
+    m_pVertexBuffer = m_pShdrMngr->genVertexBuffer(m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof(vec3), GL_STATIC_DRAW);
+    m_pShdrMngr->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
 }
 
 // Gets the instance of the environment manager.
 EntityManager* EntityManager::getInstance()
 {
-    if ( nullptr == m_pInstance )
+    if (nullptr == m_pInstance)
+    {
         m_pInstance = new EntityManager();
+    }
     return m_pInstance;
 }
 
@@ -35,21 +58,23 @@ EntityManager::~EntityManager()
 {
     purgeEnvironment();
 
+    // Delete World Axis Buffers
+    glDeleteBuffers(1, &m_pVertexBuffer);
+    glDeleteVertexArrays(1, &m_pVertexArray);
+
     // Delete Mesh Manager
-    if (nullptr != m_pMshMngr)
-        delete m_pMshMngr;
+    if (nullptr != m_pMshMngr) { delete m_pMshMngr; }
     
     // Delete Texture Manager
-    if (nullptr != m_pTxtMngr)
-        delete m_pTxtMngr;
+    if (nullptr != m_pTxtMngr) { delete m_pTxtMngr; }
 
     // Delete Scene Loader
-    if (nullptr != m_pScnLdr)
-        delete m_pScnLdr;
+    if (nullptr != m_pScnLdr) { delete m_pScnLdr; }
 
     // Delete Emitter Engine
-    if (nullptr != m_pEmtrEngn)
-        delete m_pEmtrEngn;
+    if (nullptr != m_pEmtrEngn) { delete m_pEmtrEngn; }
+
+    if (nullptr != m_pSpatialMap) { delete m_pSpatialMap; }
 }
 
 // Clears Environment and loads a new environment from specified file.
@@ -59,50 +84,21 @@ void EntityManager::initializeEnvironment(string sFileName)
 
     purgeEnvironment();
     pObjFctry->loadFromFile(sFileName);
+    // Generate Debug Camera
+    m_pCamera = generateCameraEntity();
 
-    // TESTING: To Be Removed
-    vec3 vNormal(0.0f, 1.0f, 0.0f);
-    vec3 vPosition(10.0f, 10.0f, 5.0f);
-    unique_ptr<InteractableEntity> pTestingEntity = make_unique<InteractableEntity>(getNewEntityID(), &vPosition);
-    pTestingEntity->loadAsBillboard(&vNormal, 2, 1, nullptr);
-    m_pBillboardTesting = pTestingEntity.get();
-    m_pMasterEntityList.push_back(move(pTestingEntity));
+    // Populate the Spatial Data Map now that everything has been loaded.
+    m_pSpatialMap->populateStaticMap(&m_pMasterEntityList);
 }
 
-// Remove Object from List with given ID
-//void EntityManager::killObject( long lID )
-//{
-//    unsigned int i = 0;
-//
-//    // Iterate to find Object
-//    while ( i < m_pObjects.size() && nullptr != m_pObjects[i] && lID != m_pObjects[i]->ID() )
-//        ++i;
-//
-//    // Delete Object and remove it from list.
-//    if ( i < m_pObjects.size() )
-//    {
-//        swap( m_pObjects[i], m_pObjects.back() );
-//        delete m_pObjects.back();
-//        m_pObjects.pop_back();
-//    }
-//}
-
-// Outputs all the objects in the environment for debugging.
-//void EntityManager::listEnvironment()
-//{
-//    cout << "Environment:" << endl;
-//    for ( vector<Object3D*>::iterator pIter = m_pObjects.begin();
-//          pIter != m_pObjects.end();
-//          ++pIter )
-//        cout << "\t" << (*pIter)->getDebugOutput() << endl;
-//
-//    for ( vector<Light*>::iterator pIter = m_pLights.begin();
-//          pIter != m_pLights.end();
-//          ++pIter )
-//        cout << "\t" << (*pIter)->getDebugOutput() << endl;
-//
-//    cout << endl;
-//}
+// Initializes the SpatialDataMap with a given length, width and tilesize
+void EntityManager::initializeSpatialMap(float fLength, float fWidth, float fTileSize)
+{
+    if (!m_pSpatialMap->isInitialized())     // Only Initialize the Spatial Map once. Unload everything first to initialize again.
+    {
+        m_pSpatialMap->initializeMap(fLength, fWidth, fTileSize);
+    }
+}
 
 // Clears out the entire environment
 void EntityManager::purgeEnvironment()
@@ -111,54 +107,125 @@ void EntityManager::purgeEnvironment()
     m_pMasterComponentList.clear();
     m_pMasterEntityList.clear();
     m_pEmtrEngn->clearAllEmitters();
+    m_pSpatialMap->clearMap();           // Unload the Spatial Data Map
+
+    // Reset ID Pools
+    m_iComponentIDPool = m_iEntityIDPool = 0;
 
     m_pMshMngr->unloadAllMeshes();
     m_pTxtMngr->unloadAllTextures();
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
     m_pDirectionalLight = nullptr;
-    m_pTestingLight = nullptr;
-    m_pActiveCamera = nullptr;
+    m_pActiveCameraComponent = nullptr;
 }
 
-// Fetch the Frenet Frame of the first MeshObject found (Hack for assignment)
-//mat4 EntityManager::getFrenetFrame()
-//{ 
-//    mat4 pReturnVal = mat4( 1.0 );    // Default: return Identity Matrix
-//
-//    for ( vector<Object3D*>::iterator pObjIter = m_pObjects.begin();
-//         pObjIter != m_pObjects.end();
-//         ++pObjIter )
-//    {
-//        if ( !(*pObjIter)->getType().compare( "MeshObject" ) )
-//        {
-//            pReturnVal = (*pObjIter)->getFreNetFrames();
-//            break;
-//        }
-//    }
-//
-//    // Return
-//    return pReturnVal;
-//}
-
-void EntityManager::renderEnvironment( const vec3& vCamLookAt )
+// Resets the FBO to the default settings for a new render.
+void EntityManager::resetFBO()
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, m_iWidth, m_iHeight);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_bShadowDraw = false;
+}
+
+// Name: renderEnvironment
+// Written by: James Coté
+// Description: Sets necessary lights into Shader Uniform Buffers and Renders
+//      all active Render Components.
+// TODO: Have Lighting load based on Spatial Data Structure
+void EntityManager::renderEnvironment( )
+{    
     // Local Variables
-    ShaderManager* pShdrMngr = SHADER_MANAGER;
     const LightingComponent* pDirectionalLightComponent = nullptr;
 
+    // Get Directional Light
     if (nullptr != m_pDirectionalLight)
+    {
         pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
+        //pDirectionalLightComponent->setupShadowFBO();
+        //pDirectionalLightComponent->setupPMVMatrices();
+        //m_bShadowDraw = true;
+        //doRender();
+        //resetFBO();
+    }
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
-    pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
+    m_pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
+    // Perform Final Render
+    setCameraPMVMatrices();
+    doRender();
+}
+
+// Performs Rendering of scene
+void EntityManager::doRender()
+{
+    // Render all render components
     for (unordered_map<Mesh const*, RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
         pIter != m_pRenderingComponents.end();
         ++pIter)
         (*pIter).second->render();
 
-    if (nullptr != m_pEmtrEngn)
-        m_pEmtrEngn->renderEmitters();
+    // Don't render these if only doing a shadow pass
+    if (!m_bShadowDraw)
+    {
+        // Render Emitters
+        if (nullptr != m_pEmtrEngn)
+        {
+           m_pEmtrEngn->renderEmitters();
+        }
+
+        // Draw the Spatial Map for debuggin
+        if (m_bDrawSpatialMap)
+        {
+            m_pSpatialMap->drawMap();
+        }
+
+#ifdef _DEBUG
+        renderAxis();
+#endif
+    }
+}
+
+// Draw World Axis Lines
+void EntityManager::renderAxis()
+{
+    // Increase Point Size for the Axis
+    glPointSize(10.f);
+
+    // Set up Shader and Vertex Array
+    glBindVertexArray(m_pVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::WORLD_SHDR));
+
+    // Render
+    glDrawArrays(GL_LINES, 0, AXIS_VERTS.size());
+    glDrawArrays(GL_POINTS, 0, AXIS_VERTS.size());
+
+    // Reset Point size
+    glPointSize(1.f);
+}
+
+// Sets the Camera Projection, Model and View Matrices from the active camera.
+void EntityManager::setCameraPMVMatrices()
+{
+    // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
+    //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
+    m_pCamera->setLookAt(m_pPlayerEntityList[PLAYER_1]->getCameraPosition());
+    quat pQuat = m_pPlayerEntityList[PLAYER_1]->getCameraRotation();
+    m_pCamera->setRotationQuat(pQuat);
+
+    // Get player 1's active camera to show
+    // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
+    // each with their own camera components. The game will render 4 times, each switching
+    // the player to retrieve the active camera.
+    const CameraComponent* pCamera = m_bUseDebugCamera ?
+        m_pCamera->getCameraComponent() : m_pPlayerEntityList[PLAYER_1]->getActiveCameraComponent();
+
+    mat4 pModelViewMatrix = pCamera->getToCameraMat();
+    mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
+
+    // Set camera information in Shaders before rendering
+    m_pShdrMngr->setProjectionModelViewMatrix(&pProjectionMatrix, &pModelViewMatrix);
 }
 
 /*********************************************************************************\
@@ -199,52 +266,75 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(int iHeight, int iWidth, const vec3* vPosition, const vec3* vNormal, const Material* sMaterial, const string& sShaderType)
+void EntityManager::generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sMaterial, sShaderType);
+    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewPlane));
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticSphere(float fRadius, const vec3* vPosition, const Material* sMaterial, const string& sShaderType)
+void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewSphere->loadAsSphere(fRadius, sMaterial, sShaderType);
+    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewSphere->loadAsSphere(fRadius, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
 // Generates a Static Mesh at a given location
-void EntityManager::generateStaticMesh(const string& sMeshLocation, const vec3* vPosition, const Material* sMaterial, float fScale, const string& sShaderType )
+void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {
-    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewMesh->loadFromFile(sMeshLocation, sMaterial, sShaderType, fScale);
+    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewMesh->loadFromFile(sMeshLocation, pObjectProperties, sShaderType, fScale);
     m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
-void EntityManager::generatePlayerEntity(const vec3* vPosition, const string& sMeshLocation, const Material* sMaterial, float fScale, const string& sShaderType)
+/*
+Generate a Player Entity at a starting position with a given Material, scale,
+mesh location and shader type.
+*/
+void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
-    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), vPosition);
-    pNewPlayer->initializePlayer(sMeshLocation, sMaterial, sShaderType, fScale);
-    m_pPlayerEntityList.push_back(pNewPlayer.get()); // TODO this retrieves a raw pointer from the unique pointer. Is this okay?
+    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
+    m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
 }
-void EntityManager::generateStaticCube(const vec3* vPosition, const Material* sMaterial, float fScale, const string& sShaderType)
+void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, float fScale, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), vPosition);
-    pNewMesh->loadAsCube(fScale,sMaterial, sShaderType);
+    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewMesh->loadAsCube(fScale, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewMesh));
+}
+
+/*
+Generate a Bot Entity at a starting position with a given Material, scale,
+mesh location and shader type.
+*/
+void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
+{
+    unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eBot>(m_pBotEntityList.size()));
+    m_pBotEntityList.push_back(pNewBot.get()); 
+    m_pMasterEntityList.push_back(move(pNewBot));
+}
+
+// Generates and Returns an Interactable Entity with a specified Position.
+InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)
+{
+    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(getNewEntityID(), vPosition);
+    InteractableEntity* pReturnEntity = pNewEntity.get();
+    m_pMasterEntityList.push_back(move(pNewEntity));
+
+    // Return InteractableEntity
+    return pReturnEntity;
 }
 
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
-void EntityManager::generateStaticPointLight( float fPower, const vec3* vPosition, const vec3* vColor, const Material* sMaterial, const string& sMeshLocation, float m_fMeshScale)
+void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation, float m_fMeshScale)
 {
-    unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), vPosition);
-    pNewLight->initialize(fPower, vColor, true, sMaterial, sMeshLocation, m_fMeshScale);
-
-    if (nullptr == m_pTestingLight)
-        m_pTestingLight = pNewLight.get();
-
+    unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewLight->initialize(fPower, vColor, true, pObjectProperties, sMeshLocation, m_fMeshScale);
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
@@ -264,10 +354,10 @@ void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3*
 }
 
 // Generates a new Spot Light Entity and stores it in the Entity Manager.
-void EntityManager::generateStaticSpotLight(float fPhi, float fSoftPhi, const vec3* vPosition, const vec3* vColor, const vec3* vDirection, const Material* sMaterial, const string& sMeshLocation, float m_fMeshScale)
+void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, float m_fMeshScale)
 {
-    unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), vPosition);
-    pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, sMaterial, m_fMeshScale);
+    unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, pObjectProperties, m_fMeshScale);
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
@@ -291,50 +381,49 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 //    in the game world. No rendering is done here.
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
-    // Get Total Frame Time and Benchmark for 60 fps
-    duration<float> pFrameTime = pTimer.getFrameTime();
-    constexpr auto pMaxDeltaTime = sixtieths_of_a_sec{ 1 };
-
-    // Loop updates to maintain 60 fps
-    while (pFrameTime > milliseconds(0))
-    {
-        // Get the Delta of this time step <= 1/60th of a second (60 fps)
-        // Interpolate on steps < 1/60th of a second
-        duration<float> pDeltaTime = 
-            std::min<common_type<decltype(pFrameTime),decltype(pMaxDeltaTime)>::type>(pFrameTime, pMaxDeltaTime);
-
-        pFrameTime -= pDeltaTime;
-        float fDeltaTime = static_cast<float>(pDeltaTime.count());
+    // Get the delta since the last frame and update based on that delta.
+    float fDeltaTime = static_cast<float>(pTimer.getFrameTime().count());
         
-        // UPDATES GO HERE
-        m_pEmtrEngn->update(fDeltaTime);
-        m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
+    // UPDATES GO HERE
+    m_pEmtrEngn->update(fDeltaTime);
+    m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
 
-        // Iterate through all Entities and call their update with the current time.
-        for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
-            iter != m_pMasterEntityList.end();
-            ++iter)
-            (*iter)->update(fDeltaTime);
-    }
+    // Iterate through all Entities and call their update with the current time.
+    for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
+        iter != m_pMasterEntityList.end();
+        ++iter)
+        (*iter)->update(fDeltaTime);
+
+    // Iteratre through all Animation Components to update their animations
+    for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
+        iter != m_pAnimationComponents.end();
+        ++iter)
+        (*iter)->update(fDeltaTime);
 }
 
 /*********************************************************************************\
 * Entity Component Management                                                    *
 \*********************************************************************************/
 
-// Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
+/*
+Generates a new Camera Component. Stores it in the Camera Component and Master component lists.
+@param int iEntityID the ID of the entity for which this component corresponds. This allows us
+to correspond camera components to their "owner" entity.
+*/
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
     // Generate new Camera Component
-    unique_ptr<CameraComponent> pNewCameraPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
 
     // Store new Camera Component
-    m_pCameraComponents.push_back(pNewCameraPtr.get());
-    m_pMasterComponentList.push_back(move(pNewCameraPtr));
+    m_pCameraComponents.push_back(pNewCameraComponentPtr.get());
+    m_pMasterComponentList.push_back(move(pNewCameraComponentPtr));
 
     // Set the active Camera if no camera is currently active.
-    if (NULL == m_pActiveCamera)
-        m_pActiveCamera = m_pCameraComponents.back();
+    if (NULL == m_pActiveCameraComponent)
+    {
+        m_pActiveCameraComponent = m_pCameraComponents.back();
+    }
 
     return m_pCameraComponents.back();
 }
@@ -349,8 +438,10 @@ RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh cons
     // Since Meshes are more static with their material, if there is a rendering component
     //    for that mesh already, return that instead since that Mesh will probably have multiple instances
     //    per render.
-    if (m_pRenderingComponents.end() != m_pRenderingComponents.find(pMeshKey))
+    if (FuncUtils::contains(m_pRenderingComponents, pMeshKey))
+    {
         pReturnComponent = m_pRenderingComponents[pMeshKey];
+    }
     else    // Otherwise, if it hasn't been found, create the new render component and associate it with that Mesh Pointer.
     {
         // Initialize new Unique_Ptr for Render Component.
@@ -398,30 +489,56 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
     return pReturnComponent;
 }
 
-/*********************************************************************************\
-* Command Management                                                    *
-\*********************************************************************************/
-
-void EntityManager::execute(ePlayer player, eVariableCommand command, float x, float y)
+// This function will generate a new Animation Component, store it within the internal
+//      Master Component list as well as a separate AnimationComponent* list that can be
+//      managed by the Entity Manager and prompted for updates separate from other Components.
+AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 {
-    switch (command)
-    {
-    case COMMAND_MOVE:
-        PHYSICS_MANAGER->handleControllerInputMove(x, y);
-        break;
-    case COMMAND_TURN:
-        // TODO make this a different method
-        PHYSICS_MANAGER->handleControllerInputRotate(x, y);
-        break;
-    }
+    // Generate and store new Animation Component
+    unique_ptr<AnimationComponent> pNewAnimCmp = make_unique<AnimationComponent>(iEntityID, getNewComponentID());
+    AnimationComponent* pReturnComponent = pNewAnimCmp.get();
+    m_pAnimationComponents.push_back(pReturnComponent);
+    m_pMasterComponentList.push_back(move(pNewAnimCmp));
+
+    // Return newly created component
+    return pReturnComponent;
 }
+
+/*********************************************************************************\
+* Command Management                                                             *
+\*********************************************************************************/
 
 bool EntityManager::playerExists(ePlayer player)
 {
-    return (int) m_pPlayerEntityList.size() > player;
+    return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
 PlayerEntity* EntityManager::getPlayer(ePlayer player)
 {
     return m_pPlayerEntityList.at(player);
+}
+
+bool EntityManager::botExists(eBot bot)
+{
+    return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
+}
+
+BotEntity* EntityManager::getBot(eBot bot)
+{
+    return m_pBotEntityList.at(bot);
+}
+
+
+
+/*********************************************************************************\
+* Camera Management                                                              *
+\*********************************************************************************/
+void EntityManager::rotateCamera(vec2 pDelta)
+{
+    m_pCamera->orbit(pDelta);
+}
+
+void EntityManager::zoomCamera(float fDelta)
+{
+    m_pCamera->zoom(fDelta);
 }

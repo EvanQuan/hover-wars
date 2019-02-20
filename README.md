@@ -57,12 +57,36 @@
 
 **P** - Pause the game
 
-**F** - Switch to Wireframe Mode
 
 **Left Click** - Spawns a particle Emitter at the mouse intersection with the xz-plane @ yAxis = 0
 
 **Right Click** - Holding down Right Click and moving the mouse will allow you to adjust the camera around the vehicle
 
+#### Debug Commands (for Debug mode only)
+
+##### Switching Keyboard Player
+
+**1** - Player 1
+
+**2** - Player 2
+
+**3** - Player 3
+
+**4** - Player 4
+
+**F** - Toggle Wireframe Mode
+
+**C** - Toggle Debug Camera for current player
+
+**Keypad 0** - Set User Interface display count to 0
+
+**Keypad 1** - Set User Interface display count to 1
+
+**Keypad 2** - Set User Interface display count to 2
+
+**Keypad 3** - Set User Interface display count to 3
+
+**Keypad 4** - Set User Interface display count to 4
 
 #### XBOX Controller
 

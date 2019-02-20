@@ -12,11 +12,11 @@
 *    for the GPU to render to the screen.
 ***************************************************************/
 
-class RenderComponent 
+class RenderComponent
     : public EntityComponent
 {
 public:
-    RenderComponent(int iEntityID, int iComponentID, bool bStaticDraw, 
+    RenderComponent(int iEntityID, int iComponentID, bool bStaticDraw,
                     ShaderManager::eShaderType eType, GLenum eMode);
     virtual ~RenderComponent();
 
@@ -24,13 +24,13 @@ public:
     void render();
 
     // Inherited update frunction from EntityComponent
-    void update(duration<float> fTimeDelta);
+    void update(float fTimeDeltaInMilliseconds);
     void updateCount(GLsizei iNewCount) { m_iCount = iNewCount; }
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponent( Mesh const  * pMesh );
 
-private: 
+private:
     // Private Copy Constructor and Assignment operator overload.
     RenderComponent(const RenderComponent* pCopy);
     RenderComponent& operator=(const RenderComponent& pRHS);

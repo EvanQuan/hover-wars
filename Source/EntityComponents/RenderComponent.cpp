@@ -1,6 +1,11 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityManager.h"
 
+/*************\
+ * Constants *
+\*************/
+const vec4 BOUNDING_BOX_COLOR = vec4(0.2235294117647059, 1.0, 0.0784313725490196, 1.0); // Neon Green
+
 // Default Constructor:
 //        Requires an EntityID for the Entity that the component is a part of
 //            and a ComponentID issued by the EntityManager.
@@ -24,27 +29,49 @@ RenderComponent::~RenderComponent()
 // Loads the GPU and calls openGL to render.
 void RenderComponent::render()
 {
-    // Set up OpenGL state
-    glBindVertexArray(m_iVertexArray);
-    glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
+    if (m_pMesh->getCount() > 0)
+    {
+        // Set up OpenGL state
+        glBindVertexArray(m_pMesh->getVertexArray());
 
-    // Bind Texture(s) HERE
-    m_pMesh->bindTextures(m_eShaderType);
+        if (ENTITY_MANAGER->doShadowDraw()) // Process Shadow Drawing if Specified.
+            glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::SHADOW_SHDR));
+        else                                // Otherwise, perform regular Render
+            glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
 
-    // Call related glDraw function.
-    if (m_bUsingInstanced)
-        glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
-    else if (m_bUsingIndices)
-        glDrawElements(m_eMode, m_iCount, GL_UNSIGNED_INT, nullptr);
-    else
-        glDrawArrays(m_eMode, 0, m_iCount);
+        // Bind Texture(s) HERE
+        m_pMesh->bindTextures(m_eShaderType);
 
-    // Unbind Texture(s) HERE
-    m_pMesh->unbindTextures();
+        // Call related glDraw function.
+        if (m_bUsingInstanced)
+            glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
+        else if (m_bUsingIndices)
+            glDrawElements(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, nullptr);
+        else
+            glDrawArrays(m_eMode, 0, m_pMesh->getCount());
+
+        // Unbind Texture(s) HERE
+        m_pMesh->unbindTextures();
+
+        if (!ENTITY_MANAGER->doShadowDraw())
+        {
+            // Render The Bounding Box for the mesh.
+            if (ENTITY_MANAGER->doBoundingBoxDrawing() && m_pMesh->usingBoundingBox())
+            {
+                // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
+                glBindVertexArray(m_pMesh->getBBVertexArray());
+                glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::DEBUG_SHDR));
+                m_pShdrMngr->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &BOUNDING_BOX_COLOR);
+
+                // Draw Bounding Box
+                glDrawElementsInstanced(GL_LINES, m_pMesh->getBBCount(), GL_UNSIGNED_INT, nullptr, m_pMesh->getNumInstances());
+            }
+        }
+    }
 }
 
 // Overloaded Update Function
-void RenderComponent::update(duration<float> fTimeDelta)
+void RenderComponent::update(float fTimeDeltaInMilliseconds)
 {
     /* Not Implemented */
 }

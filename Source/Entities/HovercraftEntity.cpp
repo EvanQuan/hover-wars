@@ -1,0 +1,180 @@
+#include "EntityHeaders/HovercraftEntity.h"
+#include "MeshManager.h"
+#include "EntityManager.h"
+
+HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
+    : Entity(iID, *vPosition, entityType)
+{
+    m_pSpatialMap = SPATIAL_DATA_MAP;
+    activeCameraIndex = FRONT_CAMERA;
+}
+
+HovercraftEntity::~HovercraftEntity()
+{
+
+}
+
+/****************************************************************\
+ * Inherited Pure Virtual Functions                             *
+\****************************************************************/
+
+void HovercraftEntity::update(float fTimeInMilliseconds)
+{
+    // New Transformation Matrix
+    mat4 m4NewTransform = mat4(1.0f);
+
+    // Get the Transformation from the Physics component
+    m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
+
+    // If there's a new Transformation, apply it to the Mesh.
+    m_pMesh->addInstance(&m4NewTransform);
+    m_pMesh->addBBInstance(&m4NewTransform);
+
+    // Check to update Dynamic Position in Spatial Map
+    vec3 vNewPosition = m4NewTransform[3];
+    if (m_vPosition != vNewPosition)
+    {
+        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
+    }
+
+    // Calculate Position Averages for Camera
+    m_vPosition = vNewPosition;
+    updateCameraLookAts();
+}
+
+// Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
+void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
+{
+    m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
+}
+
+// Initializes Entity information
+void HovercraftEntity::initialize(const string& sFileName,
+                                  const ObjectInfo* pObjectProperties,
+                                  const string& sShaderType,
+                                  float fScale)
+{
+    // Load Mesh and Rendering Component
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+
+    // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
+    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pPhysicsComponent->initializeComponent(true, m_pMesh);
+
+    m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
+    m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
+    
+    // Generate Camera Components
+    for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
+    {
+        m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+        m_pCmrComponents[i]->setLookAt(m_vPosition);
+    }
+    
+    m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
+    m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+}
+
+/********************************************************************************************************\
+ * Private Functions                                                                                    *
+\********************************************************************************************************/
+
+/*
+Updates an average for this player's cameras. This is what makes the camera
+sway as the player moves.
+*/
+void HovercraftEntity::updateCameraLookAts()
+{
+    updateCameraRotation();
+    updateCameraPosition();
+}
+
+void HovercraftEntity::updateCameraRotation()
+{
+    quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
+
+    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER;
+
+    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+}
+
+void HovercraftEntity::updateCameraPosition()
+{
+    vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
+
+    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER;
+
+    // Update all the camera look at and rotation values based on the averaging calculations.
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+
+}
+
+void HovercraftEntity::useAbility(eAbility ability)
+{
+    switch (ability)
+    {
+    case ABILITY_ROCKET:
+        shootRocket();
+        break;
+    case ABILITY_SPIKES:
+        activateSpikes();
+        break;
+    case ABILITY_TRAIL:
+        activateTrail();
+        break;
+    case ABILITY_DASH_BACK:
+    case ABILITY_DASH_FORWARD:
+    case ABILITY_DASH_LEFT:
+    case ABILITY_DASH_RIGHT:
+        dash(ability);
+        break;
+    }
+}
+
+void HovercraftEntity::move(float x, float y)
+{
+    m_pPhysicsComponent->movePlayer(x, y);
+}
+
+void HovercraftEntity::turn(float x)
+{
+    m_pPhysicsComponent->rotatePlayer(x);
+}
+
+void HovercraftEntity::shootRocket()
+{
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
+}
+
+void HovercraftEntity::activateSpikes()
+{
+    GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
+}
+
+void HovercraftEntity::activateTrail()
+{
+    mat4 m4TransformMat;
+    vec3 vNormal;
+    m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
+    vNormal = m4TransformMat[1];
+    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+}
+
+void HovercraftEntity::dash(eAbility direction)
+{
+    switch (direction)
+    {
+    case ABILITY_DASH_BACK:
+        break;
+    case ABILITY_DASH_FORWARD:
+        break;
+    case ABILITY_DASH_LEFT:
+        break;
+    case ABILITY_DASH_RIGHT:
+        break;
+    }
+
+}

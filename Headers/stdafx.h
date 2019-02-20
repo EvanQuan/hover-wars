@@ -28,15 +28,13 @@
 #include <glew.h>
 #endif
 #include <glfw3.h>
-// so, when we changed / added checked fundimentally what changed. 
-// will it make a difference if one of them doesn't have a 3? pretty sure it will
 
 // FreeType
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-// FTGL
-// #include <FTGL/ftgl.h>
+// PhysX
+#include "PxPhysicsAPI.h"
 
 #ifdef USING_LINUX
 #include <string.h>
@@ -51,33 +49,37 @@
 #include "Enums/ePowerup.h"
 #include "Enums/eFixedCommand.h"
 #include "Enums/eVariableCommand.h"
+#include "Enums/eBoundingBoxTypes.h"
+#include "Enums/eEntityTypes.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"
+
+// Function Utilities
+#include "Utils/FuncUtils.h"
 
 #define ERR_CODE -1
 
 /* NAMESPACES */
 using namespace std;
 using namespace glm;
-#include "PxPhysicsAPI.h"
 using namespace physx;
 
 /* DEFINES */
-#define INPUT_SIZE            128
+#define INPUT_SIZE          128
 #define START_HEIGHT        1080
-#define START_WIDTH            1920
+#define START_WIDTH         1920
 #define STARTING_ENV        "scene2.scene"
-#define LIGHT_MOVE_FACTOR    0.05f
-#define PI                    3.14159265f
+#define LIGHT_MOVE_FACTOR   0.05f
+#define PI                  3.14159265f
 #define PI_2                6.28318530718f
-#define PI_OVER_180            0.01745f
+#define DEGREES_TO_RADIANS  0.01745329251f
 
-#define KEYS 349
+#define KEYS                349
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
-#define MAX_PLAYER_COUNT 4
-#define XBOX_CONTROLLER "Xbox"
-#define EMPTY_CONTROLLER "Empty Controller"
+#define MAX_PLAYER_COUNT    4
+#define XBOX_CONTROLLER     "Xbox"
+#define EMPTY_CONTROLLER    "Empty Controller"
 // m_pJoystickAxes
 #define AXIS_LEFT_STICK_X   0
 #define AXIS_LEFT_STICK_Y   1
@@ -85,7 +87,7 @@ using namespace physx;
 #define AXIS_RIGHT_STICK_Y  3
 #define AXIS_LEFT_TRIGGER   4
 #define AXIS_RIGHT_TRIGGER  5
-// m_pJoystickButtons
+// m_joystickButtons
 #define BUTTON_A            0
 #define BUTTON_B            1
 #define BUTTON_X            2
@@ -100,38 +102,39 @@ using namespace physx;
 #define BUTTON_RIGHT        11
 #define BUTTON_DOWN         12
 #define BUTTON_LEFT         13
-#define BUTTON_UNKNOWN1     14
-#define BUTTON_UNKNOWN2     15
-// TODO What are buttons 14, 15?
-// Is it the centre xbox button (home)?
+#define MAX_BUTTON_INDEX    14
+// XBox controllers seem to have 2 more buttons (14, 15)
+// I have not been able to found out what these buttons actually represent.
+// Instead we will use the triggers as button states
+// so they can detect just pressed states
+#define TRIGGER_LEFT        14
+#define TRIGGER_RIGHT       15
+//
+#define MAX_BUTTON_COUNT    16
 // Joystick/trigger values
-#define JOYSTICK_MAX        1.0f
-#define JOYSTICK_MIN        -1.0f
-#define JOYSTICK_NEUTRAL    0.0f
-#define TRIGGER_NETURAL     -1.0f
-#define TRIGGER_FULL        1.0f
+#define JOYSTICK_IS_MAX     1.0f
+#define JOYSTICK_IS_MIN     -1.0f
+#define JOYSTICK_IS_NEUTRAL 0.0f
+#define TRIGGER_IS_NETURAL  -1.0f
+#define TRIGGER_IS_FULL     1.0f
 
-
-/* GLOBAL STRUCTS */
-struct Material
+// Mapping potential types from the scene loader to corresponding enums
+const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 {
-    string sDiffuseMap;
-    vec4 vOptionalDiffuseColor;
-    string sOptionalSpecMap;
-    vec4 vOptionalSpecShade;
-    float fShininess;
+    make_pair("box", CUBIC_BOX)
 };
 
-
 /* Manager Defines */
-#define ENTITY_MANAGER    EntityManager::getInstance()
-#define GAME_MANAGER    GameManager::getInstance()
-#define MESH_MANAGER    MeshManager::getInstance()
-#define SHADER_MANAGER    ShaderManager::getInstance()
-#define TEXTURE_MANAGER TextureManager::getInstance()
-#define PHYSICS_MANAGER PhysicsManager::getInstance()
-#define SCENE_LOADER    SceneLoader::getInstance()
-#define EMITTER_ENGINE    EmitterEngine::getInstance()
+#define EMITTER_ENGINE      EmitterEngine::getInstance()
+#define ENTITY_MANAGER      EntityManager::getInstance()
+#define GAME_MANAGER        GameManager::getInstance()
+#define GAME_STATS          GameStats::getInstance()
+#define MESH_MANAGER        MeshManager::getInstance()
+#define PHYSICS_MANAGER     PhysicsManager::getInstance()
+#define SCENE_LOADER        SceneLoader::getInstance()
+#define SHADER_MANAGER      ShaderManager::getInstance()
+#define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
+#define TEXTURE_MANAGER     TextureManager::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

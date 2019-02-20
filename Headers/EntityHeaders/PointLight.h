@@ -16,12 +16,10 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Function to Initialize the Light.
-    void initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial = nullptr,const string& sMeshName = "", float m_fMeshScale = 1.0f );
-
-    // Light Manipulation
-    void move(vec3 pMoveVec) { m_vPosition += pMoveVec; m_pLightingComponent->updatePosition(&m_vPosition); }
+    void initialize(float fPower, const vec3* vColor, bool bStatic, const ObjectInfo* pObjectProperties, const string& sMeshName = "", float m_fMeshScale = 1.0f );
 
 private:
     // Private Light Copy constructor and assignment operator

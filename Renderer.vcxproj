@@ -17,16 +17,21 @@
   <ItemGroup>
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
+    <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
+    <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
     <ClInclude Include="Headers\Emitter.h" />
     <ClInclude Include="Headers\EmitterEngine.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
+    <ClInclude Include="Headers\EntityHeaders\BotEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\Camera.h" />
     <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h" />
     <ClInclude Include="Headers\EntityHeaders\Entity.h" />
+    <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\PlayerEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\PointLight.h" />
@@ -34,6 +39,8 @@
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\Enums\eAbility.h" />
+    <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h" />
+    <ClInclude Include="Headers\Enums\eEntityTypes.h" />
     <ClInclude Include="Headers\Enums\eFixedCommand.h" />
     <ClInclude Include="Headers\Enums\ePlayer.h" />
     <ClInclude Include="Headers\Enums\ePowerup.h" />
@@ -56,11 +63,14 @@
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
+    <ClInclude Include="Headers\SpatialDataMap.h" />
     <ClInclude Include="Headers\stb_image.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
-    <ClInclude Include="Headers\UserInterface.h" />
+    <ClInclude Include="Headers\UserInterface\FontManager.h" />
+    <ClInclude Include="Headers\UserInterface\UserInterface.h" />
+    <ClInclude Include="Headers\Utils\FuncUtils.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TestClass.h" />
   </ItemGroup>
@@ -69,14 +79,17 @@
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
     <ClCompile Include="Source\EmitterEngine.cpp" />
+    <ClCompile Include="Source\Entities\BotEntity.cpp" />
     <ClCompile Include="Source\Entities\Camera.cpp" />
     <ClCompile Include="Source\Entities\DirectionalLight.cpp" />
     <ClCompile Include="Source\Entities\Entity.cpp" />
+    <ClCompile Include="Source\Entities\HovercraftEntity.cpp" />
     <ClCompile Include="Source\Entities\InteractableEntity.cpp" />
     <ClCompile Include="Source\Entities\PlayerEntity.cpp" />
     <ClCompile Include="Source\Entities\PointLight.cpp" />
     <ClCompile Include="Source\Entities\SpotLight.cpp" />
     <ClCompile Include="Source\Entities\StaticEntity.cpp" />
+    <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
@@ -102,9 +115,12 @@
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
+    <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
-    <ClCompile Include="Source\UserInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\FontManager.cpp" />
+    <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
+    <ClCompile Include="Source\Utils\FuncUtils.cpp" />
     <ClCompile Include="TestClass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,18 +187,18 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\includes;Dependencies\glfw\includes;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\include;Dependencies\glfw\includes;Dependencies\FMod\inc;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_PHYSX_FOUNDATION_EXPORTS;PX_PHYSX_CORE_EXPORTS;PX_PHYSX_GPU_SHARED_LIB_NAME=PhysXGpu_32.dll;PX_DEBUG=1;PX_CHECKED=1;PX_NVTX=0;PX_SUPPORT_PVD=1;PhysX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_PHYSX_FOUNDATION_EXPORTS;PX_PHYSX_CORE_EXPORTS;PX_PHYSX_GPU_SHARED_LIB_NAME=PhysXGpu_32.dll;PX_DEBUG=1;PX_CHECKED=1;PX_NVTX=0;PX_SUPPORT_PVD=1;PhysX_EXPORTS;%(PreprocessorDefinitions);FTGL_LIBRARY_STATIC;_LIB</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\PhysX\debug;Dependencies\glfw\debug;Dependencies\glew\debug;Dependencies\FreeType\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\FMod;Dependencies\PhysX\debug;Dependencies\glfw\debug;Dependencies\glew\debug;Dependencies\FreeType\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;fmod_vc.lib;fmodL_vc.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;glew32.lib;freetype.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -195,18 +211,18 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\includes;Dependencies\glfw\includes;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\include;Dependencies\glfw\includes;Dependencies\FMod\inc;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_WINDOWS;_GLFW_USE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_CHECKED=1;PX_NVTX=0;PX_SUPPORT_PVD=1;PhysX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_WINDOWS;_GLFW_USE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_CHECKED=1;PX_NVTX=0;PX_SUPPORT_PVD=1;PhysX_EXPORTS;%(PreprocessorDefinitions);FTGL_LIBRARY_STATIC</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>Dependencies\PhysX\checked;Dependencies\glfw\checked;Dependencies\glew\checked;Dependencies\FreeType\checked;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\FMod;Dependencies\PhysX\checked;Dependencies\glfw\checked;Dependencies\glew\checked;Dependencies\FreeType\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;fmod_vc.lib;fmodL_vc.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;freetype.lib;glew32.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
@@ -221,17 +237,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\includes;Dependencies\glfw\includes;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\include;Dependencies\glfw\includes;Dependencies\FMod\inc;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_WINDOWS;_GLFW_USE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_SUPPORT_PVD=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_WINDOWS;_GLFW_USE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_SUPPORT_PVD=0;%(PreprocessorDefinitions);FTGL_LIBRARY_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>Dependencies\PhysX\release;Dependencies\glfw\release;Dependencies\glew\release;Dependencies\FreeType\release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\FMod;Dependencies\PhysX\release;Dependencies\glfw\release;Dependencies\glew\release;Dependencies\FreeType\release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;fmod_vc.lib;fmodL_vc.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;freetype.lib;PhysXExtensions_static_32.lib;PhysXCooking_32.lib;PhysX_32.lib;PhysXCommon_32.lib;PhysXFoundation_32.lib;PhysXPvdSDK_static_32.lib;PhysXVehicle_static_32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>

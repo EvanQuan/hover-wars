@@ -1,9 +1,7 @@
 #include "CommandHandler.h"
-#include "SceneLoader.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
-
 /*
 Constructor
 */
@@ -12,9 +10,9 @@ CommandHandler::CommandHandler(GLFWwindow *rWindow)
     // Initializing Base Class
     // NOTE: Do not get an instance of GameManager here or there will be
     // infinite mutual recursion and a call stack overflow
-    // m_pGameManager = GameManager::getInstance();
-    // m_pEntityManger = ENTITY_MANAGER;
+    m_pWindow = rWindow;
     m_pInputHandler = InputHandler::getInstance(rWindow);
+    bWireFrameEnabled = false;
 }
 
 /*
@@ -42,51 +40,119 @@ CommandHandler::~CommandHandler()
 }
 
 /*
-Make a player of given joystickID execute a eFixedCommand.
+Make a hovercraft execute a eFixedCommand.
 FixedCommands are binary in that either they are executed or they are not, with
 no extra parameters.
 
-For example: if a player of joystickID 0 executes the ABILITY_ROCKET command,
-that is all the information the program needs to know for that player to
+For example: if a hovercraft PLAYER_2 executes the ABILITY_ROCKET command,
+that is all the information the program needs to know for that hovercraft to
 execute that command.
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
+{
+    if (ENTITY_MANAGER->playerExists(player))
+    {
+        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+        execute(playerEntity, command);
+    }
+}
+
+void CommandHandler::execute(eBot bot, eFixedCommand command)
+{
+    if (ENTITY_MANAGER->botExists(bot))
+    {
+        BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
+        execute(botEntity, command);
+    }
+}
+
+void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command)
 {
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
     case COMMAND_ABILITY_SPIKES:
     case COMMAND_ABILITY_TRAIL:
-    case COMMAND_DASH_BACK:
-    case COMMAND_DASH_FORWARD:
-    case COMMAND_DASH_LEFT:
-    case COMMAND_DASH_RIGHT:
-        if (ENTITY_MANAGER->playerExists(player))
-        {
-            ENTITY_MANAGER->getPlayer(player)->useAbility(m_fixedCommandToAbility.at(command));
-        }
+        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
         break;
-    case COMMAND_CAMERA_CHANGE:
+    case COMMAND_DASH_BACK:
+        break;
+    case COMMAND_DASH_FORWARD:
+        break;
+    case COMMAND_DASH_LEFT:
+        break;
+    case COMMAND_DASH_RIGHT:
+        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
+        break;
+    case COMMAND_CAMERA_FRONT:
+        hovercraft->setActiveCameraToFront();
+        break;
+    case COMMAND_CAMERA_BACK:
+        hovercraft->setActiveCameraToBack();
+        break;
     case COMMAND_MENU_BACK:
-    case COMMAND_MENU_PAUSE:
-    case COMMAND_MENU_START:
-        // cout << "Player " << player << ": "
-            // << eFixedCommandToString.at(command)
-            // << endl;
        break;
-    default:
-        cout << "Player " << player << ": "
-             << eFixedCommandToString.at(command)
-             << " not implemented yet." << endl;
+    case COMMAND_MENU_PAUSE:
+       break;
+    case COMMAND_MENU_START:
+       break;
+
+    case COMMAND_CLOSE_WINDOW:
+        glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
+        break;
+#ifndef NDEBUG
+
+    case COMMAND_DEBUG_TOGGLE_WIREFRAME:
+        debugToggleWireframe();
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_1;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_2;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_3;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
+        break;
+    case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
+        GAME_MANAGER->toggleDebugCamera();
+        break;
+    case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
+        ENTITY_MANAGER->toggleBBDrawing();
+        break;
+    case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
+        ENTITY_MANAGER->toggleSpatialMapDrawing();
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
+        break;
+#endif
     }
 }
 
+
+
 /*
-Make a player of given joystickID execute a eVariableCommand.
+Make a hovercraft of given joystickID execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
 Specifically, they require an axis or axes to make sense of the command.
 
-For example: if a player of joystickID 0 executes the MOVE command, they also
+For example: if a hovercraft of joystickID 0 executes the MOVE command, they also
 need to specify the x and y axis values to determine what direction and at what
 intensity to go at.
 
@@ -101,13 +167,34 @@ Axes values are normalized and follow Cartesian coordinates:
 */
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
-    m_pEntityManager->execute(player, command, x, y);
-#ifdef _DEBUG
-    std::cout << "Player " << player << ": "
-              << eVariableCommandToString.at(command) << std::endl
-              << "\tx: " << x << std::endl
-              << "\ty: " << y << std::endl;
-#endif
+    if (ENTITY_MANAGER->playerExists(player))
+    {
+        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+        execute(playerEntity, command, x, y);
+    }
+}
+
+void CommandHandler::execute(eBot bot, eVariableCommand command, float x, float y)
+{
+    if (ENTITY_MANAGER->botExists(bot))
+    {
+        BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
+        execute(botEntity, command, x, y);
+    }
+}
+
+void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
+{
+    switch (command)
+    {
+    case COMMAND_MOVE:
+        hovercraft->move(x, y);
+        break;
+    case COMMAND_TURN:
+        hovercraft->turn(x);
+        break;
+    }
+
 }
 
 /*
@@ -116,6 +203,7 @@ Execute all the commands for a given frame. This should be called every frame up
 void CommandHandler::executeAllCommands()
 {
     executeInputCommands();
+    executeAllBotCommands();
 }
 
 /*
@@ -124,38 +212,10 @@ Execute all commands specified by user input from keyboard and joysticks.
 void CommandHandler::executeInputCommands()
 {
 #ifdef _DEBUG
-    system("CLS"); // Clear the terminal
+    // system("CLS"); // Clear the terminal
 #endif
-    executeKeyboardCommands();
     executeJoystickCommands();
-}
-
-/*
-As key presses are binary, and multiple can be pressed to control x, y, x and y
-must be normalized to ensure the velocity is equal to that of a joystick.
-x and y as a vector should have a length of 1.
-*/
-void CommandHandler::normalize(float& x, float& y)
-{
-    float targetLength = 1;
-    float magnitude = getMagnitude(x, y);
-    x /= magnitude;
-    y /= magnitude;
-}
-
-float CommandHandler::getMagnitude(float x, float y)
-{
-    return sqrt((x * x) + (y * y));
-}
-
-/*
-Since checking for float equality can be messy, we need to introduce an epsilon
-value.
-*/
-bool CommandHandler::magnitudeIsNeutral(float magnitude)
-{
-    float epsilon = numeric_limits<float>::epsilon(); // This is part of the Windows Library
-    return (magnitude < epsilon) && (-magnitude < epsilon);
+    executeKeyboardCommands();
 }
 
 /*
@@ -164,100 +224,94 @@ Execute all commands specified by the keyboard.
 void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
-    xMove = 0;
-    yMove = 0;
-    xTurn = 0;
-    yTurn = 0;
-    for (int key = 0; key < KEYS; key++)
+    bool bTurnNeutral = true;
+    float xMove, yMove, xTurn, yTurn = 0;
+    /*
+    Copy the keys at the current snapshot so they can be iterated over while
+    m_keys continues to be updated.
+
+    NOTE: Unless there is some other better way of doing this, directly using
+    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to
+    update through key callbacks as it is being iterated through.
+
+    Considering that keys will typically contain 0-4 elements, this should be
+    fairly cheap.
+    */
+    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
+    for (auto it : keys)
     {
-        if (m_pInputHandler->pressed[key])
+        /*
+        Divide the key states into the 3 types of fixed commands
+        */
+        switch (it.second) // value - input state
         {
-            // Fixed
-            switch (key)
-            {
-            case GLFW_KEY_K:
-                m_pFixedCommand = COMMAND_DASH_BACK;
-                break;
-            case GLFW_KEY_I:
-                m_pFixedCommand = COMMAND_DASH_FORWARD;
-                break;
-            case GLFW_KEY_H:
-                m_pFixedCommand = COMMAND_DASH_LEFT;
-                break;
-            case GLFW_KEY_SEMICOLON:
-                m_pFixedCommand = COMMAND_DASH_RIGHT;
-                break;
-            case GLFW_KEY_SPACE:
-                m_pFixedCommand = COMMAND_ABILITY_ROCKET;
-                break;
-            case GLFW_KEY_LEFT_SHIFT:
-                m_pFixedCommand = COMMAND_ABILITY_TRAIL;
-                break;
-            case GLFW_KEY_APOSTROPHE:
-                m_pFixedCommand = COMMAND_ABILITY_SPIKES;
-                break;
-            case GLFW_KEY_TAB:
-                m_pFixedCommand = COMMAND_MENU_BACK;
-                break;
-            case GLFW_KEY_ENTER:
-                m_pFixedCommand = COMMAND_MENU_START;
-                break;
-            case GLFW_KEY_P:
-                m_pFixedCommand = COMMAND_MENU_PAUSE;
-                break;
-            default:
-                m_pFixedCommand = COMMAND_INVALID_FIXED;
-            }
-            if (COMMAND_INVALID_FIXED != m_pFixedCommand) {
-                execute(m_pInputHandler->keyboardPlayer, m_pFixedCommand);
-            }
-            else
-            {
-                // Variable commands
-                switch (key)
-                {
-                case GLFW_KEY_W:
-                    yMove += JOYSTICK_MAX;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_S:
-                    yMove += JOYSTICK_MIN;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_A:
-                    xMove += JOYSTICK_MIN;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_D:
-                    xMove += JOYSTICK_MAX;
-                    bMovementNeutral = false;
-                    break;
-                case GLFW_KEY_J:
-                    xTurn += JOYSTICK_MIN;
-                    break;
-                case GLFW_KEY_L:
-                    xTurn += JOYSTICK_MAX;
-                    break;
-                }
-            }
+        case InputHandler::INPUT_JUST_PRESSED:
+            /*
+            Just pressed now changed to pressed, as if the key is continued to
+            be pressed next frame, it should read as a key repeat.
+            */
+            m_pInputHandler->m_keys[it.first] = InputHandler::INPUT_PRESSED;
+            m_pFixedCommand = justPressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_PRESSED:
+            m_pFixedCommand = pressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_JUST_RELEASED:
+            /*
+            Now that the key ha been read as just released, we can now remove
+            it, so it doesn't need to be iterated over again next frame.
+            */
+            m_pInputHandler->m_keys.erase(it.first);
+            m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
+            break;
+        }
+        execute(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
+        // Check for cummulative movement commands, which are only executed once
+        // all movement keys are checked.
+        switch (m_pFixedCommand)
+        {
+        case COMMAND_MOVE_FORWARD:
+            bMovementNeutral = false;
+            yMove += JOYSTICK_IS_MAX;
+            break;
+        case COMMAND_MOVE_BACK:
+            bMovementNeutral = false;
+            yMove += JOYSTICK_IS_MIN;
+            break;
+        case COMMAND_MOVE_LEFT:
+            bMovementNeutral = false;
+            xMove += JOYSTICK_IS_MIN;
+            break;
+        case COMMAND_MOVE_RIGHT:
+            bMovementNeutral = false;
+            xMove += JOYSTICK_IS_MAX;
+            break;
+        case COMMAND_TURN_LEFT:
+            bTurnNeutral = false;
+            xTurn += JOYSTICK_IS_MIN;
+            break;
+        case COMMAND_TURN_RIGHT:
+            bTurnNeutral = false;
+            xTurn += JOYSTICK_IS_MAX;
+            break;
         }
     }
-
-    // This is where keys are handled, it's assumed that xMove and yMove will be binary on/off.
-    //  Let's use this assumption to our advantage and we can simply if them to the proper size instead of doing a sqrt calculation.
+    // This is where keys are handled, it's assumed that xMove and yMove will
+    // be binary on/off. Let's use this assumption to our advantage and we can
+    // simply if them to the proper size instead of doing a sqrt calculation.
     if (xMove != 0.0f && yMove != 0.0f)
     {
         xMove *= 0.5f;
         yMove *= 0.5f;
     }
-    
-    if (!bMovementNeutral)//!magnitudeIsNeutral(getMagnitude(xMove, yMove)))
+
+    if (!bMovementNeutral)
     {
-        execute(m_pInputHandler->keyboardPlayer, COMMAND_MOVE, xMove, yMove);
+        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
-    if (!magnitudeIsNeutral(getMagnitude(xTurn, yTurn)))
+    if (!bTurnNeutral)
     {
-        execute(m_pInputHandler->keyboardPlayer, COMMAND_TURN, xTurn, yTurn);
+        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
 }
 
@@ -274,32 +328,58 @@ void CommandHandler::executeJoystickCommands()
         if (joystickIsPresent)
         {
             const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-            const unsigned char* buttonsPressed = m_pInputHandler->m_pJoystickButtonsPressed[joystickID];
+            InputHandler::eInputState *buttons = m_pInputHandler->m_joystickButtons[joystickID];
 
             // Check buttons
-            for (int button = BUTTON_A; button < BUTTON_UNKNOWN1; button++)
+            for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
             {
-                if (buttonsPressed[button])
+                switch (buttons[button])
                 {
-                    execute((ePlayer) joystickID, buttonToFixedCommand(button));
+                case InputHandler::INPUT_JUST_PRESSED:
+                    execute((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_PRESSED;
+                    break;
+                case InputHandler::INPUT_PRESSED:
+                    execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
+                    break;
+                case InputHandler::INPUT_JUST_RELEASED:
+                    execute((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_RELEASED;
+                    break;
                 }
-            }
-
-            // NOTE: With works with the assumption that triggers are mapped to fixed commands
-            // If we decide that triggers work better for variable commands, then we will need to change this.
-            if (axes[AXIS_LEFT_TRIGGER] > TRIGGER_NETURAL)
-            {
-                execute((ePlayer) joystickID, axisToFixedCommand(AXIS_LEFT_TRIGGER));
-            }
-            if (axes[AXIS_RIGHT_TRIGGER] > TRIGGER_NETURAL)
-            {
-                execute((ePlayer) joystickID, axisToFixedCommand(AXIS_RIGHT_TRIGGER));
             }
 
             // Check axes
             // Joystick axes will not be remappable, so no need to make code generalizable
-            execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-            execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+            if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
+            {
+                execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+            }
+            if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
+            {
+                execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+            }
         }
     }
+}
+
+void CommandHandler::debugToggleWireframe()
+{
+    bWireFrameEnabled = !bWireFrameEnabled;
+    if (bWireFrameEnabled)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    }
+    else
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
+}
+
+/*
+TODO
+*/
+void CommandHandler::executeAllBotCommands()
+{
+
 }

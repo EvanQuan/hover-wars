@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "InputHandler.h"
 #include "GameManager.h"
+#include "EntityManager.h"
 
 // Single Singleton instance
 InputHandler* InputHandler::m_pInstance = nullptr;
@@ -10,8 +11,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 {
     m_gameManager = GameManager::getInstance(rWindow);
     // Keyboard
-    keyboardPlayer = PLAYER_2;
-    initializeKeysPressed();
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
     m_bRotateFlag = m_bTranslateFlag = false;
@@ -22,10 +21,12 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     initializeJoysticksAtStart();
     glfwSetJoystickCallback(InputHandler::joystickCallback);
 
-    bWireFrame = false;
-
+    bWireFrameEnabled = false;
 }
 
+/*
+@return singleton instance
+*/
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
@@ -43,71 +44,65 @@ InputHandler::~InputHandler()
 
 
 /*
-Receives input from keyborad and updates the key status in pressed.
+Receives input from keyborad and updates the key status in pressed. Since keys
+are updated through call backs, which may be faster than every frame update,
+we may have multiple key callbacks per frame update. This means, we cannot reliably
+check for just pressed or just released key statuses here.
 NOTE: Keyboard input is read from CommandHandler. All keyboard input processing
 should be done in the CommandHandler, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    /*
+    Reject unknown keys. We only want to process keys available to standard keyboards.
+    It is fastest to exit early while we can.
+    */
     if (GLFW_KEY_UNKNOWN == key)
     {
         return;
     }
+    /*
+    Possible actions:
+           GLFW_RELEASE = 0
+           GLFW_PRESS   = 1
+           GLFW_REPEAT  = 2
 
-    // Possible actions:
-    //        GLFW_RELEASE = 0
-    //        GLFW_PRESS   = 1
-    //        GLFW_REPEAT  = 2
-    // Note that any time a key is pressed, it will count as TRUE
-    m_pInstance->pressed[key] = action;
-
-    m_pInstance->debugKeyCommands(window, key, action);
-}
-
-/*
-Special keys handled differently than the rest. Since key updates occur at a
-slower rate than frame updates, we cannot rely on GLFW_PRESS checks for commands,
-as that may execute multiple commands (for multiple frames) before the action
-goes from GLFW_PRESS to GLFW_REPEAT.
-
-In other words, this is useful for debug commands on the keyboard that need to
-reliably  distinguish between pressing and repeating keys, such as toggling
-wireframe mode.
- */
-void InputHandler::debugKeyCommands(GLFWwindow* window, int key, int action)
-{
-    if (GLFW_PRESS == action)
+    We can save time by ignoring all GLFW_REPEAT callbacks, as these can be set
+    during input processing.
+    */
+    switch (action)
     {
-        switch (key)
-        {
-        case GLFW_KEY_ESCAPE:
-            // TODO Later should escape no longer close window, as there may need
-            // to be some tear down steps before the game exits?
-            glfwSetWindowShouldClose(window, GL_TRUE);
-            break;
-        case GLFW_KEY_F:
-            debugToggleWireframe();
-            break;
-        //case GLFW_KEY_W:
-            //PHYSICS_MANAGER->forwardKey();
-            //break;
-        //case GLFW_KEY_S:
-            //PHYSICS_MANAGER->stopKey();
-            //break;
-        //case GLFW_KEY_A:
-            //PHYSICS_MANAGER->leftKey();
-            //break;
-        //case GLFW_KEY_D:
-            //PHYSICS_MANAGER->rightKey();
-            //break;
-        }
+    case GLFW_PRESS:
+        /*
+        Since key callbacks occur at a faster rate than frame updates, both
+        initial key presses and repeated key pressed will be viewed as just
+        pressed until the input is processed for that fram. Only after it is
+        processed, it can be changed to INPUT_PRESSED if the key remains
+        pressed.
+
+        We want to make sure that if the key is already pressed and is repeated
+        (ie. the state is INPUT_PRESSED), that we do not override it with
+        INPUT_JUST_PRESSED.
+        */
+        m_pInstance->m_keys[key] = INPUT_JUST_PRESSED;
+        break;
+    case GLFW_RELEASE:
+        /*
+        As the key has just be released, we keep the key in the map, but note
+        it as just released. This allows us to parse for "just released"
+        commands, such as returning to the default camera, after holding the
+        camera swtich key. Once this key has been read has just released, it
+        will be removed from the map.
+        */
+        m_pInstance->m_keys[key] = INPUT_JUST_RELEASED;
+        break;
     }
 }
 
 void InputHandler::debugToggleWireframe()
 {
-    bWireFrame = !bWireFrame;
-    if (bWireFrame)
+    bWireFrameEnabled = !bWireFrameEnabled;
+    if (bWireFrameEnabled)
     {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     }
@@ -170,15 +165,6 @@ void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, doubl
     m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
 }
 
-// Keys begin not pressed until notified that they are by keyCallback.
-void InputHandler::initializeKeysPressed()
-{
-    for (int key = 0; key < KEYS; key++)
-    {
-        pressed[key] = false;
-    }
-}
-
 /*
 Initializes all joysticks at the start of the program. This is necessary as
 joysticks that are already connected before the program starts do not initiate
@@ -203,12 +189,17 @@ void InputHandler::initializeJoysticksAtStart()
 // Initialize joystick variables before they are set
 void InputHandler::initializeJoystickVariables()
 {
-    for (int i = 0; i < MAX_PLAYER_COUNT; i++)
+    for (int player = 0; player < MAX_PLAYER_COUNT; player++)
     {
-        m_pJoystickIsPresent[i] = false;
-        m_pJoystickAxesCount[i] = 0;
-        m_pJoystickButtonCount[i] = 0;
-        m_pJoystickNames[i] = EMPTY_CONTROLLER;
+        m_pJoystickIsPresent[player] = false;
+        m_pJoystickAxesCount[player] = 0;
+        m_pJoystickButtonCount[player] = 0;
+        m_pJoystickNames[player] = EMPTY_CONTROLLER;
+
+        for (int button = 0; button < MAX_BUTTON_COUNT; button++)
+        {
+            m_joystickButtons[player][button] = INPUT_RELEASED;
+        }
     }
 }
 
@@ -238,12 +229,12 @@ void InputHandler::initializeJoystick(int joystickID)
     m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
 
     // Button states
-    m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+    m_pJoystickButtonsRaw[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
     // Names
     m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
 
-#ifdef _DEBUG
+#ifdef NDEBUG
     debugPrintJoystickInformation(joystickID);
 #endif
 }
@@ -303,7 +294,7 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
     {
         return;
     }
-    const unsigned char* buttonsPressed = m_pJoystickButtonsPressed[joystickID];
+    const unsigned char* buttonsPressed = m_pJoystickButtonsRaw[joystickID];
 #ifdef _DEBUG
     std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
               << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
@@ -350,21 +341,66 @@ void InputHandler::joystickCallback(int joystickID, int event)
     }
 }
 
-// Get the input status of all the present controllers and store it.
-// Buttons and axes
-// TODO more efficient iteration algorithm?
+/*
+Get the input status of all the present controllers and stores it.
+This is called once per frame.
+*/
 void InputHandler::updateJoysticks()
 {
     for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_COUNT; joystickID++)
     {
         if (m_pJoystickIsPresent[joystickID])
         {
-            // Axis states
+            // Current axis states
             m_pJoystickAxes[joystickID] = glfwGetJoystickAxes(joystickID, &m_pJoystickAxesCount[joystickID]);
+            // Current button states
+            m_pJoystickButtonsRaw[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
 
-            // Button states
-            m_pJoystickButtonsPressed[joystickID] = glfwGetJoystickButtons(joystickID, &m_pJoystickButtonCount[joystickID]);
+            // Final button states
+            updateJoystickButtonStates(joystickID);
         }
     }
+}
 
+/*
+Convert raw joystick input values to values that the command handler can read and
+alter after processing.
+
+Can only set values to just pressed and just released if there is a change in
+pressed/released state. Changes to pressed and released are made in the
+CommandHandler after the input has been processed.
+*/
+void InputHandler::updateJoystickButtonStates(int joystickID)
+{
+    // Update actual buttons
+    for (int button = BUTTON_A; button < MAX_BUTTON_INDEX; button++)
+    {
+        if (m_pJoystickButtonsRaw[joystickID][button] == GLFW_PRESS
+            && m_joystickButtons[joystickID][button] != INPUT_PRESSED)
+        {
+            m_joystickButtons[joystickID][button] = INPUT_JUST_PRESSED;
+        }
+        else if (m_pJoystickButtonsRaw[joystickID][button] == GLFW_RELEASE
+            && m_joystickButtons[joystickID][button] != INPUT_RELEASED)
+        {
+            m_joystickButtons[joystickID][button] = INPUT_JUST_RELEASED;
+        }
+    }
+    // Update triggers as buttons
+    if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] == TRIGGER_IS_NETURAL)
+    {
+        m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_RELEASED;
+    }
+    else if (m_joystickButtons[joystickID][TRIGGER_LEFT] != INPUT_PRESSED)
+    {
+        m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_PRESSED;
+    }
+    if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] == TRIGGER_IS_NETURAL)
+    {
+        m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_RELEASED;
+    }
+    else if (m_joystickButtons[joystickID][TRIGGER_RIGHT] != INPUT_PRESSED)
+    {
+        m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_PRESSED;
+    }
 }

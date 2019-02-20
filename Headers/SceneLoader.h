@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "DataStructures/ObjectInfo.h"
 
 // Solely Generates Objects and assigns IDs to them.
 class SceneLoader
@@ -15,8 +16,10 @@ public:
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
     void createPlayer(vector< string > sData, int iLength);
+    void createBot(vector< string > sData, int iLength);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void createStaticCube(vector< string > sData, int iLength);
+    void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
 
 private:
@@ -26,7 +29,7 @@ private:
     static SceneLoader* m_pInstance;
     string m_sMeshProperty, m_sShaderProperty;
     float m_fMeshScaleProperty;
-    Material m_pMaterialProperty;
+    ObjectInfo m_pObjectProperties;
 
     long m_lNextID;
     long getNewID() { return ++m_lNextID; }
@@ -35,6 +38,7 @@ private:
     void handleData( vector< string >& sData, const string& sIndicator );
     void handleProperty( vector< string >& sData, const string& sIndicator );
     void grabMaterial(vector< string >& sData);
+    void grabBoundingBox(vector< string >& sData);
     void clearProperties(); // Clear any properties
     
     string trimString( const string& sStr );

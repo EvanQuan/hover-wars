@@ -21,8 +21,10 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
-    void loadAsBillboard(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial);
+    void loadAsBillboard(float fHeight, float fWidth);
+    void addBillboard(const vec3* vNormal, const vec3* vPosition);
 
 private:
     // Private Copy Constructor and Assignment Operator
@@ -34,4 +36,5 @@ private:
     Mesh* m_pBillboardMesh;
     RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
     PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
+    AnimationComponent* m_pAnimationComponent;
 };

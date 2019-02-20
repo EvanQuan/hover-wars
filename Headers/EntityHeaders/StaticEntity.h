@@ -19,11 +19,12 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
-    void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial, const string& sShaderType);
-    void loadAsSphere(float fRadius, const Material* pMaterial, const string& sShaderType);
-    void loadAsCube(float size, const Material* pMaterial, const string& sShaderType);
-    void loadFromFile(const string& sFileName, const Material* pMaterial, const string& sShaderType, float fScale);
+    void loadAsCube(float size, const ObjectInfo* pObjectProperties, const string& sShaderType);
+    void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType);
+    void loadAsSphere(float fRadius, const ObjectInfo* pObjectProperties, const string& sShaderType);
+    void loadFromFile(const string& sFileName, const ObjectInfo* pObjectProperties, const string& sShaderType, float fScale);
 
 private:
     // Private Copy Constructor and Assignment Operator

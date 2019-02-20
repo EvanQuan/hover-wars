@@ -7,8 +7,8 @@
 #define ZOOM_MAX            1000.f
 
 // Camera Class
-// Positions a Camera in the world at some spherical coordinates 
-class Camera : 
+// Positions a Camera in the world at some spherical coordinates
+class Camera :
     public Entity
 {
 public:
@@ -18,6 +18,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Camera Manipulation Functions
     void orbit(vec2 pDelta);
@@ -28,6 +29,9 @@ public:
     void setSteady(bool bSteady) { m_bSteadyCam = bSteady; }
     void setRotationQuat(quat pRotation) { m_pCmraCmp->setRotationQuat(pRotation); }
 
+    // Get the Camera Component
+    const CameraComponent* getCameraComponent() { return m_pCmraCmp; }
+
 private:
     CameraComponent* m_pCmraCmp;
     PhysicsComponent* m_pPhysicsCmp;
@@ -36,4 +40,3 @@ private:
 
     vec3 m_vWorldLookAt;
 };
-

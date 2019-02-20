@@ -22,8 +22,10 @@ public:
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 
     //    moreso for it to hold and manage the physics information for the entity while providing functions that allow
     //    the entity to query their physics component for desired information.
-    void update(duration<float> fTimeDelta); // Overloading Parent's virtual update function
+    void update(float fTimeDeltaInMilliseconds); // Overloading Parent's virtual update function
 
+    void movePlayer(float x, float y);
+    void rotatePlayer(float x);
     // Various initialization functions as needed.
     void initializeComponent(bool bStatic, Mesh const* pMeshReference);
     vec3 getLinearVelocity();
@@ -33,6 +35,7 @@ public:
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 
 private:
+    void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;
     bool m_bStatic;                         // Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.

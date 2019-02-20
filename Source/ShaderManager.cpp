@@ -17,6 +17,11 @@
 #define LIGHT_BUFFER_SIZE               (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2) + (SPOT_LIGHT_SIZE << 2))
 #define MAX_NUM_SPOT_LIGHTS             4
 
+///////////////
+// Constants //
+///////////////
+const GLsizei INSTANCE_STRIDE = sizeof(mat4);
+
 // Singleton Variable initialization
 ShaderManager* ShaderManager::m_pInstance = nullptr;
 
@@ -35,7 +40,7 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
 };
 
 // Public - Not a singleton
-// Designed mainly to manage different shaders between assignments.  
+// Designed mainly to manage different shaders between assignments.
 ShaderManager::ShaderManager()
 {
     m_bInitialized = false;
@@ -83,6 +88,14 @@ ShaderManager::ShaderManager()
 
     m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/boid.vert");
     m_pShader[eShaderType::BOID_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/boid.frag");
+
+    // Bounding Box Shader
+    m_pShader[eShaderType::DEBUG_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/debug.vert");
+    m_pShader[eShaderType::DEBUG_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/debug.frag");
+
+    // Shadow Shader
+    m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/shadow.vert");
+    m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/shadow.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.
@@ -125,7 +138,7 @@ shader_Type ShaderManager::getShaderType(const string& sKey)
  * Set up Shaders                                                  *
 \*******************************************************************/
 
-// Inializes shaders. 
+// Inializes shaders.
 bool ShaderManager::initializeShaders()
 {
     // Initialize Shaders
@@ -261,6 +274,37 @@ GLuint ShaderManager::genIndicesBuffer(GLuint iVertArray,
     return iIndicesBufferLoc;
 }
 
+// Function to Generate an Instance Buffer for Instanced Rendering.
+GLuint ShaderManager::genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage)
+{
+    // Set up Instanced Buffer for Instance Rendering
+    GLuint iReturnIBO = genVertexBuffer(iVertArray, pData, pSize, usage);
+
+    // Instance Rendering Attributes
+    //    Set up openGL for referencing the InstancedBuffer as a Mat4
+    // column 0
+    glBindBuffer(GL_ARRAY_BUFFER, iReturnIBO);
+    setAttrib(
+        iVertArray, iStartIndex, 4, INSTANCE_STRIDE, (void*)0);
+    // column 1
+    setAttrib(
+        iVertArray, iStartIndex + 1, 4, INSTANCE_STRIDE, (void*)sizeof(vec4));
+    // column 2
+    SHADER_MANAGER->setAttrib(
+        iVertArray, iStartIndex + 2, 4, INSTANCE_STRIDE, (void*)(sizeof(vec4) << 1));
+    // column 3
+    SHADER_MANAGER->setAttrib(
+        iVertArray, iStartIndex + 3, 4, INSTANCE_STRIDE, (void*)(3 * sizeof(vec4)));
+
+    glBindVertexArray(iVertArray);
+    glVertexAttribDivisor(iStartIndex, 1);
+    glVertexAttribDivisor(iStartIndex + 1, 1);
+    glVertexAttribDivisor(iStartIndex + 2, 1);
+    glVertexAttribDivisor(iStartIndex + 3, 1);
+
+    return iReturnIBO;
+}
+
 // given a glm 4x4 Matrix, a specifed shader and a variablename, attempt to set the given matrix into that uniform variable.
 void ShaderManager::setUnifromMatrix4x4(eShaderType eType, string sVarName, const mat4* pResultingMatrix)
 {
@@ -287,7 +331,7 @@ void ShaderManager::setUnifromMatrix4x4(eShaderType eType, string sVarName, cons
 }
 
 // given a glm vec3 set it as the unifrom light position in the mesh shader
-void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm::vec3* pResultingVector)
+void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm::vec3* pValue )
 {
     GLint iVariableLocation;
     GLint iProgram, iCurrProgram;
@@ -301,7 +345,32 @@ void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm
         iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
         if (ERR_CODE != iVariableLocation)
         {
-            glUniform3fv(iVariableLocation, 1, glm::value_ptr(*pResultingVector));
+            glUniform3fv(iVariableLocation, 1, glm::value_ptr(*pValue));
+        }
+        glUseProgram(iCurrProgram);
+
+#ifdef DEBUG
+        CheckGLErrors();
+#endif // DEBUG
+    }
+}
+
+// sets a uniform vec4 value in the specified shader to the given value.
+void ShaderManager::setUniformVec4(eShaderType eType, string sVarName, const vec4* pValue)
+{
+    GLint iVariableLocation;
+    GLint iProgram, iCurrProgram;
+
+    if (eType < eShaderType::MAX_SHDRS && eType >= 0)
+    {
+        iProgram = getProgram(eType);
+
+        glGetIntegerv(GL_CURRENT_PROGRAM, &iCurrProgram);
+        glUseProgram(iProgram);
+        iVariableLocation = glGetUniformLocation(iProgram, sVarName.c_str());
+        if (ERR_CODE != iVariableLocation)
+        {
+            glUniform4fv(iVariableLocation, 1, glm::value_ptr(*pValue));
         }
         glUseProgram(iCurrProgram);
 

@@ -31,7 +31,7 @@ const vec3 DEFAULT_POS = vec3(-90.0f, 60.0f, START_RADIUS); // (Theta, Phi, Radi
 
 // Constructor
 Camera::Camera( int iID )
-    : Entity( iID, vec3(0.0f) )
+    : Entity( iID, vec3(0.0f), CAMERA_ENTITY )
 {
     EntityManager* pEntMngr = ENTITY_MANAGER;
     m_bSteadyCam = false;
@@ -54,6 +54,12 @@ Camera::~Camera()
 \****************************************************************/
 
 void Camera::update(float fTimeInMilliseconds)
+{
+    /* Not Implemented */
+}
+
+// Shouldn't really be necessary as generally, the camera doesn't take up space in the world.
+void Camera::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
 {
     /* Not Implemented */
 }

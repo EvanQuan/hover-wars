@@ -1,9 +1,12 @@
 #include "EntityHeaders/InteractableEntity.h"
+#include "DataStructures/SpriteSheetDatabase.h"
 #include "EntityManager.h"
+
+using namespace SpriteSheetDatabase;
 
 // Default Constructor
 InteractableEntity::InteractableEntity(int iID, const vec3* vPosition)
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, INTERACTABLE_ENTITY )
 {
     
 }
@@ -23,19 +26,31 @@ void InteractableEntity::update(float fTimeInMilliseconds)
     /* Not Implemented */
 }
 
+// This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
+//  Static position.
+void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
+{
+    /* Not Implemented */
+}
+
 /****************************************************************\
- * Load Functions                                                *
+ * Billboard Functions                                          *
 \****************************************************************/
 
 // Load a Plane with a given Normal, Height and Width
-void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int iWidth, const Material* pMaterial)
+void InteractableEntity::loadAsBillboard(float fHeight, float fWidth)
 {
-    // Load Render Component and get Texture Dimensions
-    vec2 vUVStart = vec2(0.0f);
-    vec2 vUVEnd = vec2(1.0f);
+    ObjectInfo sBillboardObjectInfo;
+    sBillboardObjectInfo.sObjMaterial.fShininess = 0.0f;
+    sBillboardObjectInfo.sObjMaterial.sDiffuseMap = vSpriteInformation[eSpriteEnum::FIRE_SPRITE].sSheetLocation;
 
+    vec3 vTempPos = vec3(5.0f);
+    vec3 vTempNormal = vec3(0.0f, 1.0f, 0.0f);
     // Generate the Mesh
-    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(m_vPosition, *vNormal, vUVStart, vUVEnd, iHeight, iWidth, pMaterial);
+    m_pBillboardMesh = MESH_MANAGER->generateBillboardMesh(&sBillboardObjectInfo, this);
+    m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
+    m_pAnimationComponent->initializeComponentAsBillboard(m_pBillboardMesh, &vSpriteInformation[eSpriteEnum::FIRE_SPRITE], fHeight, fWidth);
+    // TEST Billboard    m_pAnimationComponent->addBillboard(&vTempPos, &vTempNormal);
 
     // Generate the Render Component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pBillboardMesh, true, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
@@ -43,4 +58,12 @@ void InteractableEntity::loadAsBillboard(const vec3* vNormal, int iHeight, int i
     // PHYSICSTODO: Set up Physics Component as a Physics Object for an interactable Object. This may be temporary, but maybe make it a cylinder?
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
     //m_pPhysicsComponent->initializeComponent(true, m_pBillboardMesh); // PHYSICSTODO
+}
+
+// Adds a new Billboard at a given position.
+//  @vNormal: The Normal for the Billboard to rotate around.
+//  @vPosition: The Position of the Center-Middle of the Billboard.
+void InteractableEntity::addBillboard(const vec3* vNormal, const vec3* vPosition)
+{
+    m_pAnimationComponent->addBillboard(vPosition, vNormal);
 }

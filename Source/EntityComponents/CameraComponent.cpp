@@ -21,7 +21,7 @@
 #define Z_LOOK              m_vPos[I_Z]
 
 // Default Camera Values
-#define FOV_Y               60.f
+#define FOV_Y               60.f        // Degrees
 #define Z_CLOSE             0.01f
 #define Z_FAR               10000.f
 
@@ -44,7 +44,7 @@ CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iHeight, i
 CameraComponent::CameraComponent(const CameraComponent* pCopy)
     : EntityComponent(pCopy)
 {
-    
+    // m_pRotation = quat();
 }
 
 // Default = operator overload; Private function
@@ -62,16 +62,16 @@ CameraComponent::~CameraComponent()
 }
 
 /*************************************************************************\
- * Inherited Functions                                                     *
+ * Inherited Functions                                                    *
 \*************************************************************************/
 // Inherited update function, not yet implemented.
-void CameraComponent::update(duration<float> fTimeDelta)
+void CameraComponent::update(float fTimeDeltaInMilliseconds)
 {
     /* Not Implemented */
 }
 
 /*************************************************************************\
- * Getters                                                                 *
+ * Getters                                                                *
 \*************************************************************************/
 
 // Generates toCamera Matrix and updates Uniform in ShaderManager.
@@ -84,7 +84,7 @@ mat4 CameraComponent::getToCameraMat() const
 // Generates toCamera Matrix and updates Uniform in ShaderManager.
 mat4 CameraComponent::getPerspectiveMat() const
 {
-    return perspective(m_fFOV_Y * PI / 180.f, m_fAspectRatio, m_fZClose, m_fZFar);
+    return perspective(m_fFOV_Y * DEGREES_TO_RADIANS, m_fAspectRatio, m_fZClose, m_fZFar);
 }
 
 // fetches the World Position of the Camera
@@ -103,8 +103,8 @@ vec3 CameraComponent::getLookAt() const
 vec3 CameraComponent::getCartesianPos() const
 {
     // Locals - Fetch current position of Entity.
-    float fPhi_Rads = PHI * PI / 180.f;
-    float fTheta_Rads = THETA * PI / 180.f;
+    float fPhi_Rads = PHI * DEGREES_TO_RADIANS;
+    float fTheta_Rads = THETA * DEGREES_TO_RADIANS;
     vec3 vReturn;
 
     // Identity Matrix is a flag for basic spherical camera.

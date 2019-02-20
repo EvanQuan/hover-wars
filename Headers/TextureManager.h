@@ -1,10 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include <unordered_map>
 #include "Texture.h"
-
-// Forward Declaration
-class Object;
 
 // Texture Manager Class
 //        Manages all texture objects used by the system.
@@ -14,7 +10,7 @@ class Object;
 //            if the texture already exists, it will add a new userID to it and return
 //            the already loaded texture. This avoids duplicate loads of a texture.
 //        - unloadTexture:
-//            Removes a user reference to the texture.  If there are no users left 
+//            Removes a user reference to the texture.  If there are no users left
 //            that reference the texture, it will unload the texture from memory.
 //    Functionality:
 //        Stores textures in a hash map of TextureContainer structures.  Each TextureContainer
@@ -32,6 +28,7 @@ public:
     // Methods:
     Texture* loadTexture(const string &sFileName);
     Texture* genTexture(const vec4* vColor);
+    Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);
     void unloadAllTextures();
 
 private:
@@ -44,4 +41,3 @@ private:
     // Hash Map
     unordered_map<string, unique_ptr<Texture>> m_pTextureCache;
 };
-

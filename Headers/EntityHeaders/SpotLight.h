@@ -19,10 +19,11 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Function to Initialize the Light.
     void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, 
-                        const string& sMeshLocation, const Material* sMaterial = nullptr, float m_fMeshScale = 1.0f);
+                        const string& sMeshLocation, const ObjectInfo* pObjectProperties, float m_fMeshScale = 1.0f);
 
     const LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
 

@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 PointLight::PointLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition )
+    : Entity( iID, *vPosition, POINT_LIGHT_ENTITY )
 {
     
 }
@@ -29,9 +29,17 @@ void PointLight::update(float fTimeInMilliseconds)
     /* Not Implemented */
 }
 
+// Fetch the Spatial dimensions from the Lighting component for the Spatial Data Map.
+//  AKA: the data cells that this point light covers.
+void PointLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset) const
+{
+    m_pLightingComponent->getSpatialDimensions(pNegativeOffset, pPositiveOffset);
+}
+
+
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //    If "" is provided for the Mesh name, a generic cube will be generated.
-void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const Material* pMaterial, const string& sMeshName, float m_fMeshScale)
+void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, const ObjectInfo* pObjectProperties, const string& sMeshName, float m_fMeshScale)
 {
     // Set the color of the Light
     m_pColor = (*vColor);
@@ -39,11 +47,11 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
     // Load Mesh
     if ("" == sMeshName)
     {
-        m_pMesh = MESH_MANAGER->generateCubeMesh(bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, pMaterial, m_vPosition);
+        m_pMesh = MESH_MANAGER->generateCubeMesh(bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, pObjectProperties);
     }
     else
     {
-        m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, pMaterial, m_fMeshScale, m_vPosition, bStatic);
+        m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, pObjectProperties, m_fMeshScale, bStatic);
     }
 
     // Create a Render Component

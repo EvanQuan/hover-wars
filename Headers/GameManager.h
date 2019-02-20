@@ -27,29 +27,24 @@ public:
     bool initializeGraphics( string sFileName );
     bool renderGraphics();
 
-    /// HxW Settings
+    // HxW Settings
     void resizedWindow(int iHeight, int iWidth);
 
     // Camera Functions 
     //void snapShotCamera();
     void rotateCamera(vec2 pDelta);
     void zoomCamera(float fDelta);
-    void moveCamera( vec3 pDirection );
     void intersectPlane(float fX, float fY);
-    void switchView();
-
-    // Helper Enum for RGB Values
-    enum eRGB
-    {
-        RED = 0,
-        GREEN,
-        BLUE,
-        RGB_MAX
-    };
+    void toggleDebugCamera();
 
     // Must be set after getInstance() to avoid mutual getInstance() recursion
     // with CommandHandler
     CommandHandler* m_commandHandler;
+
+    ePlayer m_eKeyboardPlayer;
+#ifndef NDEBUG
+    UserInterface* m_pUserInterface;
+#endif
 
 private:
     // For Singleton Implementation
@@ -61,28 +56,18 @@ private:
     GLFWwindow* m_pWindow;
     Time m_pTimer;
 
-    // Axis Buffer/Array Containers
-    GLuint m_pVertexArray;
-    GLuint m_pVertexBuffer;
+    // Update Variables
+    duration<float> m_fFrameTime;
+    duration<float> m_fMaxDeltaTime;
 
-    // Camera
-    Camera* m_pCamera;
-    enum cView
-    {
-        VIEW_SPHERICAL = 0,
-        VIEW_FPS,
-        VIEW_FOLLOW,
-        VIEW_MAX
-    } m_eView;
-
-    // Render Functions
-    void RenderScene();
-    void renderAxis();
+    // Camera Boolean
+    bool m_bUseDebugCamera;
 
     // Manager Pointers
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
+#ifdef NDEBUG
     UserInterface* m_pUserInterface;
-
+#endif
 };
 

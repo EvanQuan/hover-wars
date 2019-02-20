@@ -11,6 +11,8 @@
 *    type specified by the enum eLightType
 ***************************************************************/
 
+class Texture;  // Forward Declaration to avoid include loop
+
 class LightingComponent 
     : public EntityComponent
 {
@@ -28,12 +30,16 @@ public:
     virtual ~LightingComponent();
 
     // Inherited update frunction from EntityComponent
-    void update(duration<float> fTimeDelta);
+    void update(float fTimeDeltaInMilliseconds);
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeAsPointLight( const vec3* vPosition, const vec3* vColor, float fPower );
     void initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular);
     void initializeAsSpotLight(const vec3* vPosition, const vec3* vColor, const vec3* vDirection, float fPhi, float fSoftPhi);
+
+    // Shadow Map functionality
+    void setupShadowFBO() const;
+    void setupPMVMatrices() const;
 
     // Returns light information for storing in Shader
     const vector< vec4 >* getLightInformation() const { return &m_pLightData; }
@@ -46,6 +52,7 @@ public:
     vec3 getPosition() { return m_vPosition; }
     vec3 getColor() { return m_vDiffuseColor; }
     eLightType getType() { return m_eType; }
+    void getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset);
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
@@ -55,6 +62,7 @@ private:
     // Private Variables
     vec3 m_vPosition, m_vDiffuseColor;
     float m_fLightPower, m_fPhi, m_fSoftPhi;
+    float m_fSpotLightRadius;
 
     // Directional Light Variables
     vec3 m_vDirection, m_vAmbientColor, m_vSpecularColor;
@@ -63,4 +71,8 @@ private:
     vector< vec4 > m_pLightData;
     
     eLightType m_eType;
+
+    // Shadow Map Variables
+    Texture* m_pShadowMap;
+    GLuint m_iFrameBuffer;
 };
