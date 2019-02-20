@@ -21,7 +21,7 @@
 #define Z_LOOK              m_vPos[I_Z]
 
 // Default Camera Values
-#define FOV_Y               60.f
+#define FOV_Y               60.f        // Degrees
 #define Z_CLOSE             0.01f
 #define Z_FAR               10000.f
 
