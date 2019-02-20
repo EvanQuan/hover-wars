@@ -20,7 +20,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 {
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
-    m_pEntityManager       = ENTITY_MANAGER;
+    m_pEntityManager    = ENTITY_MANAGER;
     m_pUserInterface = UserInterface::getInstance(rWindow);
 
     m_pUserInterface->setDisplayCount(1);

@@ -41,6 +41,7 @@ displays them.
 */
 void UserInterface::update()
 {
+    system("CLS");
     updateScores();
     updateCooldowns();
 }
@@ -55,7 +56,7 @@ void UserInterface::updateScores()
 
 void UserInterface::updateScore(ePlayer player, int score)
 {
-    cout << "Player " << player << " score: " << score << endl;
+    cout << "Player " << (player + 1) << " score: " << score << endl;
 }
 
 void UserInterface::updateCooldowns()
