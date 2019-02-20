@@ -46,7 +46,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
+    updateCameraLookAts(fTimeInMilliseconds); // TODO: Need to interpolate positions a bit better.
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -99,7 +99,20 @@ void HovercraftEntity::initializeCameraLookAts()
 Updates an average for this player's cameras. This is what makes the camera
 sway as the player moves.
 */
-void HovercraftEntity::updateCameraLookAts()
+void HovercraftEntity::updateCameraLookAts(float fTimeInMilliseconds)
+{
+    updateCameraRotation(fTimeInMilliseconds);
+    updateCameraPosition(fTimeInMilliseconds);
+}
+
+void HovercraftEntity::updateCameraRotation(float fTimeInMilliseconds)
+{
+    m_qCurrentCameraRotation = m_pPhysicsComponent->getRotation();
+    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+}
+
+void HovercraftEntity::updateCameraPosition(float fTimeInMilliseconds)
 {
     // Queue new position and add to total
     m_vPastPositions.push(m_vPosition);
@@ -121,11 +134,9 @@ void HovercraftEntity::updateCameraLookAts()
     vAveragePosition = (vAveragePosition + m_vPosition) * 0.5;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
-    quat rotation = m_pPhysicsComponent->getRotation();
-    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragePosition + rotation * FRONT_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(rotation);
-    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragePosition + rotation * BACK_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(rotation);
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragePosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragePosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+
 }
 
 void HovercraftEntity::useAbility(eAbility ability)

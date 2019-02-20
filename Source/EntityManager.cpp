@@ -171,11 +171,15 @@ void EntityManager::doRender()
     {
         // Render Emitters
         if (nullptr != m_pEmtrEngn)
-            m_pEmtrEngn->renderEmitters();
+        {
+           m_pEmtrEngn->renderEmitters();
+        }
 
         // Draw the Spatial Map for debuggin
         if (m_bDrawSpatialMap)
+        {
             m_pSpatialMap->drawMap();
+        }
 
 #ifdef _DEBUG
         renderAxis();

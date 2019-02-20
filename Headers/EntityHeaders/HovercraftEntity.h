@@ -66,8 +66,8 @@ public:
     void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
-    vec3 getCameraPosition() { return m_vPosition; }
-    quat getCameraRotation() { return m_pPhysicsComponent->getRotation(); }
+    vec3 getCameraPosition() { return m_vCurrentCameraPosition; }
+    quat getCameraRotation() { return m_qCurrentCameraRotation; }
 
     const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCameraIndex]; }
 
@@ -93,12 +93,14 @@ private:
     queue<quat> m_qPastRotations;
 
     vec3 m_vCurrentCameraPosition;
-    quat m_vCurrentCameraRotation;
+    quat m_qCurrentCameraRotation;
 
     // Private Functions
     void initializeCameraLookAts();
     // m_vPositionTotal += position;
-    void updateCameraLookAts();
+    void updateCameraLookAts(float fTimeInMilliseconds);
+    void updateCameraPosition(float fTimeInMilliseconds);
+    void updateCameraRotation(float fTimeInMilliseconds);
 
     // Abilities
     void shootRocket();
