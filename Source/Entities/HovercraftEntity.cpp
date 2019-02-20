@@ -7,13 +7,6 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
-    m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
-    for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
-    {
-        m_vPastPositions.push(*vPosition);
-    }
-
-    initializeCameraLookAts();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -46,7 +39,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(fTimeInMilliseconds); // TODO: Need to interpolate positions a bit better.
+    updateCameraLookAts();
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -88,26 +81,16 @@ void HovercraftEntity::initialize(const string& sFileName,
 \********************************************************************************************************/
 
 /*
-For the camera to track only the horizontal rolling average, while maintaining the same
-vertical angle, it must record and use the initial horizontal 
-*/
-void HovercraftEntity::initializeCameraLookAts()
-{
-    m_vCurrentCameraPosition = m_vPosition;
-    // null pointer exception after this if done here
-    // m_qCurrentCameraRotation = m_pPhysicsComponent->getRotation();
-}
-/*
 Updates an average for this player's cameras. This is what makes the camera
 sway as the player moves.
 */
-void HovercraftEntity::updateCameraLookAts(float fTimeInMilliseconds)
+void HovercraftEntity::updateCameraLookAts()
 {
-    updateCameraRotation(fTimeInMilliseconds);
-    updateCameraPosition(fTimeInMilliseconds);
+    updateCameraRotation();
+    updateCameraPosition();
 }
 
-void HovercraftEntity::updateCameraRotation(float fTimeInMilliseconds)
+void HovercraftEntity::updateCameraRotation()
 {
     quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
 
@@ -117,7 +100,7 @@ void HovercraftEntity::updateCameraRotation(float fTimeInMilliseconds)
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
 }
 
-void HovercraftEntity::updateCameraPosition(float fTimeInMilliseconds)
+void HovercraftEntity::updateCameraPosition()
 {
     vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
 

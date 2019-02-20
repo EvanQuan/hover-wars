@@ -21,18 +21,14 @@
 // Camera Defines
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
-#define PAST_CAMERA_POSITIONS   3000 // 200
-#define AVERAGE_POSITION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_POSITIONS))
-#define PAST_CAMERA_ROTATIONS   100
-#define AVERAGE_ROTATION_MULTIPLIER (1.0f / static_cast<float>(PAST_CAMERA_ROTATIONS))
 
 #define FRONT_CAMERA_LONGITUDE  -90.0f  // theta
-#define FRONT_CAMERA_LATITUDE   60.0f   // phi
+#define FRONT_CAMERA_LATITUDE   70.0f   // phi
 #define FRONT_RADIUS            10.0f   // r
 
 #define BACK_CAMERA_LONGITUDE   -90.0f  // theta
 #define BACK_CAMERA_LATITUDE    45.0f   // phi
-#define BACK_RADIUS             15.0f   //  r
+#define BACK_RADIUS             10.0f   // r
 
 /*
 Determines the rate at the which the camera moves to catch up to player
@@ -53,8 +49,8 @@ const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATI
 The position of the camera relative to the position of the player. Both vectors
 will be added together to form the final camera position.
 */
-const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-5, 0, 0);
-const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-10, 0, 0);
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-0, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-15, 0, 0);
 
 class HovercraftEntity :
     public Entity
@@ -98,10 +94,6 @@ private:
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     InteractableEntity* m_pFireTrail;
-    vec3 m_vPositionTotal;
-    quat m_qRotationTotal;
-    queue<vec3> m_vPastPositions;
-    queue<quat> m_qPastRotations;
 
     /*
     These should lag behind
@@ -114,11 +106,9 @@ private:
     quat m_qCurrentCameraRotation;
 
     // Private Functions
-    void initializeCameraLookAts();
-    // m_vPositionTotal += position;
-    void updateCameraLookAts(float fTimeInMilliseconds);
-    void updateCameraPosition(float fTimeInMilliseconds);
-    void updateCameraRotation(float fTimeInMilliseconds);
+    void updateCameraLookAts();
+    void updateCameraPosition();
+    void updateCameraRotation();
 
     // Abilities
     void shootRocket();
