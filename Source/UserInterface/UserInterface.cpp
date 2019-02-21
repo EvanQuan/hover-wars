@@ -10,6 +10,7 @@ UserInterface::UserInterface(GLFWwindow* window)
     m_iDisplayCount = 0;
 
     m_pGameStats = GameStats::getInstance();
+    m_pFontManager = FontManager::getInstance();
 
     initializeUserInterface();
 
@@ -29,6 +30,11 @@ UserInterface::~UserInterface()
     // Let go of Window
     m_pWindow = nullptr;
     m_pGameStats = nullptr;
+    if (nullptr != m_pFontManager)
+    {
+        delete m_pFontManager;
+    }
+
 }
 
 /*
