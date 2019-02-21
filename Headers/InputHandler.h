@@ -99,7 +99,6 @@ private:
     void debugPrintJoystickButtons(int joystickID);
     void debugPrintJoystickInformation();
     void debugPrintJoystickInformation(int joystickID);
-    void debugToggleWireframe();
     void disconnectJoystick(int joystickID);
     void initializeJoystick(int joystickID);
     void initializeJoystickVariables();

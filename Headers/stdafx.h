@@ -20,13 +20,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/ext.hpp>
-#include "EnvSpec.h"
 #include "GameTime.h"
-
-#ifdef USING_WINDOWS
 #include <string>
 #include <glew.h>
-#endif
 #include <glfw3.h>
 
 // FreeType
@@ -35,13 +31,6 @@
 
 // PhysX
 #include "PxPhysicsAPI.h"
-
-#ifdef USING_LINUX
-#include <string.h>
-#include <memory>
-#define GLFW_INCLUDE_GLCOREARB
-#define GL_GLEXT_PROTOTYPES
-#endif
 
 // Game Enums
 #include "Enums/eAbility.h"

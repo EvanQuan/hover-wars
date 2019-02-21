@@ -1,5 +1,8 @@
 #include "GameTime.h"
 
+/************\
+ * Typedefs *
+\************/
 typedef std::chrono::high_resolution_clock Clock;
 
 // Initialize first Tick
@@ -19,7 +22,7 @@ void Time::updateTime()
 {
     time_point<steady_clock> pCurrTick = Clock::now();
     m_pFrameTime = pCurrTick - m_pLastTick;    // get new frame time.
-    m_pLastTick = pCurrTick;    // Store new last tick
+    m_pLastTick = pCurrTick;                   // Store new last tick
 }
 
 void Time::resetTimer()

@@ -348,9 +348,9 @@ void ShaderManager::setUnifromMatrix4x4(eShaderType eType, string sVarName, cons
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -373,9 +373,9 @@ void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -398,9 +398,9 @@ void ShaderManager::setUniformVec4(eShaderType eType, string sVarName, const vec
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -423,9 +423,9 @@ void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fV
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -448,9 +448,9 @@ void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal, 
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -472,9 +472,9 @@ void ShaderManager::setUniformIntAll(string sVarName, int iVal, unsigned int iIn
         if (ERR_CODE != iVariableLocation)  // If the Uniform exists, set the value
             glUniform1i(iVariableLocation + iIndex, iVal);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 
     // Set the program back to the original program

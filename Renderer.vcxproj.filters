@@ -60,9 +60,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\EnvSpec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\ImageReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>

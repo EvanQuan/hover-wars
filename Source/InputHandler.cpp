@@ -101,20 +101,6 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     }
 }
 
-// Toggles Wireframe drawing
-void InputHandler::debugToggleWireframe()
-{
-    // Toggle Boolean
-    bWireFrameEnabled = !bWireFrameEnabled;
-
-    // Set Polygon mode based on current setting.
-    if (bWireFrameEnabled)
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    else
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-}
-
-
 // Mouse Button Callback
 // Handle mouse movement controls.
 void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)

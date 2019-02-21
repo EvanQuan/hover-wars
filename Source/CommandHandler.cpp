@@ -210,7 +210,7 @@ Execute all commands specified by user input from keyboard and joysticks.
 void CommandHandler::executeInputCommands()
 {
 #ifdef _DEBUG
-    // system("CLS"); // Clear the terminal
+    // system("CLS"); // Clear the terminal TODO: Delete
 #endif
     executeJoystickCommands();
     executeKeyboardCommands();
@@ -364,17 +364,17 @@ void CommandHandler::executeJoystickCommands()
     }
 }
 
+// Toggles Wireframe drawing
 void CommandHandler::debugToggleWireframe()
 {
+    // Toggle Boolean
     bWireFrameEnabled = !bWireFrameEnabled;
+
+    // Set Polygon mode based on current setting.
     if (bWireFrameEnabled)
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    }
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    }
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 /*
