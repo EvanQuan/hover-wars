@@ -22,13 +22,13 @@
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 
-#define FRONT_CAMERA_LONGITUDE  -90.0f  // theta
-#define FRONT_CAMERA_LATITUDE   80.0f   // phi
-#define FRONT_RADIUS            10.0f   // r
+#define FRONT_CAMERA_LONGITUDE  -90.0f  // theta    degrees
+#define FRONT_CAMERA_LATITUDE   80.0f   // phi      degrees
+#define FRONT_RADIUS            10.0f   // r        meters
 
-#define BACK_CAMERA_LONGITUDE   -90.0f  // theta
-#define BACK_CAMERA_LATITUDE    40.0f   // phi
-#define BACK_RADIUS             12.0f   // r
+#define BACK_CAMERA_LONGITUDE   -90.0f  // theta    degrees
+#define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
+#define BACK_RADIUS             12.0f   // r        meters
 
 /*
 Determines the rate at the which the camera moves to catch up to player
