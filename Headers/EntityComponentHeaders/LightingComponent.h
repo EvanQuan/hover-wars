@@ -62,7 +62,7 @@ private:
 
     // Private Variables
     vec3 m_vPosition, m_vDiffuseColor;
-    mat4 m_m4ModelViewMatrix;
+    mat4 m_m4LightSpaceMatrix;
     float m_fLightPower, m_fPhi, m_fSoftPhi;
     float m_fSpotLightRadius;
 

@@ -8,8 +8,6 @@
 /*************\
  * Constants *
 \*************/
-const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
-const GLfloat DEPTH_ZERO = 1.0f;
 
 
 // Singleton Variable initialization
@@ -98,8 +96,6 @@ bool GameManager::renderGraphics()
     {
         m_fFrameTime = duration<float>(0.0f);
 
-        glClearBufferfv(GL_COLOR, 0, color);
-        glClearBufferfv(GL_DEPTH, 0, &DEPTH_ZERO);
         glEnable(GL_DEPTH_TEST);
 
         m_pEntityManager->renderEnvironment();

@@ -41,11 +41,11 @@ void main(void)
 	
 	// Calculate the Directional Light Fragment for Shadows
 	if( usingDirectionalLight )
-		vs_out.FragPosDirLightSpace = dirLightSpaceMat * vec4(vs_out.vFragPosition, 1.0);
+		vs_out.FragPosDirLightSpace = dirLightSpaceMat * vec4(positionModelSpace, 1.0);
 	
 	// Calculate the Spot Light Fragment for Shadows
 	for( int i = 0; i < numSpotLights; ++i )
-		vs_out.FragPosSpotLightSpace[i] = spotLightSpaceMat[i] * vec4(vs_out.vFragPosition, 1.0);
+		vs_out.FragPosSpotLightSpace[i] = spotLightSpaceMat[i] * vec4(positionModelSpace, 1.0);
 	
 	TexCoords = uv;
 	

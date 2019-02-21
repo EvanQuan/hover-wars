@@ -9,6 +9,8 @@ const mat3 WORLD_COORDS = mat3(1.0);
 const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[0],
                                   WORLD_CENTER, WORLD_COORDS[1],
                                   WORLD_CENTER, WORLD_COORDS[2] };
+const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
+const GLfloat DEPTH_ZERO = 1.0f;
 
 // Initialize Static Instance Variable
 EntityManager* EntityManager::m_pInstance = nullptr;
@@ -124,7 +126,8 @@ void EntityManager::resetFBO()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, m_iWidth, m_iHeight);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearBufferfv(GL_COLOR, 0, color);
+    glClearBufferfv(GL_DEPTH, 0, &DEPTH_ZERO);
     m_bShadowDraw = false;
 }
 

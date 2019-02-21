@@ -19,8 +19,11 @@ in vec2 TexCoords;
 
 // Algorithm derived from:
 //	https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
-float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap )
+float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fLightDotNormal )
 {
+	// Shadow Bias to counter Shadow Acne
+	float fBias = max(0.05 * (1.0 - fLightDotNormal), 0.005);
+	
 	// Perspective Division
 	vec3 vProjCoords = vFragPosLightSpace.xyz / vFragPosLightSpace.w;
 	
@@ -34,7 +37,7 @@ float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap )
 	float fCurrentDepth = vProjCoords.z;
 	
 	// Check whether current frag position is in shadow
-	return (fCurrentDepth > fClosestDepth ? 1.0 : 0.0);
+	return (fCurrentDepth - fBias > fClosestDepth ? 1.0 : 0.0);
 }
 
 // Calculates information about a specified directional light.
@@ -56,13 +59,15 @@ vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFra
 		specular = pow( specAngle, sMaterial.fShininess );
 	}
 	
-	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow );
+	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow, dot(vToLight, vNormal) );
 
 	// Apply Diffuse Value
-	vec4 colorLinear = shadowValue * texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vDiffuse, 1.0);
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vDiffuse, 1.0);
 	
 	// Apply Specular value
-	colorLinear += shadowValue * texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vSpecular, 1.0);
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vSpecular, 1.0);
+	
+	colorLinear *= shadowValue;
 
 	// Apply Ambient Value
 	colorLinear += texture(sMaterial.vDiffuse, TexCoords ) * vec4(light.vAmbient, 1.0);
