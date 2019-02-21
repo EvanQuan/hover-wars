@@ -258,7 +258,7 @@ void SceneLoader::loadFromFile( string sFileName )
                 handleData( sData, sIndicator );
 
                 // Debugging
-            #ifdef DEBUG
+            #ifdef _DEBUG
                 cout << sIndicator << endl;
                 for ( unsigned int d = 0; d < sData.size(); ++d )
                     cout << sData[ d ] << endl;

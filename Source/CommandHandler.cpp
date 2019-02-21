@@ -21,9 +21,7 @@ Get Singleton instance
 CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new CommandHandler(rWindow);
-    }
 
     return m_pInstance;
 }
@@ -118,7 +116,7 @@ void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command
         GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
-        GAME_MANAGER->toggleDebugCamera();
+        ENTITY_MANAGER->toggleDebugCamera();
         break;
     case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
         ENTITY_MANAGER->toggleBBDrawing();
@@ -144,8 +142,6 @@ void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command
 #endif
     }
 }
-
-
 
 /*
 Make a hovercraft of given joystickID execute a eVariableCommand.
@@ -194,7 +190,6 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand comm
         hovercraft->turn(x);
         break;
     }
-
 }
 
 /*
@@ -212,7 +207,7 @@ Execute all commands specified by user input from keyboard and joysticks.
 void CommandHandler::executeInputCommands()
 {
 #ifdef _DEBUG
-    // system("CLS"); // Clear the terminal
+    // system("CLS"); // Clear the terminal TODO: Delete
 #endif
     executeJoystickCommands();
     executeKeyboardCommands();
@@ -304,8 +299,8 @@ void CommandHandler::executeKeyboardCommands()
     // simply if them to the proper size instead of doing a sqrt calculation.
     if ((xMove != 0.0f) && (yMove != 0.0f))
     {
-        xMove *= 0.7071f;
-        yMove *= 0.7071f;
+        xMove *= 0.7071f;       // TODO: What is this Magic Number?
+        yMove *= 0.7071f;       // TODO: What is this Magic Number?
     }
 
     if (!bMovementNeutral)
@@ -366,17 +361,17 @@ void CommandHandler::executeJoystickCommands()
     }
 }
 
+// Toggles Wireframe drawing
 void CommandHandler::debugToggleWireframe()
 {
+    // Toggle Boolean
     bWireFrameEnabled = !bWireFrameEnabled;
+
+    // Set Polygon mode based on current setting.
     if (bWireFrameEnabled)
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    }
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    }
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 /*

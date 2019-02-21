@@ -1,5 +1,8 @@
 #include "Shader.h"
 
+/*************\
+ * Constants *
+\*************/
 const string LIGHTING_HEADER_LOC = "Shaders/lightingHeader.txt";
 const string UNIFORM_LIGHTING_LOC = "Shaders/uniformLighting.txt";
 
@@ -46,6 +49,7 @@ void Shader::storeShadrLoc( eShader shaderType, const string& sShaderLoc )
 // Shader Initialization with Tesselation Shaders
 bool Shader::initializeShader( )
 {
+    // Local Variables
     string sSources[ MAX_PARTS ];
     bool bError = false;
 
@@ -78,6 +82,7 @@ bool Shader::initializeShader( )
 // reads a text file with the given name into a string
 string Shader::LoadSource( int iShaderType, bool* bError)
 {
+    // Return Value
     string source = "";
 
     // Some Error Checking
@@ -92,7 +97,7 @@ string Shader::LoadSource( int iShaderType, bool* bError)
         ifstream input( m_uiShaderLocations[ iShaderType ] );
         if ( input )
         {
-
+            // Set GLFW Version in shader
             source = "#version 430 core\n";
 
             // Attach Uniform Lighting header for Both Vertex and Fragment Shaders
@@ -112,9 +117,13 @@ string Shader::LoadSource( int iShaderType, bool* bError)
                     istreambuf_iterator<char>(),
                     back_inserter(source));
             }
+
+            // Append rest of shader
             copy( istreambuf_iterator<char>( input ),
                 istreambuf_iterator<char>(),
                 back_inserter( source ) );
+
+            // Close stream
             input.close();
         }
         else
@@ -125,6 +134,7 @@ string Shader::LoadSource( int iShaderType, bool* bError)
         }
     }
 
+    // Return Shader as string
     return source;
 }
 

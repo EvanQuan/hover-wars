@@ -127,16 +127,17 @@ ShaderManager::~ShaderManager()
 }
 
 // Given a potential string as a hashmap key, return the corresponding ShaderType
-//    Returns: A found ShaderType or Default is Plane Shader.
+//    Returns: A found ShaderType or Default is Blinn Phong Shader.
 shader_Type ShaderManager::getShaderType(const string& sKey)
 {
+    // Set Default in case shader isn't found.
     shader_Type eReturnType = BLINN_PHONG_SHDR;
 
+    // Find shader type from given hash key
     if (pShaderTypeMap.end() != pShaderTypeMap.find(sKey))
-    {
         eReturnType = pShaderTypeMap.at(sKey);
-    }
 
+    // Return result
     return eReturnType;
 }
 
@@ -150,9 +151,7 @@ bool ShaderManager::initializeShaders()
     // Initialize Shaders
     m_bInitialized = true;
     for (int eIndex = LIGHT_SHDR; eIndex < MAX_SHDRS; eIndex++)
-    {
         m_bInitialized &= m_pShader[eIndex].initializeShader();
-    }
 
     // return False if not all Shaders Initialized Properly
     return m_bInitialized;
@@ -349,9 +348,9 @@ void ShaderManager::setUnifromMatrix4x4(eShaderType eType, string sVarName, cons
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -374,9 +373,9 @@ void ShaderManager::setUniformVec3(eShaderType eType, string sVarName, const glm
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -399,9 +398,9 @@ void ShaderManager::setUniformVec4(eShaderType eType, string sVarName, const vec
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -424,9 +423,9 @@ void ShaderManager::setUniformFloat(eShaderType eType, string sVarName, float fV
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -449,9 +448,9 @@ void ShaderManager::setUniformInt(eShaderType eType, string sVarName, int iVal, 
         }
         glUseProgram(iCurrProgram);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 }
 
@@ -473,9 +472,9 @@ void ShaderManager::setUniformIntAll(string sVarName, int iVal, unsigned int iIn
         if (ERR_CODE != iVariableLocation)  // If the Uniform exists, set the value
             glUniform1i(iVariableLocation + iIndex, iVal);
 
-#ifdef DEBUG
+#ifdef _DEBUG
         CheckGLErrors();
-#endif // DEBUG
+#endif // _DEBUG
     }
 
     // Set the program back to the original program
