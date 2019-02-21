@@ -59,5 +59,5 @@ private:
     GLFWwindow *m_pWindow;
 
     GameStats *m_pGameStats;
-    FontManager *m_pFontManager;
+    UIRenderer *m_pUIRenderer;
 };

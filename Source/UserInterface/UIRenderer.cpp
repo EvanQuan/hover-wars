@@ -1,9 +1,9 @@
-#include "UserInterface/FontManager.h"
+#include "UserInterface/UIRenderer.h"
 
 // Singleton instance
-FontManager* FontManager::m_pInstance = nullptr;
+UIRenderer* UIRenderer::m_pInstance = nullptr;
 
-FontManager::FontManager()
+UIRenderer::UIRenderer()
 {
     m_pTextureManager = TEXTURE_MANAGER->getInstance();
 }
@@ -11,16 +11,16 @@ FontManager::FontManager()
 /*
 Get singletone instance.
 */
-FontManager* FontManager::getInstance()
+UIRenderer* UIRenderer::getInstance()
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new FontManager();
+        m_pInstance = new UIRenderer();
     }
     return m_pInstance;
 }
 
-FontManager::~FontManager()
+UIRenderer::~UIRenderer()
 {
     m_pTextureManager = nullptr;
 }
@@ -31,7 +31,7 @@ Get a font of a specified name and size.
 @param filename path to the font file
 @param size     of the font
 */
-//FTFont* FontManager::GetFont(const string *filename, int size)
+//FTFont* UIRenderer::GetFont(const string *filename, int size)
 //{
 //  //  if ( fonts.find(*filename) != fonts.end())
 //  //  {

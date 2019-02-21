@@ -7,21 +7,21 @@
 
 @author Evan Quan
 */
-class FontManager
+class UIRenderer
 {
 public:
 
-    static FontManager* getInstance();
+    static UIRenderer* getInstance();
 
-    ~FontManager();
+    ~UIRenderer();
 
    // FTFont* GetFont(const string *filename, int size);
 
 private:
     // Hide these 'cause this is a singleton.
-    FontManager();
-    FontManager& operator= (const FontManager&) { return *this; };
-    static FontManager* m_pInstance;
+    UIRenderer();
+    UIRenderer& operator= (const UIRenderer&) { return *this; };
+    static UIRenderer* m_pInstance;
 
     TextureManager* m_pTextureManager;
 };
