@@ -121,6 +121,8 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define SCENE_LOADER        SceneLoader::getInstance()
 #define SHADER_MANAGER      ShaderManager::getInstance()
 #define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
+#define SOUND_MANAGER       SoundManager::getInstance()
+
 #define TEXTURE_MANAGER     TextureManager::getInstance()
 
 // From Boilerplate code,
