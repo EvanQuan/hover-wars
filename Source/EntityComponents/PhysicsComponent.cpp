@@ -67,7 +67,7 @@ void PhysicsComponent::movePlayer(float x, float y) {
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
         carBody->addForce(vForce * MOVEMENT_FORCE);
         
-        float angle = y == 0 ? -1 * atan(x / y) : 0;
+        float angle = y == 0 ? 0 : -1 * atan(x / y);
         gVehicleNoDrive->setSteerAngle(0, angle);
         gVehicleNoDrive->setSteerAngle(1, angle);
         gVehicleNoDrive->setSteerAngle(2, angle);
