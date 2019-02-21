@@ -310,12 +310,10 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)
     {
-        cout << xMove << " " << yMove << endl;
         execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        cout << xTurn << " " << yTurn << endl;
         execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
 }

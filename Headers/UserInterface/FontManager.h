@@ -1,8 +1,7 @@
 #pragma once
 #include "stdafx.h"
-
-// FTTextureFont* myFont = FontManager::Instance().GetFont("arial.ttf", 72);
-
+#include "TextureManager.h"
+#include "Texture.h"
 /*
 
 
@@ -24,6 +23,5 @@ private:
     FontManager& operator= (const FontManager&) { return *this; };
     static FontManager* m_pInstance;
 
-    // container for fonts
-   // map<string, FTFont*> fonts;
+    TextureManager* m_pTextureManager;
 };

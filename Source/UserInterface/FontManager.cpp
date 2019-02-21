@@ -5,7 +5,7 @@ FontManager* FontManager::m_pInstance = nullptr;
 
 FontManager::FontManager()
 {
-
+    m_pTextureManager = TEXTURE_MANAGER->getInstance();
 }
 
 /*
@@ -22,14 +22,7 @@ FontManager* FontManager::getInstance()
 
 FontManager::~FontManager()
 {
-    // Delete every font pointer in the font list
-   /* map<string, FTFont*>::const_iterator font;
-    for (font = fonts.begin(); font != fonts.end(); font++)
-    {
-        delete (*font).second;
-    }
-
-    fonts.clear();*/
+    m_pTextureManager = nullptr;
 }
 
 /*
