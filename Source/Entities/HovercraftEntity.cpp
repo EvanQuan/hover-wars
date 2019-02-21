@@ -7,13 +7,6 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
-    m_vPositionTotal = *vPosition * PAST_CAMERA_POSITIONS;
-    for (unsigned int i = 0; i < PAST_CAMERA_POSITIONS; ++i)
-    {
-        m_vPastPositions.push(*vPosition);
-    }
-
-    initializeCameraLookAts();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -22,7 +15,7 @@ HovercraftEntity::~HovercraftEntity()
 }
 
 /****************************************************************\
- * Inherited Pure Virtual Functions                                *
+ * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
 void HovercraftEntity::update(float fTimeInMilliseconds)
@@ -46,7 +39,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(); // TODO: Need to interpolate positions a bit better.
+    updateCameraLookAts();
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -88,44 +81,35 @@ void HovercraftEntity::initialize(const string& sFileName,
 \********************************************************************************************************/
 
 /*
-For the camera to track only the horizontal rolling average, while maintaining the same
-vertical angle, it must record and use the initial horizontal 
-*/
-void HovercraftEntity::initializeCameraLookAts()
-{
-    // TODO
-}
-/*
 Updates an average for this player's cameras. This is what makes the camera
 sway as the player moves.
 */
 void HovercraftEntity::updateCameraLookAts()
 {
-    // Queue new position and add to total
-    m_vPastPositions.push(m_vPosition);
-    m_vPositionTotal += m_vPosition;
+    updateCameraRotation();
+    updateCameraPosition();
+}
 
-    // Keep Queue within limits of Average
-    if (m_vPastPositions.size() > PAST_CAMERA_POSITIONS)
-    {
-        m_vPositionTotal -= m_vPastPositions.front();
-        m_vPastPositions.pop();
-    }
+void HovercraftEntity::updateCameraRotation()
+{
+    quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
 
-    // Calculate Average Position and set new look at for Camera Components
-    vec3 vAveragePosition = m_vPositionTotal * AVERAGE_POSITION_MULTIPLIER;
+    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER;
 
-    // Iterpolate between current position and average position to prevent
-    // rough camera changes as the average changes
-    // TODO This seems to make things smoother. Will need more testing once physics rumbling is solved.
-    vAveragePosition = (vAveragePosition + m_vPosition) * 0.5;
+    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+}
+
+void HovercraftEntity::updateCameraPosition()
+{
+    vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
+
+    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
-    quat rotation = m_pPhysicsComponent->getRotation();
-    m_pCmrComponents[FRONT_CAMERA]->setLookAt(vAveragePosition + rotation * FRONT_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(rotation);
-    m_pCmrComponents[BACK_CAMERA]->setLookAt(vAveragePosition + rotation * BACK_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(rotation);
+    m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
+    m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+
 }
 
 void HovercraftEntity::useAbility(eAbility ability)
@@ -152,12 +136,12 @@ void HovercraftEntity::useAbility(eAbility ability)
 
 void HovercraftEntity::move(float x, float y)
 {
-    PHYSICS_MANAGER->movePlayer(m_iID, x, y);
+    m_pPhysicsComponent->movePlayer(x, y);
 }
 
 void HovercraftEntity::turn(float x)
 {
-    PHYSICS_MANAGER->rotatePlayer(m_iID, x);
+    m_pPhysicsComponent->rotatePlayer(x);
 }
 
 void HovercraftEntity::shootRocket()

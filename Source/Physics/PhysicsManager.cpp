@@ -20,30 +20,6 @@
 #define UPDATE_TIME_IN_SECONDS (1.0f / 60.0f) // Physics should update every 1/60th of a second regardless of the game's framerate.
 
 /*
-Angular momementum.
-
-The greater this value, the faster the maximum turning rate.
-*/
-#define ANGULAR_MOMENTUM 3.0f
-/*
-This determines the amount of force applied to the car when movement is intiated.
-The greater the force, the faster it will accelerate.
-
-Force : Newtons
-*/
-#define MOVEMENT_FORCE 100.0f // 10000.0f // 40.0f
-
-/*
-This determines the rate of decceleration when the car input movement is in neutral.
-A braking force is applied when this is the case to help combat drifting.
-
-NOTE: This may not actually do anything a the moment.
-
-Force : Newtons
-*/
-#define BRAKE_FORCE 100000.0f // 1000.0f
-
-/*
 Hovercraft material properties
 */
 /*
@@ -183,23 +159,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
     return vehicleDesc;
 }
 
-void PhysicsManager::releaseAllControls()
-{
-    gVehicleNoDrive->setDriveTorque(0, 0.0f);
-    gVehicleNoDrive->setDriveTorque(1, 0.0f);
-    gVehicleNoDrive->setDriveTorque(2, 0.0f);
-    gVehicleNoDrive->setDriveTorque(3, 0.0f);
 
-    gVehicleNoDrive->setBrakeTorque(0, 0.0f);
-    gVehicleNoDrive->setBrakeTorque(1, 0.0f);
-    gVehicleNoDrive->setBrakeTorque(2, 0.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 0.0f);
-
-    gVehicleNoDrive->setSteerAngle(0, 0.0f);
-    gVehicleNoDrive->setSteerAngle(1, 0.0f);
-    gVehicleNoDrive->setSteerAngle(2, 0.0f);
-    gVehicleNoDrive->setSteerAngle(3, 0.0f);
-}
 
 /****************************************************************************\
  * Public Functions                                                            *
@@ -277,7 +237,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
 
     bool resultVehicle = PxInitVehicleSDK(*gPhysics);
-    PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(-1, 0, 0));
+    PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
     //Create the batched scene queries for the suspension raycasts.
@@ -318,74 +278,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
 //createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
 }
-void PhysicsManager::forwardKey() {
-    if (currentState != 1) {
-        releaseAllControls();
-        //startAccelerateForwardsMode();
-        currentState = 1;
-    }
-}
-void PhysicsManager::movePlayer(int entityID, float x, float y) {
-    /*if (x <0.1 && y <0.1 && y> -0.1 && x > -0.1) {
-        std::cout << "here" << std::endl;
-        gVehicleNoDrive->setBrakeTorque(0, 1000.0f);
-        gVehicleNoDrive->setBrakeTorque(1, 1000.0f);
-        gVehicleNoDrive->setBrakeTorque(2, 1000.0f);
-        gVehicleNoDrive->setBrakeTorque(3, 1000.0f);
-    }else
-    {*/        
-        if (x !=0 || y != 0) {
-            releaseAllControls();
-            //gVehicleNoDrive->setDriveTorque(0, distance * 1000.0f);
-        //    gVehicleNoDrive->setDriveTorque(1, distance * 1000.0f);
-            //gVehicleNoDrive->setDriveTorque(2, distance * 1000.0f);
-            //gVehicleNoDrive->setDriveTorque(3, distance * 1000.0f);
-            PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
-            PxTransform globalTransform = carBody->getGlobalPose();
-            PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
-            carBody->addForce(vForce * MOVEMENT_FORCE);
 
-            float angle = -1 * atan(x / y);
-            gVehicleNoDrive->setSteerAngle(0, angle);
-            gVehicleNoDrive->setSteerAngle(1, angle);
-            gVehicleNoDrive->setSteerAngle(2, angle);
-            gVehicleNoDrive->setSteerAngle(3, angle);
-        }
-        else {
-            releaseAllControls();
-            gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
-            gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
-            gVehicleNoDrive->setBrakeTorque(2, BRAKE_FORCE);
-            gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
-        }
-
-    //}
-}
-void PhysicsManager::rotatePlayer(int entityID, float x) {
-    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-}
-void PhysicsManager::stopKey() {
-    if (currentState != 2) {
-        //releaseAllControls();
-        //startAccelerateReverseMode();
-        currentState = 2;
-    }
-}
-void PhysicsManager::leftKey() {
-    if (currentState != 3) {
-
-        //releaseAllControls();
-    //startTurnHardLeftMode();
-    currentState = 3;
-    }
-}
-void PhysicsManager::rightKey() {
-    if (currentState != 4) {
-        //releaseAllControls();
-        //startTurnHardRightMode();
-        currentState = 4;
-    }
-}
 // This function is public. Probably intended as a sort of soft reset at the end of a match
 //    that will set up Physics to be restarted as everything gets loaded in for a new match
 // Also called from the Destructor before the Destructor performs any hard clean up.
