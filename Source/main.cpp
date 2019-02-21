@@ -7,6 +7,7 @@
 #include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "Physics/PhysicsManager.h"
+#include "SoundManager.h"
 
 #include "..\TestClass.h"
 
@@ -26,6 +27,7 @@ int main()
     ShaderManager* m_shaderManager = 0;
     InputHandler* m_inputHandler = 0;
     PhysicsManager* m_pPhysicsManager = 0;
+    SoundManager* m_soundManager = 0;
 
     // Initialize GL and a window
     if (!iRunning)
@@ -64,6 +66,10 @@ int main()
             iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
             m_shaderManager = SHADER_MANAGER;
 
+            // Initialize Sound
+            m_soundManager = SOUND_MANAGER;
+            m_soundManager->initSound();
+
             // Main loop
             while (iRunning)                
                 iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
@@ -79,7 +85,9 @@ int main()
         if (nullptr != m_pPhysicsManager)   // Physics Manager
             delete m_pPhysicsManager;
 
-        // Detroy Window
+        if (nullptr != m_soundManager)
+            delete m_soundManager;
+
         glfwDestroyWindow(m_window);
     }
 

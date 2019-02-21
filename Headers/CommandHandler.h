@@ -5,6 +5,7 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "InputHandler.h"
+#include "SoundManager.h"
 
 #ifndef NDEBUG
     #include "UserInterface/UserInterface.h"
@@ -80,8 +81,8 @@ private:
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
 
-    void execute(HovercraftEntity *player, eFixedCommand command);
-    void execute(HovercraftEntity *player, eVariableCommand command, float x, float y);
+    void execute(HovercraftEntity *hovercraft, eFixedCommand command);
+    void execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y);
     // Internal variables
     // For keyboard command handling
     eFixedCommand m_pFixedCommand;
