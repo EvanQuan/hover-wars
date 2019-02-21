@@ -17,7 +17,14 @@ public:
     Time();
     ~Time();
 
-    // Gets the current FrameTime
+    /*
+    @return the difference in time between the last updateTime() call
+            and the second last updateTime() call. If updateTIme() has
+            only been called once, compare it to when this Time object
+            has been instantiated.
+
+            Unit: seconds
+    */
     duration<double> getFrameTime() const { return m_pFrameTime;  }
     void resetTimer();
 
