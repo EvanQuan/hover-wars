@@ -35,13 +35,13 @@ Determines the rate at the which the camera moves to catch up to player
 movement. The greater it is, the faster the camera moves (the less it lags
 behind).
 */
-#define CAMERA_MOVEMENT_MULTIPLIER 10.0f
+#define CAMERA_MOVEMENT_MULTIPLIER 20.0f
 /*
 Determines the rate at which the camera rotates to catch up be behind the
 player. The greater it is, the faster the camera rotates (the less it lags
 behind).
 */
-#define CAMERA_ROTATION_MULTIPLIER 16.0f
+#define CAMERA_ROTATION_MULTIPLIER 30.0f
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
 const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_RADIUS); // (Theta, Phi, Radius)
