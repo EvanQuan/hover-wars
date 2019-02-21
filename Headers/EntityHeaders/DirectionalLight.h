@@ -21,7 +21,8 @@ public:
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Function to Initialize the Light.
-    void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor);
+    void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
+                    float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame);
 
     LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
 

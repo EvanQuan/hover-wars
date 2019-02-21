@@ -59,22 +59,15 @@ void PhysicsComponent::releaseAllControls()
     gVehicleNoDrive->setSteerAngle(2, 0.0f);
     gVehicleNoDrive->setSteerAngle(3, 0.0f);
 }
-void PhysicsComponent::movePlayer(float x, float y) {
-    float angle = -1 * atan(x / y);
-    float distance = sqrt(x*x + y*y);
-    if (y > 0) {
-        distance = -distance;
-    }
-    if (distance > 1) {
-        distance = 1;
-    }
-    if ((x != 0.0f) || (y != 0.0f)) {
+void PhysicsComponent::movePlayer(float x, float y) {   
+    if (x != 0 || y != 0) {
         releaseAllControls();
         PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
         PxTransform globalTransform = carBody->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
         carBody->addForce(vForce * MOVEMENT_FORCE);
 
+        float angle = -1 * atan(x / y);
         gVehicleNoDrive->setSteerAngle(0, angle);
         gVehicleNoDrive->setSteerAngle(1, angle);
         gVehicleNoDrive->setSteerAngle(2, angle);

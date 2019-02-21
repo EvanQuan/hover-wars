@@ -10,7 +10,7 @@
 #define MAX_SPHERE_PARAMS      4
 #define MAX_PLANE_PARAMS       8
 #define MAX_POINT_LIGHT_PARAMS 7
-#define MAX_DIR_LIGHT_PARAMS   12
+#define MAX_DIR_LIGHT_PARAMS   18
 #define MAX_SPOTLIGHT_PARAMS   10
 #define DEFAULT_SOFT_CUTOFF    5.f
 #define MAX_MESH_PARAMS        3
@@ -102,15 +102,24 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
 void SceneLoader::createDirectionalLight( vector< string > sData, int iLength )
 {
     vec3 vDirection, vDiffuseColor, vAmbientColor, vSpecularColor;
+    float fPosition, fNearPlane, fFarPlane, fShadowFrame;
+    unsigned int iShadowHeight, iShadowWidth;
 
     if ( MAX_DIR_LIGHT_PARAMS == iLength )
     {
-        vDirection = normalize( vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ ) );
-        vAmbientColor = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
-        vDiffuseColor = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
-        vSpecularColor = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
+        vDirection      = normalize( vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ ) );
+        vAmbientColor   = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
+        vDiffuseColor   = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
+        vSpecularColor  = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
+        fPosition       = stof(sData[12]);
+        fNearPlane      = stof(sData[13]);
+        fFarPlane       = stof(sData[14]);
+        iShadowHeight   = stoi(sData[15]);
+        iShadowWidth    = stoi(sData[16]);
+        fShadowFrame    = stof(sData[17]);
 
-        ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
+        ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor,
+                                                 fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
     }
     else
     {

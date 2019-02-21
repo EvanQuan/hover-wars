@@ -13,11 +13,14 @@
 #           - "x y z"   = the Position of the light in World Space
 #           - "r g b"   = the color of the light
 #           - "p"       = power of the light
-#       directional_light   { dX dY dZ aR aG aB dR dG dB sR sG sB }
-#           - "dX dY dZ" = the direction of the light source
-#           - "aR aG aB" = the ambient color of the light source
-#           - "dR dG dB" = the diffuse color of the light source
-#           - "sR sG sB" = the specular color of the light source
+#       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
+#           - "dX dY dZ" 	= the direction of the light source
+#           - "aR aG aB" 	= the ambient color of the light source
+#           - "dR dG dB" 	= the diffuse color of the light source
+#           - "sR sG sB" 	= the specular color of the light source
+#			- "P nP fP"		= The Position Offset (P) for the source of the Shadow Map
+#							= As well as the Near Plane (nP) and the Far Plane (fP)
+#			- "sH sW sF"	= The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 #       spotlight           { x y z  dX dY dZ  r g b  Phi  *softPhi* }
 #           - "x y z"       = the position of the light source
 #           - "dX dY dZ"    = the direction of the spotlight
@@ -77,6 +80,8 @@ directional_light {
     0 0 0
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+	1000.0 1.0 1200.0
+	4096 4096 100.0
 }
 
 spotlight {

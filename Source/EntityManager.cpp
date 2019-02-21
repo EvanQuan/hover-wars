@@ -340,12 +340,13 @@ void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectPropertie
 
 // Generates a New Directional Light and stores it in the Entity Manager.
 //    If a Directional Light already exists, no new Directional Light will be created.
-void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor)
+void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
+                                            float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame)
 {
     if (nullptr == m_pDirectionalLight)
     {
         unique_ptr<DirectionalLight> pNewDirectionalLight = make_unique<DirectionalLight>(getNewEntityID());
-        pNewDirectionalLight->initialize(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
+        pNewDirectionalLight->initialize(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor, fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
 
         // Set the current Directional Light and store inside the Master Entity List.
         m_pDirectionalLight = pNewDirectionalLight.get();

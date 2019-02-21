@@ -39,9 +39,10 @@ void DirectionalLight::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositi
 
 // Initializes the Light Entity with a Color, possible texture, Static boolean and possible Mesh
 //    If "" is provided for the Mesh name, a generic cube will be generated.
-void DirectionalLight::initialize(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor)
+void DirectionalLight::initialize(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
+                                float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame)
 {
     // Create and Initialize the Lighting Component.
     m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
-    m_pLightingComponent->initializeAsDirectionalLight(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
+    m_pLightingComponent->initializeAsDirectionalLight(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor, fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
 }
