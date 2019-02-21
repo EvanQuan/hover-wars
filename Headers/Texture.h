@@ -31,8 +31,10 @@ public:
     // Public Functions
     void genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GLenum eFormat, GLenum eType );
     void setTexParameter(GLenum eTexEnum, GLint iParam);
+    void setTexParameterfv(GLenum eTexEnum, const GLfloat* pParams);
     void genMipMaps();
-    void bindTexture( ShaderManager::eShaderType eType, string sVarName );
+    void bindTexture( ShaderManager::eShaderType eType, string sVarName, unsigned int iIndex = 0 );  // Binds Texture to Specified Shader
+    void bindTextureAllShaders(string sVarName, unsigned int iIndex = 0);                                      // Binds Texture to all Shaders
     void bindToFrameBuffer(GLuint iFrameBuffer, GLenum eAttachment, GLenum eTexTarget, GLint iLevel);
     void unbindTexture();
 

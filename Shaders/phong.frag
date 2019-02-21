@@ -1,10 +1,13 @@
 
 out vec4 color;
 
-in vec3 NormalVector;
-in vec3 vFragPosition;
-in vec3 ToCamera;
-in float distanceToLight;
+in VS_OUT {
+	vec3 NormalVector;
+	vec3 vFragPosition;
+	vec3 ToCamera;
+	vec4 FragPosDirLightSpace;
+	vec4 FragPosSpotLightSpace[4];
+} fs_in;
 
 void main(void)
 {
@@ -17,16 +20,17 @@ void main(void)
 	
 	// add directional light's contribution
 	if( usingDirectionalLight )
-		vColorLinear += CalcDirLight( pDirectionalLight, NormalVector, ToCamera );
+		vColorLinear += CalcDirLight( pDirectionalLight, fs_in.NormalVector, fs_in.ToCamera, fs_in.FragPosDirLightSpace );
 		
 	// add Point Light contributions
 	for( int i = 0; i < numPointLights; i++ )
-		vColorLinear += CalcPointLight( pPointLights[i], NormalVector, vFragPosition, ToCamera );
+		vColorLinear += CalcPointLight( pPointLights[i], fs_in.NormalVector, fs_in.vFragPosition, fs_in.ToCamera );
 	
 	// add Spot Light contributions
 	for( int i = 0; i < numSpotLights; i++ )
-		vColorLinear += CalcSpotLight( pSpotLights[i], NormalVector, vFragPosition, ToCamera );
+		vColorLinear += CalcSpotLight( pSpotLights[i], fs_in.NormalVector, fs_in.vFragPosition, fs_in.ToCamera );
 	
 	// Calculate the final color of the fragment
     color = vColorLinear;
+	//color = vec4(vec3(texture(DirectionalLightShadow, TexCoords).r), 1.0);
 }

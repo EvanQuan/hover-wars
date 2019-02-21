@@ -95,14 +95,18 @@ string Shader::LoadSource( int iShaderType, bool* bError)
 
             source = "#version 430 core\n";
 
-            if ( iShaderType == FRAGMENT)
+            // Attach Uniform Lighting header for Both Vertex and Fragment Shaders
+            if (VERTEX == iShaderType || FRAGMENT == iShaderType)
             {
-
                 ifstream uniformLight(UNIFORM_LIGHTING_LOC);
                 copy(istreambuf_iterator<char>(uniformLight),
                     istreambuf_iterator<char>(),
                     back_inserter(source));
+            }
 
+            // Attach Lighting Calculation Header for Fragment Shaders
+            if ( iShaderType == FRAGMENT)
+            {
                 ifstream lightingHead(LIGHTING_HEADER_LOC);
                 copy(istreambuf_iterator<char>(lightingHead),
                     istreambuf_iterator<char>(),

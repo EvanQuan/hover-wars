@@ -5,12 +5,18 @@
  * Defines *
 \***********/
 #define POSITION_SET 1000.0f
-#define SHADOW_HEIGHT 1024
-#define SHADOW_WIDTH 1024
-#define SHADOW_FRAME 10.0f
+#define SHADOW_HEIGHT 4096
+#define SHADOW_WIDTH 4096
+#define SHADOW_FRAME 100.0f
 #define NEAR_PLANE 1.0f
-#define FAR_PLANE 1500.0f
+#define FAR_PLANE 1200.0f
 #define POINT_LIGHT_POWER_MAP_MODIFIER 1.5f
+
+/*************\
+ * Constants *
+\*************/
+const string DIRECTIONAL_UNIFORM_LOC = "DirectionalLightShadow";
+const string SPOTLIGHT_UNIFORM_LOC = "SpotLightShadows";
 
 // Default Constructor:
 //      Requires an EntityID for the Entity that the component is a part of
@@ -45,7 +51,7 @@ void LightingComponent::setupShadowFBO() const
 }
 
 // Setup Projection and ModelView Matrices for the Light.
-void LightingComponent::setupPMVMatrices() const
+void LightingComponent::setupPMVMatrices()
 {
     // Local Variables
     mat4 pModelViewMatrix, pProjectionMatrix;
@@ -55,6 +61,7 @@ void LightingComponent::setupPMVMatrices() const
     case DIRECTIONAL_LIGHT: // Generate ModelView Matrix and Projection Matrix for Directional Light
         pModelViewMatrix = lookAt(m_vPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
         pProjectionMatrix = ortho(-SHADOW_FRAME, SHADOW_FRAME, -SHADOW_FRAME, SHADOW_FRAME, NEAR_PLANE, FAR_PLANE);
+        m_m4LightSpaceMatrix = pProjectionMatrix * pModelViewMatrix;
         break;
     case SPOTLIGHT:
         // Not implemented
@@ -62,7 +69,22 @@ void LightingComponent::setupPMVMatrices() const
     }
 
     // Set the Matrices as the Camera Matrices in the Shaders
-    SHADER_MANAGER->setProjectionModelViewMatrix(&pProjectionMatrix, &pModelViewMatrix);
+    SHADER_MANAGER->setDirectionalModelMatrix(&m_m4LightSpaceMatrix);
+}
+
+// Bind the Texture to the GPU and set up the 
+void LightingComponent::setupShadowUniforms(unsigned int iSpotLightIndex) const
+{
+    switch (m_eType)
+    {
+    case DIRECTIONAL_LIGHT:
+        m_pShadowMap->bindTextureAllShaders(DIRECTIONAL_UNIFORM_LOC);
+        break;
+    case SPOTLIGHT:
+        SHADER_MANAGER->setSpotLightModelMatrices(&m_m4LightSpaceMatrix, iSpotLightIndex);
+        m_pShadowMap->bindTextureAllShaders(SPOTLIGHT_UNIFORM_LOC, iSpotLightIndex);
+        break;
+    }
 }
 
 // Initializes this Lighting Component as a Simple Point Light with a position and a color
@@ -81,11 +103,11 @@ void LightingComponent::initializeAsPointLight(const vec3* vPosition, const vec3
 void LightingComponent::initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular)
 {
     m_eType                 = DIRECTIONAL_LIGHT;
-    m_vDirection            = *vDirection;
+    m_vDirection            = normalize(*vDirection);
     m_vDiffuseColor         = *vDiffuse;
     m_vAmbientColor         = *vAmbient;
     m_vSpecularColor        = *vSpecular;
-    m_vPosition             = -(*vDirection) * POSITION_SET;
+    m_vPosition             = -m_vDirection * POSITION_SET;
 
     // Generate Shadow Map
     m_pShadowMap = TEXTURE_MANAGER->genDepthBuffer(SHADOW_WIDTH, SHADOW_HEIGHT);

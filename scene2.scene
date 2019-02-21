@@ -71,6 +71,7 @@
 #                   :> <h w l> - height width length as floats
 # ============================================================
 
+
 directional_light {
     -1 -1 -1
     0 0 0
@@ -156,17 +157,17 @@ point_light {
 
 ## bottom
 plane {
-    0 0 0
-    0 1 0
-    100 100
-    +material {
-        textures/groundSeamless.jpg
-        0 0 0
-        0
-    }
-    +shader {
-        plane_shdr
-    }
+	0 0 0
+	0 1 0
+	100 100
+	+material {
+		textures/groundSeamless.jpg
+		0 0 0
+		0
+	}
+	+shader {
+		blinn_phong_shdr
+	}
 }
 
 # Mesh

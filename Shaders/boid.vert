@@ -8,6 +8,8 @@ layout (std140, binding = 0) uniform Matrices
 	mat4 projection;
 	mat4 modelview;
 	mat4 modelviewInv;
+	mat4 dirLightSpaceMat;
+	mat4 spotLightSpaceMat[4];
 };
 
 uniform vec3 lightPosition;
