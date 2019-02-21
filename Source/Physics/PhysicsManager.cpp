@@ -104,7 +104,6 @@ PhysicsManager::PhysicsManager()
     
     gPvd = NULL;
     stackZ = -3.0f;// distance between stacks, Only used for stack demo creation
-    /*Left these here to show change made by moving these to PhysicsManager Private Variables*/
 }
 
 // PhysicsManager Destructor -
@@ -193,13 +192,8 @@ void PhysicsManager::initPhysics(bool interactive)
     if (gScene != NULL) {
         return;
     }
-    // For my private variables, I append the 'm_' to the front to say, "This is my variable"
-    //    "my" referring to the namespace of the function: PhysicsManager. I also put the small case
-    //    character in front of the Variable name to signify the type of variable it is, 
-    //    'b' for bool, 'i' for int, 'p' for pointer, etc.
-    m_bInteractive = interactive;    // Storing this boolean internally to set up
-                                    // physics to persistantly be this way. Maybe 
-                                    // this needs to be designed differently?
+    
+    m_bInteractive = interactive;
 
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);

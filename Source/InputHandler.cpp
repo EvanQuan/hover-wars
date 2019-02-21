@@ -4,6 +4,11 @@
 #include "GameManager.h"
 #include "EntityManager.h"
 
+/***********\
+ * Defines *
+\***********/
+#define ZOOM_SCALE 0.05f
+
 // Single Singleton instance
 InputHandler* InputHandler::m_pInstance = nullptr;
 
@@ -30,9 +35,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new InputHandler(rWindow);
-    }
 
     return m_pInstance;
 }
@@ -58,9 +61,8 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     It is fastest to exit early while we can.
     */
     if (GLFW_KEY_UNKNOWN == key)
-    {
         return;
-    }
+
     /*
     Possible actions:
            GLFW_RELEASE = 0
@@ -99,17 +101,17 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     }
 }
 
+// Toggles Wireframe drawing
 void InputHandler::debugToggleWireframe()
 {
+    // Toggle Boolean
     bWireFrameEnabled = !bWireFrameEnabled;
+
+    // Set Polygon mode based on current setting.
     if (bWireFrameEnabled)
-    {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    }
     else
-    {
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    }
 }
 
 
@@ -117,32 +119,32 @@ void InputHandler::debugToggleWireframe()
 // Handle mouse movement controls.
 void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+    // Local Variables
     double fX, fY;
 
+    // Left Click
     if (GLFW_MOUSE_BUTTON_1 == button)
     {
-        glfwGetCursorPos(window, &fX, &fY);
-        if (GLFW_PRESS == action)
+        // Get current Cursor Position.
+        if (GLFW_PRESS == action)           // Start tracking for Left Mouse click
         {
             m_pInstance->mouseTStart();
+
+#ifdef _DEBUG   // Intersect Plane for some Testing
+            // Get cursor position
+            glfwGetCursorPos(window, &fX, &fY);
             m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
+#endif
         }
-        else if (GLFW_RELEASE == action)
-        {
+        else if (GLFW_RELEASE == action)    // Release tracking
             m_pInstance->mouseTEnd();
-        }
     }
-    if (GLFW_MOUSE_BUTTON_2 == button)
+    else if (GLFW_MOUSE_BUTTON_2 == button) // Right Click
     {
-        glfwGetCursorPos(window, &fX, &fY);
-        if (GLFW_PRESS == action)
-        {
+        if (GLFW_PRESS == action)           // Start tracking for Right Mouse Click
             m_pInstance->mouseRStart();
-        }
-        else if (GLFW_RELEASE == action)
-        {
+        else if (GLFW_RELEASE == action)    // end tracking
             m_pInstance->mouseREnd();
-        }
     }
 }
 
@@ -150,9 +152,7 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
 void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
     if (m_pInstance->m_bRotateFlag)
-    {
         m_pInstance->m_gameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
-    }
 
     // Set new current position
     m_pInstance->m_pInitialPos.x = (float) x;
@@ -162,7 +162,7 @@ void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 // Handle scroll wheel callbacks
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
+    m_pInstance->m_gameManager->zoomCamera((float) yoffset * ZOOM_SCALE);
 }
 
 /*

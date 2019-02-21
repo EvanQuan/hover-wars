@@ -9,33 +9,31 @@
  * Constants *
 \*************/
 
-
 // Singleton Variable initialization
 GameManager* GameManager::m_pInstance = nullptr;
 
 // Constructor - Private, only accessable within the Graphics Manager
-GameManager::GameManager(GLFWwindow* rWindow, int iWindowWidth, int iWindowHeight)
+GameManager::GameManager(GLFWwindow* rWindow)
 {
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
-    m_pEntityManager    = EntityManager::getInstance(iWindowWidth, iWindowHeight);
-    m_pUserInterface = UserInterface::getInstance(rWindow);
+    m_pEntityManager    = ENTITY_MANAGER;
 
+    // Initialize User Interface
+    m_pUserInterface = UserInterface::getInstance(rWindow);
     m_pUserInterface->setDisplayCount(0);
 
+    // Fetch and update Window HxW
     m_pWindow = rWindow;
     int iHeight, iWidth;
     glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
+    m_pEntityManager->updateHxW(iHeight, iWidth);
 
+    // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
     m_fMaxDeltaTime = sixtieths_of_a_sec{ 1 };
 
-    m_bUseDebugCamera = false;
-
     m_eKeyboardPlayer = PLAYER_1;
-
-    this->iWindowWidth = iWindowWidth;
-    this->iWindowHeight = iWindowHeight;
 }
 
 /*
@@ -46,12 +44,10 @@ Requires Window to initialize
 @param iWindowWidth
 @param iWindowHeight
 */
-GameManager* GameManager::getInstance(GLFWwindow *rWindow, int iWindowWidth, int iWindowHeight)
+GameManager* GameManager::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
-    {
-        m_pInstance = new GameManager(rWindow, iWindowWidth, iWindowHeight);
-    }
+        m_pInstance = new GameManager(rWindow);
 
     return m_pInstance;
 }
@@ -70,21 +66,18 @@ GameManager::~GameManager()
     // Let go of Window Handle
     m_pWindow = nullptr;
 
-    // Let go of Manager Handles
-    if (nullptr != m_pEntityManager)
-    {
+    // Clean up Allocated Memory
+    if (nullptr != m_pEntityManager)    // Entity Manager
         delete m_pEntityManager;
-    }
 
-    if (nullptr != m_pShaderManager)
-    {
+    if (nullptr != m_pShaderManager)    // Shader Manager
         delete m_pShaderManager;
-    }
 
-    if (nullptr != m_pUserInterface)
-    {
+    if (nullptr != m_pUserInterface)    // User Interface
         delete m_pUserInterface;
-    }
+
+    if (nullptr != m_pCommandHandler)   // Command Handler
+        delete m_pCommandHandler;
 }
 
 // Intended to be called every cycle, or when the graphics need to be updated
@@ -95,7 +88,7 @@ bool GameManager::renderGraphics()
     m_fFrameTime += m_pTimer.getFrameTime();
 
     // Execute all commands for this frame
-    m_commandHandler->executeAllCommands();
+    m_pCommandHandler->executeAllCommands();
 
     // Update Environment
     m_pEntityManager->updateEnvironment(m_pTimer);
@@ -105,10 +98,9 @@ bool GameManager::renderGraphics()
     {
         m_fFrameTime = duration<float>(0.0f);
 
+        // Render the Scene
         glEnable(GL_DEPTH_TEST);
-
         m_pEntityManager->renderEnvironment();
-
         glDisable(GL_DEPTH_TEST);
 
         // scene is rendered to the back buffer, so swap to front for display
@@ -140,10 +132,13 @@ bool GameManager::initializeGraphics( string sFileName )
     }
     else
     {
-        m_pEntityManager->initializeEnvironment(sFileName);
+        // Initialize Environment with a new scene
+        // TODO: This will be done once a level is chosen to load.
+        m_pEntityManager->initializeEnvironment(sFileName);         
+        m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
     }
 
-    m_pTimer.resetTimer();
+    // Return error results
     return bError; 
 }
 
@@ -161,19 +156,11 @@ void GameManager::zoomCamera(float fDelta)
     m_pEntityManager->zoomCamera(fDelta);
 }
 
+// Called from Window Resize callback.
+//  Currently updates the Entity Manager with new Window Size, may require more functionality for menus, etc.
 void GameManager::resizedWindow( int iHeight, int iWidth )
 {
     m_pEntityManager->updateHxW(iHeight, iWidth);
-}
-
-void GameManager::toggleDebugCamera()
-{
-    m_bUseDebugCamera = !m_bUseDebugCamera;
-    m_pEntityManager->toggleDebugCamera();
-    if (m_bUseDebugCamera)
-        glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    else
-        glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 // Calculates an intersection given screen coordinates.

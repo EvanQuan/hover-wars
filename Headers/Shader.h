@@ -2,6 +2,14 @@
 
 #include "stdafx.h"
 
+/**************************************************************************************************
+ * Name: Shader
+ * Written By: James Coté
+ * Description: Contains functionality for initializing and compiling shaders. ShaderManager will set
+ *  locations for necessary shader types. Vertex and Fragment Shader will need to be set at minimum for
+ *  the Shader to initialize properly. Once initialized, the Shader class will maintain the program handle
+ *  for the Shader and will unload the shader once the class is destructed.
+\****************************************************************************************************/
 class Shader
 {
 public:

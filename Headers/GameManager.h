@@ -19,7 +19,7 @@ class UserInterface;
 class GameManager
 {
 public:
-    static GameManager* getInstance(GLFWwindow *rWindow, int iWindowWidth, int iWindowHeight);
+    static GameManager* getInstance(GLFWwindow *rWindow);
     static GameManager* getInstance();
     ~GameManager();
     
@@ -35,41 +35,33 @@ public:
     void rotateCamera(vec2 pDelta);
     void zoomCamera(float fDelta);
     void intersectPlane(float fX, float fY);
-    void toggleDebugCamera();
-
-    // Must be set after getInstance() to avoid mutual getInstance() recursion
-    // with CommandHandler
-    CommandHandler* m_commandHandler;
 
     ePlayer m_eKeyboardPlayer;
 #ifndef NDEBUG
     // User interface is public for debug puprposes
     // so that debug commands can change the UI directly.
+    // TODO: Fix this design so that it doesn't change depending on Debug or Not
     UserInterface* m_pUserInterface;
 #endif
 
 private:
     // For Singleton Implementation
-    GameManager(GLFWwindow* rWindow, int iWindowWidth, int iWindowHeight); 
+    GameManager(GLFWwindow* rWindow); 
     GameManager(const GameManager* pCopy);
     static GameManager* m_pInstance;
 
     // Window Reference
     GLFWwindow* m_pWindow;
     Time m_pTimer;
-    int iWindowWidth;
-    int iWindowHeight;
 
     // Update Variables
     duration<float> m_fFrameTime;
     duration<float> m_fMaxDeltaTime;
 
-    // Camera Boolean
-    bool m_bUseDebugCamera;
-
     // Manager Pointers
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
+    CommandHandler* m_pCommandHandler;
 
 #ifdef NDEBUG
     // User interface is normally private.

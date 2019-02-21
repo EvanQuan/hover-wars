@@ -21,9 +21,7 @@ Get Singleton instance
 CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new CommandHandler(rWindow);
-    }
 
     return m_pInstance;
 }
@@ -118,7 +116,7 @@ void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command
         GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
-        GAME_MANAGER->toggleDebugCamera();
+        ENTITY_MANAGER->toggleDebugCamera();
         break;
     case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
         ENTITY_MANAGER->toggleBBDrawing();

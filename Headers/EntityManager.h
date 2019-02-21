@@ -26,7 +26,6 @@ class EntityManager
 {
 public:
     // Singleton instance retrieval and Destructor
-    static EntityManager* getInstance(int iWindowWidth, int iWindowHeight);
     static EntityManager* getInstance();
     ~EntityManager();
 
@@ -86,7 +85,7 @@ public:
     bool botExists(eBot bot);
 
 private:
-    EntityManager(int iWindowWidth, int iWindowHeight);
+    EntityManager();
     EntityManager(const EntityManager* pCopy);
     static EntityManager* m_pInstance;
 

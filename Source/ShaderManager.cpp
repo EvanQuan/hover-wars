@@ -127,16 +127,17 @@ ShaderManager::~ShaderManager()
 }
 
 // Given a potential string as a hashmap key, return the corresponding ShaderType
-//    Returns: A found ShaderType or Default is Plane Shader.
+//    Returns: A found ShaderType or Default is Blinn Phong Shader.
 shader_Type ShaderManager::getShaderType(const string& sKey)
 {
+    // Set Default in case shader isn't found.
     shader_Type eReturnType = BLINN_PHONG_SHDR;
 
+    // Find shader type from given hash key
     if (pShaderTypeMap.end() != pShaderTypeMap.find(sKey))
-    {
         eReturnType = pShaderTypeMap.at(sKey);
-    }
 
+    // Return result
     return eReturnType;
 }
 
@@ -150,9 +151,7 @@ bool ShaderManager::initializeShaders()
     // Initialize Shaders
     m_bInitialized = true;
     for (int eIndex = LIGHT_SHDR; eIndex < MAX_SHDRS; eIndex++)
-    {
         m_bInitialized &= m_pShader[eIndex].initializeShader();
-    }
 
     // return False if not all Shaders Initialized Properly
     return m_bInitialized;
