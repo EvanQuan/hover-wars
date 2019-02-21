@@ -3,6 +3,7 @@
 
 using namespace std;
 
+// Initialize Static Instance Variable
 SoundManager* SoundManager::m_pInstance = nullptr;
 
 
@@ -12,8 +13,8 @@ SoundManager* SoundManager::m_pInstance = nullptr;
 SoundManager::SoundManager() {
     mpStudioSystem = NULL;
     errorCheck(FMOD::Studio::System::create(&mpStudioSystem));     // Create the studio system object.
-    errorCheck(mpStudioSystem->initialize(32, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));   // Initialize system.
-    // 32 - max channels
+    errorCheck(mpStudioSystem->initialize(5, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));   // Initialize system.
+    // 5 - max channels
     // FMOD_STUDIO_INIT_LIVEUPDATE
     // 0 - no extra driver data
 
@@ -37,32 +38,32 @@ SoundManager* SoundManager::getInstance() {
 }
 
 void SoundManager::initSound() {
-    loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
-    loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
 
-    loadEvent("event:/car_start");
-    loadSound("Sound/car_satrt.wav", false);
+    m_pInstance->loadEvent("event:/car_start");
+    m_pInstance->loadSound("Sound/car_satrt.wav", false);
 
-    loadEvent("event:/rocket");
-    loadSound("Soumd/rocket.wav", false);
+    m_pInstance->loadEvent("event:/rocket");
+    m_pInstance->loadSound("Sound/rocket.wav", false);
 }
 
 void SoundManager::update() {
     vector<ChannelMap::iterator> vStoppedChannels;
-    for (map<int, FMOD::Channel*> it = mChannels.begin(); it != mChannels.end(); ++it)
+    for (auto it = m_pInstance->mChannels.begin(); it != m_pInstance->mChannels.end(); ++it)
     {
         bool bIsPlaying = false;
         it->second->isPlaying(&bIsPlaying);
         if (!bIsPlaying)
         {
-            pStoppedChannels.push_back(it);
+            vStoppedChannels.push_back(it);
         }
     }
-    for (auto& it : pStoppedChannels)
+    for (auto& it : vStoppedChannels)
     {
-        mChannels.erase(it);
+        m_pInstance->mChannels.erase(it);
     }
-    errorCheck(mpStudioSystem->update());
+    m_pInstance->errorCheck(m_pInstance->mpStudioSystem->update());
 }
 
 void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, bool bStream) {
@@ -92,10 +93,11 @@ void SoundManager::unloadSound(const string& sSoundName) {
     }
 
     errorCheck(tFoundIt->second->release());
-    mSounds.earase(tFoundIt);
+    mSounds.erase(tFoundIt);
 }
 
 int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, float fVolumedB) {
+    update();       // Clear finished channels
     int iChannelId = mnNextChannelId++;
     auto tFoundIt = mSounds.find(sSoundName);
     if (tFoundIt == mSounds.end()) {       // Not found in sound map
@@ -124,18 +126,18 @@ int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, fl
 }
 
 void SoundManager::setChannel3dPosition(int iChannelId, const vec3& vPosition) {
-    auto tFoundIt = mChannels.find(iChnnelId);
+    auto tFoundIt = mChannels.find(iChannelId);
     if (tFoundIt == mChannels.end()) {     // Not found
         return;
     }
 
     FMOD_VECTOR position = vectorToFmod(vPosition);
-    errorCheck(tFoundIt->second->set3DAttributes(&position, NULL)));
+    errorCheck(tFoundIt->second->set3DAttributes(&position, NULL));
 }
 
 void SoundManager::setChannelVolume(int iChannelId, float fVolumedB) {
     auto tFoundIt = mChannels.find(iChannelId);
-    if (tFoundIt == >mChannels.end()) {     // Not found
+    if (tFoundIt == mChannels.end()) {     // Not found
         return;
     }
     errorCheck(tFoundIt->second->setVolume(dbToVolume(fVolumedB)));
@@ -150,20 +152,20 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
     errorCheck(mpStudioSystem->loadBankFile(sBankName.c_str(), flags, &pBank));
 
     if (pBank) {
-        mBnaks[sBankName] = pBank;
+        mBanks[sBankName] = pBank;
     }
 }
 
 void SoundManager::loadEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
-    if (tFoundIt != mEVENTS.end()) {     // Event already loaded
+    if (tFoundIt != mEvents.end()) {     // Event already loaded
         return;
     }
     FMOD::Studio::EventDescription* pEventDescription = NULL;
     errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
     if (pEventDescription) {
         FMOD::Studio::EventInstance* pEventInstance = NULL;
-        errorCheck(createInstance(&pEventInstance));
+        errorCheck(pEventDescription->createInstance(&pEventInstance));
         if (pEventInstance) {
             mEvents[sEventName] = pEventInstance;
         }
@@ -220,7 +222,7 @@ void SoundManager::setEventParameter(const string& sEventName, const string& sPa
         return;
     }
     FMOD::Studio::ParameterInstance* pParameter = NULL;
-    errorCheck(tFoundIt->second->getParameter(sParameterName.c_str(), &pParameter);
+    errorCheck(tFoundIt->second->getParameter(sParameterName.c_str(), &pParameter));
     errorCheck(pParameter->setValue(fValue));
 }
 

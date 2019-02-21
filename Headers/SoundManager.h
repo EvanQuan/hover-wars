@@ -1,3 +1,6 @@
+#ifndef _AUDIO_ENGINE_H_
+#define _AUDIO_ENGINE_H_
+
 #include "stdafx.h"
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
@@ -9,15 +12,17 @@
 
 using namespace std;
 
-class SoundManager {
+class SoundManager
+{
 public:
     ~SoundManager();
-    static void initSound();
 
     static SoundManager* getInstance();
+
+    void initSound();
     static void update();
-    static void shutDown();
-    static int errorCheck(FMOD_RESULT result);
+    void shutDown();
+    int errorCheck(FMOD_RESULT result);
 
     void loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags);
     void loadEvent(const string& sEvenName);
@@ -25,12 +30,12 @@ public:
 
     void unloadSound(const string& sSoundName);
 
-    void set3dListenerAndOrientation(const vec3& vPos = vec3(0, 0, 0), float fVoumedB = 0.0f);
+    // void set3dListenerAndOrientation(const vec3& vPos = vec3(0, 0, 0), float fVoumedB = 0.0f);
 
-    void playSounds(const string& sSoundName, const vec3& vPos = vec3(0, 0, 0), float fVolumedB = 0.0f);
+    int playSounds(const string& sSoundName, const vec3& vPos = vec3(0, 0, 0), float fVolumedB = 0.0f);
     void playEvent(const string& sEventName);
 
-    void stopChannel(int iChannelId);
+    // void stopChannel(int iChannelId);
     void stopEvent(const string& sEventName, bool bImmediate = false);
 
     void getEventParameter(const string& sEventName, const string& sEventParameter, float* parameter);
@@ -66,3 +71,5 @@ private:
     EventMap mEvents;
     BankMap mBanks;
 };
+
+#endif

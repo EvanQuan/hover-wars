@@ -78,6 +78,8 @@ int main()
             // Initialize Sound
             m_soundManager = SOUND_MANAGER;
             m_soundManager->initSound();
+            // m_soundManager = SoundManager::getInstance();
+            // m_soundManager->initSound();
 
         #ifdef USING_WINDOWS
             m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
