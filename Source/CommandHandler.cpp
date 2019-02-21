@@ -143,8 +143,6 @@ void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command
     }
 }
 
-
-
 /*
 Make a hovercraft of given joystickID execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
@@ -192,7 +190,6 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand comm
         hovercraft->turn(x);
         break;
     }
-
 }
 
 /*
@@ -302,8 +299,8 @@ void CommandHandler::executeKeyboardCommands()
     // simply if them to the proper size instead of doing a sqrt calculation.
     if ((xMove != 0.0f) && (yMove != 0.0f))
     {
-        xMove *= 0.7071f;
-        yMove *= 0.7071f;
+        xMove *= 0.7071f;       // TODO: What is this Magic Number?
+        yMove *= 0.7071f;       // TODO: What is this Magic Number?
     }
 
     if (!bMovementNeutral)

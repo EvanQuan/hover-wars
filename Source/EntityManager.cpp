@@ -392,8 +392,8 @@ void EntityManager::updateEnvironment(const Time& pTimer)
     float fDeltaTime = static_cast<float>(pTimer.getFrameTime().count());
         
     // UPDATES GO HERE
-    m_pEmtrEngn->update(fDeltaTime);
     m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
+    m_pEmtrEngn->update(fDeltaTime);
 
     // Iterate through all Entities and call their update with the current time.
     for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();

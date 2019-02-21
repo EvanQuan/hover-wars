@@ -1,11 +1,9 @@
 #include "EmitterEngine.h"
 
-#define DEFAULT_NUM_PARTICLES 100
-#define DEFAULT_DURATION_IN_SECONDS 5.f
-
 // Initialization of Static Singleton instance
 EmitterEngine* EmitterEngine::m_pInstance = nullptr;
 
+// Singleton Implementation
 EmitterEngine* EmitterEngine::getInstance()
 {
     if (nullptr == m_pInstance)
@@ -20,12 +18,13 @@ EmitterEngine::EmitterEngine()
 
 }
 
-
+// Destructor
 EmitterEngine::~EmitterEngine()
 {
     clearAllEmitters();
 }
 
+// Clear all the Emitters for memory management
 void EmitterEngine::clearAllEmitters()
 {
     m_pEmitters.clear();
@@ -34,20 +33,26 @@ void EmitterEngine::clearAllEmitters()
 // Function to update all Emitters in the Engine.
 void EmitterEngine::update(float fDelta)
 {
-    // Update all Emitters
+    // Local Variables
+    bool bCleanUp = false;
+
+    // Update all Emitter
     for (vector<unique_ptr<Emitter>>::iterator iter = m_pEmitters.begin();
         iter != m_pEmitters.end();
         ++iter )
-        (*iter)->update(fDelta);
+        bCleanUp |= (*iter)->update(fDelta);
 
     // Clean up any Emitters that are subject for deletion.
-    m_pEmitters.erase(
-        remove_if(
-            m_pEmitters.begin(),
-            m_pEmitters.end(),
-            [](unique_ptr<Emitter> const & e) { return e->readyToDelete(); }
-        ),
-        m_pEmitters.end());
+    if (bCleanUp)
+    {
+        m_pEmitters.erase(
+            remove_if(
+                m_pEmitters.begin(),
+                m_pEmitters.end(),
+                [](unique_ptr<Emitter> const & e) { return e->readyToDelete(); }
+            ),
+            m_pEmitters.end());
+    }
 }
 
 // Draws all Emitters.
@@ -59,15 +64,16 @@ void EmitterEngine::renderEmitters()
         (*iter)->draw();
 }
 
-void EmitterEngine::generateEmitter(vec3 vPos,
-                                    vec3 vNormal,
-                                    float fAngleFromNormal,
-                                    float fParticleDuration,
-                                    unsigned int iNumParticles,
-                                    bool bExplosion,
-                                    float fRadius)
+// Generates a new Emitter with the given parameters
+void EmitterEngine::generateEmitter(vec3 vPos,                      // Position of Emitter
+                                    vec3 vNormal,                   // Direction of Emission
+                                    float fAngleFromNormal,         // Spread of Emission
+                                    float fParticleDuration,        // Duration of Particles
+                                    unsigned int iNumParticles,     // Number of Particles to spawn
+                                    bool bExplosion,                // Set as Explosion type or Fountain
+                                    float fRadius)                  // Radius of Emission
 {
-    unique_ptr<Emitter> pNewEmitter = make_unique<Emitter>(&vPos);
-    pNewEmitter->initializeEmitter(iNumParticles, vNormal, fAngleFromNormal, fParticleDuration, fRadius, bExplosion);
-    m_pEmitters.push_back(move(pNewEmitter));
+    unique_ptr<Emitter> pNewEmitter = make_unique<Emitter>(&vPos);  // Generate new Emiter
+    pNewEmitter->initializeEmitter(iNumParticles, vNormal, fAngleFromNormal, fParticleDuration, fRadius, bExplosion);   // Initialize it
+    m_pEmitters.push_back(move(pNewEmitter));                       // Store Emitter
 }

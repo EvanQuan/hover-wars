@@ -13,13 +13,18 @@
 class EmitterEngine
 {
 public:
+    // Singleton Implementation
     static EmitterEngine* getInstance();
     virtual ~EmitterEngine();
+
+    // Clean up
     void clearAllEmitters();
 
+    // Update and Render Functionality
     void update(float fDelta);
     void renderEmitters();
 
+    // Generate a new Emitter with the given parameters
     void generateEmitter(vec3 vPos,
                          vec3 vNormal,
                          float fAngleFromNormal,
@@ -29,11 +34,13 @@ public:
                          float fRadius);
 
 private:
+    // Private Constructors
     EmitterEngine();
     EmitterEngine(const EmitterEngine* pCopy);
     EmitterEngine* operator=(const EmitterEngine* pCopy);
     static EmitterEngine* m_pInstance;    // Singleton Implementation
 
+    // Emitters bank
     vector<unique_ptr<Emitter>> m_pEmitters;
 };
 

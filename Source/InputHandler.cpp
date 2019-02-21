@@ -25,8 +25,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     // Controller
     initializeJoysticksAtStart();
     glfwSetJoystickCallback(InputHandler::joystickCallback);
-
-    bWireFrameEnabled = false;
 }
 
 /*
@@ -105,9 +103,6 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 // Handle mouse movement controls.
 void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    // Local Variables
-    double fX, fY;
-
     // Left Click
     if (GLFW_MOUSE_BUTTON_1 == button)
     {
@@ -118,6 +113,7 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
 
 #ifdef _DEBUG   // Intersect Plane for some Testing
             // Get cursor position
+            double fX, fY;
             glfwGetCursorPos(window, &fX, &fY);
             m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
 #endif
