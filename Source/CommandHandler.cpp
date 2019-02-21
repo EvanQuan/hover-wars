@@ -225,7 +225,10 @@ void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
     bool bTurnNeutral = true;
-    float xMove, yMove, xTurn, yTurn = 0;
+    float xMove = 0.0f;
+    float yMove = 0.0f;
+    float xTurn = 0.0f;
+    float yTurn = 0.0f;
     /*
     Copy the keys at the current snapshot so they can be iterated over while
     m_keys continues to be updated.
@@ -307,10 +310,12 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)
     {
+        cout << xMove << " " << yMove << endl;
         execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
+        cout << xTurn << " " << yTurn << endl;
         execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
 }

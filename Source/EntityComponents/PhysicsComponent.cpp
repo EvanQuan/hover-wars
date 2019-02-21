@@ -68,7 +68,7 @@ void PhysicsComponent::movePlayer(float x, float y) {
     if (distance > 1) {
         distance = 1;
     }
-    if (x != 0 || y != 0) {
+    if (x != 0 && y != 0) {
         releaseAllControls();
         PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
         PxTransform globalTransform = carBody->getGlobalPose();
