@@ -55,7 +55,21 @@ private:
     Time m_pTimer;
 
     // Update Variables
+    /*
+    The time since graphics have been initialized.
+    This is tracked to ensure that all values update correctly for every frame
+    update.
+
+    Unit: seconds
+    */
     duration<float> m_fFrameTime;
+    /*
+    This depends the rate at which the window is re-rendered.
+    Since it is costly to re-render the window, it is locked to re-render at a
+    fixed rate, even if the enviroment updates at a faster rate.
+
+    Unit: seconds
+    */
     duration<float> m_fMaxDeltaTime;
 
     // Manager Pointers
