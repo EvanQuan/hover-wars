@@ -304,8 +304,8 @@ void CommandHandler::executeKeyboardCommands()
     // simply if them to the proper size instead of doing a sqrt calculation.
     if ((xMove != 0.0f) && (yMove != 0.0f))
     {
-        xMove *= 0.5f;
-        yMove *= 0.5f;
+        xMove *= 0.7071f;
+        yMove *= 0.7071f;
     }
 
     if (!bMovementNeutral)
