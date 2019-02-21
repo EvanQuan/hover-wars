@@ -4,12 +4,6 @@
 /***********\
  * Defines *
 \***********/
-#define POSITION_SET 1000.0f
-#define SHADOW_HEIGHT 4096
-#define SHADOW_WIDTH 4096
-#define SHADOW_FRAME 100.0f
-#define NEAR_PLANE 1.0f
-#define FAR_PLANE 1200.0f
 #define POINT_LIGHT_POWER_MAP_MODIFIER 1.5f
 
 /*************\
@@ -44,7 +38,7 @@ void LightingComponent::setupShadowFBO() const
 {
     if (DIRECTIONAL_LIGHT == m_eType)
     {
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glViewport(0, 0, m_iShadowWidth, m_iShadowHeight);
         glBindFramebuffer(GL_FRAMEBUFFER, m_iFrameBuffer);
         glClear(GL_DEPTH_BUFFER_BIT);
     }
@@ -60,7 +54,7 @@ void LightingComponent::setupPMVMatrices()
     {
     case DIRECTIONAL_LIGHT: // Generate ModelView Matrix and Projection Matrix for Directional Light
         pModelViewMatrix = lookAt(m_vPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
-        pProjectionMatrix = ortho(-SHADOW_FRAME, SHADOW_FRAME, -SHADOW_FRAME, SHADOW_FRAME, NEAR_PLANE, FAR_PLANE);
+        pProjectionMatrix = ortho(-m_fShadowFrame, m_fShadowFrame, -m_fShadowFrame, m_fShadowFrame, m_fNearPlane, m_fFarPlane);
         m_m4LightSpaceMatrix = pProjectionMatrix * pModelViewMatrix;
         break;
     case SPOTLIGHT:
@@ -100,17 +94,23 @@ void LightingComponent::initializeAsPointLight(const vec3* vPosition, const vec3
 }
 
 // Initializes this Lighting Component as a Directional Light with a Direction, Ambient Color, Diffuse Color and Specular Color
-void LightingComponent::initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular)
+void LightingComponent::initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular,
+                                                    float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame)
 {
     m_eType                 = DIRECTIONAL_LIGHT;
     m_vDirection            = normalize(*vDirection);
     m_vDiffuseColor         = *vDiffuse;
     m_vAmbientColor         = *vAmbient;
     m_vSpecularColor        = *vSpecular;
-    m_vPosition             = -m_vDirection * POSITION_SET;
+    m_vPosition             = -m_vDirection * fPosition;    // Multiply the direction of the light by a Position offset for sampling the Shadow Map from.
+    m_fNearPlane            = fNearPlane;                   // Shadow Information
+    m_fFarPlane             = fFarPlane;
+    m_iShadowHeight         = iShadowHeight;
+    m_iShadowWidth          = iShadowWidth;
+    m_fShadowFrame          = fShadowFrame;
 
     // Generate Shadow Map
-    m_pShadowMap = TEXTURE_MANAGER->genDepthBuffer(SHADOW_WIDTH, SHADOW_HEIGHT);
+    m_pShadowMap = TEXTURE_MANAGER->genDepthBuffer(m_iShadowWidth, m_iShadowHeight);
     m_pShadowMap->bindToFrameBuffer(m_iFrameBuffer, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0); // Bind Shadow Map to Light's Framebuffer
 
     // Store Light Data for passing to Shaders :> Assumes the Light is static and won't be moving.

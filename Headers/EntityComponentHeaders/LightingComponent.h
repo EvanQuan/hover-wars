@@ -34,7 +34,8 @@ public:
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeAsPointLight( const vec3* vPosition, const vec3* vColor, float fPower );
-    void initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular);
+    void initializeAsDirectionalLight(const vec3* vDirection, const vec3* vAmbient, const vec3* vDiffuse, const vec3* vSpecular,
+                                        float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame);
     void initializeAsSpotLight(const vec3* vPosition, const vec3* vColor, const vec3* vDirection, float fPhi, float fSoftPhi);
 
     // Shadow Map functionality
@@ -65,6 +66,8 @@ private:
     mat4 m_m4LightSpaceMatrix;
     float m_fLightPower, m_fPhi, m_fSoftPhi;
     float m_fSpotLightRadius;
+    float m_fNearPlane, m_fFarPlane, m_fShadowFrame;
+    unsigned int m_iShadowHeight, m_iShadowWidth;
 
     // Directional Light Variables
     vec3 m_vDirection, m_vAmbientColor, m_vSpecularColor;
