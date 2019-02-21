@@ -12,6 +12,7 @@
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 /***********\
  * DEFINES *
@@ -257,25 +258,11 @@ void PhysicsManager::initPhysics(bool interactive)
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //manager = PxCreateControllerManager(*gScene);
-    //PxBoxControllerDesc desc = PxBoxControllerDesc();
-    //desc.setToDefault();
-    //desc.position = PxExtendedVec3(1,1,1);
-    //desc.volumeGrowth = 5.0f;
-    //desc.halfForwardExtent = 1;
-    //desc.halfHeight = 1;
-    //desc.halfSideExtent = 1;
-    //desc.stepOffset = 0.5f;
-    //std::cout << desc.isValid() << std::endl;
-    //PxController* c = manager->createController(desc);
-    //std::cout << c << std::endl;
-    //initWall(gPhysics);
-    //for (PxU32 i = 0; i < 1; i++)
-    //    createStack(PxTransform(PxVec3(0, 0, stackZ += 3.0f)), 2, 0.1f);
-
-    //createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
-//createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
+    //TEST CODE
+    createSphereObject(5,1,1,1);
+    createMeshObject(3,3,3,5,"memeteam.txt");
 }
+
 // This function is public. Probably intended as a sort of soft reset at the end of a match
 //    that will set up Physics to be restarted as everything gets loaded in for a new match
 // Also called from the Destructor before the Destructor performs any hard clean up.
@@ -322,13 +309,114 @@ void PhysicsManager::cleanupPhysics()
 //    functions private. This will ensure that only Physics Components can call these functions
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
-
-PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float size) {
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(size, size, size), *gMaterial);
+PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float scale,string filename) {
+    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(generateMesh(filename,scale)), *gMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     gScene->addActor(*body);
+    return body;
+}
+const int MAXLINE = 256;
+PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
+    ifstream inFile(filename, ios::in);
+    vector<PxVec3> vertices;
+    vector<PxU32> verticesFinal;
+    while (inFile)
+    {
+        string currLine;
+        getline(inFile, currLine);
+        if (currLine[0] == 'v' && currLine[1] == ' ') {
+            currLine = currLine.substr(2, currLine.length() - 2);
+            stringstream ss(currLine);
+            PxVec3 vertex;
+            ss >> vertex.x;
+            ss >> vertex.y;
+            ss >> vertex.z;
+            vertex *= m_scale;
+            cout << vertex.x << "," << vertex.y << "," << vertex.z << "\n";
+            vertices.push_back(vertex);
+        }
+        else if (currLine[0] == 'f' && currLine[1] == ' ') {
+            currLine = currLine.substr(2, currLine.length() - 2);
+            stringstream ss;
+            PxU32 indice;
+            int i;
+            for (i = 0; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
+                ss << currLine[i];
+            }
+            ss >> indice;
+            std::cout << indice << ",";
+            stringstream ss2;
+            while (currLine[i] != ' ')
+                i++;
+            i++;
+            for (; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
+                ss2 << currLine[i];
+            }
+            PxU32 indice2;
+            ss2 >> indice2;
+            std::cout << indice2 << ",";
+            stringstream ss3;
+            while (currLine[i] != ' ')
+                i++;
+            i++;
+            for (; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
+                ss3 << currLine[i];
+            }
+            PxU32 indice3;
+
+            ss3 >> indice3;
+            std::cout << indice3 << "\n";
+            verticesFinal.push_back(indice3);
+            verticesFinal.push_back(indice2);
+            verticesFinal.push_back(indice);
+
+        }
+
+    }
+    static const PxVec3 convexVerts[] = { PxVec3(0,1,0),PxVec3(1,0,0),PxVec3(-1,0,0),PxVec3(0,0,1),
+    PxVec3(0,0,-1) };
+    PxTolerancesScale scale;
+    PxCookingParams params(scale);
+    // disable mesh cleaning - perform mesh validation on development configurations
+    params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+    // disable edge precompute, edges are set for each triangle, slows contact generation
+    params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+    // lower hierarchy for internal mesh
+    gCook->setParams(params);
+    PxTriangleMeshDesc meshDesc;
+    meshDesc.points.count = vertices.size();
+    meshDesc.points.stride = sizeof(PxVec3);
+    meshDesc.points.data = &vertices[0];
+
+    meshDesc.triangles.count = verticesFinal.size()/3;
+    meshDesc.triangles.stride = 3 * sizeof(PxU32);
+    meshDesc.triangles.data = &verticesFinal[0];
+
+    PxDefaultMemoryOutputStream writeBuffer;
+    bool status = gCook->cookTriangleMesh(meshDesc, writeBuffer);
+    if (!status){
+        std::cout << "cooking failed" << std::endl;
+        return NULL;
+    }
+    PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+    return gPhysics->createTriangleMesh(readBuffer);
+}
+PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeX, sizeY, sizeZ), *gMaterial);
+    PxTransform localTm(PxVec3(x, y, z));
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    body->attachShape(*shape);
+    //gScene->addActor(*body);
+    return body;
+}
+PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
+    PxShape* shape = gPhysics->createShape(PxSphereGeometry(radius), *gMaterial);
+    PxTransform localTm(PxVec3(x, y, z));
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    body->attachShape(*shape);
+   // gScene->addActor(*body);
     return body;
 }
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {

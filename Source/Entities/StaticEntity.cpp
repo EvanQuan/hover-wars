@@ -61,7 +61,7 @@ void StaticEntity::loadAsCube(float size, const ObjectInfo* pObjectProperties, c
     m_pMesh = MESH_MANAGER->generateCubeMesh(true,size,size,size,pObjectProperties);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
-    PHYSICS_MANAGER->createCubeObject(pObjectProperties->vPosition.x, pObjectProperties->vPosition.y, pObjectProperties->vPosition.z,size);
+    PHYSICS_MANAGER->createCubeObject(pObjectProperties->vPosition.x, pObjectProperties->vPosition.y, pObjectProperties->vPosition.z,size,size,size);
 }
 
 // Load a Static Mesh from a given file

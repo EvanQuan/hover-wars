@@ -46,12 +46,16 @@ public:
     // Scene Setting Functions
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
-    physx::PxRigidStatic *createCubeObject(float x, float y, float z, float size);
+    physx::PxRigidStatic *createMeshObject(float x, float y, float z,float scale, string filename);
+    physx::PxRigidStatic *createCubeObject(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createPlayerEntity();
+    physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
+
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
 
 private:
+    physx::PxTriangleMesh *generateMesh(string filename,float scale);
     int currentState = 0;
     snippetvehicle::VehicleSceneQueryData*      gVehicleSceneQueryData = NULL;
     physx::PxBatchQuery*                        gBatchQuery            = NULL;
