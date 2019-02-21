@@ -18,6 +18,9 @@ HovercraftEntity::~HovercraftEntity()
  * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
+/*
+@param fTimeInMilliseconds  delta time since last update
+*/
 void HovercraftEntity::update(float fTimeInMilliseconds)
 {
     // New Transformation Matrix
@@ -39,7 +42,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts();
+    updateCameraLookAts(fTimeInMilliseconds);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -84,27 +87,27 @@ void HovercraftEntity::initialize(const string& sFileName,
 Updates an average for this player's cameras. This is what makes the camera
 sway as the player moves.
 */
-void HovercraftEntity::updateCameraLookAts()
+void HovercraftEntity::updateCameraLookAts(float fTimeInMilliseconds)
 {
-    updateCameraRotation();
-    updateCameraPosition();
+    updateCameraRotation(fTimeInMilliseconds);
+    updateCameraPosition(fTimeInMilliseconds);
 }
 
-void HovercraftEntity::updateCameraRotation()
+void HovercraftEntity::updateCameraRotation(float fTimeInMilliseconds)
 {
     quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
 
-    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER;
+    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER * fTimeInMilliseconds;
 
     m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
 }
 
-void HovercraftEntity::updateCameraPosition()
+void HovercraftEntity::updateCameraPosition(float fTimeInMilliseconds)
 {
     vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
 
-    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER;
+    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER * fTimeInMilliseconds;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
     m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
