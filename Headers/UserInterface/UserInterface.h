@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Shader.h"
 #include "GameStats.h"
-#include "UserInterface/FontManager.h"
+#include "UserInterface/UIRenderer.h"
 
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4

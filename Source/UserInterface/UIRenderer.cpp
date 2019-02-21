@@ -11,7 +11,7 @@ UIRenderer::UIRenderer()
 /*
 Get singletone instance.
 */
-UIRenderer* UIRenderer::getInstance()
+UIRenderer* UIRenderer::getInstance(GLFWwindow* window)
 {
     if (nullptr == m_pInstance)
     {

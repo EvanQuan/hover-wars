@@ -19,7 +19,7 @@ class UserInterface;
 class GameManager
 {
 public:
-    static GameManager* getInstance(GLFWwindow *rWindow);
+    static GameManager* getInstance(GLFWwindow *rWindow, int iWindowWidth, int iWindowHeight);
     static GameManager* getInstance();
     ~GameManager();
     
@@ -43,18 +43,22 @@ public:
 
     ePlayer m_eKeyboardPlayer;
 #ifndef NDEBUG
+    // User interface is public for debug puprposes
+    // so that debug commands can change the UI directly.
     UserInterface* m_pUserInterface;
 #endif
 
 private:
     // For Singleton Implementation
-    GameManager(GLFWwindow* rWindow); 
+    GameManager(GLFWwindow* rWindow, int iWindowWidth, int iWindowHeight); 
     GameManager(const GameManager* pCopy);
     static GameManager* m_pInstance;
 
     // Window Reference
     GLFWwindow* m_pWindow;
     Time m_pTimer;
+    int iWindowWidth;
+    int iWindowHeight;
 
     // Update Variables
     duration<float> m_fFrameTime;
@@ -66,7 +70,10 @@ private:
     // Manager Pointers
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
+
 #ifdef NDEBUG
+    // User interface is normally private.
+    // There is no reason for it to be public.
     UserInterface* m_pUserInterface;
 #endif
 };

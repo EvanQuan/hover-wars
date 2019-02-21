@@ -67,9 +67,7 @@ using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE          128
-#define START_HEIGHT        1080
-#define START_WIDTH         1920
-#define STARTING_ENV        "scene2.scene"
+#define STARTING_ENV        "scene2.scene"  // file path
 #define LIGHT_MOVE_FACTOR   0.05f
 #define PI                  3.14159265f
 #define PI_2                6.28318530718f

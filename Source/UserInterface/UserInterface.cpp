@@ -10,7 +10,7 @@ UserInterface::UserInterface(GLFWwindow* window)
     m_iDisplayCount = 0;
 
     m_pGameStats = GameStats::getInstance();
-    m_pUIRenderer = UIRenderer::getInstance();
+    m_pUIRenderer = UIRenderer::getInstance(window);
 
     initializeUserInterface();
 

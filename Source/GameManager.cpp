@@ -14,11 +14,11 @@
 GameManager* GameManager::m_pInstance = nullptr;
 
 // Constructor - Private, only accessable within the Graphics Manager
-GameManager::GameManager(GLFWwindow* rWindow)
+GameManager::GameManager(GLFWwindow* rWindow, int iWindowWidth, int iWindowHeight)
 {
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
-    m_pEntityManager    = ENTITY_MANAGER;
+    m_pEntityManager    = EntityManager::getInstance(iWindowWidth, iWindowHeight);
     m_pUserInterface = UserInterface::getInstance(rWindow);
 
     m_pUserInterface->setDisplayCount(0);
@@ -33,15 +33,24 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_bUseDebugCamera = false;
 
     m_eKeyboardPlayer = PLAYER_1;
+
+    this->iWindowWidth = iWindowWidth;
+    this->iWindowHeight = iWindowHeight;
 }
 
-// Singleton Implementations
-// Requires Window to initialize 
-GameManager* GameManager::getInstance(GLFWwindow *rWindow)
+/*
+Singleton Implementations
+Requires Window to initialize 
+
+@param rWindow to intialize
+@param iWindowWidth
+@param iWindowHeight
+*/
+GameManager* GameManager::getInstance(GLFWwindow *rWindow, int iWindowWidth, int iWindowHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new GameManager(rWindow);
+        m_pInstance = new GameManager(rWindow, iWindowWidth, iWindowHeight);
     }
 
     return m_pInstance;

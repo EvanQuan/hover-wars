@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 #include "Texture.h"
 /*
-
+Renders all stuff for 1 User Interface display
 
 @author Evan Quan
 */
@@ -11,7 +11,8 @@ class UIRenderer
 {
 public:
 
-    static UIRenderer* getInstance();
+    static UIRenderer* getInstance(GLFWwindow* window);
+
 
     ~UIRenderer();
 

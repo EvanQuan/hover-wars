@@ -9,7 +9,7 @@ InputHandler* InputHandler::m_pInstance = nullptr;
 
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
-    m_gameManager = GameManager::getInstance(rWindow);
+    m_gameManager = GAME_MANAGER;
     // Keyboard
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
