@@ -36,8 +36,15 @@ float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fL
 	// Get the depth of the current fragment from the light's perspective
 	float fCurrentDepth = vProjCoords.z;
 	
+	// Compute Return Shadow Value
+	float fReturnShadow = (fCurrentDepth - 0.0005 > fClosestDepth ? 1.0 : 0.0);
+	
+	// Clamp the outside of the frustrum
+	if( vProjCoords.z > 1.0 )
+		fReturnShadow = 0.0;
+	
 	// Check whether current frag position is in shadow
-	return (fCurrentDepth - fBias > fClosestDepth ? 1.0 : 0.0);
+	return fReturnShadow;
 }
 
 // Calculates information about a specified directional light.

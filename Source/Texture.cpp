@@ -34,6 +34,13 @@ void Texture::setTexParameter(GLenum eTexEnum, GLint iParam)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Texture::setTexParameterfv(GLenum eTexEnum, const GLfloat* pParams)
+{
+    glBindTexture(GL_TEXTURE_2D, m_TextureName);
+    glTexParameterfv(GL_TEXTURE_2D, eTexEnum, pParams);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 // Activate MipMaps for the texture. These are generated internally
 void Texture::genMipMaps()
 {

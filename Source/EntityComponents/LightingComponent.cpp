@@ -4,12 +4,12 @@
 /***********\
  * Defines *
 \***********/
-#define POSITION_SET 100.0f
-#define SHADOW_HEIGHT 1024
-#define SHADOW_WIDTH 1024
+#define POSITION_SET 1000.0f
+#define SHADOW_HEIGHT 4096
+#define SHADOW_WIDTH 4096
 #define SHADOW_FRAME 100.0f
 #define NEAR_PLANE 1.0f
-#define FAR_PLANE 120.0f
+#define FAR_PLANE 1200.0f
 #define POINT_LIGHT_POWER_MAP_MODIFIER 1.5f
 
 /*************\
