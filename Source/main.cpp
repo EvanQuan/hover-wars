@@ -22,7 +22,7 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
 int main()
 {
     int iRunning = glfwInit();
-    int iHeight, iWidth;
+    int iWindowHeight, iWindowWidth;
     GLFWwindow* m_window = 0;
     GameManager* m_gameManager = 0;
     ShaderManager* m_shaderManager = 0;
@@ -38,7 +38,7 @@ int main()
     {
         // Set Error Callback and init window
         glfwSetErrorCallback( ErrorCallback );
-        iRunning = initializeWindow( &m_window, &iHeight, &iWidth, "Hover Wars" );
+        iRunning = initializeWindow( &m_window, &iWindowHeight, &iWindowWidth, "Hover Wars" );
 
         #ifdef USING_LINUX
                 Magick::InitializeMagick("");    // Initializing Magick for Linux Only.
@@ -63,7 +63,7 @@ int main()
             m_pPhysicsManager->initPhysics(true);
 
             // Bind window to Game Manager
-            m_gameManager = GameManager::getInstance(m_window);
+            m_gameManager = GameManager::getInstance(m_window, iWindowWidth, iWindowHeight);
             m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
 
             // Initialize the InputHandler for mouse, keyboard, controllers
@@ -135,6 +135,10 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
+    // GLFWwidmode mode reveals the monitor dimensions of the user.
+    //      mode->height     mode->width
+    // We can use these dimensions to dynamically create a window (and thus the User Interface)
+    // to match the user's monitor, instead of using hardcoded values.
     // return the Monitor's Height and Width
     *iHeight = mode->height;
     *iWidth = mode->width;
@@ -170,6 +174,6 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 
     if ((iWidth != 0) && (iHeight != 0))
     {
-        GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
+        GAME_MANAGER->resizedWindow(iHeight, iWidth);
     }
 }

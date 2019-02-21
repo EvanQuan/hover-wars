@@ -16,14 +16,14 @@ const GLfloat DEPTH_ZERO = 1.0f;
 EntityManager* EntityManager::m_pInstance = nullptr;
 
 // Default Constructor
-EntityManager::EntityManager()
+EntityManager::EntityManager(int iWindowWidth, int iWindowHeight)
 {
     // Initialize ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     // Initialize Local Variables
-    m_iHeight            = START_HEIGHT;
-    m_iWidth             = START_WIDTH;
+    m_iHeight            = iWindowHeight;
+    m_iWidth             = iWindowWidth;
     m_bPause             = false;
     m_bDrawBoundingBoxes = false;
     m_bDrawSpatialMap    = false;
@@ -46,12 +46,22 @@ EntityManager::EntityManager()
 }
 
 // Gets the instance of the environment manager.
-EntityManager* EntityManager::getInstance()
+EntityManager* EntityManager::getInstance(int iWindowWidth, int iWindowHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new EntityManager();
+        m_pInstance = new EntityManager(iWindowWidth, iWindowHeight);
     }
+    return m_pInstance;
+}
+
+/*
+Does not requires window parameter. Assumes the Singleton instance has been
+instantiated beforehand.
+*/
+EntityManager* EntityManager::getInstance()
+{
+    assert(nullptr != m_pInstance);
     return m_pInstance;
 }
 

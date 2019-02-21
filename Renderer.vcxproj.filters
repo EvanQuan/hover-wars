@@ -225,14 +225,14 @@
     <ClInclude Include="Headers\UserInterface\UserInterface.h">
       <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\UserInterface\FontManager.h">
-      <Filter>Header Files\UserInterface</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\BotEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\UIRenderer.h">
+      <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -371,14 +371,14 @@
     <ClCompile Include="Source\UserInterface\UserInterface.cpp">
       <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
-    <ClCompile Include="Source\UserInterface\FontManager.cpp">
-      <Filter>Source Files\UserInterface</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Entities\BotEntity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\HovercraftEntity.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\UIRenderer.cpp">
+      <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

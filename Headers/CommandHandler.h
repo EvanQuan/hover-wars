@@ -5,8 +5,6 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "InputHandler.h"
-#include "CommandHandler.h"
-#include "SceneLoader.h"
 
 #ifndef NDEBUG
     #include "UserInterface/UserInterface.h"
@@ -152,7 +150,6 @@ private:
     */
     map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
-        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL},
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
         {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
         {GLFW_KEY_ENTER,        COMMAND_MENU_START},
@@ -169,6 +166,7 @@ private:
     */
     map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL},
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_APOSTROPHE,   COMMAND_ABILITY_SPIKES},
         {GLFW_KEY_K,            COMMAND_DASH_BACK},

@@ -22,26 +22,26 @@
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 
-#define FRONT_CAMERA_LONGITUDE  -90.0f  // theta
-#define FRONT_CAMERA_LATITUDE   80.0f   // phi
-#define FRONT_RADIUS            10.0f   // r
+#define FRONT_CAMERA_LONGITUDE  -90.0f  // theta    degrees
+#define FRONT_CAMERA_LATITUDE   80.0f   // phi      degrees
+#define FRONT_RADIUS            10.0f   // r        meters
 
-#define BACK_CAMERA_LONGITUDE   -90.0f  // theta
-#define BACK_CAMERA_LATITUDE    40.0f   // phi
-#define BACK_RADIUS             12.0f   // r
+#define BACK_CAMERA_LONGITUDE   -90.0f  // theta    degrees
+#define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
+#define BACK_RADIUS             12.0f   // r        meters
 
 /*
 Determines the rate at the which the camera moves to catch up to player
 movement. The greater it is, the faster the camera moves (the less it lags
 behind).
 */
-#define CAMERA_MOVEMENT_MULTIPLIER 10.0f
+#define CAMERA_MOVEMENT_MULTIPLIER 20.0f
 /*
 Determines the rate at which the camera rotates to catch up be behind the
 player. The greater it is, the faster the camera rotates (the less it lags
 behind).
 */
-#define CAMERA_ROTATION_MULTIPLIER 16.0f
+#define CAMERA_ROTATION_MULTIPLIER 30.0f
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
 const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_RADIUS); // (Theta, Phi, Radius)

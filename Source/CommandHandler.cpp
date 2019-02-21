@@ -225,7 +225,10 @@ void CommandHandler::executeKeyboardCommands()
 {
     bool bMovementNeutral = true;
     bool bTurnNeutral = true;
-    float xMove, yMove, xTurn, yTurn = 0;
+    float xMove = 0.0f;
+    float yMove = 0.0f;
+    float xTurn = 0.0f;
+    float yTurn = 0.0f;
     /*
     Copy the keys at the current snapshot so they can be iterated over while
     m_keys continues to be updated.
@@ -299,10 +302,10 @@ void CommandHandler::executeKeyboardCommands()
     // This is where keys are handled, it's assumed that xMove and yMove will
     // be binary on/off. Let's use this assumption to our advantage and we can
     // simply if them to the proper size instead of doing a sqrt calculation.
-    if (xMove != 0.0f && yMove != 0.0f)
+    if ((xMove != 0.0f) && (yMove != 0.0f))
     {
-        xMove *= 0.5f;
-        yMove *= 0.5f;
+        xMove *= 0.7071f;
+        yMove *= 0.7071f;
     }
 
     if (!bMovementNeutral)
