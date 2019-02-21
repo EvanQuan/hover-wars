@@ -31,13 +31,7 @@ float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fL
 	
 	// transform to [0, 1] range
 	vProjCoords = vProjCoords * 0.5 + 0.5;
-	
-	// Get closest depth value from light's perspective (using [0, 1] range vFragPosLightSpace as Coords)
-	float fClosestDepth = texture( sShadowMap, vProjCoords.xy).r;
-	
-	// Get the depth of the current fragment from the light's perspective
-	float fCurrentDepth = vProjCoords.z;
-	
+
 	// Compute Return Shadow Value
 	float fReturnShadow = 0.0;
 	
@@ -47,10 +41,11 @@ float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fL
 		for( int iY = -iRange; iY <= iRange; ++iY )
 		{
 			float pcfDepth = texture(sShadowMap, vProjCoords.xy + vec2(iX, iY) * texelSize).r;
-			fReturnShadow += (fCurrentDepth - fBias > pcfDepth ? 1.0 : 0.0);
+			fReturnShadow += (vProjCoords.z - fBias > pcfDepth ? 1.0 : 0.0);
 		}
 	}
 	
+	// Get average of kernel
 	fReturnShadow /= fDivisor;
 	
 	// Clamp the outside of the frustrum
@@ -80,6 +75,7 @@ vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFra
 		specular = pow( specAngle, sMaterial.fShininess );
 	}
 	
+	// Get shadow value
 	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow, dot(vToLight, vNormal) );
 
 	// Apply Diffuse Value
