@@ -20,7 +20,6 @@ public:
     void createBot(vector< string > sData, int iLength);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
-
     void loadFromFile( string sFileName );
 
 private:

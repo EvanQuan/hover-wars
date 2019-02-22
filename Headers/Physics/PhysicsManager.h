@@ -9,7 +9,7 @@
 #include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
-
+#include <vector>
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan
@@ -46,13 +46,18 @@ public:
     // Scene Setting Functions
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
-    physx::PxRigidDynamic *createCubeObject(float x, float y, float z, float size);
-    physx::PxRigidDynamic *createCubeObjectPlayer(float x, float y, float z, float size);
-    physx::PxVehicleNoDrive *createPlayerEntity();
+    physx::PxRigidStatic *createMeshObject(float x, float y, float z,float scale, string filename);
+    physx::PxRigidStatic *createCubeObject(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
+    physx::PxVehicleNoDrive *createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
+    physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
 
 private:
+    std::vector<physx::PxVehicleNoDrive *> vehicles;
+    std::vector<physx::PxRigidStatic *> staticObjects;
+
+    physx::PxTriangleMesh *generateMesh(string filename,float scale);
     int currentState = 0;
     snippetvehicle::VehicleSceneQueryData*      gVehicleSceneQueryData = NULL;
     physx::PxBatchQuery*                        gBatchQuery            = NULL;
@@ -66,7 +71,7 @@ private:
     bool                            gVehicleOrderComplete = false;
     physx::PxU32                    gVehicleOrderProgress = 0;
 
-    snippetvehicle::VehicleDesc initVehicleDesc();
+    snippetvehicle::VehicleDesc initVehicleDesc(PxVec3 chassisDims);
 
     // Singleton Implementation: make all possible constructors private and inaccessable
     //        to disallow multiple instance of the physics manager.
@@ -85,7 +90,6 @@ private:
     physx::PxDefaultErrorCallback   gErrorCallback;
     physx::PxFoundation*            gFoundation     = NULL;
     physx::PxPhysics*               gPhysics        = NULL;
-    physx::PxRigidStatic*           gGroundPlane    = NULL;
 
     physx::PxDefaultCpuDispatcher*  gDispatcher     = NULL;
     physx::PxScene*                 gScene          = NULL;

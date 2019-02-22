@@ -66,7 +66,7 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeComponent(true, m_pMesh);
+    m_pPhysicsComponent->initializeComponent(true, m_pMesh, &(pObjectProperties->sObjBoundingBox));
 
     m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
     m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
