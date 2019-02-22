@@ -106,8 +106,10 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     }
 }
 
-// Mouse Button Callback
-// Handle mouse movement controls.
+/*
+Mouse Button Callback
+Handle mouse movement controls.
+*/
 void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
     // Left Click
@@ -137,7 +139,12 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
     }
 }
 
-// Handles input from Mouse Moves.
+/*
+ Handles input from Mouse Moves.
+@param window   the mouse corresponds to
+@param x        x-coordinate of the mouse in window coordinates
+@param y        y-coordinate of the mouse in window coordinates
+*/
 void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
     if (m_pInstance->m_bRotateFlag)
@@ -148,7 +155,13 @@ void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
     m_pInstance->m_pInitialPos.y = (float) y;
 }
 
-// Handle scroll wheel callbacks
+/*
+Handle scroll wheel callbacks
+
+@param window   the mouse corresponds to
+@param xoffset  of the mouse wheel
+@param yoffset  of the mouse wheel
+*/
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     m_pInstance->m_gameManager->zoomCamera((float) yoffset * ZOOM_SCALE);
@@ -175,7 +188,9 @@ void InputHandler::initializeJoysticksAtStart()
     }
 }
 
-// Initialize joystick variables before they are set
+/*
+Initialize joystick variables before they are set
+*/
 void InputHandler::initializeJoystickVariables()
 {
     for (int player = 0; player < MAX_PLAYER_COUNT; player++)
@@ -192,7 +207,9 @@ void InputHandler::initializeJoystickVariables()
     }
 }
 
-// Check all if all joysticks are connected
+/*
+Check all if all joysticks are connected
+*/
 void InputHandler::checkForPresentJoysticks()
 {
     for (int i = 0; i < MAX_PLAYER_COUNT; i++)
@@ -205,6 +222,8 @@ void InputHandler::checkForPresentJoysticks()
 /*
 Initializes a joysticks of a given joystickID. It will only initialize if the
 joystick is actually present.
+
+@param joystickID   to initialize
 */
 void InputHandler::initializeJoystick(int joystickID)
 {
@@ -224,7 +243,7 @@ void InputHandler::initializeJoystick(int joystickID)
     m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
 
 #ifdef NDEBUG
-    debugPrintJoystickInformation(joystickID);
+    // debugPrintJoystickInformation(joystickID);
 #endif
 }
 
@@ -309,6 +328,9 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
 #endif
 }
 
+/*
+Registers a joystick as not connected to the game.
+*/
 void InputHandler::disconnectJoystick(int joystickID)
 {
     m_pJoystickIsPresent[joystickID] = false;
@@ -316,8 +338,12 @@ void InputHandler::disconnectJoystick(int joystickID)
 
 }
 
-// Checks for joystick connection/disconnection
-// TODO true? Must be called in initialize() to avoid infinite getInstance() recursion
+/*
+Checks for joystick connection/disconnection.
+
+@param joystickID   to check
+@param event        to indicate what happened to joystick
+*/
 void InputHandler::joystickCallback(int joystickID, int event)
 {
     if (event == GLFW_CONNECTED)
@@ -358,6 +384,8 @@ alter after processing.
 Can only set values to just pressed and just released if there is a change in
 pressed/released state. Changes to pressed and released are made in the
 CommandHandler after the input has been processed.
+
+@param joystickID   to update
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {

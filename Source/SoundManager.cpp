@@ -47,7 +47,7 @@ instances played simultaneously.
 
 @param sound    to play
 */
-void SoundManager::play(eSound sound)
+void SoundManager::play(eSoundEvent sound)
 {
 
 }
@@ -58,7 +58,7 @@ Play a sound at a specified location in the world.
 @param sound    to play
 @param location in world-space
 */
-void SoundManager::play(eSound sound, vec3 location)
+void SoundManager::play(eSoundEvent sound, vec3 location)
 {
 }
 
@@ -70,7 +70,7 @@ instance of each sound for each loopID.
 @param entityID that the sound belongs to
 @param loopID   to start looping
 */
-void SoundManager::startLoop(eSound sound, int entityID, int loopID)
+void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 {
 
 }
@@ -83,7 +83,7 @@ that loop.
 @param entityID that the sound belongs to
 @param loopID   to stop looping
 */
-void SoundManager::endLoop(eSound sound, int entityID, int loopID)
+void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 {
 
 }
@@ -97,7 +97,7 @@ entity can only loop one instance of each sound for each loopID.
 @param entityID that the sound belongs to
 @param loopID   to start looping
 */
-void SoundManager::startLoop(eSound sound, vec3 location, int entityID, int loopID)
+void SoundManager::startLoop(eSoundEvent sound, vec3 location, int entityID, int loopID)
 {
 
 }
@@ -110,7 +110,7 @@ If the sound is looping for a specified entityID for a specified loopID, end tha
 @param entityID that the sound belongs to
 @param loopID   to stop looping
 */
-void SoundManager::endLoop(eSound sound, vec3 location, int entityID, int loopID)
+void SoundManager::endLoop(eSoundEvent sound, vec3 location, int entityID, int loopID)
 {
 
 }
@@ -120,6 +120,10 @@ void SoundManager::endLoop(eSound sound, vec3 location, int entityID, int loopID
 \*************************************************************************/
 /*
 Load all the audio files needed.
+
+For some reason, if this is called in the constructor, the program crashes. To
+avoid this, this is called after the Singleton instance is first instantiated
+in main().
 */
 void SoundManager::loadFiles() {
     m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
@@ -150,6 +154,14 @@ void SoundManager::update() {
     m_pInstance->errorCheck(m_pInstance->mpStudioSystem->update());
 }
 
+/*
+Load a sound.
+
+@param sSoundName   file path to the sound
+@param b3d          true if 3D sound, else 2D
+@param bLooping     true if sound is to be looped, else not looped
+@param bStream      ???????
+*/
 void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, bool bStream) {
     auto tFoundIt = mSounds.find(sSoundName);
     if (tFoundIt != mSounds.end()) {       // Founded (has been loaded)
@@ -170,6 +182,11 @@ void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, 
     }
 }
 
+/*
+Unload a sound. If the sound was not loaded, do nothing.
+
+@param sSoundName   filepath of sound to unload
+*/
 void SoundManager::unloadSound(const string& sSoundName) {
     auto tFoundIt = mSounds.find(sSoundName);
     if (tFoundIt == mSounds.end()) {      // Not found
