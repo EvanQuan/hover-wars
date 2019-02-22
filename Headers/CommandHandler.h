@@ -48,7 +48,7 @@ public:
     {
         {COMMAND_ABILITY_ROCKET,         "Rocket"},
         {COMMAND_ABILITY_SPIKES,         "Spikes"},
-        {COMMAND_ABILITY_TRAIL_ACTIVATE,          "Trail"},
+        {COMMAND_ABILITY_TRAIL_ACTIVATE, "Trail"},
         {COMMAND_CAMERA_BACK,            "Camera Back"},
         {COMMAND_CAMERA_FRONT,           "Camera Front"},
         {COMMAND_DASH_BACK,              "Dash back"},
