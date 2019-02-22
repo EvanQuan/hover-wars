@@ -293,6 +293,13 @@ void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, fl
     m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
+void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
+{
+    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewCube->loadAsCube(pObjectProperties, vDimensions, sShaderType);
+    m_pMasterEntityList.push_back(move(pNewCube));
+}
+
 // Generates a Static Mesh at a given location
 void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {

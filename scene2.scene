@@ -216,6 +216,18 @@ player {
 #     }
 # }
 
+#       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
+#           - "x y z"               = the position of the cube
+#           - "height width depth"  = Specifies the dimensions of the cube
+cube {
+	5 1 5
+	2 2 2
+	+bounding {
+		box
+		2.0 2.0 2.0
+	}
+}
+
 
 
 static_mesh {

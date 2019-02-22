@@ -8,6 +8,7 @@
 \***********/
 #define MAX_CHARS_PER_LINE     256
 #define MAX_SPHERE_PARAMS      4
+#define MAX_CUBE_PARAMS        6
 #define MAX_PLANE_PARAMS       8
 #define MAX_POINT_LIGHT_PARAMS 7
 #define MAX_DIR_LIGHT_PARAMS   18
@@ -30,6 +31,7 @@
 #define MATERIAL               "material"
 #define BOUNDING               "bounding"
 #define MESH                   "mesh"
+#define CUBE                   "cube"
 #define SHADER                 "shader"
 
 
@@ -39,8 +41,6 @@ SceneLoader* SceneLoader::m_pInstance = nullptr;
 // Private Constructor
 SceneLoader::SceneLoader()
 {
-    m_lNextID = 0;
-
     clearProperties();
 }
 
@@ -48,9 +48,7 @@ SceneLoader::SceneLoader()
 SceneLoader* SceneLoader::getInstance()
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new SceneLoader();
-    }
 
     return m_pInstance;
 }
@@ -181,6 +179,22 @@ void SceneLoader::createSpotLight(vector< string > sData, int iLength)
     {
         outputError(SPOTLIGHT, sData);
     }
+}
+
+// Generates a Cube from the given data from the file.
+void SceneLoader::createCube(vector< string > sData, int iLength)
+{
+    vec3 vDimensions;
+
+    if (MAX_CUBE_PARAMS == iLength)
+    {
+        m_pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+        vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
+
+        ENTITY_MANAGER->generateStaticCube(&m_pObjectProperties, &vDimensions);
+    }
+    else
+        outputError(CUBE, sData);
 }
 
 // Generates a Player Object at a given position
@@ -355,6 +369,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createStaticMesh(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information
         initializeSpatialMap(sData, sData.size());
+    else if (CUBE == sIndicator)                        // Parse Cube
+        createCube(sData, sData.size());
 
     clearProperties();
 }
