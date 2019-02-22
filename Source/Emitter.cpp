@@ -83,7 +83,7 @@ void Emitter::initializeEmitter(unsigned int iMaxParticles,
 //    all particles.
 bool Emitter::update(float fDelta)
 {
-    // Store Time as float
+    // Store GameTime as float
     m_bReadyToDelete = true;
     m_pPositions.resize(m_pParticleList.size(), vec3(0.f));
 

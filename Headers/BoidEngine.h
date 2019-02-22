@@ -37,7 +37,7 @@ private:
     vector< pair< unsigned int, vector< unsigned int > > > m_pScreenSpace;    // Boid Data Structure
     unsigned int m_iSpaceDim;                       // Dimensions of the 3D Boid Grid
     unsigned int m_iSpaceDimSqr;                    // Dimension squared of the 3D Boid Grid
-    unsigned int m_iCurrTimeStep;                   // Time Step tracker
+    unsigned int m_iCurrTimeStep;                   // GameTime Step tracker
     Mesh* m_pMesh;                                  // Boid Mesh
     Texture* m_pTexture;                            // Boid Texture
     quat m_pQuaternion;                             // Boid Quarternion for Orienting Boid Direction from Model
