@@ -17,11 +17,66 @@ class SoundManager
 public:
     ~SoundManager();
 
+    enum eSound
+    {
+        SOUND_ROCKET_ACTIVATE,
+        SOUND_ROCKET_EXPLOSION,
+
+        SOUND_SPIKES_ACTIVATE,
+        SOUND_SPIKES_IMPACT,
+
+        SOUND_TRAIL_START,
+        SOUND_TRAIL_LOOP,
+        SOUND_TRAIL_END,
+
+        SOUND_HOVERCAR_LOOP,
+        SOUND_HOVERCAR_IMPACT_HOVERCAR,
+        SOUND_HOVERCAR_IMPACT_WORLD,
+
+        SOUND_MUSIC_INGAME_LOOP,
+        SOUND_MUSIC_PAUSE_LOOP,
+    };
+
+    void play(eSound sound);
+
+    // TODO figure out sound at locations
+    void play(eSound sound, vec3 location);
+
+    void startLoop(eSound sound, int entityID, int loopID);
+    void endLoop(eSound sound, int entityID, int loopID);
+
+    void startLoop(eSound sound, vec3 location, int entityID, int loopID);
+    void endLoop(eSound sound, vec3 location, int entityID, int loopID);
+    // TODO
+    // looping at different locations.
+    // How do we make the sound follow the location as it moves?
+
     static SoundManager* getInstance();
 
-    void initSound();
+    void loadFiles();
     static void update();
     void shutDown();
+private:
+    
+    static SoundManager* m_pInstance;
+
+    FMOD::Studio::System* mpStudioSystem;   // FMOD Studio API
+    FMOD::System* mpSystem;  // FMOD Low Level API
+
+    int mnNextChannelId;
+
+    typedef map<string, FMOD::Sound*> SoundMap;
+    typedef map<int, FMOD::Channel*> ChannelMap;
+    typedef map<string, FMOD::Studio::EventInstance*> EventMap;
+    typedef map<string, FMOD::Studio::Bank*> BankMap;
+
+    SoundMap mSounds;
+    ChannelMap mChannels;
+    EventMap mEvents;
+    BankMap mBanks;
+
+    SoundManager();
+
     int errorCheck(FMOD_RESULT result);
 
     void loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS flags);
@@ -50,26 +105,6 @@ public:
     float volumeTodB(float volume);
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
-
-
-private:
-    SoundManager();
-    static SoundManager* m_pInstance;
-
-    FMOD::Studio::System* mpStudioSystem;   // FMOD Studio API
-    FMOD::System* mpSystem;  // FMOD Low Level API
-
-    int mnNextChannelId;
-
-    typedef map<string, FMOD::Sound*> SoundMap;
-    typedef map<int, FMOD::Channel*> ChannelMap;
-    typedef map<string, FMOD::Studio::EventInstance*> EventMap;
-    typedef map<string, FMOD::Studio::Bank*> BankMap;
-
-    SoundMap mSounds;
-    ChannelMap mChannels;
-    EventMap mEvents;
-    BankMap mBanks;
 };
 
 #endif

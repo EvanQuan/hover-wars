@@ -8,7 +8,7 @@ SoundManager* SoundManager::m_pInstance = nullptr;
 
 
 /*************************************************************************\
- * Constructors                                                           *
+ * Constructors                                                          *
 \*************************************************************************/
 SoundManager::SoundManager() {
     mpStudioSystem = NULL;
@@ -23,7 +23,7 @@ SoundManager::SoundManager() {
 }
 
 /*************************************************************************\
- * Destructor                                                             *
+ * Destructor                                                            *
 \*************************************************************************/
 SoundManager::~SoundManager() {
     errorCheck(mpStudioSystem->unloadAll());   // Unloads all currently loaded banks.
@@ -37,15 +37,99 @@ SoundManager* SoundManager::getInstance() {
     return m_pInstance;
 }
 
-void SoundManager::initSound() {
+/*************************************************************************\
+ * Public                                                                *
+\*************************************************************************/
+
+/*
+Play a sound in the world. That sound can have any number of
+instances played simultaneously.
+
+@param sound    to play
+*/
+void SoundManager::play(eSound sound)
+{
+
+}
+
+/*
+Play a sound at a specified location in the world.
+
+@param sound    to play
+@param location in world-space
+*/
+void SoundManager::play(eSound sound, vec3 location)
+{
+}
+
+/*
+Begin looping a sound for a specified entityID. That entity can only loop one
+instance of each sound for each loopID.
+
+@param sound    to play
+@param entityID that the sound belongs to
+@param loopID   to start looping
+*/
+void SoundManager::startLoop(eSound sound, int entityID, int loopID)
+{
+
+}
+
+/*
+If the sound is looping for a specified entityID for the specified loopID, end
+that loop.
+
+@param sound    to play
+@param entityID that the sound belongs to
+@param loopID   to stop looping
+*/
+void SoundManager::endLoop(eSound sound, int entityID, int loopID)
+{
+
+}
+
+/*
+Begin looping a sound for a specified entityID at a specified location. That
+entity can only loop one instance of each sound for each loopID.
+
+@param sound    to play
+@param location in world-space
+@param entityID that the sound belongs to
+@param loopID   to start looping
+*/
+void SoundManager::startLoop(eSound sound, vec3 location, int entityID, int loopID)
+{
+
+}
+
+/*
+If the sound is looping for a specified entityID for a specified loopID, end that loop.
+
+@param sound    to play
+@param location in world-space
+@param entityID that the sound belongs to
+@param loopID   to stop looping
+*/
+void SoundManager::endLoop(eSound sound, vec3 location, int entityID, int loopID)
+{
+
+}
+
+/*************************************************************************\
+ * Private                                                               *
+\*************************************************************************/
+/*
+Load all the audio files needed.
+*/
+void SoundManager::loadFiles() {
     m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
 
-    m_pInstance->loadEvent("event:/car_start");
-    m_pInstance->loadSound("Sound/car_satrt.wav", false);
+    m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
+    m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
 
-    m_pInstance->loadEvent("event:/rocket");
-    m_pInstance->loadSound("Sound/rocket.wav", false);
+    m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
+    m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
 }
 
 void SoundManager::update() {
