@@ -79,12 +79,10 @@ vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFra
 	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow, dot(vToLight, vNormal) );
 
 	// Apply Diffuse Value
-	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vDiffuse, 1.0);
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * vec4(shadowValue * lambertian * light.vDiffuse, 1.0);
 	
 	// Apply Specular value
-	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vSpecular, 1.0);
-	
-	colorLinear *= shadowValue;
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(shadowValue * specular * light.vSpecular, 1.0);
 
 	// Apply Ambient Value
 	colorLinear += texture(sMaterial.vDiffuse, TexCoords ) * vec4(light.vAmbient, 1.0);
@@ -115,10 +113,10 @@ vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	}
 
 	// Apply Diffuse Value
-	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vColor, 1.0) * light.fLightPower / distance;
+	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * vec4(lambertian * light.vColor * light.fLightPower / distance, 1.0);
 	
 	// Apply Specular value
-	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vColor, 1.0) * light.fLightPower / distance;
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(specular * light.vColor * light.fLightPower / distance, 1.0);
 
 	return colorLinear;
 }
@@ -159,10 +157,10 @@ vec4 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera
 		}
 
 		// Apply Diffuse Value
-		colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vColor, 1.0);
+		colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * vec4(lambertian * light.vColor, 1.0);
 		
 		// Apply Specular value
-		colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vColor, 1.0);
+		colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(specular * light.vColor, 1.0);
 		
 		// Apply Intensity modifier
 		colorLinear *= fIntensity;

@@ -502,7 +502,7 @@ void SceneLoader::clearProperties() // Clear any properties
     m_fMeshScaleProperty = 1.0f;
 
     // Clear Material Properties
-    m_pObjectProperties.sObjMaterial.fShininess = 0.0f;
+    m_pObjectProperties.sObjMaterial.fShininess = 1.0f;
     m_pObjectProperties.sObjMaterial.sDiffuseMap =  m_pObjectProperties.sObjMaterial.sOptionalSpecMap = "";
     m_pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(0.0f);
     m_pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(0.0f);
