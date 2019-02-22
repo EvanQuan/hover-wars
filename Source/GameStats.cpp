@@ -50,6 +50,18 @@ int GameStats::get(ePlayer player, eStat stat)
 }
 
 /*
+Get a cooldown. For example:
+
+     = gameStats.get(PLAYER_1, COOLDOWN_ROCKET);
+
+will retrieve Player 1's current killstreaks against player 2.
+*/
+float GameStats::get(ePlayer player, eCooldown cooldown)
+{
+    return cooldowns[player][cooldown];
+}
+
+/*
 Add score to the specified player for the specified reason.
 */
 void GameStats::addScore(ePlayer player, eAddScoreReason reason)
