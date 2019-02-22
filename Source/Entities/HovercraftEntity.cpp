@@ -149,7 +149,7 @@ void HovercraftEntity::turn(float x)
 
 void HovercraftEntity::shootRocket()
 {
-    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 10, false, 2.0f);
 }
 
 void HovercraftEntity::activateSpikes()

@@ -8,7 +8,7 @@ SoundManager* SoundManager::m_pInstance = nullptr;
 
 
 /*************************************************************************\
- * Constructors                                                           *
+ * Constructors                                                          *
 \*************************************************************************/
 SoundManager::SoundManager() {
     mpStudioSystem = NULL;
@@ -20,10 +20,12 @@ SoundManager::SoundManager() {
 
     mpSystem = NULL;
     errorCheck(mpStudioSystem->getLowLevelSystem(&mpSystem));      // Setup low level system;
+
+    loadFiles();
 }
 
 /*************************************************************************\
- * Destructor                                                             *
+ * Destructor                                                            *
 \*************************************************************************/
 SoundManager::~SoundManager() {
     errorCheck(mpStudioSystem->unloadAll());   // Unloads all currently loaded banks.
@@ -37,7 +39,69 @@ SoundManager* SoundManager::getInstance() {
     return m_pInstance;
 }
 
-void SoundManager::initSound() {
+/*************************************************************************\
+ * Public                                                                *
+\*************************************************************************/
+
+/*
+Play a sound in the world. That sound can have any number of
+instances played simultaneously.
+*/
+void SoundManager::play(eSound sound)
+{
+
+}
+
+/*
+Play a sound at a specified location in the world.
+@TODO figure out how to do this
+*/
+void SoundManager::play(eSound sound, vec3 location)
+{
+}
+
+/*
+Begin looping a sound for a specified entityID. That entity can only loop one
+instance of each sound for each loopID.
+*/
+void SoundManager::startLoop(eSound sound, int entityID, int loopID)
+{
+
+}
+
+/*
+If the sound is looping for a specified entityID for the specified loopID, end
+that loop.
+*/
+void SoundManager::endLoop(eSound sound, int entityID, int loopID)
+{
+
+}
+
+/*
+Begin looping a sound for a specified entityID at a specified location. That
+entity can only loop one instance of each sound for each loopID.
+*/
+void SoundManager::startLoop(eSound sound, vec3 location, int entityID, int loopID)
+{
+
+}
+
+/*
+If the sound is looping for a specified entityID for a specified loopID, end that loop.
+*/
+void SoundManager::endLoop(eSound sound, vec3 location, int entityID, int loopID)
+{
+
+}
+
+/*************************************************************************\
+ * Private                                                               *
+\*************************************************************************/
+/*
+Load all the audio files needed.
+*/
+void SoundManager::loadFiles() {
     m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
 

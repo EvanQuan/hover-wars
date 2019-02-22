@@ -185,7 +185,6 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand comm
     {
     case COMMAND_MOVE:
         hovercraft->move(x, y);
-        SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
         break;
     case COMMAND_TURN:
         hovercraft->turn(x);

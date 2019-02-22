@@ -59,7 +59,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
         SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
     }
     if (GLFW_KEY_9 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playSounds("Sound/rocket.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
+        SOUND_MANAGER->playSounds("Sound/rocket/rocket.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
     }
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
