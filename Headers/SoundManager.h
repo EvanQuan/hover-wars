@@ -12,12 +12,23 @@
 
 using namespace std;
 
+/*
+Manages all sounds. Provides an interfaces for other classes to play sound
+events.
+
+@author Evan Quan
+@author Jianan Ding
+*/
 class SoundManager
 {
 public:
     ~SoundManager();
 
-    enum eSound
+    /*
+    Sound events correspond to world events.
+    They may be composed of multiple individual sounds.
+    */
+    enum eSoundEvent
     {
         SOUND_ROCKET_ACTIVATE,
         SOUND_ROCKET_EXPLOSION,
@@ -37,16 +48,16 @@ public:
         SOUND_MUSIC_PAUSE_LOOP,
     };
 
-    void play(eSound sound);
+    void play(eSoundEvent sound);
 
     // TODO figure out sound at locations
-    void play(eSound sound, vec3 location);
+    void play(eSoundEvent sound, vec3 location);
 
-    void startLoop(eSound sound, int entityID, int loopID);
-    void endLoop(eSound sound, int entityID, int loopID);
+    void startLoop(eSoundEvent sound, int entityID, int loopID);
+    void endLoop(eSoundEvent sound, int entityID, int loopID);
 
-    void startLoop(eSound sound, vec3 location, int entityID, int loopID);
-    void endLoop(eSound sound, vec3 location, int entityID, int loopID);
+    void startLoop(eSoundEvent sound, vec3 location, int entityID, int loopID);
+    void endLoop(eSoundEvent sound, vec3 location, int entityID, int loopID);
     // TODO
     // looping at different locations.
     // How do we make the sound follow the location as it moves?
