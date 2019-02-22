@@ -145,7 +145,7 @@ void GameStats::useAbility(ePlayer player, eAbility ability)
     case ABILITY_SPIKES:
         stats[player][ABILITY_SPIKES_USED]++;
         break;
-    case ABILITY_TRAIL:
+    case ABILITY_TRAIL_ACTIVATE:
         stats[player][ABILITY_TRAIL_USED]++;
         break;
     case ABILITY_DASH_BACK:
