@@ -98,7 +98,7 @@ Determines the rate at the which the camera moves to catch up to player
 movement. The greater it is, the faster the camera moves (the less it lags
 behind).
 */
-#define CAMERA_MOVEMENT_MULTIPLIER 20.0f
+#define CAMERA_MOVEMENT_MULTIPLIER 150.0f
 /*
 Determines the rate at which the camera rotates to catch up be behind the
 player. The greater it is, the faster the camera rotates (the less it lags
