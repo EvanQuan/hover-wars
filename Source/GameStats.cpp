@@ -6,7 +6,7 @@ GameStats* GameStats::m_pInstance = nullptr;
 
 GameStats::GameStats()
 {
-    initializeStats();
+    initialize();
 }
 
 GameStats* GameStats::getInstance()
@@ -23,9 +23,39 @@ GameStats::~GameStats()
 }
 
 /*
-Initialize all stats. This should be done at the start of every game, or if the
-game resets.
+In order to keep track of cooldowns, GameStats must be updated in sync with the
+rest of the game.
+
+This will decrease the cooldown value all all abilities by the time that has
+passed.
+
+@NOTE the cooldown values will become negative once they hit zero. When
+factoring all cooldown ability checks and updates amongst the stats,
+UserInterface, and hovercraft entities, it it cheaper this way.
+This may change later in the future.
 */
+void GameStats::update(float fSecondsSinceLastUpdate)
+{
+    for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+    {
+        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
+        {
+            cooldowns[player][cooldown] -= fSecondsSinceLastUpdate;
+        }
+    }
+}
+
+/*
+Initialize all stats and cooldowns to 0.
+
+This should be called at the start of every game, or if the game resets.
+*/
+void GameStats::initialize()
+{
+    initializeStats();
+    initializeCooldowns();
+}
+
 void GameStats::initializeStats()
 {
     for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
@@ -33,6 +63,17 @@ void GameStats::initializeStats()
         for (int stat = 0; stat < STAT_COUNT; stat++)
         {
             stats[player][stat] = 0;
+        }
+    }
+}
+
+void GameStats::initializeCooldowns()
+{
+    for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+    {
+        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
+        {
+            cooldowns[player][cooldown] = 0.0f;
         }
     }
 }
@@ -47,6 +88,26 @@ will retrieve Player 1's current killstreaks against player 2.
 int GameStats::get(ePlayer player, eStat stat)
 {
     return stats[player][stat];
+}
+
+/*
+Get a cooldown. For example:
+
+     = gameStats.get(PLAYER_1, COOLDOWN_ROCKET);
+
+will retrieve Player 1's current killstreaks against player 2.
+*/
+float GameStats::get(ePlayer player, eCooldown cooldown)
+{
+    return cooldowns[player][cooldown];
+}
+
+/*
+@return true is ability is ready to be used
+*/
+bool GameStats::isOffCooldown(ePlayer player, eCooldown cooldown)
+{
+    return cooldowns[player][cooldown] <= 0.0f;
 }
 
 /*

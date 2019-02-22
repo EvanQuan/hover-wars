@@ -8,6 +8,8 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
+
+    initializeCooldowns();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -20,7 +22,7 @@ HovercraftEntity::~HovercraftEntity()
 \****************************************************************/
 
 /*
-@param fTimeInMilliseconds  delta time since last update
+@param fSecondsSinceLastUpdate  delta time since last update
 */
 void HovercraftEntity::update(float fTimeInMilliseconds)
 {
@@ -84,31 +86,40 @@ void HovercraftEntity::initialize(const string& sFileName,
  * Private Functions                                                                                    *
 \********************************************************************************************************/
 
+void HovercraftEntity::initializeCooldowns()
+{
+    for (int ability = 0; ability < ABILITY_COUNT; ability++)
+    {
+        m_fCooldowns[ability] = 0.0f;
+    }
+}
+
 /*
 Updates an average for this player's cameras. This is what makes the camera
 sway as the player moves.
 */
-void HovercraftEntity::updateCameraLookAts(float fTimeInMilliseconds)
+void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 {
-    updateCameraRotation(fTimeInMilliseconds);
-    updateCameraPosition(fTimeInMilliseconds);
+    updateCameraRotation(fSecondsSinceLastUpdate);
+    updateCameraPosition(fSecondsSinceLastUpdate);
+    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
-void HovercraftEntity::updateCameraRotation(float fTimeInMilliseconds)
+void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
 {
     quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
 
-    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER * fTimeInMilliseconds;
+    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER * fSecondsSinceLastUpdate;
 
     m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
 }
 
-void HovercraftEntity::updateCameraPosition(float fTimeInMilliseconds)
+void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
 {
     vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
 
-    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER * fTimeInMilliseconds;
+    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER * fSecondsSinceLastUpdate;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
     m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
@@ -116,26 +127,68 @@ void HovercraftEntity::updateCameraPosition(float fTimeInMilliseconds)
 
 }
 
-void HovercraftEntity::useAbility(eAbility ability)
+/*
+This will decrease the cooldown value all all abilities by the time that has
+passed.
+*/
+void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
 {
-    switch (ability)
+    for (int i = 0; i < ABILITY_COUNT; i++)
     {
-    case ABILITY_ROCKET:
-        shootRocket();
-        break;
-    case ABILITY_SPIKES:
-        activateSpikes();
-        break;
-    case ABILITY_TRAIL:
-        activateTrail();
-        break;
-    case ABILITY_DASH_BACK:
-    case ABILITY_DASH_FORWARD:
-    case ABILITY_DASH_LEFT:
-    case ABILITY_DASH_RIGHT:
-        dash(ability);
-        break;
+        if (m_fCooldowns[i] - fSecondsSinceLastUpdate <= 0.0f)
+        {
+            m_fCooldowns[i] = 0.0f;
+        }
+        else
+        {
+            m_fCooldowns[i] -= fSecondsSinceLastUpdate;
+        }
     }
+}
+
+/*
+@return true if ability successfully used
+*/
+bool HovercraftEntity::useAbility(eAbility ability)
+{
+    if (isOffCooldown(ability))
+    {
+        switch (ability)
+        {
+        case ABILITY_ROCKET:
+            return shootRocket();
+            break;
+        case ABILITY_SPIKES:
+            return activateSpikes();
+            break;
+        case ABILITY_TRAIL:
+            return activateTrail();
+            break;
+        case ABILITY_DASH_BACK:
+        case ABILITY_DASH_FORWARD:
+        case ABILITY_DASH_LEFT:
+        case ABILITY_DASH_RIGHT:
+            return dash(ability);
+            break;
+        default:
+            return false;
+        }
+    }
+    return false;
+
+}
+
+/*
+@return true is the ability is ready to be used
+*/
+bool HovercraftEntity::isOffCooldown(eAbility ability)
+{
+    return m_fCooldowns[ability] <= 0;
+}
+
+void HovercraftEntity::putOnCooldown(eAbility ability)
+{
+    m_fCooldowns[ability] <=
 }
 
 void HovercraftEntity::move(float x, float y)
@@ -148,43 +201,47 @@ void HovercraftEntity::turn(float x)
     m_pPhysicsComponent->rotatePlayer(x);
 }
 
-void HovercraftEntity::shootRocket()
+/*
+@return true if ability successfully used
+*/
+bool HovercraftEntity::shootRocket()
 {
-    if (rocketIsReady())
-    {
-        EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
-        SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
-    }
-}
-
-bool HovercraftEntity::rocketIsReady()
-{
-    return true;
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
 }
 
 /*
+@return true is ability successfully used
 */
-void HovercraftEntity::activateSpikes()
+bool HovercraftEntity::activateSpikes()
 {
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 }
 
-void HovercraftEntity::activateTrail()
+/*
+@return true is ability successfully used
+*/
+bool HovercraftEntity::activateTrail()
 {
     mat4 m4TransformMat;
     vec3 vNormal;
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
     vNormal = m4TransformMat[1];
     m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+
+    return false;
 }
 
-void HovercraftEntity::deactivateTrail()
+/*
+@return true is ability successfully used
+*/
+bool HovercraftEntity::deactivateTrail()
 {
-
+    return false;
 }
 
-void HovercraftEntity::dash(eAbility direction)
+bool HovercraftEntity::dash(eAbility direction)
 {
     switch (direction)
     {
@@ -197,5 +254,6 @@ void HovercraftEntity::dash(eAbility direction)
     case ABILITY_DASH_RIGHT:
         break;
     }
+    return false;
 
 }

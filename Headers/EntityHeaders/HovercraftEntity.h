@@ -14,6 +14,8 @@
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
 
+#define ABILITY_COUNT           3
+
 // Rocket Defines
 #define ROCKET_COOLDOWN         10      // seconds
 
@@ -72,7 +74,7 @@ public:
                     const string& sShaderType,
                     float fScale);
 
-    void useAbility(eAbility ability);
+    bool useAbility(eAbility ability);
     void move(float x, float y);
     void turn(float x);
 
@@ -113,16 +115,19 @@ private:
     void updateCameraLookAts(float fSecondsSinceLastUpdate);
     void updateCameraPosition(float fSecondsSinceLastUpdate);
     void updateCameraRotation(float fSecondsSinceLastUpdate);
+    void updateCooldowns(float fSecondsSinceLastUpdate);
 
     // Abilities
-    void shootRocket();
-    bool rocketIsReady();
-    void activateSpikes();
-    void activateTrail();
-    void deactivateTrail();
-    void dash(eAbility direction);
+    bool shootRocket();
+    bool activateSpikes();
+    bool activateTrail();
+    bool deactivateTrail();
+    bool dash(eAbility direction);
 
-    // Cool downs
-    time_point<steady_clock> m_tTimeSinceLastRocket;
+    // Cooldowns
+    void initializeCooldowns();
+    bool isOffCooldown(eAbility ability);
+    void putOnCooldown(eAbility ability);
+    float m_fCooldowns[ABILITY_COUNT];
 };
 
