@@ -68,7 +68,7 @@ int main()
 
             // Initialize Sound
             m_soundManager = SOUND_MANAGER;
-            m_soundManager->initSound();
+            m_soundManager->loadFiles();
 
             // Main loop
             while (iRunning)                

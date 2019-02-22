@@ -19,8 +19,22 @@ public:
 
     enum eSound
     {
-        SOUND_ROCKET,
+        SOUND_ROCKET_ACTIVATE,
+        SOUND_ROCKET_EXPLOSION,
 
+        SOUND_SPIKES_ACTIVATE,
+        SOUND_SPIKES_IMPACT,
+
+        SOUND_TRAIL_START,
+        SOUND_TRAIL_LOOP,
+        SOUND_TRAIL_END,
+
+        SOUND_HOVERCAR_LOOP,
+        SOUND_HOVERCAR_IMPACT_HOVERCAR,
+        SOUND_HOVERCAR_IMPACT_WORLD,
+
+        SOUND_MUSIC_INGAME_LOOP,
+        SOUND_MUSIC_PAUSE_LOOP,
     };
 
     void play(eSound sound);
@@ -39,6 +53,7 @@ public:
 
     static SoundManager* getInstance();
 
+    void loadFiles();
     static void update();
     void shutDown();
 private:
@@ -61,7 +76,6 @@ private:
     BankMap mBanks;
 
     SoundManager();
-    void loadFiles();
 
     int errorCheck(FMOD_RESULT result);
 

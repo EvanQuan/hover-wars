@@ -20,8 +20,6 @@ SoundManager::SoundManager() {
 
     mpSystem = NULL;
     errorCheck(mpStudioSystem->getLowLevelSystem(&mpSystem));      // Setup low level system;
-
-    loadFiles();
 }
 
 /*************************************************************************\
@@ -105,11 +103,11 @@ void SoundManager::loadFiles() {
     m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
 
-    m_pInstance->loadEvent("event:/car_start");
-    m_pInstance->loadSound("Sound/car_satrt.wav", false);
+    m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
+    m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
 
-    m_pInstance->loadEvent("event:/rocket");
-    m_pInstance->loadSound("Sound/rocket.wav", false);
+    m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
+    m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
 }
 
 void SoundManager::update() {
