@@ -14,6 +14,8 @@
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
 
+#define ABILITY_COUNT           3
+
 // Rocket Defines
 #define ROCKET_COOLDOWN         10      // seconds
 
@@ -114,6 +116,10 @@ private:
     void updateCameraPosition(float fSecondsSinceLastUpdate);
     void updateCameraRotation(float fSecondsSinceLastUpdate);
 
+    void updateCooldowns(float fSecondsSinceLastUpdate);
+
+    void initializeCooldowns();
+
     // Abilities
     void shootRocket();
     bool rocketIsReady();
@@ -121,5 +127,8 @@ private:
     void activateTrail();
     void deactivateTrail();
     void dash(eAbility direction);
+
+    // Cooldowns
+    float m_fCooldowns[ABILITY_COUNT];
 };
 

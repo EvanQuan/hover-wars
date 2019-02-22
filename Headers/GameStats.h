@@ -112,7 +112,7 @@ public:
 
     ~GameStats();
 
-    void initializeStats();
+    void update(float fSecondsSinceLastUpdate);
 
     // Stats
     int get(ePlayer player, eStat stat);
@@ -122,10 +122,15 @@ public:
     float get(ePlayer player, eCooldown cooldown);
     void useAbility(ePlayer player, eAbility ability);
 
+    void initialize();
 
 private:
     GameStats();
     static GameStats* m_pInstance;
+
+    void initializeStats();
+    void initializeCooldowns();
+
 
     /*
     Overall game stats

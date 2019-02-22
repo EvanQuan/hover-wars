@@ -8,6 +8,8 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
+
+    initializeCooldowns();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -83,6 +85,14 @@ void HovercraftEntity::initialize(const string& sFileName,
 /********************************************************************************************************\
  * Private Functions                                                                                    *
 \********************************************************************************************************/
+
+void HovercraftEntity::initializeCooldowns()
+{
+    for (int ability = 0; ability < ABILITY_COUNT; ability++)
+    {
+        m_fCooldowns[ability] = 0.0f;
+    }
+}
 
 /*
 Updates an average for this player's cameras. This is what makes the camera

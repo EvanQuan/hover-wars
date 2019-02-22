@@ -6,7 +6,7 @@ GameStats* GameStats::m_pInstance = nullptr;
 
 GameStats::GameStats()
 {
-    initializeStats();
+    initialize();
 }
 
 GameStats* GameStats::getInstance()
@@ -23,9 +23,16 @@ GameStats::~GameStats()
 }
 
 /*
-Initialize all stats. This should be done at the start of every game, or if the
-game resets.
+Initialize all stats and cooldowns to 0.
+
+This should be called at the start of every game, or if the game resets.
 */
+void GameStats::initialize()
+{
+    initializeStats();
+    initializeCooldowns();
+}
+
 void GameStats::initializeStats()
 {
     for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
@@ -33,6 +40,17 @@ void GameStats::initializeStats()
         for (int stat = 0; stat < STAT_COUNT; stat++)
         {
             stats[player][stat] = 0;
+        }
+    }
+}
+
+void GameStats::initializeCooldowns()
+{
+    for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+    {
+        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
+        {
+            cooldowns[player][cooldown] = 0.0f;
         }
     }
 }
