@@ -41,7 +41,7 @@ They ALL behave like seconds, but not this.
 
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        0.02f
+#define TRAIL_GAUGE_FULL        0.04f
 /*
 Represents the trail gauge is empty. 
 */
@@ -68,7 +68,7 @@ This makes spam toggling less effective.
 
 Unit: seconds
 */
-#define TRAIL_RECHARGE_COOLDOWN 0.5f
+#define TRAIL_RECHARGE_COOLDOWN 0.1f
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0

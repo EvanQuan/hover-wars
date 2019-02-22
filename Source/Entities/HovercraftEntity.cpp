@@ -138,14 +138,8 @@ void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
 {
     for (int i = 0; i < ABILITY_COUNT; i++)
     {
-        if (m_fCooldowns[i] - fSecondsSinceLastUpdate <= 0.0f)
-        {
-            m_fCooldowns[i] = 0.0f;
-        }
-        else
-        {
-            m_fCooldowns[i] -= fSecondsSinceLastUpdate;
-        }
+        float newCooldown = m_fCooldowns[i] - fSecondsSinceLastUpdate;
+        m_fCooldowns[i] = newCooldown > 0.0f ? newCooldown : 0.0f;
     }
     updateTrail(fSecondsSinceLastUpdate);
     // check flame trail separately
@@ -285,7 +279,6 @@ Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {
-    cout << "DEACTIVATED" << endl;
     m_bTrailActivated = false;
 }
 
