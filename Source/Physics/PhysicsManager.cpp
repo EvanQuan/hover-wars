@@ -118,13 +118,12 @@ PhysicsManager::~PhysicsManager()
     // PHYSICSTODO: finish any remaining final clean up here:
 }
 
-snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
+snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
 {
     //Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
     //The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
     //Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
     const PxF32 chassisMass = 300.0f;
-    const PxVec3 chassisDims(2.5f, 2.0f, 5.0f);
     const PxVec3 chassisMOI
     ((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
         (chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
@@ -256,7 +255,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //TEST CODE
     //createSphereObject(0,0,0,3);
     //createMeshObject(3,3,3,5,"memeteam.txt");
-    createPlayerEntity(0,0,0);
+    //createPlayerEntity(0,0,0);
 }
 
 // This function is public. Probably intended as a sort of soft reset at the end of a match
@@ -419,9 +418,9 @@ PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, flo
     staticObjects.push_back(body);
     return body;
 }
-PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z) {
+PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
     //Create a vehicle that will drive on the plane.
-    snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc();
+    snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc(PxVec3(sizeX, sizeY, sizeZ));
     gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
     PxTransform startTransform(PxVec3(x, y+(vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), z), PxQuat(PxIdentity));
     gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);

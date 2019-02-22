@@ -48,7 +48,7 @@ public:
                                 // the physics scene. Additional specific functions could be generated as neccessary.
     physx::PxRigidStatic *createMeshObject(float x, float y, float z,float scale, string filename);
     physx::PxRigidStatic *createCubeObject(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
-    physx::PxVehicleNoDrive *createPlayerEntity(float x, float y, float z);
+    physx::PxVehicleNoDrive *createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
@@ -71,7 +71,7 @@ private:
     bool                            gVehicleOrderComplete = false;
     physx::PxU32                    gVehicleOrderProgress = 0;
 
-    snippetvehicle::VehicleDesc initVehicleDesc();
+    snippetvehicle::VehicleDesc initVehicleDesc(PxVec3 chassisDims);
 
     // Singleton Implementation: make all possible constructors private and inaccessable
     //        to disallow multiple instance of the physics manager.
