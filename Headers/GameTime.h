@@ -45,6 +45,14 @@ public:
     time_point<steady_clock> getCurrentFrameTime() const { return m_pCurrentTick; }
 
 
+    /*
+    Get the absolute time of the current frame.
+
+    @return time in seconds
+    */
+    time_point<steady_clock> getCurrentFrameTime() const { return m_pCurrentTick; }
+
+
 private:
 
     /*
