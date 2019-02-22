@@ -92,6 +92,9 @@ void HovercraftEntity::initializeCooldowns()
     {
         m_fCooldowns[ability] = 0.0f;
     }
+
+    m_fTrailGauge = TRAIL_GAUGE_FULL;
+    m_fSecondsSinceLastFlame = 0.0f;
 }
 
 /*
@@ -144,6 +147,53 @@ void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
             m_fCooldowns[i] -= fSecondsSinceLastUpdate;
         }
     }
+    updateTrail(fSecondsSinceLastUpdate);
+    // check flame trail separately
+}
+
+/*
+Update the flame indepently over other abilities. Create particles at a
+constant rate if activated, and drain from the gauge.
+Otherwise, recharge.
+
+@TODO break this up into more functions
+*/
+void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
+{
+    if (m_bTrailActivated)
+    {
+        if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
+        {
+            m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
+    
+            if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+            {
+                mat4 m4TransformMat;
+                vec3 vNormal;
+                m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
+                vNormal = m4TransformMat[1];
+                m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+    
+                float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
+                m_fTrailGauge = newGaugeValue > TRAIL_GAUGE_EMPTY ?
+                    newGaugeValue : TRAIL_GAUGE_EMPTY;
+                // cout << "Seconds since last frame: " << fSecondsSinceLastUpdate << endl;
+                // cout << "Decrease: " << m_fTrailGauge << endl;
+                m_fSecondsSinceLastFlame = 0.0f;
+            }
+        }
+    }
+    else
+    {
+        m_fSecondsSinceTrailDeactivated += fSecondsSinceLastUpdate;
+
+        if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN)
+        {
+            float newGaugeValue = m_fTrailGauge + fSecondsSinceLastUpdate;
+            m_fTrailGauge = newGaugeValue < TRAIL_GAUGE_FULL ?
+                newGaugeValue : TRAIL_GAUGE_FULL;
+        }
+    }
 }
 
 /*
@@ -162,8 +212,11 @@ bool HovercraftEntity::useAbility(eAbility ability)
     case ABILITY_SPIKES:
         activateSpikes();
         break;
-    case ABILITY_TRAIL:
+    case ABILITY_TRAIL_ACTIVATE:
         activateTrail();
+        break;
+    case ABILITY_TRAIL_DEACTIVATE:
+        deactivateTrail();
         break;
     case ABILITY_DASH_BACK:
     case ABILITY_DASH_FORWARD:
@@ -222,14 +275,9 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
-    mat4 m4TransformMat;
-    vec3 vNormal;
-    m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
-    vNormal = m4TransformMat[1];
-    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
-
-    // May not have a cooldown. May work on a fuel system instead.
-    // Will need to implement.
+    m_bTrailActivated = true;
+    m_fSecondsSinceLastFlame = 0.0f;
+    m_fSecondsSinceTrailDeactivated = 0.0f;
 }
 
 /*
@@ -237,6 +285,8 @@ Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {
+    cout << "DEACTIVATED" << endl;
+    m_bTrailActivated = false;
 }
 
 void HovercraftEntity::dash(eAbility direction)

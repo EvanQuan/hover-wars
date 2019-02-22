@@ -36,15 +36,32 @@ The time the hovercraft must wait until they can use the ability again.
 /*
 Total time the trail can be activated from full to empty.
 
+@TODO why is the time value so different than all the other time values.
+They ALL behave like seconds, but not this.
+
 Unit: seconds
 */
-#define TRAIL_GAUGE             5.0f
+#define TRAIL_GAUGE_FULL        0.02f
+/*
+Represents the trail gauge is empty. 
+*/
+#define TRAIL_GAUGE_EMPTY       0.0f
 /*
 Total time for the trail to recharge from empty to full.
+
+@NOTE: Currently unused. Right now the rate of drain and
+recharge are identical.
 
 Unit: seconds
 */
 #define TRAIL_RECHARGE          5.0f
+/*
+The interval of time between each created flame while the trail trail is
+activated.
+
+Unit: seconds
+*/
+#define FLAME_INTERVAL          0.1f
 /*
 Delay time when the trail is deactivate and when the gauge begins to recharge.
 This makes spam toggling less effective.
@@ -154,14 +171,16 @@ private:
     // Abilities
     void shootRocket();
     void activateSpikes();
+
     void activateTrail();
     void deactivateTrail();
+    void updateTrail(float fSecondsSinceLastUpdate);
+
     void dash(eAbility direction);
 
     // Cooldowns
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
-    void putOnCooldown(eAbility ability);
     float m_fCooldowns[ABILITY_COUNT];
 
     /*
@@ -169,7 +188,24 @@ private:
 
     true: trail is activated and fuel gauge is draining.
     false: trail is deactivated and fuel gauge is recharging.
+
+    Even if there is no fuel available, the trail can still be activated.
+    The trail will simply not produce any flames.
+    This activation state is based on player input.
     */
-    bool trailActivated;
+    bool m_bTrailActivated;
+    float m_fSecondsSinceTrailDeactivated;
+    bool m_bTrailReadyToRecharge;
+    /*
+    Stores the flame trail fuel gauge values.
+    Since the gauge drain and recharge rates are in terms of time, so
+    is the gauge itself.
+    */
+    float m_fTrailGauge;
+    /*
+    To ensure that the flames are generated at constant intervals, we need
+    to track the time since the last flame was generated.
+    */
+    float m_fSecondsSinceLastFlame;
 };
 

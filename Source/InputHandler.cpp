@@ -376,7 +376,8 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
         }
     }
     // Update triggers as buttons
-    if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] == TRIGGER_IS_NETURAL)
+    if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] == TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_LEFT] != INPUT_RELEASED)
     {
         m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_RELEASED;
     }
@@ -384,7 +385,9 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
     {
         m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_PRESSED;
     }
-    if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] == TRIGGER_IS_NETURAL)
+
+    if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] == TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_RIGHT] != INPUT_RELEASED)
     {
         m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_RELEASED;
     }
