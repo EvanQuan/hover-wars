@@ -51,6 +51,7 @@
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\Enums\eAbility.h" />
     <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h" />
+    <ClInclude Include="Headers\Enums\eCooldown.h" />
     <ClInclude Include="Headers\Enums\eEntityTypes.h" />
     <ClInclude Include="Headers\Enums\eFixedCommand.h" />
     <ClInclude Include="Headers\Enums\ePlayer.h" />

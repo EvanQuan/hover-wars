@@ -267,6 +267,9 @@
     <ClInclude Include="Headers\GameTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eCooldown.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">

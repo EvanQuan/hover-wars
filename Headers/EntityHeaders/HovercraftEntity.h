@@ -74,7 +74,7 @@ public:
                     const string& sShaderType,
                     float fScale);
 
-    void useAbility(eAbility ability);
+    bool useAbility(eAbility ability);
     void move(float x, float y);
     void turn(float x);
 
@@ -115,20 +115,19 @@ private:
     void updateCameraLookAts(float fSecondsSinceLastUpdate);
     void updateCameraPosition(float fSecondsSinceLastUpdate);
     void updateCameraRotation(float fSecondsSinceLastUpdate);
-
     void updateCooldowns(float fSecondsSinceLastUpdate);
 
-    void initializeCooldowns();
-
     // Abilities
-    void shootRocket();
-    bool rocketIsReady();
-    void activateSpikes();
-    void activateTrail();
-    void deactivateTrail();
-    void dash(eAbility direction);
+    bool shootRocket();
+    bool activateSpikes();
+    bool activateTrail();
+    bool deactivateTrail();
+    bool dash(eAbility direction);
 
     // Cooldowns
+    void initializeCooldowns();
+    bool isOffCooldown(eAbility ability);
+    void putOnCooldown(eAbility ability);
     float m_fCooldowns[ABILITY_COUNT];
 };
 
