@@ -18,7 +18,6 @@ GameManager::GameManager(GLFWwindow* rWindow)
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
     m_pEntityManager    = ENTITY_MANAGER;
-    m_pTimer            = TIME;
 
     // Initialize User Interface
     m_pUserInterface = UserInterface::getInstance(rWindow);
@@ -32,7 +31,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
-    m_fMaxDeltaTime = sixtieths_of_a_sec{ 1 };
+    m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
     m_eKeyboardPlayer = PLAYER_1;
 }
@@ -79,17 +78,14 @@ GameManager::~GameManager()
 
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
-
-    if (nullptr != m_pTimer)            // Timer
-        delete m_pTimer;
 }
 
 // Intended to be called every cycle, or when the graphics need to be updated
 bool GameManager::renderGraphics()
 {
     // Update Timer
-    m_pTimer->updateTimeSinceLastFrame();
-    m_fFrameTime += m_pTimer->getFrameTimeSinceLastFrame();
+    m_pTimer.updateTimeSinceLastFrame();
+    m_fFrameTime += m_pTimer.getFrameTimeSinceLastFrame();
 
     // Execute all commands for this frame
     m_pCommandHandler->executeAllCommands();
