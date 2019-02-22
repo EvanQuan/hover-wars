@@ -22,7 +22,7 @@ AnimationComponent::~AnimationComponent()
 // Overloaded Update Function
 void AnimationComponent::update(float fTimeDeltaInMilliseconds)
 {
-    // Add Timestep to Animation Time.
+    // Add Timestep to Animation GameTime.
     m_fAnimTime += fTimeDeltaInMilliseconds;
     bool bUpdateAnimation = m_fAnimTime >= ANIMATION_SPEED;
     bool bDeletionFlag = false;

@@ -1,18 +1,18 @@
 #include "GameTime.h"
 
 // Initialize Static Instance Variable
-Time* Time::m_pInstance = nullptr;
+GameTime* GameTime::m_pInstance = nullptr;
 
 /************\
  * Typedefs *
 \************/
 typedef std::chrono::high_resolution_clock Clock;
 
-Time* Time::getInstance()
+GameTime* GameTime::getInstance()
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new Time();
+        m_pInstance = new GameTime();
     }
     return m_pInstance;
 
@@ -20,7 +20,7 @@ Time* Time::getInstance()
 /*
 Initialize first tick as soon as the object is created.
 */
-Time::Time()
+GameTime::GameTime()
 {
     resetTimer();
 }
@@ -28,7 +28,7 @@ Time::Time()
 /*
 Nothing to Destruct
 */
-Time::~Time()
+GameTime::~GameTime()
 {
 
 }
@@ -43,7 +43,7 @@ update the in game environment correctly.
 No other class should call this method in order for all time values to be in sync
 for every frame.
 */
-void Time::updateTimeSinceLastFrame()
+void GameTime::updateTimeSinceLastFrame()
 {
     m_pCurrentTick = Clock::now();
     m_pFrameTimeSinceLastFrame = m_pCurrentTick - m_pLastTick;    // get new frame time.
@@ -56,7 +56,7 @@ The timer resets its start time and last tick time to now.
 The Graphics Manager calls this once all the graphics have been initialized to
 freshly start the time from scratch.
 */
-void Time::resetTimer()
+void GameTime::resetTimer()
 {
     m_pStartTick = Clock::now();
     m_pCurrentTick = m_pStartTick;

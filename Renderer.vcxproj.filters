@@ -99,9 +99,6 @@
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\GameTime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
@@ -267,6 +264,9 @@
     <ClInclude Include="Headers\UserInterface\UIRenderer.h">
       <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -307,9 +307,6 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameTime.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
@@ -414,6 +411,9 @@
       <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
     <ClCompile Include="Source\SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

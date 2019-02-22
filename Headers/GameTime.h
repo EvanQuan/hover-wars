@@ -10,7 +10,7 @@ This is used to determine the frame rate for rendering updates.
 typedef duration<long, std::ratio<1, 60>> sixtieths_of_a_sec;
 
 /***********************************************************
- * Time Class: Maintains the Time for the game logic.
+ * GameTime Class: Maintains the Time for the game logic.
  * Written by: James Cote, Evan Quan
  *
  * This is a singleton so that all classes that use time are
@@ -19,18 +19,18 @@ typedef duration<long, std::ratio<1, 60>> sixtieths_of_a_sec;
  * GameManager can update the time, ensuring that everything
  * is in sync.
 \************************************************************/
-class Time
+class GameTime
 {
 public:
 
-    static Time* getInstance();
+    static GameTime* getInstance();
     // Constructor and Destructor
-    ~Time();
+    ~GameTime();
 
     /*
     Get the difference in time between the last updateTimeSinceLastFrame()
     call and the second last updateTimeSinceLastFrame() call. If updateTIme()
-    has only been called once, compare it to when this Time object has been
+    has only been called once, compare it to when this GameTime object has been
     instantiated.
 
     @return time in seconds
@@ -50,7 +50,7 @@ private:
     /*
     Singleton instance
     */
-    static Time* m_pInstance;
+    static GameTime* m_pInstance;
 
     // Time Recording Variables
 
@@ -73,7 +73,7 @@ private:
     */
     duration<double> m_pFrameTimeSinceLastFrame;
 
-    Time();
+    GameTime();
     /*
     Private update function for Graphics Manager to call.
     */
