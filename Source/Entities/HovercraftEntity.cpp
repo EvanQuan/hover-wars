@@ -1,6 +1,7 @@
 #include "EntityHeaders/HovercraftEntity.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
+#include "SoundManager.h"
 
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
     : Entity(iID, *vPosition, entityType)
@@ -150,11 +151,13 @@ void HovercraftEntity::turn(float x)
 void HovercraftEntity::shootRocket()
 {
     EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 10, false, 2.0f);
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
 }
 
 void HovercraftEntity::activateSpikes()
 {
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
+    SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 }
 
 void HovercraftEntity::activateTrail()
