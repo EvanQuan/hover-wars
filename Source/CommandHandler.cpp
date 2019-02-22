@@ -38,13 +38,16 @@ CommandHandler::~CommandHandler()
 }
 
 /*
-Make a hovercraft execute a eFixedCommand.
+Make a player execute a eFixedCommand.
 FixedCommands are binary in that either they are executed or they are not, with
 no extra parameters.
 
-For example: if a hovercraft PLAYER_2 executes the ABILITY_ROCKET command,
+For example: if a player PLAYER_2 executes the ABILITY_ROCKET command,
 that is all the information the program needs to know for that hovercraft to
 execute that command.
+
+@param player   to execute command on
+@param command  to execute
 */
 void CommandHandler::execute(ePlayer player, eFixedCommand command)
 {
@@ -55,6 +58,12 @@ void CommandHandler::execute(ePlayer player, eFixedCommand command)
     }
 }
 
+/*
+Make a bot execute a fixed command.
+
+@param bot      to execute command on
+@param command  to execute
+*/
 void CommandHandler::execute(eBot bot, eFixedCommand command)
 {
     if (ENTITY_MANAGER->botExists(bot))
@@ -64,7 +73,13 @@ void CommandHandler::execute(eBot bot, eFixedCommand command)
     }
 }
 
-void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command)
+/*
+Make a hovercraft execute a fixed command.
+
+@param hovercraft   to execute command on
+@param command      to execute
+*/
+void CommandHandler::execute(HovercraftEntity *hovercraft, eFixedCommand command)
 {
     switch (command)
     {
@@ -145,12 +160,12 @@ void CommandHandler::execute(HovercraftEntity* hovercraft, eFixedCommand command
 }
 
 /*
-Make a hovercraft of given joystickID execute a eVariableCommand.
+Make a given player execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
 Specifically, they require an axis or axes to make sense of the command.
 
-For example: if a hovercraft of joystickID 0 executes the MOVE command, they also
-need to specify the x and y axis values to determine what direction and at what
+For example: if player PLAYER_1 executes the MOVE command, they also need to
+specify the x and y axis values to determine what direction and at what
 intensity to go at.
 
 Axes values are normalized and follow Cartesian coordinates:
@@ -161,6 +176,11 @@ Axes values are normalized and follow Cartesian coordinates:
                           |
                           v
                         y = -1
+
+@param player   to execute command on
+@param command  to execute
+@param x        x-coordinate
+@param y        y-coordinate
 */
 void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
 {
@@ -171,6 +191,14 @@ void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, 
     }
 }
 
+/*
+Make a bot execute a variable command.
+
+@param bot      to execute command on
+@param command  to execute
+@param x        x-coordinate
+@param y        y-coordinate
+*/
 void CommandHandler::execute(eBot bot, eVariableCommand command, float x, float y)
 {
     if (ENTITY_MANAGER->botExists(bot))
@@ -180,6 +208,14 @@ void CommandHandler::execute(eBot bot, eVariableCommand command, float x, float 
     }
 }
 
+/*
+Make a hovercraft execute a variable command.
+
+@param hovercraft   to execute command on
+@param command      to execute
+@param x            x-coordinate
+@param y            y-coordinate
+*/
 void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
 {
     switch (command)
