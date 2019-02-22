@@ -14,10 +14,13 @@
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
 
-#define ABILITY_COUNT           3
+#define ABILITY_COUNT           4
 
 // Rocket Defines
-#define ROCKET_COOLDOWN         10      // seconds
+#define ROCKET_COOLDOWN         5       // seconds
+#define SPIKES_COOLDOWN         10      // seconds
+#define TRAIL_COOLDOWN          0       // seconds
+#define DASH_COOLDOWN           5       // seconds
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -118,15 +121,15 @@ private:
     void updateCooldowns(float fSecondsSinceLastUpdate);
 
     // Abilities
-    bool shootRocket();
-    bool activateSpikes();
-    bool activateTrail();
-    bool deactivateTrail();
-    bool dash(eAbility direction);
+    void shootRocket();
+    void activateSpikes();
+    void activateTrail();
+    void deactivateTrail();
+    void dash(eAbility direction);
 
     // Cooldowns
     void initializeCooldowns();
-    bool isOffCooldown(eAbility ability);
+    bool isOnCooldown(eAbility ability);
     void putOnCooldown(eAbility ability);
     float m_fCooldowns[ABILITY_COUNT];
 };

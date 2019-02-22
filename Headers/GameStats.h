@@ -121,7 +121,7 @@ public:
     // Cooldowns
     float get(ePlayer player, eCooldown cooldown);
     void useAbility(ePlayer player, eAbility ability);
-    bool isOffCooldown(ePlayer player, eCooldown cooldown);
+    bool isOnCooldown(ePlayer player, eCooldown cooldown);
 
     void initialize();
 
