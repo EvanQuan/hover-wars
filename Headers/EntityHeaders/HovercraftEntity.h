@@ -116,5 +116,7 @@ private:
     void activateTrail();
     void deactivateTrail();
     void dash(eAbility direction);
+
+    // Cool downs
 };
 
