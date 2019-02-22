@@ -52,7 +52,6 @@ private:
 
     // Window Reference
     GLFWwindow* m_pWindow;
-    Time m_pTimer;
 
     // Update Variables
     /*
@@ -76,6 +75,7 @@ private:
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
     CommandHandler* m_pCommandHandler;
+    Time* m_pTimer;
 
 #ifdef NDEBUG
     // User interface is normally private.
