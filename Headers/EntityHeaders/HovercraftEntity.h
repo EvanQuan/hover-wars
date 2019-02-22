@@ -114,6 +114,7 @@ private:
     void shootRocket();
     void activateSpikes();
     void activateTrail();
+    void deactivateTrail();
     void dash(eAbility direction);
 };
 

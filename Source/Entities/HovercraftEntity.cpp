@@ -154,6 +154,8 @@ void HovercraftEntity::shootRocket()
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
 }
 
+/*
+*/
 void HovercraftEntity::activateSpikes()
 {
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
@@ -167,6 +169,11 @@ void HovercraftEntity::activateTrail()
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
     vNormal = m4TransformMat[1];
     m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+}
+
+void HovercraftEntity::deactivateTrail()
+{
+
 }
 
 void HovercraftEntity::dash(eAbility direction)
