@@ -196,7 +196,7 @@ void HovercraftEntity::turn(float x)
 }
 
 /*
-@return true if ability successfully used
+Shoot a rocket and put it on cool down.
 */
 void HovercraftEntity::shootRocket()
 {
@@ -207,7 +207,7 @@ void HovercraftEntity::shootRocket()
 }
 
 /*
-@return true is ability successfully used
+Activate spikes and put it on cool down.
 */
 void HovercraftEntity::activateSpikes()
 {
@@ -218,7 +218,7 @@ void HovercraftEntity::activateSpikes()
 }
 
 /*
-@return true is ability successfully used
+Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
@@ -233,7 +233,7 @@ void HovercraftEntity::activateTrail()
 }
 
 /*
-@return true is ability successfully used
+Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {

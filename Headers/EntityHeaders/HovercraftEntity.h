@@ -14,13 +14,44 @@
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
 
+// Ability Defines
+/*
+Rocket
+Spikes
+Trail
+Dash - (all 4 directions count as 1 ability for cool down purposes)
+*/
 #define ABILITY_COUNT           4
 
-// Rocket Defines
-#define ROCKET_COOLDOWN         5       // seconds
-#define SPIKES_COOLDOWN         10      // seconds
-#define TRAIL_COOLDOWN          0       // seconds
-#define DASH_COOLDOWN           5       // seconds
+/*
+Cooldowns
+
+The time the hovercraft must wait until they can use the ability again.
+*/
+#define ROCKET_COOLDOWN         5.0f    // seconds
+#define SPIKES_COOLDOWN         10.0f   // seconds
+#define TRAIL_COOLDOWN          0.0f    // seconds
+#define DASH_COOLDOWN           5.0f    // seconds
+
+/*
+Total time the trail can be activated from full to empty.
+
+Unit: seconds
+*/
+#define TRAIL_GAUGE             5.0f
+/*
+Total time for the trail to recharge from empty to full.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE          5.0f
+/*
+Delay time when the trail is deactivate and when the gauge begins to recharge.
+This makes spam toggling less effective.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE_COOLDOWN 0.5f
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -132,5 +163,13 @@ private:
     bool isOnCooldown(eAbility ability);
     void putOnCooldown(eAbility ability);
     float m_fCooldowns[ABILITY_COUNT];
+
+    /*
+    Tracks the state of the flame trail
+
+    true: trail is activated and fuel gauge is draining.
+    false: trail is deactivated and fuel gauge is recharging.
+    */
+    bool trailActivated;
 };
 
