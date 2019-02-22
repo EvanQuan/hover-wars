@@ -253,8 +253,8 @@ void PhysicsManager::initPhysics(bool interactive)
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //TEST CODE
-    createSphereObject(5,1,1,1);
-    createMeshObject(3,3,3,5,"memeteam.txt");
+    //createSphereObject(5,1,1,1);
+    //createMeshObject(3,3,3,5,"memeteam.txt");
 }
 
 // This function is public. Probably intended as a sort of soft reset at the end of a match

@@ -216,7 +216,11 @@ void SceneLoader::createBot(vector< string > sData, int iLength)
 
     ENTITY_MANAGER->generateBotEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
 }
-
+void SceneLoader::createStaticCube(vector< string > sData, int iLength)
+{
+    m_pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+    ENTITY_MANAGER->generateStaticCube(&m_pObjectProperties, stof(sData[3]), m_sShaderProperty);
+}
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
@@ -367,6 +371,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createBot(sData, sData.size());
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
+    else if (CUBE == sIndicator)
+        createStaticCube(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information
         initializeSpatialMap(sData, sData.size());
     else if (CUBE == sIndicator)                        // Parse Cube
