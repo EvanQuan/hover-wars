@@ -9,7 +9,7 @@
 #include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
-
+#include <vector>
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan
@@ -48,13 +48,15 @@ public:
                                 // the physics scene. Additional specific functions could be generated as neccessary.
     physx::PxRigidStatic *createMeshObject(float x, float y, float z,float scale, string filename);
     physx::PxRigidStatic *createCubeObject(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
-    physx::PxVehicleNoDrive *createPlayerEntity();
+    physx::PxVehicleNoDrive *createPlayerEntity(float x, float y, float z);
     physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
-
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
 
 private:
+    std::vector<physx::PxVehicleNoDrive *> vehicles;
+    std::vector<physx::PxRigidStatic *> staticObjects;
+
     physx::PxTriangleMesh *generateMesh(string filename,float scale);
     int currentState = 0;
     snippetvehicle::VehicleSceneQueryData*      gVehicleSceneQueryData = NULL;
@@ -88,7 +90,6 @@ private:
     physx::PxDefaultErrorCallback   gErrorCallback;
     physx::PxFoundation*            gFoundation     = NULL;
     physx::PxPhysics*               gPhysics        = NULL;
-    physx::PxRigidStatic*           gGroundPlane    = NULL;
 
     physx::PxDefaultCpuDispatcher*  gDispatcher     = NULL;
     physx::PxScene*                 gScene          = NULL;

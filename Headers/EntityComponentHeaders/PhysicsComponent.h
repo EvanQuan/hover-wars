@@ -30,7 +30,8 @@ public:
     void initializeComponent(bool bStatic, Mesh const* pMeshReference);
     vec3 getLinearVelocity();
     quat getRotation();
-
+    void flipVehicle();
+    void jumpVehicle();
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 

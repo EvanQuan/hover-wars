@@ -173,11 +173,11 @@ void PhysicsManager::update(float fTimeDelta)
     // Increment Time since last update and check to see if an update is ready.
     //    if an update is ready, decrement the internal timer to reset it accurately
     //    then perform the update.
-    if (m_fTimeSinceLastUpdate >= UPDATE_TIME_IN_SECONDS)
+    while (m_fTimeSinceLastUpdate >= UPDATE_TIME_IN_SECONDS)
     {
         // Don't reset to 0.0f as it's probably not at the Update Time Exactly.
         //    this preserves an accuracy w.r.t. the game timer.
-        m_fTimeSinceLastUpdate = 0;
+        m_fTimeSinceLastUpdate -= UPDATE_TIME_IN_SECONDS;
 
         // Step Physics at 1/60th of a second.
         stepPhysics(UPDATE_TIME_IN_SECONDS); 
@@ -242,9 +242,10 @@ void PhysicsManager::initPhysics(bool interactive)
 
     //Create a plane to drive on.
     PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-    gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
-    gScene->addActor(*gGroundPlane);
 
+    PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
+    gScene->addActor(*gGroundPlane);
+    staticObjects.push_back(gGroundPlane);
     
 
 
@@ -253,8 +254,9 @@ void PhysicsManager::initPhysics(bool interactive)
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //TEST CODE
-    //createSphereObject(5,1,1,1);
+    //createSphereObject(0,0,0,3);
     //createMeshObject(3,3,3,5,"memeteam.txt");
+    createPlayerEntity(0,0,0);
 }
 
 // This function is public. Probably intended as a sort of soft reset at the end of a match
@@ -265,10 +267,13 @@ void PhysicsManager::cleanupPhysics()
     if (hasStarted) { // basically this is just so that we don't try and destroy
         // the physics before it's been initalized
         PX_UNUSED(m_bInteractive);
-
-        gVehicleNoDrive->getRigidDynamicActor()->release();
-        gVehicleNoDrive->free();
-        gGroundPlane->release();
+        for (PxVehicleNoDrive *vehicle : vehicles) {
+            vehicle->getRigidDynamicActor()->release();
+            vehicle->free();
+        }
+        for (PxRigidStatic *object : staticObjects) {
+            object->release();
+        }
         gBatchQuery->release();
         gVehicleSceneQueryData->free(gAllocator);
         gFrictionPairs->release();
@@ -309,6 +314,7 @@ PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float 
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     gScene->addActor(*body);
+    staticObjects.push_back(body);
     return body;
 }
 const int MAXLINE = 256;
@@ -369,8 +375,6 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
         }
 
     }
-    static const PxVec3 convexVerts[] = { PxVec3(0,1,0),PxVec3(1,0,0),PxVec3(-1,0,0),PxVec3(0,0,1),
-    PxVec3(0,0,-1) };
     PxTolerancesScale scale;
     PxCookingParams params(scale);
     // disable mesh cleaning - perform mesh validation on development configurations
@@ -402,7 +406,8 @@ PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float 
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
-    //gScene->addActor(*body);
+    gScene->addActor(*body);
+    staticObjects.push_back(body);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
@@ -410,14 +415,15 @@ PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, flo
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
-   // gScene->addActor(*body);
+    gScene->addActor(*body);
+    staticObjects.push_back(body);
     return body;
 }
-PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
+PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z) {
     //Create a vehicle that will drive on the plane.
     snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc();
     gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
-    PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxIdentity));
+    PxTransform startTransform(PxVec3(x, y+(vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), z), PxQuat(PxIdentity));
     gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);
     gScene->addActor(*gVehicleNoDrive->getRigidDynamicActor());
 
@@ -427,10 +433,10 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
 
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
+    vehicles.push_back(gVehicleNoDrive);
 
     return gVehicleNoDrive;
 }
-
 /********************************************************************************\
  * Private Functions                                                            *
 \********************************************************************************/
@@ -446,27 +452,6 @@ mat4 PhysicsManager::getMat4(PxTransform transform) {
 
     // Return mat4 matrix
     return returnMatrix;
-}
-
-// I made this a private function for PhysicsManager. As an outsider using PhysicsManager
-//    as a blackbox, I don't know what "createStack" means or why I want to call that function.
-//    I assume PhysicsManager knows what it means and what it wants to use it for, therefore, I assume
-//    this should be a private function.
-void PhysicsManager::createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
-{
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
-    for (PxU32 i = 0; i < size; i++)
-    {
-        for (PxU32 j = 0; j < size - i; j++)
-        {
-            PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-            PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
-            body->attachShape(*shape);
-            PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-            gScene->addActor(*body);
-        }
-    }
-    shape->release();
 }
 
 // Made this function private, externally this makes sense, but when and why it should
@@ -493,7 +478,6 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, gVehicleNoDrive->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
-
     gScene->simulate(timestep);
     gScene->fetchResults(true);
 }
