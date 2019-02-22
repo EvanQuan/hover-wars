@@ -74,7 +74,7 @@ public:
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
     void renderEnvironment( );
-    void updateEnvironment(const GameTime* pTimer);
+    void updateEnvironment(const GameTime pTimer);
     
     /*
     The command handler can get all the players to directly communicate to.

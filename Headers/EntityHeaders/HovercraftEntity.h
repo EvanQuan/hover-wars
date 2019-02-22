@@ -14,6 +14,9 @@
 \***********/
 #define MAX_CAMERAS_PER_PLAYER  2 
 
+// Rocket Defines
+#define ROCKET_COOLDOWN         10      // seconds
+
 // Fire Defines
 #define FIRE_HEIGHT             2.0
 #define FIRE_WIDTH              2.0
@@ -42,6 +45,7 @@ player. The greater it is, the faster the camera rotates (the less it lags
 behind).
 */
 #define CAMERA_ROTATION_MULTIPLIER 30.0f
+
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
 const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_RADIUS); // (Theta, Phi, Radius)
@@ -106,17 +110,19 @@ private:
     quat m_qCurrentCameraRotation;
 
     // Private Functions
-    void updateCameraLookAts(float fTimeInMilliseconds);
-    void updateCameraPosition(float fTimeInMilliseconds);
-    void updateCameraRotation(float fTimeInMilliseconds);
+    void updateCameraLookAts(float fSecondsSinceLastUpdate);
+    void updateCameraPosition(float fSecondsSinceLastUpdate);
+    void updateCameraRotation(float fSecondsSinceLastUpdate);
 
     // Abilities
     void shootRocket();
+    bool rocketIsReady();
     void activateSpikes();
     void activateTrail();
     void deactivateTrail();
     void dash(eAbility direction);
 
     // Cool downs
+    time_point<steady_clock> m_tTimeSinceLastRocket;
 };
 

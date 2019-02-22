@@ -1,22 +1,10 @@
 #include "GameTime.h"
 
-// Initialize Static Instance Variable
-GameTime* GameTime::m_pInstance = nullptr;
-
 /************\
  * Typedefs *
 \************/
 typedef std::chrono::high_resolution_clock Clock;
 
-GameTime* GameTime::getInstance()
-{
-    if (nullptr == m_pInstance)
-    {
-        m_pInstance = new GameTime();
-    }
-    return m_pInstance;
-
-}
 /*
 Initialize first tick as soon as the object is created.
 */
@@ -30,7 +18,6 @@ Nothing to Destruct
 */
 GameTime::~GameTime()
 {
-
 }
 
 /*
@@ -58,7 +45,6 @@ freshly start the time from scratch.
 */
 void GameTime::resetTimer()
 {
-    m_pStartTick = Clock::now();
-    m_pCurrentTick = m_pStartTick;
-    m_pLastTick = m_pStartTick;
+    m_pCurrentTick = Clock::now();
+    m_pLastTick = m_pCurrentTick;
 }
