@@ -41,7 +41,7 @@ They ALL behave like seconds, but not this.
 
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        0.04f
+#define TRAIL_GAUGE_FULL        0.01f
 /*
 Represents the trail gauge is empty. 
 */
@@ -59,12 +59,19 @@ Unit: seconds
 The interval of time between each created flame while the trail trail is
 activated.
 
+@TODO Flame interval should be based on distance, not time. In some sense, a
+line is simply being laid out, of which flame billboards are uniformly
+distributed across, meanining that the spacing is time invariant.
+
 Unit: seconds
 */
-#define FLAME_INTERVAL          0.1f
+#define FLAME_INTERVAL          0.075f
 /*
 Delay time when the trail is deactivate and when the gauge begins to recharge.
 This makes spam toggling less effective.
+
+@TODO this is potentially not behaving in seconds, like the charge
+drain/recharge. Difficult to tell without visual indicators.
 
 Unit: seconds
 */
