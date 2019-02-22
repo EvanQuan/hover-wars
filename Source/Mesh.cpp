@@ -243,10 +243,10 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
     m_pNormals.push_back(vNormals[1]);
     m_pNormals.push_back(vNormals[2]);
     m_pNormals.push_back(vNormals[3]);
-    m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
+    m_pUVs.push_back(vec2(0.f));
+    m_pUVs.push_back(vec2(0.f, 1.0f));
     m_pUVs.push_back(vec2(1.f));
+    m_pUVs.push_back(vec2(1.f, 0.0f));
 
     // Face 2 - Back
     m_pVertices.push_back(vIndexes[4]);        // Index 4
@@ -299,10 +299,10 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
     m_pNormals.push_back(vNormals[3]);
     m_pNormals.push_back(vNormals[6]);
     m_pNormals.push_back(vNormals[7]);
-    m_pUVs.push_back(vec2(1.0f, 0.f));
     m_pUVs.push_back(vec2(0.0f));
-    m_pUVs.push_back(vec2(0.0f, 1.0f));
+    m_pUVs.push_back(vec2(1.0f, 0.f));
     m_pUVs.push_back(vec2(1.f));
+    m_pUVs.push_back(vec2(0.0f, 1.0f));
 
     // Face 6 - Top
     m_pVertices.push_back(vIndexes[0]);        // Index 0
@@ -313,10 +313,10 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
     m_pNormals.push_back(vNormals[1]);
     m_pNormals.push_back(vNormals[4]);
     m_pNormals.push_back(vNormals[5]);
-    m_pUVs.push_back(vec2(1.0f, 0.f));
-    m_pUVs.push_back(vec2(1.f));
     m_pUVs.push_back(vec2(0.0f));
+    m_pUVs.push_back(vec2(1.0f, 0.f));
     m_pUVs.push_back(vec2(0.0f, 1.0f));
+    m_pUVs.push_back(vec2(1.f));
 
     m_pIndices = {
         0, 2, 1, 0, 3, 2,
