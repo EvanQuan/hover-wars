@@ -12,6 +12,7 @@
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 /***********\
  * DEFINES *
@@ -117,13 +118,12 @@ PhysicsManager::~PhysicsManager()
     // PHYSICSTODO: finish any remaining final clean up here:
 }
 
-snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
+snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
 {
     //Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
     //The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
     //Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
     const PxF32 chassisMass = 300.0f;
-    const PxVec3 chassisDims(2.5f, 2.0f, 5.0f);
     const PxVec3 chassisMOI
     ((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
         (chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
@@ -158,8 +158,6 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc()
     return vehicleDesc;
 }
 
-
-
 /****************************************************************************\
  * Public Functions                                                            *
 \****************************************************************************/
@@ -174,11 +172,11 @@ void PhysicsManager::update(float fTimeDelta)
     // Increment Time since last update and check to see if an update is ready.
     //    if an update is ready, decrement the internal timer to reset it accurately
     //    then perform the update.
-    if (m_fTimeSinceLastUpdate >= UPDATE_TIME_IN_SECONDS)
+    while (m_fTimeSinceLastUpdate >= UPDATE_TIME_IN_SECONDS)
     {
         // Don't reset to 0.0f as it's probably not at the Update Time Exactly.
         //    this preserves an accuracy w.r.t. the game timer.
-        m_fTimeSinceLastUpdate = 0;
+        m_fTimeSinceLastUpdate -= UPDATE_TIME_IN_SECONDS;
 
         // Step Physics at 1/60th of a second.
         stepPhysics(UPDATE_TIME_IN_SECONDS); 
@@ -243,9 +241,10 @@ void PhysicsManager::initPhysics(bool interactive)
 
     //Create a plane to drive on.
     PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
-    gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
-    gScene->addActor(*gGroundPlane);
 
+    PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
+    gScene->addActor(*gGroundPlane);
+    staticObjects.push_back(gGroundPlane);
     
 
 
@@ -253,24 +252,10 @@ void PhysicsManager::initPhysics(bool interactive)
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //manager = PxCreateControllerManager(*gScene);
-    //PxBoxControllerDesc desc = PxBoxControllerDesc();
-    //desc.setToDefault();
-    //desc.position = PxExtendedVec3(1,1,1);
-    //desc.volumeGrowth = 5.0f;
-    //desc.halfForwardExtent = 1;
-    //desc.halfHeight = 1;
-    //desc.halfSideExtent = 1;
-    //desc.stepOffset = 0.5f;
-    //std::cout << desc.isValid() << std::endl;
-    //PxController* c = manager->createController(desc);
-    //std::cout << c << std::endl;
-    //initWall(gPhysics);
-    //for (PxU32 i = 0; i < 1; i++)
-    //    createStack(PxTransform(PxVec3(0, 0, stackZ += 3.0f)), 2, 0.1f);
-
-    //createDynamic(PxTransform(PxVec3(0, 4, 1)), PxSphereGeometry(1), PxVec3(0, -1, -1));
-//createDynamic(PxTransform(PxVec3(0, 4, 0)), PxSphereGeometry(1), PxVec3(0, -1, 0));
+    //TEST CODE
+    //createSphereObject(0,0,0,3);
+    //createMeshObject(3,3,3,5,"memeteam.txt");
+    //createPlayerEntity(0,0,0);
 }
 
 // This function is public. Probably intended as a sort of soft reset at the end of a match
@@ -281,10 +266,13 @@ void PhysicsManager::cleanupPhysics()
     if (hasStarted) { // basically this is just so that we don't try and destroy
         // the physics before it's been initalized
         PX_UNUSED(m_bInteractive);
-
-        gVehicleNoDrive->getRigidDynamicActor()->release();
-        gVehicleNoDrive->free();
-        gGroundPlane->release();
+        for (PxVehicleNoDrive *vehicle : vehicles) {
+            vehicle->getRigidDynamicActor()->release();
+            vehicle->free();
+        }
+        for (PxRigidStatic *object : staticObjects) {
+            object->release();
+        }
         gBatchQuery->release();
         gVehicleSceneQueryData->free(gAllocator);
         gFrictionPairs->release();
@@ -319,34 +307,122 @@ void PhysicsManager::cleanupPhysics()
 //    functions private. This will ensure that only Physics Components can call these functions
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
+PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float scale,string filename) {
+    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(generateMesh(filename,scale)), *gMaterial);
+    PxTransform localTm(PxVec3(x, y, z));
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    body->attachShape(*shape);
+    gScene->addActor(*body);
+    staticObjects.push_back(body);
+    return body;
+}
+const int MAXLINE = 256;
+PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
+    ifstream inFile(filename, ios::in);
+    vector<PxVec3> vertices;
+    vector<PxU32> verticesFinal;
+    while (inFile)
+    {
+        string currLine;
+        getline(inFile, currLine);
+        if (currLine[0] == 'v' && currLine[1] == ' ') {
+            currLine = currLine.substr(2, currLine.length() - 2);
+            stringstream ss(currLine);
+            PxVec3 vertex;
+            ss >> vertex.x;
+            ss >> vertex.y;
+            ss >> vertex.z;
+            vertex *= m_scale;
+            cout << vertex.x << "," << vertex.y << "," << vertex.z << "\n";
+            vertices.push_back(vertex);
+        }
+        else if (currLine[0] == 'f' && currLine[1] == ' ') {
+            currLine = currLine.substr(2, currLine.length() - 2);
+            stringstream ss;
+            PxU32 indice;
+            int i;
+            for (i = 0; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
+                ss << currLine[i];
+            }
+            ss >> indice;
+            std::cout << indice << ",";
+            stringstream ss2;
+            while (currLine[i] != ' ')
+                i++;
+            i++;
+            for (; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
+                ss2 << currLine[i];
+            }
+            PxU32 indice2;
+            ss2 >> indice2;
+            std::cout << indice2 << ",";
+            stringstream ss3;
+            while (currLine[i] != ' ')
+                i++;
+            i++;
+            for (; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
+                ss3 << currLine[i];
+            }
+            PxU32 indice3;
 
-PxRigidDynamic *PhysicsManager::createCubeObject(float x,float y, float z, float size) {
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(size, size, size), *gMaterial);
-    PxTransform localTm(PxVec3(x, y, z));
-    PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
-    body->attachShape(*shape);
-    PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-    gScene->addActor(*body);
-    return body;
-    //physicsDynamicObject *sphere = new physicsDynamicObject();
-    //dynamicObjects.push_back(sphere);
+            ss3 >> indice3;
+            std::cout << indice3 << "\n";
+            verticesFinal.push_back(indice3);
+            verticesFinal.push_back(indice2);
+            verticesFinal.push_back(indice);
+
+        }
+
+    }
+    PxTolerancesScale scale;
+    PxCookingParams params(scale);
+    // disable mesh cleaning - perform mesh validation on development configurations
+    params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
+    // disable edge precompute, edges are set for each triangle, slows contact generation
+    params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+    // lower hierarchy for internal mesh
+    gCook->setParams(params);
+    PxTriangleMeshDesc meshDesc;
+    meshDesc.points.count = vertices.size();
+    meshDesc.points.stride = sizeof(PxVec3);
+    meshDesc.points.data = &vertices[0];
+
+    meshDesc.triangles.count = verticesFinal.size()/3;
+    meshDesc.triangles.stride = 3 * sizeof(PxU32);
+    meshDesc.triangles.data = &verticesFinal[0];
+
+    PxDefaultMemoryOutputStream writeBuffer;
+    bool status = gCook->cookTriangleMesh(meshDesc, writeBuffer);
+    if (!status){
+        std::cout << "cooking failed" << std::endl;
+        return NULL;
+    }
+    PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+    return gPhysics->createTriangleMesh(readBuffer);
 }
-PxRigidDynamic *PhysicsManager::createCubeObjectPlayer(float x, float y, float z, float size) {
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(0.05f, 0.05f, 0.05f), *gMaterial);
+PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeX, sizeY, sizeZ), *gMaterial);
     PxTransform localTm(PxVec3(x, y, z));
-    PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
-    PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
     gScene->addActor(*body);
+    staticObjects.push_back(body);
     return body;
-    //physicsDynamicObject *sphere = new physicsDynamicObject();
-    //dynamicObjects.push_back(sphere);
 }
-PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
+PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
+    PxShape* shape = gPhysics->createShape(PxSphereGeometry(radius), *gMaterial);
+    PxTransform localTm(PxVec3(x, y, z));
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    body->attachShape(*shape);
+    gScene->addActor(*body);
+    staticObjects.push_back(body);
+    return body;
+}
+PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
     //Create a vehicle that will drive on the plane.
-    snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc();
+    snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc(PxVec3(sizeX, sizeY, sizeZ));
     gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
-    PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxIdentity));
+    PxTransform startTransform(PxVec3(x, y+(vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), z), PxQuat(PxIdentity));
     gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);
     gScene->addActor(*gVehicleNoDrive->getRigidDynamicActor());
 
@@ -356,13 +432,10 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity() {
 
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
+    vehicles.push_back(gVehicleNoDrive);
 
     return gVehicleNoDrive;
-    //startBrakeMode();
-    //physicsDynamicObject *sphere = new physicsDynamicObject();
-    //dynamicObjects.push_back(sphere);
 }
-
 /********************************************************************************\
  * Private Functions                                                            *
 \********************************************************************************/
@@ -378,27 +451,6 @@ mat4 PhysicsManager::getMat4(PxTransform transform) {
 
     // Return mat4 matrix
     return returnMatrix;
-}
-
-// I made this a private function for PhysicsManager. As an outsider using PhysicsManager
-//    as a blackbox, I don't know what "createStack" means or why I want to call that function.
-//    I assume PhysicsManager knows what it means and what it wants to use it for, therefore, I assume
-//    this should be a private function.
-void PhysicsManager::createStack(const PxTransform& t, PxU32 size, PxReal halfExtent)
-{
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
-    for (PxU32 i = 0; i < size; i++)
-    {
-        for (PxU32 j = 0; j < size - i; j++)
-        {
-            PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-            PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
-            body->attachShape(*shape);
-            PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-            gScene->addActor(*body);
-        }
-    }
-    shape->release();
 }
 
 // Made this function private, externally this makes sense, but when and why it should
@@ -425,7 +477,6 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, gVehicleNoDrive->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
-
     gScene->simulate(timestep);
     gScene->fetchResults(true);
 }

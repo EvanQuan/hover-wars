@@ -27,11 +27,11 @@ public:
     void movePlayer(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeComponent(bool bStatic, Mesh const* pMeshReference,float x, float y, float z, float size);
-    void initializeComponent(bool bStatic, Mesh const* pMeshReference);
+    void initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb);
     vec3 getLinearVelocity();
     quat getRotation();
-
+    void flipVehicle();
+    void jumpVehicle();
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 

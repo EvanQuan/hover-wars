@@ -2,6 +2,9 @@
 #include "stdafx.h"
 #include <iostream>
 
+#define JUMP_FORCE 200000
+
+#define MAX_SPEED 100
 /*
 Angular momementum.
 
@@ -41,6 +44,9 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_bStatic = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
+}
+void PhysicsComponent::jumpVehicle() {
+    gVehicleNoDrive->getRigidDynamicActor()->addForce(PxVec3(0, JUMP_FORCE, 0));
 }
 void PhysicsComponent::releaseAllControls()
 {
@@ -101,24 +107,33 @@ PhysicsComponent::~PhysicsComponent()
 //    information that will be gathered by the Entity when they need it?
 void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
 {
-    // PHYSICSTODO: Provide Component Update functionality here.
+    PxVec3 vel = body->getLinearVelocity();
+    //std::cout << vel.magnitude() << std::endl;
+    /*if (vel.magnitude() > MAX_SPEED) {
+        //vel.normalize();
+        //body->setLinearVelocity(vel * MAX_SPEED);
+    }*/
 }
 
+// TODO
+// This will flip the vehicle over, however it will also reset it's x and y rotation
+// so it is possible to get wall clipping when calling this method. A better solution is
+// desirable.
+// TODO
+// sync this method to a button press.
+void PhysicsComponent::flipVehicle() {
+    PxTransform pxTrans = gVehicleNoDrive->getRigidDynamicActor()->getGlobalPose();
+    pxTrans.q = PxQuat(PxIdentity);
+    gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(pxTrans);
+}
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference)
+void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb)
 {
     // Set up Internal Static qualifier.
     m_bStatic = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity();
+    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(10,0,0,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
-
-    // PHYSICSTODO: Initialize Component with how the Entity wants it set up.
-    //    multiple versions of these Initialze functions may need to be employed to allow
-    //    Entities to choose the type of initialization they want.
-    //        For example: a Plane probably wnats a Plane bounding box, but a Billboard probably
-    //            wants a cylindrical bounding box and will set it up as it needs it.
-    //    Make these as general and apparent as possible while providing as much functionality as you can. 
 }
 
 // Returns the Rotation Quaternion for the Entity's body.
@@ -134,19 +149,6 @@ quat PhysicsComponent::getRotation()
     return quat(pCurrRotation.w, pCurrRotation.x, pCurrRotation.y, pCurrRotation.z);
 }
 
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, float x, float y, float z, float size)
-{
-    // Set up Internal Static qualifier.
-    m_bStatic = bStatic;
-    body = m_pPhysicsManager->createCubeObject(x,y,z,size);
-
-    // PHYSICSTODO: Initialize Component with how the Entity wants it set up.
-    //    multiple versions of these Initialze functions may need to be employed to allow
-    //    Entities to choose the type of initialization they want.
-    //        For example: a Plane probably wnats a Plane bounding box, but a Billboard probably
-    //            wants a cylindrical bounding box and will set it up as it needs it.
-    //    Make these as general and apparent as possible while providing as much functionality as you can. 
-}
 // Functionality provided to Entity for getting necessary information about
 //     their physics via their physics component.
 void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)

@@ -33,7 +33,7 @@
 #define MESH                   "mesh"
 #define CUBE                   "cube"
 #define SHADER                 "shader"
-
+#define CUBE                   "cube"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -216,7 +216,6 @@ void SceneLoader::createBot(vector< string > sData, int iLength)
 
     ENTITY_MANAGER->generateBotEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
 }
-
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
