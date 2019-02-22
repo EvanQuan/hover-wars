@@ -84,8 +84,8 @@ GameManager::~GameManager()
 bool GameManager::renderGraphics()
 {
     // Update Timer
-    m_pTimer.updateTime();
-    m_fFrameTime += m_pTimer.getFrameTime();
+    m_pTimer.updateTimeSinceLastFrame();
+    m_fFrameTime += m_pTimer.getFrameTimeSinceLastFrame();
 
     // Execute all commands for this frame
     m_pCommandHandler->executeAllCommands();

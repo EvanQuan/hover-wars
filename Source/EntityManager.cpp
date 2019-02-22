@@ -389,7 +389,7 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 void EntityManager::updateEnvironment(const Time& pTimer)
 {
     // Get the delta since the last frame and update based on that delta.
-    float fDeltaTime = static_cast<float>(pTimer.getFrameTime().count());
+    float fDeltaTime = static_cast<float>(pTimer.getFrameTimeSinceLastFrame().count());
         
     // UPDATES GO HERE
     m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
