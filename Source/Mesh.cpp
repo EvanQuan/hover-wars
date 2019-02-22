@@ -5,7 +5,7 @@
 /****************************\
  * Constants: For Materials *
 \****************************/
-const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.jpg";
+const string DEFAULT_DIFFUSE_MAP = "textures/defaultTexture.png";
 const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 
 /************************************\

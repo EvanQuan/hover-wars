@@ -32,5 +32,8 @@ void main(void)
 	
 	// Calculate the final color of the fragment
     color = vColorLinear;
+	//color = vec4(fs_in.ToCamera, 1.0);
+	//color = vec4(TexCoords, 0.0, 1.0);
+	//color = vec4(fs_in.NormalVector, 1.0);
 	//color = vec4(vec3(texture(DirectionalLightShadow, TexCoords).r), 1.0);
 }
