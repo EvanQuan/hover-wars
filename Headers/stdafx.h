@@ -40,6 +40,7 @@
 #include "Enums/eVariableCommand.h"
 #include "Enums/eBoundingBoxTypes.h"
 #include "Enums/eEntityTypes.h"
+#include "Enums/eCooldown.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"

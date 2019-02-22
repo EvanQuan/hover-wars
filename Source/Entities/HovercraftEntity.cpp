@@ -151,44 +151,38 @@ void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
 */
 bool HovercraftEntity::useAbility(eAbility ability)
 {
-    if (isOffCooldown(ability))
-    {
-        switch (ability)
-        {
-        case ABILITY_ROCKET:
-            return shootRocket();
-            break;
-        case ABILITY_SPIKES:
-            return activateSpikes();
-            break;
-        case ABILITY_TRAIL:
-            return activateTrail();
-            break;
-        case ABILITY_DASH_BACK:
-        case ABILITY_DASH_FORWARD:
-        case ABILITY_DASH_LEFT:
-        case ABILITY_DASH_RIGHT:
-            return dash(ability);
-            break;
-        default:
-            return false;
-        }
-    }
-    return false;
+    if (isOnCooldown(ability))
+        return false;
 
+    switch (ability)
+    {
+    case ABILITY_ROCKET:
+        shootRocket();
+        break;
+    case ABILITY_SPIKES:
+        activateSpikes();
+        break;
+    case ABILITY_TRAIL:
+        activateTrail();
+        break;
+    case ABILITY_DASH_BACK:
+    case ABILITY_DASH_FORWARD:
+    case ABILITY_DASH_LEFT:
+    case ABILITY_DASH_RIGHT:
+        dash(ability);
+        break;
+    default:
+        return false;
+    }
+    return true;
 }
 
 /*
-@return true is the ability is ready to be used
+@return true is the ability on cooldown and cannot be used.
 */
-bool HovercraftEntity::isOffCooldown(eAbility ability)
+bool HovercraftEntity::isOnCooldown(eAbility ability)
 {
-    return m_fCooldowns[ability] <= 0;
-}
-
-void HovercraftEntity::putOnCooldown(eAbility ability)
-{
-    m_fCooldowns[ability] <=
+    return m_fCooldowns[ability] > 0;
 }
 
 void HovercraftEntity::move(float x, float y)
@@ -204,25 +198,29 @@ void HovercraftEntity::turn(float x)
 /*
 @return true if ability successfully used
 */
-bool HovercraftEntity::shootRocket()
+void HovercraftEntity::shootRocket()
 {
     EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+
+    m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
 
 /*
 @return true is ability successfully used
 */
-bool HovercraftEntity::activateSpikes()
+void HovercraftEntity::activateSpikes()
 {
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
+
+    m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
 }
 
 /*
 @return true is ability successfully used
 */
-bool HovercraftEntity::activateTrail()
+void HovercraftEntity::activateTrail()
 {
     mat4 m4TransformMat;
     vec3 vNormal;
@@ -230,18 +228,18 @@ bool HovercraftEntity::activateTrail()
     vNormal = m4TransformMat[1];
     m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
 
-    return false;
+    // May not have a cooldown. May work on a fuel system instead.
+    // Will need to implement.
 }
 
 /*
 @return true is ability successfully used
 */
-bool HovercraftEntity::deactivateTrail()
+void HovercraftEntity::deactivateTrail()
 {
-    return false;
 }
 
-bool HovercraftEntity::dash(eAbility direction)
+void HovercraftEntity::dash(eAbility direction)
 {
     switch (direction)
     {
@@ -254,6 +252,4 @@ bool HovercraftEntity::dash(eAbility direction)
     case ABILITY_DASH_RIGHT:
         break;
     }
-    return false;
-
 }

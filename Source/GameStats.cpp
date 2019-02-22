@@ -105,7 +105,7 @@ float GameStats::get(ePlayer player, eCooldown cooldown)
 /*
 @return true is ability is ready to be used
 */
-bool GameStats::isOffCooldown(ePlayer player, eCooldown cooldown)
+bool GameStats::isOnCooldown(ePlayer player, eCooldown cooldown)
 {
     return cooldowns[player][cooldown] <= 0.0f;
 }
