@@ -121,8 +121,5 @@ private:
     void activateTrail();
     void deactivateTrail();
     void dash(eAbility direction);
-
-    // Cool downs
-    time_point<steady_clock> m_tTimeSinceLastRocket;
 };
 
