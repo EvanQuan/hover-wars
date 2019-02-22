@@ -35,14 +35,12 @@ public:
     void rotateCamera(vec2 pDelta);
     void zoomCamera(float fDelta);
     void intersectPlane(float fX, float fY);
-    void toggleDebugCamera();
-
-    // Must be set after getInstance() to avoid mutual getInstance() recursion
-    // with CommandHandler
-    CommandHandler* m_commandHandler;
 
     ePlayer m_eKeyboardPlayer;
 #ifndef NDEBUG
+    // User interface is public for debug puprposes
+    // so that debug commands can change the UI directly.
+    // TODO: Fix this design so that it doesn't change depending on Debug or Not
     UserInterface* m_pUserInterface;
 #endif
 
@@ -54,19 +52,34 @@ private:
 
     // Window Reference
     GLFWwindow* m_pWindow;
-    Time m_pTimer;
 
     // Update Variables
-    duration<float> m_fFrameTime;
-    duration<float> m_fMaxDeltaTime;
+    /*
+    The time since graphics have been initialized.
+    This is tracked to ensure that all values update correctly for every frame
+    update.
 
-    // Camera Boolean
-    bool m_bUseDebugCamera;
+    Unit: seconds
+    */
+    duration<float> m_fFrameTime;
+    /*
+    This depends the rate at which the window is re-rendered.
+    Since it is costly to re-render the window, it is locked to re-render at a
+    fixed rate, even if the enviroment updates at a faster rate.
+
+    Unit: seconds
+    */
+    duration<float> m_fMaxDeltaTime;
 
     // Manager Pointers
     EntityManager* m_pEntityManager;
     ShaderManager* m_pShaderManager;
+    CommandHandler* m_pCommandHandler;
+    GameTime m_pTimer;
+
 #ifdef NDEBUG
+    // User interface is normally private.
+    // There is no reason for it to be public.
     UserInterface* m_pUserInterface;
 #endif
 };

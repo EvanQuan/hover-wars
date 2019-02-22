@@ -3,33 +3,61 @@
 
 using namespace std::chrono;
 
-// Typedef for 1/60th of a second: (60 fps)
-typedef duration<long, std::ratio<1, 60>> sixtieths_of_a_sec;
+/*
+Typedef for 1/60th of a second: (60 fps)
+This is used to determine the frame rate for rendering updates.
+*/
+typedef duration<long, std::ratio<1, 60>> sixtieth_of_a_sec;
 
 /***********************************************************
- * Time Class: Maintains the Time for the game logic.
- * Written by: James Cote
+ * GameTime Class: Maintains the Time for the game logic.
+ * Written by: James Cote, Evan Quan
 \************************************************************/
-class Time
+class GameTime
 {
 public:
-    // Constructor and Destructor
-    Time();
-    ~Time();
 
-    // Gets the current FrameTime
-    duration<double> getFrameTime() const { return m_pFrameTime;  }
-    void resetTimer();
+    // Constructor and Destructor
+    GameTime();
+    ~GameTime();
+
+    /*
+    Get the difference in time between the last updateTimeSinceLastFrame()
+    call and the second last updateTimeSinceLastFrame() call. If updateTIme()
+    has only been called once, compare it to when this GameTime object has been
+    instantiated.
+
+    @return time in seconds
+    */
+    duration<double> getFrameTimeSinceLastFrame() const { return m_pFrameTimeSinceLastFrame;  }
 
 private:
     // Time Recording Variables
+    /*
+    The time for the current frame since last update. This is used to determine
+    the real world time betweeen frames as well as for ability cool downs.
+    */
+    time_point<steady_clock> m_pCurrentTick;
+    /*
+    Last frame's m_pCurrentTick value. This is used to determine the real
+    world time between frames.
+    */
     time_point<steady_clock> m_pLastTick;
-    duration<double> m_pFrameTime; 
+    /*
+    The difference in time between this frame and the last.
+    */
+    duration<double> m_pFrameTimeSinceLastFrame;
 
-    // Private update function for Graphics Manager to call.
-    void updateTime();
+    /*
+    Private update function for Graphics Manager to call.
+    */
+    void updateTimeSinceLastFrame();
 
-    // Only allows Graphics Manager to update the timer.
+    void resetTimer();
+
+    /*
+    Only allows Graphics Manager to update the timer.
+    */
     friend class GameManager;
 };
 

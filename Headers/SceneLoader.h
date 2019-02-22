@@ -16,9 +16,9 @@ public:
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
     void createPlayer(vector< string > sData, int iLength);
+    void createCube(vector< string > sData, int iLength);
     void createBot(vector< string > sData, int iLength);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
-    void createStaticCube(vector< string > sData, int iLength);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
 
@@ -31,8 +31,6 @@ private:
     float m_fMeshScaleProperty;
     ObjectInfo m_pObjectProperties;
 
-    long m_lNextID;
-    long getNewID() { return ++m_lNextID; }
     void outputError( string sName, vector<string> sData );
     void pullData( ifstream& inFile, vector< string >& sReturnData );
     void handleData( vector< string >& sData, const string& sIndicator );

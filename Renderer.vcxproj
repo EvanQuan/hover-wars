@@ -15,6 +15,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dependencies\FMod\inc\fmod.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod.hpp" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_codec.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_common.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp_effects.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_errors.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_output.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.h" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.hpp" />
+    <ClInclude Include="Dependencies\FMod\inc\fmod_studio_common.h" />
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
@@ -40,12 +51,12 @@
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\Enums\eAbility.h" />
     <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h" />
+    <ClInclude Include="Headers\Enums\eCooldown.h" />
     <ClInclude Include="Headers\Enums\eEntityTypes.h" />
     <ClInclude Include="Headers\Enums\eFixedCommand.h" />
     <ClInclude Include="Headers\Enums\ePlayer.h" />
     <ClInclude Include="Headers\Enums\ePowerup.h" />
     <ClInclude Include="Headers\Enums\eVariableCommand.h" />
-    <ClInclude Include="Headers\EnvSpec.h" />
     <ClInclude Include="Headers\GameStats.h" />
     <ClInclude Include="Headers\GameTime.h" />
     <ClInclude Include="Headers\GameManager.h" />
@@ -63,12 +74,13 @@
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h" />
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
+    <ClInclude Include="Headers\SoundManager.h" />
     <ClInclude Include="Headers\SpatialDataMap.h" />
     <ClInclude Include="Headers\stb_image.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
-    <ClInclude Include="Headers\UserInterface\FontManager.h" />
+    <ClInclude Include="Headers\UserInterface\UIRenderer.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
     <ClInclude Include="resource.h" />
@@ -115,10 +127,11 @@
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp" />
     <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
+    <ClCompile Include="Source\SoundManager.cpp" />
     <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
-    <ClCompile Include="Source\UserInterface\FontManager.cpp" />
+    <ClCompile Include="Source\UserInterface\UIRenderer.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
     <ClCompile Include="TestClass.cpp" />
@@ -128,6 +141,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="Dependencies\FMod\inc\fmod.cs" />
+    <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />
+    <None Include="Dependencies\FMod\inc\fmod_errors.cs" />
+    <None Include="Dependencies\FMod\inc\fmod_studio.cs" />
+    <None Include="Sound\Master Bank.bank" />
+    <None Include="Sound\Master Bank.strings.bank" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\car_start.wav" />
+    <Media Include="Sound\rocket.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Dependencies\FMod\fmodL_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodstudioL_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodstudio_vc.lib" />
+    <Library Include="Dependencies\FMod\fmod_vc.lib" />
+    <Library Include="Dependencies\FMod\libfmod.a" />
+    <Library Include="Dependencies\FMod\libfmodL.a" />
+    <Library Include="Dependencies\FMod\libfmodstudio.a" />
+    <Library Include="Dependencies\FMod\libfmodstudioL.a" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>

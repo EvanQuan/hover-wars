@@ -13,11 +13,11 @@ public:
                     const string& sShaderType,
                     float fScale,
                     eBot botID);
-
 private:
 
-    // TODO What purpose does this serve?
-    // It is currently not doing anything.
+    /*
+    This ID is used for communicating with GameStats
+    */
     eBot m_eBotID; 
 };
 

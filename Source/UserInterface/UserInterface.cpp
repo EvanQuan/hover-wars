@@ -10,6 +10,7 @@ UserInterface::UserInterface(GLFWwindow* window)
     m_iDisplayCount = 0;
 
     m_pGameStats = GameStats::getInstance();
+    m_pUIRenderer = UIRenderer::getInstance(window);
 
     initializeUserInterface();
 
@@ -29,6 +30,11 @@ UserInterface::~UserInterface()
     // Let go of Window
     m_pWindow = nullptr;
     m_pGameStats = nullptr;
+    if (nullptr != m_pUIRenderer)
+    {
+        delete m_pUIRenderer;
+    }
+
 }
 
 /*
@@ -73,11 +79,13 @@ void UserInterface::updateCooldowns()
 /*
 Set the number of UIs to display.
 Values:
-    0 - No UIs aree displayed. This should be done in the main menu (not in game).
+    0 - No UIs are displayed. This should be done in the main menu (not in game).
     1 - 1 player. This will display across the whole window.
     2 - 2 player. Each UI will display across 1/4 of the window.
     3 - 3 player. Each UI will display across 1/4 of the window.
     4 - 4 player. Each UI will display across 1/4 of the window.
+
+@TODO set count for main menu or pause menu
 */
 void UserInterface::setDisplayCount(int count)
 {

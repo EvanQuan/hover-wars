@@ -1,5 +1,5 @@
 
-uniform bool bUsingLinux = true;
+uniform bool bUsingLinux = false;
 float Rval = 1.0;	// Determines the Magnitude of the xtoon effect
 
 out vec4 color;

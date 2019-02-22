@@ -113,8 +113,10 @@ Texture* TextureManager::genDepthBuffer(unsigned int iWidth, unsigned int iHeigh
         // Set Texture Parameters
         pNewTexture->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         pNewTexture->setTexParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        pNewTexture->setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-        pNewTexture->setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+        pNewTexture->setTexParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        pNewTexture->setTexParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        pNewTexture->setTexParameterfv(GL_TEXTURE_BORDER_COLOR, borderColor);
 
         // Return the raw pointer to the caller
         pReturnTexture = pNewTexture.get();

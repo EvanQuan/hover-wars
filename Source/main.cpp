@@ -7,11 +7,9 @@
 #include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "Physics/PhysicsManager.h"
+#include "SoundManager.h"
 
 #include "..\TestClass.h"
-#ifdef USING_LINUX
-    #include <Magick++.h>
-#endif
 
 // Function Prototypes
 void ErrorCallback(int error, const char* description);
@@ -21,13 +19,15 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
 // Main entry point for the Graphics System
 int main()
 {
+    // Local Variables
     int iRunning = glfwInit();
-    int iHeight, iWidth;
+    int iWindowHeight, iWindowWidth;
     GLFWwindow* m_window = 0;
     GameManager* m_gameManager = 0;
     ShaderManager* m_shaderManager = 0;
     InputHandler* m_inputHandler = 0;
     PhysicsManager* m_pPhysicsManager = 0;
+    SoundManager* m_soundManager = 0;
 
     // Initialize GL and a window
     if (!iRunning)
@@ -38,23 +38,17 @@ int main()
     {
         // Set Error Callback and init window
         glfwSetErrorCallback( ErrorCallback );
-        iRunning = initializeWindow( &m_window, &iHeight, &iWidth, "Hover Wars" );
+        iRunning = initializeWindow( &m_window, &iWindowHeight, &iWindowWidth, "Hover Wars" );
 
-        #ifdef USING_LINUX
-                Magick::InitializeMagick("");    // Initializing Magick for Linux Only.
-        #endif
-
-        #ifdef USING_WINDOWS
-            // Initialize glew
-            glewExperimental = GL_TRUE;
-            if ( GLEW_OK != glewInit() )
-            {
-                cout << "Glew didn't initialize properly.  Exiting program." << endl;
-                cout << "GLEW ERROR: " << glewGetErrorString( iRunning ) << endl;
-                iRunning = false;
-            }
-            glGetError();
-        #endif
+        // Initialize glew
+        glewExperimental = GL_TRUE;
+        if ( GLEW_OK != glewInit() )
+        {
+            cout << "Glew didn't initialize properly.  Exiting program." << endl;
+            cout << "GLEW ERROR: " << glewGetErrorString( iRunning ) << endl;
+            iRunning = false;
+        }
+        glGetError();
 
         if (iRunning)
         {
@@ -64,7 +58,6 @@ int main()
 
             // Bind window to Game Manager
             m_gameManager = GameManager::getInstance(m_window);
-            m_gameManager->m_commandHandler = CommandHandler::getInstance(m_window);
 
             // Initialize the InputHandler for mouse, keyboard, controllers
             m_inputHandler = InputHandler::getInstance(m_window);
@@ -73,44 +66,35 @@ int main()
             iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
             m_shaderManager = SHADER_MANAGER;
 
-        #ifdef USING_WINDOWS
-            m_shaderManager->setUniformBool( ShaderManager::eShaderType::TOON_SHDR, "bUsingLinux", false );
-        #endif
+            // Initialize Sound
+            m_soundManager = SOUND_MANAGER;
+            m_soundManager->loadFiles();
 
             // Main loop
-            while (iRunning)
-            {
-                // do Graphics Loop
-                iRunning = m_gameManager->renderGraphics();
-            }
+            while (iRunning)                
+                iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
         }
 
         // Clean up!
-        if (nullptr != m_gameManager)
-        {
+        if (nullptr != m_gameManager)       // Game Manager
             delete m_gameManager;
-        }
 
-        if (nullptr != m_inputHandler)
-        {
+        if (nullptr != m_inputHandler)      // Input Handler
             delete m_inputHandler;
-        }
 
-        if (nullptr != m_pPhysicsManager)
-        {
+        if (nullptr != m_pPhysicsManager)   // Physics Manager
             delete m_pPhysicsManager;
-        }
+
+        if (nullptr != m_soundManager)
+            delete m_soundManager;
 
         glfwDestroyWindow(m_window);
     }
 
+    // Terminate Window
     glfwTerminate();
-    cout << "Finished Program, au revoir!" << endl;
 
-#ifdef DEBUG // To Read any debug info output in console before ending.
-    cin.get();
-#endif
-
+    // Exit Program
     return 0;
 }
 
@@ -135,10 +119,13 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
+    // GLFWwidmode mode reveals the monitor dimensions of the user.
+    //      mode->height     mode->width
+    // We can use these dimensions to dynamically create a window (and thus the User Interface)
+    // to match the user's monitor, instead of using hardcoded values.
     // return the Monitor's Height and Width
     *iHeight = mode->height;
     *iWidth = mode->width;
-
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -162,6 +149,7 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
     glfwMakeContextCurrent(*rWindow);
     return true;
 }
+
 // handles Window Resize events
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
 {
@@ -169,7 +157,5 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
     glViewport(0, 0, iWidth, iHeight);
 
     if ((iWidth != 0) && (iHeight != 0))
-    {
-        GameManager::getInstance(window)->resizedWindow(iHeight, iWidth);
-    }
+        GAME_MANAGER->resizedWindow(iHeight, iWidth);
 }

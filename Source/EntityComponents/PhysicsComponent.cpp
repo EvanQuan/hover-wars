@@ -14,7 +14,7 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 40.0f // 10000.0f
+#define MOVEMENT_FORCE 60.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -59,22 +59,15 @@ void PhysicsComponent::releaseAllControls()
     gVehicleNoDrive->setSteerAngle(2, 0.0f);
     gVehicleNoDrive->setSteerAngle(3, 0.0f);
 }
-void PhysicsComponent::movePlayer(float x, float y) {
-    float angle = -1 * atan(x / y);
-    float distance = sqrt(x*x + y * y);
-    if (y > 0) {
-        distance = -distance;
-    }
-    if (distance > 1) {
-        distance = 1;
-    }
+void PhysicsComponent::movePlayer(float x, float y) {   
     if (x != 0 || y != 0) {
         releaseAllControls();
         PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
         PxTransform globalTransform = carBody->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
         carBody->addForce(vForce * MOVEMENT_FORCE);
-
+        
+        float angle = y == 0 ? 0 : -1 * atan(x / y);
         gVehicleNoDrive->setSteerAngle(0, angle);
         gVehicleNoDrive->setSteerAngle(1, angle);
         gVehicleNoDrive->setSteerAngle(2, angle);

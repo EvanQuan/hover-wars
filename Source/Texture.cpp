@@ -34,6 +34,13 @@ void Texture::setTexParameter(GLenum eTexEnum, GLint iParam)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Texture::setTexParameterfv(GLenum eTexEnum, const GLfloat* pParams)
+{
+    glBindTexture(GL_TEXTURE_2D, m_TextureName);
+    glTexParameterfv(GL_TEXTURE_2D, eTexEnum, pParams);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 // Activate MipMaps for the texture. These are generated internally
 void Texture::genMipMaps()
 {
@@ -44,12 +51,20 @@ void Texture::genMipMaps()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-// Bind Texture for Drawing
-void Texture::bindTexture( ShaderManager::eShaderType eType, string sVarName )
+// Bind Texture for Drawing to a specified shader.
+void Texture::bindTexture( ShaderManager::eShaderType eType, string sVarName, unsigned int iIndex)
 {
     glActiveTexture( GL_TEXTURE0 + m_TextureName );
     glBindTexture( GL_TEXTURE_2D, m_TextureName );
-    SHADER_MANAGER->setUniformInt( eType, sVarName, m_TextureName );
+    SHADER_MANAGER->setUniformInt( eType, sVarName, m_TextureName, iIndex );
+}
+
+// Binds Texture to all Shaders
+void Texture::bindTextureAllShaders(string sVarName, unsigned int iIndex)
+{
+    glActiveTexture(GL_TEXTURE0 + m_TextureName);
+    glBindTexture(GL_TEXTURE_2D, m_TextureName);
+    SHADER_MANAGER->setUniformIntAll(sVarName, m_TextureName, iIndex);
 }
 
 void Texture::bindToFrameBuffer(GLuint iFrameBuffer, GLenum eAttachment, GLenum eTexTarget, GLint iLevel)

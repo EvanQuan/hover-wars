@@ -5,8 +5,7 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "InputHandler.h"
-#include "CommandHandler.h"
-#include "SceneLoader.h"
+#include "SoundManager.h"
 
 #ifndef NDEBUG
     #include "UserInterface/UserInterface.h"
@@ -49,7 +48,7 @@ public:
     {
         {COMMAND_ABILITY_ROCKET,         "Rocket"},
         {COMMAND_ABILITY_SPIKES,         "Spikes"},
-        {COMMAND_ABILITY_TRAIL,          "Trail"},
+        {COMMAND_ABILITY_TRAIL_ACTIVATE, "Trail"},
         {COMMAND_CAMERA_BACK,            "Camera Back"},
         {COMMAND_CAMERA_FRONT,           "Camera Front"},
         {COMMAND_DASH_BACK,              "Dash back"},
@@ -82,8 +81,8 @@ private:
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
 
-    void execute(HovercraftEntity *player, eFixedCommand command);
-    void execute(HovercraftEntity *player, eVariableCommand command, float x, float y);
+    void execute(HovercraftEntity *hovercraft, eFixedCommand command);
+    void execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y);
     // Internal variables
     // For keyboard command handling
     eFixedCommand m_pFixedCommand;
@@ -152,7 +151,6 @@ private:
     */
     map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
-        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL},
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
         {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
         {GLFW_KEY_ENTER,        COMMAND_MENU_START},
@@ -169,6 +167,7 @@ private:
     */
     map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_APOSTROPHE,   COMMAND_ABILITY_SPIKES},
         {GLFW_KEY_K,            COMMAND_DASH_BACK},
@@ -199,6 +198,7 @@ private:
 
     map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
     {
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_DEACTIVATE},
         {GLFW_KEY_COMMA,        COMMAND_CAMERA_FRONT},
     };
 
@@ -230,24 +230,26 @@ private:
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
         {BUTTON_BACK,           COMMAND_MENU_PAUSE},
         {BUTTON_START,          COMMAND_MENU_START},
-        {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL},
+        {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_ACTIVATE},
         {TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
     };
 
     map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
     {
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
+        {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_DEACTIVATE},
     };
 
 
     map<eFixedCommand, eAbility> m_fixedCommandToAbility =
     {
-        {COMMAND_ABILITY_ROCKET,    ABILITY_ROCKET},
-        {COMMAND_ABILITY_SPIKES,    ABILITY_SPIKES},
-        {COMMAND_ABILITY_TRAIL,     ABILITY_TRAIL},
-        {COMMAND_DASH_BACK,         ABILITY_DASH_BACK},
-        {COMMAND_DASH_FORWARD,      ABILITY_DASH_FORWARD},
-        {COMMAND_DASH_LEFT,         ABILITY_DASH_LEFT},
-        {COMMAND_DASH_RIGHT,        ABILITY_DASH_RIGHT},
+        {COMMAND_ABILITY_ROCKET,            ABILITY_ROCKET},
+        {COMMAND_ABILITY_SPIKES,            ABILITY_SPIKES},
+        {COMMAND_ABILITY_TRAIL_ACTIVATE,    ABILITY_TRAIL_ACTIVATE},
+        {COMMAND_ABILITY_TRAIL_DEACTIVATE,  ABILITY_TRAIL_DEACTIVATE},
+        {COMMAND_DASH_BACK,                 ABILITY_DASH_BACK},
+        {COMMAND_DASH_FORWARD,              ABILITY_DASH_FORWARD},
+        {COMMAND_DASH_LEFT,                 ABILITY_DASH_LEFT},
+        {COMMAND_DASH_RIGHT,                ABILITY_DASH_RIGHT},
     };
 };

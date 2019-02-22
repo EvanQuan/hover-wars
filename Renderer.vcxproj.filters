@@ -60,9 +60,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\EnvSpec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\ImageReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -101,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameTime.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
@@ -222,10 +216,43 @@
     <ClInclude Include="Headers\Utils\FuncUtils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\UserInterface\UserInterface.h">
-      <Filter>Header Files\UserInterface</Filter>
+    <ClInclude Include="Headers\SoundManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\UserInterface\FontManager.h">
+    <ClInclude Include="Dependencies\FMod\inc\fmod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_codec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp_effects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_errors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_output.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\FMod\inc\fmod_studio_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\UserInterface.h">
       <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\BotEntity.h">
@@ -233,6 +260,15 @@
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\UIRenderer.h">
+      <Filter>Header Files\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\eCooldown.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -274,9 +310,6 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameTime.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
@@ -371,14 +404,20 @@
     <ClCompile Include="Source\UserInterface\UserInterface.cpp">
       <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
-    <ClCompile Include="Source\UserInterface\FontManager.cpp">
-      <Filter>Source Files\UserInterface</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Entities\BotEntity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\HovercraftEntity.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\UIRenderer.cpp">
+      <Filter>Source Files\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameTime.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -388,5 +427,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include="Sound\Master Bank.bank" />
+    <None Include="Sound\Master Bank.strings.bank" />
+    <None Include="Dependencies\FMod\inc\fmod.cs" />
+    <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />
+    <None Include="Dependencies\FMod\inc\fmod_errors.cs" />
+    <None Include="Dependencies\FMod\inc\fmod_studio.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\car_start.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Sound\rocket.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Dependencies\FMod\fmod_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodL_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodstudio_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodstudioL_vc.lib" />
+    <Library Include="Dependencies\FMod\libfmod.a" />
+    <Library Include="Dependencies\FMod\libfmodL.a" />
+    <Library Include="Dependencies\FMod\libfmodstudio.a" />
+    <Library Include="Dependencies\FMod\libfmodstudioL.a" />
   </ItemGroup>
 </Project>

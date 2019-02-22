@@ -9,14 +9,55 @@ layout (std140, binding = 0) uniform Matrices
 	mat4 projection;
 	mat4 modelview;
 	mat4 modelviewInv;
+	mat4 dirLightSpaceMat;
+	mat4 spotLightSpaceMat[4];
 };
 
 // Defaulted to Chrome
 uniform Material sMaterial;
 in vec2 TexCoords;
 
+// Algorithm derived from:
+//	https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
+float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fLightDotNormal )
+{
+	// Shadow Bias to counter Shadow Acne
+	float fBias = 0.0005;
+	int iRange = 3;
+	float fDivisor = 49.0;
+	
+	// Perspective Division
+	vec3 vProjCoords = vFragPosLightSpace.xyz / vFragPosLightSpace.w;
+	
+	// transform to [0, 1] range
+	vProjCoords = vProjCoords * 0.5 + 0.5;
+
+	// Compute Return Shadow Value
+	float fReturnShadow = 0.0;
+	
+	vec2 texelSize = 1.0 / textureSize(sShadowMap, 0);
+	for( int iX = -iRange; iX <= iRange; ++iX )
+	{
+		for( int iY = -iRange; iY <= iRange; ++iY )
+		{
+			float pcfDepth = texture(sShadowMap, vProjCoords.xy + vec2(iX, iY) * texelSize).r;
+			fReturnShadow += (vProjCoords.z - fBias > pcfDepth ? 1.0 : 0.0);
+		}
+	}
+	
+	// Get average of kernel
+	fReturnShadow /= fDivisor;
+	
+	// Clamp the outside of the frustrum
+	if( vProjCoords.z > 1.0 )
+		fReturnShadow = 0.0;
+	
+	// Check whether current frag position is in shadow
+	return fReturnShadow;
+}
+
 // Calculates information about a specified directional light.
-vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
+vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFragPos )
 {	
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
 	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
@@ -33,12 +74,17 @@ vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera )
 		float specAngle = max( dot( vHalfDir, vNormal), 0.0);
 		specular = pow( specAngle, sMaterial.fShininess );
 	}
+	
+	// Get shadow value
+	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow, dot(vToLight, vNormal) );
 
 	// Apply Diffuse Value
 	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * lambertian * vec4(light.vDiffuse, 1.0);
 	
 	// Apply Specular value
 	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * specular * vec4(light.vSpecular, 1.0);
+	
+	colorLinear *= shadowValue;
 
 	// Apply Ambient Value
 	colorLinear += texture(sMaterial.vDiffuse, TexCoords ) * vec4(light.vAmbient, 1.0);

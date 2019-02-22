@@ -1,12 +1,15 @@
 #include "EntityHeaders/HovercraftEntity.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
+#include "SoundManager.h"
 
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
     : Entity(iID, *vPosition, entityType)
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
+
+    initializeCooldowns();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -18,6 +21,9 @@ HovercraftEntity::~HovercraftEntity()
  * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
+/*
+@param fSecondsSinceLastUpdate  delta time since last update
+*/
 void HovercraftEntity::update(float fTimeInMilliseconds)
 {
     // New Transformation Matrix
@@ -39,7 +45,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts();
+    updateCameraLookAts(fTimeInMilliseconds);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -80,31 +86,43 @@ void HovercraftEntity::initialize(const string& sFileName,
  * Private Functions                                                                                    *
 \********************************************************************************************************/
 
+void HovercraftEntity::initializeCooldowns()
+{
+    for (int ability = 0; ability < ABILITY_COUNT; ability++)
+    {
+        m_fCooldowns[ability] = 0.0f;
+    }
+
+    m_fTrailGauge = TRAIL_GAUGE_FULL;
+    m_fSecondsSinceLastFlame = 0.0f;
+}
+
 /*
 Updates an average for this player's cameras. This is what makes the camera
 sway as the player moves.
 */
-void HovercraftEntity::updateCameraLookAts()
+void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 {
-    updateCameraRotation();
-    updateCameraPosition();
+    updateCameraRotation(fSecondsSinceLastUpdate);
+    updateCameraPosition(fSecondsSinceLastUpdate);
+    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
-void HovercraftEntity::updateCameraRotation()
+void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
 {
     quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
 
-    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER;
+    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER * fSecondsSinceLastUpdate;
 
     m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
 }
 
-void HovercraftEntity::updateCameraPosition()
+void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
 {
     vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
 
-    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER;
+    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER * fSecondsSinceLastUpdate;
 
     // Update all the camera look at and rotation values based on the averaging calculations.
     m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
@@ -112,8 +130,74 @@ void HovercraftEntity::updateCameraPosition()
 
 }
 
-void HovercraftEntity::useAbility(eAbility ability)
+/*
+This will decrease the cooldown value all all abilities by the time that has
+passed.
+*/
+void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
 {
+    for (int i = 0; i < ABILITY_COUNT; i++)
+    {
+        float newCooldown = m_fCooldowns[i] - fSecondsSinceLastUpdate;
+        m_fCooldowns[i] = newCooldown > 0.0f ? newCooldown : 0.0f;
+    }
+    updateTrail(fSecondsSinceLastUpdate);
+    // check flame trail separately
+}
+
+/*
+Update the flame indepently over other abilities. Create particles at a
+constant rate if activated, and drain from the gauge.
+Otherwise, recharge.
+
+@TODO break this up into more functions
+*/
+void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
+{
+    if (m_bTrailActivated)
+    {
+        if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
+        {
+            m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
+    
+            if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+            {
+                mat4 m4TransformMat;
+                vec3 vNormal;
+                m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
+                vNormal = m4TransformMat[1];
+                m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+    
+                float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
+                m_fTrailGauge = newGaugeValue > TRAIL_GAUGE_EMPTY ?
+                    newGaugeValue : TRAIL_GAUGE_EMPTY;
+                // cout << "Seconds since last frame: " << fSecondsSinceLastUpdate << endl;
+                // cout << "Decrease: " << m_fTrailGauge << endl;
+                m_fSecondsSinceLastFlame = 0.0f;
+            }
+        }
+    }
+    else
+    {
+        m_fSecondsSinceTrailDeactivated += fSecondsSinceLastUpdate;
+
+        if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN)
+        {
+            float newGaugeValue = m_fTrailGauge + fSecondsSinceLastUpdate;
+            m_fTrailGauge = newGaugeValue < TRAIL_GAUGE_FULL ?
+                newGaugeValue : TRAIL_GAUGE_FULL;
+        }
+    }
+}
+
+/*
+@return true if ability successfully used
+*/
+bool HovercraftEntity::useAbility(eAbility ability)
+{
+    if (isOnCooldown(ability))
+        return false;
+
     switch (ability)
     {
     case ABILITY_ROCKET:
@@ -122,8 +206,11 @@ void HovercraftEntity::useAbility(eAbility ability)
     case ABILITY_SPIKES:
         activateSpikes();
         break;
-    case ABILITY_TRAIL:
+    case ABILITY_TRAIL_ACTIVATE:
         activateTrail();
+        break;
+    case ABILITY_TRAIL_DEACTIVATE:
+        deactivateTrail();
         break;
     case ABILITY_DASH_BACK:
     case ABILITY_DASH_FORWARD:
@@ -131,7 +218,18 @@ void HovercraftEntity::useAbility(eAbility ability)
     case ABILITY_DASH_RIGHT:
         dash(ability);
         break;
+    default:
+        return false;
     }
+    return true;
+}
+
+/*
+@return true is the ability on cooldown and cannot be used.
+*/
+bool HovercraftEntity::isOnCooldown(eAbility ability)
+{
+    return m_fCooldowns[ability] > 0;
 }
 
 void HovercraftEntity::move(float x, float y)
@@ -144,23 +242,44 @@ void HovercraftEntity::turn(float x)
     m_pPhysicsComponent->rotatePlayer(x);
 }
 
+/*
+Shoot a rocket and put it on cool down.
+*/
 void HovercraftEntity::shootRocket()
 {
-    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 100, false, 2.0f);
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+
+    m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
 
+/*
+Activate spikes and put it on cool down.
+*/
 void HovercraftEntity::activateSpikes()
 {
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
+    SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
+
+    m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
 }
 
+/*
+Activate trail and drain from the fuel gauge until it is deactivated.
+*/
 void HovercraftEntity::activateTrail()
 {
-    mat4 m4TransformMat;
-    vec3 vNormal;
-    m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
-    vNormal = m4TransformMat[1];
-    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+    m_bTrailActivated = true;
+    m_fSecondsSinceLastFlame = 0.0f;
+    m_fSecondsSinceTrailDeactivated = 0.0f;
+}
+
+/*
+Deactivate the trail and start recharging the fuel gauge.
+*/
+void HovercraftEntity::deactivateTrail()
+{
+    m_bTrailActivated = false;
 }
 
 void HovercraftEntity::dash(eAbility direction)
@@ -176,5 +295,4 @@ void HovercraftEntity::dash(eAbility direction)
     case ABILITY_DASH_RIGHT:
         break;
     }
-
 }

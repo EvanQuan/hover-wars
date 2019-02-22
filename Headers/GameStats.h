@@ -54,7 +54,7 @@ public:
     */
     enum eStat
     {
-        CURRENT_SCORE,
+        CURRENT_SCORE = 0,
         TOTAL_SCORE,
         TOTAL_KILLS,
         TOTAL_KILLS_AGAINST_PLAYER_1,
@@ -87,7 +87,7 @@ public:
 
     enum eAddScoreReason
     {
-        HIT_BOT,
+        HIT_BOT = 0,
         HIT_PLAYER_1,
         HIT_PLAYER_2,
         HIT_PLAYER_3,
@@ -98,22 +98,40 @@ public:
 
     enum eRemoveScoreReason
     {
-        HIT,
+        HIT = 0,
+    };
+
+    enum eCooldown
+    {
+        COOLDOWN_ROCKET = 0,
+        COOLDOWN_SPIKES,
+        COOLDOWN_TRAIL,
+        COOLDOWN_DASH,
+        COOLDOWN_COUNT,
     };
 
     ~GameStats();
 
-    void initializeStats();
+    void update(float fSecondsSinceLastUpdate);
 
+    // Stats
     int get(ePlayer player, eStat stat);
-
     void addScore(ePlayer player, eAddScoreReason reason);
-    void useAbility(ePlayer player, eAbility ability);
 
+    // Cooldowns
+    float get(ePlayer player, eCooldown cooldown);
+    void useAbility(ePlayer player, eAbility ability);
+    bool isOnCooldown(ePlayer player, eCooldown cooldown);
+
+    void initialize();
 
 private:
     GameStats();
     static GameStats* m_pInstance;
+
+    void initializeStats();
+    void initializeCooldowns();
+
 
     /*
     Overall game stats
@@ -122,6 +140,8 @@ private:
     efficiency.
     */
     int stats[MAX_PLAYER_COUNT][STAT_COUNT];
+
+    float cooldowns[MAX_PLAYER_COUNT][COOLDOWN_COUNT];
 
     // Actions
     void hitBot(ePlayer playerAttacker);

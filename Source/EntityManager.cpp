@@ -1,6 +1,11 @@
 #include "EntityManager.h"
 #include "EntityHeaders/StaticEntity.h"
 
+/***********\
+ * Defines *
+\***********/
+#define DEFAULT_HXW 1024
+
 /*************\
  * Constants *
 \*************/
@@ -9,6 +14,8 @@ const mat3 WORLD_COORDS = mat3(1.0);
 const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[0],
                                   WORLD_CENTER, WORLD_COORDS[1],
                                   WORLD_CENTER, WORLD_COORDS[2] };
+const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
+const GLfloat DEPTH_ZERO = 1.0f;
 
 // Initialize Static Instance Variable
 EntityManager* EntityManager::m_pInstance = nullptr;
@@ -20,8 +27,7 @@ EntityManager::EntityManager()
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     // Initialize Local Variables
-    m_iHeight            = START_HEIGHT;
-    m_iWidth             = START_WIDTH;
+    m_iHeight = m_iWidth = DEFAULT_HXW;
     m_bPause             = false;
     m_bDrawBoundingBoxes = false;
     m_bDrawSpatialMap    = false;
@@ -43,13 +49,15 @@ EntityManager::EntityManager()
     m_pShdrMngr->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
 }
 
-// Gets the instance of the environment manager.
+/*
+Does not requires window parameter. Assumes the Singleton instance has been
+instantiated beforehand.
+*/
 EntityManager* EntityManager::getInstance()
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new EntityManager();
-    }
+
     return m_pInstance;
 }
 
@@ -124,7 +132,8 @@ void EntityManager::resetFBO()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, m_iWidth, m_iHeight);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearBufferfv(GL_COLOR, 0, color);
+    glClearBufferfv(GL_DEPTH, 0, &DEPTH_ZERO);
     m_bShadowDraw = false;
 }
 
@@ -136,17 +145,20 @@ void EntityManager::resetFBO()
 void EntityManager::renderEnvironment( )
 {    
     // Local Variables
-    const LightingComponent* pDirectionalLightComponent = nullptr;
+    LightingComponent* pDirectionalLightComponent = nullptr;
 
     // Get Directional Light
     if (nullptr != m_pDirectionalLight)
     {
         pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
-        //pDirectionalLightComponent->setupShadowFBO();
-        //pDirectionalLightComponent->setupPMVMatrices();
-        //m_bShadowDraw = true;
-        //doRender();
-        //resetFBO();
+        pDirectionalLightComponent->setupShadowFBO();       // Set up Frame Buffer for Shadow
+        pDirectionalLightComponent->setupPMVMatrices();     // Set the Lighting ModelView and Projection Matrices for generating a Depth Buffer from Light Position
+        m_bShadowDraw = true;                               // Render For Shadow Map
+        glCullFace(GL_FRONT);
+        doRender();                                         // Do the Render
+        glCullFace(GL_BACK);
+        pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
+        resetFBO();                                         // Reset the Frame Buffer for typical rendering.
     }
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
@@ -281,6 +293,13 @@ void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, fl
     m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
+void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
+{
+    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewCube->loadAsCube(pObjectProperties, vDimensions, sShaderType);
+    m_pMasterEntityList.push_back(move(pNewCube));
+}
+
 // Generates a Static Mesh at a given location
 void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {
@@ -299,12 +318,6 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
     pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
     m_pPlayerEntityList.push_back(pNewPlayer.get()); 
     m_pMasterEntityList.push_back(move(pNewPlayer));
-}
-void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, float fScale, const string& sShaderType)
-{
-    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
-    pNewMesh->loadAsCube(fScale, pObjectProperties, sShaderType);
-    m_pMasterEntityList.push_back(move(pNewMesh));
 }
 
 /*
@@ -340,12 +353,13 @@ void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectPropertie
 
 // Generates a New Directional Light and stores it in the Entity Manager.
 //    If a Directional Light already exists, no new Directional Light will be created.
-void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor)
+void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
+                                            float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame)
 {
     if (nullptr == m_pDirectionalLight)
     {
         unique_ptr<DirectionalLight> pNewDirectionalLight = make_unique<DirectionalLight>(getNewEntityID());
-        pNewDirectionalLight->initialize(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor);
+        pNewDirectionalLight->initialize(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor, fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
 
         // Set the current Directional Light and store inside the Master Entity List.
         m_pDirectionalLight = pNewDirectionalLight.get();
@@ -379,14 +393,18 @@ void EntityManager::updateHxW(int iHeight, int iWidth)
 // Main Update Function
 // This function checks the timer and updates necessary components
 //    in the game world. No rendering is done here.
-void EntityManager::updateEnvironment(const Time& pTimer)
+void EntityManager::updateEnvironment(const GameTime pTimer)
 {
-    // Get the delta since the last frame and update based on that delta.
-    float fDeltaTime = static_cast<float>(pTimer.getFrameTime().count());
+    /*
+    Get the delta since the last frame and update based on that delta.
+
+    Unit: seconds
+    */
+    float fDeltaTime = static_cast<float>(pTimer.getFrameTimeSinceLastFrame().count());
         
     // UPDATES GO HERE
-    m_pEmtrEngn->update(fDeltaTime);
     m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
+    m_pEmtrEngn->update(fDeltaTime);
 
     // Iterate through all Entities and call their update with the current time.
     for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();

@@ -118,8 +118,12 @@ The world loads in from the file scene2.scene and can be modified as per the rul
 
 ## Libraries
 
-[OpenGL]
+[OpenGL 3.2.1](https://www.opengl.org/)
 
 [FTGL 2.1.3~rc5](https://sourceforge.net/projects/ftgl/)
 
+[FMod](https://www.fmod.com/)
+
 [GLFW 3.2.1](https://www.glfw.org/)
+
+[GLM 0.9.9](https://glm.g-truc.net/0.9.9/index.html)

@@ -8,9 +8,10 @@
 \***********/
 #define MAX_CHARS_PER_LINE     256
 #define MAX_SPHERE_PARAMS      4
+#define MAX_CUBE_PARAMS        6
 #define MAX_PLANE_PARAMS       8
 #define MAX_POINT_LIGHT_PARAMS 7
-#define MAX_DIR_LIGHT_PARAMS   12
+#define MAX_DIR_LIGHT_PARAMS   18
 #define MAX_SPOTLIGHT_PARAMS   10
 #define DEFAULT_SOFT_CUTOFF    5.f
 #define MAX_MESH_PARAMS        3
@@ -30,6 +31,7 @@
 #define MATERIAL               "material"
 #define BOUNDING               "bounding"
 #define MESH                   "mesh"
+#define CUBE                   "cube"
 #define SHADER                 "shader"
 #define CUBE                   "cube"
 
@@ -39,8 +41,6 @@ SceneLoader* SceneLoader::m_pInstance = nullptr;
 // Private Constructor
 SceneLoader::SceneLoader()
 {
-    m_lNextID = 0;
-
     clearProperties();
 }
 
@@ -48,9 +48,7 @@ SceneLoader::SceneLoader()
 SceneLoader* SceneLoader::getInstance()
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new SceneLoader();
-    }
 
     return m_pInstance;
 }
@@ -102,15 +100,24 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
 void SceneLoader::createDirectionalLight( vector< string > sData, int iLength )
 {
     vec3 vDirection, vDiffuseColor, vAmbientColor, vSpecularColor;
+    float fPosition, fNearPlane, fFarPlane, fShadowFrame;
+    unsigned int iShadowHeight, iShadowWidth;
 
     if ( MAX_DIR_LIGHT_PARAMS == iLength )
     {
-        vDirection = normalize( vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ ) );
-        vAmbientColor = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
-        vDiffuseColor = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
-        vSpecularColor = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
+        vDirection      = normalize( vec3( stof( sData[ 0 ] )/*dX*/, stof( sData[ 1 ] )/*dY*/, stof( sData[ 2 ] )/*dZ*/ ) );
+        vAmbientColor   = vec3( stof( sData[ 3 ] )/*aR*/, stof( sData[ 4 ] )/*aG*/, stof( sData[ 5 ] )/*aB*/ );
+        vDiffuseColor   = vec3(stof(sData[ 6 ])/*aR*/, stof(sData[ 7 ])/*aG*/, stof(sData[ 8 ])/*dB*/);
+        vSpecularColor  = vec3(stof(sData[ 9 ])/*sR*/, stof(sData[ 10 ])/*sG*/, stof(sData[ 11 ])/*sB*/);
+        fPosition       = stof(sData[12]);
+        fNearPlane      = stof(sData[13]);
+        fFarPlane       = stof(sData[14]);
+        iShadowHeight   = stoi(sData[15]);
+        iShadowWidth    = stoi(sData[16]);
+        fShadowFrame    = stof(sData[17]);
 
-        ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor);
+        ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor,
+                                                 fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
     }
     else
     {
@@ -174,6 +181,22 @@ void SceneLoader::createSpotLight(vector< string > sData, int iLength)
     }
 }
 
+// Generates a Cube from the given data from the file.
+void SceneLoader::createCube(vector< string > sData, int iLength)
+{
+    vec3 vDimensions;
+
+    if (MAX_CUBE_PARAMS == iLength)
+    {
+        m_pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+        vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
+
+        ENTITY_MANAGER->generateStaticCube(&m_pObjectProperties, &vDimensions);
+    }
+    else
+        outputError(CUBE, sData);
+}
+
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
@@ -193,11 +216,7 @@ void SceneLoader::createBot(vector< string > sData, int iLength)
 
     ENTITY_MANAGER->generateBotEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
 }
-void SceneLoader::createStaticCube(vector< string > sData, int iLength)
-{
-    m_pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
-    ENTITY_MANAGER->generateStaticCube(&m_pObjectProperties, stof(sData[3]), m_sShaderProperty);
-}
+
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 {
@@ -253,7 +272,7 @@ void SceneLoader::loadFromFile( string sFileName )
                 handleData( sData, sIndicator );
 
                 // Debugging
-            #ifdef DEBUG
+            #ifdef _DEBUG
                 cout << sIndicator << endl;
                 for ( unsigned int d = 0; d < sData.size(); ++d )
                     cout << sData[ d ] << endl;
@@ -348,10 +367,11 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createBot(sData, sData.size());
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
-    else if (CUBE == sIndicator)
-        createStaticCube(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information
         initializeSpatialMap(sData, sData.size());
+    else if (CUBE == sIndicator)                        // Parse Cube
+        createCube(sData, sData.size());
+
     clearProperties();
 }
 

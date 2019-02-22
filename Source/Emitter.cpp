@@ -81,9 +81,9 @@ void Emitter::initializeEmitter(unsigned int iMaxParticles,
 
 // Integrate Particle Positions, velocities and forces as well as updating the remaining duration for
 //    all particles.
-void Emitter::update(float fDelta)
+bool Emitter::update(float fDelta)
 {
-    // Store Time as float
+    // Store GameTime as float
     m_bReadyToDelete = true;
     m_pPositions.resize(m_pParticleList.size(), vec3(0.f));
 
@@ -116,6 +116,9 @@ void Emitter::update(float fDelta)
         m_bReadyToDelete = false;
         spawnNewParticle();
     }
+
+    // Return boolean saying that the emitter is ready to delete
+    return m_bReadyToDelete;
 }
 
 // Draw the Particles from the Emitter

@@ -87,10 +87,6 @@ public:
     The names of each joystick. This is only important for debugging purposes.
     */
     const char* m_pJoystickNames[MAX_PLAYER_COUNT];
-
-    // The only reason this needed is for mouse input, which may not actually
-    // be needed for the final product. ie. this may be removed later on.
-    GameManager* m_gameManager;
 private:
     // Singleton Variables
     InputHandler(GLFWwindow *rWindow);
@@ -99,7 +95,6 @@ private:
     void debugPrintJoystickButtons(int joystickID);
     void debugPrintJoystickInformation();
     void debugPrintJoystickInformation(int joystickID);
-    void debugToggleWireframe();
     void disconnectJoystick(int joystickID);
     void initializeJoystick(int joystickID);
     void initializeJoystickVariables();
@@ -107,13 +102,14 @@ private:
 
     static InputHandler* m_pInstance;
 
-    bool bWireFrameEnabled;
-
     // Mouse
     bool m_bTranslateFlag;
     bool m_bRotateFlag;
     glm::vec2 m_pInitialPos;
 
+    // The only reason this needed is for mouse input, which may not actually
+    // be needed for the final product. ie. this may be removed later on.
+    GameManager* m_gameManager;
 
     // Joysticks
     void updateJoystickButtonStates(int joystick);

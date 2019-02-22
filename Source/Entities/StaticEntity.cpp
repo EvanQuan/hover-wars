@@ -57,11 +57,13 @@ void StaticEntity::loadAsSphere(float fRadius, const ObjectInfo* pObjectProperti
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
     //m_pPhysicsComponent->initializeComponent(true, m_pMesh); // PHYSICSTODO
 }
-void StaticEntity::loadAsCube(float size, const ObjectInfo* pObjectProperties, const string& sShaderType) {
-    m_pMesh = MESH_MANAGER->generateCubeMesh(true,size,size,size,pObjectProperties);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
-    PHYSICS_MANAGER->createCubeObject(pObjectProperties->vPosition.x, pObjectProperties->vPosition.y, pObjectProperties->vPosition.z,size,size,size);
+void StaticEntity::loadAsCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
+{
+    m_pMesh = MESH_MANAGER->generateCubeMesh(true, vDimensions->x, vDimensions->y, vDimensions->z, pObjectProperties);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+
+    PHYSICS_MANAGER->createCubeObject(pObjectProperties->vPosition.x, pObjectProperties->vPosition.y, pObjectProperties->vPosition.z, vDimensions->x, vDimensions->y, vDimensions->z);
 }
 
 // Load a Static Mesh from a given file

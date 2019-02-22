@@ -45,12 +45,11 @@ public:
     Camera* generateCameraEntity();
     void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
     void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
+    void generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
     void generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );
     void generateStaticPointLight(const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
-    void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor );
-
-    void generateStaticCube(const ObjectInfo* pObjectProperties, float fScale, const string& sShaderType = "");
-
+    void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
+                                    float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame);
     void generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
@@ -76,7 +75,7 @@ public:
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
     void renderEnvironment( );
-    void updateEnvironment(const Time& pTimer);
+    void updateEnvironment(const GameTime pTimer);
     
     /*
     The command handler can get all the players to directly communicate to.

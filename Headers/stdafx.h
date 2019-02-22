@@ -20,13 +20,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/ext.hpp>
-#include "EnvSpec.h"
 #include "GameTime.h"
-
-#ifdef USING_WINDOWS
 #include <string>
 #include <glew.h>
-#endif
 #include <glfw3.h>
 
 // FreeType
@@ -36,13 +32,6 @@
 // PhysX
 #include "PxPhysicsAPI.h"
 
-#ifdef USING_LINUX
-#include <string.h>
-#include <memory>
-#define GLFW_INCLUDE_GLCOREARB
-#define GL_GLEXT_PROTOTYPES
-#endif
-
 // Game Enums
 #include "Enums/eAbility.h"
 #include "Enums/ePlayer.h"
@@ -51,6 +40,7 @@
 #include "Enums/eVariableCommand.h"
 #include "Enums/eBoundingBoxTypes.h"
 #include "Enums/eEntityTypes.h"
+#include "Enums/eCooldown.h"
 
 // Custom Data Structures
 #include "DataStructures/Bag.h"
@@ -67,9 +57,7 @@ using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE          128
-#define START_HEIGHT        1080
-#define START_WIDTH         1920
-#define STARTING_ENV        "scene2.scene"
+#define STARTING_ENV        "scene2.scene"  // file path
 #define LIGHT_MOVE_FACTOR   0.05f
 #define PI                  3.14159265f
 #define PI_2                6.28318530718f
@@ -134,6 +122,7 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define SCENE_LOADER        SceneLoader::getInstance()
 #define SHADER_MANAGER      ShaderManager::getInstance()
 #define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
+#define SOUND_MANAGER       SoundManager::getInstance()
 #define TEXTURE_MANAGER     TextureManager::getInstance()
 
 // From Boilerplate code,

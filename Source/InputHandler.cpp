@@ -3,13 +3,19 @@
 #include "InputHandler.h"
 #include "GameManager.h"
 #include "EntityManager.h"
+#include "SoundManager.h"
+
+/***********\
+ * Defines *
+\***********/
+#define ZOOM_SCALE 0.05f
 
 // Single Singleton instance
 InputHandler* InputHandler::m_pInstance = nullptr;
 
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
-    m_gameManager = GameManager::getInstance(rWindow);
+    m_gameManager = GAME_MANAGER;
     // Keyboard
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
@@ -20,8 +26,6 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
     // Controller
     initializeJoysticksAtStart();
     glfwSetJoystickCallback(InputHandler::joystickCallback);
-
-    bWireFrameEnabled = false;
 }
 
 /*
@@ -30,9 +34,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
-    {
         m_pInstance = new InputHandler(rWindow);
-    }
 
     return m_pInstance;
 }
@@ -53,14 +55,19 @@ should be done in the CommandHandler, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    if (GLFW_KEY_0 == key && action == GLFW_PRESS) {
+        // SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
+    }
+    if (GLFW_KEY_9 == key && action == GLFW_PRESS) {
+        SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+    }
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
     It is fastest to exit early while we can.
     */
     if (GLFW_KEY_UNKNOWN == key)
-    {
         return;
-    }
+
     /*
     Possible actions:
            GLFW_RELEASE = 0
@@ -99,70 +106,65 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     }
 }
 
-void InputHandler::debugToggleWireframe()
-{
-    bWireFrameEnabled = !bWireFrameEnabled;
-    if (bWireFrameEnabled)
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    }
-    else
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    }
-}
-
-
-// Mouse Button Callback
-// Handle mouse movement controls.
+/*
+Mouse Button Callback
+Handle mouse movement controls.
+*/
 void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    double fX, fY;
-
+    // Left Click
     if (GLFW_MOUSE_BUTTON_1 == button)
     {
-        glfwGetCursorPos(window, &fX, &fY);
-        if (GLFW_PRESS == action)
+        // Get current Cursor Position.
+        if (GLFW_PRESS == action)           // Start tracking for Left Mouse click
         {
             m_pInstance->mouseTStart();
+
+#ifdef _DEBUG   // Intersect Plane for some Testing
+            // Get cursor position
+            double fX, fY;
+            glfwGetCursorPos(window, &fX, &fY);
             m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
+#endif
         }
-        else if (GLFW_RELEASE == action)
-        {
+        else if (GLFW_RELEASE == action)    // Release tracking
             m_pInstance->mouseTEnd();
-        }
     }
-    if (GLFW_MOUSE_BUTTON_2 == button)
+    else if (GLFW_MOUSE_BUTTON_2 == button) // Right Click
     {
-        glfwGetCursorPos(window, &fX, &fY);
-        if (GLFW_PRESS == action)
-        {
+        if (GLFW_PRESS == action)           // Start tracking for Right Mouse Click
             m_pInstance->mouseRStart();
-        }
-        else if (GLFW_RELEASE == action)
-        {
+        else if (GLFW_RELEASE == action)    // end tracking
             m_pInstance->mouseREnd();
-        }
     }
 }
 
-// Handles input from Mouse Moves.
+/*
+ Handles input from Mouse Moves.
+@param window   the mouse corresponds to
+@param x        x-coordinate of the mouse in window coordinates
+@param y        y-coordinate of the mouse in window coordinates
+*/
 void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
     if (m_pInstance->m_bRotateFlag)
-    {
         m_pInstance->m_gameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
-    }
 
     // Set new current position
     m_pInstance->m_pInitialPos.x = (float) x;
     m_pInstance->m_pInitialPos.y = (float) y;
 }
 
-// Handle scroll wheel callbacks
+/*
+Handle scroll wheel callbacks
+
+@param window   the mouse corresponds to
+@param xoffset  of the mouse wheel
+@param yoffset  of the mouse wheel
+*/
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    m_pInstance->m_gameManager->zoomCamera((float) yoffset * 0.05f);
+    m_pInstance->m_gameManager->zoomCamera((float) yoffset * ZOOM_SCALE);
 }
 
 /*
@@ -186,7 +188,9 @@ void InputHandler::initializeJoysticksAtStart()
     }
 }
 
-// Initialize joystick variables before they are set
+/*
+Initialize joystick variables before they are set
+*/
 void InputHandler::initializeJoystickVariables()
 {
     for (int player = 0; player < MAX_PLAYER_COUNT; player++)
@@ -203,7 +207,9 @@ void InputHandler::initializeJoystickVariables()
     }
 }
 
-// Check all if all joysticks are connected
+/*
+Check all if all joysticks are connected
+*/
 void InputHandler::checkForPresentJoysticks()
 {
     for (int i = 0; i < MAX_PLAYER_COUNT; i++)
@@ -216,6 +222,8 @@ void InputHandler::checkForPresentJoysticks()
 /*
 Initializes a joysticks of a given joystickID. It will only initialize if the
 joystick is actually present.
+
+@param joystickID   to initialize
 */
 void InputHandler::initializeJoystick(int joystickID)
 {
@@ -235,7 +243,7 @@ void InputHandler::initializeJoystick(int joystickID)
     m_pJoystickNames[joystickID] = glfwGetJoystickName(joystickID);
 
 #ifdef NDEBUG
-    debugPrintJoystickInformation(joystickID);
+    // debugPrintJoystickInformation(joystickID);
 #endif
 }
 
@@ -320,6 +328,9 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
 #endif
 }
 
+/*
+Registers a joystick as not connected to the game.
+*/
 void InputHandler::disconnectJoystick(int joystickID)
 {
     m_pJoystickIsPresent[joystickID] = false;
@@ -327,8 +338,12 @@ void InputHandler::disconnectJoystick(int joystickID)
 
 }
 
-// Checks for joystick connection/disconnection
-// TODO true? Must be called in initialize() to avoid infinite getInstance() recursion
+/*
+Checks for joystick connection/disconnection.
+
+@param joystickID   to check
+@param event        to indicate what happened to joystick
+*/
 void InputHandler::joystickCallback(int joystickID, int event)
 {
     if (event == GLFW_CONNECTED)
@@ -369,6 +384,8 @@ alter after processing.
 Can only set values to just pressed and just released if there is a change in
 pressed/released state. Changes to pressed and released are made in the
 CommandHandler after the input has been processed.
+
+@param joystickID   to update
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
@@ -387,20 +404,25 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
         }
     }
     // Update triggers as buttons
-    if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] == TRIGGER_IS_NETURAL)
-    {
-        m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_RELEASED;
-    }
-    else if (m_joystickButtons[joystickID][TRIGGER_LEFT] != INPUT_PRESSED)
+    if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] > TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_LEFT] != INPUT_PRESSED)
     {
         m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_PRESSED;
     }
-    if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] == TRIGGER_IS_NETURAL)
+    else if (m_pJoystickAxes[joystickID][AXIS_LEFT_TRIGGER] == TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_LEFT] != INPUT_RELEASED)
     {
-        m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_RELEASED;
+        m_joystickButtons[joystickID][TRIGGER_LEFT] = INPUT_JUST_RELEASED;
     }
-    else if (m_joystickButtons[joystickID][TRIGGER_RIGHT] != INPUT_PRESSED)
+
+    if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] > TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_RIGHT] != INPUT_PRESSED)
     {
         m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_PRESSED;
+    }
+    else if (m_pJoystickAxes[joystickID][AXIS_RIGHT_TRIGGER] == TRIGGER_IS_NETURAL
+        && m_joystickButtons[joystickID][TRIGGER_RIGHT] != INPUT_RELEASED)
+    {
+        m_joystickButtons[joystickID][TRIGGER_RIGHT] = INPUT_JUST_RELEASED;
     }
 }
