@@ -4,7 +4,7 @@
 #define MASTER_BANK_PATH "Sound/Master Bank.bank"
 #define MASTER_BANK_STRINGS_PATH "Sound/Master Bank.strings.bank"
 
-#define MAX_CHANNELS 5
+#define MAX_CHANNELS 10
 #define NO_EXTRA_DRIVER_DATA 0
 
 using namespace std;
@@ -81,6 +81,9 @@ void SoundManager::play(eSoundEvent sound)
         break;
     case SOUND_HOVERCAR_IMPACT_WORLD:
         playEvent("event:/hovercraft_hit_world");
+        break;
+    case SOUND_HOVERCAR_DASH:
+        // playEvent("event:/");
         break;
     case SOUND_MUSIC_INGAME_LOOP:
         playEvent("event:/background_2");

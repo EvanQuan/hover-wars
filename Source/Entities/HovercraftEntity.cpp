@@ -363,8 +363,9 @@ Shoot a rocket and put it on cool down.
 */
 void HovercraftEntity::shootRocket()
 {
-    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
 
     m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
@@ -374,10 +375,13 @@ Activate spikes and put it on cool down.
 */
 void HovercraftEntity::activateSpikes()
 {
+    SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
+
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+
 }
 
 /*
@@ -385,6 +389,11 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
+    /*
+    Later, this should be split into starting and ending the trail event loop
+    */
+    SOUND_MANAGER->play(SoundManager::SOUND_TRAIL);
+
     m_bTrailActivated = true;
     m_fSecondsSinceLastFlame = 0.0f;
     m_fSecondsSinceTrailDeactivated = 0.0f;
@@ -400,6 +409,7 @@ void HovercraftEntity::deactivateTrail()
 
 void HovercraftEntity::dash(eAbility direction)
 {
+    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {
     case ABILITY_DASH_BACK:
