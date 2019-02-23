@@ -418,6 +418,7 @@ void EntityManager::updateEnvironment(const GameTime* pTimer)
         // UPDATES GO HERE
         m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
         m_pEmtrEngn->update(fDeltaTime);
+        // USER_INTERFACE->update(fDeltaTime);
 
         for (vector<PhysicsComponent*>::iterator iter = m_pPhysicsComponents.begin();
             iter != m_pPhysicsComponents.end();

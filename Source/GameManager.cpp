@@ -90,7 +90,7 @@ bool GameManager::renderGraphics()
 
     Unit: seconds
     */
-    float fDeltaTime = static_cast<float>(fTimeSinceLastFrame.count());
+    // float fDeltaTime = static_cast<float>(fTimeSinceLastFrame.count());
 
     // Execute all commands for this frame
     // These should be done before the environment updates so that the
@@ -116,7 +116,7 @@ bool GameManager::renderGraphics()
 
     // TODO the user interface updating may need to change to account for
     // time, similar to how the EntityManager does it.
-    m_pUserInterface->update(fDeltaTime);
+    // m_pUserInterface->update(fDeltaTime);
 
     // check for Window events
     glfwPollEvents();
