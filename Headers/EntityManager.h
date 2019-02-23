@@ -18,6 +18,7 @@
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "Physics/PhysicsManager.h"
 #include "SpatialDataMap.h"
+#include "UserInterface/UserInterface.h"
 
 // Environment Manager
 // Manages all objects in an environment

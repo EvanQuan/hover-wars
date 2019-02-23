@@ -83,14 +83,12 @@ bool GameManager::renderGraphics()
 {
     // Update Timer
     m_pTimer.updateTimeSinceLastFrame();
-    duration<double> fTimeSinceLastFrame = m_pTimer.getFrameTimeSinceLastFrame();
-    m_fFrameTime += fTimeSinceLastFrame;
+    m_fFrameTime += m_pTimer.getFrameTimeSinceLastFrame();
     /*
     Get the delta since the last frame and update based on that delta.
 
     Unit: seconds
     */
-    // float fDeltaTime = static_cast<float>(fTimeSinceLastFrame.count());
 
     // Execute all commands for this frame
     // These should be done before the environment updates so that the
@@ -98,6 +96,7 @@ bool GameManager::renderGraphics()
     m_pCommandHandler->executeAllCommands();
 
     // Update Environment
+    // includes UI
     m_pEntityManager->updateEnvironment(&m_pTimer);
 
     // call function to draw our scene
@@ -113,10 +112,6 @@ bool GameManager::renderGraphics()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
-
-    // TODO the user interface updating may need to change to account for
-    // time, similar to how the EntityManager does it.
-    // m_pUserInterface->update(fDeltaTime);
 
     // check for Window events
     glfwPollEvents();
