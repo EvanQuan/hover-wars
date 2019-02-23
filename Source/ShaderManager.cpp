@@ -44,7 +44,8 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
     make_pair<string, eShaderType>("blinn_phong_shdr", shader_Type::BLINN_PHONG_SHDR),
     make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
     make_pair<string, eShaderType>("boid_shdr", shader_Type::BOID_SHDR),
-    make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR)
+    make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR),
+    make_pair<string, eShaderType>("ui_shdr", shader_Type::UI_SHDR)
 };
 
 // Public - Not a singleton
