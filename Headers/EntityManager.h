@@ -18,6 +18,7 @@
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "Physics/PhysicsManager.h"
 #include "SpatialDataMap.h"
+#include "UserInterface/UserInterface.h"
 
 // Environment Manager
 // Manages all objects in an environment
@@ -64,7 +65,7 @@ public:
     AnimationComponent* generateAnimationComponent(int iEntityID);
 
     // Camera Management
-    void updateHxW(int iHeight, int iWidth);
+    void updateWidthAndHeight(int iWidth, int iHeight);
     void rotateCamera(vec2 pDelta); 
     void zoomCamera(float fDelta);
 

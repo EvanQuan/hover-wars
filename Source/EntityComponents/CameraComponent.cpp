@@ -31,10 +31,10 @@
 // Default Constructor:
 //        Requires an EntityID for the Entity that the component is a part of
 //            and a ComponentID issued by the EntityManager.
-CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iHeight, int iWidth)
+CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iWidth, int iHeight)
     : EntityComponent( iEntityID, iComponentID )
 {
-    updateHxW(iHeight, iWidth);
+    updateWidthAndHeight(iWidth, iHeight);
     m_m4Frame = mat4(1.0);
     setFOV_Y(FOV_Y);
     setZRange(Z_CLOSE, Z_FAR);
@@ -155,10 +155,10 @@ vec3 CameraComponent::getRay(float fX, float fY) const
 }
 
 // Handle logic for changing window size.
-void CameraComponent::updateHxW(int iHeight, int iWidth)
+void CameraComponent::updateWidthAndHeight(int iWidth, int iHeight)
 {
-    m_iHeight = iHeight;
     m_iWidth = iWidth;
+    m_iHeight = iHeight;
 
     m_fAspectRatio = (float)m_iWidth / (float)m_iHeight;
 }

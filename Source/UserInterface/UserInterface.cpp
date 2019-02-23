@@ -4,24 +4,34 @@
 // Singleton instance
 UserInterface* UserInterface::m_pInstance = nullptr;
 
-UserInterface::UserInterface(GLFWwindow* window)
+UserInterface::UserInterface(int iWidth, int iHeight)
 {
-    m_pWindow = window;
+    m_iWidth = iWidth;
+    m_iHeight = iHeight;
     m_iDisplayCount = 0;
 
     m_pGameStats = GameStats::getInstance();
-    m_pUIRenderer = UIRenderer::getInstance(window);
+    // m_pUIRenderer = UIRenderer::getInstance(window);
 
     initializeUserInterface();
 
 }
 
-UserInterface* UserInterface::getInstance(GLFWwindow* window)
+UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new UserInterface(window);
+        m_pInstance = new UserInterface(iWidth, iHeight);
     }
+    return m_pInstance;
+}
+
+/*
+Assumes already instantiated beforehand.
+*/
+UserInterface* UserInterface::getInstance()
+{
+    assert(nullptr != m_pInstance);
     return m_pInstance;
 }
 
@@ -38,21 +48,42 @@ UserInterface::~UserInterface()
 }
 
 /*
+Update the window width and height due to window resizing.
+*/
+void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
+{
+    m_iWidth = iWidth;
+    m_iHeight = iHeight;
+}
+
+/*
 This visually updates the UserInterface to all value changes since last update.
 
 Under the scenes, this retrieves all needed the values from GameStats and
-displays them.
+displays them. This is why it does not need a time value in order to determine
+time-sensitive information such as cooldown and game time.
+@TODO this may change later on.
 
-@TODO
+This should be called once per frame update.
+
 */
-void UserInterface::update()
+void UserInterface::update(float fSecondsSinceLastUpdate)
 {
     if (m_iDisplayCount > 0)
     {
         // system("CLS");
+        updateGameTime(fSecondsSinceLastUpdate);
         updateScores();
         updateCooldowns();
     }
+}
+
+/*
+
+*/
+void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
+{
+
 }
 
 /*
@@ -73,6 +104,15 @@ void UserInterface::updateScore(ePlayer player, int score)
 
 void UserInterface::updateCooldowns()
 {
+    // renderImage(IMAGE_TRAIL, 0, 0, 10);
+}
+
+void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
+{
+    // Enable transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
 }
 

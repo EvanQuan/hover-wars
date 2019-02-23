@@ -375,19 +375,25 @@ void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties,
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
-// Goes through all Existing Camera Components and updates their aspect ratio.
-void EntityManager::updateHxW(int iHeight, int iWidth)
+/*
+Goes through all Existing Camera Components and updates their aspect ratio.
+
+As the cameras' depend on knowing the current window dimensions in order to
+project the correct aspect ratio, they have have their window dimensions
+updated every time the the window is resized.
+*/
+void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
 {
     for (vector<CameraComponent*>::iterator iter = m_pCameraComponents.begin();
         iter != m_pCameraComponents.end();
         ++iter)
     {
-        (*iter)->updateHxW(iHeight, iWidth);
+        (*iter)->updateWidthAndHeight(iWidth, iHeight);
     }
 
-    // Store new Height and Width in case another Camera Component is created.
-    m_iHeight = iHeight;
+    // Store new Width and Height in case another Camera Component is created.
     m_iWidth = iWidth;
+    m_iHeight = iHeight;
 }
 
 // Main Update Function
@@ -412,6 +418,7 @@ void EntityManager::updateEnvironment(const GameTime* pTimer)
         // UPDATES GO HERE
         m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
         m_pEmtrEngn->update(fDeltaTime);
+        USER_INTERFACE->update(fDeltaTime);
 
         for (vector<PhysicsComponent*>::iterator iter = m_pPhysicsComponents.begin();
             iter != m_pPhysicsComponents.end();
@@ -443,7 +450,7 @@ to correspond camera components to their "owner" entity.
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
     // Generate new Camera Component
-    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iWidth, m_iHeight);
 
     // Store new Camera Component
     m_pCameraComponents.push_back(pNewCameraComponentPtr.get());

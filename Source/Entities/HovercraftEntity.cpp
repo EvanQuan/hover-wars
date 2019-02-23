@@ -32,6 +32,8 @@ Total time the trail can be activated from full to empty.
 @TODO why is the time value so different than all the other time values.
 They ALL behave like seconds, but not this.
 
+0.01f seems to be around 3 seconds
+
 Unit: seconds
 */
 #define TRAIL_GAUGE_FULL        0.01f
@@ -83,9 +85,18 @@ Unit: seconds
 #define BACK_RADIUS             12.0f   // r        meters
 
 // Camera Spring Constants
+/*
+This should always be zero.
+
+Units: meters
+*/
 #define CAMERA_REST_LENGTH 0.0f
-#define SPRING_MOVEMENT_CONSTANT 50.0f
-#define SPRING_ROTATION_CONSTANT 10.0f
+/*
+The larger the spring constant, the more elastic the spring is.
+To increase the camera lag, increase the camera spring constants.
+*/
+#define SPRING_MOVEMENT_CONSTANT 50.0f  // unitless
+#define SPRING_ROTATION_CONSTANT 20.0f  // unitless
 
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)

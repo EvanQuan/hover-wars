@@ -19,15 +19,15 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pShaderManager    = SHADER_MANAGER;
     m_pEntityManager    = ENTITY_MANAGER;
 
-    // Initialize User Interface
-    m_pUserInterface = UserInterface::getInstance(rWindow);
-    m_pUserInterface->setDisplayCount(0);
-
     // Fetch and update Window HxW
     m_pWindow = rWindow;
-    int iHeight, iWidth;
+    int iWidth, iHeight;
     glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-    m_pEntityManager->updateHxW(iHeight, iWidth);
+    m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
+
+    // Initialize User Interface
+    m_pUserInterface = UserInterface::getInstance(iWidth, iHeight);
+    m_pUserInterface->setDisplayCount(0);
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
@@ -41,8 +41,6 @@ Singleton Implementations
 Requires Window to initialize 
 
 @param rWindow to intialize
-@param iWindowWidth
-@param iWindowHeight
 */
 GameManager* GameManager::getInstance(GLFWwindow *rWindow)
 {
@@ -86,11 +84,19 @@ bool GameManager::renderGraphics()
     // Update Timer
     m_pTimer.updateTimeSinceLastFrame();
     m_fFrameTime += m_pTimer.getFrameTimeSinceLastFrame();
+    /*
+    Get the delta since the last frame and update based on that delta.
+
+    Unit: seconds
+    */
 
     // Execute all commands for this frame
+    // These should be done before the environment updates so that the
+    // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->executeAllCommands();
 
     // Update Environment
+    // includes UI
     m_pEntityManager->updateEnvironment(&m_pTimer);
 
     // call function to draw our scene
@@ -107,18 +113,21 @@ bool GameManager::renderGraphics()
         glfwSwapBuffers(m_pWindow);
     }
 
-    // TODO the user interface updating may need to change to account for
-    // time, similar to how the EntityManager does it.
-    m_pUserInterface->update();
-
     // check for Window events
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_pWindow);
 }
 
-// Function initializes shaders and geometry.
-// contains any initializion requirements in order to start drawing.
+/*
+Function initializes shaders and geometry.
+contains any initializion requirements in order to start drawing.
+
+@param sFileName    filepath to a proper .scene file that contains the
+                    necessary information about shaders,  and geometry
+                    in the scene.
+@return true if the shaders failed to initialize.
+*/
 bool GameManager::initializeGraphics( string sFileName )
 {
     // Locals
@@ -156,16 +165,28 @@ void GameManager::zoomCamera(float fDelta)
     m_pEntityManager->zoomCamera(fDelta);
 }
 
-// Called from Window Resize callback.
-//  Currently updates the Entity Manager with new Window Size, may require more functionality for menus, etc.
-void GameManager::resizedWindow( int iHeight, int iWidth )
+/*
+Called from Window Resize callback.
+Currently updates the Entity Manager with new Window Size, may require more
+functionality for menus, etc.
+
+@param iWidth   of the window after resizing
+@param iHeight  of the window after resizing
+*/
+void GameManager::resizeWindow( int iWidth, int iHeight )
 {
-    m_pEntityManager->updateHxW(iHeight, iWidth);
+    m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
+    m_pUserInterface->updateWidthAndHeight(iWidth, iHeight);
 }
 
-// Calculates an intersection given screen coordinates.
-// This is used for testing the particle emitter by spawning an emitter where
-// the mouse clicks the floor plane.
+/*
+Calculates an intersection given screen coordinates.
+This is used for testing the particle emitter by spawning an emitter where
+the mouse clicks the floor plane.
+
+@param fX   x-coordinate of the mouse in window coordinates
+@param fY   y-coordinate of the mouse in window coordinates
+*/
 void GameManager::intersectPlane(float fX, float fY)
 {
     // Local Variables
