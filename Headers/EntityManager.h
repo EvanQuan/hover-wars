@@ -64,7 +64,7 @@ public:
     AnimationComponent* generateAnimationComponent(int iEntityID);
 
     // Camera Management
-    void updateHxW(int iHeight, int iWidth);
+    void updateWidthAndHeight(int iWidth, int iHeight);
     void rotateCamera(vec2 pDelta); 
     void zoomCamera(float fDelta);
 

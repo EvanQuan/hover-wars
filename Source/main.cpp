@@ -157,5 +157,5 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
     glViewport(0, 0, iWidth, iHeight);
 
     if ((iWidth != 0) && (iHeight != 0))
-        GAME_MANAGER->resizedWindow(iHeight, iWidth);
+        GAME_MANAGER->resizeWindow(iWidth, iHeight);
 }

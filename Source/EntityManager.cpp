@@ -374,18 +374,18 @@ void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties,
 }
 
 // Goes through all Existing Camera Components and updates their aspect ratio.
-void EntityManager::updateHxW(int iHeight, int iWidth)
+void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
 {
     for (vector<CameraComponent*>::iterator iter = m_pCameraComponents.begin();
         iter != m_pCameraComponents.end();
         ++iter)
     {
-        (*iter)->updateHxW(iHeight, iWidth);
+        (*iter)->updateWidthAndHeight(iWidth, iHeight);
     }
 
-    // Store new Height and Width in case another Camera Component is created.
-    m_iHeight = iHeight;
+    // Store new Width and Height in case another Camera Component is created.
     m_iWidth = iWidth;
+    m_iHeight = iHeight;
 }
 
 // Main Update Function
@@ -434,7 +434,7 @@ to correspond camera components to their "owner" entity.
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
     // Generate new Camera Component
-    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iWidth, m_iHeight);
 
     // Store new Camera Component
     m_pCameraComponents.push_back(pNewCameraComponentPtr.get());

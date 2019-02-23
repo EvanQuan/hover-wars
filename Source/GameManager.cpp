@@ -19,15 +19,15 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pShaderManager    = SHADER_MANAGER;
     m_pEntityManager    = ENTITY_MANAGER;
 
-    // Initialize User Interface
-    m_pUserInterface = UserInterface::getInstance(rWindow);
-    m_pUserInterface->setDisplayCount(0);
-
     // Fetch and update Window HxW
     m_pWindow = rWindow;
     int iHeight, iWidth;
     glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-    m_pEntityManager->updateHxW(iHeight, iWidth);
+    m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
+
+    // Initialize User Interface
+    m_pUserInterface = UserInterface::getInstance(rWindow);
+    m_pUserInterface->setDisplayCount(0);
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
@@ -158,9 +158,9 @@ void GameManager::zoomCamera(float fDelta)
 
 // Called from Window Resize callback.
 //  Currently updates the Entity Manager with new Window Size, may require more functionality for menus, etc.
-void GameManager::resizedWindow( int iHeight, int iWidth )
+void GameManager::resizeWindow( int iWidth, int iHeight )
 {
-    m_pEntityManager->updateHxW(iHeight, iWidth);
+    m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
 }
 
 // Calculates an intersection given screen coordinates.

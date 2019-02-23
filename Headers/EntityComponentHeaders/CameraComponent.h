@@ -12,11 +12,11 @@ class CameraComponent :
     public EntityComponent
 {
 public:
-    CameraComponent(int iEntityID, int iComponentID, int iHeight, int iWidth);
+    CameraComponent(int iEntityID, int iComponentID, int iWidth, int iHeight);
     virtual ~CameraComponent();
 
     // Updating Functions
-    void updateHxW(int iHeight, int iWidth);
+    void updateWidthAndHeight(int iWidth, int iHeight);
     void update(float fTimeDeltaInMilliseconds); // Overloading virtual update function from Entity Component
 
     // Set up Camera Matrices
