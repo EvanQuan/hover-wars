@@ -195,6 +195,8 @@ player {
         2.0 5.0 2.5 
     }
 }
+# These player bounding box values are more accurate, but result in wacky physics
+# 1.2 3.8 1.8
 
 # bot {
 #     0 0 0
@@ -228,12 +230,25 @@ cube {
     }
 }
 
+# Wall
+# Player should not be able to pass this
 cube {
     0 5 50
     10 50 2
     +bounding {
         box
         10.0 50.0 2.0
+    }
+}
+
+# bump
+# Player should be able to move over this?
+cube {
+    20 0 20
+    0.25 2 2
+    +bounding {
+        box
+        0.25 2.0 2.0
     }
 }
 
