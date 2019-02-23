@@ -95,12 +95,16 @@ void UserInterface::updateScore(ePlayer player, int score)
 
 void UserInterface::updateCooldowns()
 {
-    // renderImage("images/trail.png", 0, 0, 10);
+    // renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-    
+    // Enable transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 }
 
 /*
