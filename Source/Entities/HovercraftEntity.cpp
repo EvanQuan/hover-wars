@@ -92,8 +92,8 @@ Units: meters
 */
 #define CAMERA_REST_LENGTH 0.0f
 /*
-The larger the spring constant, the more elastic the spring is.
-To increase the camera lag, increase the camera spring constants.
+The larger the spring constant, the stronger the spring effect.
+In order words, the spring will pull together faster the higher the constant is.
 */
 #define SPRING_MOVEMENT_CONSTANT 50.0f  // unitless
 #define SPRING_ROTATION_CONSTANT 20.0f  // unitless
