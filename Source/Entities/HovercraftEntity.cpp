@@ -32,6 +32,8 @@ Total time the trail can be activated from full to empty.
 @TODO why is the time value so different than all the other time values.
 They ALL behave like seconds, but not this.
 
+0.01f seems to be around 3 seconds
+
 Unit: seconds
 */
 #define TRAIL_GAUGE_FULL        0.01f
