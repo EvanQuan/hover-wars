@@ -222,6 +222,7 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand comm
     {
     case COMMAND_MOVE:
         hovercraft->move(x, y);
+        //SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
         break;
     case COMMAND_TURN:
         hovercraft->turn(x);

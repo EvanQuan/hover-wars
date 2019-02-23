@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "SoundManager.h"
 
+#define MASTER_BANK_PATH "Sound/Master Bank.bank"
+#define MASTER_BANK_STRINGS_PATH "Sound/Master Bank.strings.bank"
+
+#define MAX_CHANNELS 10
+#define NO_EXTRA_DRIVER_DATA 0
+
 using namespace std;
 
 // Initialize Static Instance Variable
@@ -13,7 +19,7 @@ SoundManager* SoundManager::m_pInstance = nullptr;
 SoundManager::SoundManager() {
     mpStudioSystem = NULL;
     errorCheck(FMOD::Studio::System::create(&mpStudioSystem));     // Create the studio system object.
-    errorCheck(mpStudioSystem->initialize(5, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));   // Initialize system.
+    errorCheck(mpStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
     // 5 - max channels
     // FMOD_STUDIO_INIT_LIVEUPDATE
     // 0 - no extra driver data
@@ -49,7 +55,43 @@ instances played simultaneously.
 */
 void SoundManager::play(eSoundEvent sound)
 {
-
+    update();
+    switch (sound)
+    {
+    case SOUND_ROCKET_ACTIVATE:
+        playEvent("event:/rocket_activate");
+        break;
+    case SOUND_ROCKET_EXPLOSION:
+        playEvent("event:/rocket_explosion");
+        break;
+    case SOUND_SPIKES_ACTIVATE:
+        //playEvent("event:/");
+        break;
+    case SOUND_SPIKES_IMPACT:
+        //playEvent("event:/");
+        break;
+    case SOUND_TRAIL:
+        playEvent("event:/trail");
+        break;
+    case SOUND_HOVERCAR_LOOP:
+        playEvent("event:/hovercraft_move");   // need flag
+        break;
+    case SOUND_HOVERCAR_IMPACT_HOVERCAR:
+        playEvent("event:/hovercraft_hit_hovercraft");
+        break;
+    case SOUND_HOVERCAR_IMPACT_WORLD:
+        playEvent("event:/hovercraft_hit_world");
+        break;
+    case SOUND_HOVERCAR_DASH:
+        // playEvent("event:/");
+        break;
+    case SOUND_MUSIC_INGAME_LOOP:
+        playEvent("event:/background_2");
+        break;
+    case SOUND_MUSIC_PAUSE_LOOP:
+        //m_pInstance->playEvent("");
+        break;
+    }
 }
 
 /*
@@ -126,14 +168,15 @@ avoid this, this is called after the Singleton instance is first instantiated
 in main().
 */
 void SoundManager::loadFiles() {
-    m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
-    m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
 
-    m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
-    m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
+    //m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
+    //m_pInstance->loadEvent("event:/SwordBattle");
+    //m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
 
-    m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
-    m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
+    //m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
+    //m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
 }
 
 void SoundManager::update() {
@@ -273,6 +316,11 @@ void SoundManager::loadEvent(const string& sEventName) {
     }
 }
 
+/*
+Play an event.
+
+@param sEventName   
+*/
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt == mEvents.end()) {
@@ -345,7 +393,7 @@ float SoundManager::volumeTodB(float volume) {
 
 int SoundManager::errorCheck(FMOD_RESULT result) {
     if (result != FMOD_OK) {
-        cout << "FMOD ERROR " << result << endl;
+        cout << "FMOD error: " << result << " (" << FMOD_ErrorString(result) << ")"<<endl;
         return 1;   // Error
     }
     return 0;   // No error
