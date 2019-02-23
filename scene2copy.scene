@@ -32,6 +32,8 @@
 # Object Instructions
 #
 # Many different objects can be specified with the following syntax:
+#       player  { x y z }
+#           - "x y z"               = the initial position of the player
 #       plane   { x y z  nX nY nZ  height  width }
 #           - "x y z"               = the position of the plane
 #           - "nX nY nZ"            = the normal of the plane 

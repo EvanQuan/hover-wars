@@ -32,9 +32,13 @@
 # Object Instructions
 #
 # Many different objects can be specified with the following syntax:
+#       player  { x y z }
+#           - "x y z"               = the initial position of the player
+#       bot     { x y z }
+#           - "x y z"               = the initial position of the bot
 #       plane   { x y z  nX nY nZ  height  width }
 #           - "x y z"               = the position of the plane
-#           - "nX nY nZ"            = the normal of the plane 
+#           - "nX nY nZ"            = the normal of the plane
 #                                   = the plane will be rotated to align with its normal
 #           - "height  width"       = the height and width of the plane
 #       sphere  { x y z  r }
@@ -176,17 +180,37 @@ plane {
 }
 
 # Mesh
+## player {
+#     0 0 0
+#     +mesh {
+#         models/big_dodge.obj
+#         0.25
+#     }
+#     +material {
+#         textures/tronBase.png
+#         0.1 0.1 0.1
+#         20.0
+#     }   
+#     +shader {
+#         blinn_phong_shdr
+#     }
+#     +bounding {
+#         box
+#         2.0 5.0 2.5 
+#     }
+# }
+
 player {
     0 0 0
     +mesh {
-        models/big_dodge.obj
-        0.25
+        models/missile.obj
+        0.01
     }
     +material {
         textures/tronBase.png
         0.1 0.1 0.1
         20.0
-    }   
+    }
     +shader {
         blinn_phong_shdr
     }
@@ -195,6 +219,7 @@ player {
         2.0 5.0 2.5 
     }
 }
+
 # These player bounding box values are more accurate, but result in wacky physics
 # 1.2 3.8 1.8
 
