@@ -58,14 +58,20 @@ time-sensitive information such as cooldown and game time.
 This should be called once per frame update.
 
 */
-void UserInterface::update()
+void UserInterface::update(float fSecondsSinceLastUpdate)
 {
     if (m_iDisplayCount > 0)
     {
         // system("CLS");
+        updateGameTime();
         updateScores();
         updateCooldowns();
     }
+}
+
+void UserInterface::updateGameTime()
+{
+
 }
 
 /*

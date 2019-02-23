@@ -397,14 +397,8 @@ void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
 // Main Update Function
 // This function checks the timer and updates necessary components
 //    in the game world. No rendering is done here.
-void EntityManager::updateEnvironment(const GameTime pTimer)
+void EntityManager::updateEnvironment(float fDeltaTime)
 {
-    /*
-    Get the delta since the last frame and update based on that delta.
-
-    Unit: seconds
-    */
-    float fDeltaTime = static_cast<float>(pTimer.getFrameTimeSinceLastFrame().count());
         
     // UPDATES GO HERE
     m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.

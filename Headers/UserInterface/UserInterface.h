@@ -20,7 +20,18 @@ public:
 
     ~UserInterface();
 
-    void update();
+    /*
+    This visually updates the UserInterface to all value changes since last update.
+    
+    Under the scenes, this retrieves all needed the values from GameStats and
+    displays them. This is why it does not need a time value in order to determine
+    time-sensitive information such as cooldown and game time.
+    @TODO this may change later on.
+    
+    This should be called once per frame update.
+    
+    */
+    void update(float fSecondsSinceLastUpdate);
 
     void setDisplayCount(int count);
 
@@ -33,6 +44,9 @@ private:
     void setScore(int joystickID, int score);
     void renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void initializeUserInterface();
+
+    // Game Time
+    void updateGameTime();
 
     // Score
     void initializeScores();

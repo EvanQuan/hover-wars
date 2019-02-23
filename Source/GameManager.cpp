@@ -83,13 +83,22 @@ bool GameManager::renderGraphics()
 {
     // Update Timer
     m_pTimer.updateTimeSinceLastFrame();
-    m_fFrameTime += m_pTimer.getFrameTimeSinceLastFrame();
+    duration<double> fTimeSinceLastFrame = m_pTimer.getFrameTimeSinceLastFrame();
+    m_fFrameTime += fTimeSinceLastFrame;
+    /*
+    Get the delta since the last frame and update based on that delta.
+
+    Unit: seconds
+    */
+    float fDeltaTime = static_cast<float>(fTimeSinceLastFrame.count());
 
     // Execute all commands for this frame
+    // These should be done before the environment updates so that the
+    // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->executeAllCommands();
 
     // Update Environment
-    m_pEntityManager->updateEnvironment(m_pTimer);
+    m_pEntityManager->updateEnvironment(fDeltaTime);
 
     // call function to draw our scene
     if (m_fFrameTime >= m_fMaxDeltaTime) // This locks the framerate to 60 fps
@@ -107,7 +116,7 @@ bool GameManager::renderGraphics()
 
     // TODO the user interface updating may need to change to account for
     // time, similar to how the EntityManager does it.
-    m_pUserInterface->update();
+    m_pUserInterface->update(fDeltaTime);
 
     // check for Window events
     glfwPollEvents();
