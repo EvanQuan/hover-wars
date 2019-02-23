@@ -44,7 +44,8 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
     make_pair<string, eShaderType>("blinn_phong_shdr", shader_Type::BLINN_PHONG_SHDR),
     make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
     make_pair<string, eShaderType>("boid_shdr", shader_Type::BOID_SHDR),
-    make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR)
+    make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR),
+    make_pair<string, eShaderType>("ui_shdr", shader_Type::UI_SHDR)
 };
 
 // Public - Not a singleton
@@ -101,6 +102,10 @@ ShaderManager::ShaderManager()
     // Shadow Shader
     m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/shadow.vert");
     m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/shadow.frag");
+
+    // UI Shader (does nothing)
+    m_pShader[eShaderType::UI_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/ui.vert");
+    m_pShader[eShaderType::UI_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/ui.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

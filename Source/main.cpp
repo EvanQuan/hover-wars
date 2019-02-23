@@ -71,6 +71,7 @@ int main()
             m_soundManager->loadFiles();
 
             // Main loop
+            m_gameManager->resetTime();
             while (iRunning)                
                 iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
         }
@@ -157,5 +158,5 @@ void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight)
     glViewport(0, 0, iWidth, iHeight);
 
     if ((iWidth != 0) && (iHeight != 0))
-        GAME_MANAGER->resizedWindow(iHeight, iWidth);
+        GAME_MANAGER->resizeWindow(iWidth, iHeight);
 }

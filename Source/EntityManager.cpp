@@ -5,6 +5,7 @@
  * Defines *
 \***********/
 #define DEFAULT_HXW 1024
+#define FRAMERATE sixtieth_of_a_sec{ 1 }
 
 /*************\
  * Constants *
@@ -25,6 +26,7 @@ EntityManager::EntityManager()
 {
     // Initialize ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;
+    m_fGameTime = seconds(0);
 
     // Initialize Local Variables
     m_iHeight = m_iWidth = DEFAULT_HXW;
@@ -154,9 +156,7 @@ void EntityManager::renderEnvironment( )
         pDirectionalLightComponent->setupShadowFBO();       // Set up Frame Buffer for Shadow
         pDirectionalLightComponent->setupPMVMatrices();     // Set the Lighting ModelView and Projection Matrices for generating a Depth Buffer from Light Position
         m_bShadowDraw = true;                               // Render For Shadow Map
-        glCullFace(GL_FRONT);
         doRender();                                         // Do the Render
-        glCullFace(GL_BACK);
         pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
         resetFBO();                                         // Reset the Frame Buffer for typical rendering.
     }
@@ -293,6 +293,13 @@ void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, fl
     m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
+void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
+{
+    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    pNewCube->loadAsCube(pObjectProperties, vDimensions, sShaderType);
+    m_pMasterEntityList.push_back(move(pNewCube));
+}
+
 // Generates a Static Mesh at a given location
 void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {
@@ -368,48 +375,67 @@ void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties,
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
-// Goes through all Existing Camera Components and updates their aspect ratio.
-void EntityManager::updateHxW(int iHeight, int iWidth)
+/*
+Goes through all Existing Camera Components and updates their aspect ratio.
+
+As the cameras' depend on knowing the current window dimensions in order to
+project the correct aspect ratio, they have have their window dimensions
+updated every time the the window is resized.
+*/
+void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
 {
     for (vector<CameraComponent*>::iterator iter = m_pCameraComponents.begin();
         iter != m_pCameraComponents.end();
         ++iter)
     {
-        (*iter)->updateHxW(iHeight, iWidth);
+        (*iter)->updateWidthAndHeight(iWidth, iHeight);
     }
 
-    // Store new Height and Width in case another Camera Component is created.
-    m_iHeight = iHeight;
+    // Store new Width and Height in case another Camera Component is created.
     m_iWidth = iWidth;
+    m_iHeight = iHeight;
 }
 
 // Main Update Function
 // This function checks the timer and updates necessary components
 //    in the game world. No rendering is done here.
-void EntityManager::updateEnvironment(const GameTime pTimer)
+void EntityManager::updateEnvironment(const GameTime* pTimer)
 {
-    /*
-    Get the delta since the last frame and update based on that delta.
+    m_fGameTime += pTimer->getFrameTimeSinceLastFrame();
+    constexpr auto pMaxDeltaTime = FRAMERATE;
+    float fDeltaTime = 0.0f;
 
-    Unit: seconds
-    */
-    float fDeltaTime = static_cast<float>(pTimer.getFrameTimeSinceLastFrame().count());
+   while (m_fGameTime > seconds{ 0 })
+   {
+        // Get the Delta of this time step <= 1/60th of a second (60 fps)
+        // Interpolate on steps < 1/60th of a second
+        duration<float> pDeltaTime =
+            std::min<common_type<decltype(m_fGameTime), decltype(pMaxDeltaTime)>::type>(m_fGameTime, pMaxDeltaTime);
+
+        m_fGameTime -= pDeltaTime;
+        fDeltaTime = static_cast<float>(pDeltaTime.count());
         
-    // UPDATES GO HERE
-    m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
-    m_pEmtrEngn->update(fDeltaTime);
+        // UPDATES GO HERE
+        m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
+        m_pEmtrEngn->update(fDeltaTime);
+        USER_INTERFACE->update(fDeltaTime);
 
-    // Iterate through all Entities and call their update with the current time.
-    for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
-        iter != m_pMasterEntityList.end();
-        ++iter)
-        (*iter)->update(fDeltaTime);
+        for (vector<PhysicsComponent*>::iterator iter = m_pPhysicsComponents.begin();
+            iter != m_pPhysicsComponents.end();
+            ++iter)
+            (*iter)->update(fDeltaTime);
+        // Iterate through all Entities and call their update with the current time.
+        for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
+            iter != m_pMasterEntityList.end();
+            ++iter)
+            (*iter)->update(fDeltaTime);
 
-    // Iteratre through all Animation Components to update their animations
-    for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
-        iter != m_pAnimationComponents.end();
-        ++iter)
-        (*iter)->update(fDeltaTime);
+        // Iteratre through all Animation Components to update their animations
+        for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
+            iter != m_pAnimationComponents.end();
+            ++iter)
+            (*iter)->update(fDeltaTime);
+   }
 }
 
 /*********************************************************************************\
@@ -424,7 +450,7 @@ to correspond camera components to their "owner" entity.
 CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 {
     // Generate new Camera Component
-    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iHeight, m_iWidth);
+    unique_ptr<CameraComponent> pNewCameraComponentPtr = make_unique<CameraComponent>(iEntityID, getNewComponentID(), m_iWidth, m_iHeight);
 
     // Store new Camera Component
     m_pCameraComponents.push_back(pNewCameraComponentPtr.get());

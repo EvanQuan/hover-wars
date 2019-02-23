@@ -23,6 +23,7 @@ public:
 
     void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType);
     void loadAsSphere(float fRadius, const ObjectInfo* pObjectProperties, const string& sShaderType);
+    void loadAsCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType);
     void loadFromFile(const string& sFileName, const ObjectInfo* pObjectProperties, const string& sShaderType, float fScale);
 
 private:

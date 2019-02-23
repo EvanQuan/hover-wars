@@ -18,6 +18,7 @@
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "Physics/PhysicsManager.h"
 #include "SpatialDataMap.h"
+#include "UserInterface/UserInterface.h"
 
 // Environment Manager
 // Manages all objects in an environment
@@ -45,6 +46,7 @@ public:
     Camera* generateCameraEntity();
     void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
     void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
+    void generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
     void generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );
     void generateStaticPointLight(const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
@@ -63,7 +65,7 @@ public:
     AnimationComponent* generateAnimationComponent(int iEntityID);
 
     // Camera Management
-    void updateHxW(int iHeight, int iWidth);
+    void updateWidthAndHeight(int iWidth, int iHeight);
     void rotateCamera(vec2 pDelta); 
     void zoomCamera(float fDelta);
 
@@ -74,7 +76,7 @@ public:
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
     void renderEnvironment( );
-    void updateEnvironment(const GameTime pTimer);
+    void updateEnvironment(const GameTime* pTimer);
     
     /*
     The command handler can get all the players to directly communicate to.
@@ -92,6 +94,7 @@ private:
     // Entity Managing
     int m_iEntityIDPool, m_iComponentIDPool;
     int m_iHeight, m_iWidth;
+    duration<float> m_fGameTime;
     inline int getNewEntityID() { return ++m_iEntityIDPool; }
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
 
