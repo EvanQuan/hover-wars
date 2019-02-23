@@ -1,0 +1,319 @@
+# ============================================================
+# Scene file for rendering
+#
+# Instructions for reading this file:
+#   - lines beginning with ‘#’ are comments
+#   - all positions are expressed in world coords
+#
+# ============================================================
+# Lighting Instructions
+#
+# Lights can be described as:
+#       point_light         { x y z  r g b  p } 
+#           - "x y z"   = the Position of the light in World Space
+#           - "r g b"   = the color of the light
+#           - "p"       = power of the light
+#       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
+#           - "dX dY dZ"    = the direction of the light source
+#           - "aR aG aB"    = the ambient color of the light source
+#           - "dR dG dB"    = the diffuse color of the light source
+#           - "sR sG sB"    = the specular color of the light source
+#           - "P nP fP"     = The Position Offset (P) for the source of the Shadow Map
+#                           = As well as the Near Plane (nP) and the Far Plane (fP)
+#           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
+#       spotlight           { x y z  dX dY dZ  r g b  Phi  *softPhi* }
+#           - "x y z"       = the position of the light source
+#           - "dX dY dZ"    = the direction of the spotlight
+#           - "r g b"       = the color of the spotlight
+#           - "Phi"         = the cutoff angle (in degrees) specifying the radius of the spotlight
+#           - "*softPhi*"   = (Optional) a degree from the cutoff angle to smooth out hard edges, default is 5
+#
+# ============================================================
+# Object Instructions
+#
+# Many different objects can be specified with the following syntax:
+#       player  { x y z }
+#           - "x y z"               = the initial position of the player
+#       plane   { x y z  nX nY nZ  height  width }
+#           - "x y z"               = the position of the plane
+#           - "nX nY nZ"            = the normal of the plane 
+#                                   = the plane will be rotated to align with its normal
+#           - "height  width"       = the height and width of the plane
+#       sphere  { x y z  r }
+#           - "x y z"               = the position of the sphere
+#           - "r"                   = the radius of the sphere
+#       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
+#           - "x y z"               = the position of the cube
+#           - "height width depth"  = Specifies the dimensions of the cube
+#       static_mesh { x y z... }
+#           - "x y z..."            = the position of the mesh
+#                                   = multiple positions can be specified for instanced rendering
+#
+# ============================================================
+# Attributes
+#
+# For any object, additional attributes can be given in-line to specify additional
+#   aspects of an object. Those that can't be used for an object will be ignored.
+#
+#       +material   { <diffuse map location> <*specular map location*> S }
+#           - specifies a texture to use for the object.
+#           - <diffuse map location>    = specifies a texture to use as a diffuse map for the object
+#           - <*specular map location*> = (Optional) specifies a texture to use as a specular map.
+#                                       = (Optional) if specified as 3 floats, a texture of that shade will be generated.
+#           - S                         = specifies the shininess of the material
+#       +mesh       { <mesh location>  s }
+#           - specifies a mesh .obj that will be loaded for the object
+#           - if a mesh is expected, but no mesh is given, a cube will be used as default.
+#           - "s"                   = the scale of the mesh *Optional: Default is 1.0f*
+#       +shader     { <shader type> }
+#           - These are application specific and types are specified in
+#               ShaderManager.cpp.
+#           - if shader type is incorrect, or shader not specified, a simple
+#               diffuse shader will be used (PLANE_SHADER internally).
+#           - TODO: list valid <shader type> inputs here.
+#       +bounding   { "box"  h w l }
+#           - "box" :> specifies a cubic box to bound the object 
+#                   :> <h w l> - height width length as floats
+# ============================================================
+
+
+directional_light {
+    -1 -1 -1
+    0 0 0
+    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    1000.0 1.0 1200.0
+    4096 4096 100.0
+}
+
+spotlight {
+    50 6 -50
+    0 -1 0
+    0.3764705882352941 0.1843137254901961 0.4196078431372549
+    25.0
+    10.0
+}
+
+#Neon Blue Color : 0.2745098039215686 0.4 1.0
+spotlight {
+    20 6 -20
+    0 -1 0
+    0.2745098039215686 0.4 1.0
+    25.0
+    10.0
+}
+spotlight {
+    -20 6 20
+    0 -1 0
+    0.4941176470588235 0.9764705882352941 1.0
+    25.0
+    10.0
+}
+spotlight {
+    0 6 22
+    0 -1 0
+    1.0 0.1568627450980392 0.0
+    25.0
+    10.0
+}
+
+point_light {
+    0 5 22
+    0.0 1.0 0.0
+    5.0
+}
+
+point_light {
+    22 5 0
+    1.0 0.0 0.0
+    5.0
+}
+
+point_light {
+    0 5 -22
+    0.0 0.0 1.0
+    5.0
+}
+
+point_light {
+    -22 5 0
+    1.0 1.0 1.0
+    5.0
+}
+
+#Indices:
+#       0 - Num_Boids
+#       1 - Avoid Radius
+#       2 - Cohesion Radius
+#       3 - Gather Radius
+#       4 - Min Speed (length)
+#       5 - Max Speed (length)
+#       6 - Boundary Radius
+#       7 - Delta T
+#       8 - Scale
+#       9 - Texture Location (Optional)
+#       10 - Mesh Location (Optional)
+#boids {
+#   10000
+#   0.5 1.0 1.50
+#   5.0 8.0
+#   30.0 0.0005 1.0
+#   textures-256-256/fig-10c.png
+#   models/paper_airplane.obj
+#}
+
+## bottom
+plane {
+    0 0 0
+    0 1 0
+    100 100
+    +material {
+        textures/groundSeamless.jpg
+        0 0 0
+        0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
+# Mesh
+# player {
+    0 0 0
+    +mesh {
+        models/big_dodge.obj
+        0.25
+    }
+    +material {
+        textures/tronBase.png
+        0.1 0.1 0.1
+        20.0
+    }   
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        box
+        2.0 5.0 2.5 
+    }
+}
+
+# These player bounding box values are more accurate, but result in wacky physics
+# 1.2 3.8 1.8
+
+# playerasdf {
+    0 0 0
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.015
+    }
+    +material {
+        textures/tronBase.png
+        0.1 0.1 0.1
+        20.0
+    }   
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        box
+        2.0 5.0 2.5 
+    }
+}
+
+# bot {
+#     0 0 0
+#     +mesh {
+#         models/big_dodge.obj
+#         0.25
+#     }
+#     +material {
+#         textures/tronBase.png
+#         0.1 0.1 0.1
+#         20.0
+#     }
+#     +shader {
+#         blinn_phong_shdr
+#     }
+#     +bounding {
+#         box
+#         2.0 2.5 5.0
+#     }
+# }
+
+#       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
+#           - "x y z"               = the position of the cube
+#           - "height width depth"  = Specifies the dimensions of the cube
+cube {
+    5 1 5
+    2 2 2
+    +bounding {
+        box
+        2.0 2.0 2.0
+    }
+}
+
+# Wall
+# Player should not be able to pass this
+cube {
+    0 5 50
+    10 50 2
+    +bounding {
+        box
+        10.0 50.0 2.0
+    }
+}
+
+# bump
+# Player should be able to move over this?
+cube {
+    20 0 20
+    0.25 2 2
+    +bounding {
+        box
+        0.25 2.0 2.0
+    }
+}
+
+
+
+static_mesh {
+    0 0 -32.5
+    32.5 0 0
+    -32.5 0 32.5
+    0 0 32.5
+    32.5 0 32.5
+    -32.5 0 -32.5
+    -32.5 0 0
+    +mesh {
+        models/bunny.obj
+        5.0
+    }
+    +material {
+        textures/fig-7c.png
+        0.0
+    }
+    +shader {
+        toon_shdr
+    }
+    +bounding {
+        box
+        0.5 0.5 0.5
+    }
+}
+
+sphere {
+    3 4 -3 .5
+    +material {
+        textures/nightSpherical.jpg
+        textures/nightSphericalSpecMap.png
+        100.0
+    }
+}
+
+# Set Spatial Map information for the Scene
+# values are: length, width and tile size in that order.
+#   This will only be evaluated once and multiple specifications of the spatial_map will ignored.
+spatial_map {
+    100 100 10
+}
