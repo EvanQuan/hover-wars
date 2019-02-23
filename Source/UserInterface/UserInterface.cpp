@@ -39,12 +39,24 @@ UserInterface::~UserInterface()
 }
 
 /*
+Update the window width and height due to window resizing.
+*/
+void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
+{
+    m_iWidth = iWidth;
+    m_iHeight = iHeight;
+}
+
+/*
 This visually updates the UserInterface to all value changes since last update.
 
 Under the scenes, this retrieves all needed the values from GameStats and
-displays them.
+displays them. This is why it does not need a time value in order to determine
+time-sensitive information such as cooldown and game time.
+@TODO this may change later on.
 
-@TODO
+This should be called once per frame update.
+
 */
 void UserInterface::update()
 {
