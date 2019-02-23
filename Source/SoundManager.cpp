@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "SoundManager.h"
 
+#define MASTER_BANK_PATH "Sound/Master Bank.bank"
+#define MASTER_BANK_STRINGS_PATH "Sound/Master Bank.strings.bank"
+
+#define MAX_CHANNELS 5
+#define NO_EXTRA_DRIVER_DATA 0
+
 using namespace std;
 
 // Initialize Static Instance Variable
@@ -13,7 +19,7 @@ SoundManager* SoundManager::m_pInstance = nullptr;
 SoundManager::SoundManager() {
     mpStudioSystem = NULL;
     errorCheck(FMOD::Studio::System::create(&mpStudioSystem));     // Create the studio system object.
-    errorCheck(mpStudioSystem->initialize(5, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));   // Initialize system.
+    errorCheck(mpStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
     // 5 - max channels
     // FMOD_STUDIO_INIT_LIVEUPDATE
     // 0 - no extra driver data
@@ -159,8 +165,8 @@ avoid this, this is called after the Singleton instance is first instantiated
 in main().
 */
 void SoundManager::loadFiles() {
-    m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
-    m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
 
     //m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
     //m_pInstance->loadEvent("event:/SwordBattle");
@@ -307,6 +313,11 @@ void SoundManager::loadEvent(const string& sEventName) {
     }
 }
 
+/*
+Play an event.
+
+@param sEventName   
+*/
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt == mEvents.end()) {

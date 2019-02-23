@@ -55,6 +55,7 @@ should be done in the CommandHandler, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+
     if (GLFW_KEY_5 == key && action == GLFW_PRESS) {
         // SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
         SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
