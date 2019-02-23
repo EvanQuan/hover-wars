@@ -16,7 +16,7 @@ Retrieves its values from GameStats
 class UserInterface
 {
 public:
-    static UserInterface* getInstance(GLFWwindow* window);
+    static UserInterface* getInstance(int iWidth, int iHeight);
 
     ~UserInterface();
 
@@ -24,8 +24,10 @@ public:
 
     void setDisplayCount(int count);
 
+    void updateWidthAndHeight(int iWidth, int iHeight);
+
 private:
-    UserInterface(GLFWwindow* window);
+    UserInterface(int iWidth, int iHeight);
     static UserInterface* m_pInstance;
 
     void setScore(int joystickID, int score);
@@ -57,6 +59,8 @@ private:
 
     // Window reference
     GLFWwindow *m_pWindow;
+    int m_iWidth;
+    int m_iHeight;
 
     GameStats *m_pGameStats;
     UIRenderer *m_pUIRenderer;

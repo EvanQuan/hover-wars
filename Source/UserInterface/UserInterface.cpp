@@ -4,23 +4,24 @@
 // Singleton instance
 UserInterface* UserInterface::m_pInstance = nullptr;
 
-UserInterface::UserInterface(GLFWwindow* window)
+UserInterface::UserInterface(int iWidth, int iHeight)
 {
-    m_pWindow = window;
+    m_iWidth = iWidth;
+    m_iHeight = iHeight;
     m_iDisplayCount = 0;
 
     m_pGameStats = GameStats::getInstance();
-    m_pUIRenderer = UIRenderer::getInstance(window);
+    // m_pUIRenderer = UIRenderer::getInstance(window);
 
     initializeUserInterface();
 
 }
 
-UserInterface* UserInterface::getInstance(GLFWwindow* window)
+UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new UserInterface(window);
+        m_pInstance = new UserInterface(iWidth, iHeight);
     }
     return m_pInstance;
 }

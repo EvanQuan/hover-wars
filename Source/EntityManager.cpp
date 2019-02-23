@@ -373,7 +373,13 @@ void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties,
     m_pMasterEntityList.push_back(move(pNewLight));
 }
 
-// Goes through all Existing Camera Components and updates their aspect ratio.
+/*
+Goes through all Existing Camera Components and updates their aspect ratio.
+
+As the cameras' depend on knowing the current window dimensions in order to
+project the correct aspect ratio, they have have their window dimensions
+updated every time the the window is resized.
+*/
 void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
 {
     for (vector<CameraComponent*>::iterator iter = m_pCameraComponents.begin();
