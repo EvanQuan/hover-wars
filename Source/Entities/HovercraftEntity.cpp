@@ -207,26 +207,32 @@ void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 
 void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
 {
-    quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
-    float fSpring = SPRING_ROTATION_CONSTANT * (length(cameraRotationDirection) - CAMERA_REST_LENGTH);
+    quat qCurrRotation = m_pPhysicsComponent->getRotation();
+    if (qCurrRotation != m_qCurrentCameraRotation)
+    {
+        quat cameraRotationDirection = qCurrRotation - m_qCurrentCameraRotation;
+        float fSpring = SPRING_ROTATION_CONSTANT * (length(cameraRotationDirection) - CAMERA_REST_LENGTH);
 
-    m_qCurrentCameraRotation += (normalize(cameraRotationDirection) * fSpring) * fSecondsSinceLastUpdate;
+        m_qCurrentCameraRotation += (normalize(cameraRotationDirection) * fSpring) * fSecondsSinceLastUpdate;
 
-    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
-    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+        m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+        m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+    }
 }
 
 void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
 {
     vec3 cameraLength = m_vPosition - m_vCurrentCameraPosition;
-    float fSpring = SPRING_MOVEMENT_CONSTANT * (length(cameraLength) - CAMERA_REST_LENGTH);
 
-    m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
-
-    // Update all the camera look at and rotation values based on the averaging calculations.
-    m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
-
+    if (vec3(0.0f) != cameraLength) // Don't proceed if there's no change.
+    {
+        float fSpring = SPRING_MOVEMENT_CONSTANT * (length(cameraLength) - CAMERA_REST_LENGTH);
+        m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
+      
+        // Update all the camera look at and rotation values based on the averaging calculations.
+        m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + FRONT_CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + BACK_CAMERA_POSITION_OFFSET);
+    }
 }
 
 /*
