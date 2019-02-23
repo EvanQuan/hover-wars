@@ -1,5 +1,4 @@
-
-// NEON green color
+// Input color
 uniform vec4 vColor;
 
 // Output Fragment color
