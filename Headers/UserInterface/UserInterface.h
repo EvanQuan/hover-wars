@@ -20,6 +20,7 @@ class UserInterface
 {
 public:
     static UserInterface* getInstance(int iWidth, int iHeight);
+    static UserInterface* getInstance();
 
     ~UserInterface();
 

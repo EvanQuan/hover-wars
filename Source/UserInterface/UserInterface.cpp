@@ -26,6 +26,15 @@ UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
     return m_pInstance;
 }
 
+/*
+Assumes already instantiated beforehand.
+*/
+UserInterface* UserInterface::getInstance()
+{
+    assert(nullptr != m_pInstance);
+    return m_pInstance;
+}
+
 UserInterface::~UserInterface()
 {
     // Let go of Window
