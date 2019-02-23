@@ -427,12 +427,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
-    <None Include="Sound\Master Bank.bank" />
-    <None Include="Sound\Master Bank.strings.bank" />
     <None Include="Dependencies\FMod\inc\fmod.cs" />
     <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />
     <None Include="Dependencies\FMod\inc\fmod_errors.cs" />
     <None Include="Dependencies\FMod\inc\fmod_studio.cs" />
+    <None Include="..\..\..\..\Desktop\FmodStudioEngine-master\AudioAdventure\resource\Master Bank.bank" />
+    <None Include="..\..\..\..\Desktop\FmodStudioEngine-master\AudioAdventure\resource\Master Bank.strings.bank" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Sound\car_start.wav">

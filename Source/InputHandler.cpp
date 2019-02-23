@@ -55,11 +55,24 @@ should be done in the CommandHandler, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (GLFW_KEY_0 == key && action == GLFW_PRESS) {
+    if (GLFW_KEY_5 == key && action == GLFW_PRESS) {
         // SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
+        SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+    }
+    if (GLFW_KEY_6 == key && action == GLFW_PRESS) {
+        SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_EXPLOSION);
+    }
+    if (GLFW_KEY_7 == key && action == GLFW_PRESS) {
+        SOUND_MANAGER->play(SoundManager::SOUND_TRAIL);
+    }
+    if (GLFW_KEY_8 == key && action == GLFW_PRESS) {
+        SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
     }
     if (GLFW_KEY_9 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+        SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+    }
+    if (GLFW_KEY_0 == key && action == GLFW_PRESS) {
+        SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_INGAME_LOOP);
     }
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.

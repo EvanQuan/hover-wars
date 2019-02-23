@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
+#include "fmod_errors.h"
 #include <string>
 #include <map>
 #include <vector>
@@ -36,9 +37,10 @@ public:
         SOUND_SPIKES_ACTIVATE,
         SOUND_SPIKES_IMPACT,
 
-        SOUND_TRAIL_START,
-        SOUND_TRAIL_LOOP,
-        SOUND_TRAIL_END,
+        SOUND_TRAIL,        // combine as one
+        //SOUND_TRAIL_START,
+        //SOUND_TRAIL_LOOP,
+        //SOUND_TRAIL_END,
 
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,

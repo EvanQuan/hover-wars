@@ -49,6 +49,38 @@ instances played simultaneously.
 */
 void SoundManager::play(eSoundEvent sound)
 {
+    m_pInstance->update();
+    if (sound == SOUND_ROCKET_ACTIVATE) {
+        //SOUND_MANAGER->playSounds("Sound/hovercraft/bumper_car_go_loop.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
+        m_pInstance->playEvent("event:/rocket_activate");
+    }
+    else if (sound == SOUND_ROCKET_EXPLOSION) {
+        m_pInstance->playEvent("event:/rocket_explosion");
+    }
+    else if (sound == SOUND_SPIKES_ACTIVATE) {
+        //m_pInstance->playEvent("event:/");
+    }
+    else if (sound == SOUND_SPIKES_IMPACT) {
+        //m_pInstance->playEvent("event:/");
+    }
+    else if (sound == SOUND_TRAIL) {
+        m_pInstance->playEvent("event:/trail");
+    }
+    else if (sound == SOUND_HOVERCAR_LOOP) {
+        m_pInstance->playEvent("event:/hovercraft_move");   // need flag
+    }
+    else if (sound == SOUND_HOVERCAR_IMPACT_HOVERCAR) {
+        m_pInstance->playEvent("event:/hovercraft_hit_hovercraft");
+    }
+    else if (sound == SOUND_HOVERCAR_IMPACT_WORLD) {
+        m_pInstance->playEvent("event:/hovercraft_hit_world");
+    }
+    else if (sound == SOUND_MUSIC_INGAME_LOOP) {
+        m_pInstance->playEvent("event:/background_2");
+    }
+    else if (sound == SOUND_MUSIC_PAUSE_LOOP) {
+        //m_pInstance->playEvent("");
+    }
 
 }
 
@@ -129,11 +161,12 @@ void SoundManager::loadFiles() {
     m_pInstance->loadBank("Sound/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank("Sound/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
 
-    m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
-    m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
+    //m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
+    //m_pInstance->loadEvent("event:/SwordBattle");
+    //m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
 
-    m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
-    m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
+    //m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
+    //m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
 }
 
 void SoundManager::update() {
@@ -345,7 +378,7 @@ float SoundManager::volumeTodB(float volume) {
 
 int SoundManager::errorCheck(FMOD_RESULT result) {
     if (result != FMOD_OK) {
-        cout << "FMOD ERROR " << result << endl;
+        cout << "FMOD error: " << result << " (" << FMOD_ErrorString(result) << ")"<<endl;
         return 1;   // Error
     }
     return 0;   // No error
