@@ -49,39 +49,40 @@ instances played simultaneously.
 */
 void SoundManager::play(eSoundEvent sound)
 {
-    m_pInstance->update();
-    if (sound == SOUND_ROCKET_ACTIVATE) {
-        //SOUND_MANAGER->playSounds("Sound/hovercraft/bumper_car_go_loop.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
-        m_pInstance->playEvent("event:/rocket_activate");
-    }
-    else if (sound == SOUND_ROCKET_EXPLOSION) {
-        m_pInstance->playEvent("event:/rocket_explosion");
-    }
-    else if (sound == SOUND_SPIKES_ACTIVATE) {
-        //m_pInstance->playEvent("event:/");
-    }
-    else if (sound == SOUND_SPIKES_IMPACT) {
-        //m_pInstance->playEvent("event:/");
-    }
-    else if (sound == SOUND_TRAIL) {
-        m_pInstance->playEvent("event:/trail");
-    }
-    else if (sound == SOUND_HOVERCAR_LOOP) {
-        m_pInstance->playEvent("event:/hovercraft_move");   // need flag
-    }
-    else if (sound == SOUND_HOVERCAR_IMPACT_HOVERCAR) {
-        m_pInstance->playEvent("event:/hovercraft_hit_hovercraft");
-    }
-    else if (sound == SOUND_HOVERCAR_IMPACT_WORLD) {
-        m_pInstance->playEvent("event:/hovercraft_hit_world");
-    }
-    else if (sound == SOUND_MUSIC_INGAME_LOOP) {
-        m_pInstance->playEvent("event:/background_2");
-    }
-    else if (sound == SOUND_MUSIC_PAUSE_LOOP) {
+    update();
+    switch (sound)
+    {
+    case SOUND_ROCKET_ACTIVATE:
+        playEvent("event:/rocket_activate");
+        break;
+    case SOUND_ROCKET_EXPLOSION:
+        playEvent("event:/rocket_explosion");
+        break;
+    case SOUND_SPIKES_ACTIVATE:
+        //playEvent("event:/");
+        break;
+    case SOUND_SPIKES_IMPACT:
+        //playEvent("event:/");
+        break;
+    case SOUND_TRAIL:
+        playEvent("event:/trail");
+        break;
+    case SOUND_HOVERCAR_LOOP:
+        playEvent("event:/hovercraft_move");   // need flag
+        break;
+    case SOUND_HOVERCAR_IMPACT_HOVERCAR:
+        playEvent("event:/hovercraft_hit_hovercraft");
+        break;
+    case SOUND_HOVERCAR_IMPACT_WORLD:
+        playEvent("event:/hovercraft_hit_world");
+        break;
+    case SOUND_MUSIC_INGAME_LOOP:
+        playEvent("event:/background_2");
+        break;
+    case SOUND_MUSIC_PAUSE_LOOP:
         //m_pInstance->playEvent("");
+        break;
     }
-
 }
 
 /*
