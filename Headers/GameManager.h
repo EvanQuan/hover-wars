@@ -26,6 +26,7 @@ public:
     // Graphics Application
     bool initializeGraphics( string sFileName );
     bool renderGraphics();
+    void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height  Settings
     void resizeWindow(int iWidth, int iHeight);

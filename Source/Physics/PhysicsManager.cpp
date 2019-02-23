@@ -176,7 +176,7 @@ void PhysicsManager::update(float fTimeDelta)
     {
         // Don't reset to 0.0f as it's probably not at the Update Time Exactly.
         //    this preserves an accuracy w.r.t. the game timer.
-        m_fTimeSinceLastUpdate -= UPDATE_TIME_IN_SECONDS;
+        m_fTimeSinceLastUpdate = 0.0f;
 
         // Step Physics at 1/60th of a second.
         stepPhysics(UPDATE_TIME_IN_SECONDS); 

@@ -98,12 +98,12 @@ bool GameManager::renderGraphics()
     m_pCommandHandler->executeAllCommands();
 
     // Update Environment
-    m_pEntityManager->updateEnvironment(fDeltaTime);
+    m_pEntityManager->updateEnvironment(&m_pTimer);
 
     // call function to draw our scene
-    if (m_fFrameTime >= m_fMaxDeltaTime) // This locks the framerate to 60 fps
+    while (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
     {
-        m_fFrameTime = duration<float>(0.0f);
+        m_fFrameTime = seconds{ 0 };
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);

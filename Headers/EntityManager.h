@@ -75,7 +75,7 @@ public:
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
     void renderEnvironment( );
-    void updateEnvironment(float fDeltaTime);
+    void updateEnvironment(const GameTime* pTimer);
     
     /*
     The command handler can get all the players to directly communicate to.
@@ -93,6 +93,7 @@ private:
     // Entity Managing
     int m_iEntityIDPool, m_iComponentIDPool;
     int m_iHeight, m_iWidth;
+    duration<float> m_fGameTime;
     inline int getNewEntityID() { return ++m_iEntityIDPool; }
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
 
