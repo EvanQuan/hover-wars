@@ -83,9 +83,18 @@ Unit: seconds
 #define BACK_RADIUS             12.0f   // r        meters
 
 // Camera Spring Constants
+/*
+This should always be zero.
+
+Units: meters
+*/
 #define CAMERA_REST_LENGTH 0.0f
-#define SPRING_MOVEMENT_CONSTANT 50.0f
-#define SPRING_ROTATION_CONSTANT 10.0f
+/*
+The larger the spring constant, the more elastic the spring is.
+To increase the camera lag, increase the camera spring constants.
+*/
+#define SPRING_MOVEMENT_CONSTANT 50.0f  // unitless
+#define SPRING_ROTATION_CONSTANT 20.0f  // unitless
 
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
