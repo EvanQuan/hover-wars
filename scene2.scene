@@ -180,37 +180,17 @@ plane {
 }
 
 # Mesh
-## player {
-#     0 0 0
-#     +mesh {
-#         models/big_dodge.obj
-#         0.25
-#     }
-#     +material {
-#         textures/tronBase.png
-#         0.1 0.1 0.1
-#         20.0
-#     }   
-#     +shader {
-#         blinn_phong_shdr
-#     }
-#     +bounding {
-#         box
-#         2.0 5.0 2.5 
-#     }
-# }
-
 player {
     0 0 0
     +mesh {
-        models/missile.obj
-        0.01
+        models/big_dodge.obj
+        0.25
     }
     +material {
         textures/tronBase.png
         0.1 0.1 0.1
         20.0
-    }
+    }   
     +shader {
         blinn_phong_shdr
     }
@@ -219,6 +199,26 @@ player {
         2.0 5.0 2.5 
     }
 }
+
+#player {
+#    0 0 0
+#    +mesh {
+#        models/missile.obj
+#        0.01
+#    }
+#    +material {
+#        textures/tronBase.png
+#        0.1 0.1 0.1
+#        20.0
+#    }
+#    +shader {
+#        blinn_phong_shdr
+#    }
+#    +bounding {
+#        box
+#        2.0 5.0 2.5 
+#    }
+#}
 
 # These player bounding box values are more accurate, but result in wacky physics
 # 1.2 3.8 1.8
@@ -278,7 +278,7 @@ cube {
 }
 
 
-
+# Bunnies
 static_mesh {
     0 0 -32.5
     32.5 0 0
@@ -303,6 +303,39 @@ static_mesh {
         0.5 0.5 0.5
     }
 }
+
+# Rocket
+static_mesh {
+    -20 1 1
+    +mesh {
+        models/missile.obj
+        0.01
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
+# Other ships
+static_mesh {
+    -20 2 10
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
 
 sphere {
     3 4 -3 .5

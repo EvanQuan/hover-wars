@@ -36,7 +36,7 @@ Force : Newtons
 //                                 Entity Manager if needed.
 
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
-    : EntityComponent(iEntityID, iComponentID)
+    : EntityComponent(iEntityID, iComponentID), PxSimulationEventCallback()
 {
 #ifdef _DEBUG
     std::cout << "Physics Component constructor 2 vars" << std::endl;
@@ -164,6 +164,15 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
         *pReturnTransformMatrix = m_pTransformationMatrix;
     }
 }
+void PhysicsComponent::onContact(const PxContactPairHeader & pairHeader, const PxContactPair * pairs, PxU32 nbPairs)
+{
+    cout << "COLLISION DETECTED" << endl;
+}
+void PhysicsComponent::onTrigger(PxTriggerPair * pairs, PxU32 count)
+{
+    cout << "TRIGGER DETECTED" << endl;
+}
+
 glm::vec3 PhysicsComponent::getLinearVelocity() {
     physx::PxVec3 velocity = body->getLinearVelocity();
     return glm::vec3(velocity.x, velocity.y, velocity.z);
