@@ -26,6 +26,7 @@ public:
     // Graphics Application
     bool initializeGraphics( string sFileName );
     bool renderGraphics();
+    void resetTime() { m_pTimer.resetTimer(); }
 
     // HxW Settings
     void resizedWindow(int iHeight, int iWidth);

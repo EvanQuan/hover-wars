@@ -71,6 +71,7 @@ int main()
             m_soundManager->loadFiles();
 
             // Main loop
+            m_gameManager->resetTime();
             while (iRunning)                
                 iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
         }

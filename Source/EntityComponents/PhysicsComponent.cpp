@@ -4,7 +4,7 @@
 
 #define JUMP_FORCE 200000
 
-#define MAX_SPEED 100
+#define MAX_SPEED 500
 /*
 Angular momementum.
 
@@ -17,7 +17,7 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 40.0f // 10000.0f
+#define MOVEMENT_FORCE 50.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.

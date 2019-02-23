@@ -3,11 +3,108 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 
+/***********\
+ * Defines *
+\***********/
+
+// Ability Defines
+/*
+Rocket
+Spikes
+Trail
+Dash - (all 4 directions count as 1 ability for cool down purposes)
+*/
+#define ABILITY_COUNT           COOLDOWN_COUNT
+
+/*
+Cooldowns
+
+The time the hovercraft must wait until they can use the ability again.
+*/
+#define ROCKET_COOLDOWN         5.0f    // seconds
+#define SPIKES_COOLDOWN         10.0f   // seconds
+#define TRAIL_COOLDOWN          0.0f    // seconds
+#define DASH_COOLDOWN           5.0f    // seconds
+
+/*
+Total time the trail can be activated from full to empty.
+
+@TODO why is the time value so different than all the other time values.
+They ALL behave like seconds, but not this.
+
+Unit: seconds
+*/
+#define TRAIL_GAUGE_FULL        0.01f
+/*
+Represents the trail gauge is empty.
+*/
+#define TRAIL_GAUGE_EMPTY       0.0f
+/*
+Total time for the trail to recharge from empty to full.
+
+@NOTE: Currently unused. Right now the rate of drain and
+recharge are identical.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE          5.0f
+/*
+The interval of time between each created flame while the trail trail is
+activated.
+
+@TODO Flame interval should be based on distance, not time. In some sense, a
+line is simply being laid out, of which flame billboards are uniformly
+distributed across, meanining that the spacing is time invariant.
+
+Unit: seconds
+*/
+#define FLAME_INTERVAL          0.075f
+/*
+Delay time when the trail is deactivate and when the gauge begins to recharge.
+This makes spam toggling less effective.
+
+@TODO this is potentially not behaving in seconds, like the charge
+drain/recharge. Difficult to tell without visual indicators.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE_COOLDOWN 0.1f
+
+// Fire Defines
+#define FIRE_HEIGHT             2.0
+#define FIRE_WIDTH              2.0
+
+#define FRONT_CAMERA_LONGITUDE  -90.0f  // theta    degrees
+#define FRONT_CAMERA_LATITUDE   80.0f   // phi      degrees
+#define FRONT_RADIUS            10.0f   // r        meters
+
+#define BACK_CAMERA_LONGITUDE   -90.0f  // theta    degrees
+#define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
+#define BACK_RADIUS             12.0f   // r        meters
+
+// Camera Spring Constants
+#define CAMERA_REST_LENGTH 0.0f
+#define SPRING_MOVEMENT_CONSTANT 50.0f
+#define SPRING_ROTATION_CONSTANT 10.0f
+
+
+const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
+const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_RADIUS); // (Theta, Phi, Radius)
+/*
+The position of the camera relative to the position of the player. Both vectors
+will be added together to form the final camera position.
+*/
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-0, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-10, 0, 0);
+
+
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
     : Entity(iID, *vPosition, entityType)
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
+    m_qCurrentCameraRotation = quat();
+    m_vCurrentCameraPosition = vec3(0.0f);
 
     initializeCooldowns();
 }
@@ -111,8 +208,9 @@ void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
 {
     quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
+    float fSpring = SPRING_ROTATION_CONSTANT * (length(cameraRotationDirection) - CAMERA_REST_LENGTH);
 
-    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER * fSecondsSinceLastUpdate;
+    m_qCurrentCameraRotation += (normalize(cameraRotationDirection) * fSpring) * fSecondsSinceLastUpdate;
 
     m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
     m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
@@ -120,9 +218,10 @@ void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
 
 void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
 {
-    vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
+    vec3 cameraLength = m_vPosition - m_vCurrentCameraPosition;
+    float fSpring = SPRING_MOVEMENT_CONSTANT * (length(cameraLength) - CAMERA_REST_LENGTH);
 
-    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER * fSecondsSinceLastUpdate;
+    m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
 
     // Update all the camera look at and rotation values based on the averaging calculations.
     m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);

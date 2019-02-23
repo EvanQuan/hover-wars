@@ -38,6 +38,7 @@ CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iHeight, i
     m_m4Frame = mat4(1.0);
     setFOV_Y(FOV_Y);
     setZRange(Z_CLOSE, Z_FAR);
+    m_pRotation = quat();
 }
 
 // Default Copy Constructor
