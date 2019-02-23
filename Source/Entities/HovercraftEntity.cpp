@@ -20,11 +20,13 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 Cooldowns
 
 The time the hovercraft must wait until they can use the ability again.
+
+Units: seconds
 */
-#define ROCKET_COOLDOWN         5.0f    // seconds
-#define SPIKES_COOLDOWN         10.0f   // seconds
-#define TRAIL_COOLDOWN          0.0f    // seconds
-#define DASH_COOLDOWN           5.0f    // seconds
+#define ROCKET_COOLDOWN         5.0f
+#define SPIKES_COOLDOWN         10.0f
+#define TRAIL_COOLDOWN          0.0f
+#define DASH_COOLDOWN           5.0f
 
 /*
 Total time the trail can be activated from full to empty.
@@ -41,6 +43,7 @@ Unit: seconds
 Represents the trail gauge is empty.
 */
 #define TRAIL_GAUGE_EMPTY       0.0f
+
 /*
 Total time for the trail to recharge from empty to full.
 
