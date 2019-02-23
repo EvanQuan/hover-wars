@@ -50,6 +50,7 @@ recharge are identical.
 Unit: seconds
 */
 #define TRAIL_RECHARGE          5.0f
+
 /*
 The interval of time between each created flame while the trail trail is
 activated.
@@ -61,6 +62,7 @@ distributed across, meanining that the spacing is time invariant.
 Unit: seconds
 */
 #define FLAME_INTERVAL          0.075f
+
 /*
 Delay time when the trail is deactivate and when the gauge begins to recharge.
 This makes spam toggling less effective.
@@ -76,13 +78,67 @@ Unit: seconds
 #define FIRE_HEIGHT             2.0
 #define FIRE_WIDTH              2.0
 
-#define FRONT_CAMERA_LONGITUDE  -90.0f  // theta    degrees
-#define FRONT_CAMERA_LATITUDE   80.0f   // phi      degrees
-#define FRONT_RADIUS            10.0f   // r        meters
+/*
+Determines from what horizontal angle the camera is tracking the hovercraft.
+                   90
+                  -270
+                    |
+                    v                 
+     180 -----> hovercraft  <----- 0
+    -180            ^              360
+                    |
+                   270
+                   -90
 
+The front camera should be facing the hovercraft's backside.
+
+theta : degrees
+*/
+#define FRONT_CAMERA_LONGITUDE  -90.0f
+
+/*
+Determines the vertical angle the camera is tracking the hovercraft.
+          45      0
+            \     |
+             \    v
+    90 -----> hovercraft
+
+The front camera should be low enough to give the player as much vision ahead
+of them as possible. This will give more information on where to drive, as well
+as make aiming the rocket easier.
+
+phi : degrees
+*/
+#define FRONT_CAMERA_LATITUDE   80.0f
+
+/*
+Distance between the centre of the car and the look-at position.
+
+If negative, the camera will look behind the car's centre.
+*/
+#define FRONT_CAMERA_OFFSET     0       // r        meters
+
+/*
+Distance between look-at position and camera.
+*/
+#define FRONT_CAMERA_RADIUS     10.0f   // r        meters
 #define BACK_CAMERA_LONGITUDE   -90.0f  // theta    degrees
+
+/*
+This determines the pitch that the camera 
+*/
 #define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
-#define BACK_RADIUS             12.0f   // r        meters
+
+/*
+Distance between look-at position and camera.
+*/
+#define BACK_CAMERA_RADIUS      12.0f   // r        meters
+/*
+Distance between the centre of the car and the look-at position.
+
+If negative, the camera will look behind the car's centre.
+*/
+#define BACK_CAMERA_OFFSET      -10     // r        meters
 
 // Camera Spring Constants
 /*
@@ -93,20 +149,20 @@ Units: meters
 #define CAMERA_REST_LENGTH 0.0f
 /*
 The larger the spring constant, the stronger the spring effect.
-In order words, the spring will pull together faster the higher the constant is.
+In other words, the spring will pull together faster the higher the constant is.
 */
 #define SPRING_MOVEMENT_CONSTANT 50.0f  // unitless
 #define SPRING_ROTATION_CONSTANT 20.0f  // unitless
 
 
-const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_RADIUS); // (Theta, Phi, Radius)
-const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_RADIUS); // (Theta, Phi, Radius)
+const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_CAMERA_RADIUS); // (Theta, Phi, Radius)
+const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_CAMERA_RADIUS); // (Theta, Phi, Radius)
 /*
 The position of the camera relative to the position of the player. Both vectors
 will be added together to form the final camera position.
 */
-const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(-0, 0, 0);
-const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(-10, 0, 0);
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(FRONT_CAMERA_OFFSET, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(BACK_CAMERA_OFFSET, 0, 0);
 
 
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
