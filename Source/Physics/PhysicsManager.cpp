@@ -480,3 +480,13 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
     gScene->simulate(timestep);
     gScene->fetchResults(true);
 }
+
+void PhysicsManager::onContact(const PxContactPairHeader & pairHeader, const PxContactPair * pairs, PxU32 nbPairs)
+{
+    cout << "COLLISION DETECTED" << endl;
+}
+
+void PhysicsManager::onTrigger(PxTriggerPair * pairs, PxU32 count)
+{
+    cout << "TRIGGER DETECTED" << endl;
+}
