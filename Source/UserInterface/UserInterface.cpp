@@ -63,13 +63,16 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
     if (m_iDisplayCount > 0)
     {
         // system("CLS");
-        updateGameTime();
+        updateGameTime(fSecondsSinceLastUpdate);
         updateScores();
         updateCooldowns();
     }
 }
 
-void UserInterface::updateGameTime()
+/*
+
+*/
+void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
 }
@@ -92,7 +95,12 @@ void UserInterface::updateScore(ePlayer player, int score)
 
 void UserInterface::updateCooldowns()
 {
+    // renderImage("images/trail.png", 0, 0, 10);
+}
 
+void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
+{
+    
 }
 
 /*

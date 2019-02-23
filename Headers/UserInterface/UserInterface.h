@@ -43,10 +43,11 @@ private:
 
     void setScore(int joystickID, int score);
     void renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
+    void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void initializeUserInterface();
 
     // Game Time
-    void updateGameTime();
+    void updateGameTime(float fSecondsSinceLastUpdate);
 
     // Score
     void initializeScores();
