@@ -2,10 +2,6 @@
 #include "characterkinematic/PxControllerManager.h"
 #include "PxPhysicsAPI.h"
 #include "PxFoundation.h"
-/*
-Collisions
-*/
-#include "PxSimulationEventCallback.h"
 #include "stdafx.h"
 
 #include "vehicle/PxVehicleUtil.h"
@@ -14,6 +10,7 @@ Collisions
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <vector>
+
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan
@@ -27,7 +24,7 @@ Collisions
  *        Manager, but Entity Manager should know about Physics Manager for
  *        running that aspect of the engine.
 \************************************************************************************/
-class PhysicsManager : public PxSimulationEventCallback {
+class PhysicsManager {
 public:
     // Singleton Implementation - If necessary, initializes static instance and returns
     //            reference to Singleton Physics Manager.
@@ -56,38 +53,9 @@ public:
     physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
-
-
-    // PxSimulationEventCallback functions
-    // These are necessary for collision events
-    // Reference: https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/apireference/files/classPxSimulationEventCallback.html
-    // @TODO should this be done here or the PhysicsManager?
-    /*
-    This is called when certain contact events occur.
-    */
-    virtual void  onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs);
-    /*
-    This is called with the current trigger pair events.
-    */
-    virtual void  onTrigger(PxTriggerPair* pairs, PxU32 count);
-    /*
-    This is called when a breakable constraint breaks.
-    */
-    virtual void  onConstraintBreak(PxConstraintInfo*, PxU32) {}
-    /*
-    This is called with the actors which have just been woken up.
-    */
-    virtual void  onWake(PxActor**, PxU32) {}
-    /*
-    This is called with the actors which have just been put to sleep.
-    */
-    virtual void  onSleep(PxActor**, PxU32) {}
-    /*
-    Provides early access to the new pose of moving ribig bodies
-    */
-    virtual void onAdvance(const PxRigidBody*const* bodyBuffer, const PxTransform* poseBuffer, const PxU32 count) {}
-
+    bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
 private:
+    PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
     std::vector<physx::PxRigidStatic *> staticObjects;
 
@@ -133,8 +101,5 @@ private:
 
     physx::PxPvd*                   gPvd            = NULL;
     physx::PxCooking *              gCook;
-    physx::PxReal stackZ = -3.0f;
 
-    // Private Functions - Not necessary for outside classes to have access to these, they don't need to know about them.
-    void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent);
 };
