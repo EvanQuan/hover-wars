@@ -162,6 +162,8 @@ private:
                                            "event:/pulse/pulse_impact_02",
                                            "event:/pulse/pulse_impact_03",
                                          }},
+        {SOUND_HOVERCAR_DASH,            { "event:/hovercraft/hovercraft_dash",
+                                         }},
         {SOUND_HOVERCAR_IMPACT_HOVERCAR, { "event:/hovercraft/hovercraft_hit_hovercraft_01",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_02",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_03",

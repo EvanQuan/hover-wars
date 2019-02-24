@@ -404,7 +404,15 @@ bool HovercraftEntity::useAbility(eAbility ability)
 */
 bool HovercraftEntity::isOnCooldown(eAbility ability)
 {
-    return m_fCooldowns[ability] > 0;
+    /*
+    Since there are more abilities than there are cooldown, (each dash shares a
+    common cooldown), we must make sure the ability index does not exceed the
+    size the m_fCooldowns.
+
+    If the value at that index is greater than 0, then there is still some time
+    left to wait before it can be used.
+    */
+    return m_fCooldowns[ability >= COOLDOWN_COUNT ? COOLDOWN_DASH : ability] > 0;
 }
 
 void HovercraftEntity::move(float x, float y)
@@ -480,4 +488,6 @@ void HovercraftEntity::dash(eAbility direction)
     case ABILITY_DASH_RIGHT:
         break;
     }
+
+    m_fCooldowns[COOLDOWN_DASH] = DASH_COOLDOWN;
 }
