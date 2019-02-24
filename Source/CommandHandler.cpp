@@ -113,6 +113,22 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eFixedCommand command
     case COMMAND_MENU_START:
        break;
 
+    // Since the honk sound is played directly and all players hear the same
+    // thing, we don't actually need to relate anything to the hovercraft
+    // itself.
+    case COMMAND_HONK_UP:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_UP);
+        break;
+    case COMMAND_HONK_RIGHT:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_RIGHT);
+        break;
+    case COMMAND_HONK_DOWN:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_DOWN);
+        break;
+    case COMMAND_HONK_LEFT:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_LEFT);
+        break;
+
     case COMMAND_CLOSE_WINDOW:
         glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
         break;
