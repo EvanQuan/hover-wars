@@ -3,6 +3,7 @@
 /* INCLUDES */
 #include <map>
 #include <unordered_map>
+#include <random>
 
 /*
 Provides non-class specific functions for data manipulation.
@@ -98,4 +99,11 @@ namespace FuncUtils
     @return true if x and y are equal
     */
     bool equals(float x, float y);
+
+    /*
+    Get a uniformly distributed int from the start to end range, inclusively
+    @param start    of range, inclusively
+    @param end      of range, inclusively
+    */
+    int random(int start, int end);
 }

@@ -5,13 +5,6 @@
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
 #include "fmod_errors.h"
-#include <string>
-#include <map>
-#include <vector>
-#include <math.h>
-#include <iostream>
-
-using namespace std;
 
 /*
 Manages all sounds. Provides an interfaces for other classes to play sound
@@ -55,6 +48,11 @@ public:
 
         SOUND_MUSIC_INGAME_LOOP,
         SOUND_MUSIC_PAUSE_LOOP,
+
+        SOUND_KILL_DOMINATION,
+        SOUND_KILL_REVENGE,
+        SOUND_KILL_NEMESIS,
+        SOUND_KILL_STREAK,
     };
 
     void playEvent(eSoundEvent sound);
@@ -133,10 +131,7 @@ private:
         vector<const char*> soundList = eventToSound.at(event);
         if (soundList.size() > 1)
         {
-            std::random_device rd; // get a random number for the seed
-            std::mt19937 eng(rd()); // seed the generator
-            std::uniform_int_distribution<> distr(0, soundList.size() - 1); // 0 to (length of list - 1)
-            return soundList[distr(eng)];
+            return soundList[FuncUtils::random(0, soundList.size() - 1)];
         }
         return soundList[0]; // there is only 1 
     }
@@ -180,6 +175,16 @@ private:
                                            "event:/hovercraft/hovercraft_hit_hovercraft_08",
                                          }},
         {SOUND_TRAIL,                    { "event:/trail/trail",
+                                         }},
+        {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
+                                         }},
+        {SOUND_KILL_DOMINATION,          { "event:/kill/domination",
+                                         }},
+        {SOUND_KILL_NEMESIS,             { "event:/kill/nemesis",
+                                         }},
+        {SOUND_KILL_REVENGE,             { "event:/kill/revenge",
+                                         }},
+        {SOUND_KILL_STREAK,              { "event:/kill/killstreak",
                                          }},
     };
 };

@@ -5,15 +5,9 @@
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
 #define MASTER_BANK_STRINGS_PATH "Sound/Desktop/Master Bank.strings.bank"
 
-// Event paths
-#define SOUND_TRAIL_PATH                    "event:/trail/trail"
-#define SOUND_TRAIL_START_PATH              "event:/trail/trail_start"
-#define SOUND_TRAIL_LOOP_PATH               "event:/trail/trail_loop"
-#define SOUND_TRAIL_END_PATH                "event:/trail/trail_end"
-
-#define SOUND_BACKGROUND_1 "event:/background/background_1"
-#define SOUND_BACKGROUND_2 "event:/background/background_2"
-
+/*
+@Stephen What does this impact? Describe why this is here.
+*/
 #define MAX_CHANNELS 10
 #define NO_EXTRA_DRIVER_DATA 0
 
