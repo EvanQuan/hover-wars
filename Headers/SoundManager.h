@@ -44,6 +44,9 @@ public:
         SOUND_TRAIL_LOOP,
         SOUND_TRAIL_END,
 
+        SOUND_PULSE_ACTIVATE,
+        SOUND_PULSE_IMPACT,
+
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,
         SOUND_HOVERCAR_IMPACT_WORLD,
@@ -54,7 +57,7 @@ public:
         SOUND_MUSIC_PAUSE_LOOP,
     };
 
-    void play(eSoundEvent sound);
+    void playEvent(eSoundEvent sound);
 
     // TODO figure out sound at locations
     void play(eSoundEvent sound, vec3 location);
@@ -124,15 +127,40 @@ private:
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
     const char* getPath(eSoundEvent event) {
+        if (!FuncUtils::contains(eventToSound, event)) {
+            return "";
+        }
         vector<const char*> soundList = eventToSound.at(event);
-        std::random_device rd; // get a random number for the seed
-        std::mt19937 eng(rd()); // seed the generator
-        std::uniform_int_distribution<> distr(0, soundList.size() - 1); // 0 to (length of list - 1)
-        return soundList[distr(eng)];
+        if (soundList.size() > 1)
+        {
+            std::random_device rd; // get a random number for the seed
+            std::mt19937 eng(rd()); // seed the generator
+            std::uniform_int_distribution<> distr(0, soundList.size() - 1); // 0 to (length of list - 1)
+            return soundList[distr(eng)];
+        }
+        return soundList[0]; // there is only 1 
     }
 
     const unordered_map<eSoundEvent, vector<const char*>> eventToSound =
     {
+        {SOUND_ROCKET_ACTIVATE,          { "event:/rocket/rocket_activate",
+                                         }},
+        {SOUND_ROCKET_EXPLOSION,         { "event:/rocket/rocket_explosion_01",
+                                           "event:/rocket/rocket_explosion_02",
+                                           "event:/rocket/rocket_explosion_03",
+                                         }},
+        {SOUND_SPIKES_ACTIVATE,          { "event:/spikes/spikes_activate_01",
+                                           "event:/spikes/spikes_activate_02",
+                                           "event:/spikes/spikes_activate_03",
+                                         }},
+        {SOUND_SPIKES_IMPACT,            { "event:/spikes/spikes_impact",
+                                         }},
+        {SOUND_PULSE_ACTIVATE,           { "event:/pulse/pulse_activate",
+                                         }},
+        {SOUND_PULSE_IMPACT,             { "event:/pulse/pulse_impact_01",
+                                           "event:/pulse/pulse_impact_02",
+                                           "event:/pulse/pulse_impact_03",
+                                         }},
         {SOUND_HOVERCAR_IMPACT_HOVERCAR, { "event:/hovercraft/hovercraft_hit_hovercraft_01",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_02",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_03",
@@ -141,6 +169,17 @@ private:
                                            "event:/hovercraft/hovercraft_hit_hovercraft_06",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_07",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_08",
+                                         }},
+        {SOUND_HOVERCAR_IMPACT_WORLD,    { "event:/hovercraft/hovercraft_hit_hovercraft_01",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_02",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_03",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_04",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_05",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_06",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_07",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_08",
+                                         }},
+        {SOUND_TRAIL,                    { "event:/trail/trail",
                                          }},
     };
 };
