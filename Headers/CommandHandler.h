@@ -232,6 +232,10 @@ private:
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
         {BUTTON_BACK,           COMMAND_MENU_PAUSE},
         {BUTTON_START,          COMMAND_MENU_START},
+        {BUTTON_UP,             COMMAND_HONK_UP},
+        {BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
+        {BUTTON_DOWN,           COMMAND_HONK_DOWN},
+        {BUTTON_LEFT,           COMMAND_HONK_LEFT},
         {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_ACTIVATE},
         {TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
     };
