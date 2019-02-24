@@ -53,6 +53,12 @@ public:
         SOUND_KILL_REVENGE,
         SOUND_KILL_NEMESIS,
         SOUND_KILL_STREAK,
+
+        // Honks, for fun
+        SOUND_HONK_UP,
+        SOUND_HONK_RIGHT,
+        SOUND_HONK_DOWN,
+        SOUND_HONK_LEFT,
     };
 
     void playEvent(eSoundEvent sound);
@@ -185,6 +191,14 @@ private:
         {SOUND_KILL_REVENGE,             { "event:/kill/revenge",
                                          }},
         {SOUND_KILL_STREAK,              { "event:/kill/killstreak",
+                                         }},
+        {SOUND_HONK_UP,                  { "event:/honk/honk_01",
+                                         }},
+        {SOUND_HONK_RIGHT,               { "event:/honk/honk_02",
+                                         }},
+        {SOUND_HONK_DOWN,                { "event:/honk/honk_03",
+                                         }},
+        {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
                                          }},
     };
 };
