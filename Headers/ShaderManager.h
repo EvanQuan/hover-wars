@@ -25,6 +25,7 @@ public:
         BOID_SHDR,
         DEBUG_SHDR,
         SHADOW_SHDR,
+        UI_SHDR,
         MAX_SHDRS
     };
     const static unordered_map<string, eShaderType> pShaderTypeMap;

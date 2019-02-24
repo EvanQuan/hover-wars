@@ -7,6 +7,6 @@ out vec4 color;
 
 // Main: just output the color of the fragment
 void main(void)
-{    
+{
     color = vColor;
 }

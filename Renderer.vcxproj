@@ -142,6 +142,8 @@
     <ResourceCompile Include="Renderer.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\Desktop\FmodStudioEngine-master\AudioAdventure\resource\Master Bank.bank" />
+    <None Include="..\..\..\..\Desktop\FmodStudioEngine-master\AudioAdventure\resource\Master Bank.strings.bank" />
     <None Include=".editorconfig" />
     <None Include="Dependencies\FMod\inc\fmod.cs" />
     <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />

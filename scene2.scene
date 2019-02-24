@@ -14,13 +14,13 @@
 #           - "r g b"   = the color of the light
 #           - "p"       = power of the light
 #       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
-#           - "dX dY dZ" 	= the direction of the light source
-#           - "aR aG aB" 	= the ambient color of the light source
-#           - "dR dG dB" 	= the diffuse color of the light source
-#           - "sR sG sB" 	= the specular color of the light source
-#			- "P nP fP"		= The Position Offset (P) for the source of the Shadow Map
-#							= As well as the Near Plane (nP) and the Far Plane (fP)
-#			- "sH sW sF"	= The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
+#           - "dX dY dZ"    = the direction of the light source
+#           - "aR aG aB"    = the ambient color of the light source
+#           - "dR dG dB"    = the diffuse color of the light source
+#           - "sR sG sB"    = the specular color of the light source
+#           - "P nP fP"     = The Position Offset (P) for the source of the Shadow Map
+#                           = As well as the Near Plane (nP) and the Far Plane (fP)
+#           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 #       spotlight           { x y z  dX dY dZ  r g b  Phi  *softPhi* }
 #           - "x y z"       = the position of the light source
 #           - "dX dY dZ"    = the direction of the spotlight
@@ -32,9 +32,13 @@
 # Object Instructions
 #
 # Many different objects can be specified with the following syntax:
+#       player  { x y z }
+#           - "x y z"               = the initial position of the player
+#       bot     { x y z }
+#           - "x y z"               = the initial position of the bot
 #       plane   { x y z  nX nY nZ  height  width }
 #           - "x y z"               = the position of the plane
-#           - "nX nY nZ"            = the normal of the plane 
+#           - "nX nY nZ"            = the normal of the plane
 #                                   = the plane will be rotated to align with its normal
 #           - "height  width"       = the height and width of the plane
 #       sphere  { x y z  r }
@@ -80,8 +84,8 @@ directional_light {
     0 0 0
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
-	1000.0 1.0 1200.0
-	4096 4096 100.0
+    1000.0 1.0 1200.0
+    4096 4096 100.0
 }
 
 spotlight {
@@ -162,17 +166,17 @@ point_light {
 
 ## bottom
 plane {
-	0 0 0
-	0 1 0
-	100 100
-	+material {
-		textures/groundSeamless.jpg
-		0 0 0
-		0
-	}
-	+shader {
-		blinn_phong_shdr
-	}
+    0 0 0
+    0 1 0
+    100 100
+    +material {
+        textures/groundSeamless.jpg
+        0 0 0
+        0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
 }
 
 # Mesh
@@ -195,6 +199,29 @@ player {
         2.0 5.0 2.5 
     }
 }
+
+#player {
+#    0 0 0
+#    +mesh {
+#        models/missile.obj
+#        0.01
+#    }
+#    +material {
+#        textures/tronBase.png
+#        0.1 0.1 0.1
+#        20.0
+#    }
+#    +shader {
+#        blinn_phong_shdr
+#    }
+#    +bounding {
+#        box
+#        2.0 5.0 2.5 
+#    }
+#}
+
+# These player bounding box values are more accurate, but result in wacky physics
+# 1.2 3.8 1.8
 
 # bot {
 #     0 0 0
@@ -220,16 +247,38 @@ player {
 #           - "x y z"               = the position of the cube
 #           - "height width depth"  = Specifies the dimensions of the cube
 cube {
-	5 1 5
-	2 2 2
-	+bounding {
-		box
-		2.0 2.0 2.0
-	}
+    5 1 5
+    2 2 2
+    +bounding {
+        box
+        2.0 2.0 2.0
+    }
+}
+
+# Wall
+# Player should not be able to pass this
+cube {
+    0 5 50
+    10 50 2
+    +bounding {
+        box
+        10.0 50.0 2.0
+    }
+}
+
+# bump
+# Player should be able to move over this?
+cube {
+    20 0 20
+    0.25 2 2
+    +bounding {
+        box
+        0.25 2.0 2.0
+    }
 }
 
 
-
+# Bunnies
 static_mesh {
     0 0 -32.5
     32.5 0 0
@@ -254,6 +303,39 @@ static_mesh {
         0.5 0.5 0.5
     }
 }
+
+# Rocket
+static_mesh {
+    -20 1 1
+    +mesh {
+        models/missile.obj
+        0.01
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
+# Other ships
+static_mesh {
+    -20 2 10
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
 
 sphere {
     3 4 -3 .5

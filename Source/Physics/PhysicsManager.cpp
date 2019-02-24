@@ -176,7 +176,7 @@ void PhysicsManager::update(float fTimeDelta)
     {
         // Don't reset to 0.0f as it's probably not at the Update Time Exactly.
         //    this preserves an accuracy w.r.t. the game timer.
-        m_fTimeSinceLastUpdate -= UPDATE_TIME_IN_SECONDS;
+        m_fTimeSinceLastUpdate = 0.0f;
 
         // Step Physics at 1/60th of a second.
         stepPhysics(UPDATE_TIME_IN_SECONDS); 
@@ -499,4 +499,14 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
     return wheelQueryResults[0].isInAir && wheelQueryResults[1].isInAir && wheelQueryResults[2].isInAir && wheelQueryResults[3].isInAir;
+}
+
+void PhysicsManager::onContact(const PxContactPairHeader & pairHeader, const PxContactPair * pairs, PxU32 nbPairs)
+{
+    cout << "COLLISION DETECTED" << endl;
+}
+
+void PhysicsManager::onTrigger(PxTriggerPair * pairs, PxU32 count)
+{
+    cout << "TRIGGER DETECTED" << endl;
 }

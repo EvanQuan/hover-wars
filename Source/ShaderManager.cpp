@@ -101,6 +101,10 @@ ShaderManager::ShaderManager()
     // Shadow Shader
     m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/shadow.vert");
     m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/shadow.frag");
+
+    // UI Shader (does nothing)
+    m_pShader[eShaderType::UI_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/ui.vert");
+    m_pShader[eShaderType::UI_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/ui.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

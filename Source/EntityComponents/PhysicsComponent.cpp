@@ -4,7 +4,7 @@
 
 #define JUMP_FORCE 200000
 
-#define MAX_SPEED 100
+#define MAX_SPEED 500
 /*
 Angular momementum.
 
@@ -17,7 +17,7 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 100.0f // 10000.0f
+#define MOVEMENT_FORCE 50.0f // 10000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -36,7 +36,7 @@ Force : Newtons
 //                                 Entity Manager if needed.
 
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
-    : EntityComponent(iEntityID, iComponentID)
+    : EntityComponent(iEntityID, iComponentID), PxSimulationEventCallback()
 {
 #ifdef _DEBUG
     std::cout << "Physics Component constructor 2 vars" << std::endl;
@@ -183,6 +183,15 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
         *pReturnTransformMatrix = m_pTransformationMatrix;
     }
 }
+void PhysicsComponent::onContact(const PxContactPairHeader & pairHeader, const PxContactPair * pairs, PxU32 nbPairs)
+{
+    cout << "COLLISION DETECTED" << endl;
+}
+void PhysicsComponent::onTrigger(PxTriggerPair * pairs, PxU32 count)
+{
+    cout << "TRIGGER DETECTED" << endl;
+}
+
 glm::vec3 PhysicsComponent::getLinearVelocity() {
     physx::PxVec3 velocity = body->getLinearVelocity();
     return glm::vec3(velocity.x, velocity.y, velocity.z);

@@ -3,11 +3,178 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 
+/***********\
+ * Defines *
+\***********/
+
+// Ability Defines
+/*
+Rocket
+Spikes
+Trail
+Dash - (all 4 directions count as 1 ability for cool down purposes)
+*/
+#define ABILITY_COUNT           COOLDOWN_COUNT
+
+/*
+Cooldowns
+
+The time the hovercraft must wait until they can use the ability again.
+
+Units: seconds
+*/
+#define ROCKET_COOLDOWN         5.0f
+#define SPIKES_COOLDOWN         10.0f
+#define TRAIL_COOLDOWN          0.0f
+#define DASH_COOLDOWN           5.0f
+
+/*
+Total time the trail can be activated from full to empty.
+
+@TODO why is the time value so different than all the other time values.
+They ALL behave like seconds, but not this.
+
+0.01f seems to be around 3 seconds
+
+Unit: seconds
+*/
+#define TRAIL_GAUGE_FULL        0.01f
+/*
+Represents the trail gauge is empty.
+*/
+#define TRAIL_GAUGE_EMPTY       0.0f
+
+/*
+Total time for the trail to recharge from empty to full.
+
+@NOTE: Currently unused. Right now the rate of drain and
+recharge are identical.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE          5.0f
+
+/*
+The interval of time between each created flame while the trail trail is
+activated.
+
+@TODO Flame interval should be based on distance, not time. In some sense, a
+line is simply being laid out, of which flame billboards are uniformly
+distributed across, meanining that the spacing is time invariant.
+
+Unit: seconds
+*/
+#define FLAME_INTERVAL          0.075f
+
+/*
+Delay time when the trail is deactivate and when the gauge begins to recharge.
+This makes spam toggling less effective.
+
+@TODO this is potentially not behaving in seconds, like the charge
+drain/recharge. Difficult to tell without visual indicators.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE_COOLDOWN 0.1f
+
+// Fire Defines
+#define FIRE_HEIGHT             2.0
+#define FIRE_WIDTH              2.0
+
+/*
+Determines from what horizontal angle the camera is tracking the hovercraft.
+                   90
+                  -270
+                    |
+                    v                 
+     180 -----> hovercraft  <----- 0
+    -180            ^              360
+                    |
+                   270
+                   -90
+
+The front camera should be facing the hovercraft's backside.
+
+theta : degrees
+*/
+#define FRONT_CAMERA_LONGITUDE  -90.0f
+
+/*
+Determines the vertical angle the camera is tracking the hovercraft.
+          45      0
+            \     |
+             \    v
+    90 -----> hovercraft
+
+The front camera should be low enough to give the player as much vision ahead
+of them as possible. This will give more information on where to drive, as well
+as make aiming the rocket easier.
+
+phi : degrees
+*/
+#define FRONT_CAMERA_LATITUDE   80.0f
+
+/*
+Distance between the centre of the car and the look-at position.
+
+If negative, the camera will look behind the car's centre.
+*/
+#define FRONT_CAMERA_OFFSET     0       // r        meters
+
+/*
+Distance between look-at position and camera.
+*/
+#define FRONT_CAMERA_RADIUS     10.0f   // r        meters
+#define BACK_CAMERA_LONGITUDE   -90.0f  // theta    degrees
+
+/*
+This determines the pitch that the camera 
+*/
+#define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
+
+/*
+Distance between look-at position and camera.
+*/
+#define BACK_CAMERA_RADIUS      12.0f   // r        meters
+/*
+Distance between the centre of the car and the look-at position.
+
+If negative, the camera will look behind the car's centre.
+*/
+#define BACK_CAMERA_OFFSET      -10     // r        meters
+
+// Camera Spring Constants
+/*
+This should always be zero.
+
+Units: meters
+*/
+#define CAMERA_REST_LENGTH 0.0f
+/*
+The larger the spring constant, the stronger the spring effect.
+In other words, the spring will pull together faster the higher the constant is.
+*/
+#define SPRING_MOVEMENT_CONSTANT 50.0f  // unitless
+#define SPRING_ROTATION_CONSTANT 20.0f  // unitless
+
+
+const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_CAMERA_RADIUS); // (Theta, Phi, Radius)
+const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_CAMERA_RADIUS); // (Theta, Phi, Radius)
+/*
+The position of the camera relative to the position of the player. Both vectors
+will be added together to form the final camera position.
+*/
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(FRONT_CAMERA_OFFSET, 0, 0);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(BACK_CAMERA_OFFSET, 0, 0);
+
+
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
     : Entity(iID, *vPosition, entityType)
 {
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
+    m_qCurrentCameraRotation = quat();
+    m_vCurrentCameraPosition = vec3(0.0f);
 
     initializeCooldowns();
 }
@@ -110,24 +277,32 @@ void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 
 void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
 {
-    quat cameraRotationDirection = m_pPhysicsComponent->getRotation() - m_qCurrentCameraRotation;
+    quat qCurrRotation = m_pPhysicsComponent->getRotation();
+    if (qCurrRotation != m_qCurrentCameraRotation)
+    {
+        quat cameraRotationDirection = qCurrRotation - m_qCurrentCameraRotation;
+        float fSpring = SPRING_ROTATION_CONSTANT * (length(cameraRotationDirection) - CAMERA_REST_LENGTH);
 
-    m_qCurrentCameraRotation += cameraRotationDirection * CAMERA_ROTATION_MULTIPLIER * fSecondsSinceLastUpdate;
+        m_qCurrentCameraRotation += (normalize(cameraRotationDirection) * fSpring) * fSecondsSinceLastUpdate;
 
-    m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
-    m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+        m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+        m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
+    }
 }
 
 void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
 {
-    vec3 cameraMovementDirection = m_vPosition - m_vCurrentCameraPosition;
+    vec3 cameraLength = m_vPosition - m_vCurrentCameraPosition;
 
-    m_vCurrentCameraPosition += cameraMovementDirection * CAMERA_MOVEMENT_MULTIPLIER * fSecondsSinceLastUpdate;
-
-    // Update all the camera look at and rotation values based on the averaging calculations.
-    m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
-    m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
-
+    if (vec3(0.0f) != cameraLength) // Don't proceed if there's no change.
+    {
+        float fSpring = SPRING_MOVEMENT_CONSTANT * (length(cameraLength) - CAMERA_REST_LENGTH);
+        m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
+      
+        // Update all the camera look at and rotation values based on the averaging calculations.
+        m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + FRONT_CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + BACK_CAMERA_POSITION_OFFSET);
+    }
 }
 
 /*
@@ -247,8 +422,9 @@ Shoot a rocket and put it on cool down.
 */
 void HovercraftEntity::shootRocket()
 {
-    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+
+    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
 
     m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
@@ -258,10 +434,13 @@ Activate spikes and put it on cool down.
 */
 void HovercraftEntity::activateSpikes()
 {
+    SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
+
     GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+
 }
 
 /*
@@ -269,6 +448,11 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
+    /*
+    Later, this should be split into starting and ending the trail event loop
+    */
+    SOUND_MANAGER->play(SoundManager::SOUND_TRAIL);
+
     m_bTrailActivated = true;
     m_fSecondsSinceLastFlame = 0.0f;
     m_fSecondsSinceTrailDeactivated = 0.0f;
@@ -284,6 +468,7 @@ void HovercraftEntity::deactivateTrail()
 
 void HovercraftEntity::dash(eAbility direction)
 {
+    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {
     case ABILITY_DASH_BACK:
