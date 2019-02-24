@@ -32,3 +32,16 @@ bool FuncUtils::equals(float x, float y)
     float epsilon = numeric_limits<float>::epsilon(); // This is part of the Windows Library
     return (-difference < epsilon) && (epsilon > difference);
 }
+
+/*
+Get a uniformly distributed int from the start to end range, inclusively
+@param start    of range, inclusively
+@param end      of range, inclusively
+*/
+int FuncUtils::random(int start, int end)
+{
+    std::random_device random_seed; // get a random number for the seed
+    std::mt19937 random_generator(random_seed()); // seed the generator
+    std::uniform_int_distribution<> distribution(start, end);
+    return distribution(random_generator);
+}

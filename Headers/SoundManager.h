@@ -133,10 +133,7 @@ private:
         vector<const char*> soundList = eventToSound.at(event);
         if (soundList.size() > 1)
         {
-            std::random_device rd; // get a random number for the seed
-            std::mt19937 eng(rd()); // seed the generator
-            std::uniform_int_distribution<> distr(0, soundList.size() - 1); // 0 to (length of list - 1)
-            return soundList[distr(eng)];
+            return soundList[FuncUtils::random(0, soundList.size() - 1)];
         }
         return soundList[0]; // there is only 1 
     }
