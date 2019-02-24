@@ -38,9 +38,11 @@ public:
         SOUND_SPIKES_IMPACT,
 
         SOUND_TRAIL,        // combine as one
-        //SOUND_TRAIL_START,
-        //SOUND_TRAIL_LOOP,
-        //SOUND_TRAIL_END,
+
+        // Not used
+        SOUND_TRAIL_START,
+        SOUND_TRAIL_LOOP,
+        SOUND_TRAIL_END,
 
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,
@@ -120,6 +122,27 @@ private:
     float volumeTodB(float volume);
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
+
+    const char* getPath(eSoundEvent event) {
+        vector<const char*> soundList = eventToSound.at(event);
+        std::random_device rd; // get a random number for the seed
+        std::mt19937 eng(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(0, soundList.size() - 1); // 0 to (length of list - 1)
+        return soundList[distr(eng)];
+    }
+
+    const unordered_map<eSoundEvent, vector<const char*>> eventToSound =
+    {
+        {SOUND_HOVERCAR_IMPACT_HOVERCAR, { "event:/hovercraft/hovercraft_hit_hovercraft_01",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_02",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_03",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_04",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_05",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_06",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_07",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_08",
+                                         }},
+    };
 };
 
 #endif
