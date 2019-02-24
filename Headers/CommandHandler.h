@@ -25,10 +25,10 @@ public:
     static CommandHandler* getInstance(GLFWwindow *rWindow);
     ~CommandHandler();
 
-    void execute(ePlayer player, eFixedCommand command);
-    void execute(ePlayer player, eVariableCommand command, float x, float y);
-    void execute(eBot bot, eFixedCommand command);
-    void execute(eBot bot, eVariableCommand command, float x, float y);
+    void executeIfPlayerExists(ePlayer player, eFixedCommand command);
+    void executeIfPlayerExists(ePlayer player, eVariableCommand command, float x, float y);
+    void executeIfBotExists(eBot bot, eFixedCommand command);
+    void executeIfBotExists(eBot bot, eVariableCommand command, float x, float y);
     /*
     Execute all commands for a given frame.
     */
@@ -110,6 +110,7 @@ private:
     static eFixedCommand justPressedKeyToFixedCommand(int key)
     {
         eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        // If the command is invalid, then check for repeat commands next
         return COMMAND_INVALID_FIXED == result ? pressedKeyToFixedCommand(key) : result;
     };
     /*
@@ -134,6 +135,7 @@ private:
     static eFixedCommand justPressedButtonToFixedCommand(int button)
     {
         eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+        // If the command is invalid, then check for repeat commands next
         return COMMAND_INVALID_FIXED == result ? repeatButtonToFixedCommand(button) : result;
     };
     /*

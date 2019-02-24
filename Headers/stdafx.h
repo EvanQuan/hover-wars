@@ -106,6 +106,24 @@ using namespace physx;
 #define TRIGGER_IS_NETURAL  -1.0f
 #define TRIGGER_IS_FULL     1.0f
 
+/*
+Actor names
+
+Interactable entities have actor names so the game can discern what type of
+object they are. This is especially important for collisions, as collisions
+between different kinds of entities determine the results.
+*/
+#define NAME_PLAYER  "player"
+#define NAME_BOT     "bot"
+#define NAME_ROCKET  "rocket"
+#define NAME_TRAIL   "trail"
+#define NAME_SPIKES  "spikes"
+#define NAME_WALL    "wall"
+#define NAME_GROUND  "ground"
+#define NAME_SPHERE  "sphere"
+#define NAME_MESH    "mesh"
+
+
 // Mapping potential types from the scene loader to corresponding enums
 const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 {

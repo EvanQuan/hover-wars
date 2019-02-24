@@ -49,13 +49,15 @@ execute that command.
 @param player   to execute command on
 @param command  to execute
 */
-void CommandHandler::execute(ePlayer player, eFixedCommand command)
+void CommandHandler::executeIfPlayerExists(ePlayer player, eFixedCommand command)
 {
-    if (ENTITY_MANAGER->playerExists(player))
+    if ((command == COMMAND_INVALID_FIXED) || (!ENTITY_MANAGER->playerExists(player)))
     {
-        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-        execute(playerEntity, command);
+        return;
     }
+    cout << command << endl;
+    PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+    execute(playerEntity, command);
 }
 
 /*
@@ -64,13 +66,14 @@ Make a bot execute a fixed command.
 @param bot      to execute command on
 @param command  to execute
 */
-void CommandHandler::execute(eBot bot, eFixedCommand command)
+void CommandHandler::executeIfBotExists(eBot bot, eFixedCommand command)
 {
-    if (ENTITY_MANAGER->botExists(bot))
+    if ((command == COMMAND_INVALID_FIXED) || (!ENTITY_MANAGER->botExists(bot)))
     {
-        BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
-        execute(botEntity, command);
+        return;
     }
+    BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
+    execute(botEntity, command);
 }
 
 /*
@@ -182,13 +185,14 @@ Axes values are normalized and follow Cartesian coordinates:
 @param x        x-coordinate
 @param y        y-coordinate
 */
-void CommandHandler::execute(ePlayer player, eVariableCommand command, float x, float y)
+void CommandHandler::executeIfPlayerExists(ePlayer player, eVariableCommand command, float x, float y)
 {
-    if (ENTITY_MANAGER->playerExists(player))
+    if ((command == COMMAND_INVALID_VARIABLE) || (!ENTITY_MANAGER->playerExists(player)))
     {
-        PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-        execute(playerEntity, command, x, y);
+        return;
     }
+    PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+    execute(playerEntity, command, x, y);
 }
 
 /*
@@ -199,13 +203,14 @@ Make a bot execute a variable command.
 @param x        x-coordinate
 @param y        y-coordinate
 */
-void CommandHandler::execute(eBot bot, eVariableCommand command, float x, float y)
+void CommandHandler::executeIfBotExists(eBot bot, eVariableCommand command, float x, float y)
 {
-    if (ENTITY_MANAGER->botExists(bot))
+    if ((command == COMMAND_INVALID_VARIABLE) || (!ENTITY_MANAGER->botExists(bot)))
     {
-        BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
-        execute(botEntity, command, x, y);
+        return;
     }
+    BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
+    execute(botEntity, command, x, y);
 }
 
 /*
@@ -301,7 +306,7 @@ void CommandHandler::executeKeyboardCommands()
             m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        execute(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
+        executeIfPlayerExists(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
         // Check for cummulative movement commands, which are only executed once
         // all movement keys are checked.
         switch (m_pFixedCommand)
@@ -343,11 +348,11 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)
     {
-        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
+        executeIfPlayerExists(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        execute(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
+        executeIfPlayerExists(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
     }
 }
 
@@ -372,14 +377,14 @@ void CommandHandler::executeJoystickCommands()
                 switch (buttons[button])
                 {
                 case InputHandler::INPUT_JUST_PRESSED:
-                    execute((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
+                    executeIfPlayerExists((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
                     m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
-                    execute((ePlayer) joystickID, repeatButtonToFixedCommand(button));
+                    executeIfPlayerExists((ePlayer) joystickID, repeatButtonToFixedCommand(button));
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
-                    execute((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
+                    executeIfPlayerExists((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
                     m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_RELEASED;
                     break;
                 }
@@ -389,11 +394,11 @@ void CommandHandler::executeJoystickCommands()
             // Joystick axes will not be remappable, so no need to make code generalizable
             if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
             {
-                execute((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+                executeIfPlayerExists((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
             }
             if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
             {
-                execute((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+                executeIfPlayerExists((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
             }
         }
     }
