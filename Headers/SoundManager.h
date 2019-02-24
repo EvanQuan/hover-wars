@@ -40,6 +40,8 @@ public:
         SOUND_PULSE_ACTIVATE,
         SOUND_PULSE_IMPACT,
 
+        SOUND_DASH,
+
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,
         SOUND_HOVERCAR_IMPACT_WORLD,
@@ -161,6 +163,8 @@ private:
         {SOUND_PULSE_IMPACT,             { "event:/pulse/pulse_impact_01",
                                            "event:/pulse/pulse_impact_02",
                                            "event:/pulse/pulse_impact_03",
+        {SOUND_DASH,                     { "event:/hovercraft/hovercraft_dash",
+                                         }},
                                          }},
         {SOUND_HOVERCAR_IMPACT_HOVERCAR, { "event:/hovercraft/hovercraft_hit_hovercraft_01",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_02",
