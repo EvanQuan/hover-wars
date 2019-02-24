@@ -424,7 +424,7 @@ PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float 
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(NAME_CUBE);
+    body->setName(NAME_WALL);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
@@ -449,7 +449,7 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, 
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
     vehicles.push_back(gVehicleNoDrive);
-    gVehicleNoDrive->getRigidDynamicActor()->setName(NAME_VEHICLE);
+    gVehicleNoDrive->getRigidDynamicActor()->setName(NAME_PLAYER);
 
     return gVehicleNoDrive;
 }
