@@ -53,6 +53,12 @@ public:
         SOUND_KILL_REVENGE,
         SOUND_KILL_NEMESIS,
         SOUND_KILL_STREAK,
+
+        // Honks, for fun
+        SOUND_HONK_UP,
+        SOUND_HONK_RIGHT,
+        SOUND_HONK_DOWN,
+        SOUND_HONK_LEFT,
     };
 
     void playEvent(eSoundEvent sound);
