@@ -192,6 +192,14 @@ private:
                                          }},
         {SOUND_KILL_STREAK,              { "event:/kill/killstreak",
                                          }},
+        {SOUND_HONK_UP,                  { "event:/honk/honk_01",
+                                         }},
+        {SOUND_HONK_RIGHT,               { "event:/honk/honk_02",
+                                         }},
+        {SOUND_HONK_DOWN,                { "event:/honk/honk_03",
+                                         }},
+        {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
+                                         }},
     };
 };
 
