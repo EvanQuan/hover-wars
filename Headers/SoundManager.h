@@ -122,6 +122,21 @@ private:
     float volumeTodB(float volume);
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
+
+    // void getPath(eSoundEvent event);
+
+    unordered_map<eSoundEvent, list<const char*>> eventToSound =
+    {
+        {SOUND_HOVERCAR_IMPACT_HOVERCAR, { "event:/hovercraft/hovercraft_hit_hovercraft_01",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_02",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_03",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_04",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_05",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_06",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_07",
+                                           "event:/hovercraft/hovercraft_hit_hovercraft_08",
+                                         }},
+    };
 };
 
 #endif

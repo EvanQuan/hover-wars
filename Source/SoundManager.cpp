@@ -68,6 +68,7 @@ instances played simultaneously.
 void SoundManager::play(eSoundEvent sound)
 {
     update();
+    // const char* eventPath = getPath()
     switch (sound)
     {
     case SOUND_ROCKET_ACTIVATE:
@@ -92,7 +93,7 @@ void SoundManager::play(eSoundEvent sound)
         playEvent(SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH);
         break;
     case SOUND_HOVERCAR_IMPACT_WORLD:
-        playEvent(SOUND_HOVERCAR_IMPACT_WORLD_PATH);
+        playEvent(SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH);
         break;
     case SOUND_HOVERCAR_DASH:
         // playEvent("event:/");
@@ -327,6 +328,8 @@ void SoundManager::loadEvent(const string& sEventName) {
         }
     }
 }
+
+
 
 /*
 Play an event.
