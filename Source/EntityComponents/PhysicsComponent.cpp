@@ -66,12 +66,11 @@ void PhysicsComponent::releaseAllControls()
     gVehicleNoDrive->setSteerAngle(3, 0.0f);
 }
 void PhysicsComponent::movePlayer(float x, float y) {   
-    if (x != 0 || y != 0) {
+    if (x != 0 || y != 0 && currentState == 0) {
         releaseAllControls();
-        PxRigidBody *carBody = gVehicleNoDrive->getRigidDynamicActor();
-        PxTransform globalTransform = carBody->getGlobalPose();
+        PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
-        carBody->addForce(vForce * MOVEMENT_FORCE);
+        body->addForce(vForce * MOVEMENT_FORCE);
         
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         gVehicleNoDrive->setSteerAngle(0, angle);
@@ -87,8 +86,21 @@ void PhysicsComponent::movePlayer(float x, float y) {
         gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
     }
 }
+void PhysicsComponent::dash(float x, float y) {
+    PxTransform globalTransform = body->getGlobalPose();
+    PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+    body->addForce(vForce * MOVEMENT_FORCE * 10);
+
+    float angle = y == 0 ? 0 : -1 * atan(x / y);
+    gVehicleNoDrive->setSteerAngle(0, angle);
+    gVehicleNoDrive->setSteerAngle(1, angle);
+    gVehicleNoDrive->setSteerAngle(2, angle);
+    gVehicleNoDrive->setSteerAngle(3, angle);
+}
 void PhysicsComponent::rotatePlayer(float x) {
-    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
+    if (currentState == 0) {
+        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
+    }
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
@@ -107,12 +119,19 @@ PhysicsComponent::~PhysicsComponent()
 //    information that will be gathered by the Entity when they need it?
 void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
 {
-    PxVec3 vel = body->getLinearVelocity();
+    //PxVec3 vel = body->getLinearVelocity();
     //std::cout << vel.magnitude() << std::endl;
     /*if (vel.magnitude() > MAX_SPEED) {
         //vel.normalize();
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
+    bool isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
+    if (isInAir) {
+        currentState = 1;
+    }
+    else {
+        currentState = 0;
+    }
 }
 
 // TODO

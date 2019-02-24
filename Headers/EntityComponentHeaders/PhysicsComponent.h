@@ -31,11 +31,13 @@ public:
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();
+    void dash(float x, float y);
     void jumpVehicle();
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 
 private:
+    int currentState = 0;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;

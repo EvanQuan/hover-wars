@@ -4,6 +4,7 @@
 #include "characterkinematic/PxControllerManager.h"
 #include "PxPhysicsAPI.h"
 #include "PxFoundation.h"
+#include "Physics/PhysicsCallBack.h"
 #include "Physics/PhysicsManager.h"
 #include "vehicle/PxVehicleUtil.h"
 #include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -104,7 +105,6 @@ PhysicsManager::PhysicsManager()
     gMaterial = NULL;
     
     gPvd = NULL;
-    stackZ = -3.0f;// distance between stacks, Only used for stack demo creation
 }
 
 // PhysicsManager Destructor -
@@ -182,7 +182,21 @@ void PhysicsManager::update(float fTimeDelta)
         stepPhysics(UPDATE_TIME_IN_SECONDS); 
     }
 }
-
+static PxFilterFlags filterShader(
+    PxFilterObjectAttributes attributes0,
+    PxFilterData filterData0,
+    PxFilterObjectAttributes attributes1,
+    PxFilterData filterData1,
+    PxPairFlags& pairFlags,
+    const void* constantBlock,
+    PxU32 constantBlockSize)
+{
+    pairFlags = PxPairFlag::eSOLVE_CONTACT;
+    pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+    pairFlags |= PxPairFlag::eDETECT_DISCRETE_CONTACT;
+    pairFlags |= PxPairFlag::eDETECT_CCD_CONTACT;
+    return PxFilterFlags();
+}
 // Initialization of Physics will happen here, this will be called in main, immediately
 //    after constructing the PhysicsManager Instance.
 void PhysicsManager::initPhysics(bool interactive)
@@ -195,7 +209,6 @@ void PhysicsManager::initPhysics(bool interactive)
 
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-
     gPvd = PxCreatePvd(*gFoundation);
 #ifdef _DEBUG
     PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
@@ -203,14 +216,16 @@ void PhysicsManager::initPhysics(bool interactive)
 #endif
 
     gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = gDispatcher;
-    sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+    sceneDesc.filterShader = filterShader;
+    cb = new PhysicsCallBack();
+    sceneDesc.simulationEventCallback = cb;
+    sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_PAIRS;
+    sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
     gScene = gPhysics->createScene(sceneDesc);
-
     PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
     if (pvdClient)
     {
@@ -244,6 +259,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
     PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
     gScene->addActor(*gGroundPlane);
+    gGroundPlane->setName("Cube");
     staticObjects.push_back(gGroundPlane);
     
 
@@ -277,7 +293,7 @@ void PhysicsManager::cleanupPhysics()
         gVehicleSceneQueryData->free(gAllocator);
         gFrictionPairs->release();
         PxCloseVehicleSDK();
-
+        delete cb;
 
         gMaterial->release();
         gCook->release();
@@ -314,6 +330,7 @@ PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float 
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
+    body->setName("mesh");
     return body;
 }
 const int MAXLINE = 256;
@@ -407,6 +424,7 @@ PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float 
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
+    body->setName("Cube");
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
@@ -416,6 +434,7 @@ PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, flo
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
+    body->setName("Sphere");
     return body;
 }
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
@@ -425,14 +444,12 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, 
     PxTransform startTransform(PxVec3(x, y+(vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), z), PxQuat(PxIdentity));
     gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);
     gScene->addActor(*gVehicleNoDrive->getRigidDynamicActor());
-
     //Set the vehicle to rest in first gear.
-    //Set the vehicle to use auto-gears.
     gVehicleNoDrive->setToRestState();
-
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
     vehicles.push_back(gVehicleNoDrive);
+    gVehicleNoDrive->getRigidDynamicActor()->setName("vehicle");
 
     return gVehicleNoDrive;
 }
@@ -465,9 +482,13 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
 
     //Cycle through the driving modes to demonstrate how to accelerate/reverse/brake/turn etc.
     //incrementDrivingMode(timestep);
-
+    gScene->simulate(timestep);
+    gScene->fetchResults(true);
+}
+bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
+    const PxF32 timestep = fTimeDelta;
     //Raycasts.
-    PxVehicleWheels* vehicles[1] = { gVehicleNoDrive };
+    PxVehicleWheels* vehicles[1] = { vehicle };
     PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
     const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
     PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
@@ -475,8 +496,7 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
     //Vehicle update.
     const PxVec3 grav = gScene->getGravity();
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
-    PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, gVehicleNoDrive->mWheelsSimData.getNbWheels()} };
+    PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
-    gScene->simulate(timestep);
-    gScene->fetchResults(true);
+    return wheelQueryResults[0].isInAir && wheelQueryResults[1].isInAir && wheelQueryResults[2].isInAir && wheelQueryResults[3].isInAir;
 }

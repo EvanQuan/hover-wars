@@ -52,8 +52,9 @@ public:
     physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
-
+    bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
 private:
+    PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
     std::vector<physx::PxRigidStatic *> staticObjects;
 
@@ -99,8 +100,5 @@ private:
 
     physx::PxPvd*                   gPvd            = NULL;
     physx::PxCooking *              gCook;
-    physx::PxReal stackZ = -3.0f;
 
-    // Private Functions - Not necessary for outside classes to have access to these, they don't need to know about them.
-    void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent);
 };
