@@ -5,13 +5,6 @@
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
 #include "fmod_errors.h"
-#include <string>
-#include <map>
-#include <vector>
-#include <math.h>
-#include <iostream>
-
-using namespace std;
 
 /*
 Manages all sounds. Provides an interfaces for other classes to play sound
