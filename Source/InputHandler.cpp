@@ -75,6 +75,9 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
     if (GLFW_KEY_0 == key && action == GLFW_PRESS) {
         SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
     }
+    if (GLFW_KEY_4 == key && action == GLFW_PRESS) {
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
+    }
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
     It is fastest to exit early while we can.

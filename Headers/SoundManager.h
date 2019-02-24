@@ -181,6 +181,10 @@ private:
                                          }},
         {SOUND_TRAIL,                    { "event:/trail/trail",
                                          }},
+        {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
+                                         }},
+        {SOUND_MUSIC_PAUSE_LOOP,         { "event:/background/pause",
+                                         }},
     };
 };
 
