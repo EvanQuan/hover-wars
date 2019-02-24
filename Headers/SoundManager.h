@@ -38,9 +38,11 @@ public:
         SOUND_SPIKES_IMPACT,
 
         SOUND_TRAIL,        // combine as one
-        //SOUND_TRAIL_START,
-        //SOUND_TRAIL_LOOP,
-        //SOUND_TRAIL_END,
+
+        // Not used
+        SOUND_TRAIL_START,
+        SOUND_TRAIL_LOOP,
+        SOUND_TRAIL_END,
 
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,

@@ -1,31 +1,25 @@
 #include "stdafx.h"
 #include "SoundManager.h"
 
-#define MASTER_BANK_PATH         "Sound/FMODPROJECT/Build/Desktop/Master Bank.bank"
-#define MASTER_BANK_STRINGS_PATH "Sound/FMODPROJECT/Build/Desktop/Master Bank.strings.bank"
-// #define MASTER_BANK_PATH "Sound/Master Bank.bank"
-// #define MASTER_BANK_STRINGS_PATH "Sound/Master Bank.strings.bank"
+// Bank paths
+#define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
+#define MASTER_BANK_STRINGS_PATH "Sound/Desktop/Master Bank.strings.bank"
 
-//#define SOUND_ROCKET_ACTIVATE_PATH "event:/rocket_activate"
-//#define SOUND_ROCKET_EXPLOSION_PATH "event:/rocket_explosion"
-//#define SOUND_TRAIL_START_PATH "event:/trail_start"
-//#define SOUND_TRAIL_LOOP_PATH "event:/trail_loop"
-//#define SOUND_TRAIL_END_PATH "event:/trail_end"
-//#define SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH "event:/hovercraft_hit_hovercraft"
-//#define SOUND_HOVERCAR_IMPACT_WORLD_PATH "event:/hovercraft_hit_world"
-
+// Event paths
 #define SOUND_ROCKET_ACTIVATE_PATH          "event:/rocket/rocket_activate"
 #define SOUND_ROCKET_EXPLOSION_PATH         "event:/rocket/rocket_explosion"
+#define SOUND_TRAIL_PATH                    "event:/trail/trail"
 #define SOUND_TRAIL_START_PATH              "event:/trail/trail_start"
 #define SOUND_TRAIL_LOOP_PATH               "event:/trail/trail_loop"
 #define SOUND_TRAIL_END_PATH                "event:/trail/trail_end"
 #define SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH "event:/hovercraft/hovercraft_hit_hovercraft"
 #define SOUND_HOVERCAR_IMPACT_WORLD_PATH    "event:/hovercraft/hovercraft_hit_world"
 
+#define SOUND_BACKGROUND_1 "event:/background/background_1"
+#define SOUND_BACKGROUND_2 "event:/background/background_2"
+
 #define MAX_CHANNELS 10
 #define NO_EXTRA_DRIVER_DATA 0
-
-using namespace std;
 
 // Initialize Static Instance Variable
 SoundManager* SoundManager::m_pInstance = nullptr;
@@ -89,7 +83,7 @@ void SoundManager::play(eSoundEvent sound)
         //playEvent("event:/");
         break;
     case SOUND_TRAIL:
-        // playEvent("event:/trail");
+        playEvent(SOUND_TRAIL_PATH);
         break;
     case SOUND_HOVERCAR_LOOP:
         // playEvent("event:/hovercraft_move");   // need flag
@@ -104,7 +98,7 @@ void SoundManager::play(eSoundEvent sound)
         // playEvent("event:/");
         break;
     case SOUND_MUSIC_INGAME_LOOP:
-        playEvent("event:/background_2");
+        playEvent(SOUND_BACKGROUND_1);
         break;
     case SOUND_MUSIC_PAUSE_LOOP:
         //m_pInstance->playEvent("");
