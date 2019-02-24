@@ -259,7 +259,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
     PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
     gScene->addActor(*gGroundPlane);
-    gGroundPlane->setName(NAME_CUBE);
+    gGroundPlane->setName(NAME_GROUND);
     staticObjects.push_back(gGroundPlane);
     
 

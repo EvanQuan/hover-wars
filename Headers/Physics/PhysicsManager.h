@@ -16,12 +16,18 @@ Actor names
 
 Interactable entities have actor names so the game can discern what type of
 object they are. This is especially important for collisions, as collisions
-between different kinds of entities determine what the game should do next.
+between different kinds of entities determine the results.
 */
 #define NAME_VEHICLE "vehicle"
-#define NAME_CUBE "cube"
-#define NAME_SPHERE "sphere"
-#define NAME_MESH "mesh"
+#define NAME_PLAYER  "player"
+#define NAME_BOT     "bot"
+#define NAME_ROCKET  "rocket"
+#define NAME_TRAIL   "trail"
+#define NAME_SPIKES  "spikes"
+#define NAME_CUBE    "cube"
+#define NAME_GROUND   "ground"
+#define NAME_SPHERE  "sphere"
+#define NAME_MESH    "mesh"
 
 /***************************************************************
  * Name: PhysicsManager
