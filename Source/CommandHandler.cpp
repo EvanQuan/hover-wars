@@ -55,7 +55,6 @@ void CommandHandler::executeIfPlayerExists(ePlayer player, eFixedCommand command
     {
         return;
     }
-    cout << command << endl;
     PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
     execute(playerEntity, command);
 }
