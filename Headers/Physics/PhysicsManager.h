@@ -10,6 +10,19 @@
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <vector>
+
+/*
+Actor names
+
+Interactable entities have actor names so the game can discern what type of
+object they are. This is especially important for collisions, as collisions
+between different kinds of entities determine what the game should do next.
+*/
+#define NAME_VEHICLE "vehicle"
+#define NAME_CUBE "cube"
+#define NAME_SPHERE "sphere"
+#define NAME_MESH "mesh"
+
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan

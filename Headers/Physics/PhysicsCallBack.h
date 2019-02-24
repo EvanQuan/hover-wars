@@ -8,6 +8,12 @@
 #include "PxFoundation.h"
 #include "stdafx.h"
 
+/*
+Handles the collisions between objects in the game world.
+
+@author Austin Eaton
+@author Evan Quan
+*/
 class PhysicsCallBack : public physx::PxSimulationEventCallback {
 public:
     void initObjects(physx::PxRigidDynamic *body1, physx::PxRigidDynamic *body2);

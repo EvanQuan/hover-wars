@@ -259,7 +259,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
     PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
     gScene->addActor(*gGroundPlane);
-    gGroundPlane->setName("Cube");
+    gGroundPlane->setName(NAME_CUBE);
     staticObjects.push_back(gGroundPlane);
     
 
@@ -330,7 +330,7 @@ PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float 
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName("mesh");
+    body->setName(NAME_MESH);
     return body;
 }
 const int MAXLINE = 256;
@@ -424,7 +424,7 @@ PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float 
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName("Cube");
+    body->setName(NAME_CUBE);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
@@ -434,7 +434,7 @@ PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, flo
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName("Sphere");
+    body->setName(NAME_SPHERE);
     return body;
 }
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
@@ -449,7 +449,7 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, 
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
     vehicles.push_back(gVehicleNoDrive);
-    gVehicleNoDrive->getRigidDynamicActor()->setName("vehicle");
+    gVehicleNoDrive->getRigidDynamicActor()->setName(NAME_VEHICLE);
 
     return gVehicleNoDrive;
 }
