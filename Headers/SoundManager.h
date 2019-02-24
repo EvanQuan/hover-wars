@@ -143,6 +143,8 @@ private:
                                            "event:/rocket/rocket_explosion_02",
                                            "event:/rocket/rocket_explosion_03",
                                          }},
+        {SOUND_ROCKET_ACTIVATE,          { "event:/rocket/rocket_activate",
+                                         }},
         {SOUND_HOVERCAR_IMPACT_HOVERCAR, { "event:/hovercraft/hovercraft_hit_hovercraft_01",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_02",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_03",
