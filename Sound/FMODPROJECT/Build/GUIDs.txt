@@ -1,0 +1,6 @@
+{c934d7bc-0c7d-4b68-8590-f964351870ea} event:/car_start
+{b859c9c5-4f11-458e-8104-376361a250df} event:/rocket
+{10a012c0-6a72-429d-96ea-59de21308e1b} bus:/
+{4f6917ea-d478-4e00-90f3-567d9bd17fad} bus:/Reverb
+{ea456630-c3c8-43d1-89cd-0b2c1da55881} bank:/Master Bank
+{bd43ea8b-2dd3-4599-95c2-0b5fc4440ef7} bank:/Sample
