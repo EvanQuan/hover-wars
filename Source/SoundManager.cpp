@@ -12,8 +12,6 @@
 #define SOUND_TRAIL_START_PATH              "event:/trail/trail_start"
 #define SOUND_TRAIL_LOOP_PATH               "event:/trail/trail_loop"
 #define SOUND_TRAIL_END_PATH                "event:/trail/trail_end"
-#define SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH "event:/hovercraft/hovercraft_hit_hovercraft_01"
-#define SOUND_HOVERCAR_IMPACT_WORLD_PATH    "event:/hovercraft/hovercraft_hit_hovercraft_08"
 
 #define SOUND_BACKGROUND_1 "event:/background/background_1"
 #define SOUND_BACKGROUND_2 "event:/background/background_2"
@@ -72,7 +70,7 @@ void SoundManager::play(eSoundEvent sound)
     switch (sound)
     {
     case SOUND_ROCKET_ACTIVATE:
-        playEvent(SOUND_ROCKET_ACTIVATE_PATH);
+        playEvent(getPath(sound));
         break;
     case SOUND_ROCKET_EXPLOSION:
         playEvent(SOUND_ROCKET_EXPLOSION_PATH);
@@ -90,10 +88,10 @@ void SoundManager::play(eSoundEvent sound)
         // playEvent("event:/hovercraft_move");   // need flag
         break;
     case SOUND_HOVERCAR_IMPACT_HOVERCAR:
-        playEvent(SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH);
+        playEvent(getPath(sound));
         break;
     case SOUND_HOVERCAR_IMPACT_WORLD:
-        playEvent(getPath(SOUND_HOVERCAR_IMPACT_HOVERCAR));
+        playEvent(getPath(sound));
         break;
     case SOUND_HOVERCAR_DASH:
         // playEvent("event:/");
