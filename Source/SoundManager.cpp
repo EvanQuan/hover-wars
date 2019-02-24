@@ -93,7 +93,7 @@ void SoundManager::play(eSoundEvent sound)
         playEvent(SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH);
         break;
     case SOUND_HOVERCAR_IMPACT_WORLD:
-        playEvent(SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH);
+        playEvent(getPath(SOUND_HOVERCAR_IMPACT_HOVERCAR));
         break;
     case SOUND_HOVERCAR_DASH:
         // playEvent("event:/");
