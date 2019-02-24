@@ -55,6 +55,11 @@ public:
 
         SOUND_MUSIC_INGAME_LOOP,
         SOUND_MUSIC_PAUSE_LOOP,
+
+        SOUND_KILL_DOMINATION,
+        SOUND_KILL_REVENGE,
+        SOUND_KILL_NEMESIS,
+        SOUND_KILL_STREAK,
     };
 
     void playEvent(eSoundEvent sound);
@@ -180,7 +185,13 @@ private:
                                          }},
         {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
                                          }},
-        {SOUND_MUSIC_PAUSE_LOOP,         { "event:/background/pause",
+        {SOUND_KILL_DOMINATION,          { "event:/kill/domination",
+                                         }},
+        {SOUND_KILL_NEMESIS,             { "event:/kill/nemesis",
+                                         }},
+        {SOUND_KILL_REVENGE,             { "event:/kill/revenge",
+                                         }},
+        {SOUND_KILL_STREAK,              { "event:/kill/killstreak",
                                          }},
     };
 };
