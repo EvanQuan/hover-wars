@@ -500,13 +500,3 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
     return wheelQueryResults[0].isInAir && wheelQueryResults[1].isInAir && wheelQueryResults[2].isInAir && wheelQueryResults[3].isInAir;
 }
-
-void PhysicsManager::onContact(const PxContactPairHeader & pairHeader, const PxContactPair * pairs, PxU32 nbPairs)
-{
-    cout << "COLLISION DETECTED" << endl;
-}
-
-void PhysicsManager::onTrigger(PxTriggerPair * pairs, PxU32 count)
-{
-    cout << "TRIGGER DETECTED" << endl;
-}
