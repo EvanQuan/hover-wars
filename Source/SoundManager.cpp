@@ -12,8 +12,8 @@
 #define SOUND_TRAIL_START_PATH              "event:/trail/trail_start"
 #define SOUND_TRAIL_LOOP_PATH               "event:/trail/trail_loop"
 #define SOUND_TRAIL_END_PATH                "event:/trail/trail_end"
-#define SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH "event:/hovercraft/hovercraft_hit_hovercraft"
-#define SOUND_HOVERCAR_IMPACT_WORLD_PATH    "event:/hovercraft/hovercraft_hit_world"
+#define SOUND_HOVERCAR_IMPACT_HOVERCAR_PATH "event:/hovercraft/hovercraft_hit_hovercraft_01"
+#define SOUND_HOVERCAR_IMPACT_WORLD_PATH    "event:/hovercraft/hovercraft_hit_hovercraft_08"
 
 #define SOUND_BACKGROUND_1 "event:/background/background_1"
 #define SOUND_BACKGROUND_2 "event:/background/background_2"

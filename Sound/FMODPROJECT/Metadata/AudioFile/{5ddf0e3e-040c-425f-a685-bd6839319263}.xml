@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.01.10.00">
-    <object class="AudioFile" id="{312d883f-2e5b-4b78-a847-6675458ca83d}">
+    <object class="AudioFile" id="{5ddf0e3e-040c-425f-a685-bd6839319263}">
         <property name="assetPath">
-            <value>Hovercraft/bumper_car_hit6.wav</value>
+            <value>Hovercraft/car_speed_boost_start.wav</value>
         </property>
         <property name="frequencyInKHz">
             <value>44.0999985</value>
@@ -11,7 +11,7 @@
             <value>2</value>
         </property>
         <property name="length">
-            <value>1.3872335600907029</value>
+            <value>2.3978231292517007</value>
         </property>
         <relationship name="masterAssetFolder">
             <destination>{181fe279-8f98-4648-9db6-bcacf47e740f}</destination>
