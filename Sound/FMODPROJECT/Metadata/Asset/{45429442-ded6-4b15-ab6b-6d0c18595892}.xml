@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="EncodableAsset" id="{45429442-ded6-4b15-ab6b-6d0c18595892}">
+        <property name="assetPath">
+            <value>PowerUp/</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{181fe279-8f98-4648-9db6-bcacf47e740f}</destination>
+        </relationship>
+    </object>
+</objects>

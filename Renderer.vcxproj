@@ -140,13 +140,13 @@
     <ResourceCompile Include="Renderer.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\Desktop\FmodStudioEngine-master\AudioAdventure\resource\Master Bank.bank" />
-    <None Include="..\..\..\..\Desktop\FmodStudioEngine-master\AudioAdventure\resource\Master Bank.strings.bank" />
     <None Include=".editorconfig" />
     <None Include="Dependencies\FMod\inc\fmod.cs" />
     <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />
     <None Include="Dependencies\FMod\inc\fmod_errors.cs" />
     <None Include="Dependencies\FMod\inc\fmod_studio.cs" />
+    <None Include="Sound\FMODPROJECT\Build\Desktop\Master Bank.bank" />
+    <None Include="Sound\FMODPROJECT\Build\Desktop\Master Bank.strings.bank" />
     <None Include="Sound\Master Bank.bank" />
     <None Include="Sound\Master Bank.strings.bank" />
   </ItemGroup>
