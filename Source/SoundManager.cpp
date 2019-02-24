@@ -5,6 +5,9 @@
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
 #define MASTER_BANK_STRINGS_PATH "Sound/Desktop/Master Bank.strings.bank"
 
+/*
+@Stephen What does this impact? Describe why this is here.
+*/
 #define MAX_CHANNELS 10
 #define NO_EXTRA_DRIVER_DATA 0
 
