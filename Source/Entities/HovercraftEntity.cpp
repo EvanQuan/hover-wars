@@ -468,6 +468,7 @@ void HovercraftEntity::deactivateTrail()
 
 void HovercraftEntity::dash(eAbility direction)
 {
+    cout << "DASH: " << direction << endl;
     SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {

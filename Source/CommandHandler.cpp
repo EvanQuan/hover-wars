@@ -89,14 +89,9 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eFixedCommand command
     case COMMAND_ABILITY_SPIKES:
     case COMMAND_ABILITY_TRAIL_ACTIVATE:
     case COMMAND_ABILITY_TRAIL_DEACTIVATE:
-        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
-        break;
     case COMMAND_DASH_BACK:
-        break;
     case COMMAND_DASH_FORWARD:
-        break;
     case COMMAND_DASH_LEFT:
-        break;
     case COMMAND_DASH_RIGHT:
         hovercraft->useAbility(m_fixedCommandToAbility.at(command));
         break;
