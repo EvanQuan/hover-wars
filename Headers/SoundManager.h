@@ -107,6 +107,8 @@ private:
     void loadEvent(const string& sEvenName);
     void loadSound(const string& sSoundName, bool b3d = true, bool bLooping = false, bool bStream = false);
 
+    void loadAllEvents();
+
     void unloadSound(const string& sSoundName);
 
     // void set3dListenerAndOrientation(const vec3& vPos = vec3(0, 0, 0), float fVoumedB = 0.0f);

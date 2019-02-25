@@ -65,7 +65,6 @@ void SoundManager::playEvent(eSoundEvent sound)
     }
 
     playEvent(eventPath);
-    return;
 }
 
 /*
@@ -144,6 +143,8 @@ in main().
 void SoundManager::loadFiles() {
     m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+
+    loadAllEvents();
 }
 
 void SoundManager::update() {
@@ -267,6 +268,21 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
     }
 }
 
+/*
+Load all events
+*/
+void SoundManager::loadAllEvents()
+{
+    for (auto& it : eventToSound)
+    {
+        for (string sound : it.second)
+        {
+            loadEvent(sound);
+        }
+
+    }
+}
+
 void SoundManager::loadEvent(const string& sEventName) {
     // Exit early if event already loaded
     if (FuncUtils::contains(mEvents, sEventName)) {
@@ -311,8 +327,13 @@ void SoundManager::playEvent(const string& sEventName) {
         }
     }
     tFoundIt->second->start();
-    // mEvents[sEventName]->start();
     cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+
+    clock_t goal = 3000 + clock();
+    while (goal > clock());
+
+    tFoundIt->second->start();
+    cout << "event again: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
