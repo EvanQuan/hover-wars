@@ -57,15 +57,16 @@ instances played simultaneously.
 */
 void SoundManager::playEvent(eSoundEvent sound)
 {
-    update();
+    this->updateChannels();
     const char* eventPath = getPath(sound);
     if (eventPath == "")
     {
         return;
     }
 
-    playEvent(eventPath);
-    return;
+    // playEvent(eventPath);
+    // Lag issue might not be due to loading, but maybe updating?
+    playEventDirect(eventPath);
 }
 
 /*
@@ -88,7 +89,9 @@ instance of each sound for each loopID.
 */
 void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 {
-
+    auto flameTrail = mEvents[getPath(sound)];
+    flameTrail->setParameterValue(0, 0.0);
+    flameTrail->start();
 }
 
 /*
@@ -101,7 +104,8 @@ that loop.
 */
 void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 {
-
+    auto flameTrail = mEvents[getPath(sound)];
+    flameTrail->setParameterValue(0, 1.0);
 }
 
 /*
@@ -142,20 +146,15 @@ avoid this, this is called after the Singleton instance is first instantiated
 in main().
 */
 void SoundManager::loadFiles() {
-    m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
 
-    //m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
-    //m_pInstance->loadEvent("event:/SwordBattle");
-    //m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
-
-    //m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
-    //m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
+    loadAllEvents();
 }
 
-void SoundManager::update() {
+void SoundManager::updateChannels() {
     vector<ChannelMap::iterator> vStoppedChannels;
-    for (auto it = m_pInstance->mChannels.begin(); it != m_pInstance->mChannels.end(); ++it)
+    for (auto it = mChannels.begin(); it != mChannels.end(); ++it)
     {
         bool bIsPlaying = false;
         it->second->isPlaying(&bIsPlaying);
@@ -166,9 +165,9 @@ void SoundManager::update() {
     }
     for (auto& it : vStoppedChannels)
     {
-        m_pInstance->mChannels.erase(it);
+        mChannels.erase(it);
     }
-    m_pInstance->errorCheck(m_pInstance->mpStudioSystem->update());
+    errorCheck(mpStudioSystem->update());
 }
 
 /*
@@ -215,7 +214,7 @@ void SoundManager::unloadSound(const string& sSoundName) {
 }
 
 int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, float fVolumedB) {
-    update();       // Clear finished channels
+    updateChannels();       // Clear finished channels
     int iChannelId = mnNextChannelId++;
     auto tFoundIt = mSounds.find(sSoundName);
     if (tFoundIt == mSounds.end()) {       // Not found in sound map
@@ -274,18 +273,41 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
     }
 }
 
-void SoundManager::loadEvent(const string& sEventName) {
-    auto tFoundIt = mEvents.find(sEventName);
-    if (tFoundIt != mEvents.end()) {     // Event already loaded
-        return;
+/*
+Load all events
+*/
+void SoundManager::loadAllEvents()
+{
+    for (auto& it : eventToSound)
+    {
+        for (string sound : it.second)
+        {
+            loadEvent(sound);
+        }
+
     }
-    FMOD::Studio::EventDescription* pEventDescription = NULL;
+}
+
+void SoundManager::loadEvent(const string& sEventName) {
+    // Exit early if event already loaded
+    if (FuncUtils::contains(mEvents, sEventName)) {
+        return;
+        cout << sEventName << " already loaded." << endl;
+    }
+    cout << sEventName << " not loaded yet." << endl;
+
+    //auto tFoundIt = mEvents.find(sEventName);
+    //if (tFoundIt != mEvents.end()) {     // Event already loaded
+        //return;
+    //}
+    FMOD::Studio::EventDescription* pEventDescription = nullptr;
     errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
-    if (pEventDescription) {
-        FMOD::Studio::EventInstance* pEventInstance = NULL;
+    if (nullptr != pEventDescription) {
+        FMOD::Studio::EventInstance* pEventInstance = nullptr;
         errorCheck(pEventDescription->createInstance(&pEventInstance));
-        if (pEventInstance) {
+        if (nullptr != pEventInstance) {
             mEvents[sEventName] = pEventInstance;
+            cout << sEventName << " successfully loaded with " << pEventInstance << endl;
         }
     }
 }
@@ -300,13 +322,27 @@ Play an event.
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt == mEvents.end()) {
+        cout << "event " << sEventName << " not loaded" << endl;
         loadEvent(sEventName);
+        cout << "event " << sEventName << " finished loading" << endl;
         tFoundIt = mEvents.find(sEventName);
         if (tFoundIt == mEvents.end()) {
             return;
+            cout << "event is not a valid event and so wasn't played" << endl;
         }
     }
     tFoundIt->second->start();
+    cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+}
+
+/*
+Testing things out
+https://books.google.ca/books?id=VfxNDwAAQBAJ&pg=PT373&lpg=PT373&dq=fmod::studio:eventInstance+getplaybackstate&source=bl&ots=Dlb4f5O3pe&sig=ACfU3U3_eWkbAVazGIRgrqwPHPdr2_0CyA&hl=en&sa=X&ved=2ahUKEwi2lrnWvtbgAhWIuZ4KHXguDvsQ6AEwCHoECAIQAQ#v=onepage&q=fmod%3A%3Astudio%3AeventInstance%20getplaybackstate&f=false
+*/
+void SoundManager::playEventDirect(const string& sEventName) {
+    mEvents[sEventName]->start();
+
+    cout << "event: " << sEventName << " played " << mEvents[sEventName] << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {

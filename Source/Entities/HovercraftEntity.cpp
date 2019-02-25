@@ -444,9 +444,6 @@ void HovercraftEntity::activateSpikes()
 {
     SOUND_MANAGER->playEvent(SoundManager::SOUND_SPIKES_ACTIVATE);
 
-    GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_SPIKES_ACTIVATE);
-
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
 
 }
@@ -459,7 +456,8 @@ void HovercraftEntity::activateTrail()
     /*
     Later, this should be split into starting and ending the trail event loop
     */
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
+    // SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
+    SOUND_MANAGER->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
 
     m_bTrailActivated = true;
     m_fSecondsSinceLastFlame = 0.0f;
@@ -471,6 +469,7 @@ Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {
+    SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
     m_bTrailActivated = false;
 }
 

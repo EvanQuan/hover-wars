@@ -78,7 +78,6 @@ public:
     static SoundManager* getInstance();
 
     void loadFiles();
-    static void update();
     void shutDown();
 private:
     
@@ -100,6 +99,7 @@ private:
     BankMap mBanks;
 
     SoundManager();
+    void updateChannels();
 
     int errorCheck(FMOD_RESULT result);
 
@@ -107,12 +107,15 @@ private:
     void loadEvent(const string& sEvenName);
     void loadSound(const string& sSoundName, bool b3d = true, bool bLooping = false, bool bStream = false);
 
+    void loadAllEvents();
+
     void unloadSound(const string& sSoundName);
 
     // void set3dListenerAndOrientation(const vec3& vPos = vec3(0, 0, 0), float fVoumedB = 0.0f);
 
     int playSounds(const string& sSoundName, const vec3& vPos = vec3(0, 0, 0), float fVolumedB = 0.0f);
     void playEvent(const string& sEventName);
+    void playEventDirect(const string& sEventName);
 
     // void stopChannel(int iChannelId);
     void stopEvent(const string& sEventName, bool bImmediate = false);
