@@ -57,14 +57,16 @@ instances played simultaneously.
 */
 void SoundManager::playEvent(eSoundEvent sound)
 {
-    update();
+    this->updateChannels();
     const char* eventPath = getPath(sound);
     if (eventPath == "")
     {
         return;
     }
 
-    playEvent(eventPath);
+    // playEvent(eventPath);
+    // Lag issue might not be due to loading, but maybe updating?
+    playEventDirect(eventPath);
 }
 
 /*
@@ -147,9 +149,9 @@ void SoundManager::loadFiles() {
     loadAllEvents();
 }
 
-void SoundManager::update() {
+void SoundManager::updateChannels() {
     vector<ChannelMap::iterator> vStoppedChannels;
-    for (auto it = m_pInstance->mChannels.begin(); it != m_pInstance->mChannels.end(); ++it)
+    for (auto it = mChannels.begin(); it != mChannels.end(); ++it)
     {
         bool bIsPlaying = false;
         it->second->isPlaying(&bIsPlaying);
@@ -160,9 +162,9 @@ void SoundManager::update() {
     }
     for (auto& it : vStoppedChannels)
     {
-        m_pInstance->mChannels.erase(it);
+        mChannels.erase(it);
     }
-    m_pInstance->errorCheck(m_pInstance->mpStudioSystem->update());
+    errorCheck(mpStudioSystem->update());
 }
 
 /*
@@ -209,7 +211,7 @@ void SoundManager::unloadSound(const string& sSoundName) {
 }
 
 int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, float fVolumedB) {
-    update();       // Clear finished channels
+    updateChannels();       // Clear finished channels
     int iChannelId = mnNextChannelId++;
     auto tFoundIt = mSounds.find(sSoundName);
     if (tFoundIt == mSounds.end()) {       // Not found in sound map
@@ -328,12 +330,16 @@ void SoundManager::playEvent(const string& sEventName) {
     }
     tFoundIt->second->start();
     cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+}
 
-    clock_t goal = 3000 + clock();
-    while (goal > clock());
+/*
+Testing things out
+https://books.google.ca/books?id=VfxNDwAAQBAJ&pg=PT373&lpg=PT373&dq=fmod::studio:eventInstance+getplaybackstate&source=bl&ots=Dlb4f5O3pe&sig=ACfU3U3_eWkbAVazGIRgrqwPHPdr2_0CyA&hl=en&sa=X&ved=2ahUKEwi2lrnWvtbgAhWIuZ4KHXguDvsQ6AEwCHoECAIQAQ#v=onepage&q=fmod%3A%3Astudio%3AeventInstance%20getplaybackstate&f=false
+*/
+void SoundManager::playEventDirect(const string& sEventName) {
+    mEvents[sEventName]->start();
 
-    tFoundIt->second->start();
-    cout << "event again: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+    cout << "event: " << sEventName << " played " << mEvents[sEventName] << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
