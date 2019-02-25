@@ -56,28 +56,6 @@ should be done in the CommandHandler, not here.
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
-    if (GLFW_KEY_5 == key && action == GLFW_PRESS) {
-        // SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
-    }
-    if (GLFW_KEY_6 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_EXPLOSION);
-    }
-    if (GLFW_KEY_7 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
-    }
-    if (GLFW_KEY_8 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_LOOP);
-    }
-    if (GLFW_KEY_9 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
-    }
-    if (GLFW_KEY_0 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
-    }
-    if (GLFW_KEY_4 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
-    }
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
     It is fastest to exit early while we can.
@@ -122,6 +100,43 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
         break;
     }
 }
+
+#ifndef NDEBUG
+/*
+After being introduced and then removed, debugKeyCommands has returned from the grave.
+I guess if you really want to do your debug key commands here, you can. Have fun!
+*/
+void InputHandler::debugKeyCommands(int key, int action)
+{
+    if (action == GLFW_PRESS)
+    {
+        switch (key)
+        {
+        case GLFW_KEY_5:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
+            break;
+        case GLFW_KEY_6:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_EXPLOSION);
+            break;
+        case GLFW_KEY_7:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
+            break;
+        case GLFW_KEY_8:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_LOOP);
+            break;
+        case GLFW_KEY_9:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+            break;
+        case GLFW_KEY_0:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
+            break;
+        case GLFW_KEY_MINUS:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
+            break;
+        }
+    }
+}
+#endif
 
 /*
 Mouse Button Callback

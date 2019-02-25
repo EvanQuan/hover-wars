@@ -93,6 +93,7 @@ private:
     void checkForPresentJoysticks();
 
 #ifndef NDEBUG
+    void debugKeyCommands(int key, int action);
     void debugPrintJoystickAxes(int joystickID);
     void debugPrintJoystickButtons(int joystickID);
     void debugPrintJoystickInformation();
