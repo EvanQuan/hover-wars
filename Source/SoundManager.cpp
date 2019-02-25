@@ -90,7 +90,8 @@ instance of each sound for each loopID.
 void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 {
     auto flameTrail = mEvents[getPath(sound)];
-    flameTrail->setParameterValue(0, 0.0);
+    const char* end = "shouldGoToEnd";
+    flameTrail->setParameterValue(end, 0.0);
     flameTrail->start();
 }
 
@@ -105,7 +106,8 @@ that loop.
 void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 {
     auto flameTrail = mEvents[getPath(sound)];
-    flameTrail->setParameterValue(0, 1.0);
+    const char* end = "shouldGoToEnd";
+    flameTrail->setParameterValue(end, 1.0);
 }
 
 /*
