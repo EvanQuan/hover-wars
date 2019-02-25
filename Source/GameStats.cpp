@@ -242,7 +242,12 @@ void GameStats::debugPlayer(ePlayer player)
         << "\t\tis dominating Player 0: " << isDominating(player, PLAYER_1) << endl
         << "\t\tis dominating Player 1: " << isDominating(player, PLAYER_2) << endl
         << "\t\tis dominating Player 2: " << isDominating(player, PLAYER_3) << endl
-        << "\t\tis dominating Player 3: " << isDominating(player, PLAYER_4) << endl;
+        << "\t\tis dominating Player 3: " << isDominating(player, PLAYER_4) << endl
+        << "\t\ttotal abilities used: " << stats[player][TOTAL_ABILITIES_USED] << endl
+        << "\t\ttotal rockets used: " << stats[player][ABILITY_ROCKET_USED] << endl
+        << "\t\ttotal spikes used: " << stats[player][ABILITY_SPIKES_USED] << endl
+        << "\t\ttotal trails used: " << stats[player][ABILITY_TRAIL_USED] << endl
+        << "\t\ttotal dashes used: " << stats[player][ABILITY_DASH_USED] << endl;
 }
 
 /*

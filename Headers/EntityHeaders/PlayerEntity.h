@@ -14,6 +14,21 @@ public:
                     float fScale,
                     ePlayer playerID);
 
+    /*
+    Track ability usage for players
+    */
+    bool useAbility(eAbility ability)
+    {
+        if (HovercraftEntity::useAbility(ability))
+        {
+            GAME_STATS->useAbility(m_ePlayerID, ability);
+            cout << "PLAYER " << m_ePlayerID << "USED ABILITY " << ability << endl;
+            return true;
+        }
+        return false;
+
+    }
+
 private:
 
     /*
