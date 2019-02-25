@@ -258,7 +258,9 @@ Update the killstreaks from the results of playerAttacker hitting playerHit
 */
 void GameStats::updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit)
 {
+    // Increase the attacker's killstreak
     addKillstreak(playerAttacker, playerHit);
+    // Reset the hit's killstreaks
     resetKillstreak(playerHit, playerAttacker);
 }
 /*
