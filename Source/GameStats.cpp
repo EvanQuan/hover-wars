@@ -1,5 +1,5 @@
 #include "GameStats.h"
-
+#include "SoundManager.h"
 
 // Singleton instance
 GameStats* GameStats::m_pInstance = nullptr;
@@ -237,8 +237,11 @@ void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
     {
         stats[playerAttacker][LARGEST_TOTAL_KILLSTREAK] = currentTotalKillstreak;
     }
-    if (currentKillstreakAgainstPlayer >= DOMINATION_COUNT)
+    // Update dominating if exceeds domination count and not already dominating
+    if (currentKillstreakAgainstPlayer >= DOMINATION_COUNT
+        && stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] == 1)
     {
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_DOMINATION);
         stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = 1;
     }
 }
@@ -251,7 +254,13 @@ void GameStats::resetKillstreak(ePlayer playerHit, ePlayer playerAttacker)
 {
     stats[playerHit][CURRENT_TOTAL_KILLSTREAK + playerAttacker] = 0;
     stats[playerHit][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerAttacker] = 0;
-    stats[playerHit][IS_DOMINATING_PLAYER_1 + playerAttacker] = 0;
+
+    // If player hit was dominating playerAttacker, disable domination and 
+    // player revenge sound.
+    if (isDominating(playerHit, playerAttacker))
+    {
+        getRevenge(playerAttacker, playerHit);
+    }
 }
 
 /*
@@ -265,6 +274,15 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
 {
     return stats[playerToCheck][IS_DOMINATING_PLAYER_1 + playerHit];
+}
+
+/*
+Disable playerWasDominating's domination status against playerToGetRevenge.
+*/
+void GameStats::getRevenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating)
+{
+    SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_REVENGE);
+    stats[playerWasDominating][IS_DOMINATING_PLAYER_1 + playerToGetRevenge] = 0;
 }
 
 

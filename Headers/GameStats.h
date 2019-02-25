@@ -156,6 +156,7 @@ private:
     void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
     void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
     bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
+    void getRevenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating);
     // Powerups
     void pickupPowerup(ePlayer player);
     void addPowerupCount(ePlayer player);
