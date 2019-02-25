@@ -444,9 +444,6 @@ void HovercraftEntity::activateSpikes()
 {
     SOUND_MANAGER->playEvent(SoundManager::SOUND_SPIKES_ACTIVATE);
 
-    GAME_STATS->addScore(PLAYER_1, GameStats::HIT_BOT);
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_SPIKES_ACTIVATE);
-
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
 
 }

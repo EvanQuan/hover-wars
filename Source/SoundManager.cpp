@@ -278,14 +278,16 @@ void SoundManager::loadEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt != mEvents.end()) {     // Event already loaded
         return;
+        cout << sEventName << " already loaded." << endl;
     }
-    FMOD::Studio::EventDescription* pEventDescription = NULL;
+    FMOD::Studio::EventDescription* pEventDescription = nullptr;
     errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
-    if (pEventDescription) {
-        FMOD::Studio::EventInstance* pEventInstance = NULL;
+    if (nullptr != pEventDescription) {
+        FMOD::Studio::EventInstance* pEventInstance = nullptr;
         errorCheck(pEventDescription->createInstance(&pEventInstance));
-        if (pEventInstance) {
+        if (nullptr != pEventInstance) {
             mEvents[sEventName] = pEventInstance;
+            cout << sEventName << " successfully loaded with " << pEventInstance << endl;
         }
     }
 }
@@ -307,6 +309,7 @@ void SoundManager::playEvent(const string& sEventName) {
         }
     }
     tFoundIt->second->start();
+    cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
