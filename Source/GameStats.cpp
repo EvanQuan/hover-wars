@@ -270,8 +270,17 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 */
 void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
 {
+    // Update attacker's current total killstreak
     stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK]++;
+    // notify if attacker reached current total killstreak milestone
+    if (stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK] % CURRENT_TOTAL_KILLSTREAK_MILESTONE == 0)
+    {
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_STREAK);
+    }
+
+    // Update attacker's current total killstreak against hit
     stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit]++;
+
     updateLargestTotalKillstreak(playerAttacker);
     // Update dominating if exceeds domination count and not already dominating
     if (canStartDomination(playerAttacker, playerHit))

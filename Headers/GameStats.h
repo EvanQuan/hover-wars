@@ -10,6 +10,8 @@
 #define POINTS_LOST_GOT_HIT 10
 #define POINTS_LOST_PER_KILLSTREAK 10
 
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
+
 /*
 Stores and calculates all in-game stats.
 
