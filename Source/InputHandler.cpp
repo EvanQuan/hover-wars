@@ -112,6 +112,7 @@ void InputHandler::debugKeyCommands(int key, int action)
     {
         switch (key)
         {
+            // Testing sound
         case GLFW_KEY_5:
             SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
             break;
@@ -131,7 +132,15 @@ void InputHandler::debugKeyCommands(int key, int action)
             SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
             break;
         case GLFW_KEY_MINUS:
+            GAME_STATS->addScore(ePlayer::PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
             SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
+            break;
+            // Testing game stats kill updates
+        case GLFW_KEY_R:
+            GAME_STATS->addScore(ePlayer::PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
+            break;
+        case GLFW_KEY_T:
+            GAME_STATS->addScore(ePlayer::PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
             break;
         }
     }
