@@ -114,6 +114,12 @@ Actor names
 Interactable entities have actor names so the game can discern what type of
 object they are. This is especially important for collisions, as collisions
 between different kinds of entities determine the results.
+
+Actor names are composed of 2 characters. The order of tokens are:
+
+1. Type
+
+2. Subtype or Owner
 */
 #define NAME_PLAYER  "player"
 #define NAME_BOT     "bot"
