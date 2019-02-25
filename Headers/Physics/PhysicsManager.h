@@ -59,6 +59,11 @@ private:
     std::vector<physx::PxVehicleNoDrive *> vehicles;
     std::vector<physx::PxRigidStatic *> staticObjects;
 
+    /*
+
+    */
+    std::vector<physx::PxRigidDynamic *> dynamicActors;
+
     physx::PxTriangleMesh *generateMesh(string filename,float scale);
     int currentState = 0;
     snippetvehicle::VehicleSceneQueryData*      gVehicleSceneQueryData = NULL;
