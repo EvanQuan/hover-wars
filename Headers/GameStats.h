@@ -151,15 +151,27 @@ private:
     int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
     int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
     void addScore(ePlayer playerAttacker, int points);
+
     // Killstreaks
     void updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit);
     void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+    int getKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+    void updateLargestTotalKillstreak(ePlayer player);
     void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+
+    // Domination
     bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
-    void getRevenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating);
+    bool canStartDomination(ePlayer playerAttacker, ePlayer playerHit);
+    void dominate(ePlayer playerAttacker, ePlayer playerHit);
+
+    // Revenge
+    void revenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating);
+
     // Powerups
     void pickupPowerup(ePlayer player);
     void addPowerupCount(ePlayer player);
+
+    void debugPlayer(ePlayer player);
 
     unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
     {
