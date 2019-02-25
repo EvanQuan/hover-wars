@@ -144,13 +144,6 @@ in main().
 void SoundManager::loadFiles() {
     m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
-
-    //m_pInstance->loadEvent("event:/hovercraft/bumper_car_go_loop.wav");
-    //m_pInstance->loadEvent("event:/SwordBattle");
-    //m_pInstance->loadSound("Sound/hovercraft/bumper_car_go_loop.wav", false);
-
-    //m_pInstance->loadEvent("event:/rocket/rocket_shoot.wav");
-    //m_pInstance->loadSound("Sound/rocket/rocket_shoot.wav", false);
 }
 
 void SoundManager::update() {
@@ -275,11 +268,17 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
 }
 
 void SoundManager::loadEvent(const string& sEventName) {
-    auto tFoundIt = mEvents.find(sEventName);
-    if (tFoundIt != mEvents.end()) {     // Event already loaded
+    // Exit early if event already loaded
+    if (FuncUtils::contains(mEvents, sEventName)) {
         return;
         cout << sEventName << " already loaded." << endl;
     }
+    cout << sEventName << " not loaded yet." << endl;
+
+    //auto tFoundIt = mEvents.find(sEventName);
+    //if (tFoundIt != mEvents.end()) {     // Event already loaded
+        //return;
+    //}
     FMOD::Studio::EventDescription* pEventDescription = nullptr;
     errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
     if (nullptr != pEventDescription) {
@@ -302,13 +301,17 @@ Play an event.
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt == mEvents.end()) {
+        cout << "event " << sEventName << " not loaded" << endl;
         loadEvent(sEventName);
+        cout << "event " << sEventName << " finished loading" << endl;
         tFoundIt = mEvents.find(sEventName);
         if (tFoundIt == mEvents.end()) {
             return;
+            cout << "event is not a valid event and so wasn't played" << endl;
         }
     }
     tFoundIt->second->start();
+    // mEvents[sEventName]->start();
     cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
 
