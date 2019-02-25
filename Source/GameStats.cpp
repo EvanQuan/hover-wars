@@ -1,6 +1,46 @@
 #include "GameStats.h"
 #include "SoundManager.h"
 
+/*
+Number of killstreaks against another player to count as domination
+*/
+#define DOMINATION_COUNT 3
+/*
+Base points gained for hitting a bot
+*/
+#define POINTS_GAINED_HIT_BOT 10
+/*
+Base points gained for hitting a player
+*/
+#define POINTS_GAINED_HIT_PLAYER 50
+/*
+Number of extra points gained when a player gets revenge
+*/
+#define POINTS_GAINED_HIT_REVENGE 100
+/*
+Players gain additional points against other players based on their current
+total killstreak. This gives players an incentive to not get hit.
+*/
+#define POINTS_GAINED_PER_KILLSTREAK 20
+/*
+Base points for picking up a power up
+*/
+#define POINTS_GAINED_PICKUP_POWERUP 10
+/*
+Base points lost for getting hit
+*/
+#define POINTS_LOST_GOT_HIT 10
+/*
+Additional points lost per own killstreak. This makes having a large killstreak
+risky as you will lose more points.
+*/
+#define POINTS_LOST_PER_KILLSTREAK 10
+/*
+Notifies everyone once a player hits a milestone.
+*/
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
+
+
 // Singleton instance
 GameStats* GameStats::m_pInstance = nullptr;
 
@@ -175,9 +215,11 @@ Updates killstreaks and scores.
 */
 void GameStats::hitPlayer(ePlayer playerAttacker, ePlayer playerHit)
 {
+    // Update score first
+    updateAttackerAndHitScore(playerAttacker, playerHit);
+
     updateAttackerAndHitKills(playerAttacker, playerHit);
     updateAttackerAndHitKillstreak(playerAttacker, playerHit);
-    updateAttackerAndHitScore(playerAttacker, playerHit);
 
 #ifndef NDEBUG
     cout << "Player " << playerAttacker << " hit Player " << playerHit << endl;

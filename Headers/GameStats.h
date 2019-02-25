@@ -1,17 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-#define DOMINATION_COUNT 3
-#define POINTS_GAINED_HIT_BOT 10
-#define POINTS_GAINED_HIT_PLAYER 50
-#define POINTS_GAINED_HIT_REVENGE 150
-#define POINTS_GAINED_PER_KILLSTREAK 20
-#define POINTS_GAINED_PICKUP_POWERUP 10
-#define POINTS_LOST_GOT_HIT 10
-#define POINTS_LOST_PER_KILLSTREAK 10
-
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
-
 /*
 Stores and calculates all in-game stats.
 
