@@ -264,20 +264,19 @@ void InputHandler::initializeJoystick(int joystickID)
 #endif
 }
 
+#ifndef NDEBUG
 // DEBUG Print information about all joysticks
 void InputHandler::debugPrintJoystickInformation()
 {
-#ifdef NDEBUG
-    return;
-#else
     system("CLS");
     for (int joystickID = 0; joystickID < MAX_PLAYER_COUNT; joystickID++)
     {
         debugPrintJoystickInformation(joystickID);
     }
-#endif
 }
+#endif
 
+#ifndef NDEBUG
 // DEBUG Print information about a joystick
 void InputHandler::debugPrintJoystickInformation(int joystickID)
 {
@@ -288,7 +287,9 @@ void InputHandler::debugPrintJoystickInformation(int joystickID)
     // debugPrintJoystickAxes(joystickID);
     // debugPrintJoystickButtons(joystickID);
 }
+#endif
 
+#ifndef NDEBUG
 void InputHandler::debugPrintJoystickAxes(int joystickID)
 {
     if (!m_pJoystickIsPresent[joystickID])
@@ -296,7 +297,6 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
         return;
     }
     const float* axes = m_pJoystickAxes[joystickID];
-#ifdef _DEBUG
     std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: " << std::endl
               << "\t\tLeft stick x: "  << axes[AXIS_LEFT_STICK_X]  << std::endl
               << "\t\t           y: "  << axes[AXIS_LEFT_STICK_Y]  << std::endl
@@ -310,9 +310,10 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
         std::cout << axes[i] << " ";
     }
     std::cout << "]" << std::endl;
-#endif
 }
+#endif
 
+#ifndef NDEBUG
 void InputHandler::debugPrintJoystickButtons(int joystickID)
 {
     if (!m_pJoystickIsPresent[joystickID])
@@ -320,7 +321,6 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
         return;
     }
     const unsigned char* buttonsPressed = m_pJoystickButtonsRaw[joystickID];
-#ifdef _DEBUG
     std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
               << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
               << "\t\tB: "            << buttonsPressed[BUTTON_B]            << std::endl
@@ -342,8 +342,8 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
         std::cout << buttonsPressed[i] << " ";
     }
     std::cout << "]" << std::endl;
-#endif
 }
+#endif
 
 /*
 Registers a joystick as not connected to the game.
