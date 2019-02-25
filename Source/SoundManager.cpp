@@ -143,8 +143,8 @@ avoid this, this is called after the Singleton instance is first instantiated
 in main().
 */
 void SoundManager::loadFiles() {
-    m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
 
     loadAllEvents();
 }
