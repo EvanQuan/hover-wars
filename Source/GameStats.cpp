@@ -175,6 +175,7 @@ Updates killstreaks and scores.
 */
 void GameStats::hitPlayer(ePlayer playerAttacker, ePlayer playerHit)
 {
+    updateAttackerAndHitKills(playerAttacker, playerHit);
     updateAttackerAndHitKillstreak(playerAttacker, playerHit);
     updateAttackerAndHitScore(playerAttacker, playerHit);
 
@@ -192,10 +193,10 @@ void GameStats::debugPlayer(ePlayer player)
         << "\t\ttotal kills: " << stats[player][TOTAL_KILLS] << endl
         << "\t\tcurrent total killstreak: " << stats[player][CURRENT_TOTAL_KILLSTREAK] << endl
         << "\t\tlargest total killstreak: " << stats[player][LARGEST_TOTAL_KILLSTREAK] << endl
-        << "\t\tcurrent killstreak against Player 0: " << getKillstreak(player, PLAYER_1) << endl
-        << "\t\tcurrent killstreak against Player 1: " << getKillstreak(player, PLAYER_2) << endl
-        << "\t\tcurrent killstreak against Player 2: " << getKillstreak(player, PLAYER_3) << endl
-        << "\t\tcurrent killstreak against Player 3: " << getKillstreak(player, PLAYER_4) << endl
+        << "\t\tcurrent killstreak against Player 0: " << getCurrentKillstreakAgainst(player, PLAYER_1) << endl
+        << "\t\tcurrent killstreak against Player 1: " << getCurrentKillstreakAgainst(player, PLAYER_2) << endl
+        << "\t\tcurrent killstreak against Player 2: " << getCurrentKillstreakAgainst(player, PLAYER_3) << endl
+        << "\t\tcurrent killstreak against Player 3: " << getCurrentKillstreakAgainst(player, PLAYER_4) << endl
         << "\t\tis dominating Player 0: " << isDominating(player, PLAYER_1) << endl
         << "\t\tis dominating Player 1: " << isDominating(player, PLAYER_2) << endl
         << "\t\tis dominating Player 2: " << isDominating(player, PLAYER_3) << endl
@@ -246,6 +247,12 @@ void GameStats::addScore(ePlayer playerAttacker, int points)
     stats[playerAttacker][TOTAL_SCORE] += points;
 }
 
+void GameStats::updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit)
+{
+    stats[playerAttacker][TOTAL_KILLS]++;
+    stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_1 + playerHit]++;
+}
+
 /*
 Update the killstreaks from the results of playerAttacker hitting playerHit
 */
@@ -279,7 +286,7 @@ void GameStats::updateLargestTotalKillstreak(ePlayer player)
     }
 }
 
-int GameStats::getKillstreak(ePlayer playerAttacker, ePlayer playerHit)
+int GameStats::getCurrentKillstreakAgainst(ePlayer playerAttacker, ePlayer playerHit)
 {
     return stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit];
 }
@@ -290,7 +297,9 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 */
 void GameStats::resetKillstreak(ePlayer playerHit, ePlayer playerAttacker)
 {
+    // Reset current total killstreak
     stats[playerHit][CURRENT_TOTAL_KILLSTREAK + playerAttacker] = 0;
+    // Reset current total killstreak against attacker
     stats[playerHit][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerAttacker] = 0;
 
     // If player hit was dominating playerAttacker, disable domination and 
@@ -321,7 +330,7 @@ playerAttacker can start domination against playerHIt if
 */
 bool GameStats::canStartDomination(ePlayer playerAttacker, ePlayer playerHit)
 {
-    return getKillstreak(playerAttacker, playerHit) >= DOMINATION_COUNT
+    return getCurrentKillstreakAgainst(playerAttacker, playerHit) >= DOMINATION_COUNT
         && !isDominating(playerAttacker, playerHit);
 }
 

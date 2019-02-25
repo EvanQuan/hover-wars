@@ -152,10 +152,14 @@ private:
     int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
     void addScore(ePlayer playerAttacker, int points);
 
+    // Kills
+    void updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit);
+
+
     // Killstreaks
     void updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit);
     void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
-    int getKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+    int getCurrentKillstreakAgainst(ePlayer playerAttacker, ePlayer playerHit);
     void updateLargestTotalKillstreak(ePlayer player);
     void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
 
