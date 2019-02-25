@@ -150,6 +150,7 @@ private:
     // Killstreaks
     void updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit);
     void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+    void increaseCurrentTotalKillstreak(ePlayer playerAttacker);
     int getCurrentKillstreakAgainst(ePlayer playerAttacker, ePlayer playerHit);
     void updateLargestTotalKillstreak(ePlayer player);
     void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);

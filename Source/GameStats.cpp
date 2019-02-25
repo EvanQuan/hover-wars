@@ -324,7 +324,7 @@ This does not moditfy playerHit's data
 void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
 {
     // Update attacker's current total killstreak
-    stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK]++;
+    increaseCurrentTotalKillstreak(playerAttacker);
     // notify if attacker reached current total killstreak milestone
     if (stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK] % CURRENT_TOTAL_KILLSTREAK_MILESTONE == 0)
     {
@@ -334,12 +334,22 @@ void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
     // Update attacker's current total killstreak against hit
     stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit]++;
 
-    updateLargestTotalKillstreak(playerAttacker);
     // Update dominating if exceeds domination count and not already dominating
     if (canStartDomination(playerAttacker, playerHit))
     {
         dominate(playerAttacker, playerHit);
     }
+}
+
+
+/*
+Increase the player's current total killstreak and check for largest total
+killstreak updating.
+*/
+void GameStats::increaseCurrentTotalKillstreak(ePlayer player)
+{
+    stats[player][CURRENT_TOTAL_KILLSTREAK]++;
+    updateLargestTotalKillstreak(player);
 }
 
 /*
