@@ -268,7 +268,8 @@ int GameStats::getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerH
 {
     int basePoints = POINTS_GAINED_HIT_PLAYER;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK];
-    return basePoints + killstreakBonus;
+    int revengeBonus = isDominating(playerHit, playerAttacker) ? POINTS_GAINED_HIT_REVENGE : 0;
+    return basePoints + killstreakBonus; + revengeBonus;
 }
 
 /*
