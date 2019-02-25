@@ -56,7 +56,7 @@ void CommandHandler::executeIfPlayerExists(ePlayer player, eFixedCommand command
         return;
     }
     PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-    execute(playerEntity, command);
+    executeValidPlayer(playerEntity, command);
 }
 
 /*
@@ -72,16 +72,16 @@ void CommandHandler::executeIfBotExists(eBot bot, eFixedCommand command)
         return;
     }
     BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
-    execute(botEntity, command);
+    executeValidBot(botEntity, command);
 }
 
 /*
-Make a hovercraft execute a fixed command.
+Make a player execute a fixed command.
 
-@param hovercraft   to execute command on
+@param player       to execute command on
 @param command      to execute
 */
-void CommandHandler::execute(HovercraftEntity *hovercraft, eFixedCommand command)
+void CommandHandler::executeValidPlayer(PlayerEntity *player, eFixedCommand command)
 {
     switch (command)
     {
@@ -93,13 +93,13 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eFixedCommand command
     case COMMAND_DASH_FORWARD:
     case COMMAND_DASH_LEFT:
     case COMMAND_DASH_RIGHT:
-        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
+        player->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        hovercraft->setActiveCameraToFront();
+        player->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        hovercraft->setActiveCameraToBack();
+        player->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
        break;
@@ -172,6 +172,98 @@ void CommandHandler::execute(HovercraftEntity *hovercraft, eFixedCommand command
     }
 }
 
+void CommandHandler::executeValidBot(BotEntity *bot, eFixedCommand command)
+{
+    switch (command)
+    {
+    case COMMAND_ABILITY_ROCKET:
+    case COMMAND_ABILITY_SPIKES:
+    case COMMAND_ABILITY_TRAIL_ACTIVATE:
+    case COMMAND_ABILITY_TRAIL_DEACTIVATE:
+    case COMMAND_DASH_BACK:
+    case COMMAND_DASH_FORWARD:
+    case COMMAND_DASH_LEFT:
+    case COMMAND_DASH_RIGHT:
+        bot->useAbility(m_fixedCommandToAbility.at(command));
+        break;
+    case COMMAND_CAMERA_FRONT:
+        bot->setActiveCameraToFront();
+        break;
+    case COMMAND_CAMERA_BACK:
+        bot->setActiveCameraToBack();
+        break;
+    case COMMAND_MENU_BACK:
+       break;
+    case COMMAND_MENU_PAUSE:
+       break;
+    case COMMAND_MENU_START:
+       break;
+
+    // Since the honk sound is played directly and all players hear the same
+    // thing, we don't actually need to relate anything to the hovercraft
+    // itself.
+    case COMMAND_HONK_UP:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_UP);
+        break;
+    case COMMAND_HONK_RIGHT:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_RIGHT);
+        break;
+    case COMMAND_HONK_DOWN:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_DOWN);
+        break;
+    case COMMAND_HONK_LEFT:
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_LEFT);
+        break;
+
+    case COMMAND_CLOSE_WINDOW:
+        glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
+        break;
+#ifndef NDEBUG
+
+    case COMMAND_DEBUG_TOGGLE_WIREFRAME:
+        debugToggleWireframe();
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_1;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_2;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_3;
+        break;
+    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
+        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
+        break;
+    case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
+        ENTITY_MANAGER->toggleDebugCamera();
+        break;
+    case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
+        ENTITY_MANAGER->toggleBBDrawing();
+        break;
+    case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
+        ENTITY_MANAGER->toggleSpatialMapDrawing();
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
+        break;
+    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
+        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
+        break;
+#endif
+    }
+
+}
+
 /*
 Make a given player execute a eVariableCommand.
 VariableCommands require extra parameters to complete the command.
@@ -202,7 +294,7 @@ void CommandHandler::executeIfPlayerExists(ePlayer player, eVariableCommand comm
         return;
     }
     PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-    execute(playerEntity, command, x, y);
+    executeValidHovercraft(playerEntity, command, x, y);
 }
 
 /*
@@ -220,24 +312,23 @@ void CommandHandler::executeIfBotExists(eBot bot, eVariableCommand command, floa
         return;
     }
     BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
-    execute(botEntity, command, x, y);
+    executeValidHovercraft(botEntity, command, x, y);
 }
 
 /*
-Make a hovercraft execute a variable command.
+Make a player execute a variable command.
 
-@param hovercraft   to execute command on
+@param player       to execute command on
 @param command      to execute
 @param x            x-coordinate
 @param y            y-coordinate
 */
-void CommandHandler::execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
+void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
 {
     switch (command)
     {
     case COMMAND_MOVE:
         hovercraft->move(x, y);
-        //SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
         break;
     case COMMAND_TURN:
         hovercraft->turn(x);

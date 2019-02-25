@@ -1,15 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-#define DOMINATION_COUNT 3
-#define POINTS_GAINED_HIT_BOT 10
-#define POINTS_GAINED_HIT_PLAYER 50
-#define POINTS_GAINED_HIT_REVENGE 150
-#define POINTS_GAINED_PER_KILLSTREAK 20
-#define POINTS_GAINED_PICKUP_POWERUP 10
-#define POINTS_LOST_GOT_HIT 10
-#define POINTS_LOST_PER_KILLSTREAK 10
-
 /*
 Stores and calculates all in-game stats.
 
@@ -151,14 +142,32 @@ private:
     int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
     int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
     void addScore(ePlayer playerAttacker, int points);
+
+    // Kills
+    void updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit);
+
+
     // Killstreaks
     void updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit);
     void addKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+    void increaseCurrentTotalKillstreak(ePlayer playerAttacker);
+    int getCurrentKillstreakAgainst(ePlayer playerAttacker, ePlayer playerHit);
+    void updateLargestTotalKillstreak(ePlayer player);
     void resetKillstreak(ePlayer playerAttacker, ePlayer playerHit);
+
+    // Domination
     bool isDominating(ePlayer playerAttacker, ePlayer playerHit);
+    bool canStartDomination(ePlayer playerAttacker, ePlayer playerHit);
+    void dominate(ePlayer playerAttacker, ePlayer playerHit);
+
+    // Revenge
+    void revenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating);
+
     // Powerups
     void pickupPowerup(ePlayer player);
     void addPowerupCount(ePlayer player);
+
+    void debugPlayer(ePlayer player);
 
     unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
     {

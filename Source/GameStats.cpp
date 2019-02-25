@@ -1,4 +1,44 @@
 #include "GameStats.h"
+#include "SoundManager.h"
+
+/*
+Number of killstreaks against another player to count as domination
+*/
+#define DOMINATION_COUNT 3
+/*
+Base points gained for hitting a bot
+*/
+#define POINTS_GAINED_HIT_BOT 10
+/*
+Base points gained for hitting a player
+*/
+#define POINTS_GAINED_HIT_PLAYER 50
+/*
+Number of extra points gained when a player gets revenge
+*/
+#define POINTS_GAINED_HIT_REVENGE 100
+/*
+Players gain additional points against other players based on their current
+total killstreak. This gives players an incentive to not get hit.
+*/
+#define POINTS_GAINED_PER_KILLSTREAK 20
+/*
+Base points for picking up a power up
+*/
+#define POINTS_GAINED_PICKUP_POWERUP 10
+/*
+Base points lost for getting hit
+*/
+#define POINTS_LOST_GOT_HIT 10
+/*
+Additional points lost per own killstreak. This makes having a large killstreak
+risky as you will lose more points.
+*/
+#define POINTS_LOST_PER_KILLSTREAK 10
+/*
+Notifies everyone once a player hits a milestone.
+*/
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
 
 
 // Singleton instance
@@ -84,6 +124,7 @@ Get a stat. For example:
     int killstreak = gameStats.get(PLAYER_1, CURRENT_KILLSTREAKS_AGAINST_PLAYER_2);
 
 will retrieve Player 1's current killstreaks against player 2.
+@pure
 */
 int GameStats::get(ePlayer player, eStat stat)
 {
@@ -96,6 +137,7 @@ Get a cooldown. For example:
      = gameStats.get(PLAYER_1, COOLDOWN_ROCKET);
 
 will retrieve Player 1's current killstreaks against player 2.
+@pure
 */
 float GameStats::get(ePlayer player, eCooldown cooldown)
 {
@@ -104,6 +146,7 @@ float GameStats::get(ePlayer player, eCooldown cooldown)
 
 /*
 @return true is ability is ready to be used
+@pure
 */
 bool GameStats::isOnCooldown(ePlayer player, eCooldown cooldown)
 {
@@ -172,8 +215,39 @@ Updates killstreaks and scores.
 */
 void GameStats::hitPlayer(ePlayer playerAttacker, ePlayer playerHit)
 {
-    updateAttackerAndHitKillstreak(playerAttacker, playerHit);
+    // Update score first
     updateAttackerAndHitScore(playerAttacker, playerHit);
+
+    updateAttackerAndHitKills(playerAttacker, playerHit);
+    updateAttackerAndHitKillstreak(playerAttacker, playerHit);
+
+#ifndef NDEBUG
+    cout << "Player " << playerAttacker << " hit Player " << playerHit << endl;
+    debugPlayer(playerAttacker);
+    debugPlayer(playerHit);
+#endif
+}
+
+void GameStats::debugPlayer(ePlayer player)
+{
+    cout << "\tPlayer " << player << endl
+        << "\t\tscore: " << stats[player][CURRENT_SCORE] << endl
+        << "\t\ttotal kills: " << stats[player][TOTAL_KILLS] << endl
+        << "\t\tcurrent total killstreak: " << stats[player][CURRENT_TOTAL_KILLSTREAK] << endl
+        << "\t\tlargest total killstreak: " << stats[player][LARGEST_TOTAL_KILLSTREAK] << endl
+        << "\t\tcurrent killstreak against Player 0: " << getCurrentKillstreakAgainst(player, PLAYER_1) << endl
+        << "\t\tcurrent killstreak against Player 1: " << getCurrentKillstreakAgainst(player, PLAYER_2) << endl
+        << "\t\tcurrent killstreak against Player 2: " << getCurrentKillstreakAgainst(player, PLAYER_3) << endl
+        << "\t\tcurrent killstreak against Player 3: " << getCurrentKillstreakAgainst(player, PLAYER_4) << endl
+        << "\t\tis dominating Player 0: " << isDominating(player, PLAYER_1) << endl
+        << "\t\tis dominating Player 1: " << isDominating(player, PLAYER_2) << endl
+        << "\t\tis dominating Player 2: " << isDominating(player, PLAYER_3) << endl
+        << "\t\tis dominating Player 3: " << isDominating(player, PLAYER_4) << endl
+        << "\t\ttotal abilities used: " << stats[player][TOTAL_ABILITIES_USED] << endl
+        << "\t\ttotal rockets used: " << stats[player][ABILITY_ROCKET_USED] << endl
+        << "\t\ttotal spikes used: " << stats[player][ABILITY_SPIKES_USED] << endl
+        << "\t\ttotal trails used: " << stats[player][ABILITY_TRAIL_USED] << endl
+        << "\t\ttotal dashes used: " << stats[player][ABILITY_DASH_USED] << endl;
 }
 
 /*
@@ -187,17 +261,22 @@ void GameStats::updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer player
 
 /*
 Get the score for playerAtacker to gain if they hit playerHit
+
+@pure
 */
 int GameStats::getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit)
 {
     int basePoints = POINTS_GAINED_HIT_PLAYER;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK];
-    return basePoints + killstreakBonus;
+    int revengeBonus = isDominating(playerHit, playerAttacker) ? POINTS_GAINED_HIT_REVENGE : 0;
+    return basePoints + killstreakBonus + revengeBonus;
 }
 
 /*
 Get the score for playerHit to lose if hit by playerAttacker
 playerHit cannot lose more points than they have.
+
+@pure
 */
 int GameStats::getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit)
 {
@@ -217,30 +296,76 @@ void GameStats::addScore(ePlayer playerAttacker, int points)
 }
 
 /*
+Update the attacker's total kills, and total kills against hit player
+*/
+void GameStats::updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit)
+{
+    stats[playerAttacker][TOTAL_KILLS]++;
+    stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_1 + playerHit]++;
+}
+
+/*
 Update the killstreaks from the results of playerAttacker hitting playerHit
 */
 void GameStats::updateAttackerAndHitKillstreak(ePlayer playerAttacker, ePlayer playerHit)
 {
+    // Increase the attacker's killstreak
     addKillstreak(playerAttacker, playerHit);
+    // Reset the hit's killstreaks
     resetKillstreak(playerHit, playerAttacker);
 }
 /*
-Add to a playerAttacker's  killstreak against playerHit.
+Add to a playerAttacker's killstreak against playerHit.
 playerHit's domination streak against playerAttacker ends.
 NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
+
+This does not moditfy playerHit's data
 */
 void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
 {
-    int currentTotalKillstreak = ++stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK];
-    int currentKillstreakAgainstPlayer = ++stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit];
-    if (currentTotalKillstreak > stats[playerAttacker][LARGEST_TOTAL_KILLSTREAK])
+    // Update attacker's current total killstreak
+    increaseCurrentTotalKillstreak(playerAttacker);
+    // notify if attacker reached current total killstreak milestone
+    if (stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK] % CURRENT_TOTAL_KILLSTREAK_MILESTONE == 0)
     {
-        stats[playerAttacker][LARGEST_TOTAL_KILLSTREAK] = currentTotalKillstreak;
+        SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_STREAK);
     }
-    if (currentKillstreakAgainstPlayer >= DOMINATION_COUNT)
+
+    // Update attacker's current total killstreak against hit
+    stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit]++;
+
+    // Update dominating if exceeds domination count and not already dominating
+    if (canStartDomination(playerAttacker, playerHit))
     {
-        stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = 1;
+        dominate(playerAttacker, playerHit);
     }
+}
+
+
+/*
+Increase the player's current total killstreak and check for largest total
+killstreak updating.
+*/
+void GameStats::increaseCurrentTotalKillstreak(ePlayer player)
+{
+    stats[player][CURRENT_TOTAL_KILLSTREAK]++;
+    updateLargestTotalKillstreak(player);
+}
+
+/*
+
+*/
+void GameStats::updateLargestTotalKillstreak(ePlayer player)
+{
+    if (stats[player][CURRENT_TOTAL_KILLSTREAK] > stats[player][LARGEST_TOTAL_KILLSTREAK])
+    {
+        stats[player][LARGEST_TOTAL_KILLSTREAK] = stats[player][CURRENT_TOTAL_KILLSTREAK];
+    }
+}
+
+int GameStats::getCurrentKillstreakAgainst(ePlayer playerAttacker, ePlayer playerHit)
+{
+    return stats[playerAttacker][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerHit];
 }
 
 /*
@@ -249,9 +374,17 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 */
 void GameStats::resetKillstreak(ePlayer playerHit, ePlayer playerAttacker)
 {
-    stats[playerHit][CURRENT_TOTAL_KILLSTREAK + playerAttacker] = 0;
+    // Reset current total killstreak
+    stats[playerHit][CURRENT_TOTAL_KILLSTREAK] = 0;
+    // Reset current total killstreak against attacker
     stats[playerHit][CURRENT_KILLSTREAK_AGAINST_PLAYER_1 + playerAttacker] = 0;
-    stats[playerHit][IS_DOMINATING_PLAYER_1 + playerAttacker] = 0;
+
+    // If player hit was dominating playerAttacker, disable domination and 
+    // player revenge sound.
+    if (isDominating(playerHit, playerAttacker))
+    {
+        revenge(playerAttacker, playerHit);
+    }
 }
 
 /*
@@ -262,9 +395,37 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 
 @return true if playerToCheck is dominating playerHit
 */
-bool GameStats::isDominating(ePlayer playerToCheck, ePlayer playerHit)
+bool GameStats::isDominating(ePlayer playerAttacker, ePlayer playerHit)
 {
-    return stats[playerToCheck][IS_DOMINATING_PLAYER_1 + playerHit];
+    return stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit];
+}
+
+/*
+playerAttacker can start domination against playerHIt if
+1. playerAttacker's killstreak against playerHit is at least DOMINATION_COUNT
+2. playerAttacker is not already dominating playerHit
+*/
+bool GameStats::canStartDomination(ePlayer playerAttacker, ePlayer playerHit)
+{
+    return getCurrentKillstreakAgainst(playerAttacker, playerHit) >= DOMINATION_COUNT
+        && !isDominating(playerAttacker, playerHit);
+}
+
+/*
+Enable playerAttacker's domaination status against playerHit
+*/
+void GameStats::dominate(ePlayer playerAttacker, ePlayer playerHit)
+{
+    SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_DOMINATION);
+    stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = true;
+}
+/*
+Disable playerWasDominating's domination status against playerToGetRevenge.
+*/
+void GameStats::revenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating)
+{
+    SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_REVENGE);
+    stats[playerWasDominating][IS_DOMINATING_PLAYER_1 + playerToGetRevenge] = false;
 }
 
 

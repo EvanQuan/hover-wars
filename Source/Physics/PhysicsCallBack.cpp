@@ -14,6 +14,8 @@ void PhysicsCallBack::initObjects(physx::PxRigidDynamic *body1, physx::PxRigidDy
 
 /*
 Detects when two actors have collided.
+
+https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/AdvancedCollisionDetection.html
 */
 void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxContactPair *pairs, PxU32 nbPairs) {
     std::cout << "Collision detected" << std::endl;

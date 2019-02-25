@@ -56,28 +56,6 @@ should be done in the CommandHandler, not here.
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
-    if (GLFW_KEY_5 == key && action == GLFW_PRESS) {
-        // SOUND_MANAGER->playSounds("Sound/car_start.wav", vec3(0, 0, 0), SOUND_MANAGER->volumeTodB(1.0f));
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
-    }
-    if (GLFW_KEY_6 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_EXPLOSION);
-    }
-    if (GLFW_KEY_7 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
-    }
-    if (GLFW_KEY_8 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_LOOP);
-    }
-    if (GLFW_KEY_9 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
-    }
-    if (GLFW_KEY_0 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
-    }
-    if (GLFW_KEY_4 == key && action == GLFW_PRESS) {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
-    }
     /*
     Reject unknown keys. We only want to process keys available to standard keyboards.
     It is fastest to exit early while we can.
@@ -121,7 +99,58 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
         m_pInstance->m_keys[key] = INPUT_JUST_RELEASED;
         break;
     }
+
+#ifndef NDEBUG
+    m_pInstance->debugKeyCommands(key, action);
+#endif
 }
+
+#ifndef NDEBUG
+/*
+After being introduced and then removed, debugKeyCommands has returned from the grave.
+I guess if you really want to do your debug key commands here, you can. Have fun!
+*/
+void InputHandler::debugKeyCommands(int key, int action)
+{
+    if (action == GLFW_PRESS)
+    {
+        switch (key)
+        {
+            // Testing sound
+        case GLFW_KEY_5:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
+            break;
+        case GLFW_KEY_6:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_EXPLOSION);
+            break;
+        case GLFW_KEY_7:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
+            break;
+        case GLFW_KEY_8:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_LOOP);
+            break;
+        case GLFW_KEY_9:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+            break;
+        case GLFW_KEY_0:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
+            break;
+        case GLFW_KEY_MINUS:
+            SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
+            break;
+            // Testing game stats kill updates
+        case GLFW_KEY_R:
+            cout << "R" << endl;
+            GAME_STATS->addScore(ePlayer::PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
+            break;
+        case GLFW_KEY_T:
+            cout << "T" << endl;
+            GAME_STATS->addScore(ePlayer::PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
+            break;
+        }
+    }
+}
+#endif
 
 /*
 Mouse Button Callback
@@ -264,20 +293,19 @@ void InputHandler::initializeJoystick(int joystickID)
 #endif
 }
 
+#ifndef NDEBUG
 // DEBUG Print information about all joysticks
 void InputHandler::debugPrintJoystickInformation()
 {
-#ifdef NDEBUG
-    return;
-#else
     system("CLS");
     for (int joystickID = 0; joystickID < MAX_PLAYER_COUNT; joystickID++)
     {
         debugPrintJoystickInformation(joystickID);
     }
-#endif
 }
+#endif
 
+#ifndef NDEBUG
 // DEBUG Print information about a joystick
 void InputHandler::debugPrintJoystickInformation(int joystickID)
 {
@@ -288,7 +316,9 @@ void InputHandler::debugPrintJoystickInformation(int joystickID)
     // debugPrintJoystickAxes(joystickID);
     // debugPrintJoystickButtons(joystickID);
 }
+#endif
 
+#ifndef NDEBUG
 void InputHandler::debugPrintJoystickAxes(int joystickID)
 {
     if (!m_pJoystickIsPresent[joystickID])
@@ -296,7 +326,6 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
         return;
     }
     const float* axes = m_pJoystickAxes[joystickID];
-#ifdef _DEBUG
     std::cout << "\tAxes[" << m_pJoystickAxesCount[joystickID] << "]: " << std::endl
               << "\t\tLeft stick x: "  << axes[AXIS_LEFT_STICK_X]  << std::endl
               << "\t\t           y: "  << axes[AXIS_LEFT_STICK_Y]  << std::endl
@@ -310,9 +339,10 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
         std::cout << axes[i] << " ";
     }
     std::cout << "]" << std::endl;
-#endif
 }
+#endif
 
+#ifndef NDEBUG
 void InputHandler::debugPrintJoystickButtons(int joystickID)
 {
     if (!m_pJoystickIsPresent[joystickID])
@@ -320,7 +350,6 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
         return;
     }
     const unsigned char* buttonsPressed = m_pJoystickButtonsRaw[joystickID];
-#ifdef _DEBUG
     std::cout << "\tButtons[" << m_pJoystickButtonCount[joystickID] << "]: " << std::endl
               << "\t\tA: "            << buttonsPressed[BUTTON_A]            << std::endl
               << "\t\tB: "            << buttonsPressed[BUTTON_B]            << std::endl
@@ -342,8 +371,8 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
         std::cout << buttonsPressed[i] << " ";
     }
     std::cout << "]" << std::endl;
-#endif
 }
+#endif
 
 /*
 Registers a joystick as not connected to the game.

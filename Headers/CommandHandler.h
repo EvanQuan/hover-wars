@@ -81,8 +81,22 @@ private:
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
 
-    void execute(HovercraftEntity *hovercraft, eFixedCommand command);
-    void execute(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y);
+    /*
+    C++ has object slicing, so using a polymorphic approach here requires
+    static or dynamic casts. While possible, it will end up creating a switch
+    statement for players and bots, or a condition check within each case of a
+    single switch statement. As a result, we might as well just break it up
+    into each execute command.
+    */
+    void executeValidPlayer(PlayerEntity *player, eFixedCommand command);
+
+    void executeValidBot(BotEntity *bot, eFixedCommand command);
+
+    /*
+    This assumes no polymorphic stuff is happening for movement
+    */
+    void executeValidHovercraft(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y);
+
     // Internal variables
     // For keyboard command handling
     eFixedCommand m_pFixedCommand;
