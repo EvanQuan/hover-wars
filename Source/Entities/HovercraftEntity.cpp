@@ -23,10 +23,10 @@ The time the hovercraft must wait until they can use the ability again.
 
 Units: seconds
 */
-#define ROCKET_COOLDOWN         3.0f
-#define SPIKES_COOLDOWN         1.5f
+#define ROCKET_COOLDOWN         2.0f
+#define SPIKES_COOLDOWN         1.0f
 #define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           5.0f
+#define DASH_COOLDOWN           4.0f
 
 /*
 Total time the trail can be activated from full to empty.
@@ -323,9 +323,9 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 {
     if (m_bTrailActivated)
     {
+        m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
-            m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
     
             float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
 
@@ -467,15 +467,16 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
-    /*
-    Later, this should be split into starting and ending the trail event loop
-    */
-    // SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
-    SOUND_MANAGER->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
+    // Trail start sound does always begin, as we cannot guarantee there is
+    // any fuel due to trail recharge cooldown. Need to check fuel first.
+    if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
+    {
+        SOUND_MANAGER->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_bTrailActivated = true;
+        m_fSecondsSinceLastFlame = 0.0f;
+        m_fSecondsSinceTrailDeactivated = 0.0f;
+    }
 
-    m_bTrailActivated = true;
-    m_fSecondsSinceLastFlame = 0.0f;
-    m_fSecondsSinceTrailDeactivated = 0.0f;
 }
 
 /*
