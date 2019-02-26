@@ -23,8 +23,8 @@ The time the hovercraft must wait until they can use the ability again.
 
 Units: seconds
 */
-#define ROCKET_COOLDOWN         5.0f
-#define SPIKES_COOLDOWN         2.0f
+#define ROCKET_COOLDOWN         3.0f
+#define SPIKES_COOLDOWN         1.5f
 #define TRAIL_COOLDOWN          0.0f
 #define DASH_COOLDOWN           5.0f
 
@@ -40,14 +40,14 @@ Represents the trail gauge is empty.
 #define TRAIL_GAUGE_EMPTY       0.0f
 
 /*
-Total time for the trail to recharge from empty to full.
+Time multiplier for the trail to recharge from empty to full.
 
-@NOTE: Currently unused. Right now the rate of drain and
-recharge are identical.
+= 1: recharge rate is the same as drain rate.
+> 1: recharge rate is faster than drain rate
+< 1: recharge rate is slower than drain rate
 
-Unit: seconds
 */
-#define TRAIL_RECHARGE          5.0f
+#define TRAIL_RECHARGE_MULTIPLIER 0.5f
 
 /*
 The interval of time between each created flame while the trail trail is
@@ -65,12 +65,9 @@ Unit: seconds
 Delay time when the trail is deactivate and when the gauge begins to recharge.
 This makes spam toggling less effective.
 
-@TODO this is potentially not behaving in seconds, like the charge
-drain/recharge. Difficult to tell without visual indicators.
-
 Unit: seconds
 */
-#define TRAIL_RECHARGE_COOLDOWN 0.1f
+#define TRAIL_RECHARGE_COOLDOWN 0.5f
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -356,7 +353,7 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
         if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN
             && m_fTrailGauge < TRAIL_GAUGE_FULL)
         {
-            float newGaugeValue = m_fTrailGauge + fSecondsSinceLastUpdate;
+            float newGaugeValue = m_fTrailGauge + (fSecondsSinceLastUpdate * TRAIL_RECHARGE_MULTIPLIER);
             if (newGaugeValue < TRAIL_GAUGE_FULL)
             {
                 m_fTrailGauge = newGaugeValue;
