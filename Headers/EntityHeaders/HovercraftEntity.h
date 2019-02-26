@@ -83,6 +83,7 @@ private:
     void activateTrail();
     void deactivateTrail();
     void updateTrail(float fSecondsSinceLastUpdate);
+    void createTrailInstance();
 
     void dash(eAbility direction);
 

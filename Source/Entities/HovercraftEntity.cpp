@@ -23,36 +23,31 @@ The time the hovercraft must wait until they can use the ability again.
 
 Units: seconds
 */
-#define ROCKET_COOLDOWN         5.0f
-#define SPIKES_COOLDOWN         2.0f
+#define ROCKET_COOLDOWN         2.0f
+#define SPIKES_COOLDOWN         1.0f
 #define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           5.0f
+#define DASH_COOLDOWN           4.0f
 
 /*
 Total time the trail can be activated from full to empty.
 
-@TODO why is the time value so different than all the other time values.
-They ALL behave like seconds, but not this.
-
-0.01f seems to be around 3 seconds
-
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        0.01f
+#define TRAIL_GAUGE_FULL        3.0f
 /*
 Represents the trail gauge is empty.
 */
 #define TRAIL_GAUGE_EMPTY       0.0f
 
 /*
-Total time for the trail to recharge from empty to full.
+Time multiplier for the trail to recharge from empty to full.
 
-@NOTE: Currently unused. Right now the rate of drain and
-recharge are identical.
+= 1: recharge rate is the same as drain rate.
+> 1: recharge rate is faster than drain rate
+< 1: recharge rate is slower than drain rate
 
-Unit: seconds
 */
-#define TRAIL_RECHARGE          5.0f
+#define TRAIL_RECHARGE_MULTIPLIER 0.5f
 
 /*
 The interval of time between each created flame while the trail trail is
@@ -64,18 +59,15 @@ distributed across, meanining that the spacing is time invariant.
 
 Unit: seconds
 */
-#define FLAME_INTERVAL          0.075f
+#define FLAME_INTERVAL          0.10f
 
 /*
 Delay time when the trail is deactivate and when the gauge begins to recharge.
 This makes spam toggling less effective.
 
-@TODO this is potentially not behaving in seconds, like the charge
-drain/recharge. Difficult to tell without visual indicators.
-
 Unit: seconds
 */
-#define TRAIL_RECHARGE_COOLDOWN 0.1f
+#define TRAIL_RECHARGE_COOLDOWN 0.5f
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -141,7 +133,7 @@ Distance between the centre of the car and the look-at position.
 
 If negative, the camera will look behind the car's centre.
 */
-#define BACK_CAMERA_OFFSET      -10     // r        meters
+#define BACK_CAMERA_OFFSET      -10     // -10 r        meters
 
 // Camera Spring Constants
 /*
@@ -300,8 +292,8 @@ void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
         m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
       
         // Update all the camera look at and rotation values based on the averaging calculations.
-        m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + FRONT_CAMERA_POSITION_OFFSET);
-        m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + BACK_CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
     }
 }
 
@@ -331,23 +323,25 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 {
     if (m_bTrailActivated)
     {
+        m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
-            m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
     
+            float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
+
+            if (newGaugeValue > TRAIL_GAUGE_EMPTY)
+            {
+                m_fTrailGauge = newGaugeValue;
+            }
+            else
+            {
+                m_fTrailGauge = TRAIL_GAUGE_EMPTY;
+                deactivateTrail();
+            }
             if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
             {
-                mat4 m4TransformMat;
-                vec3 vNormal;
-                m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
-                vNormal = m4TransformMat[1];
-                m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+                createTrailInstance();
     
-                float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
-                m_fTrailGauge = newGaugeValue > TRAIL_GAUGE_EMPTY ?
-                    newGaugeValue : TRAIL_GAUGE_EMPTY;
-                // cout << "Seconds since last frame: " << fSecondsSinceLastUpdate << endl;
-                // cout << "Decrease: " << m_fTrailGauge << endl;
                 m_fSecondsSinceLastFlame = 0.0f;
             }
         }
@@ -356,13 +350,33 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
     {
         m_fSecondsSinceTrailDeactivated += fSecondsSinceLastUpdate;
 
-        if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN)
+        if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN
+            && m_fTrailGauge < TRAIL_GAUGE_FULL)
         {
-            float newGaugeValue = m_fTrailGauge + fSecondsSinceLastUpdate;
-            m_fTrailGauge = newGaugeValue < TRAIL_GAUGE_FULL ?
-                newGaugeValue : TRAIL_GAUGE_FULL;
+            float newGaugeValue = m_fTrailGauge + (fSecondsSinceLastUpdate * TRAIL_RECHARGE_MULTIPLIER);
+            if (newGaugeValue < TRAIL_GAUGE_FULL)
+            {
+                m_fTrailGauge = newGaugeValue;
+            }
+            else
+            {
+                m_fTrailGauge = TRAIL_GAUGE_FULL;
+            }
         }
     }
+}
+
+/*
+Create 1 flame entity
+*/
+void HovercraftEntity::createTrailInstance()
+{
+    mat4 m4TransformMat;
+    vec3 vNormal;
+    m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
+    vNormal = m4TransformMat[1];
+    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+
 }
 
 /*
@@ -453,15 +467,16 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
-    /*
-    Later, this should be split into starting and ending the trail event loop
-    */
-    // SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
-    SOUND_MANAGER->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
+    // Trail start sound does always begin, as we cannot guarantee there is
+    // any fuel due to trail recharge cooldown. Need to check fuel first.
+    if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
+    {
+        SOUND_MANAGER->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_bTrailActivated = true;
+        m_fSecondsSinceLastFlame = 0.0f;
+        m_fSecondsSinceTrailDeactivated = 0.0f;
+    }
 
-    m_bTrailActivated = true;
-    m_fSecondsSinceLastFlame = 0.0f;
-    m_fSecondsSinceTrailDeactivated = 0.0f;
 }
 
 /*
