@@ -133,7 +133,7 @@ Distance between the centre of the car and the look-at position.
 
 If negative, the camera will look behind the car's centre.
 */
-#define BACK_CAMERA_OFFSET      -10     // r        meters
+#define BACK_CAMERA_OFFSET      -10     // -10 r        meters
 
 // Camera Spring Constants
 /*
@@ -292,8 +292,8 @@ void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
         m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
       
         // Update all the camera look at and rotation values based on the averaging calculations.
-        m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + FRONT_CAMERA_POSITION_OFFSET);
-        m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + BACK_CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
+        m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
     }
 }
 
