@@ -57,7 +57,6 @@ instances played simultaneously.
 */
 void SoundManager::playEvent(eSoundEvent sound)
 {
-    this->updateChannels();
     const char* eventPath = getPath(sound);
     if (eventPath == "")
     {
@@ -65,8 +64,8 @@ void SoundManager::playEvent(eSoundEvent sound)
     }
 
     // playEvent(eventPath);
-    // Lag issue might not be due to loading, but maybe updating?
     playEventDirect(eventPath);
+    this->updateChannels();
 }
 
 /*
