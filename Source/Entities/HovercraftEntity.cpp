@@ -31,14 +31,9 @@ Units: seconds
 /*
 Total time the trail can be activated from full to empty.
 
-@TODO why is the time value so different than all the other time values.
-They ALL behave like seconds, but not this.
-
-0.01f seems to be around 3 seconds
-
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        0.01f
+#define TRAIL_GAUGE_FULL        3.0f
 /*
 Represents the trail gauge is empty.
 */
@@ -64,7 +59,7 @@ distributed across, meanining that the spacing is time invariant.
 
 Unit: seconds
 */
-#define FLAME_INTERVAL          0.075f
+#define FLAME_INTERVAL          0.10f
 
 /*
 Delay time when the trail is deactivate and when the gauge begins to recharge.
@@ -335,19 +330,21 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
         {
             m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
     
+            float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
+
+            if (newGaugeValue > TRAIL_GAUGE_EMPTY)
+            {
+                m_fTrailGauge = newGaugeValue;
+            }
+            else
+            {
+                m_fTrailGauge = TRAIL_GAUGE_EMPTY;
+                deactivateTrail();
+            }
             if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
             {
-                mat4 m4TransformMat;
-                vec3 vNormal;
-                m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
-                vNormal = m4TransformMat[1];
-                m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+                createTrailInstance();
     
-                float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
-                m_fTrailGauge = newGaugeValue > TRAIL_GAUGE_EMPTY ?
-                    newGaugeValue : TRAIL_GAUGE_EMPTY;
-                // cout << "Seconds since last frame: " << fSecondsSinceLastUpdate << endl;
-                // cout << "Decrease: " << m_fTrailGauge << endl;
                 m_fSecondsSinceLastFlame = 0.0f;
             }
         }
@@ -356,13 +353,33 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
     {
         m_fSecondsSinceTrailDeactivated += fSecondsSinceLastUpdate;
 
-        if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN)
+        if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN
+            && m_fTrailGauge < TRAIL_GAUGE_FULL)
         {
             float newGaugeValue = m_fTrailGauge + fSecondsSinceLastUpdate;
-            m_fTrailGauge = newGaugeValue < TRAIL_GAUGE_FULL ?
-                newGaugeValue : TRAIL_GAUGE_FULL;
+            if (newGaugeValue < TRAIL_GAUGE_FULL)
+            {
+                m_fTrailGauge = newGaugeValue;
+            }
+            else
+            {
+                m_fTrailGauge = TRAIL_GAUGE_FULL;
+            }
         }
     }
+}
+
+/*
+Create 1 flame entity
+*/
+void HovercraftEntity::createTrailInstance()
+{
+    mat4 m4TransformMat;
+    vec3 vNormal;
+    m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
+    vNormal = m4TransformMat[1];
+    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+
 }
 
 /*
