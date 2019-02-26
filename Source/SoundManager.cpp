@@ -92,6 +92,7 @@ void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
     const char* end = "shouldGoToEnd";
     flameTrail->setParameterValue(end, 0.0);
     flameTrail->start();
+    this->updateChannels();
 }
 
 /*
@@ -107,6 +108,7 @@ void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
     auto flameTrail = mEvents[getPath(sound)];
     const char* end = "shouldGoToEnd";
     flameTrail->setParameterValue(end, 1.0);
+    this->updateChannels();
 }
 
 /*
