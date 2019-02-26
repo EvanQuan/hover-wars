@@ -320,6 +320,10 @@ void SoundManager::loadEvent(const string& sEventName) {
 /*
 Play an event.
 
+Currently, only one instance of each event can play at a time, as additional
+concurrent calls will just reset the event's audio back to the start instead of
+overlapping a new instance.
+
 @param sEventName   
 */
 void SoundManager::playEvent(const string& sEventName) {
