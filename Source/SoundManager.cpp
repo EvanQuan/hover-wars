@@ -63,8 +63,8 @@ void SoundManager::playEvent(eSoundEvent sound)
         return;
     }
 
-    // playEvent(eventPath);
-    playEventDirect(eventPath);
+    playEvent(eventPath);
+    // playEventDirect(eventPath);
     this->updateChannels();
 }
 
@@ -332,6 +332,44 @@ void SoundManager::playEvent(const string& sEventName) {
             cout << "event is not a valid event and so wasn't played" << endl;
         }
     }
+    else {      // Event is in mEvents
+        FMOD_STUDIO_PLAYBACK_STATE state;
+        tFoundIt->second->getPlaybackState(&state);
+        if (state == FMOD_STUDIO_PLAYBACK_PLAYING) {        // Event currently playing
+            // Copy from load event
+            // Create new event instance with same event in bank file
+            bool playable = false;
+            int i = 0;
+            string sNewEventName = sEventName + to_string(i);
+            while (!playable) {
+                auto found = mEvents.find(sNewEventName);
+                if (found == mEvents.end()) {
+                    playable = true;
+                }
+                else {
+                    found->second->getPlaybackState(&state);
+                    if (state == FMOD_STUDIO_PLAYBACK_STOPPED) {
+                        playable = true;
+                    }
+                    i++;
+                    sNewEventName = sEventName + to_string(i);
+                }
+            }
+            // Create event instance with same event description
+            FMOD::Studio::EventDescription* pEventDescription = nullptr;
+            errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+            if (nullptr != pEventDescription) {
+                FMOD::Studio::EventInstance* pEventInstance = nullptr;
+                errorCheck(pEventDescription->createInstance(&pEventInstance));
+                if (nullptr != pEventInstance) {
+                    mEvents[sNewEventName] = pEventInstance;
+                    cout << sNewEventName << " successfully loaded with " << pEventInstance << endl;
+                }
+            }
+            tFoundIt = mEvents.find(sNewEventName);
+        }
+        // Event not playing, going play tFoundIt
+    }
     tFoundIt->second->start();
     cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
@@ -343,7 +381,7 @@ https://books.google.ca/books?id=VfxNDwAAQBAJ&pg=PT373&lpg=PT373&dq=fmod::studio
 void SoundManager::playEventDirect(const string& sEventName) {
     mEvents[sEventName]->start();
 
-    cout << "event: " << sEventName << " played " << mEvents[sEventName] << endl;
+    cout << "hahaevent: " << sEventName << " played " << mEvents[sEventName] << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
