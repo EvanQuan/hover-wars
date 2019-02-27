@@ -63,8 +63,8 @@ void SoundManager::playEvent(eSoundEvent sound)
         return;
     }
 
-    // playEvent(eventPath);
-    playEventDirect(eventPath);
+    playEvent(eventPath);
+    // playEventDirect(eventPath);
     this->updateChannels();
 }
 
@@ -295,9 +295,9 @@ void SoundManager::loadEvent(const string& sEventName) {
     // Exit early if event already loaded
     if (FuncUtils::contains(mEvents, sEventName)) {
         return;
-        cout << sEventName << " already loaded." << endl;
+        // cout << sEventName << " already loaded." << endl;
     }
-    cout << sEventName << " not loaded yet." << endl;
+    // cout << sEventName << " not loaded yet." << endl;
 
     //auto tFoundIt = mEvents.find(sEventName);
     //if (tFoundIt != mEvents.end()) {     // Event already loaded
@@ -310,7 +310,7 @@ void SoundManager::loadEvent(const string& sEventName) {
         errorCheck(pEventDescription->createInstance(&pEventInstance));
         if (nullptr != pEventInstance) {
             mEvents[sEventName] = pEventInstance;
-            cout << sEventName << " successfully loaded with " << pEventInstance << endl;
+            // cout << sEventName << " successfully loaded with " << pEventInstance << endl;
         }
     }
 }
@@ -329,17 +329,55 @@ overlapping a new instance.
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt == mEvents.end()) {
-        cout << "event " << sEventName << " not loaded" << endl;
+        // cout << "event " << sEventName << " not loaded" << endl;
         loadEvent(sEventName);
-        cout << "event " << sEventName << " finished loading" << endl;
+        // cout << "event " << sEventName << " finished loading" << endl;
         tFoundIt = mEvents.find(sEventName);
         if (tFoundIt == mEvents.end()) {
             return;
-            cout << "event is not a valid event and so wasn't played" << endl;
+            // cout << "event is not a valid event and so wasn't played" << endl;
         }
     }
+    else {      // Event is in mEvents
+        FMOD_STUDIO_PLAYBACK_STATE state;
+        tFoundIt->second->getPlaybackState(&state);
+        if (state == FMOD_STUDIO_PLAYBACK_PLAYING) {        // Event currently playing
+            // Copy from load event
+            // Create new event instance with same event in bank file
+            bool playable = false;
+            int i = 0;
+            string sNewEventName = sEventName + to_string(i);
+            while (!playable) {
+                auto found = mEvents.find(sNewEventName);
+                if (found == mEvents.end()) {
+                    playable = true;
+                }
+                else {
+                    found->second->getPlaybackState(&state);
+                    if (state == FMOD_STUDIO_PLAYBACK_STOPPED) {
+                        playable = true;
+                    }
+                    i++;
+                    sNewEventName = sEventName + to_string(i);
+                }
+            }
+            // Create event instance with same event description
+            FMOD::Studio::EventDescription* pEventDescription = nullptr;
+            errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+            if (nullptr != pEventDescription) {
+                FMOD::Studio::EventInstance* pEventInstance = nullptr;
+                errorCheck(pEventDescription->createInstance(&pEventInstance));
+                if (nullptr != pEventInstance) {
+                    mEvents[sNewEventName] = pEventInstance;
+                    // cout << sNewEventName << " successfully loaded with " << pEventInstance << endl;
+                }
+            }
+            tFoundIt = mEvents.find(sNewEventName);
+        }
+        // Event not playing, going play tFoundIt
+    }
     tFoundIt->second->start();
-    cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+    // cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
 
 /*
@@ -349,7 +387,7 @@ https://books.google.ca/books?id=VfxNDwAAQBAJ&pg=PT373&lpg=PT373&dq=fmod::studio
 void SoundManager::playEventDirect(const string& sEventName) {
     mEvents[sEventName]->start();
 
-    cout << "event: " << sEventName << " played " << mEvents[sEventName] << endl;
+    // cout << "hahaevent: " << sEventName << " played " << mEvents[sEventName] << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
