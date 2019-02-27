@@ -112,16 +112,16 @@ void CommandHandler::executeValidPlayer(PlayerEntity *player, eFixedCommand comm
     // thing, we don't actually need to relate anything to the hovercraft
     // itself.
     case COMMAND_HONK_UP:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_UP);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_UP);
         break;
     case COMMAND_HONK_RIGHT:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_RIGHT);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_RIGHT);
         break;
     case COMMAND_HONK_DOWN:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_DOWN);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_DOWN);
         break;
     case COMMAND_HONK_LEFT:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_LEFT);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_LEFT);
         break;
 
     case COMMAND_CLOSE_WINDOW:
@@ -203,16 +203,16 @@ void CommandHandler::executeValidBot(BotEntity *bot, eFixedCommand command)
     // thing, we don't actually need to relate anything to the hovercraft
     // itself.
     case COMMAND_HONK_UP:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_UP);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_UP);
         break;
     case COMMAND_HONK_RIGHT:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_RIGHT);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_RIGHT);
         break;
     case COMMAND_HONK_DOWN:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_DOWN);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_DOWN);
         break;
     case COMMAND_HONK_LEFT:
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_HONK_LEFT);
+        SOUND_MANAGER->play(SoundManager::SOUND_HONK_LEFT);
         break;
 
     case COMMAND_CLOSE_WINDOW:

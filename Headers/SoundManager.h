@@ -59,9 +59,11 @@ public:
         SOUND_HONK_RIGHT,
         SOUND_HONK_DOWN,
         SOUND_HONK_LEFT,
+
+        MUSIC_INGAME,
     };
 
-    void playEvent(eSoundEvent sound);
+    void play(eSoundEvent sound);
 
     // TODO figure out sound at locations
     void play(eSoundEvent sound, vec3 location);
@@ -204,6 +206,8 @@ private:
         {SOUND_HONK_DOWN,                { "event:/honk/honk_03",
                                          }},
         {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
+                                         }},
+        {MUSIC_INGAME,                   { "event:/background/music_loop",
                                          }},
     };
 };

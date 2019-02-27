@@ -55,7 +55,7 @@ instances played simultaneously.
 
 @param sound    to play
 */
-void SoundManager::playEvent(eSoundEvent sound)
+void SoundManager::play(eSoundEvent sound)
 {
     const char* eventPath = getPath(sound);
     if (eventPath == "")
@@ -65,8 +65,9 @@ void SoundManager::playEvent(eSoundEvent sound)
 
     playEvent(eventPath);
     // playEventDirect(eventPath);
-    this->updateChannels();
+    updateChannels();
 }
+
 
 /*
 Play a sound at a specified location in the world.
@@ -88,10 +89,10 @@ instance of each sound for each loopID.
 */
 void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 {
-    auto flameTrail = mEvents[getPath(sound)];
+    auto eventInstance = mEvents[getPath(sound)];
     const char* end = "shouldGoToEnd";
-    flameTrail->setParameterValue(end, 0.0);
-    flameTrail->start();
+    eventInstance->setParameterValue(end, 0.0);
+    eventInstance->start();
     this->updateChannels();
 }
 
@@ -105,9 +106,9 @@ that loop.
 */
 void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 {
-    auto flameTrail = mEvents[getPath(sound)];
+    auto eventInstance = mEvents[getPath(sound)];
     const char* end = "shouldGoToEnd";
-    flameTrail->setParameterValue(end, 1.0);
+    eventInstance->setParameterValue(end, 1.0);
     this->updateChannels();
 }
 

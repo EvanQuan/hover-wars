@@ -48,7 +48,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 // check what the player collided with...
                 if (collided == NAME_WALL) {
                     // Play a sound only
-                    SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
+                    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
                 } else if (collided == NAME_TRAIL) {
                     // Hit the player
                     // Give points to the player that owns the trail
@@ -57,7 +57,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                     // Give poitns to the player that owns the rocket
                 } else if (collided == NAME_PLAYER) {
                     // Play a sound only
-                    SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+                    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
                 }
             } else if (collider == NAME_BOT) {
             } else if (collider == NAME_ROCKET) {
