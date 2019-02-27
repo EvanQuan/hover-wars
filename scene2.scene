@@ -257,25 +257,25 @@ cube {
 
 # Wall
 # Player should not be able to pass this
-cube {
-    0 5 50
-    10 50 2
-    +bounding {
-        box
-        10.0 50.0 2.0
-    }
-}
+#cube {
+#    0 5 50
+#    10 50 2
+#    +bounding {
+#        box
+#        10.0 50.0 2.0
+#    }
+#}
 
 # bump
 # Player should be able to move over this?
-cube {
-    20 0 20
-    0.25 2 2
-    +bounding {
-        box
-        0.25 2.0 2.0
-    }
-}
+# cube {
+#     20 0 20
+#     0.25 2 2
+#     +bounding {
+#         box
+#         0.25 2.0 2.0
+#     }
+# }
 
 
 # Bunnies
@@ -305,36 +305,36 @@ static_mesh {
 }
 
 # Rocket
-static_mesh {
-    -20 1 1
-    +mesh {
-        models/missile.obj
-        0.01
-    }
-    +material {
-        textures/defaultTexture.png
-        0.0
-    }
-    +shader {
-        blinn_phong_shdr
-    }
-}
+# static_mesh {
+#     -20 1 1
+#     +mesh {
+#         models/missile.obj
+#         0.01
+#     }
+#     +material {
+#         textures/defaultTexture.png
+#         0.0
+#     }
+#     +shader {
+#         blinn_phong_shdr
+#     }
+# }
 
 # Other ships
-static_mesh {
-    -20 2 10
-    +mesh {
-        models/hovercraft/HoverCar.obj
-        0.012
-    }
-    +material {
-        textures/defaultTexture.png
-        0.0
-    }
-    +shader {
-        blinn_phong_shdr
-    }
-}
+#static_mesh {
+#    -20 2 10
+#    +mesh {
+#        models/hovercraft/HoverCar.obj
+#        0.012
+#    }
+#    +material {
+#        textures/defaultTexture.png
+#        0.0
+#    }
+#    +shader {
+#        blinn_phong_shdr
+#    }
+#}
 
 
 sphere {
