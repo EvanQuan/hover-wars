@@ -295,9 +295,9 @@ void SoundManager::loadEvent(const string& sEventName) {
     // Exit early if event already loaded
     if (FuncUtils::contains(mEvents, sEventName)) {
         return;
-        cout << sEventName << " already loaded." << endl;
+        // cout << sEventName << " already loaded." << endl;
     }
-    cout << sEventName << " not loaded yet." << endl;
+    // cout << sEventName << " not loaded yet." << endl;
 
     //auto tFoundIt = mEvents.find(sEventName);
     //if (tFoundIt != mEvents.end()) {     // Event already loaded
@@ -310,7 +310,7 @@ void SoundManager::loadEvent(const string& sEventName) {
         errorCheck(pEventDescription->createInstance(&pEventInstance));
         if (nullptr != pEventInstance) {
             mEvents[sEventName] = pEventInstance;
-            cout << sEventName << " successfully loaded with " << pEventInstance << endl;
+            // cout << sEventName << " successfully loaded with " << pEventInstance << endl;
         }
     }
 }
@@ -329,13 +329,13 @@ overlapping a new instance.
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
     if (tFoundIt == mEvents.end()) {
-        cout << "event " << sEventName << " not loaded" << endl;
+        // cout << "event " << sEventName << " not loaded" << endl;
         loadEvent(sEventName);
-        cout << "event " << sEventName << " finished loading" << endl;
+        // cout << "event " << sEventName << " finished loading" << endl;
         tFoundIt = mEvents.find(sEventName);
         if (tFoundIt == mEvents.end()) {
             return;
-            cout << "event is not a valid event and so wasn't played" << endl;
+            // cout << "event is not a valid event and so wasn't played" << endl;
         }
     }
     else {      // Event is in mEvents
@@ -369,7 +369,7 @@ void SoundManager::playEvent(const string& sEventName) {
                 errorCheck(pEventDescription->createInstance(&pEventInstance));
                 if (nullptr != pEventInstance) {
                     mEvents[sNewEventName] = pEventInstance;
-                    cout << sNewEventName << " successfully loaded with " << pEventInstance << endl;
+                    // cout << sNewEventName << " successfully loaded with " << pEventInstance << endl;
                 }
             }
             tFoundIt = mEvents.find(sNewEventName);
@@ -377,7 +377,7 @@ void SoundManager::playEvent(const string& sEventName) {
         // Event not playing, going play tFoundIt
     }
     tFoundIt->second->start();
-    cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+    // cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
 
 /*
@@ -387,7 +387,7 @@ https://books.google.ca/books?id=VfxNDwAAQBAJ&pg=PT373&lpg=PT373&dq=fmod::studio
 void SoundManager::playEventDirect(const string& sEventName) {
     mEvents[sEventName]->start();
 
-    cout << "hahaevent: " << sEventName << " played " << mEvents[sEventName] << endl;
+    // cout << "hahaevent: " << sEventName << " played " << mEvents[sEventName] << endl;
 }
 
 void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
