@@ -190,7 +190,7 @@ player {
         textures/tronBase.png
         0.1 0.1 0.1
         20.0
-    }   
+    }
     +shader {
         blinn_phong_shdr
     }
@@ -257,14 +257,14 @@ cube {
 
 # Wall
 # Player should not be able to pass this
-#cube {
-#    0 5 50
-#    10 50 2
-#    +bounding {
-#        box
-#        10.0 50.0 2.0
-#    }
-#}
+cube {
+    0 5 50
+    10 50 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
 
 # bump
 # Player should be able to move over this?

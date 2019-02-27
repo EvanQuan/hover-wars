@@ -116,5 +116,13 @@ private:
     to track the time since the last flame was generated.
     */
     float m_fSecondsSinceLastFlame;
+    /*
+    To keep the distance between flame trail flames consistent at different
+    velocities we must track the position of the last flame so we know when to
+    place the next one.
+    */
+    vec3 m_vPositionOfLastFlame;
+
+    float m_fMinimumDistanceBetweenFlames;
 };
 

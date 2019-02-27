@@ -418,7 +418,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     return gPhysics->createTriangleMesh(readBuffer);
 }
 PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeX, sizeY, sizeZ), *gMaterial);
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
@@ -487,6 +487,8 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
 }
 
 /*
+Update the car over a period of time.
+
 @return true if the car is in the air, meaning all 4 wheels are in the air.
 */
 bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {

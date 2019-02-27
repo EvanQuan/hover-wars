@@ -44,8 +44,7 @@ public:
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 
 private:
-    bool isInAir;
-    float fSecondsSinceLastDash;
+    int currentState = 0;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;

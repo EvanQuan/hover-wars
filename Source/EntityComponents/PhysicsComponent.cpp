@@ -4,7 +4,19 @@
 
 #define JUMP_FORCE 200000
 
-#define MAX_SPEED 500
+#define MAX_SPEED 5
+
+/*
+The maximum speed the player can travel while dashing. This returns back to MAX_SPEED
+shortly afterwards.
+*/
+#define MAX_DASH_SPEED 5000
+/*
+The amount of time the player can be in MAX_DASH_SPEED after dashing.
+
+Unit : seconds
+*/
+#define DASH_TIME
 /*
 Angular momementum.
 
@@ -18,6 +30,7 @@ The greater the force, the faster it will accelerate.
 Force : Newtons
 */
 #define MOVEMENT_FORCE 50.0f // 10000.0f
+#define DASH_FORCE 1000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -45,9 +58,17 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
 }
+
+/*
+Applies an upward force to the car. Why is this here?
+*/
 void PhysicsComponent::jumpVehicle() {
     gVehicleNoDrive->getRigidDynamicActor()->addForce(PxVec3(0, JUMP_FORCE, 0));
 }
+/*
+This is never called because there is never a point there the movement input is
+completely neutral
+*/
 void PhysicsComponent::releaseAllControls()
 {
     gVehicleNoDrive->setDriveTorque(0, 0.0f);
@@ -65,13 +86,28 @@ void PhysicsComponent::releaseAllControls()
     gVehicleNoDrive->setSteerAngle(2, 0.0f);
     gVehicleNoDrive->setSteerAngle(3, 0.0f);
 }
-void PhysicsComponent::movePlayer(float x, float y) {   
-    if (x != 0 || y != 0 && currentState == 0) {
+
+/*
+Move a player according to x, y coordinates where
+
+                Map view
+
+                  y = 1
+                    ^
+                    |
+    x = -1  <-- hovercraft --> x = 1
+                    |
+                    v
+                  y = -1
+*/
+void PhysicsComponent::move(float x, float y) {   
+    if (x != 0 || y != 0 && isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
         body->addForce(vForce * MOVEMENT_FORCE);
         
+        // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         gVehicleNoDrive->setSteerAngle(0, angle);
         gVehicleNoDrive->setSteerAngle(1, angle);
@@ -79,6 +115,7 @@ void PhysicsComponent::movePlayer(float x, float y) {
         gVehicleNoDrive->setSteerAngle(3, angle);
     }
     else {
+        // This never gets calle because movement is always non-zero from the CommandHandler.
         releaseAllControls();
         gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
         gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
@@ -87,9 +124,10 @@ void PhysicsComponent::movePlayer(float x, float y) {
     }
 }
 void PhysicsComponent::dash(float x, float y) {
+    body->setMaxLinearVelocity(MAX_DASH_SPEED);
     PxTransform globalTransform = body->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
-    body->addForce(vForce * MOVEMENT_FORCE * 10);
+    body->addForce(vForce * DASH_FORCE);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);
     gVehicleNoDrive->setSteerAngle(0, angle);
@@ -98,7 +136,7 @@ void PhysicsComponent::dash(float x, float y) {
     gVehicleNoDrive->setSteerAngle(3, angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    if (currentState == 0) {
+    if (!isInAir) {
         gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
     }
 }
@@ -125,13 +163,9 @@ void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
         //vel.normalize();
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
-    bool isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
-    if (isInAir) {
-        currentState = 1;
-    }
-    else {
-        currentState = 0;
-    }
+    // gVehicleNoDrive->
+
+    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
 }
 
 // TODO
@@ -153,6 +187,7 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
     m_bStatic = bStatic;
     gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(10,0,0,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
+    body->setMaxLinearVelocity(MAX_SPEED);
 }
 
 // Returns the Rotation Quaternion for the Entity's body.
@@ -181,6 +216,10 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
         //TODO maybe move getMat4 to physicsComponent?
 
         *pReturnTransformMatrix = m_pTransformationMatrix;
+
+        // 
+        if ()
+        body->setMaxLinearVelocity(MAX_SPEED);
     }
 }
 
