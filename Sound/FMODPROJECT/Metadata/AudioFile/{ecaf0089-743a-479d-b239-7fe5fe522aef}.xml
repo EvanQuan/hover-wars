@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.01.10.00">
     <object class="AudioFile" id="{ecaf0089-743a-479d-b239-7fe5fe522aef}">
         <property name="assetPath">
-            <value>Music/06 Into the Belly of the Beast.mp3</value>
+            <value>Music/nitronic rush/06 Into the Belly of the Beast.mp3</value>
         </property>
         <property name="isStreaming">
             <value>true</value>

@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.01.10.00">
     <object class="AudioFile" id="{66f4c811-f8da-49b5-af02-124c311357df}">
         <property name="assetPath">
-            <value>Music/04 Storm on the Horizon.mp3</value>
+            <value>Music/nitronic rush/04 Storm on the Horizon.mp3</value>
         </property>
         <property name="isStreaming">
             <value>true</value>

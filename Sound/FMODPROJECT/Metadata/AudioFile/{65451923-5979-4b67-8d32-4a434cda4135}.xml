@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.01.10.00">
     <object class="AudioFile" id="{65451923-5979-4b67-8d32-4a434cda4135}">
         <property name="assetPath">
-            <value>Music/02 Abandoned Utopia.mp3</value>
+            <value>Music/nitronic rush/02 Abandoned Utopia.mp3</value>
         </property>
         <property name="isStreaming">
             <value>true</value>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="AudioFile" id="{102bee80-8e90-48b8-8fd0-625eb70ef813}">
+        <property name="assetPath">
+            <value>Music/retro/[Kung Fury OST] 08. Mitch Murder - Power Move.mp3</value>
+        </property>
+        <property name="isStreaming">
+            <value>true</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>182.80489795918368</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{181fe279-8f98-4648-9db6-bcacf47e740f}</destination>
+        </relationship>
+    </object>
+</objects>
