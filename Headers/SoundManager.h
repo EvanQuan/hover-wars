@@ -30,12 +30,7 @@ public:
         SOUND_SPIKES_ACTIVATE,
         SOUND_SPIKES_IMPACT,
 
-        SOUND_TRAIL,        // combine as one
-
-        // Not used
-        SOUND_TRAIL_START,
-        SOUND_TRAIL_LOOP,
-        SOUND_TRAIL_END,
+        SOUND_TRAIL,
 
         SOUND_PULSE_ACTIVATE,
         SOUND_PULSE_IMPACT,
