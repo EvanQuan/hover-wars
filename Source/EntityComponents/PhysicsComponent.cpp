@@ -66,7 +66,7 @@ void PhysicsComponent::releaseAllControls()
     gVehicleNoDrive->setSteerAngle(3, 0.0f);
 }
 void PhysicsComponent::movePlayer(float x, float y) {   
-    if (x != 0 || y != 0 && currentState == 0) {
+    if ((x != 0 || y != 0) && currentState == 0) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
@@ -125,9 +125,10 @@ void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
         //vel.normalize();
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
+    //TODO check if vehicle is in air and set current state
     bool isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
-    if (isInAir) {
-        currentState = 1;
+    if (!isInAir) {
+       // currentState = 1;
     }
     else {
         currentState = 0;
@@ -147,11 +148,11 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb)
+void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
 {
     // Set up Internal Static qualifier.
     m_bStatic = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(10,0,0,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
+    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
 }
 

@@ -223,8 +223,8 @@ player {
 # These player bounding box values are more accurate, but result in wacky physics
 # 1.2 3.8 1.8
 
-# bot {
-#     0 0 0
+#bot {
+#     5 5 0
 #     +mesh {
 #         models/big_dodge.obj
 #         0.25

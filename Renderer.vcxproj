@@ -32,6 +32,7 @@
     <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
     <ClInclude Include="Headers\Emitter.h" />
     <ClInclude Include="Headers\EmitterEngine.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="Source\Entities\PointLight.cpp" />
     <ClCompile Include="Source\Entities\SpotLight.cpp" />
     <ClCompile Include="Source\Entities\StaticEntity.cpp" />
+    <ClCompile Include="Source\EntityComponents\AIComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />

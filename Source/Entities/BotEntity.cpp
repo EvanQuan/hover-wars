@@ -16,6 +16,7 @@ void BotEntity::initialize(const string& sFileName,
     float fScale,
     eBot botID)
 {
+    std::cout << "Bot Entity created" << std::endl;
     HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
     m_eBotID = botID;
 }
