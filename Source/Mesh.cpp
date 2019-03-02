@@ -643,7 +643,7 @@ void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
 }
 
 // Taking in a new Position a Rotation Quaternion and a Scale, add a new transformation matrix to the internal list and updates the VBO.
-void Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale)
+unsigned int Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale)
 {
     // Order as Scale -> Rotation -> Translation
     mat4 m4NewTransform = scale(vec3(fScale));
@@ -651,28 +651,45 @@ void Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale)
     m4NewTransform = translate(*vPosition) * m4NewTransform;
 
     // Utilize Overloaded Function for functionality.
-    addInstance(&m4NewTransform);
+    return addInstance(&m4NewTransform);
 }
 
 // Take in a new Transformation Matrix, update the internal transform list as well as the VBO
 //    Dynamic Meshes will replace their old transformation and Static Meshes will add a transformation.
-void Mesh::addInstance(const mat4* m4Transform)
+unsigned int Mesh::addInstance(const mat4* m4Transform)
 {
     // Local Variables
-    mat4 m4ScaledTransform = *m4Transform;
-
-    // If Dynamic, clear previous position.
-    if (!m_bStaticMesh)
-    {
-        m_m4ListOfInstances.clear();
-        m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;
-    }
+    unsigned int iReturnIndex;
 
     // Add new Transformation
-    m_m4ListOfInstances.push_back(m4ScaledTransform);
+    iReturnIndex = m_m4ListOfInstances.size();          // Return the Index of the Instance for updating
+    m_m4ListOfInstances.push_back(*m4Transform);   // Add the New instance to the Instance Buffer
 
     // Load VBO with new Data.
     loadInstanceData(m_m4ListOfInstances.data(), m_m4ListOfInstances.size());
+
+    // Return the New Instance
+    return iReturnIndex;
+}
+
+// Updates a Transformation Matrix at a specified index. This will update the transformation
+//      for both the Mesh and the Bounding Box.
+void Mesh::updateInstance(const mat4* m4Transform, unsigned int iTransformIndex)
+{
+    // Ensure the specified index is a valid index.
+    assert(iTransformIndex < m_m4ListOfInstances.size());
+    mat4 m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;    // Scale transformation with Scale MAtrix for the model.
+
+    // Update the local List of Instances with the updated Transformation.
+    m_m4ListOfInstances[iTransformIndex] = m4ScaledTransform;
+
+    // Update the VBO with the new transformation
+    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, iTransformIndex * sizeof(mat4), sizeof(mat4), &m4ScaledTransform);
+
+    // Update the Bounding Box Transformation if the Bounding Box is loaded.
+    if (m_sBoundingBox.isLoaded())
+        m_sBoundingBox.updateInstance(m4Transform, iTransformIndex);
 }
 
 // Returns a Rotation Matrix to rotate an object from a World Coordinate System to a Local
@@ -835,6 +852,18 @@ void Mesh::sBoundingBox::loadInstance(const mat4* pTransform)
     glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
 }
 
+// Loads a new transformation Instance into the Instance buffer
+void Mesh::sBoundingBox::updateInstance(const mat4* pTransform, unsigned int iIndex)
+{
+    // Ensure a valid transformation is passed in and that the InstancedBuffer is generated
+    assert(nullptr != pTransform && 0 != iInstancedBuffer && iIndex < pInstances.size());
+
+    // Add the Transformation to the Instance Vector and load the Instance Vector into the Instance VBO
+    pInstances[iIndex] = *pTransform;
+    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(mat4) * iIndex, sizeof(mat4), pTransform);
+}
+
 // Initializes VBOs for the Bounding Box.
 void Mesh::sBoundingBox::initVBOs()
 {
@@ -902,10 +931,6 @@ void Mesh::addBBInstance(const mat4* m4Transformation)
 {
     if (m_sBoundingBox.isLoaded())
     {
-        // If the Mesh is dynamic, clear the current Instance loaded
-        if (!m_bStaticMesh)
-            m_sBoundingBox.pInstances.clear();
-
         // Load the new instance
         m_sBoundingBox.loadInstance(m4Transformation);
     }

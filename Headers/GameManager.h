@@ -11,10 +11,9 @@ class CommandHandler;
 class ShaderManager;
 class UserInterface;
 
-// Class: Graphics Manager
-// Purpose: Acts as the Sinew between all moving parts that are required for drawing
-//          with openGL.
-// TODO: Set-up a Manager for Geometry (Geometry may be expanded on later).
+// Class: Game Manager
+// Purpose: Manages Game States and handles initialization of a level and handling of
+//      Main menu interfacing
 // Written by: James Coté
 class GameManager
 {

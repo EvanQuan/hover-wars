@@ -223,25 +223,25 @@ player {
 # These player bounding box values are more accurate, but result in wacky physics
 # 1.2 3.8 1.8
 
-#bot {
-#     5 5 0
-#     +mesh {
-#         models/big_dodge.obj
-#         0.25
-#     }
-#     +material {
-#         textures/tronBase.png
-#         0.1 0.1 0.1
-#         20.0
-#     }
-#     +shader {
-#         blinn_phong_shdr
-#     }
-#     +bounding {
-#         box
-#         2.0 2.5 5.0
-#     }
-# }
+bot {
+     5 5 0
+     +mesh {
+         models/big_dodge.obj
+         0.25
+     }
+     +material {
+         textures/tronBase.png
+         0.1 0.1 0.1
+         20.0
+     }
+     +shader {
+         blinn_phong_shdr
+     }
+     +bounding {
+         box
+         2.0 2.5 5.0
+     }
+}
 
 #       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
 #           - "x y z"               = the position of the cube

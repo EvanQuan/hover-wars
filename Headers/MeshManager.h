@@ -11,10 +11,10 @@ public:
     ~MeshManager();
 
     // Methods:
-    Mesh* loadMeshFromFile( const string &sFileName, const ObjectInfo* pObjectProperties, float fScale = 1.0f, bool bStaticMesh = false);
-    Mesh* generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, vec3 vNormal = vec3(0.f, 1.f, 0.f));
-    Mesh* generateSphereMesh(bool bStaticMesh, float fRadius, const ObjectInfo* pObjectProperties);
-    Mesh* generateCubeMesh(bool bStaticMesh, float fHeight, float fWidth, float fDepth, const ObjectInfo* pObjectProperties);
+    Mesh* loadMeshFromFile( unsigned int *iTransformIndex, const string &sFileName, const ObjectInfo* pObjectProperties, float fScale = 1.0f, bool bStaticMesh = false);
+    Mesh* generatePlaneMesh(unsigned int *iTransformIndex, bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, vec3 vNormal = vec3(0.f, 1.f, 0.f));
+    Mesh* generateSphereMesh(unsigned int *iTransformIndex, bool bStaticMesh, float fRadius, const ObjectInfo* pObjectProperties);
+    Mesh* generateCubeMesh(unsigned int *iTransformIndex, bool bStaticMesh, float fHeight, float fWidth, float fDepth, const ObjectInfo* pObjectProperties);
     Mesh* generateBillboardMesh(const ObjectInfo* pObjectProperties, const void* pOwnerHandle );
     void unloadAllMeshes();
 
