@@ -9,7 +9,7 @@ const vec4 GRID_COLOR       = vec4(1.0f, 0.1568627450980392f, 0.0f, ALPHA);     
 const vec4 POP_COLOR        = vec4(0.4941176470588235f, 0.9764705882352941f, 1.0f, ALPHA);                                  // Electric Blue
 const vec4 SPOT_COLOR       = vec4(0.3764705882352941f, 0.1843137254901961f, 0.4196078431372549f, ALPHA);                   // Deep Purple
 const vec4 POINT_COLOR      = vec4(0.9411764705882353f, 1.0f, 0.9411764705882353f, ALPHA);                                  // Azure White
-const vec4 DYNAMIC_COLOR = vec4(0.0f, 0.65882352941176470588235294117647f, 0.41960784313725490196078431372549f, ALPHA);    // Jade
+const vec4 DYNAMIC_COLOR    = vec4(0.0f, 0.65882352941176470588235294117647f, 0.41960784313725490196078431372549f, ALPHA);    // Jade
 float OVERLAY_HEIGHT = 0.1f;
 
 /***********\
@@ -180,6 +180,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
                 m_pSpatialMap[x][y].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
 #ifdef _DEBUG
+            case BOT_ENTITY:
             case PLAYER_ENTITY:
                 // Add this entry to the Dynamic Indices Map.
                 if (m_pDynamicIndicesMap.find(vEntity->getID()) == m_pDynamicIndicesMap.end())
@@ -219,7 +220,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
 
 #ifdef _DEBUG
     // Generate IBO if the Entity was a PLAYER_ENTITY
-    if (PLAYER_ENTITY == vEntity->getType())
+    if (PLAYER_ENTITY == vEntity->getType() || BOT_ENTITY == vEntity->getType() )
         m_pDynamicIndicesMap[vEntity->getID()].iDynamicIBO =
         SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.data(),
                                          m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), GL_DYNAMIC_DRAW);
@@ -334,6 +335,9 @@ void SpatialDataMap::drawMap()
                     ++i;    // Increment to next set of indices in the GPU
                     vColor = DYNAMIC_COLOR;
                 }
+
+            // Reset the i Index
+            i = 0;
         }
 
         // Draw the Populated Squares

@@ -159,10 +159,12 @@ will be added together to form the final camera position.
 const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(FRONT_CAMERA_OFFSET, 0, 0);
 const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(BACK_CAMERA_OFFSET, 0, 0);
 
-
+// Hovercraft Entity Default Constructor.
+//  Call the base class Entity Constructor
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
     : Entity(iID, *vPosition, entityType)
 {
+    // Initialize base information.
     m_pSpatialMap = SPATIAL_DATA_MAP;
     activeCameraIndex = FRONT_CAMERA;
     m_qCurrentCameraRotation = quat();
@@ -192,8 +194,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
-    m_pMesh->addInstance(&m4NewTransform);
-    m_pMesh->addBBInstance(&m4NewTransform);
+    m_pMesh->updateInstance(&m4NewTransform, m_iTransformationIndex);
 
     // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
@@ -220,12 +221,12 @@ void HovercraftEntity::initialize(const string& sFileName,
                                   float fScale)
 {
     // Load Mesh and Rendering Component
-    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, fScale);
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeComponent(true, m_pMesh, &(pObjectProperties->sObjBoundingBox));
+    m_pPhysicsComponent->initializeComponent(true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
     m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
     m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);

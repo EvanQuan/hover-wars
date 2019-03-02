@@ -59,6 +59,7 @@ private:
 
         // Loads a new transformation Instance into the Instance buffer
         void loadInstance(const mat4* pTransform);
+        void updateInstance(const mat4* pTransform, unsigned int iIndex);
 
         // Generation Functions
         void generateCubicBox(float fHeight, float fWidth, float fDepth);
@@ -122,8 +123,9 @@ public:
     bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
 
     // Function to add a new Instance Matrix for the Mesh. If the Mesh is dynamic, it will replace the current instance, static will add a new instance.
-    void addInstance(const vec3* vPosition, const vec3* vNormal, float fScale);    // Specify particular components and a transformation matrix will be generated
-    void addInstance(const mat4* m4Transform);                                    // Specify a previously generated transformation matrix
+    unsigned int addInstance(const vec3* vPosition, const vec3* vNormal, float fScale);    // Specify particular components and a transformation matrix will be generated
+    unsigned int addInstance(const mat4* m4Transform);                                     // Specify a previously generated transformation matrix
+    void updateInstance(const mat4* m4Transform, unsigned int iTransformIndex);           // Updates a Transformation matrix at the given index.
 
     // Getters for Mesh Data
     const vector<vec3>& getVertices() const { return m_pVertices; }

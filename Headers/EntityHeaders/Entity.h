@@ -22,5 +22,6 @@ public:
 protected:
     vec3 m_vPosition;
     int m_iID;
+    unsigned int m_iTransformationIndex;
     eEntityTypes m_eType;
 };

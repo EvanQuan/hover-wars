@@ -47,11 +47,11 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
     // Load Mesh
     if ("" == sMeshName)
     {
-        m_pMesh = MESH_MANAGER->generateCubeMesh(bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, pObjectProperties);
+        m_pMesh = MESH_MANAGER->generateCubeMesh(&m_iTransformationIndex, bStatic, LIGHT_HEIGHT, LIGHT_WIDTH, LIGHT_DEPTH, pObjectProperties);
     }
     else
     {
-        m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshName, pObjectProperties, m_fMeshScale, bStatic);
+        m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sMeshName, pObjectProperties, m_fMeshScale, bStatic);
     }
 
     // Create a Render Component

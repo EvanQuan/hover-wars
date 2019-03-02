@@ -6,6 +6,7 @@ Entity::Entity(int iID, vec3 vPosition, eEntityTypes eType)
     m_iID = iID;
     m_vPosition = vPosition;
     m_eType = eType;
+    m_iTransformationIndex = 0;
 }
 
 // Copy Constructor

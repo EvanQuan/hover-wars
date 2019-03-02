@@ -40,14 +40,14 @@ void MeshManager::unloadAllMeshes()
 // Return:                Returns a pointer to the desired mesh from the specified file.
 // Parameters:            sFileName - The location of the file to load.
 // Written by:            James Cote
-Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const ObjectInfo* pObjectProperties, float fScale, bool bStaticMesh)
+Mesh* MeshManager::loadMeshFromFile(unsigned int *iTransformIndex, const string& sFileName, const ObjectInfo* pObjectProperties, float fScale, bool bStaticMesh)
 {
     // Attempt to grab it from the texture cache if it already exists
     Mesh* pReturnMesh = nullptr;
     string sHashKey = sFileName + materialToString(&pObjectProperties->sObjMaterial);
 
     // Found an existing Mesh from that file.
-    if ( bStaticMesh && m_pMeshCache.end() != m_pMeshCache.find( sHashKey ) )
+    if ( m_pMeshCache.end() != m_pMeshCache.find( sHashKey ) )
     {
         // Grab the Mesh from the Cache
         pReturnMesh = m_pMeshCache[ sHashKey ].get();
@@ -55,8 +55,8 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const ObjectInfo* 
         // Add the new instance to the mesh.
         mat4 m4TranslationMat4 = translate(pObjectProperties->vPosition);
         mat4 m4NewTransformInstance = m4TranslationMat4 * scale(vec3(fScale)) * mat4(1.0f);
-        pReturnMesh->addInstance(&m4NewTransformInstance);      // Add new Position for the Mesh
-        pReturnMesh->addBBInstance(&m4TranslationMat4);         // Add Translation for the Bounding Box, this shouldn't be scaled.
+        *iTransformIndex = pReturnMesh->addInstance(&m4NewTransformInstance);      // Add new Position for the Mesh
+        pReturnMesh->addBBInstance(&m4TranslationMat4);                            // Add Translation for the Bounding Box, this shouldn't be scaled.
     }
     else // Create the New Texture in the Texture Cache, attach the User to the Texture and return the newly created texture.
     {
@@ -75,6 +75,7 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const ObjectInfo* 
         {
             // Return Newly Created Mesh.
             pReturnMesh = pNewMesh.get();
+            *iTransformIndex = 0;   // Set the return index to 0 since it's the first instance of the Mesh;
 
             // Attach Mesh to the Cache
             m_pMeshCache.insert(make_pair( sHashKey, move(pNewMesh) ));
@@ -88,7 +89,7 @@ Mesh* MeshManager::loadMeshFromFile( const string& sFileName, const ObjectInfo* 
 //                            or creates a new Plane Mesh if one hasn't been created yet.
 // Returns:                Generated plane mesh or nullptr if no mesh was able to be generated.
 // Written by:            James Cote
-Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, vec3 vNormal)
+Mesh* MeshManager::generatePlaneMesh(unsigned int *iTransformIndex, bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, vec3 vNormal)
 {
     // Local Variables
     string sHashHandle = "Plane" + to_string(iHeight) + to_string(iWidth) +
@@ -101,20 +102,21 @@ Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, 
         pReturnMesh = m_pMeshCache[sHashHandle].get();
 
         // Add the new instance to the mesh.
-        pReturnMesh->addInstance(&pObjectProperties->vPosition, &vNormal, 1.0f);
+        *iTransformIndex = pReturnMesh->addInstance(&pObjectProperties->vPosition, &vNormal, 1.0f);
     }
     else // Generate a new Plane Mesh of height iHeight and width iWidth
     {
         unique_ptr<Mesh> pNewPlane = make_unique<Mesh>(sHashHandle, bStaticMesh, pObjectProperties, Mesh::manager_cookie());
         pNewPlane->genPlane(iHeight, iWidth, pObjectProperties->vPosition, vNormal);    // Generate Plane
         pReturnMesh = pNewPlane.get();                                                  // Return raw pointer to managed Mesh.
+        *iTransformIndex = 0;                                                           // Set the return index to 0 since it's the first instance of the Mesh;
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewPlane)));                   // Insert into Mesh Cache
     }
 
     return pReturnMesh;
 }
 
-Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, const ObjectInfo* pObjectProperties )
+Mesh* MeshManager::generateSphereMesh(unsigned int *iTransformIndex, bool bStaticMesh, float fRadius, const ObjectInfo* pObjectProperties )
 {
     // Local Variables
     string sHashHandle = "Sphere" + to_string(fRadius) + materialToString(&pObjectProperties->sObjMaterial);
@@ -126,20 +128,21 @@ Mesh* MeshManager::generateSphereMesh(bool bStaticMesh, float fRadius, const Obj
         pReturnMesh = m_pMeshCache[sHashHandle].get();
 
         // Add new Transformation Instance
-        pReturnMesh->addInstance(&pObjectProperties->vPosition, &NORMAL_VECT, 1.0f);
+        *iTransformIndex = pReturnMesh->addInstance(&pObjectProperties->vPosition, &NORMAL_VECT, 1.0f);
     }
     else // Generate a new Sphere Mesh of given Radius
     {
         unique_ptr<Mesh> pNewSphere = make_unique<Mesh>(sHashHandle, bStaticMesh, pObjectProperties, Mesh::manager_cookie());
         pNewSphere->genSphere(fRadius, pObjectProperties->vPosition);    // Generate Sphere
         pReturnMesh = pNewSphere.get();                                  // Return raw pointer to managed Mesh
+        *iTransformIndex = 0;                                            // Set the return index to 0 since it's the first instance of the Mesh;
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewSphere)));   // Move Mesh to Cache
     }
 
     return pReturnMesh;
 }
 
-Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, float fHeight, float fWidth, float fDepth, const ObjectInfo* pObjectProperties)
+Mesh* MeshManager::generateCubeMesh(unsigned int *iTransformIndex, bool bStaticMesh, float fHeight, float fWidth, float fDepth, const ObjectInfo* pObjectProperties)
 {
     // Local Variables
     string sHashHandle = "Cube" + to_string(fHeight) + to_string(fWidth) + to_string(fDepth) +
@@ -152,13 +155,14 @@ Mesh* MeshManager::generateCubeMesh(bool bStaticMesh, float fHeight, float fWidt
         pReturnMesh = m_pMeshCache[sHashHandle].get();
 
         // Add new Transformation Matrix
-        pReturnMesh->addInstance(&pObjectProperties->vPosition, &NORMAL_VECT, 1.0f);
+        *iTransformIndex = pReturnMesh->addInstance(&pObjectProperties->vPosition, &NORMAL_VECT, 1.0f);
     }
     else // Generate a new Cube Mesh with given dimensions
     {
         unique_ptr<Mesh> pNewCube = make_unique<Mesh>(sHashHandle, bStaticMesh, pObjectProperties, Mesh::manager_cookie());
         pNewCube->genCube(fHeight, fWidth, fDepth, pObjectProperties->vPosition);
         pReturnMesh = pNewCube.get();
+        *iTransformIndex = 0;                                           // Set the return index to 0 since it's the first instance of the Mesh;
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewCube)));
     }
 

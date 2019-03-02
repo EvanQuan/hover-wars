@@ -45,9 +45,9 @@ void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3*
 
     // Load Mesh
     if ("" == sMeshLocation)
-        m_pMesh = MESH_MANAGER->generateSphereMesh(bStatic, 0.25f, pObjectProperties);
+        m_pMesh = MESH_MANAGER->generateSphereMesh(&m_iTransformationIndex, bStatic, 0.25f, pObjectProperties);
     else
-        m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshLocation, pObjectProperties, m_fMeshScale, bStatic);
+        m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sMeshLocation, pObjectProperties, m_fMeshScale, bStatic);
 
     // Create a Render Component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLE_STRIP);
