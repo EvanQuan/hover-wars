@@ -4,13 +4,15 @@
 /*
 For collisions
 */
+#define MUTATIONS_PER_FRAME 10
 #define LOOK_AHEAD_FRAMES 30
+#define MUTATION_SET 10
 /**************************************************************
  * Name: AIComponent
  * Written by: Austin Eaton
 \***************************************************************************************/
 struct Action {
-    bool actionsToTake[3] = { false,false,false };
+    int actionsToTake[2] = { 0,0 };
 };
 class AIComponent :
     public EntityComponent
@@ -29,7 +31,14 @@ public:
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
 private:
-    vector<Action *> frames;
+    Action genRandomAction();
+    void mutateSet(int setIndex, int mutations);
+    float evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, glm::vec3 botRotation);
+    Action popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, glm::vec3 botRotation);
+    Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
+    int currentBest = 0;
+    float currentBestEval = 0;
+    int currentPlace = 0;
     int iEntityID;
     int iComponentID;
 };
