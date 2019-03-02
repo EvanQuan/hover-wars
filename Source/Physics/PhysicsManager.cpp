@@ -418,7 +418,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     return gPhysics->createTriangleMesh(readBuffer);
 }
 PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeX, sizeY, sizeZ), *gMaterial);
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
@@ -485,6 +485,12 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
     gScene->simulate(timestep);
     gScene->fetchResults(true);
 }
+
+/*
+Update the car over a period of time.
+
+@return true if the car is in the air, meaning all 4 wheels are in the air.
+*/
 bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     const PxF32 timestep = fTimeDelta;
     //Raycasts.
@@ -498,5 +504,8 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
-    return wheelQueryResults[0].isInAir && wheelQueryResults[1].isInAir && wheelQueryResults[2].isInAir && wheelQueryResults[3].isInAir;
+    return wheelQueryResults[0].isInAir
+        && wheelQueryResults[1].isInAir
+        && wheelQueryResults[2].isInAir
+        && wheelQueryResults[3].isInAir;
 }

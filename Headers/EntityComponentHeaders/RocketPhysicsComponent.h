@@ -34,7 +34,7 @@ public:
     void move(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
+    void initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb);
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();
@@ -44,8 +44,7 @@ public:
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 
 private:
-    bool isInAir;
-    float fSecondsSinceLastDash;
+    int currentState = 0;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;
