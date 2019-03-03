@@ -1,4 +1,6 @@
 #include "Utils/FuncUtils.h"
+#include <iomanip> // setprecision
+#include <sstream> // stringstream
 
 using namespace FuncUtils;
 
@@ -44,4 +46,18 @@ int FuncUtils::random(int start, int end)
     std::mt19937 random_generator(random_seed()); // seed the generator
     std::uniform_int_distribution<> distribution(start, end);
     return distribution(random_generator);
+}
+
+/*
+Convert a float to string, given a specified number of decimal places.
+
+@param value of float to convert
+@param decimalPlaces to include in the string
+@return string of float with specified decimal places
+*/
+std::string FuncUtils::to_string(float value, int decimalPlaces)
+{
+    stringstream stream;
+    stream << fixed << setprecision(decimalPlaces) << value;
+    return stream.str();
 }

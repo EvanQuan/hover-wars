@@ -16,58 +16,6 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
 
-/*
-Cooldowns
-
-The time the hovercraft must wait until they can use the ability again.
-
-Units: seconds
-*/
-#define ROCKET_COOLDOWN         2.0f
-#define SPIKES_COOLDOWN         1.0f
-#define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           2.0f
-
-/*
-Total time the trail can be activated from full to empty.
-
-Unit: seconds
-*/
-#define TRAIL_GAUGE_FULL        4.0f
-/*
-Represents the trail gauge is empty.
-*/
-#define TRAIL_GAUGE_EMPTY       0.0f
-
-/*
-Time multiplier for the trail to recharge from empty to full.
-
-= 1: recharge rate is the same as drain rate.
-> 1: recharge rate is faster than drain rate
-< 1: recharge rate is slower than drain rate
-
-*/
-#define TRAIL_RECHARGE_MULTIPLIER 0.5f
-
-/*
-The interval of time between each created flame while the trail trail is
-activated.
-
-@TODO Flame interval should be based on distance, not time. In some sense, a
-line is simply being laid out, of which flame billboards are uniformly
-distributed across, meanining that the spacing is time invariant.
-
-Unit: seconds
-*/
-#define FLAME_INTERVAL          0.10f
-
-/*
-Delay time when the trail is deactivate and when the gauge begins to recharge.
-This makes spam toggling less effective.
-
-Unit: seconds
-*/
-#define TRAIL_RECHARGE_COOLDOWN 0.5f
 
 // Fire Defines
 #define FIRE_HEIGHT             2.0
@@ -326,7 +274,7 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 {
     if (m_bTrailActivated)
     {
-        // m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
+        m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
     
@@ -342,14 +290,13 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
                 deactivateTrail();
             }
 
-            float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
+            // float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
 
             // cout << m_vPositionOfLastFlame.x << " " << m_vPositionOfLastFlame.y << " " << m_vPosition << endl;
-            // if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
-            if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
+            if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+            // if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
             {
                 createTrailInstance();
-                // m_fSecondsSinceLastFlame = 0.0f;
             }
         }
     }
@@ -379,8 +326,9 @@ Create 1 flame entity
 void HovercraftEntity::createTrailInstance()
 {
     // Update the position of the last flame
-    m_vPositionOfLastFlame = m_pFireTrail->getPosition();
+    // m_vPositionOfLastFlame = m_pFireTrail->getPosition();
     // m_vPositionOfLastFlame = getPosition();
+    m_fSecondsSinceLastFlame = 0.0f;
 
     mat4 m4TransformMat;
     vec3 vNormal;

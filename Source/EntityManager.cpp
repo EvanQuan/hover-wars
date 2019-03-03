@@ -193,8 +193,7 @@ void EntityManager::doRender()
             m_pSpatialMap->drawMap();
         }
 
-        UserInterface::getInstance()->renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
-
+        USER_INTERFACE->render();
 #ifdef _DEBUG
         renderAxis();
 #endif

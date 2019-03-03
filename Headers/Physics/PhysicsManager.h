@@ -102,7 +102,8 @@ private:
     physx::PxScene*                 gScene          = NULL;
     physx::PxControllerManager*     manager         = NULL;
 
-    physx::PxMaterial*              gMaterial       = NULL;
+    physx::PxMaterial*              gCarMaterial    = NULL;
+    physx::PxMaterial*              gWorldMaterial  = NULL;
 
     physx::PxPvd*                   gPvd            = NULL;
     physx::PxCooking *              gCook;
