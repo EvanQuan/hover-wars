@@ -10,7 +10,7 @@ does not infinitely accelerate as they move.
 
 Speed : meters/second
 */
-#define MAX_NORMAL_SPEED 50
+#define MAX_NORMAL_SPEED 30
 
 /*
 The maximum speed the player can travel while dashing. This returns back to MAX_SPEED
@@ -18,26 +18,28 @@ shortly afterwards.
 
 Speed : meters/second
 */
-#define MAX_DASH_SPEED 5000
+#define MAX_DASH_SPEED 500
 /*
 The amount of time the player can be in MAX_DASH_SPEED after dashing.
 
 Time : seconds
 */
-#define DASH_TIME 0.1
+#define DASH_TIME 0.25
 /*
 Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MOMENTUM 3.0f
+#define ANGULAR_MOMENTUM 4.0f // 3.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
 
+50 @ 9.81
+
 Force : Newtons
 */
-#define MOVEMENT_FORCE 50.0f // 10000.0f
+#define MOVEMENT_FORCE 200.0f // 
 #define DASH_FORCE 1000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.

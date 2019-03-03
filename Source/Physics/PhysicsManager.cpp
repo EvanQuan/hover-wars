@@ -51,7 +51,7 @@ objects bounce away.
 
 This should be relatively high to make car collisions satisfying.
 */
-#define CAR_RESTITUTION 0.2f
+#define CAR_RESTITUTION 0.2f // 0.2f
 /*
 Acceleration of gravity downwards
 
@@ -60,8 +60,9 @@ Real world value is -9.81
 Typically in games, this value is much greater than the real world value.
 
 Acceleration : m/s^2
+
 */
-#define GRAVITY -9.81f
+#define GRAVITY -30.0f
 /*
 This affects the momentum of the vehicle.
 The greater it is, the slow the car will take to accelerate, either from

@@ -26,14 +26,14 @@ Units: seconds
 #define ROCKET_COOLDOWN         2.0f
 #define SPIKES_COOLDOWN         1.0f
 #define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           4.0f
+#define DASH_COOLDOWN           2.0f
 
 /*
 Total time the trail can be activated from full to empty.
 
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        3.0f
+#define TRAIL_GAUGE_FULL        4.0f
 /*
 Represents the trail gauge is empty.
 */
