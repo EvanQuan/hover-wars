@@ -122,13 +122,13 @@ Actor names are composed of 2 characters. The order of tokens are:
 2. Subtype or Owner
 */
 // Type TODO to implememnt
-#define TYPE_WORLD "w"
+#define TYPE_WORLD   "w"
 #define TYPE_POWERUP "p"
-#define TYPE_TRAIL "t"
-#define TYPE_PLAYER "P"
-#define TYPE_BOT "b"
-#define TYPE_ROCKET "r"
-#define TYPE_SPIKES "s"
+#define TYPE_TRAIL   "t"
+#define TYPE_PLAYER  "P"
+#define TYPE_BOT     "b"
+#define TYPE_ROCKET  "r"
+#define TYPE_SPIKES  "s"
 
 // Subtype TODO to implememnt
 #define SUBTYPE_WALL "W"
@@ -139,14 +139,13 @@ Actor names are composed of 2 characters. The order of tokens are:
 #define OWNER_PLAYER_2 "2"
 #define OWNER_PLAYER_3 "3"
 #define OWNER_PLAYER_4 "4"
-#define OWNER_BOT_1 "5"
-#define OWNER_BOT_2 "6"
-#define OWNER_BOT_3 "7"
-#define OWNER_BOT_4 "8"
+#define OWNER_BOT_1    "5"
+#define OWNER_BOT_2    "6"
+#define OWNER_BOT_3    "7"
+#define OWNER_BOT_4    "8"
 
 // Don't use these
-#define TYPE_WORLD "w"
-#define TYPE_WORLD "w"
+#define TYPE_WORLD   "w"
 #define NAME_PLAYER  "p"
 #define NAME_BOT     "b"
 #define NAME_ROCKET  "r"
