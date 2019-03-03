@@ -7,8 +7,6 @@
  * Defines *
 \***********/
 #define FONT_HEIGHT             48                      // 48 Pixels High.
-#define VEC4_SIZE               (sizeof(GLfloat) << 2)  // Size of a single vertex
-#define NUM_VERTS               4                       // Number of vertices to store per glyph
 #define BITMAP_HEIGHT           512
 #define BITMAP_WIDTH            512
 #define MAX_ASCII_CHARS         255
@@ -203,7 +201,7 @@ void UserInterface::initializeVBOs()
 {
     // Generate Vertex Array
     glGenVertexArrays(1, &m_iVertexArray);
-    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, sizeof(vec4) * NUM_VERTS, GL_DYNAMIC_DRAW);    // Generate the Vertex Buffer and store some space on the GPU for Text Rendering.
+    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, sizeof(vec4), GL_DYNAMIC_DRAW);    // Generate the Vertex Buffer and store some space on the GPU for Text Rendering.
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
 }
 
