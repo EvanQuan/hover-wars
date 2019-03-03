@@ -79,7 +79,7 @@ private:
     {
         for (physx::PxU32 wheel = 0; wheel < WHEEL_COUNT; wheel++)
         {
-            gVehicleNoDrive->setBrakeTorque(wheel, angle);
+            gVehicleNoDrive->setSteerAngle(wheel, angle);
         }
     }
 };

@@ -120,14 +120,6 @@ void PhysicsComponent::move(float x, float y) {
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         setSteerAngle(angle);
    }
-//    else {
-//        // This never gets calle because movement is always non-zero from the CommandHandler.
-//        releaseAllControls();
-//        gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
-//        gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
-//        gVehicleNoDrive->setBrakeTorque(2, BRAKE_FORCE);
-//        gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
-//    }
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
