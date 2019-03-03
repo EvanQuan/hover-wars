@@ -39,11 +39,13 @@ public:
     
     */
     void update(float fSecondsSinceLastUpdate);
-    void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
+
+    void render();
 
     void setDisplayCount(int count);
 
     void updateWidthAndHeight(int iWidth, int iHeight);
+
 
 private:
     UserInterface(int iWidth, int iHeight);                                 // Default Constructor
@@ -56,6 +58,14 @@ private:
     void initializeVBOs();
 
     void setScore(int joystickID, int score);
+
+    /*
+    Other classes should not be able to directly tell the UI to render text or
+    images. Instead, the UI gathers the necessary information from other
+    classes, such as GameStats, where it decides what text and images needs to
+    be updated during its update() call.
+    */
+    void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void initializeUserInterface();
 

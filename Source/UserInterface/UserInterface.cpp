@@ -236,10 +236,24 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
     if (m_iDisplayCount > 0)
     {
         // system("CLS");
+
         updateGameTime(fSecondsSinceLastUpdate);
         updateScores();
         updateCooldowns();
     }
+}
+
+/*
+Renders the most recently updated state to the screen.
+This this be called every render update, after the environment has been
+rendered to ensure the UI is on top.
+*/
+void UserInterface::render()
+{
+    USER_INTERFACE->renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
+    // renderGameTime();
+    // renderScores();
+    // renderCooldowns();
 }
 
 /*
@@ -271,6 +285,21 @@ void UserInterface::updateCooldowns()
     // renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
+/*
+Render text to the screen.
+
+Window coordinates in pixels
+(0, height)     (width, height)
+
+
+(0, 0)          (width, 0)
+
+@param text     to render
+@param x        x-coordinate of the bottom-left corner of text, in pixels
+@param y        y-coordinate of the bottom-left corner of text, in pixels
+@param scale    text, where 1.0 is the default size
+@param color    rgb colors of the text
+*/
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
     // Vector for storing VBO data.

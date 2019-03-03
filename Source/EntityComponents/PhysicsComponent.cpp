@@ -30,7 +30,7 @@ Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MOMENTUM 4.0f // 3.0f
+#define ANGULAR_MOMENTUM 5.0f // 3.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.

@@ -32,7 +32,8 @@ This determines the threshold for a force to begin moving the car from neutral
 We want this to be relatively small or even 0 since whenever we apply a force
 to the car, we typically would want it to move.
 */
-#define STATIC_FRICTION 0.0f // 0.35f
+#define CAR_STATIC_FRICTION 0.0f // 0.35f
+#define WORLD_STATIC_FRICTION 0.0f // 0.35f
 /*
 Coefficient of dynamic friction
 
@@ -42,7 +43,8 @@ stop and change directions in a reasonably responsive manner.
 We want this to be low enough that there some amount of drifting can be done to
 make it feel like a hovercraft.
 */
-#define DYNAMIC_FRICTION 1.00f // 0.35f
+#define CAR_DYNAMIC_FRICTION 1.00f // 0.35f
+#define WORLD_DYNAMIC_FRICTION 1.00f // 0.35f
 /*
 Car Restitution
 
@@ -51,7 +53,15 @@ objects bounce away.
 
 This should be relatively high to make car collisions satisfying.
 */
-#define CAR_RESTITUTION 0.2f // 0.2f
+#define CAR_RESTITUTION 0.1f // 0.2f
+
+/*
+World Restituti8on
+
+This should be low to make the world not bouncy.
+*/
+#define WORLD_RESTITUTION 0.1f
+
 /*
 Acceleration of gravity downwards
 
@@ -62,7 +72,7 @@ Typically in games, this value is much greater than the real world value.
 Acceleration : m/s^2
 
 */
-#define GRAVITY -30.0f
+#define GRAVITY -50.0f
 /*
 This affects the momentum of the vehicle.
 The greater it is, the slow the car will take to accelerate, either from
@@ -73,7 +83,7 @@ explosions or collisions.
 
 Mass : kilograms
 */
-#define CHASSIS_MASS = 1000.0f
+#define CHASSIS_MASS = 10000.0f // 1000
 
 
 /****************************************************************************\
@@ -103,7 +113,8 @@ PhysicsManager::PhysicsManager()
     gDispatcher = NULL;
     gScene = NULL;
     manager = NULL;
-    gMaterial = NULL;
+    gCarMaterial = NULL;
+    gWorldMaterial = NULL;
     
     gPvd = NULL;
 }
@@ -145,7 +156,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     vehicleDesc.chassisDims = chassisDims;
     vehicleDesc.chassisMOI = chassisMOI;
     vehicleDesc.chassisCMOffset = chassisCMOffset;
-    vehicleDesc.chassisMaterial = gMaterial;
+    vehicleDesc.chassisMaterial = gCarMaterial;
     vehicleDesc.chassisSimFilterData = PxFilterData(snippetvehicle::COLLISION_FLAG_CHASSIS, snippetvehicle::COLLISION_FLAG_CHASSIS_AGAINST, 0, 0);
 
     vehicleDesc.wheelMass = wheelMass;
@@ -153,7 +164,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     vehicleDesc.wheelWidth = wheelWidth;
     vehicleDesc.wheelMOI = wheelMOI;
     vehicleDesc.numWheels = nbWheels;
-    vehicleDesc.wheelMaterial = gMaterial;
+    vehicleDesc.wheelMaterial = gCarMaterial;
     vehicleDesc.chassisSimFilterData = PxFilterData(snippetvehicle::COLLISION_FLAG_WHEEL, snippetvehicle::COLLISION_FLAG_WHEEL_AGAINST, 0, 0);
 
     return vehicleDesc;
@@ -234,7 +245,8 @@ void PhysicsManager::initPhysics(bool interactive)
         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
     }
-    gMaterial = gPhysics->createMaterial(STATIC_FRICTION, DYNAMIC_FRICTION, CAR_RESTITUTION);
+    gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
+    gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
     gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
     if (!gCook)
@@ -253,12 +265,12 @@ void PhysicsManager::initPhysics(bool interactive)
     gBatchQuery = snippetvehicle::VehicleSceneQueryData::setUpBatchedSceneQuery(0, *gVehicleSceneQueryData, gScene);
 
     //Create the friction table for each combination of tire and surface type.
-    gFrictionPairs = snippetvehicle::createFrictionPairs(gMaterial);
+    gFrictionPairs = snippetvehicle::createFrictionPairs(gCarMaterial);
 
     //Create a plane to drive on.
     PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 
-    PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gMaterial, gPhysics);
+    PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics);
     gScene->addActor(*gGroundPlane);
     gGroundPlane->setName(NAME_GROUND);
     staticObjects.push_back(gGroundPlane);
@@ -296,7 +308,8 @@ void PhysicsManager::cleanupPhysics()
         PxCloseVehicleSDK();
         delete cb;
 
-        gMaterial->release();
+        gCarMaterial->release();
+        gWorldMaterial->release();
         gCook->release();
         gScene->release();
         gDispatcher->release();
@@ -325,7 +338,7 @@ void PhysicsManager::cleanupPhysics()
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
 PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float scale,string filename) {
-    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(generateMesh(filename,scale)), *gMaterial);
+    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(generateMesh(filename,scale)), *gCarMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
@@ -419,7 +432,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     return gPhysics->createTriangleMesh(readBuffer);
 }
 PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gMaterial);
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
@@ -429,7 +442,7 @@ PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float 
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
-    PxShape* shape = gPhysics->createShape(PxSphereGeometry(radius), *gMaterial);
+    PxShape* shape = gPhysics->createShape(PxSphereGeometry(radius), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
@@ -510,3 +523,7 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
         && wheelQueryResults[2].isInAir
         && wheelQueryResults[3].isInAir;
 }
+
+// bool PhysicsManager::updateRocket(PxRigidDynamic *rocket, float fTimeDelta) {
+
+// }
