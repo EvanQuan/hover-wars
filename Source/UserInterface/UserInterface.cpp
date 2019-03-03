@@ -53,7 +53,7 @@
 /*
 Unit : seconds
 */
-// #define ROUND_TIME              5 * 60
+#define ROUND_TIME              5 * SECONDS_PER_MINUTE
 #define TIME_X                  600.0f
 #define TIME_Y                  1000.0f
 #define TIME_SCALE              1.0f
@@ -84,7 +84,7 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     initFreeType();
     initializeVBOs();
 
-    m_iGameTime = 1.0f;
+    m_iGameTime = ROUND_TIME;
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -307,7 +307,7 @@ void UserInterface::render()
 void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
-    m_iGameTime += fSecondsSinceLastUpdate;
+    m_iGameTime -= fSecondsSinceLastUpdate;
     // TODO refactor this
     // int total, seconds, hours, minutes;
 
