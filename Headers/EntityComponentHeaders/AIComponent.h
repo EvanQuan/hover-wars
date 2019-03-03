@@ -7,12 +7,16 @@ For collisions
 #define MUTATIONS_PER_FRAME 10
 #define LOOK_AHEAD_FRAMES 30
 #define MUTATION_SET 10
+#define ROCKET_VEL 10
+#define ROCKET_FRAME_PREDICTION_THRESHOLD 50
 /**************************************************************
  * Name: AIComponent
  * Written by: Austin Eaton
 \***************************************************************************************/
+
+// fire Rocket, right-left turn, forward-back move,right-left move
 struct Action {
-    int actionsToTake[2] = { 0,0 };
+    int actionsToTake[4] = { 0,0,0,0 };
 };
 class AIComponent :
     public EntityComponent
@@ -33,8 +37,8 @@ public:
 private:
     Action genRandomAction();
     void mutateSet(int setIndex, int mutations);
-    float evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, glm::vec3 botRotation);
-    Action popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, glm::vec3 botRotation);
+    float evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown);
+    Action popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown);
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
