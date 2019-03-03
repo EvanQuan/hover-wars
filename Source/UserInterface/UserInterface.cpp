@@ -18,6 +18,32 @@
 #define BOTTOM_RIGHT            1
 #define TOP_RIGHT               3
 
+// UI Component locations
+#define SCORE_X                 1000
+#define SCORE_Y                 1000
+#define SCORE_SCALE             0.8
+#define SCORE_COLOR             vec3(1.0)
+
+#define TRAIL_X                 500
+#define TRAIL_Y                 100
+#define TRAIL_SCALE             0.8
+#define TRAIL_COLOR             vec3(1.0)
+
+#define ROCKET_X                800
+#define ROCKET_Y                100
+#define ROCKET_SCALE            0.8
+#define ROCKET_COLOR            vec3(1.0)
+
+#define SPIKES_X                1000
+#define SPIKES_Y                100
+#define SPIKES_SCALE            0.8
+#define SPIKES_COLOR            vec3(1.0)
+
+#define DASH_X                  1200
+#define DASH_Y                  100
+#define DASH_SCALE              0.8
+#define DASH_COLOR              vec3(1.0)
+
 /*************\
  * Constants *
 \*************/
@@ -267,7 +293,7 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 
     m_iGameTime += fSecondsSinceLastUpdate;
     // TODO refactor this
-    int total, seconds, hours, minutes;
+    // int total, seconds, hours, minutes;
 
 }
 
@@ -295,8 +321,8 @@ void UserInterface::updateScore(ePlayer player, int score)
 void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
-    int score = m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE);
-    renderText(score, 250, 250, 1.0, vec3(1.0));
+    std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE));
+    renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, TRAIL_COLOR);
 }
 
 void UserInterface::updateCooldowns()
@@ -307,9 +333,18 @@ void UserInterface::renderCooldowns()
 {
     // TODO put this in the proper place, font, scale etc.
     // 0 - 100
-    int trailPercent = (int) ENTITY_MANAGER->getPlayer(PLAYER_1)->getTrailGaugePercent() * 100;
-    renderText(trailPercent, 500, 100, 1.0, vec3(1.0));
-    // renderImage(IMAGE_TRAIL, 0, 0, 10);
+    PlayerEntity* player = ENTITY_MANAGER->getPlayer(PLAYER_1);
+    float* cooldowns = player->getCooldowns();
+    std::string trailPercent = std::to_string((int) (player->getTrailGaugePercent() * 100));
+    renderText("Flame: " + trailPercent, TRAIL_X, TRAIL_Y, TRAIL_SCALE, TRAIL_COLOR);
+
+    std::string rocketCooldown = std::to_string(cooldowns[eCooldown::COOLDOWN_ROCKET]);
+    std::string spikesCooldown = std::to_string(cooldowns[eCooldown::COOLDOWN_SPIKES]);
+    std::string dashCooldown = std::to_string(cooldowns[eCooldown::COOLDOWN_DASH]);
+    renderText("Rocket: " + rocketCooldown, ROCKET_X, ROCKET_Y, ROCKET_SCALE, ROCKET_COLOR);
+    renderText("Spikes: " + spikesCooldown, SPIKES_X, SPIKES_Y, SPIKES_SCALE, SPIKES_COLOR);
+    renderText("Dash: " + dashCooldown, DASH_X, DASH_Y, DASH_SCALE, DASH_COLOR);
+     renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
 /*

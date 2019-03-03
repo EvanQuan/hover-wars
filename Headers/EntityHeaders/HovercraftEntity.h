@@ -34,7 +34,7 @@ Total time the trail can be activated from full to empty.
 
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        4.0f
+#define TRAIL_GAUGE_FULL        3.0f
 /*
 Represents the trail gauge is empty.
 */
