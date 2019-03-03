@@ -86,6 +86,7 @@ private:
     void initializeCooldowns();
     void updateCooldowns();
     void renderCooldowns();
+    void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {

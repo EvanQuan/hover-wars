@@ -21,32 +21,37 @@
 // UI Component locations
 // These should all be relative to the window dimensions
 // not hardcoded pixel values, as they are now.
+#define COLOR_WHITE             vec3(1.0)
+#define COLOR_RED               vec3(1.0, 0.0, 0.0)
+#define COLOR_GREEN             vec3(0.0, 1.0, 0.0)
+#define COLOR_YELLOW            vec3(1.0, 1.0, 0.0)
+
+#define COLOR_READY             COLOR_GREEN
+#define COLOR_MID_READY         COLOR_YELLOW
+#define COLOR_NOT_READY         COLOR_RED
+
 #define COOLDOWN_READY          "Ready"
 #define COOLDOWN_DECIMAL_PLACES 1
 #define SCORE_X                 100.0f
 #define SCORE_Y                 1000.0f
 #define SCORE_SCALE             1.0f
-#define SCORE_COLOR             vec3(1.0)
+#define SCORE_COLOR             COLOR_WHITE
 
 #define TRAIL_X                 250.0f
 #define TRAIL_Y                 100.0f
 #define TRAIL_SCALE             1.0f
-#define TRAIL_COLOR             vec3(1.0)
 
 #define ROCKET_X                650.0f
 #define ROCKET_Y                100.0f
 #define ROCKET_SCALE            1.0f
-#define ROCKET_COLOR            vec3(1.0)
 
 #define SPIKES_X                1100.0f
 #define SPIKES_Y                100.0f
 #define SPIKES_SCALE            1.0f
-#define SPIKES_COLOR            vec3(1.0)
 
 #define DASH_X                  1500.0f
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
-#define DASH_COLOR              vec3(1.0)
 
 // Game time
 #define SECONDS_PER_MINUTE      60
@@ -57,7 +62,7 @@ Unit : seconds
 #define TIME_X                  900.0f
 #define TIME_Y                  1000.0f
 #define TIME_SCALE              1.0f
-#define TIME_COLOR              vec3(1.0)
+#define TIME_COLOR              COLOR_WHITE
 
 /*************\
  * Constants *
@@ -317,8 +322,8 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
     m_iGameTime -= fSecondsSinceLastUpdate;
-    // TODO refactor this
-    // int total, seconds, hours, minutes;
+    // TODO make sure time does not become negative, or if it does, it signifies
+    // the end of the round
 
 }
 
@@ -367,7 +372,7 @@ void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
     std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE));
-    renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, TRAIL_COLOR);
+    renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
 }
 
 void UserInterface::updateCooldowns()
@@ -381,19 +386,24 @@ void UserInterface::renderCooldowns()
     // 0 - 100
     PlayerEntity* player = ENTITY_MANAGER->getPlayer(PLAYER_1);
     float* cooldowns = player->getCooldowns();
-    std::string trailPercent = std::to_string((int) (player->getTrailGaugePercent() * 100));
-    renderText("Flame: " + trailPercent + "%", TRAIL_X, TRAIL_Y, TRAIL_SCALE, TRAIL_COLOR);
+    float trailPercent = player->getTrailGaugePercent();
+    std::string trailPercentString = std::to_string((int) (trailPercent * 100));
+    vec3 color = trailPercent == 1.0 ? COLOR_READY : trailPercent == 0.0 ? COLOR_NOT_READY : COLOR_MID_READY;
+    renderText("Flame: " + trailPercentString + "%", TRAIL_X, TRAIL_Y, TRAIL_SCALE, color);
 
-    std::string rocketCooldown = cooldowns[eCooldown::COOLDOWN_ROCKET] > 0 ? FuncUtils::to_string(cooldowns[eCooldown::COOLDOWN_ROCKET], COOLDOWN_DECIMAL_PLACES) + "s" : COOLDOWN_READY;
-    std::string spikesCooldown = cooldowns[eCooldown::COOLDOWN_SPIKES] > 0 ? FuncUtils::to_string(cooldowns[eCooldown::COOLDOWN_SPIKES], COOLDOWN_DECIMAL_PLACES) + "s" : COOLDOWN_READY;
-    std::string dashCooldown   = cooldowns[eCooldown::COOLDOWN_DASH]   > 0 ? FuncUtils::to_string(cooldowns[eCooldown::COOLDOWN_DASH], COOLDOWN_DECIMAL_PLACES)   + "s" : COOLDOWN_READY;
-    renderText("Rocket: " + rocketCooldown, ROCKET_X, ROCKET_Y, ROCKET_SCALE, ROCKET_COLOR);
-    renderText("Spikes: " + spikesCooldown, SPIKES_X, SPIKES_Y, SPIKES_SCALE, SPIKES_COLOR);
-    renderText("Dash: " + dashCooldown, DASH_X, DASH_Y, DASH_SCALE, DASH_COLOR);
-
+    renderCooldown("Rocket", eCooldown::COOLDOWN_ROCKET, cooldowns, ROCKET_X, ROCKET_Y, ROCKET_SCALE);
+    renderCooldown("Spikes", eCooldown::COOLDOWN_SPIKES, cooldowns, SPIKES_X, SPIKES_Y, SPIKES_SCALE);
+    renderCooldown("Dash", eCooldown::COOLDOWN_DASH, cooldowns, DASH_X, DASH_Y, DASH_SCALE);
     //  renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
+void UserInterface::renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale)
+{
+    bool isReady = cooldowns[cooldown] == 0;
+    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::to_string(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
+    vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
+    renderText(label + ": " + cooldownString, x, y, scale, color);
+}
 /*
 Render text to the screen.
 
