@@ -22,6 +22,7 @@
 // These should all be relative to the window dimensions
 // not hardcoded pixel values, as they are now.
 #define COLOR_WHITE             vec3(1.0)
+#define COLOR_RED               vec3(1.0, 0.0, 0.0)
 #define COOLDOWN_READY          "Ready"
 #define COOLDOWN_DECIMAL_PLACES 1
 #define SCORE_X                 100.0f
@@ -32,7 +33,7 @@
 #define TRAIL_X                 250.0f
 #define TRAIL_Y                 100.0f
 #define TRAIL_SCALE             1.0f
-#define TRAIL_COLOR             COLOR_WHITE
+#define TRAIL_COLOR             COLOR_RED
 
 #define ROCKET_X                650.0f
 #define ROCKET_Y                100.0f
@@ -368,7 +369,7 @@ void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
     std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE));
-    renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, TRAIL_COLOR);
+    renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
 }
 
 void UserInterface::updateCooldowns()
