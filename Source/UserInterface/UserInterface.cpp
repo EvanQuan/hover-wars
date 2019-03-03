@@ -12,6 +12,10 @@
 #define BITMAP_HEIGHT           512
 #define BITMAP_WIDTH            512
 #define MAX_ASCII_CHARS         255
+#define TOP_LEFT                2
+#define BOTTOM_LEFT             0
+#define BOTTOM_RIGHT            1
+#define TOP_RIGHT               3
 
 /*************\
  * Constants *
@@ -60,12 +64,6 @@ UserInterface::~UserInterface()
 {
     m_pGameStats = nullptr;
     m_pShdrMngr = nullptr;
-
-   //for (map<GLchar, Character>::const_iterator iter = m_pCharacters.begin();
-   //    iter != m_pCharacters.end();
-   //    ++iter)
-   //    glDeleteTextures(1, &iter->second.textureID);
-    m_pCharacters.clear();
 
     // Clean up VBO and VAO
     glDeleteBuffers(1, &m_iVertexBuffer);
@@ -163,6 +161,9 @@ void UserInterface::initFreeType()
     FT_Done_FreeType(ftLibrary);
 }
 
+// Given a FreeType Bitmap, add the buffer to a character Buffer at the given pointer.
+//  This function is private and should only be called after ensuring that the bitmap will not write out of
+//  the bounds of the character buffer.
 void UserInterface::addBitmapToBuffer(const FT_Bitmap* pBitmap, char* cPtr)
 {
     // Add Glyph Bitmap to larger Bitmap
@@ -178,6 +179,8 @@ void UserInterface::addBitmapToBuffer(const FT_Bitmap* pBitmap, char* cPtr)
     }
 }
 
+// Generates a New Character struct for a given character and associated glyph, then adds the entry into
+//  the character map.
 void UserInterface::addNewCharacter(char c, const FT_GlyphSlotRec_* pGlyph, const vec2* vOffsets)
 {
     // Generate Texture - Deal with Textures locally for simplicy as they don't need to be generalized yet.
@@ -278,6 +281,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
 
+    // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
@@ -286,13 +290,24 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
     {
+        // Grab Character Glyph information
         Character ch = m_pCharacters[*c];
 
+        // Calculate Position offset by the bearings of the glyph
         GLfloat xpos = x + ch.bearing.x * scale;
         GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
+        // Calculate width and height of the glyph
         GLfloat w = ch.size.x * scale;
         GLfloat h = ch.size.y * scale;
+
+        // Generate Information for 4 Corners for readability and less computation
+        vec4 vCorners[4] = {
+            vec4(xpos,      ypos,       ch.uvOffset.x,                  ch.uvOffset.y + ch.uvSize.y),
+            vec4(xpos + w,  ypos,       ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y + ch.uvSize.y),
+            vec4(xpos,      ypos + h,   ch.uvOffset.x,                  ch.uvOffset.y),
+            vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
+        };
 
         // Update VBO for each character
         // Triangle 1:
@@ -303,18 +318,9 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             |  \
             0---1
         */
-        vTextOutput.push_back(vec4(xpos,
-                                   ypos,
-                                   ch.uvOffset.x,
-                                   ch.uvOffset.y + ch.uvSize.y));
-        vTextOutput.push_back(vec4(xpos + w,
-                                    ypos,
-                                    ch.uvOffset.x + ch.uvSize.x,
-                                    ch.uvOffset.y + ch.uvSize.y));
-        vTextOutput.push_back(vec4(xpos,
-                                    ypos + h,
-                                    ch.uvOffset.x,
-                                    ch.uvOffset.y));
+        vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
+        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
+        vTextOutput.push_back(vCorners[TOP_LEFT]);
 
         // Triangle 2
         /*
@@ -324,19 +330,9 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
                \|
                 0
         */
-        vTextOutput.push_back(vec4(xpos + w,                        // 0
-                                    ypos,
-                                    ch.uvOffset.x + ch.uvSize.x,
-                                    ch.uvOffset.y + ch.uvSize.y));
-        vTextOutput.push_back(vec4(xpos + w,                        // 1
-                                    ypos + h,
-                                    ch.uvOffset.x + ch.uvSize.x,
-                                    ch.uvOffset.y));
-        vTextOutput.push_back(vec4(xpos,                            // 2
-                                    ypos + h,
-                                    ch.uvOffset.x,
-                                    ch.uvOffset.y));
-        
+        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
+        vTextOutput.push_back(vCorners[TOP_RIGHT]);
+        vTextOutput.push_back(vCorners[TOP_LEFT]);
 
         // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
         x += (ch.advance >> 6) * scale; // >> 6 == 1/64 (2^6 = 64)
@@ -350,6 +346,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     // Render Quad
     glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
 
+    // Clean up OpenGL
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
