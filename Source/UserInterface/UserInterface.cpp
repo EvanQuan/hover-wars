@@ -49,8 +49,11 @@
 #define DASH_COLOR              vec3(1.0)
 
 // Game time
-#define SECONDS_TO_MINUTES      0.01666666666
 #define SECONDS_PER_MINUTE      60
+/*
+Unit : seconds
+*/
+// #define ROUND_TIME              5 * 60
 #define TIME_X                  600.0f
 #define TIME_Y                  1000.0f
 #define TIME_SCALE              1.0f
@@ -73,10 +76,11 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     m_pGameStats = GameStats::getInstance();
     m_pShdrMngr = SHADER_MANAGER;
 
-    m_iDisplayCount = 0;
     updateWidthAndHeight(iWidth, iHeight);
 
-    initializeUserInterface();
+    // m_iDisplayCount = 0;
+    setDisplayCount(1);
+    // initializeUserInterface();
     initFreeType();
     initializeVBOs();
 
@@ -278,7 +282,7 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
     {
         // system("CLS");
 
-        // updateGameTime(fSecondsSinceLastUpdate);
+        updateGameTime(fSecondsSinceLastUpdate);
         // updateScores();
         // updateCooldowns();
     }
@@ -318,13 +322,20 @@ For now, the game time is going up from 0. Later this should count down.
 */
 void UserInterface::renderGameTime()
 {
-    int hours, minutes, seconds;
-    seconds = (int) m_iGameTime;
-    cout << m_iGameTime << endl;
-    minutes = seconds / SECONDS_PER_MINUTE;
-    std::string time = std::to_string(minutes) + ":" + std::to_string(seconds);
-    renderText(time, TIME_X, TIME_Y, TIME_SCALE, TIME_COLOR);
+    renderText(timeToString(), TIME_X, TIME_Y, TIME_SCALE, TIME_COLOR);
 
+}
+
+/*
+This is calculated in renderGameTime() since there is no reason to calculated
+it more than every render update (ie. no reason to update it every game update)
+*/
+std::string UserInterface::timeToString()
+{
+    int total = (int) m_iGameTime;
+    int seconds = total % SECONDS_PER_MINUTE;
+    int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
+    return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
 }
 
 /*
