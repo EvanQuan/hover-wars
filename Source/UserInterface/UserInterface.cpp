@@ -37,6 +37,17 @@
 #define SCORE_SCALE             1.0f
 #define SCORE_COLOR             COLOR_WHITE
 
+// Game time
+#define SECONDS_PER_MINUTE      60
+/*
+Unit : seconds
+*/
+#define ROUND_TIME              5 * SECONDS_PER_MINUTE
+#define TIME_X                  900.0f
+#define TIME_Y                  1000.0f
+#define TIME_SCALE              1.0f
+#define TIME_COLOR              COLOR_WHITE
+
 #define TRAIL_X                 250.0f
 #define TRAIL_Y                 150.0f
 #define TRAIL_SCALE             1.0f
@@ -53,16 +64,6 @@
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
 
-// Game time
-#define SECONDS_PER_MINUTE      60
-/*
-Unit : seconds
-*/
-#define ROUND_TIME              5 * SECONDS_PER_MINUTE
-#define TIME_X                  900.0f
-#define TIME_Y                  1000.0f
-#define TIME_SCALE              1.0f
-#define TIME_COLOR              COLOR_WHITE
 
 /*************\
  * Constants *
