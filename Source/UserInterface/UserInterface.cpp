@@ -344,7 +344,8 @@ void UserInterface::renderCooldowns()
     renderText("Rocket: " + rocketCooldown, ROCKET_X, ROCKET_Y, ROCKET_SCALE, ROCKET_COLOR);
     renderText("Spikes: " + spikesCooldown, SPIKES_X, SPIKES_Y, SPIKES_SCALE, SPIKES_COLOR);
     renderText("Dash: " + dashCooldown, DASH_X, DASH_Y, DASH_SCALE, DASH_COLOR);
-     renderImage(IMAGE_TRAIL, 0, 0, 10);
+
+    //  renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
 /*
