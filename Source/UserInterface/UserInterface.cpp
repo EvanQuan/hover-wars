@@ -21,32 +21,33 @@
 // UI Component locations
 // These should all be relative to the window dimensions
 // not hardcoded pixel values, as they are now.
+#define COLOR_WHITE             vec3(1.0)
 #define COOLDOWN_READY          "Ready"
 #define COOLDOWN_DECIMAL_PLACES 1
 #define SCORE_X                 100.0f
 #define SCORE_Y                 1000.0f
 #define SCORE_SCALE             1.0f
-#define SCORE_COLOR             vec3(1.0)
+#define SCORE_COLOR             COLOR_WHITE
 
 #define TRAIL_X                 250.0f
 #define TRAIL_Y                 100.0f
 #define TRAIL_SCALE             1.0f
-#define TRAIL_COLOR             vec3(1.0)
+#define TRAIL_COLOR             COLOR_WHITE
 
 #define ROCKET_X                650.0f
 #define ROCKET_Y                100.0f
 #define ROCKET_SCALE            1.0f
-#define ROCKET_COLOR            vec3(1.0)
+#define ROCKET_COLOR            COLOR_WHITE
 
 #define SPIKES_X                1100.0f
 #define SPIKES_Y                100.0f
 #define SPIKES_SCALE            1.0f
-#define SPIKES_COLOR            vec3(1.0)
+#define SPIKES_COLOR            COLOR_WHITE
 
 #define DASH_X                  1500.0f
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
-#define DASH_COLOR              vec3(1.0)
+#define DASH_COLOR              COLOR_WHITE
 
 // Game time
 #define SECONDS_PER_MINUTE      60
@@ -317,8 +318,8 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
     m_iGameTime -= fSecondsSinceLastUpdate;
-    // TODO refactor this
-    // int total, seconds, hours, minutes;
+    // TODO make sure time does not become negative, or if it does, it signifies
+    // the end of the round
 
 }
 
