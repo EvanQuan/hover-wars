@@ -18,6 +18,8 @@
 \*************/
 const string ANDROID_FONT("fonts/Android.ttf");
 const string ARIAL_FONT("fonts/arial.ttf");
+const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
+const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 
 // Singleton instance
 UserInterface* UserInterface::m_pInstance = nullptr;
@@ -80,7 +82,7 @@ void UserInterface::initFreeType()
     FT_Face     ftFace;
     GLsizei fHeight(0), fWidth(0);      // Height and Width Trackers for generating the Bitmap
     vec2 vOffsets = vec2(0.0f);         // Compute Offsets for UVs every entry.
-    char cData[512 * 512] = { '\0' };   // character array buffer for storing bitmap.
+    char cData[BITMAP_WIDTH * BITMAP_HEIGHT] = { '\0' };   // character array buffer for storing bitmap.
     char* cPtr = cData;                 // Pointer for inserting Data into the buffer.
 
     // Initialize FreeType Library and Default Font: Each function returns a non-zero integer when an error occurs.
@@ -98,10 +100,7 @@ void UserInterface::initFreeType()
     {
         FT_Set_Pixel_Sizes(ftFace, 0, FONT_HEIGHT);   // Set the Font Width to 0 to automatically adjust width based on height.
 
-        // Generate Textures for first 128 Characters
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  // Disable byte-alignment restriction
-
-        for (GLubyte c = 0; c < 255; ++c)
+        for (GLubyte c = 0; c < MAX_ASCII_CHARS; ++c)
         {
             // Load Character Glyph
             if (FT_Load_Char(ftFace, c, FT_LOAD_RENDER))
@@ -121,44 +120,29 @@ void UserInterface::initFreeType()
                     fHeight = 0;            // Reset Height for new pass.
                 }
 
-                // Add Glyph Bitmap to larger Bitmap
-                char* cPtrReturn = cPtr + ftFace->glyph->bitmap.width; // Set a value for Pointer to return to after adding glyph
-                for (unsigned int y = 0; y < ftFace->glyph->bitmap.rows; ++y) // Iterate through rows
+                // Probe to see how far the bitmap will write into the buffer.
+                char* cTest = (cPtr + ftFace->glyph->bitmap.width + (BITMAP_WIDTH * ftFace->glyph->bitmap.rows));
+
+                // If it won't go out of bounds, save to buffer
+                if (cTest - cData < (BITMAP_HEIGHT * BITMAP_WIDTH))
+                    addBitmapToBuffer(&ftFace->glyph->bitmap, cPtr);
+                else    // If it will go out of bounds, escape and input an error.
                 {
-                    for (unsigned int x = 0; x < ftFace->glyph->bitmap.width; ++x) // Iterate through pixels within row
-                    {
-                        // Add the pixel to the buffer at the proper index.
-                        *(cPtr++) = ftFace->glyph->bitmap.buffer[(y * ftFace->glyph->bitmap.width) + x];
-                    }
-                    // Jump to the next row in the data buffer, offset by the glyph width for a new row.
-                    cPtr += BITMAP_WIDTH - ftFace->glyph->bitmap.width;
-                    assert(cPtr - cData < BITMAP_HEIGHT * BITMAP_WIDTH); // Ensure the pointer doesn't go out of bounds
+                    cout << "ERROR: FreeType: Could not construct proper Bitmap, Buffer went out of bounds.\n";
+                    break;
                 }
 
-                // Return to new starting point for next Glyph
-                cPtr = cPtrReturn;
-
-                // Update tracking information for bitmaps.
-                vOffsets.x += ftFace->glyph->bitmap.width;
-                fWidth += ftFace->glyph->bitmap.width;
-                fHeight = (ftFace->glyph->bitmap.rows > static_cast<unsigned int>(fHeight) ? ftFace->glyph->bitmap.rows : fHeight);
+                // Fast Forward to next Glyph position in buffer.
+                cPtr += ftFace->glyph->bitmap.width;
             }
 
+            // Store Character in CharacterMap
+            addNewCharacter(c, ftFace->glyph, &vOffsets);
 
-            // Generate Texture - Deal with Textures locally for simplicy as they don't need to be generalized yet.
-            Character cNewChar;
-
-            // Set up rest of Character Structure
-            cNewChar.uvOffset = vec2((vOffsets.x - static_cast<float>(ftFace->glyph->bitmap.width)) / static_cast<float>(BITMAP_WIDTH),
-                                      vOffsets.y / static_cast<float>(BITMAP_HEIGHT));
-            cNewChar.uvSize = vec2(static_cast<float>(ftFace->glyph->bitmap.width) / static_cast<float>(BITMAP_WIDTH),
-                static_cast<float>(ftFace->glyph->bitmap.rows) / static_cast<float>(BITMAP_HEIGHT));
-            cNewChar.size = ivec2(ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows);
-            cNewChar.bearing = ivec2(ftFace->glyph->bitmap_left, ftFace->glyph->bitmap_top);
-            cNewChar.advance = ftFace->glyph->advance.x;
-
-            // Store Character for Later use.
-            m_pCharacters.insert(make_pair(c, cNewChar));
+            // Update tracking information for bitmaps.
+            vOffsets.x += ftFace->glyph->bitmap.width;
+            fWidth += ftFace->glyph->bitmap.width;
+            fHeight = (ftFace->glyph->bitmap.rows > static_cast<unsigned int>(fHeight) ? ftFace->glyph->bitmap.rows : fHeight);
         }
 
         // Generate Bitmap Texture
@@ -177,6 +161,39 @@ void UserInterface::initFreeType()
     // Clean up FreeType after finished processing the glyphs
     FT_Done_Face(ftFace);
     FT_Done_FreeType(ftLibrary);
+}
+
+void UserInterface::addBitmapToBuffer(const FT_Bitmap* pBitmap, char* cPtr)
+{
+    // Add Glyph Bitmap to larger Bitmap
+    for (unsigned int y = 0; y < pBitmap->rows; ++y) // Iterate through rows
+    {
+        for (unsigned int x = 0; x < pBitmap->width; ++x) // Iterate through pixels within row
+        {
+            // Add the pixel to the buffer at the proper index.
+            *(cPtr++) = pBitmap->buffer[(y * pBitmap->width) + x];
+        }
+        // Jump to the next row in the data buffer, offset by the glyph width for a new row.
+        cPtr += BITMAP_WIDTH - pBitmap->width;
+    }
+}
+
+void UserInterface::addNewCharacter(char c, const FT_GlyphSlotRec_* pGlyph, const vec2* vOffsets)
+{
+    // Generate Texture - Deal with Textures locally for simplicy as they don't need to be generalized yet.
+    Character cNewChar;
+
+    // Set up rest of Character Structure
+    cNewChar.uvOffset = vec2(vOffsets->x / F_BITMAP_WIDTH,                                      // UV Offset for Bitmap
+                             vOffsets->y / F_BITMAP_HEIGHT);
+    cNewChar.uvSize = vec2(static_cast<float>(pGlyph->bitmap.width) / F_BITMAP_WIDTH,    // Size of UV section
+                           static_cast<float>(pGlyph->bitmap.rows) / F_BITMAP_HEIGHT);
+    cNewChar.size = ivec2(pGlyph->bitmap.width, pGlyph->bitmap.rows);     // Pixel Size
+    cNewChar.bearing = ivec2(pGlyph->bitmap_left, pGlyph->bitmap_top);    // Bearing Information
+    cNewChar.advance = pGlyph->advance.x;                                        // Glyph Advance information
+
+    // Store Character for Later use.
+    m_pCharacters.insert(make_pair(c, cNewChar));
 }
 
 void UserInterface::initializeVBOs()

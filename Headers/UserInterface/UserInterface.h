@@ -80,7 +80,8 @@ private:
         GLuint  advance;    // Horizontal offset to advance to next glyph
     };
     map<GLchar, Character> m_pCharacters;
-    Texture* m_pFontBitmap;
+    void addNewCharacter(char c, const FT_GlyphSlotRec_* pGlyph, const vec2* vOffsets);
+    void addBitmapToBuffer(const FT_Bitmap* pBitmap, char* cPtr);
 
     // VBO and VAO for rendering
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
