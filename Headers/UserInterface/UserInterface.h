@@ -53,7 +53,7 @@ private:
 
     // Initializes FreeType and the Font Library
     void initFreeType();
-    void initVBOs();
+    void initializeVBOs();
 
     void setScore(int joystickID, int score);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
@@ -73,17 +73,18 @@ private:
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {
-        GLuint  textureID;  // ID handle of the glyph texture
+        vec2    uvOffset;   // Offset to index the UV in the bitmap
+        vec2    uvSize;     // Size of UVs for bitmap
         ivec2   size;       // Size of glyph
         ivec2   bearing;    // Offset from baseline to left/top of glyph
         GLuint  advance;    // Horizontal offset to advance to next glyph
     };
     map<GLchar, Character> m_pCharacters;
-    Texture* m_pFontBitmap;
+    void addNewCharacter(char c, const FT_GlyphSlotRec_* pGlyph, const vec2* vOffsets);
+    void addBitmapToBuffer(const FT_Bitmap* pBitmap, char* cPtr);
 
     // VBO and VAO for rendering
-    GLuint m_iVertexArray, m_iVertexBuffer;
-    void initializeVBOs();
+    GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
     map<int, int> scores;
 
