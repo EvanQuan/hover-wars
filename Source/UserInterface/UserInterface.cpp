@@ -19,29 +19,31 @@
 #define TOP_RIGHT               3
 
 // UI Component locations
-#define SCORE_X                 1000
-#define SCORE_Y                 1000
-#define SCORE_SCALE             0.8
+#define COOLDOWN_DECIMAL_PLACES 2
+
+#define SCORE_X                 100.0f
+#define SCORE_Y                 1000.0f
+#define SCORE_SCALE             1.0
 #define SCORE_COLOR             vec3(1.0)
 
-#define TRAIL_X                 500
-#define TRAIL_Y                 100
-#define TRAIL_SCALE             0.8
+#define TRAIL_X                 400.0f
+#define TRAIL_Y                 100.0f
+#define TRAIL_SCALE             0.7
 #define TRAIL_COLOR             vec3(1.0)
 
-#define ROCKET_X                800
-#define ROCKET_Y                100
-#define ROCKET_SCALE            0.8
+#define ROCKET_X                700.0f
+#define ROCKET_Y                100.0f
+#define ROCKET_SCALE            0.7
 #define ROCKET_COLOR            vec3(1.0)
 
-#define SPIKES_X                1000
-#define SPIKES_Y                100
-#define SPIKES_SCALE            0.8
+#define SPIKES_X                1000.0f
+#define SPIKES_Y                100.0f
+#define SPIKES_SCALE            0.7
 #define SPIKES_COLOR            vec3(1.0)
 
-#define DASH_X                  1200
-#define DASH_Y                  100
-#define DASH_SCALE              0.8
+#define DASH_X                  1300.0f
+#define DASH_Y                  100.0f
+#define DASH_SCALE              0.7
 #define DASH_COLOR              vec3(1.0)
 
 /*************\
@@ -338,9 +340,9 @@ void UserInterface::renderCooldowns()
     std::string trailPercent = std::to_string((int) (player->getTrailGaugePercent() * 100));
     renderText("Flame: " + trailPercent, TRAIL_X, TRAIL_Y, TRAIL_SCALE, TRAIL_COLOR);
 
-    std::string rocketCooldown = std::to_string(cooldowns[eCooldown::COOLDOWN_ROCKET]);
-    std::string spikesCooldown = std::to_string(cooldowns[eCooldown::COOLDOWN_SPIKES]);
-    std::string dashCooldown = std::to_string(cooldowns[eCooldown::COOLDOWN_DASH]);
+    std::string rocketCooldown = FuncUtils::to_string(cooldowns[eCooldown::COOLDOWN_ROCKET], COOLDOWN_DECIMAL_PLACES);
+    std::string spikesCooldown = FuncUtils::to_string(cooldowns[eCooldown::COOLDOWN_SPIKES], COOLDOWN_DECIMAL_PLACES);
+    std::string dashCooldown = FuncUtils::to_string(cooldowns[eCooldown::COOLDOWN_DASH], COOLDOWN_DECIMAL_PLACES);
     renderText("Rocket: " + rocketCooldown, ROCKET_X, ROCKET_Y, ROCKET_SCALE, ROCKET_COLOR);
     renderText("Spikes: " + spikesCooldown, SPIKES_X, SPIKES_Y, SPIKES_SCALE, SPIKES_COLOR);
     renderText("Dash: " + dashCooldown, DASH_X, DASH_Y, DASH_SCALE, DASH_COLOR);

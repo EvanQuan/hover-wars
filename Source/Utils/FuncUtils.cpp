@@ -55,7 +55,7 @@ Convert a float to string, given a specified number of decimal places.
 @param decimalPlaces to include in the string
 @return string of float with specified decimal places
 */
-std::string to_string(float value, int decimalPlaces)
+std::string FuncUtils::to_string(float value, int decimalPlaces)
 {
     stringstream stream;
     stream << fixed << setprecision(decimalPlaces) << value;
