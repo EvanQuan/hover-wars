@@ -23,6 +23,8 @@
 // not hardcoded pixel values, as they are now.
 #define COLOR_WHITE             vec3(1.0)
 #define COLOR_RED               vec3(1.0, 0.0, 0.0)
+#define COLOR_GREEN             vec3(0.0, 1.0, 0.0)
+#define COLOR_YELLOW            vec3(1.0, 1.0, 0.0)
 #define COOLDOWN_READY          "Ready"
 #define COOLDOWN_DECIMAL_PLACES 1
 #define SCORE_X                 100.0f
@@ -33,7 +35,7 @@
 #define TRAIL_X                 250.0f
 #define TRAIL_Y                 100.0f
 #define TRAIL_SCALE             1.0f
-#define TRAIL_COLOR             COLOR_RED
+#define TRAIL_COLOR             COLOR_YELLOW
 
 #define ROCKET_X                650.0f
 #define ROCKET_Y                100.0f
