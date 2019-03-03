@@ -30,7 +30,7 @@ Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MOMENTUM 4.0f // 3.0f
+#define ANGULAR_MOMENTUM 5.0f // 3.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
@@ -113,7 +113,7 @@ Move a player according to x, y coordinates where
                   y = -1
 */
 void PhysicsComponent::move(float x, float y) {   
-    if (x != 0 || y != 0 && isInAir) {
+    if ((x != 0 || y != 0) && isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
@@ -190,6 +190,7 @@ void PhysicsComponent::update(float fTimeDeltaInSeconds)
 
 
     isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInSeconds);
+    isInAir = true;
 }
 
 // TODO

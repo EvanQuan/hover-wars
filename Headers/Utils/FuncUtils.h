@@ -106,4 +106,13 @@ namespace FuncUtils
     @param end      of range, inclusively
     */
     int random(int start, int end);
+
+    /*
+    Convert a float to string, given a specified number of decimal places.
+
+    @param value of float to convert
+    @param decimalPlaces to include in the string
+    @return string of float with specified decimal places
+    */
+    std::string to_string(float value, int decimalPlaces);
 }

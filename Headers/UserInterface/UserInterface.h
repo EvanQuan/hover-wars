@@ -39,11 +39,13 @@ public:
     
     */
     void update(float fSecondsSinceLastUpdate);
-    void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
+
+    void render();
 
     void setDisplayCount(int count);
 
     void updateWidthAndHeight(int iWidth, int iHeight);
+
 
 private:
     UserInterface(int iWidth, int iHeight);                                 // Default Constructor
@@ -56,20 +58,35 @@ private:
     void initializeVBOs();
 
     void setScore(int joystickID, int score);
+
+    /*
+    Other classes should not be able to directly tell the UI to render text or
+    images. Instead, the UI gathers the necessary information from other
+    classes, such as GameStats, where it decides what text and images needs to
+    be updated during its update() call.
+    */
+    void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
+    void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void initializeUserInterface();
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
+    void renderGameTime();
+    std::string timeToString();
+    
 
     // Score
     void initializeScores();
     void updateScores();
     void updateScore(ePlayer player, int score);
+    void renderScores();
 
     // Cooldowns
     void initializeCooldowns();
     void updateCooldowns();
+    void renderCooldowns();
+    void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {
@@ -87,6 +104,12 @@ private:
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
     map<int, int> scores;
+    /*
+    NOTE: this may need to change in the future.
+
+    Unit : seconds
+    */
+    float m_iGameTime;
 
     int m_iDisplayCount;
 
@@ -95,6 +118,12 @@ private:
     int m_iHeight;
 
     // Singleton Pointers
+    /*
+    Retrieve game stats to display
+    */
     GameStats *m_pGameStats;
+    /*
+    The UI needs to render its own components
+    */
     ShaderManager *m_pShdrMngr;
 };

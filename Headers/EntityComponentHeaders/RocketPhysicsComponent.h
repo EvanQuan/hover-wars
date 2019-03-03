@@ -17,13 +17,13 @@ For collisions
  *              Inherit from PxSimulationEventCallback so that it can receive
  *              event call backs necessary for collisions.
 \***************************************************************************************/
-class PhysicsComponent :
+class RocketPhysicsComponent :
     public EntityComponent
 {
 public:
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
-    PhysicsComponent(int iEntityID, int iComponentID);
-    virtual ~PhysicsComponent();
+    RocketPhysicsComponent(int iEntityID, int iComponentID);
+    virtual ~RocketPhysicsComponent();
 
     // After Initialization, the update function should handle things for the Physics of this Entity.
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 
@@ -45,8 +45,6 @@ public:
 
 private:
     int currentState = 0;
-    void releaseAllControls();
-    physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;
     bool m_bStatic;                         // Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.
     PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.

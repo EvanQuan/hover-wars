@@ -17,6 +17,59 @@
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 
+/*
+Cooldowns
+
+The time the hovercraft must wait until they can use the ability again.
+
+Units: seconds
+*/
+#define ROCKET_COOLDOWN         2.0f
+#define SPIKES_COOLDOWN         1.0f
+#define TRAIL_COOLDOWN          0.0f
+#define DASH_COOLDOWN           2.0f
+
+/*
+Total time the trail can be activated from full to empty.
+
+Unit: seconds
+*/
+#define TRAIL_GAUGE_FULL        3.0f
+/*
+Represents the trail gauge is empty.
+*/
+#define TRAIL_GAUGE_EMPTY       0.0f
+
+/*
+Time multiplier for the trail to recharge from empty to full.
+
+= 1: recharge rate is the same as drain rate.
+> 1: recharge rate is faster than drain rate
+< 1: recharge rate is slower than drain rate
+
+*/
+#define TRAIL_RECHARGE_MULTIPLIER 0.5f
+
+/*
+The interval of time between each created flame while the trail trail is
+activated.
+
+@TODO Flame interval should be based on distance, not time. In some sense, a
+line is simply being laid out, of which flame billboards are uniformly
+distributed across, meanining that the spacing is time invariant.
+
+Unit: seconds
+*/
+#define FLAME_INTERVAL          0.10f
+
+/*
+Delay time when the trail is deactivate and when the gauge begins to recharge.
+This makes spam toggling less effective.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE_COOLDOWN 0.5f
+
 class HovercraftEntity :
     public Entity
 {
@@ -48,6 +101,20 @@ public:
     void setActiveCameraToBack() { activeCameraIndex = BACK_CAMERA; }
     void setActiveCameraToFront() { activeCameraIndex = FRONT_CAMERA; }
     void toggleActiveCamera() { activeCameraIndex = !activeCameraIndex; }
+
+    // Get ability statuses for UI
+    /*
+    Get the status of the flame in percent.
+    @return 1.0f if full, 0.0f if empty, or intermediate value if in between
+    */
+    float getTrailGaugePercent() { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
+
+    /*
+    Get all the cooldowns to be used by the UI.
+    // NOTE: why not send m_fCooldowns directly (make public)?
+    @return an array of all ability cooldowns.
+    */
+    float* getCooldowns() { return m_fCooldowns; };
 
 private:
     // Private Variables
@@ -109,6 +176,8 @@ private:
     Stores the flame trail fuel gauge values.
     Since the gauge drain and recharge rates are in terms of time, so
     is the gauge itself.
+
+    At maximum, this is TRAIL_GAUGE_FULL, at minimum, it is TRAIL_GAUGE_EMPTY.
     */
     float m_fTrailGauge;
     /*
