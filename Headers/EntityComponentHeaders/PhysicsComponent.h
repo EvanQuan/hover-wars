@@ -31,7 +31,7 @@ public:
     //    the entity to query their physics component for desired information.
     void update(float fTimeDeltaInMilliseconds); // Overloading Parent's virtual update function
 
-    void movePlayer(float x, float y);
+    void move(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
     void initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
@@ -44,7 +44,12 @@ public:
     void getTransformMatrix(mat4* pReturnTransformMatrix);
 
 private:
-    int currentState = 0;
+    bool isInAir;
+    /*
+    Tracks the last dash to reset the max speed to normal.
+    */
+    float m_fSecondsSinceLastDash;
+    bool isDashing;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;

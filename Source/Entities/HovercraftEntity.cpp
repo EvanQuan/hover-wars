@@ -26,14 +26,14 @@ Units: seconds
 #define ROCKET_COOLDOWN         2.0f
 #define SPIKES_COOLDOWN         1.0f
 #define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           4.0f
+#define DASH_COOLDOWN           2.0f
 
 /*
 Total time the trail can be activated from full to empty.
 
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        3.0f
+#define TRAIL_GAUGE_FULL        4.0f
 /*
 Represents the trail gauge is empty.
 */
@@ -169,6 +169,8 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
     activeCameraIndex = FRONT_CAMERA;
     m_qCurrentCameraRotation = quat();
     m_vCurrentCameraPosition = vec3(0.0f);
+
+    m_fMinimumDistanceBetweenFlames = 5.0f;
 
     initializeCooldowns();
 }
@@ -324,7 +326,7 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 {
     if (m_bTrailActivated)
     {
-        m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
+        // m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
     
@@ -339,11 +341,15 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
                 m_fTrailGauge = TRAIL_GAUGE_EMPTY;
                 deactivateTrail();
             }
-            if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+
+            float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
+
+            // cout << m_vPositionOfLastFlame.x << " " << m_vPositionOfLastFlame.y << " " << m_vPosition << endl;
+            // if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+            if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
             {
                 createTrailInstance();
-    
-                m_fSecondsSinceLastFlame = 0.0f;
+                // m_fSecondsSinceLastFlame = 0.0f;
             }
         }
     }
@@ -372,6 +378,10 @@ Create 1 flame entity
 */
 void HovercraftEntity::createTrailInstance()
 {
+    // Update the position of the last flame
+    m_vPositionOfLastFlame = m_pFireTrail->getPosition();
+    // m_vPositionOfLastFlame = getPosition();
+
     mat4 m4TransformMat;
     vec3 vNormal;
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
@@ -432,7 +442,7 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 
 void HovercraftEntity::move(float x, float y)
 {
-    m_pPhysicsComponent->movePlayer(x, y);
+    m_pPhysicsComponent->move(x, y);
 }
 
 void HovercraftEntity::turn(float x)
@@ -445,7 +455,7 @@ Shoot a rocket and put it on cool down.
 */
 void HovercraftEntity::shootRocket()
 {
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
 
     EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
 
@@ -457,7 +467,7 @@ Activate spikes and put it on cool down.
 */
 void HovercraftEntity::activateSpikes()
 {
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_SPIKES_ACTIVATE);
+    SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
 
@@ -491,16 +501,20 @@ void HovercraftEntity::deactivateTrail()
 
 void HovercraftEntity::dash(eAbility direction)
 {
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_DASH);
+    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {
     case ABILITY_DASH_BACK:
+        m_pPhysicsComponent->dash(0, -1);
         break;
     case ABILITY_DASH_FORWARD:
+        m_pPhysicsComponent->dash(0, 1);
         break;
     case ABILITY_DASH_LEFT:
+        m_pPhysicsComponent->dash(-1, 0);
         break;
     case ABILITY_DASH_RIGHT:
+        m_pPhysicsComponent->dash(1, 0);
         break;
     }
 

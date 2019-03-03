@@ -30,12 +30,7 @@ public:
         SOUND_SPIKES_ACTIVATE,
         SOUND_SPIKES_IMPACT,
 
-        SOUND_TRAIL,        // combine as one
-
-        // Not used
-        SOUND_TRAIL_START,
-        SOUND_TRAIL_LOOP,
-        SOUND_TRAIL_END,
+        SOUND_TRAIL,
 
         SOUND_PULSE_ACTIVATE,
         SOUND_PULSE_IMPACT,
@@ -59,9 +54,11 @@ public:
         SOUND_HONK_RIGHT,
         SOUND_HONK_DOWN,
         SOUND_HONK_LEFT,
+
+        MUSIC_INGAME,
     };
 
-    void playEvent(eSoundEvent sound);
+    void play(eSoundEvent sound);
 
     // TODO figure out sound at locations
     void play(eSoundEvent sound, vec3 location);
@@ -205,6 +202,10 @@ private:
                                          }},
         {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
                                          }},
+        {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
+                                         }},
+        // {MUSIC_INGAME,                   { "event:/background/music_loop",
+        //                                  }},
     };
 };
 

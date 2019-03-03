@@ -4,20 +4,43 @@
 
 #define JUMP_FORCE 200000
 
-#define MAX_SPEED 500
+/*
+The maximum speed the player can normally travel. This ensures the player
+does not infinitely accelerate as they move.
+
+Speed : meters/second
+*/
+#define MAX_NORMAL_SPEED 30
+
+/*
+The maximum speed the player can travel while dashing. This returns back to MAX_SPEED
+shortly afterwards.
+
+Speed : meters/second
+*/
+#define MAX_DASH_SPEED 500
+/*
+The amount of time the player can be in MAX_DASH_SPEED after dashing.
+
+Time : seconds
+*/
+#define DASH_TIME 0.25
 /*
 Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MOMENTUM 3.0f
+#define ANGULAR_MOMENTUM 4.0f // 3.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
 
+50 @ 9.81
+
 Force : Newtons
 */
-#define MOVEMENT_FORCE 50.0f // 10000.0f
+#define MOVEMENT_FORCE 200.0f // 
+#define DASH_FORCE 1000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -44,10 +67,20 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_bStatic = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
+
+    isDashing = false;
 }
+
+/*
+Applies an upward force to the car. Why is this here?
+*/
 void PhysicsComponent::jumpVehicle() {
     gVehicleNoDrive->getRigidDynamicActor()->addForce(PxVec3(0, JUMP_FORCE, 0));
 }
+/*
+This is never called because there is never a point there the movement input is
+completely neutral
+*/
 void PhysicsComponent::releaseAllControls()
 {
     gVehicleNoDrive->setDriveTorque(0, 0.0f);
@@ -65,13 +98,28 @@ void PhysicsComponent::releaseAllControls()
     gVehicleNoDrive->setSteerAngle(2, 0.0f);
     gVehicleNoDrive->setSteerAngle(3, 0.0f);
 }
-void PhysicsComponent::movePlayer(float x, float y) {   
-    if ((x != 0 || y != 0) && currentState == 0) {
+
+/*
+Move a player according to x, y coordinates where
+
+                Map view
+
+                  y = 1
+                    ^
+                    |
+    x = -1  <-- hovercraft --> x = 1
+                    |
+                    v
+                  y = -1
+*/
+void PhysicsComponent::move(float x, float y) {   
+    if (x != 0 || y != 0 && isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
         body->addForce(vForce * MOVEMENT_FORCE);
         
+        // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         gVehicleNoDrive->setSteerAngle(0, angle);
         gVehicleNoDrive->setSteerAngle(1, angle);
@@ -79,6 +127,7 @@ void PhysicsComponent::movePlayer(float x, float y) {
         gVehicleNoDrive->setSteerAngle(3, angle);
     }
     else {
+        // This never gets calle because movement is always non-zero from the CommandHandler.
         releaseAllControls();
         gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
         gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
@@ -87,9 +136,14 @@ void PhysicsComponent::movePlayer(float x, float y) {
     }
 }
 void PhysicsComponent::dash(float x, float y) {
+    // Increase the max speed so that dashing can go faster than normal movement
+    body->setMaxLinearVelocity(MAX_DASH_SPEED);
+    m_fSecondsSinceLastDash = 0.0f;
+    isDashing = true;
+
     PxTransform globalTransform = body->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
-    body->addForce(vForce * MOVEMENT_FORCE * 10);
+    body->addForce(vForce * DASH_FORCE);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);
     gVehicleNoDrive->setSteerAngle(0, angle);
@@ -98,9 +152,10 @@ void PhysicsComponent::dash(float x, float y) {
     gVehicleNoDrive->setSteerAngle(3, angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    if (currentState == 0) {
+    // if (!isInAir) {
+    // TODO Find out why this is a problem? Initially the player is in the air and can't turn?
         gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-    }
+    // }
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
@@ -117,16 +172,24 @@ PhysicsComponent::~PhysicsComponent()
 //    Maybe this needs to update aspects of the particular physics related to its entity?
 //    Maybe this just needs to communicate to the Physics Manager to grab and store updated 
 //    information that will be gathered by the Entity when they need it?
-void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
+void PhysicsComponent::update(float fTimeDeltaInSeconds)
 {
-    //TODO check if vehicle is in air and set current state
-    bool isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
-    if (!isInAir) {
-       // currentState = 1;
+    //PxVec3 vel = body->getLinearVelocity();
+    //std::cout << vel.magnitude() << std::endl;
+    /*if (vel.magnitude() > MAX_SPEED) {
+        //vel.normalize();
+        //body->setLinearVelocity(vel * MAX_SPEED);
+    }*/
+    // gVehicleNoDrive->
+    m_fSecondsSinceLastDash += fTimeDeltaInSeconds;
+
+    if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
+    {
+        body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
     }
-    else {
-        currentState = 0;
-    }
+
+
+    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInSeconds);
 }
 
 // TODO
@@ -148,6 +211,7 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
     m_bStatic = bStatic;
     gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
+    body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
 }
 
 // Returns the Rotation Quaternion for the Entity's body.

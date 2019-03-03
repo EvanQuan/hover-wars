@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="AudioFile" id="{7d189db4-a255-442d-8459-1a6d41acf39c}">
+        <property name="assetPath">
+            <value>Music/nitronic rush/07 End to a Violent Heart.mp3</value>
+        </property>
+        <property name="isStreaming">
+            <value>true</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>306.91265306122449</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{181fe279-8f98-4648-9db6-bcacf47e740f}</destination>
+        </relationship>
+    </object>
+</objects>

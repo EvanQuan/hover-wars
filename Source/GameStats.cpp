@@ -328,7 +328,7 @@ void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
     // notify if attacker reached current total killstreak milestone
     if (stats[playerAttacker][CURRENT_TOTAL_KILLSTREAK] % CURRENT_TOTAL_KILLSTREAK_MILESTONE == 0)
     {
-        SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_STREAK);
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
     }
 
     // Update attacker's current total killstreak against hit
@@ -416,7 +416,7 @@ Enable playerAttacker's domaination status against playerHit
 */
 void GameStats::dominate(ePlayer playerAttacker, ePlayer playerHit)
 {
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_DOMINATION);
+    SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
     stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = true;
 }
 /*
@@ -424,7 +424,7 @@ Disable playerWasDominating's domination status against playerToGetRevenge.
 */
 void GameStats::revenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating)
 {
-    SOUND_MANAGER->playEvent(SoundManager::SOUND_KILL_REVENGE);
+    SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
     stats[playerWasDominating][IS_DOMINATING_PLAYER_1 + playerToGetRevenge] = false;
 }
 

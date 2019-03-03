@@ -118,25 +118,25 @@ void InputHandler::debugKeyCommands(int key, int action)
         {
             // Testing sound
         case GLFW_KEY_5:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_ACTIVATE);
+            SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
             break;
         case GLFW_KEY_6:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_ROCKET_EXPLOSION);
+            SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_EXPLOSION);
             break;
         case GLFW_KEY_7:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_TRAIL);
+            SOUND_MANAGER->play(SoundManager::SOUND_TRAIL);
             break;
         case GLFW_KEY_8:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_LOOP);
+            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
             break;
         case GLFW_KEY_9:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
             break;
         case GLFW_KEY_0:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_INGAME_LOOP);
+            SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
             break;
         case GLFW_KEY_MINUS:
-            SOUND_MANAGER->playEvent(SoundManager::SOUND_MUSIC_PAUSE_LOOP);
+            SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
             break;
             // Testing game stats kill updates
         case GLFW_KEY_R:

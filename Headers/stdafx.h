@@ -121,13 +121,41 @@ Actor names are composed of 2 characters. The order of tokens are:
 
 2. Subtype or Owner
 */
-#define NAME_PLAYER  "player"
-#define NAME_BOT     "bot"
-#define NAME_ROCKET  "rocket"
-#define NAME_TRAIL   "trail"
-#define NAME_SPIKES  "spikes"
-#define NAME_WALL    "wall"
-#define NAME_GROUND  "ground"
+// Type TODO to implememnt
+#define TYPE_WORLD "w"
+#define TYPE_POWERUP "p"
+#define TYPE_TRAIL "t"
+#define TYPE_PLAYER "P"
+#define TYPE_BOT "b"
+#define TYPE_ROCKET "r"
+#define TYPE_SPIKES "s"
+
+// Subtype TODO to implememnt
+#define SUBTYPE_WALL "W"
+#define SUBTYPE_GROUND "g"
+#define SUBTYPE_POWERUP_SPEED "S"
+// Owner TODO to implement
+#define OWNER_PLAYER_1 "1"
+#define OWNER_PLAYER_2 "2"
+#define OWNER_PLAYER_3 "3"
+#define OWNER_PLAYER_4 "4"
+#define OWNER_BOT_1 "5"
+#define OWNER_BOT_2 "6"
+#define OWNER_BOT_3 "7"
+#define OWNER_BOT_4 "8"
+
+// Don't use these
+#define TYPE_WORLD "w"
+#define TYPE_WORLD "w"
+#define NAME_PLAYER  "p"
+#define NAME_BOT     "b"
+#define NAME_ROCKET  "r"
+#define NAME_TRAIL   "t"
+#define NAME_SPIKES  "s"
+#define NAME_WALL    "w"
+#define NAME_GROUND  "g"
+
+// Don't use these
 #define NAME_SPHERE  "sphere"
 #define NAME_MESH    "mesh"
 
