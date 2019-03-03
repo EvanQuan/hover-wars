@@ -28,24 +28,24 @@
 #define SCORE_SCALE             1.0f
 #define SCORE_COLOR             vec3(1.0)
 
-#define TRAIL_X                 400.0f
+#define TRAIL_X                 250.0f
 #define TRAIL_Y                 100.0f
-#define TRAIL_SCALE             0.7f
+#define TRAIL_SCALE             1.0f
 #define TRAIL_COLOR             vec3(1.0)
 
-#define ROCKET_X                700.0f
+#define ROCKET_X                650.0f
 #define ROCKET_Y                100.0f
-#define ROCKET_SCALE            0.7f
+#define ROCKET_SCALE            1.0f
 #define ROCKET_COLOR            vec3(1.0)
 
-#define SPIKES_X                1000.0f
+#define SPIKES_X                1100.0f
 #define SPIKES_Y                100.0f
-#define SPIKES_SCALE            0.7f
+#define SPIKES_SCALE            1.0f
 #define SPIKES_COLOR            vec3(1.0)
 
-#define DASH_X                  1300.0f
+#define DASH_X                  1500.0f
 #define DASH_Y                  100.0f
-#define DASH_SCALE              0.7f
+#define DASH_SCALE              1.0f
 #define DASH_COLOR              vec3(1.0)
 
 // Game time
@@ -54,7 +54,7 @@
 Unit : seconds
 */
 #define ROUND_TIME              5 * SECONDS_PER_MINUTE
-#define TIME_X                  600.0f
+#define TIME_X                  900.0f
 #define TIME_Y                  1000.0f
 #define TIME_SCALE              1.0f
 #define TIME_COLOR              vec3(1.0)
@@ -64,6 +64,13 @@ Unit : seconds
 \*************/
 const string ANDROID_FONT("fonts/Android.ttf");
 const string ARIAL_FONT("fonts/arial.ttf");
+const string VANADINE_FONT("fonts/Vanadine Bold.ttf");
+
+/*
+The default font to use for the UI components
+*/
+const string  DEFAULT_FONT = VANADINE_FONT;
+
 const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
 const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 
@@ -134,9 +141,9 @@ void UserInterface::initFreeType()
         cout << "ERROR: Freetype: could not initialize FreeType Library for UI.\n";
 
     // Initialize Default Face
-    bLoaded &= (0 == FT_New_Face(ftLibrary, ARIAL_FONT.c_str(), 0, &ftFace));
+    bLoaded &= (0 == FT_New_Face(ftLibrary, DEFAULT_FONT.c_str(), 0, &ftFace));
     if (!bLoaded )
-        cout << "ERROR: Freetype: failed to load \"" << ARIAL_FONT << "\" for UI.\n";
+        cout << "ERROR: Freetype: failed to load \"" << DEFAULT_FONT << "\" for UI.\n";
 
     // Successfully loaded -> Finish loading the rest of the Library.
     if (bLoaded)
