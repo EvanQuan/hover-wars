@@ -120,6 +120,8 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 
     m_fMinimumDistanceBetweenFlames = 5.0f;
 
+    outOfControlTime = 0.0f;
+
     initializeCooldowns();
 }
 
@@ -135,8 +137,17 @@ HovercraftEntity::~HovercraftEntity()
 /*
 @param fSecondsSinceLastUpdate  delta time since last update
 */
-void HovercraftEntity::update(float fTimeInMilliseconds)
+void HovercraftEntity::update(float fSecondsSinceLastUpdate)
 {
+    if (!isInControl)
+    {
+        outOfControlTime -= fSecondsSinceLastUpdate;
+        if (outOfControlTime <= 0)
+        {
+            isInControl = true;
+        }
+    }
+
     // New Transformation Matrix
     mat4 m4NewTransform = mat4(1.0f);
 
@@ -155,7 +166,7 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(fTimeInMilliseconds);
+    updateCameraLookAts(fSecondsSinceLastUpdate);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -390,12 +401,18 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 
 void HovercraftEntity::move(float x, float y)
 {
-    m_pPhysicsComponent->move(x, y);
+    if (isInControl)
+    {
+        m_pPhysicsComponent->move(x, y);
+    }
 }
 
 void HovercraftEntity::turn(float x)
 {
-    m_pPhysicsComponent->rotatePlayer(x);
+    if (isInControl)
+    {
+        m_pPhysicsComponent->rotatePlayer(x);
+    }
 }
 
 /*

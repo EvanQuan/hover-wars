@@ -18,7 +18,7 @@ Detects when two actors have collided.
 https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/AdvancedCollisionDetection.html
 */
 void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxContactPair *pairs, PxU32 nbPairs) {
-    std::cout << "Collision detected" << std::endl;
+    // std::cout << "Collision detected" << std::endl;
     for (PxU32 i = 0; i < nbPairs; i++)
     {
         const PxContactPair& cp = pairs[i];
@@ -34,8 +34,8 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             const char* collider = actor0->getName();
             const char* collided = actor1->getName();
 
-            std::cout << "\tactor 0: " << collider << std::endl;
-            std::cout << "\tactor 1: " << collided << std::endl;
+            // std::cout << "\tactor 0: " << collider << std::endl;
+            // std::cout << "\tactor 1: " << collided << std::endl;
 
             // NOTE: Is there something more efficient than an if, else-if chain to do here?
 

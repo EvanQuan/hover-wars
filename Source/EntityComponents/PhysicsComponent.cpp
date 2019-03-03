@@ -37,10 +37,16 @@ The greater the force, the faster it will accelerate.
 
 50 @ 9.81
 
+200 @ 300 kg
+
 Force : Newtons
 */
-#define MOVEMENT_FORCE 200.0f // 
-#define DASH_FORCE 1000000.0f
+#define MOVEMENT_FORCE 2000.0f // 
+/*
+1000000.0f @ 300 kg
+
+*/
+#define DASH_FORCE 3000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -113,7 +119,9 @@ Move a player according to x, y coordinates where
                   y = -1
 */
 void PhysicsComponent::move(float x, float y) {   
-    if ((x != 0 || y != 0) && isInAir) {
+    // if ((x != 0 || y != 0) && !isInAir) {
+    // if ((x != 0 || y != 0)) {
+    if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
@@ -125,15 +133,15 @@ void PhysicsComponent::move(float x, float y) {
         gVehicleNoDrive->setSteerAngle(1, angle);
         gVehicleNoDrive->setSteerAngle(2, angle);
         gVehicleNoDrive->setSteerAngle(3, angle);
-    }
-    else {
-        // This never gets calle because movement is always non-zero from the CommandHandler.
-        releaseAllControls();
-        gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
-        gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
-        gVehicleNoDrive->setBrakeTorque(2, BRAKE_FORCE);
-        gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
-    }
+   }
+//    else {
+//        // This never gets calle because movement is always non-zero from the CommandHandler.
+//        releaseAllControls();
+//        gVehicleNoDrive->setBrakeTorque(0, BRAKE_FORCE);
+//        gVehicleNoDrive->setBrakeTorque(1, BRAKE_FORCE);
+//        gVehicleNoDrive->setBrakeTorque(2, BRAKE_FORCE);
+//        gVehicleNoDrive->setBrakeTorque(3, BRAKE_FORCE);
+//    }
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
@@ -152,10 +160,10 @@ void PhysicsComponent::dash(float x, float y) {
     gVehicleNoDrive->setSteerAngle(3, angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    // if (!isInAir) {
+    if (!isInAir) {
     // TODO Find out why this is a problem? Initially the player is in the air and can't turn?
         gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-    // }
+    }
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
@@ -190,7 +198,10 @@ void PhysicsComponent::update(float fTimeDeltaInSeconds)
 
 
     isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInSeconds);
-    isInAir = true;
+    // if (isInAir) {
+        // cout << isInAir << endl;
+    // }
+    // isInAir = true;
 }
 
 // TODO

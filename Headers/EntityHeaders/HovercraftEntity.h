@@ -116,6 +116,8 @@ public:
     */
     float* getCooldowns() { return m_fCooldowns; };
 
+    void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
+
 private:
     // Private Variables
     int activeCameraIndex;
@@ -193,5 +195,12 @@ private:
     vec3 m_vPositionOfLastFlame;
 
     float m_fMinimumDistanceBetweenFlames;
+
+    /*
+    If true, car is able to receive and act upon movement input.
+    Else, not movement input is processed.
+    */
+    bool isInControl;
+    float outOfControlTime;
 };
 
