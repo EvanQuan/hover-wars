@@ -251,15 +251,20 @@ rendered to ensure the UI is on top.
 void UserInterface::render()
 {
     USER_INTERFACE->renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
-    // renderGameTime();
-    // renderScores();
-    // renderCooldowns();
+    renderGameTime();
+    renderScores();
+    renderCooldowns();
 }
 
 /*
 
 */
 void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
+{
+
+}
+
+void UserInterface::renderGameTime()
 {
 
 }
@@ -280,9 +285,19 @@ void UserInterface::updateScore(ePlayer player, int score)
     // cout << "Player " << (player + 1) << " score: " << score << endl;
 }
 
+void UserInterface::renderScores()
+{
+
+}
+
 void UserInterface::updateCooldowns()
 {
     // renderImage(IMAGE_TRAIL, 0, 0, 10);
+}
+
+void UserInterface::renderCooldowns()
+{
+
 }
 
 /*

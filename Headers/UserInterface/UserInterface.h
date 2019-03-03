@@ -71,15 +71,18 @@ private:
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
+    void renderGameTime();
 
     // Score
     void initializeScores();
     void updateScores();
     void updateScore(ePlayer player, int score);
+    void renderScores();
 
     // Cooldowns
     void initializeCooldowns();
     void updateCooldowns();
+    void renderCooldowns();
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {
