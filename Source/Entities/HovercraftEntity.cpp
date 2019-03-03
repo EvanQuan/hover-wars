@@ -326,7 +326,7 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 {
     if (m_bTrailActivated)
     {
-        // m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
+        m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
     
@@ -342,14 +342,13 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
                 deactivateTrail();
             }
 
-            float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
+            // float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
 
             // cout << m_vPositionOfLastFlame.x << " " << m_vPositionOfLastFlame.y << " " << m_vPosition << endl;
-            // if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
-            if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
+            if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+            // if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
             {
                 createTrailInstance();
-                // m_fSecondsSinceLastFlame = 0.0f;
             }
         }
     }
@@ -379,8 +378,9 @@ Create 1 flame entity
 void HovercraftEntity::createTrailInstance()
 {
     // Update the position of the last flame
-    m_vPositionOfLastFlame = m_pFireTrail->getPosition();
+    // m_vPositionOfLastFlame = m_pFireTrail->getPosition();
     // m_vPositionOfLastFlame = getPosition();
+    m_fSecondsSinceLastFlame = 0.0f;
 
     mat4 m4TransformMat;
     vec3 vNormal;
