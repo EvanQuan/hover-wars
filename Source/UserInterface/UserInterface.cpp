@@ -65,11 +65,13 @@ Unit : seconds
 const string ANDROID_FONT("fonts/Android.ttf");
 const string ARIAL_FONT("fonts/arial.ttf");
 const string VANADINE_FONT("fonts/Vanadine Bold.ttf");
+const string ASTRON_BOY_REGULAR_FONT("fonts/astron-boy.regular.ttf");
+const string FUTURE_OUTRUN_FONT("fonts/future.outrun-future.otf");
 
 /*
 The default font to use for the UI components
 */
-const string  DEFAULT_FONT = VANADINE_FONT;
+const string  DEFAULT_FONT = ASTRON_BOY_REGULAR_FONT;
 
 const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
 const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
