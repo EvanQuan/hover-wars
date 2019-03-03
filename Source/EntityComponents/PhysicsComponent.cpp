@@ -89,20 +89,9 @@ completely neutral
 */
 void PhysicsComponent::releaseAllControls()
 {
-    gVehicleNoDrive->setDriveTorque(0, 0.0f);
-    gVehicleNoDrive->setDriveTorque(1, 0.0f);
-    gVehicleNoDrive->setDriveTorque(2, 0.0f);
-    gVehicleNoDrive->setDriveTorque(3, 0.0f);
-
-    gVehicleNoDrive->setBrakeTorque(0, 0.0f);
-    gVehicleNoDrive->setBrakeTorque(1, 0.0f);
-    gVehicleNoDrive->setBrakeTorque(2, 0.0f);
-    gVehicleNoDrive->setBrakeTorque(3, 0.0f);
-
-    gVehicleNoDrive->setSteerAngle(0, 0.0f);
-    gVehicleNoDrive->setSteerAngle(1, 0.0f);
-    gVehicleNoDrive->setSteerAngle(2, 0.0f);
-    gVehicleNoDrive->setSteerAngle(3, 0.0f);
+    setDriveTorque(0.0f);
+    setBrakeTorque(0.0f);
+    setSteerAngle(0.0f);
 }
 
 /*
@@ -129,10 +118,7 @@ void PhysicsComponent::move(float x, float y) {
         
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
-        gVehicleNoDrive->setSteerAngle(0, angle);
-        gVehicleNoDrive->setSteerAngle(1, angle);
-        gVehicleNoDrive->setSteerAngle(2, angle);
-        gVehicleNoDrive->setSteerAngle(3, angle);
+        setSteerAngle(angle);
    }
 //    else {
 //        // This never gets calle because movement is always non-zero from the CommandHandler.
@@ -154,10 +140,7 @@ void PhysicsComponent::dash(float x, float y) {
     body->addForce(vForce * DASH_FORCE);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);
-    gVehicleNoDrive->setSteerAngle(0, angle);
-    gVehicleNoDrive->setSteerAngle(1, angle);
-    gVehicleNoDrive->setSteerAngle(2, angle);
-    gVehicleNoDrive->setSteerAngle(3, angle);
+    setSteerAngle(angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
     if (!isInAir) {

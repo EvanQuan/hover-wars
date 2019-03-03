@@ -6,6 +6,7 @@ For collisions
 #include "Physics/PhysicsManager.h"
 #include "Mesh.h"
 
+#define WHEEL_COUNT 4
 /**************************************************************
  * Name: PhysicsComponent
  * Written by: James Cote Austin Eaton, Evan Quan
@@ -49,6 +50,9 @@ private:
     Tracks the last dash to reset the max speed to normal.
     */
     float m_fSecondsSinceLastDash;
+    /*
+    If true, the max speed is the dash max speed, otherwise the normal max speed
+    */
     bool isDashing;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
@@ -56,5 +60,27 @@ private:
     bool m_bStatic;                         // Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.
     PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.
     mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
+
+    void setDriveTorque(float torque)
+    {
+        for (physx::PxU32 wheel = 0; wheel < WHEEL_COUNT; wheel++)
+        {
+            gVehicleNoDrive->setDriveTorque(wheel, torque);
+        }
+    }
+    void setBrakeTorque(float torque)
+    {
+        for (physx::PxU32 wheel = 0; wheel < WHEEL_COUNT; wheel++)
+        {
+            gVehicleNoDrive->setBrakeTorque(wheel, torque);
+        }
+    }
+    void setSteerAngle(float angle)
+    {
+        for (physx::PxU32 wheel = 0; wheel < WHEEL_COUNT; wheel++)
+        {
+            gVehicleNoDrive->setBrakeTorque(wheel, angle);
+        }
+    }
 };
 
