@@ -1,4 +1,5 @@
 #include "UserInterface/UserInterface.h"
+#include "EntityManager.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
 
@@ -40,6 +41,8 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     initializeUserInterface();
     initFreeType();
     initializeVBOs();
+
+    m_iGameTime = 1.0f;
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -262,6 +265,10 @@ void UserInterface::render()
 void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
+    m_iGameTime += fSecondsSinceLastUpdate;
+    // TODO refactor this
+    int total, seconds, hours, minutes;
+
 }
 
 void UserInterface::renderGameTime()
@@ -274,10 +281,10 @@ Update the scores for all display count players
 */
 void UserInterface::updateScores()
 {
-    for (int player = 0; player < m_iDisplayCount; player++)
-    {
+    // for (int player = 0; player < m_iDisplayCount; player++)
+    // {
         // updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
-    }
+    // }
 }
 
 void UserInterface::updateScore(ePlayer player, int score)
@@ -287,17 +294,22 @@ void UserInterface::updateScore(ePlayer player, int score)
 
 void UserInterface::renderScores()
 {
-    renderText(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE), 250, 250, 1.0, vec3(1.0));
+    // TODO put this in the proper place, font, scale etc.
+    int score = m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE);
+    renderText(score, 250, 250, 1.0, vec3(1.0));
 }
 
 void UserInterface::updateCooldowns()
 {
-    // renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
 void UserInterface::renderCooldowns()
 {
-
+    // TODO put this in the proper place, font, scale etc.
+    // 0 - 100
+    int trailPercent = (int) ENTITY_MANAGER->getPlayer(PLAYER_1)->getTrailGaugePercent() * 100;
+    renderText(trailPercent, 500, 100, 1.0, vec3(1.0));
+    // renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
 /*

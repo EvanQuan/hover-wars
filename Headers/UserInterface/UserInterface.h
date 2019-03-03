@@ -102,6 +102,12 @@ private:
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
     map<int, int> scores;
+    /*
+    NOTE: this may need to change in the future.
+
+    Unit : seconds
+    */
+    float m_iGameTime;
 
     int m_iDisplayCount;
 
@@ -110,6 +116,12 @@ private:
     int m_iHeight;
 
     // Singleton Pointers
+    /*
+    Retrieve game stats to display
+    */
     GameStats *m_pGameStats;
+    /*
+    The UI needs to render its own components
+    */
     ShaderManager *m_pShdrMngr;
 };
