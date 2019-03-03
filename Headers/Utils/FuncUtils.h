@@ -106,4 +106,6 @@ namespace FuncUtils
     @param end      of range, inclusively
     */
     int random(int start, int end);
+
+    std::string to_string(float value, int decimals);
 }
