@@ -8,7 +8,10 @@
 \***********/
 #define FONT_HEIGHT             48                      // 48 Pixels High.
 #define VEC4_SIZE               (sizeof(GLfloat) << 2)  // Size of a single vertex
-#define NUM_VERTS               6                       // Number of vertices to store per glyph
+#define NUM_VERTS               4                       // Number of vertices to store per glyph
+#define BITMAP_HEIGHT           512
+#define BITMAP_WIDTH            512
+#define MAX_ASCII_CHARS         255
 
 /*************\
  * Constants *
@@ -56,14 +59,15 @@ UserInterface::~UserInterface()
     m_pGameStats = nullptr;
     m_pShdrMngr = nullptr;
 
-    for (map<GLchar, Character>::const_iterator iter = m_pCharacters.begin();
-        iter != m_pCharacters.end();
-        ++iter)
-        glDeleteTextures(1, &iter->second.textureID);
+   //for (map<GLchar, Character>::const_iterator iter = m_pCharacters.begin();
+   //    iter != m_pCharacters.end();
+   //    ++iter)
+   //    glDeleteTextures(1, &iter->second.textureID);
     m_pCharacters.clear();
 
     // Clean up VBO and VAO
     glDeleteBuffers(1, &m_iVertexBuffer);
+    glDeleteTextures(1, &m_iTextureBuffer);
     glDeleteVertexArrays(1, &m_iVertexArray);
 }
 
@@ -71,10 +75,13 @@ UserInterface::~UserInterface()
 void UserInterface::initFreeType()
 {
     // Local Variables
-    bool bLoaded = true; // Determines if the Font was properly loaded or not.
-    // FreeType Data Structures
-    FT_Library  ftLibrary;
+    bool bLoaded = true;                // Determines if the Font was properly loaded or not.
+    FT_Library  ftLibrary;              // FreeType Data Structures
     FT_Face     ftFace;
+    GLsizei fHeight(0), fWidth(0);      // Height and Width Trackers for generating the Bitmap
+    vec2 vOffsets = vec2(0.0f);         // Compute Offsets for UVs every entry.
+    char cData[512 * 512] = { '\0' };   // character array buffer for storing bitmap.
+    char* cPtr = cData;                 // Pointer for inserting Data into the buffer.
 
     // Initialize FreeType Library and Default Font: Each function returns a non-zero integer when an error occurs.
     bLoaded = (0 == FT_Init_FreeType(&ftLibrary));
@@ -89,13 +96,12 @@ void UserInterface::initFreeType()
     // Successfully loaded -> Finish loading the rest of the Library.
     if (bLoaded)
     {
-        m_pFontBitmap = TEXTURE_MANAGER->loadTexture("textures/hud/trail.png");
         FT_Set_Pixel_Sizes(ftFace, 0, FONT_HEIGHT);   // Set the Font Width to 0 to automatically adjust width based on height.
 
         // Generate Textures for first 128 Characters
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  // Disable byte-alignment restriction
 
-        for (GLubyte c = 0; c < 128; ++c)
+        for (GLubyte c = 0; c < 255; ++c)
         {
             // Load Character Glyph
             if (FT_Load_Char(ftFace, c, FT_LOAD_RENDER))
@@ -103,31 +109,71 @@ void UserInterface::initFreeType()
                 cout << "ERROR: FreeType: Failed to load Glyph (\'" << c << "\')\n";
                 continue;
             }
+            else if (ftFace->glyph->bitmap.buffer != nullptr)
+            {
+                // Concat the resulting bitmap to a specified width.
+                if (fWidth + ftFace->glyph->bitmap.width > BITMAP_WIDTH)
+                {
+                    fWidth = 0;             // Overflow? reset Width to 0 for next line
+                    vOffsets.x = 0.0f;      // Set Offset x back to 0
+                    vOffsets.y += static_cast<float>(fHeight);  // Set Offset y to next row
+                    cPtr = cData + (BITMAP_WIDTH * static_cast<unsigned int>(vOffsets.y)); // Reset pointer to next line in buffer.
+                    fHeight = 0;            // Reset Height for new pass.
+                }
+
+                // Add Glyph Bitmap to larger Bitmap
+                char* cPtrReturn = cPtr + ftFace->glyph->bitmap.width; // Set a value for Pointer to return to after adding glyph
+                for (unsigned int y = 0; y < ftFace->glyph->bitmap.rows; ++y) // Iterate through rows
+                {
+                    for (unsigned int x = 0; x < ftFace->glyph->bitmap.width; ++x) // Iterate through pixels within row
+                    {
+                        // Add the pixel to the buffer at the proper index.
+                        *(cPtr++) = ftFace->glyph->bitmap.buffer[(y * ftFace->glyph->bitmap.width) + x];
+                    }
+                    // Jump to the next row in the data buffer, offset by the glyph width for a new row.
+                    cPtr += BITMAP_WIDTH - ftFace->glyph->bitmap.width;
+                    assert(cPtr - cData < BITMAP_HEIGHT * BITMAP_WIDTH); // Ensure the pointer doesn't go out of bounds
+                }
+
+                // Return to new starting point for next Glyph
+                cPtr = cPtrReturn;
+
+                // Update tracking information for bitmaps.
+                vOffsets.x += ftFace->glyph->bitmap.width;
+                fWidth += ftFace->glyph->bitmap.width;
+                fHeight = (ftFace->glyph->bitmap.rows > static_cast<unsigned int>(fHeight) ? ftFace->glyph->bitmap.rows : fHeight);
+            }
+
 
             // Generate Texture - Deal with Textures locally for simplicy as they don't need to be generalized yet.
             Character cNewChar;
-            glGenTextures(1, &cNewChar.textureID);
-            glBindTexture(GL_TEXTURE_2D, cNewChar.textureID);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows,
-                         0, GL_RED, GL_UNSIGNED_BYTE, ftFace->glyph->bitmap.buffer);
-
-
-            // Set Texture Options
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             // Set up rest of Character Structure
-            cNewChar.size       = ivec2(ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows);
-            cNewChar.bearing    = ivec2(ftFace->glyph->bitmap_left, ftFace->glyph->bitmap_top);
-            cNewChar.advance    = ftFace->glyph->advance.x;
+            cNewChar.uvOffset = vec2((vOffsets.x - static_cast<float>(ftFace->glyph->bitmap.width)) / static_cast<float>(BITMAP_WIDTH),
+                                      vOffsets.y / static_cast<float>(BITMAP_HEIGHT));
+            cNewChar.uvSize = vec2(static_cast<float>(ftFace->glyph->bitmap.width) / static_cast<float>(BITMAP_WIDTH),
+                static_cast<float>(ftFace->glyph->bitmap.rows) / static_cast<float>(BITMAP_HEIGHT));
+            cNewChar.size = ivec2(ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows);
+            cNewChar.bearing = ivec2(ftFace->glyph->bitmap_left, ftFace->glyph->bitmap_top);
+            cNewChar.advance = ftFace->glyph->advance.x;
 
             // Store Character for Later use.
             m_pCharacters.insert(make_pair(c, cNewChar));
         }
-    }
 
+        // Generate Bitmap Texture
+        glGenTextures(1, &m_iTextureBuffer);
+        glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, BITMAP_WIDTH, BITMAP_HEIGHT,
+            0, GL_RED, GL_UNSIGNED_BYTE, cData);
+        
+        // Set Texture Options
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    
     // Clean up FreeType after finished processing the glyphs
     FT_Done_Face(ftFace);
     FT_Done_FreeType(ftLibrary);
@@ -207,11 +253,17 @@ void UserInterface::updateCooldowns()
 
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
+    // Vector for storing VBO data.
+    vector<vec4> vTextOutput;
+
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
-    glActiveTexture(GL_TEXTURE0);
+
+    glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
+    SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
     // Iterate through all Characters
     string::const_iterator c;
@@ -226,34 +278,60 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         GLfloat h = ch.size.y * scale;
 
         // Update VBO for each character
-        GLfloat vertices[NUM_VERTS][4] = {
-            { xpos,     ypos + h,   0.0, 0.0 },
-            { xpos,     ypos,       0.0, 1.0 },
-            { xpos + w, ypos,       1.0, 1.0 },
+        // Triangle 1:
+        /*
+            2
+            |\
+            | \ 
+            |  \
+            0---1
+        */
+        vTextOutput.push_back(vec4(xpos,
+                                   ypos,
+                                   ch.uvOffset.x,
+                                   ch.uvOffset.y + ch.uvSize.y));
+        vTextOutput.push_back(vec4(xpos + w,
+                                    ypos,
+                                    ch.uvOffset.x + ch.uvSize.x,
+                                    ch.uvOffset.y + ch.uvSize.y));
+        vTextOutput.push_back(vec4(xpos,
+                                    ypos + h,
+                                    ch.uvOffset.x,
+                                    ch.uvOffset.y));
 
-            { xpos,     ypos + h,   0.0, 0.0 },
-            { xpos + w, ypos,       1.0, 1.0 },
-            { xpos + w, ypos + h,   1.0, 0.0 }
-        };
-
-        // Render glyph texture over quad
-        //m_pFontBitmap->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
-
-        glActiveTexture(GL_TEXTURE0 + ch.textureID);
-        glBindTexture(GL_TEXTURE_2D, ch.textureID);
-        SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", ch.textureID);
-
-        // Update content of VBO memory
-        glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // Render Quad
-        glDrawArrays(GL_TRIANGLES, 0, NUM_VERTS);
+        // Triangle 2
+        /*
+            2---1
+             \  |
+              \ |
+               \|
+                0
+        */
+        vTextOutput.push_back(vec4(xpos + w,                        // 0
+                                    ypos,
+                                    ch.uvOffset.x + ch.uvSize.x,
+                                    ch.uvOffset.y + ch.uvSize.y));
+        vTextOutput.push_back(vec4(xpos + w,                        // 1
+                                    ypos + h,
+                                    ch.uvOffset.x + ch.uvSize.x,
+                                    ch.uvOffset.y));
+        vTextOutput.push_back(vec4(xpos,                            // 2
+                                    ypos + h,
+                                    ch.uvOffset.x,
+                                    ch.uvOffset.y));
+        
 
         // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
         x += (ch.advance >> 6) * scale; // >> 6 == 1/64 (2^6 = 64)
     }
+
+    // Update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, vTextOutput.size() * sizeof(vec4), vTextOutput.data(), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Render Quad
+    glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);

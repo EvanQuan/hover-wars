@@ -1,0 +1,226 @@
+directional_light
+-1
+-1
+-1
+0
+0
+0
+0.1960784313725490196078431372549
+0.1960784313725490196078431372549
+0.58823529411764705882352941176471
+0.1960784313725490196078431372549
+0.1960784313725490196078431372549
+0.58823529411764705882352941176471
+1000.0
+1.0
+1200.0
+4096
+4096
+100.0
+		 END LINE
+spotlight
+50
+6
+-50
+0
+-1
+0
+0.3764705882352941
+0.1843137254901961
+0.4196078431372549
+25.0
+10.0
+		 END LINE
+spotlight
+20
+6
+-20
+0
+-1
+0
+0.2745098039215686
+0.4
+1.0
+25.0
+10.0
+		 END LINE
+spotlight
+-20
+6
+20
+0
+-1
+0
+0.4941176470588235
+0.9764705882352941
+1.0
+25.0
+10.0
+		 END LINE
+spotlight
+0
+6
+22
+0
+-1
+0
+1.0
+0.1568627450980392
+0.0
+25.0
+10.0
+		 END LINE
+point_light
+0
+5
+22
+0.0
+1.0
+0.0
+5.0
+		 END LINE
+point_light
+22
+5
+0
+1.0
+0.0
+0.0
+5.0
+		 END LINE
+point_light
+0
+5
+-22
+0.0
+0.0
+1.0
+5.0
+		 END LINE
+point_light
+-22
+5
+0
+1.0
+1.0
+1.0
+5.0
+		 END LINE
+plane
+0
+0
+0
+0
+1
+0
+100
+100
+		 END LINE
+Physics Component constructor 2 vars
+player
+0
+0
+0
+		 END LINE
+Bot Entity created
+Physics Component constructor 2 vars
+bot
+5
+5
+0
+		 END LINE
+cube
+5
+1
+5
+2
+2
+2
+		 END LINE
+cube
+0
+5
+50
+10
+50
+2
+		 END LINE
+cube
+20
+0
+20
+0.25
+2
+2
+		 END LINE
+static_mesh
+0
+0
+-32.5
+32.5
+0
+0
+-32.5
+0
+32.5
+0
+0
+32.5
+32.5
+0
+32.5
+-32.5
+0
+-32.5
+-32.5
+0
+0
+		 END LINE
+static_mesh
+-20
+1
+1
+		 END LINE
+static_mesh
+-20
+2
+10
+		 END LINE
+sphere
+3
+4
+-3
+.5
+		 END LINE
+spatial_map
+100
+100
+10
+		 END LINE
+Collision detected
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+Collision detected
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+Collision detected
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
+	actor 0: player
+	actor 1: ground
