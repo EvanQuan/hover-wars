@@ -4,19 +4,27 @@
 
 #define JUMP_FORCE 200000
 
-#define MAX_SPEED 5
+/*
+The maximum speed the player can normally travel. This ensures the player
+does not infinitely accelerate as they move.
+
+Speed : meters/second
+*/
+#define MAX_NORMAL_SPEED 50
 
 /*
 The maximum speed the player can travel while dashing. This returns back to MAX_SPEED
 shortly afterwards.
+
+Speed : meters/second
 */
 #define MAX_DASH_SPEED 5000
 /*
 The amount of time the player can be in MAX_DASH_SPEED after dashing.
 
-Unit : seconds
+Time : seconds
 */
-#define DASH_TIME
+#define DASH_TIME 0.1
 /*
 Angular momementum.
 
@@ -57,6 +65,8 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_bStatic = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
+
+    isDashing = false;
 }
 
 /*
@@ -124,7 +134,11 @@ void PhysicsComponent::move(float x, float y) {
     }
 }
 void PhysicsComponent::dash(float x, float y) {
+    // Increase the max speed so that dashing can go faster than normal movement
     body->setMaxLinearVelocity(MAX_DASH_SPEED);
+    m_fSecondsSinceLastDash = 0.0f;
+    isDashing = true;
+
     PxTransform globalTransform = body->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
     body->addForce(vForce * DASH_FORCE);
@@ -136,9 +150,10 @@ void PhysicsComponent::dash(float x, float y) {
     gVehicleNoDrive->setSteerAngle(3, angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    if (!isInAir) {
+    // if (!isInAir) {
+    // TODO Find out why this is a problem? Initially the player is in the air and can't turn?
         gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-    }
+    // }
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
@@ -155,7 +170,7 @@ PhysicsComponent::~PhysicsComponent()
 //    Maybe this needs to update aspects of the particular physics related to its entity?
 //    Maybe this just needs to communicate to the Physics Manager to grab and store updated 
 //    information that will be gathered by the Entity when they need it?
-void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
+void PhysicsComponent::update(float fTimeDeltaInSeconds)
 {
     //PxVec3 vel = body->getLinearVelocity();
     //std::cout << vel.magnitude() << std::endl;
@@ -164,8 +179,15 @@ void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
     // gVehicleNoDrive->
+    m_fSecondsSinceLastDash += fTimeDeltaInSeconds;
 
-    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
+    if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
+    {
+        body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+    }
+
+
+    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInSeconds);
 }
 
 // TODO
@@ -187,7 +209,7 @@ void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshRefere
     m_bStatic = bStatic;
     gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
-    body->setMaxLinearVelocity(MAX_SPEED);
+    body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
 }
 
 // Returns the Rotation Quaternion for the Entity's body.
@@ -218,8 +240,8 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
         *pReturnTransformMatrix = m_pTransformationMatrix;
 
         // 
-        if ()
-        body->setMaxLinearVelocity(MAX_SPEED);
+        // if ()
+        // body->setMaxLinearVelocity(MAX_SPEED);
     }
 }
 

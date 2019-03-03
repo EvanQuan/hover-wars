@@ -45,7 +45,11 @@ public:
 
 private:
     bool isInAir;
-    float fSecondsSinceLastDash;
+    /*
+    Tracks the last dash to reset the max speed to normal.
+    */
+    float m_fSecondsSinceLastDash;
+    bool isDashing;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;
