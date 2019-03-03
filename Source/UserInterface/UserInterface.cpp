@@ -237,9 +237,9 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
     {
         // system("CLS");
 
-        updateGameTime(fSecondsSinceLastUpdate);
-        updateScores();
-        updateCooldowns();
+        // updateGameTime(fSecondsSinceLastUpdate);
+        // updateScores();
+        // updateCooldowns();
     }
 }
 
@@ -250,7 +250,7 @@ rendered to ensure the UI is on top.
 */
 void UserInterface::render()
 {
-    USER_INTERFACE->renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
+    // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
     renderGameTime();
     renderScores();
     renderCooldowns();
@@ -276,7 +276,7 @@ void UserInterface::updateScores()
 {
     for (int player = 0; player < m_iDisplayCount; player++)
     {
-        updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
+        // updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
     }
 }
 
@@ -287,7 +287,7 @@ void UserInterface::updateScore(ePlayer player, int score)
 
 void UserInterface::renderScores()
 {
-
+    renderText(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE), 250, 250, 1.0, vec3(1.0));
 }
 
 void UserInterface::updateCooldowns()
@@ -315,6 +315,10 @@ Window coordinates in pixels
 @param scale    text, where 1.0 is the default size
 @param color    rgb colors of the text
 */
+void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
+{
+    renderText(std::to_string(text), x, y, scale, color);
+}
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
     // Vector for storing VBO data.

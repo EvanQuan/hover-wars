@@ -65,6 +65,7 @@ private:
     classes, such as GameStats, where it decides what text and images needs to
     be updated during its update() call.
     */
+    void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void initializeUserInterface();
@@ -72,6 +73,7 @@ private:
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
     void renderGameTime();
+    
 
     // Score
     void initializeScores();
