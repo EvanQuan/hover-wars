@@ -119,12 +119,6 @@ PhysicsComponent::~PhysicsComponent()
 //    information that will be gathered by the Entity when they need it?
 void PhysicsComponent::update(float fTimeDeltaInMilliseconds)
 {
-    //PxVec3 vel = body->getLinearVelocity();
-    //std::cout << vel.magnitude() << std::endl;
-    /*if (vel.magnitude() > MAX_SPEED) {
-        //vel.normalize();
-        //body->setLinearVelocity(vel * MAX_SPEED);
-    }*/
     //TODO check if vehicle is in air and set current state
     bool isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInMilliseconds);
     if (!isInAir) {

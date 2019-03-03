@@ -15,17 +15,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dependencies\FMod\inc\fmod.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod.hpp" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_codec.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_common.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp_effects.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_errors.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_output.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.h" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.hpp" />
-    <ClInclude Include="Dependencies\FMod\inc\fmod_studio_common.h" />
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
@@ -78,14 +67,11 @@
     <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
     <ClInclude Include="Headers\SoundManager.h" />
     <ClInclude Include="Headers\SpatialDataMap.h" />
-    <ClInclude Include="Headers\stb_image.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
-    <ClInclude Include="Headers\UserInterface\UIRenderer.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="TestClass.h" />
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +121,6 @@
     <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
-    <ClCompile Include="Source\UserInterface\UIRenderer.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
     <ClCompile Include="TestClass.cpp" />

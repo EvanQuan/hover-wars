@@ -123,7 +123,7 @@ void EntityManager::purgeEnvironment()
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     m_pMshMngr->unloadAllMeshes();
-    m_pTxtMngr->unloadAllTextures();
+    //m_pTxtMngr->unloadAllTextures();
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
     m_pDirectionalLight = nullptr;
     m_pActiveCameraComponent = nullptr;
@@ -192,6 +192,8 @@ void EntityManager::doRender()
         {
             m_pSpatialMap->drawMap();
         }
+
+        UserInterface::getInstance()->renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
 
 #ifdef _DEBUG
         renderAxis();

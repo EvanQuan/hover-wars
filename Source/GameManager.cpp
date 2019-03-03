@@ -25,10 +25,6 @@ GameManager::GameManager(GLFWwindow* rWindow)
     glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
     m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
 
-    // Initialize User Interface
-    m_pUserInterface = UserInterface::getInstance(iWidth, iHeight);
-    m_pUserInterface->setDisplayCount(0);
-
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
@@ -132,6 +128,7 @@ bool GameManager::initializeGraphics( string sFileName )
 {
     // Locals
     bool bError = false;
+    int iWidth, iHeight;
 
     // Shaders
     if (!m_pShaderManager->initializeShaders())
@@ -141,8 +138,12 @@ bool GameManager::initializeGraphics( string sFileName )
     }
     else
     {
-        // Initialize Environment with a new scene
         // TODO: This will be done once a level is chosen to load.
+        // Initialize User Interface
+        glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
+        m_pUserInterface = UserInterface::getInstance(iWidth, iHeight);
+
+        // Initialize Environment with a new scene
         m_pEntityManager->initializeEnvironment(sFileName);         
         m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
     }

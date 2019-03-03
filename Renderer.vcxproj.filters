@@ -105,9 +105,6 @@
     <ClInclude Include="Headers\GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\CommandHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -149,9 +146,6 @@
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\GameStats.h">
       <Filter>Header Files</Filter>
@@ -219,39 +213,6 @@
     <ClInclude Include="Headers\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_codec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_dsp_effects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_errors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_output.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_studio.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\FMod\inc\fmod_studio_common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\UserInterface\UserInterface.h">
       <Filter>Header Files\UserInterface</Filter>
     </ClInclude>
@@ -261,13 +222,7 @@
     <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\UserInterface\UIRenderer.h">
-      <Filter>Header Files\UserInterface</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\GameTime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eCooldown.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Physics\PhysicsCallBack.h">
@@ -275,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Enums\eCooldown.h">
+      <Filter>Header Files\Enums</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -415,9 +373,6 @@
     </ClCompile>
     <ClCompile Include="Source\Entities\HovercraftEntity.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UserInterface\UIRenderer.cpp">
-      <Filter>Source Files\UserInterface</Filter>
     </ClCompile>
     <ClCompile Include="Source\SoundManager.cpp">
       <Filter>Source Files</Filter>
