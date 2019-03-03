@@ -1,20 +1,36 @@
 #include "UserInterface/UserInterface.h"
+#include "ShaderManager.h"
+#include "TextureManager.h"
 
+
+/***********\
+ * Defines *
+\***********/
+#define FONT_HEIGHT             48                      // 48 Pixels High.
+#define VEC4_SIZE               (sizeof(GLfloat) << 2)  // Size of a single vertex
+#define NUM_VERTS               6                       // Number of vertices to store per glyph
+
+/*************\
+ * Constants *
+\*************/
+const string ANDROID_FONT("fonts/Android.ttf");
+const string ARIAL_FONT("fonts/arial.ttf");
 
 // Singleton instance
 UserInterface* UserInterface::m_pInstance = nullptr;
 
 UserInterface::UserInterface(int iWidth, int iHeight)
 {
-    m_iWidth = iWidth;
-    m_iHeight = iHeight;
-    m_iDisplayCount = 0;
-
+    // Get Singleton Handles
     m_pGameStats = GameStats::getInstance();
-    // m_pUIRenderer = UIRenderer::getInstance(window);
+    m_pShdrMngr = SHADER_MANAGER;
+
+    m_iDisplayCount = 0;
+    updateWidthAndHeight(iWidth, iHeight);
 
     initializeUserInterface();
-
+    initFreeType();
+    initializeVBOs();
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -37,14 +53,92 @@ UserInterface* UserInterface::getInstance()
 
 UserInterface::~UserInterface()
 {
-    // Let go of Window
-    m_pWindow = nullptr;
     m_pGameStats = nullptr;
-    if (nullptr != m_pUIRenderer)
+    m_pShdrMngr = nullptr;
+
+    for (map<GLchar, Character>::const_iterator iter = m_pCharacters.begin();
+        iter != m_pCharacters.end();
+        ++iter)
+        glDeleteTextures(1, &iter->second.textureID);
+    m_pCharacters.clear();
+
+    // Clean up VBO and VAO
+    glDeleteBuffers(1, &m_iVertexBuffer);
+    glDeleteVertexArrays(1, &m_iVertexArray);
+}
+
+// Initializes The FreeType Library and Fonts as well as any other Characters necessary for displaying UI
+void UserInterface::initFreeType()
+{
+    // Local Variables
+    bool bLoaded = true; // Determines if the Font was properly loaded or not.
+    // FreeType Data Structures
+    FT_Library  ftLibrary;
+    FT_Face     ftFace;
+
+    // Initialize FreeType Library and Default Font: Each function returns a non-zero integer when an error occurs.
+    bLoaded = (0 == FT_Init_FreeType(&ftLibrary));
+    if (!bLoaded )
+        cout << "ERROR: Freetype: could not initialize FreeType Library for UI.\n";
+
+    // Initialize Default Face
+    bLoaded &= (0 == FT_New_Face(ftLibrary, ARIAL_FONT.c_str(), 0, &ftFace));
+    if (!bLoaded )
+        cout << "ERROR: Freetype: failed to load \"" << ARIAL_FONT << "\" for UI.\n";
+
+    // Successfully loaded -> Finish loading the rest of the Library.
+    if (bLoaded)
     {
-        delete m_pUIRenderer;
+        m_pFontBitmap = TEXTURE_MANAGER->loadTexture("textures/hud/trail.png");
+        FT_Set_Pixel_Sizes(ftFace, 0, FONT_HEIGHT);   // Set the Font Width to 0 to automatically adjust width based on height.
+
+        // Generate Textures for first 128 Characters
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  // Disable byte-alignment restriction
+
+        for (GLubyte c = 0; c < 128; ++c)
+        {
+            // Load Character Glyph
+            if (FT_Load_Char(ftFace, c, FT_LOAD_RENDER))
+            {
+                cout << "ERROR: FreeType: Failed to load Glyph (\'" << c << "\')\n";
+                continue;
+            }
+
+            // Generate Texture - Deal with Textures locally for simplicy as they don't need to be generalized yet.
+            Character cNewChar;
+            glGenTextures(1, &cNewChar.textureID);
+            glBindTexture(GL_TEXTURE_2D, cNewChar.textureID);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows,
+                         0, GL_RED, GL_UNSIGNED_BYTE, ftFace->glyph->bitmap.buffer);
+
+
+            // Set Texture Options
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            // Set up rest of Character Structure
+            cNewChar.size       = ivec2(ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows);
+            cNewChar.bearing    = ivec2(ftFace->glyph->bitmap_left, ftFace->glyph->bitmap_top);
+            cNewChar.advance    = ftFace->glyph->advance.x;
+
+            // Store Character for Later use.
+            m_pCharacters.insert(make_pair(c, cNewChar));
+        }
     }
 
+    // Clean up FreeType after finished processing the glyphs
+    FT_Done_Face(ftFace);
+    FT_Done_FreeType(ftLibrary);
+}
+
+void UserInterface::initializeVBOs()
+{
+    // Generate Vertex Array
+    glGenVertexArrays(1, &m_iVertexArray);
+    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, sizeof(vec4) * NUM_VERTS, GL_DYNAMIC_DRAW);    // Generate the Vertex Buffer and store some space on the GPU for Text Rendering.
+    m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
 }
 
 /*
@@ -54,6 +148,10 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
 {
     m_iWidth = iWidth;
     m_iHeight = iHeight;
+
+    // Update UI Projection Matrix Uniform for UI Shader
+    mat4 m4UIProjection = ortho(0.0f, static_cast<GLfloat>(m_iWidth), 0.0f, static_cast<GLfloat>(m_iHeight), 0.0f, 1.0f);
+    m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
 }
 
 /*
@@ -107,11 +205,62 @@ void UserInterface::updateCooldowns()
     // renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
+void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
+{
+    // Set up OpenGL for Rendering
+    glBindVertexArray(m_iVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
+    m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
+    glActiveTexture(GL_TEXTURE0);
+
+    // Iterate through all Characters
+    string::const_iterator c;
+    for (c = text.begin(); c != text.end(); ++c)
+    {
+        Character ch = m_pCharacters[*c];
+
+        GLfloat xpos = x + ch.bearing.x * scale;
+        GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+        GLfloat w = ch.size.x * scale;
+        GLfloat h = ch.size.y * scale;
+
+        // Update VBO for each character
+        GLfloat vertices[NUM_VERTS][4] = {
+            { xpos,     ypos + h,   0.0, 0.0 },
+            { xpos,     ypos,       0.0, 1.0 },
+            { xpos + w, ypos,       1.0, 1.0 },
+
+            { xpos,     ypos + h,   0.0, 0.0 },
+            { xpos + w, ypos,       1.0, 1.0 },
+            { xpos + w, ypos + h,   1.0, 0.0 }
+        };
+
+        // Render glyph texture over quad
+        //m_pFontBitmap->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
+
+        glActiveTexture(GL_TEXTURE0 + ch.textureID);
+        glBindTexture(GL_TEXTURE_2D, ch.textureID);
+        SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", ch.textureID);
+
+        // Update content of VBO memory
+        glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // Render Quad
+        glDrawArrays(GL_TRIANGLES, 0, NUM_VERTS);
+
+        // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
+        x += (ch.advance >> 6) * scale; // >> 6 == 1/64 (2^6 = 64)
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-    // Enable transparency
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 }
@@ -187,51 +336,3 @@ void initializeDisplayCount()
 {
     // TODO
 }
-
-
-// https://learnopengl.com/code_viewer.php?code=in-practice/text_rendering
-// void UserInterface::renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
-// {
-    // Activate corresponding render state    
-    // TODO shader stuff  here
-    // shader.Use();
-    // glUniform3f(glGetUniformLocation(shader.Program, "textColor"), color.x, color.y, color.z);
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindVertexArray(VAO);
-    
-    // Iterate through all characters
-//    std::string::const_iterator c;
-//    for (c = text.begin(); c != text.end(); c++) 
-//    {
-//        Character ch = characters[*c];
-//        
-//        GLfloat xpos = x + ch.bearing.x * scale;
-//        GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
-//        
-//        GLfloat w = ch.size.x * scale;
-//        GLfloat h = ch.size.y * scale;
-//        // Update VBO for each character
-//        GLfloat vertices[6][4] = {
-//            { xpos,     ypos + h,   0.0, 0.0 },            
-//            { xpos,     ypos,       0.0, 1.0 },
-//            { xpos + w, ypos,       1.0, 1.0 },
-//            
-//            { xpos,     ypos + h,   0.0, 0.0 },
-//            { xpos + w, ypos,       1.0, 1.0 },
-//            { xpos + w, ypos + h,   1.0, 0.0 }           
-//        };
-//        // Render glyph texture over quad
-//        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-//        // Update content of VBO memory
-//        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
-//        
-//        glBindBuffer(GL_ARRAY_BUFFER, 0);
-//        // Render quad
-//        glDrawArrays(GL_TRIANGLES, 0, 6);
-//        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-//        x += (ch.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-//    }
-//    glBindVertexArray(0);
-//    glBindTexture(GL_TEXTURE_2D, 0);
-// }

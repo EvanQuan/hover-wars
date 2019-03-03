@@ -240,10 +240,6 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
         //TODO maybe move getMat4 to physicsComponent?
 
         *pReturnTransformMatrix = m_pTransformationMatrix;
-
-        // 
-        // if ()
-        // body->setMaxLinearVelocity(MAX_SPEED);
     }
 }
 

@@ -1,14 +1,17 @@
 #pragma once
 #include "stdafx.h"
-#include "Shader.h"
 #include "GameStats.h"
-#include "UserInterface/UIRenderer.h"
 
 #define IMAGE_ROCKET "textures/hud/rocket.png"
 #define IMAGE_TRAIL "textures/hud/trail.png"
 #define IMAGE_EXPLOSION "textures/hud/explosion.png"
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
+
+// Forward Declaration
+class ShaderManager;
+class Texture;
+
 /*
 An interface to all user interface features.
 
@@ -36,17 +39,23 @@ public:
     
     */
     void update(float fSecondsSinceLastUpdate);
+    void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
 
     void setDisplayCount(int count);
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
 private:
-    UserInterface(int iWidth, int iHeight);
+    UserInterface(int iWidth, int iHeight);                                 // Default Constructor
+    UserInterface(const UserInterface* pCopy);                              // Default Copy Constructor
+    UserInterface& operator=(const UserInterface* pCopy) {return (*this); } // Assignment Operator.
     static UserInterface* m_pInstance;
 
+    // Initializes FreeType and the Font Library
+    void initFreeType();
+    void initVBOs();
+
     void setScore(int joystickID, int score);
-    void renderText(Shader &shader, string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void initializeUserInterface();
 
@@ -64,23 +73,27 @@ private:
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {
-        GLuint textureID;  // ID handle of the glyph texture
-        ivec2 size;        // Size of glyph
-        ivec2 bearing;     // Offset from baseline to left/top of glyph
-        GLuint advance;    // Horizontal offset to advance to next glyph
+        GLuint  textureID;  // ID handle of the glyph texture
+        ivec2   size;       // Size of glyph
+        ivec2   bearing;    // Offset from baseline to left/top of glyph
+        GLuint  advance;    // Horizontal offset to advance to next glyph
     };
+    map<GLchar, Character> m_pCharacters;
+    Texture* m_pFontBitmap;
 
-    map<GLchar, Character> characters;
+    // VBO and VAO for rendering
+    GLuint m_iVertexArray, m_iVertexBuffer;
+    void initializeVBOs();
 
     map<int, int> scores;
 
     int m_iDisplayCount;
 
     // Window reference
-    GLFWwindow *m_pWindow;
     int m_iWidth;
     int m_iHeight;
 
+    // Singleton Pointers
     GameStats *m_pGameStats;
-    UIRenderer *m_pUIRenderer;
+    ShaderManager *m_pShdrMngr;
 };
