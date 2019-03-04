@@ -151,6 +151,31 @@ When you load up the program, you'll see a textured plane with a white spot ligh
 
 The world loads in from the file scene2.scene and can be modified as per the rules stated at the top of that file.
 
+
+### Sound
+
+Music
+- Music transitions and loops
+
+Collision sounds
+- Different entities result in different collision sound events.
+    - Hovercraft against hovercraft
+    - Hovecraft against world
+    - Rocket against hovercraft (implemented, but not testable)
+    - Flame against hovercraft (implemented, but not testable)
+    - Spikes against hovercraft
+    - Hovercraft and powerup (not implemented)
+- Sound events can randomize between a pool of available sound for that sound event to increase variance. Random sound pools implemented for.
+    - Hovercraft against hovercraft
+    - Hovercraft against world
+    - Spike activation
+
+- Killstreaks
+    - Killstreak sound plays when players reaches a high killstreak
+    
+- Domination/Revenge
+    - Domination and revenge sounds play when players dominate another player or get revenge
+
 ## Team
 
 [Austin Easton](https://github.com/austinen)
