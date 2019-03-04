@@ -10,7 +10,7 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
         }
     }
     /* initialize random seed: */
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(NULL)));
 
 }
 AIComponent::~AIComponent() {
@@ -31,7 +31,7 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
         botPos.x += frames[setIndex][i + currentBest % LOOK_AHEAD_FRAMES].actionsToTake[2] * 10;
         botPos.y += frames[setIndex][i + currentBest % LOOK_AHEAD_FRAMES].actionsToTake[3] * 10;
-        botRotation = frames[setIndex][i + currentBest % LOOK_AHEAD_FRAMES].actionsToTake[1];
+        botRotation = static_cast<float>(frames[setIndex][i + currentBest % LOOK_AHEAD_FRAMES].actionsToTake[1]);
         if (CurrcoolDown < 0 && frames[setIndex][i + currentBest % LOOK_AHEAD_FRAMES].actionsToTake[0] == 1) {
             glm::vec3 rocketDir = glm::vec3(cos(botRotation),sin(botRotation),0);
             float mRocket = rocketDir.y / rocketDir.x;

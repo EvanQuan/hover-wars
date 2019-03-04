@@ -135,7 +135,7 @@ HovercraftEntity::~HovercraftEntity()
 /*
 @param fSecondsSinceLastUpdate  delta time since last update
 */
-void HovercraftEntity::update(float fTimeInMilliseconds)
+void HovercraftEntity::update(float fTimeInSeconds)
 {
     // New Transformation Matrix
     mat4 m4NewTransform = mat4(1.0f);
@@ -155,7 +155,8 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(fTimeInMilliseconds);
+    updateCameraLookAts(fTimeInSeconds);
+    updateCooldowns(fTimeInSeconds);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -215,7 +216,6 @@ void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 {
     updateCameraRotation(fSecondsSinceLastUpdate);
     updateCameraPosition(fSecondsSinceLastUpdate);
-    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
 void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
