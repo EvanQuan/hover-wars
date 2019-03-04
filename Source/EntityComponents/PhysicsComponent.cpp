@@ -39,6 +39,8 @@ The greater the force, the faster it will accelerate.
 
 200 @ 300 kg
 
+2000 @ 1000 kg, 50 grav
+
 Force : Newtons
 */
 #define MOVEMENT_FORCE 2000.0f // 

@@ -120,6 +120,8 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 
     m_fMinimumDistanceBetweenFlames = 5.0f;
 
+    m_bSpikesActivated = false;
+
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
@@ -167,6 +169,7 @@ void HovercraftEntity::update(float fSecondsSinceLastUpdate)
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
     updateCameraLookAts(fSecondsSinceLastUpdate);
+    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -226,7 +229,6 @@ void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 {
     updateCameraRotation(fSecondsSinceLastUpdate);
     updateCameraPosition(fSecondsSinceLastUpdate);
-    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
 void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
@@ -271,7 +273,19 @@ void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
         m_fCooldowns[i] = newCooldown > 0.0f ? newCooldown : 0.0f;
     }
     updateTrail(fSecondsSinceLastUpdate);
-    // check flame trail separately
+    updateSpikes(fSecondsSinceLastUpdate);
+}
+
+void HovercraftEntity::updateSpikes(float fSecondsSinceLastUpdate)
+{
+    if (m_bSpikesActivated)
+    {
+        m_fSecondsSinceSpikesActivated += fSecondsSinceLastUpdate;
+    }
+    if (m_fSecondsSinceSpikesActivated > SPIKES_DURATION)
+    {
+        m_bSpikesActivated = false;
+    }
 }
 
 /*
@@ -435,6 +449,9 @@ void HovercraftEntity::activateSpikes()
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+    
+    m_bSpikesActivated = true;
+    m_fSecondsSinceSpikesActivated = 0.0f;
 
 }
 

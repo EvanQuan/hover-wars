@@ -6,7 +6,6 @@ For collisions
 #include "Physics/PhysicsManager.h"
 #include "Mesh.h"
 
-#define WHEEL_COUNT 4
 /**************************************************************
  * Name: PhysicsComponent
  * Written by: James Cote Austin Eaton, Evan Quan

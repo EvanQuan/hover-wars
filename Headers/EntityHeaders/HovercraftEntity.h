@@ -25,10 +25,14 @@ The time the hovercraft must wait until they can use the ability again.
 Units: seconds
 */
 #define ROCKET_COOLDOWN         2.0f
-#define SPIKES_COOLDOWN         1.0f
+#define SPIKES_COOLDOWN         2.0f
 #define TRAIL_COOLDOWN          0.0f
 #define DASH_COOLDOWN           2.0f
 
+/*
+Once spikes are activated, they are enabled for a duration before deactivating.
+*/
+#define SPIKES_DURATION         3.0f // 1.0f
 /*
 Total time the trail can be activated from full to empty.
 
@@ -118,6 +122,7 @@ public:
 
     void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
 
+    bool hasSpikesActivated() { return m_bSpikesActivated; };
 private:
     // Private Variables
     int activeCameraIndex;
@@ -148,6 +153,7 @@ private:
     // Abilities
     void shootRocket();
     void activateSpikes();
+    void updateSpikes(float fSecondsSinceLastUpdate);
 
     void activateTrail();
     void deactivateTrail();
@@ -160,6 +166,9 @@ private:
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
     float m_fCooldowns[COOLDOWN_COUNT];
+
+    bool m_bSpikesActivated;
+    float m_fSecondsSinceSpikesActivated;
 
     /*
     Tracks the state of the flame trail

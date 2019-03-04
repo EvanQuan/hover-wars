@@ -11,6 +11,7 @@
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <vector>
 
+#define WHEEL_COUNT 4
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan
