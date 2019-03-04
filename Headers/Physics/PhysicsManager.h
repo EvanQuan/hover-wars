@@ -12,6 +12,7 @@
 #include <vector>
 
 #define WHEEL_COUNT 4
+#define ROCKET_SPEED 50
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan
@@ -52,6 +53,7 @@ public:
     physx::PxRigidStatic *createCubeObject(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
+    physx::PxRigidDynamic *createRocketObjects(float x, float y, float z, float dirX, float dirY, float dirZ);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);

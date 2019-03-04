@@ -16,9 +16,10 @@ For collisions
  * Written by: Austin Eaton
 \***************************************************************************************/
 
+// the below are the values for the 4 values
 // fire Rocket, right-left turn, forward-back move,right-left move
 struct Action {
-    float actionsToTake[4] = { 0,0,0,0 };
+    float actionsToTake[5] = { 0,0,0,0,0 };
 };
 class AIComponent :
     public EntityComponent
@@ -47,5 +48,6 @@ private:
     int currentPlace = 0;
     int iEntityID;
     int iComponentID;
+    float coolDown;
 };
 

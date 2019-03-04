@@ -43,7 +43,7 @@ The greater the force, the faster it will accelerate.
 
 Force : Newtons
 */
-#define MOVEMENT_FORCE 20000.0f // 
+#define MOVEMENT_FORCE 20000.0f
 /*
 1000000.0f @ 300 kg
 
@@ -126,7 +126,7 @@ void PhysicsComponent::move(float x, float y) {
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
         PxVec3 vForce = PxVec3(y, 0, x);
-        body->addForce(vForce * MOVEMENT_FORCE/4);
+        body->addForce(vForce * MOVEMENT_FORCE/7);
 
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
