@@ -298,6 +298,8 @@ Points lost per killstreak **10**
     - Score change
   - Game time
   - Domination, revenge, killstreak messages
+- Not implemented
+  - Abilities images
 
 
 ### Sound
