@@ -97,51 +97,15 @@
 
 **Right Trigger** - Press to fire rocket
 
-- Implemented
-    - Controls
-    - Cooldown
-    - Sound
-    - Internal collision detection
-    - Collision processing
-- Not implemented
-    - Physics
-    - Rendering
-
 **Right Bumper** - Hold to switch to alternate camera
-
-- Fully implemented
 
 **Left Trigger** - Hold to activate flame trail
 
-- Implemented
-    - Controls
-    - Fuel gauge
-    - Graphics
-    - Sound
-    - Internal collision detection
-    - Collision processing
-- Not implemented
-    - Physics collision detection
-
 **Left Bumper** - Press to activate spikes
-
-- Implemented
-    - Controls
-    - Cooldown
-    - Sound
-    - Internal collision detection
-    - Collision processing
-    - Physics collision detection
-- Not implemented
-    - Graphics
 
 **X, Y, A, B** - Directional dash
 
-- Fully implemented
-
 **D-pad** - Honk
-
-- Fully implemented
 
 ## Write-Up:
 
@@ -153,7 +117,58 @@ The world loads in from the file scene2.scene and can be modified as per the rul
 
 ### Game Rules
 
-Stats
+**Abilities**
+
+Rocket
+
+- Implemented
+    - Controls
+    - Cooldown
+    - Sound
+    - Internal collision detection
+    - Collision processing
+- Not implemented
+    - Physics
+    - Rendering
+
+Flame Trail
+
+- Implemented
+    - Controls
+    - Fuel gauge
+    - Graphics
+    - Sound
+    - Internal collision detection
+    - Collision processing
+- Not implemented
+    - Physics collision detection
+
+Spikes
+
+- Implemented
+    - Controls
+    - Cooldown
+    - Sound
+    - Internal collision detection
+    - Collision processing
+    - Physics collision detection
+- Not implemented
+    - Graphics
+
+Directional dash
+
+- Fully implemented
+
+Honk
+
+- Fully implemented
+
+Alternate camera
+
+- Fully implemented
+
+
+**Stats**
 - All in game stat tracking is fully implemented
 ```
 Player:
@@ -180,7 +195,7 @@ Player:
         Count of each ability used
 ```
 
-Game Time
+**Game Time**
 - Implemented
     - The round timer tracks time correctly
 - Not implemented
