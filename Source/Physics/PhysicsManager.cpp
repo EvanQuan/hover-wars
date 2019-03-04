@@ -290,6 +290,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //createSphereObject(0,0,0,3);
     //createMeshObject(3,3,3,5,"memeteam.txt");
     //createPlayerEntity(0,0,0);
+    //createRocketP(5,5,5,1,0,1);
 }
 
 // This function is public. Probably intended as a sort of soft reset at the end of a match
@@ -454,6 +455,21 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
     gScene->addActor(*body);
     staticObjects.push_back(body);
     body->setName(sEntityID);
+    return body;
+}
+PxRigidDynamic *PhysicsManager::createRocketObjects(float x, float y, float z,float dirX,float dirY,float dirZ) {
+    std::cout << "Rocket Created Physics Manager" << std::endl;
+    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(0.1f,0.5f), *gWorldMaterial);
+    PxTransform localTm(PxVec3(x, y, z));
+    PxVec3 rocketVel(dirX, dirY, dirZ);
+    rocketVel.normalize();
+    localTm.rotate(rocketVel*20);
+    PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
+    body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+    body->setLinearVelocity(rocketVel * ROCKET_SPEED);
+    body->attachShape(*shape);
+    gScene->addActor(*body);
+    body->setName(NAME_ROCKET);
     return body;
 }
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ) {

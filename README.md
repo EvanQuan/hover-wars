@@ -315,9 +315,15 @@ Collision sounds
 - Domination/Revenge
     - Domination and revenge sounds play when players dominate another player or get revenge
 
+- AI 
+	-The AI works on a basic follow model. 
+	-it oscillates between following the player and seeking a random point on the map.
+	-The goal of this AI is to collide with the player with spikes engaged. 
+	-This will result in the AI gaining a point.
+
 ## Team
 
-[Austin Easton](https://github.com/austinen)
+[Austin Eaton](https://github.com/austinen)
 
 [Evan Quan](https://github.com/EvanQuan)
 

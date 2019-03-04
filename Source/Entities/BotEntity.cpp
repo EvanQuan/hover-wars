@@ -1,5 +1,7 @@
 #include "EntityHeaders/BotEntity.h"
 #include "EntityManager.h"
+#include "Enums/eCooldown.h"
+
 
 BotEntity::BotEntity(int iID, const vec3* vPosition)
     : HovercraftEntity(iID, vPosition, BOT_ENTITY)
@@ -11,7 +13,7 @@ BotEntity::~BotEntity()
 {
 
 }
-#define M_PI 3.14159
+#define M_PI 3.1415926535
 void BotEntity::toEulerAngle(glm::quat q, double& roll, double& pitch, double& yaw)
 {
     // roll (x-axis rotation)
@@ -70,12 +72,11 @@ void BotEntity::initialize(const string& sFileName,
 
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
-    double x, y, z;
-    toEulerAngle(m_pPhysicsComponent->getRotation(), x, y, z);
+    PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
+    PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
     glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->getPosition();
     glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
-    m_AIComponent->initalize(playerPos, playerVel, botPos, botVel, z);
-    m_iStatsID = iStatsID;
+    m_AIComponent->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 
 /*
@@ -109,5 +110,6 @@ void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
         setInvincible();
         break;
     }
+ 
 }
 
