@@ -59,6 +59,7 @@ public:
     };
 
     void play(eSoundEvent sound);
+    void handleCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
 
     // TODO figure out sound at locations
     void play(eSoundEvent sound, vec3 location);

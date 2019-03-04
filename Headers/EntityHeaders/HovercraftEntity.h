@@ -90,6 +90,11 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+
+    // Signifies to this HoverCraft that they were hit by a damaging attack.
+    virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
+    void handleCollision(const Entity* pOther) const;
+
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void initialize(const string& sFileName,
@@ -129,7 +134,7 @@ public:
 
     void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
 
-    bool hasSpikesActivated() { return m_bSpikesActivated; };
+    bool hasSpikesActivated() const { return m_bSpikesActivated; };
 
     /*
     Signifies the hovercraft is vulernable to attack.
@@ -139,13 +144,13 @@ public:
     bool isInvincible() { return invincible; };
 
     bool setInvincile() { invincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
+    PhysicsComponent* m_pPhysicsComponent;
 private:
     // Private Variables
     int activeCameraIndex;
     Mesh* m_pMesh;
     SpatialDataMap* m_pSpatialMap;
     RenderComponent* m_pRenderComponent;
-    PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     InteractableEntity* m_pFireTrail;
@@ -182,9 +187,6 @@ private:
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
     float m_fCooldowns[COOLDOWN_COUNT];
-
-    bool m_bSpikesActivated;
-    float m_fSecondsSinceSpikesActivated;
 
     /*
     Tracks the state of the flame trail
@@ -231,5 +233,17 @@ private:
     void updateVulnerability(float fTimeInSeconds);
     bool invincible;
     float m_fSecondsLeftUntilVulnerable;
+
+// Protected Functions and variables for Child Classes
+protected:
+    GameStats* m_pGmStats;
+
+    //This ID is used for communicating with GameStats
+    unsigned int m_iStatsID;
+    unsigned int getStatsID() const { return m_iStatsID; }
+
+    // Bool Spikes Information
+    bool m_bSpikesActivated;
+    float m_fSecondsSinceSpikesActivated;
 };
 

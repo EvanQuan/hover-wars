@@ -32,9 +32,10 @@ public:
     void update(float fTimeDeltaInMilliseconds); // Overloading Parent's virtual update function
 
     void move(float x, float y);
+    void moveGlobal(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
+    void initializeComponent(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();
@@ -42,7 +43,8 @@ public:
     void jumpVehicle();
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);
-
+    glm::vec3 PhysicsComponent::getPosition();
+    PxTransform getGlobalPose();
 private:
     bool isInAir;
     /*

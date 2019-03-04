@@ -342,14 +342,14 @@ void PhysicsManager::cleanupPhysics()
 //    functions private. This will ensure that only Physics Components can call these functions
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
-PxRigidStatic *PhysicsManager::createMeshObject(float x, float y, float z,float scale,string filename) {
+PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, float y, float z,float scale,string filename) {
     PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(generateMesh(filename,scale)), *gCarMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(NAME_MESH);
+    body->setName(sEntityID);
     return body;
 }
 const int MAXLINE = 256;
@@ -436,27 +436,27 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
     return gPhysics->createTriangleMesh(readBuffer);
 }
-PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
+PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
     PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(TYPE_PLAYER OWNER_PLAYER_2);
+    body->setName(sEntityID);
     return body;
 }
-PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
+PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x, float y, float z, float radius) {
     PxShape* shape = gPhysics->createShape(PxSphereGeometry(radius), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(NAME_SPHERE);
+    body->setName(sEntityID);
     return body;
 }
-PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
+PxVehicleNoDrive *PhysicsManager::createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
     //Create a vehicle that will drive on the plane.
     snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc(PxVec3(sizeX, sizeY, sizeZ));
     gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
@@ -468,7 +468,7 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity(float x, float y, float z, 
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
     vehicles.push_back(gVehicleNoDrive);
-    gVehicleNoDrive->getRigidDynamicActor()->setName(TYPE_PLAYER OWNER_PLAYER_1);
+    gVehicleNoDrive->getRigidDynamicActor()->setName(sEntityID);
 
     return gVehicleNoDrive;
 }
@@ -492,8 +492,10 @@ mat4 PhysicsManager::getMat4(PxTransform transform) {
 // Made this function private, externally this makes sense, but when and why it should
 //    be called it up to the PhysicsManager. I added an update function that will be called
 //    every frame, but you can decide how often to call this function and how it works under the hood.
+
 void PhysicsManager::stepPhysics(float fTimeDelta)
 {
+    timesStepped++;
     hasStarted = true;
     PX_UNUSED(m_bInteractive
         /*Private Variable, lasts lifetime of PhysicsManager since initialization, may need to be redesigned as needed?*/);

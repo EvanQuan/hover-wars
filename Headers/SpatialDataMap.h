@@ -17,7 +17,7 @@ public:
 
     // Initialization/Deconstruction of Data Map
     void initializeMap(float fLength, float fWidth, float fTileSize);
-    void populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList);
+    void populateStaticMap(const unordered_map<int, unique_ptr<Entity>>* pMasterEntityList);
     void clearMap();
 
     // Update Dynamic Entities

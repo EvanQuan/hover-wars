@@ -12,7 +12,10 @@ public:
                     const ObjectInfo* pObjectProperties,
                     const string& sShaderType,
                     float fScale,
-                    ePlayer playerID);
+                    unsigned int iStatsID);
+
+    // Overridden function for handling a hit by an opposing entity
+    void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
 
     /*
     Track ability usage for players
@@ -21,7 +24,7 @@ public:
     {
         if (HovercraftEntity::useAbility(ability))
         {
-            GAME_STATS->useAbility(m_ePlayerID, ability);
+            GAME_STATS->useAbility(static_cast<ePlayer>(m_iStatsID), ability);
             return true;
         }
         return false;
@@ -29,10 +32,5 @@ public:
     }
 
 private:
-
-    /*
-    This ID is used for communicating with GameStats
-    */
-    ePlayer m_ePlayerID; 
 };
 
