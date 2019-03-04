@@ -7,6 +7,7 @@
 #include "Physics/PhysicsManager.h"
 #include "SoundManager.h"
 #include "GameStats.h"
+#include "EntityManager.h"
 
 void PhysicsCallBack::initObjects(physx::PxRigidDynamic *body1, physx::PxRigidDynamic *body2) {
     this->body1 = body1;
@@ -115,8 +116,38 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 }
                 else if (collided[0] == 'b') {  // Bot type
                     // check if player spikes is on or not for both actor
-                    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
                     // TODO: need to work on here
+                    bool spikesON = false;
+                    if (collider[1] == '1') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_1)->hasSpikesActivated();
+                    }
+                    else if (collider[1] == '2') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_2)->hasSpikesActivated();
+                    }
+                    else if (collider[1] == '3') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_3)->hasSpikesActivated();
+                    }
+                    else if (collider[1] == '4') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_4)->hasSpikesActivated();
+                    }
+
+                    if (spikesON) {
+                        if (collider[1] == '1') {
+                            GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT);
+                        }
+                        else if (collider[1] == '2') {
+                            GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT);
+                        }
+                        else if (collider[1] == '3') {
+                            GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT);
+                        }
+                        else if (collider[1] == '4') {
+                            GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT);
+                        }
+                    }
+                    else {
+                        SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+                    }
                 }
                 else if (collided[0] == 'P') {  // Player type
                     // check if player spikes is on or not for both actor
