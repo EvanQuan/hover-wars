@@ -203,7 +203,8 @@ Alternate camera
 
 
 **Stats**
-- All in game stat tracking is fully implemented in order for the game to run
+- All in game stat tracking is fully implemented in order for the game rules
+  to work
 
 ```
 Player:
@@ -252,31 +253,34 @@ Revenge
 Killstreak
 - Number of kills a player has in a row without being killed by anyone
 
+**Points**
+
 Points are tracked as as followed (are open to change):
 
-Base points gained for killing a bot (10)
+Base points gained for killing a bot **10**
 
-Base points gained for killing a player (50)
+Base points gained for killing a player **50**
 - It is more rewarding to hit another player than a bot
 
-Points gained for getting revenge 100
+Points gained for getting revenge **100**
 - This gives an incentive to players to seek revenge other other players
+- Provides a means for players who are not performing too well to catch up,
+  but only if they have the skill to perform that kill
 
-Points gained per killstreak 20
+Points gained per killstreak **20**
 - This stacks
 - This rewards players who can obtain a high killstreak
 
-Points gained for picking up a powerup 10
+Points gained for picking up a powerup **10**
 - Minor extra incentive to pick up powerups
 
-Base points lost for getting killed 30
+Base points lost for getting killed **30**
 - Should be less points than a kill, not too much
 
-Points lost per killstreak 10
+Points lost per killstreak **10**
 - This stacks
 - This makes it risky to those with highstreaks as they will also lose more
   points on death
-
 
 
 **Game Time**
@@ -284,6 +288,7 @@ Points lost per killstreak 10
     - The round timer tracks time correctly
 - Not implemented
     - The round ends when the timer hits 0:00
+    - Once the round ends, the player with the highest score wins
 
 
 ### Sound
