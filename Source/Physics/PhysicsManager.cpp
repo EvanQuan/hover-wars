@@ -462,6 +462,7 @@ PxRigidDynamic *PhysicsManager::createRocketObjects(float x, float y, float z,fl
     PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(0.1f,0.5f), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxVec3 rocketVel(dirX, dirY, dirZ);
+    rocketVel.normalize();
     localTm.rotate(rocketVel*20);
     PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
     body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
