@@ -79,7 +79,7 @@ After getting hit, the hovercraft is invulnerable for a duration of time
 
 Unit : seconds
 */
-#define INVINCIBLE_TIME 1.0f
+#define INVINCIBLE_TIME 2.0f
 
 class HovercraftEntity :
     public Entity

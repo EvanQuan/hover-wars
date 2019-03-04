@@ -257,8 +257,8 @@ void EntityManager::dispatchCollision(int iColliderID, int iCollidedID)
     Entity* pCollided = m_pMasterEntityList[iCollidedID].get();
 
     // Handle Impact Sound
-    // SOUND_MANAGER->handleCollisionSound(pCollider->getType(), pCollided->getType());
-    SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
+    SOUND_MANAGER->handleBaseCollisionSound(pCollider->getType(), pCollided->getType());
+    // SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
 
     // Tell the Collided Entity that someone collided with them
     pCollided->handleCollision(pCollider);

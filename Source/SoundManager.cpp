@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SoundManager.h"
+#include "EntityHeaders/BotEntity.h"
+#include "EntityHeaders/PlayerEntity.h"
 
 // Bank paths
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
@@ -75,8 +77,10 @@ void SoundManager::play(eSoundEvent sound)
     @param eColliderType    The Entity Type of the Collider
     @param eCollidedType    The Entity Type of the Collided
 */
-void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType)
+void SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType)
 {
+    // Context-specific sounds require specific information about the entities, specifically
+    // if they are players
     switch (eColliderType)
     {
     case eEntityTypes::PLAYER_ENTITY:                   // Waterfall for Player and Bot Entities
@@ -86,6 +90,7 @@ void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes
         case eEntityTypes::PLAYER_ENTITY:               
         case eEntityTypes::BOT_ENTITY:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
+
             break;
         case eEntityTypes::STATIC_ENTITY:
         case eEntityTypes::PLANE_ENTITY:
@@ -102,8 +107,9 @@ void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes
 
 void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 {
-    eEntityTypes eColliderType = collider->getType();
-    eEntityTypes eCollidedType = collided->getType();
+    // TODO this will be reorganized
+    // Base collision sounds only require type
+    handleBaseCollisionSound(collider->getType(), collider->getType());
 }
 
 
