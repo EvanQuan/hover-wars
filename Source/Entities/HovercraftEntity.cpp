@@ -122,9 +122,12 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 
     m_bSpikesActivated = false;
 
+    vulnerable = true;
+
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
+
 }
 
 HovercraftEntity::~HovercraftEntity()

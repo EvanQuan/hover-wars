@@ -123,6 +123,15 @@ public:
     void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
 
     bool hasSpikesActivated() { return m_bSpikesActivated; };
+
+    /*
+    Signifies the hovercraft is vulernable to attack.
+    If true, ability collisions will count.
+    Otherwise, ignore ability collisions.
+    */
+    bool isVulnerable() { return vulnerable; };
+
+    bool setVulernable(bool vulernable) { this->vulnerable = vulnerable; };
 private:
     // Private Variables
     int activeCameraIndex;
@@ -211,5 +220,7 @@ private:
     */
     bool isInControl;
     float outOfControlTime;
+
+    bool vulnerable;
 };
 
