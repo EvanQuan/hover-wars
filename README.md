@@ -257,18 +257,25 @@ Points are tracked as as followed (are open to change):
 Base points gained for killing a bot (10)
 
 Base points gained for killing a player (50)
+- It is more rewarding to hit another player than a bot
 
 Points gained for getting revenge 100
+- This gives an incentive to players to seek revenge other other players
 
 Points gained per killstreak 20
 - This stacks
+- This rewards players who can obtain a high killstreak
 
 Points gained for picking up a powerup 10
+- Minor extra incentive to pick up powerups
 
 Base points lost for getting killed 30
+- Should be less points than a kill, not too much
 
 Points lost per killstreak 10
 - This stacks
+- This makes it risky to those with highstreaks as they will also lose more
+  points on death
 
 
 
