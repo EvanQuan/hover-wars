@@ -8,15 +8,6 @@
 
 1. The Libraries and Settings should all be set up in the VS project.
 
-### Compiling on Linux:
-
-**NOT TESTED**
-1. In the file EnvSpec.h: You'll need to switch the comment from Defining
-   Windows to Defining Linux.
-
-2. The included Makefile should generate a run file that will launch the
-   program.
-
 ## Controls
 
 #### Keyboard
@@ -212,7 +203,8 @@ Alternate camera
 
 
 **Stats**
-- All in game stat tracking is fully implemented
+- All in game stat tracking is fully implemented in order for the game to run
+
 ```
 Player:
     Score:
@@ -237,6 +229,55 @@ Player:
         Total abilities used
         Count of each ability used
 ```
+
+To test this, run in `Debug` mode and press:
+
+
+**R** - Player 1 hits Player 2
+
+**T** - Player 2 hits Player 1
+
+This demonstrates how players gain and lose points based on their current
+killstreaks, dominations and revenges.
+
+
+Domination
+- If player A kills player B 3 times in a row without being killed by player
+  B, player A will `dominate` player B.
+
+Revenge
+- If player A is dominating player B, and player B kills player A, player
+  B gets `revenge` on player A. Player A no longer dominates player B.
+
+Killstreak
+- Number of kills a player has in a row without being killed by anyone
+
+Points are tracked as as followed (are open to change):
+
+Base points gained for killing a bot (10)
+
+Base points gained for killing a player (50)
+- It is more rewarding to hit another player than a bot
+
+Points gained for getting revenge 100
+- This gives an incentive to players to seek revenge other other players
+
+Points gained per killstreak 20
+- This stacks
+- This rewards players who can obtain a high killstreak
+
+Points gained for picking up a powerup 10
+- Minor extra incentive to pick up powerups
+
+Base points lost for getting killed 30
+- Should be less points than a kill, not too much
+
+Points lost per killstreak 10
+- This stacks
+- This makes it risky to those with highstreaks as they will also lose more
+  points on death
+
+
 
 **Game Time**
 - Implemented
