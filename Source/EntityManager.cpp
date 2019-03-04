@@ -529,6 +529,19 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
     return pReturnComponent;
 }
 
+AIComponent* EntityManager::generateAIComponent(int iEntityID)
+{
+    // Generate new Physics Component
+    unique_ptr<AIComponent> pNewComponent = make_unique<AIComponent>(iEntityID, getNewComponentID());
+    AIComponent* pReturnComponent = pNewComponent.get();
+
+    m_pAIComponents.push_back(pReturnComponent);
+    m_pMasterComponentList.push_back(move(pNewComponent));
+
+    // Return newly created component
+    return pReturnComponent;
+}
+
 // This function will generate a new Animation Component, store it within the internal
 //      Master Component list as well as a separate AnimationComponent* list that can be
 //      managed by the Entity Manager and prompted for updates separate from other Components.

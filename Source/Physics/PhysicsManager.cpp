@@ -493,8 +493,10 @@ mat4 PhysicsManager::getMat4(PxTransform transform) {
 // Made this function private, externally this makes sense, but when and why it should
 //    be called it up to the PhysicsManager. I added an update function that will be called
 //    every frame, but you can decide how often to call this function and how it works under the hood.
+
 void PhysicsManager::stepPhysics(float fTimeDelta)
 {
+    timesStepped++;
     hasStarted = true;
     PX_UNUSED(m_bInteractive
         /*Private Variable, lasts lifetime of PhysicsManager since initialization, may need to be redesigned as needed?*/);
