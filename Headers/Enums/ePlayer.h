@@ -10,6 +10,7 @@ enum ePlayer
     PLAYER_3,
     PLAYER_4,
     MAX_PLAYER_INDEX,
+    PLAYER_INVALID,
 };
 
 /*
@@ -22,4 +23,5 @@ enum eBot
     BOT_3,
     BOT_4,
     MAX_BOT_INDEX,
+    BOT_INVALID,
 };

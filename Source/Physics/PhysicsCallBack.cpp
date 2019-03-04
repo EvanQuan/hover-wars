@@ -9,6 +9,10 @@
 #include "GameStats.h"
 #include "EntityManager.h"
 
+#define TYPE        0
+#define SUBTYPE     1
+#define OWNER       1
+
 void PhysicsCallBack::initObjects(physx::PxRigidDynamic *body1, physx::PxRigidDynamic *body2) {
     this->body1 = body1;
     this->body2 = body2;
@@ -39,6 +43,8 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             std::cout << "\tactor 0: " << collider << std::endl;
             std::cout << "\tactor 1: " << collided << std::endl;
 
+            ePlayer colliderPlayer = FuncUtils::getValueIfNotDefault(ownerToPlayer, collider[OWNER], PLAYER_INVALID);
+            ePlayer collidedPlayer = FuncUtils::getValueIfNotDefault(ownerToPlayer, collided[OWNER], PLAYER_INVALID);
             // NOTE: Is there something more efficient than an if, else-if chain to do here?
 
             // If something hits something else, actor0 will always be a dynamic object:
@@ -46,23 +52,24 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             // - bot
             // - rocket
             // So we need to distinguish between them
-            if (collider[0] == 'P') {
+            if (collider[TYPE] == C_TYPE_PLAYER) {
+                colliderPlayer = ownerToPlayer.at(collider[OWNER]);
                 // Check what the player collided with...
-                if (collided[0] == 'w') {   // World type (include wall, ground and other object)
+                if (collided[TYPE] == C_TYPE_WORLD) {   // World type (include wall, ground and other object)
                     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
                 }
-                else if (collided[0] == 't' || collided[0] == 'r') {  // Trail, Rocket type (treat as same damage for now)
-                    if (collided[0] == 'r') {   // Rocket explosion sound
+                else if (collided[TYPE] == C_TYPE_TRAIL || collided[TYPE] == C_TYPE_ROCKET) {  // Trail, Rocket type (treat as same damage for now)
+                    if (collided[TYPE] == C_TYPE_ROCKET) {   // Rocket explosion sound
                         SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_EXPLOSION);
                     }
-                    if (collided[1] == '1') {
-                        if (collider[1] == '2') {
+                    if (collided[OWNER] == C_OWNER_PLAYER_1) {
+                        if (collider[OWNER] == C_OWNER_PLAYER_2) {
                             GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
                         }
-                        else if (collider[1] == '3') {
+                        else if (collider[OWNER] == C_OWNER_PLAYER_3) {
                             GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_3);
                         }
-                        else if (collider[1] == '4') {
+                        else if (collider[OWNER] == C_OWNER_PLAYER_4) {
                             GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_4);
                         }
                     }
@@ -92,57 +99,57 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                         if (collider[1] == '1') {
                             GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_1);
                         }
-                        else if (collider[1] == '2') {
+                        else if (collider[OWNER] == '2') {
                             GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_2);
                         }
-                        else if (collider[1] == '3') {
+                        else if (collider[OWNER] == '3') {
                             GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_3);
                         }
                     }
                 }
-                else if (collided[0] == 'p') { // Powerup type
-                    if (collider[1] == '1') {
+                else if (collided[TYPE] == C_TYPE_POWERUP) { // Powerup type
+                    if (collider[OWNER] == '1') {
                         GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::PICKUP_POWERUP);
                     }
-                    else if (collider[1] == '2') {
+                    else if (collider[OWNER] == '2') {
                         GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::PICKUP_POWERUP);
                     }
-                    else if (collider[1] == '3') {
+                    else if (collider[OWNER] == '3') {
                         GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::PICKUP_POWERUP);
                     }
-                    else if (collider[1] == '4') {
+                    else if (collider[OWNER] == '4') {
                         GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::PICKUP_POWERUP);
                     }
                 }
-                else if (collided[0] == 'b') {  // Bot type
+                else if (collided[TYPE] == 'b') {  // Bot type
                     // check if player spikes is on or not for both actor
                     // TODO: need to work on here
                     bool spikesON = false;
                     if (collider[1] == '1') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_1)->hasSpikesActivated();
                     }
-                    else if (collider[1] == '2') {
+                    else if (collider[OWNER] == '2') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_2)->hasSpikesActivated();
                     }
-                    else if (collider[1] == '3') {
+                    else if (collider[OWNER] == '3') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_3)->hasSpikesActivated();
                     }
-                    else if (collider[1] == '4') {
+                    else if (collider[OWNER] == '4') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_4)->hasSpikesActivated();
                     }
 
                     if (spikesON) {
                         SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_IMPACT);
-                        if (collider[1] == '1') {
+                        if (collider[OWNER] == '1') {
                             GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT);
                         }
-                        else if (collider[1] == '2') {
+                        else if (collider[OWNER] == '2') {
                             GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT);
                         }
-                        else if (collider[1] == '3') {
+                        else if (collider[OWNER] == '3') {
                             GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT);
                         }
-                        else if (collider[1] == '4') {
+                        else if (collider[OWNER] == '4') {
                             GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT);
                         }
                     }
@@ -150,67 +157,67 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                         SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
                     }
                 }
-                else if (collided[0] == 'P') {  // Player type
+                else if (collided[TYPE] == 'P') {  // Player type
                     // check if player spikes is on or not for both actor
                     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
                     // TODO: need to work on here
                     // check collider's spikes is on or not
                     bool spikesON = false;
-                    if (collider[1] == '1') {
+                    if (collider[OWNER] == '1') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_1)->hasSpikesActivated();
                     }
-                    else if (collider[1] == '2') {
+                    else if (collider[OWNER] == '2') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_2)->hasSpikesActivated();
                     }
-                    else if (collider[1] == '3') {
+                    else if (collider[OWNER] == '3') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_3)->hasSpikesActivated();
                     }
-                    else if (collider[1] == '4') {
+                    else if (collider[OWNER] == '4') {
                         spikesON = ENTITY_MANAGER->getPlayer(PLAYER_4)->hasSpikesActivated();
                     }
                     // action
                     if (spikesON) {
-                        if (collided[1] == '1') {
-                            if (collider[1] == '2') {
+                        if (collided[OWNER] == '1') {
+                            if (collider[OWNER] == '2') {
                                 GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
                             }
-                            else if (collider[1] == '3') {
+                            else if (collider[OWNER] == '3') {
                                 GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_PLAYER_1);
                             }
-                            else if (collider[1] == '4') {
+                            else if (collider[OWNER] == '4') {
                                 GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_1);
                             }
                         }
-                        else if (collided[1] == '2') {
-                            if (collider[1] == '1') {
+                        else if (collided[OWNER] == '2') {
+                            if (collider[OWNER] == '1') {
                                 GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
                             }
-                            else if (collider[1] == '3') {
+                            else if (collider[OWNER] == '3') {
                                 GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_PLAYER_2);
                             }
-                            else if (collider[1] == '4') {
+                            else if (collider[OWNER] == '4') {
                                 GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_2);
                             }
                         }
-                        else if (collided[1] == '3') {
-                            if (collider[1] == '1') {
+                        else if (collided[OWNER] == '3') {
+                            if (collider[OWNER] == '1') {
                                 GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_3);
                             }
-                            else if (collider[1] == '2') {
+                            else if (collider[OWNER] == '2') {
                                 GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_3);
                             }
-                            else if (collider[1] == '4') {
+                            else if (collider[OWNER] == '4') {
                                 GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_3);
                             }
                         }
-                        else if (collided[1] == '4') {
-                            if (collider[1] == '1') {
+                        else if (collided[OWNER] == '4') {
+                            if (collider[OWNER] == '1') {
                                 GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_4);
                             }
-                            else if (collider[1] == '2') {
+                            else if (collider[OWNER] == '2') {
                                 GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_4);
                             }
-                            else if (collider[1] == '3') {
+                            else if (collider[OWNER] == '3') {
                                 GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_PLAYER_4);
                             }
                         }
