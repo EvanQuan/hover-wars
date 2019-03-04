@@ -119,9 +119,13 @@ Spatial Data Map: There's a basic Spatial Data Map in place that is intended to 
 
 Shadow Mapping: The directional light in the scene casts shadows. The shadow map is specified in the scene that loaded in under the directional light entity entry. The texture size for the shadow is rather large to avoid overly pixellated shadows. Also, a smoothing kernel is applied to the shadows to soften their edges and blend with the fragment colors in a nicer way.
 
+AI: The AI works on a basic follw/seek model. it oscillates between following the player and seeking a random point on the map.
+The goal of this AI is to collide with the player with spikes engaged. This will result in the AI gaining a point. Visa versa if the player collides
+with the AI the player will gain a point 
+
 ## Team
 
-[Austin Easton](https://github.com/austinen)
+[Austin Eaton](https://github.com/austinen)
 
 [Evan Quan](https://github.com/EvanQuan)
 
