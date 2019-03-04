@@ -143,7 +143,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
 {
     if (!isInControl)
     {
-        outOfControlTime -= fSecondsSinceLastUpdate;
+        outOfControlTime -= fTimeInSeconds;
         if (outOfControlTime <= 0)
         {
             isInControl = true;
