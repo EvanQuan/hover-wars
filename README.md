@@ -8,15 +8,6 @@
 
 1. The Libraries and Settings should all be set up in the VS project.
 
-### Compiling on Linux:
-
-**NOT TESTED**
-1. In the file EnvSpec.h: You'll need to switch the comment from Defining
-   Windows to Defining Linux.
-
-2. The included Makefile should generate a run file that will launch the
-   program.
-
 ## Controls
 
 #### Keyboard
