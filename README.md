@@ -88,6 +88,10 @@
 
 **Keypad 4** - Set User Interface display count to 4
 
+**R** - Player 1 hits Player 2
+
+**T** - Player 2 hits Player 1
+
 #### XBOX Controller
 
 Currently, basic driving is implemented. The controls are:
