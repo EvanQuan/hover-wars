@@ -32,7 +32,7 @@ Units: seconds
 /*
 Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         3.0f // 1.0f
+#define SPIKES_DURATION         1.0f // 1.0f
 /*
 Total time the trail can be activated from full to empty.
 

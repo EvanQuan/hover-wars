@@ -101,7 +101,7 @@ private:
     SoundManager();
     void updateChannels();
 
-    void handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
+    bool handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
     void handleContextCollisionSound(Entity* collider, Entity* collided);
 
     int errorCheck(FMOD_RESULT result);
