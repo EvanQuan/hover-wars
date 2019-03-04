@@ -115,9 +115,11 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     }
     //a->actionsToTake[2] = difference.x/100.0f;
     //a->actionsToTake[3] = difference.z/100.0f;
-    std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
-    //std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
+    // std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
+#ifndef NDEBUG
+    std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
     //currentPlace = (1 + currentPlace) % LOOK_AHEAD_FRAMES;
+#endif
 }
 void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown) {
     for (int i = 0; i < MUTATION_SET; i++) {
