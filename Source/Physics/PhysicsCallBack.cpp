@@ -35,8 +35,8 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             const char* collider = actor0->getName();
             const char* collided = actor1->getName();
 
-            // std::cout << "\tactor 0: " << collider << std::endl;
-            // std::cout << "\tactor 1: " << collided << std::endl;
+            std::cout << "\tactor 0: " << collider << std::endl;
+            std::cout << "\tactor 1: " << collided << std::endl;
 
             // NOTE: Is there something more efficient than an if, else-if chain to do here?
 
