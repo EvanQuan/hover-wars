@@ -49,7 +49,7 @@ public:
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
     physx::PxRigidStatic *createMeshObject(float x, float y, float z,float scale, string filename);
-    physx::PxRigidStatic *createCubeObject(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
+    physx::PxRigidStatic *createCubeObject(const char* name, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createPlayerEntity(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(float x, float y, float z, float radius);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)

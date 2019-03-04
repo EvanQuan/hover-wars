@@ -436,14 +436,15 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
     return gPhysics->createTriangleMesh(readBuffer);
 }
-PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
+PxRigidStatic *PhysicsManager::createCubeObject(const char* name, float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
     PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(TYPE_PLAYER OWNER_PLAYER_2);
+    // body->setName(TYPE_PLAYER OWNER_PLAYER_2);
+    body->setName(name);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {

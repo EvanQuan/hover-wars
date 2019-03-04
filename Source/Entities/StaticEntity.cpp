@@ -2,10 +2,10 @@
 #include "EntityManager.h"
 
 // Default Constructor
-StaticEntity::StaticEntity(int iID, const vec3* vPosition)
+StaticEntity::StaticEntity(int iID, const vec3* vPosition, const char* physicsComponentName)
     : Entity( iID, *vPosition, STATIC_ENTITY )
 {
-    
+    m_sPhysicsComponentName = physicsComponentName;
 }
 
 // Destructor
@@ -51,7 +51,7 @@ void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, con
 void StaticEntity::loadAsSphere(float fRadius, const ObjectInfo* pObjectProperties, const string& sShaderType)
 {
     m_pMesh = MESH_MANAGER->generateSphereMesh(&m_iTransformationIndex, true, fRadius, pObjectProperties);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID,m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
@@ -64,7 +64,10 @@ void StaticEntity::loadAsCube(const ObjectInfo* pObjectProperties, const vec3* v
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
     vec3 boundingBox = pObjectProperties->sObjBoundingBox.vDimensions;
     boundingBox *= 0.5; // TODO
-    PHYSICS_MANAGER->createCubeObject(pObjectProperties->vPosition.x , pObjectProperties->vPosition.y, pObjectProperties->vPosition.z, boundingBox.x, boundingBox.y, boundingBox.z);
+    PHYSICS_MANAGER->createCubeObject(m_sPhysicsComponentName, pObjectProperties->vPosition.x ,
+        pObjectProperties->vPosition.y,
+        pObjectProperties->vPosition.z,
+        boundingBox.x, boundingBox.y, boundingBox.z);
 }
 
 // Load a Static Mesh from a given file

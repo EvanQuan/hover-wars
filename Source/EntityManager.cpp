@@ -279,32 +279,32 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType)
+void EntityManager::generateStaticPlane(const char* name, const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition, name);
     pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewPlane));
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType)
+void EntityManager::generateStaticSphere(const char* name, const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition, name);
     pNewSphere->loadAsSphere(fRadius, pObjectProperties, sShaderType);
     m_pMasterEntityList.push_back(move(pNewSphere));
 }
 
-void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
+void EntityManager::generateStaticCube(const char* name, const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition, name);
     pNewCube->loadAsCube(pObjectProperties, vDimensions, sShaderType);
     m_pMasterEntityList.push_back(move(pNewCube));
 }
 
 // Generates a Static Mesh at a given location
-void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
+void EntityManager::generateStaticMesh(const char* name, const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {
-    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition, name);
     pNewMesh->loadFromFile(sMeshLocation, pObjectProperties, sShaderType, fScale);
     m_pMasterEntityList.push_back(move(pNewMesh));
 }
@@ -332,6 +332,8 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
     m_pBotEntityList.push_back(pNewBot.get()); 
     m_pMasterEntityList.push_back(move(pNewBot));
 }
+
+
 
 // Generates and Returns an Interactable Entity with a specified Position.
 InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)

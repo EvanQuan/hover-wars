@@ -16,7 +16,7 @@ void PlayerEntity::initialize(const string& sFileName,
                               float fScale,
                               ePlayer playerID)
 {
-HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
+    HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
     m_ePlayerID = playerID;
     // Queue new position and add to total
 

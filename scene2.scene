@@ -177,6 +177,9 @@ plane {
     +shader {
         blinn_phong_shdr
     }
+    +name {
+        g
+    }
 }
 
 # Mesh
@@ -197,6 +200,9 @@ player {
     +bounding {
         box
         2.0 5.0 2.5 
+    }
+    +name {
+        h1
     }
 }
 
@@ -241,6 +247,9 @@ bot {
          box
          2.0 2.5 5.0
      }
+     +name {
+        h5
+     }
 }
 
 #       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
@@ -253,6 +262,9 @@ cube {
         box
         2.0 2.0 2.0
     }
+    +name {
+        P2
+    }
 }
 
 # Wall
@@ -263,6 +275,9 @@ cube {
     +bounding {
         box
         10.0 50.0 4.0
+    }
+    +name {
+        wW
     }
 }
 
@@ -301,6 +316,9 @@ static_mesh {
     +bounding {
         box
         0.5 0.5 0.5
+    }
+    +name {
+        mesh
     }
 }
 
@@ -344,6 +362,9 @@ sphere {
         textures/nightSphericalSpecMap.png
         100.0
     }
+    +name {
+        null
+    }
 }
 
 # Set Spatial Map information for the Scene
@@ -351,4 +372,7 @@ sphere {
 #   This will only be evaluated once and multiple specifications of the spatial_map will ignored.
 spatial_map {
     100 100 10
+    +name {
+        spatial_map
+    }
 }

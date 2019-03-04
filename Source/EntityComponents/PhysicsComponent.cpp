@@ -194,13 +194,20 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
+void PhysicsComponent::initializeComponent(bool bStatic,
+                                           Mesh const* pMeshReference,
+                                           const ObjectInfo::BoundingBox *bb,
+                                           glm::vec3 position)
 {
     // Set up Internal Static qualifier.
     m_bStatic = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
-    body = gVehicleNoDrive->getRigidDynamicActor();
-    body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+    // if (!bStatic)
+    // {
+        // Static objects are definitely not cars
+        gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
+        body = gVehicleNoDrive->getRigidDynamicActor();
+        body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+    // }
 }
 
 // Returns the Rotation Quaternion for the Entity's body.

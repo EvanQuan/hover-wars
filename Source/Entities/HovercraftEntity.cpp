@@ -205,6 +205,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeComponent(true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
+    // The fire trail entity is always at the same location as the hovecraft
     m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
     m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
     

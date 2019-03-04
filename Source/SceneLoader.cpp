@@ -34,6 +34,7 @@
 #define CUBE                   "cube"
 #define SHADER                 "shader"
 #define CUBE                   "cube"
+#define NAME                   "name"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -67,7 +68,7 @@ void SceneLoader::createSphere( vector< string > sData, int iLength )
     {
         m_pObjectProperties.vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );    // Position of Sphere
 
-        ENTITY_MANAGER->generateStaticSphere(&m_pObjectProperties, stof(sData[3]), m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticSphere(m_sNameProperty.c_str(), &m_pObjectProperties, stof(sData[3]), m_sShaderProperty);
     }
     else
         outputError(SPHERE, sData);
@@ -86,7 +87,7 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
         vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
         iHeight = stoi(sData[6]);
         iWidth = stoi(sData[7]);
-        ENTITY_MANAGER->generateStaticPlane(&m_pObjectProperties, iHeight, iWidth, &vNormal, m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticPlane(m_sNameProperty.c_str(), &m_pObjectProperties, iHeight, iWidth, &vNormal, m_sShaderProperty);
     }
     else
     {
@@ -191,7 +192,7 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
         m_pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
 
-        ENTITY_MANAGER->generateStaticCube(&m_pObjectProperties, &vDimensions);
+        ENTITY_MANAGER->generateStaticCube(m_sNameProperty.c_str(), &m_pObjectProperties, &vDimensions);
     }
     else
         outputError(CUBE, sData);
@@ -223,7 +224,7 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
     for (unsigned int i = 0; i + 3 <= iLength; i += 3)
     {
         m_pObjectProperties.vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);    // Position of Mesh
-        ENTITY_MANAGER->generateStaticMesh(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticMesh(m_sNameProperty.c_str(), &m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty);
     }
 }
 
@@ -396,6 +397,10 @@ void SceneLoader::handleProperty( vector< string >& sData, const string& sIndica
     {
         m_sShaderProperty = sDataTrimmed;
     }
+    else if (NAME == sIndicator)
+    {
+        m_sNameProperty = sDataTrimmed;
+    }
 }
 
 // Grabs a Material from the given data
@@ -498,7 +503,7 @@ string SceneLoader::trimString( const string& sStr )
 void SceneLoader::clearProperties() // Clear any properties
 {
     // Clear Basic Properties
-    m_sMeshProperty = m_sShaderProperty = "";
+    m_sMeshProperty = m_sShaderProperty = m_sNameProperty = "";
     m_fMeshScaleProperty = 1.0f;
 
     // Clear Material Properties

@@ -26,6 +26,7 @@ public:
     void loadAsBillboard(float fHeight, float fWidth);
     void addBillboard(const vec3* vNormal, const vec3* vPosition);
 
+    void loadAsPowerup(vec3* dimensions);
 private:
     // Private Copy Constructor and Assignment Operator
     InteractableEntity(const InteractableEntity& pCopy);
@@ -34,7 +35,11 @@ private:
     GLuint m_iVertexArray;
 
     Mesh* m_pBillboardMesh;
+    ObjectInfo m_pObjectInfo;
+
+    vec3 m_vDimensions;
+
     RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
-    PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
+    // PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
     AnimationComponent* m_pAnimationComponent;
 };

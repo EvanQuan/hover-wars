@@ -44,10 +44,10 @@ public:
 
     // Entity Functions
     Camera* generateCameraEntity();
-    void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
-    void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
-    void generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
-    void generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );
+    void generateStaticPlane(const char* name, const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
+    void generateStaticSphere(const char* name, const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
+    void generateStaticCube(const char* name, const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
+    void generateStaticMesh(const char* name, const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );
     void generateStaticPointLight(const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
                                     float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame);
