@@ -105,7 +105,7 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
             timeChased = 0;
         }
     }
-    if (!isChasing && (timeChased > 15)) {
+    if (!isChasing && (timeChased > 3)) {
         isChasing = true;
         timeChased = 0;
     }
