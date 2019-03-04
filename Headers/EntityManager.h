@@ -63,7 +63,7 @@ public:
     LightingComponent* generateLightingComponent(int iEntityID);
     PhysicsComponent* generatePhysicsComponent(int iEntityID);
     AnimationComponent* generateAnimationComponent(int iEntityID);
-
+    AIComponent* EntityManager::generateAIComponent(int iEntityID);
     // Camera Management
     void updateWidthAndHeight(int iWidth, int iHeight);
     void rotateCamera(vec2 pDelta); 
@@ -102,7 +102,9 @@ private:
     vector<unique_ptr<Entity>>                      m_pMasterEntityList;
     vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
     // Phycis
-    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // PHYSICSTODO: If this isn't necessary, remove it.
+    vector<PhysicsComponent*>                       m_pPhysicsComponents;   // 
+    // AI's
+    vector<AIComponent*>                            m_pAIComponents;   // TBH I have no idea why we want/need these? please clarify and I will remove
     // Players
     vector<PlayerEntity*>                           m_pPlayerEntityList;    
     // Bots

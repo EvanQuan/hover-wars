@@ -139,13 +139,13 @@ public:
     bool isInvincible() { return invincible; };
 
     bool setInvincile() { invincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
+    PhysicsComponent* m_pPhysicsComponent;
 private:
     // Private Variables
     int activeCameraIndex;
     Mesh* m_pMesh;
     SpatialDataMap* m_pSpatialMap;
     RenderComponent* m_pRenderComponent;
-    PhysicsComponent* m_pPhysicsComponent;
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     InteractableEntity* m_pFireTrail;
