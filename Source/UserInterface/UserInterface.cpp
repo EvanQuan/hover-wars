@@ -406,7 +406,7 @@ void UserInterface::renderScores()
 void UserInterface::renderScoreChange()
 {
     int scoreChange = m_pGameStats->get(PLAYER_1, GameStats::eStat::SCORE_CHANGE);
-    bool scoreIncreased = scoreChange > 0;
+    bool scoreIncreased = scoreChange >= 0;
     renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) , SCORE_CHANGE_X, SCORE_CHANGE_Y, SCORE_CHANGE_SCALE, scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
 }
 
