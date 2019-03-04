@@ -257,7 +257,8 @@ void EntityManager::dispatchCollision(int iColliderID, int iCollidedID)
     Entity* pCollided = m_pMasterEntityList[iCollidedID].get();
 
     // Handle Impact Sound
-    SOUND_MANAGER->handleCollisionSound(pCollider->getType(), pCollided->getType());
+    // SOUND_MANAGER->handleCollisionSound(pCollider->getType(), pCollided->getType());
+    SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
 
     // Tell the Collided Entity that someone collided with them
     pCollided->handleCollision(pCollider);
@@ -645,6 +646,18 @@ PlayerEntity* EntityManager::getPlayer(ePlayer player)
     return m_pPlayerEntityList.at(player);
 }
 
+PlayerEntity* EntityManager::getPlayer(int iEntityID)
+{
+    for (PlayerEntity* player : m_pPlayerEntityList)
+    {
+        if (player->getID() == iEntityID)
+        {
+            return player;
+        }
+    }
+    return nullptr;
+}
+
 bool EntityManager::botExists(eBot bot)
 {
     return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
@@ -653,6 +666,18 @@ bool EntityManager::botExists(eBot bot)
 BotEntity* EntityManager::getBot(eBot bot)
 {
     return m_pBotEntityList.at(bot);
+}
+
+BotEntity* EntityManager::getBot(int iEntityID)
+{
+    for (BotEntity* bot : m_pBotEntityList)
+    {
+        if (bot->getID() == iEntityID)
+        {
+            return bot;
+        }
+    }
+    return nullptr;
 }
 
 
