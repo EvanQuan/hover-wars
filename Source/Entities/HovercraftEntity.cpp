@@ -139,11 +139,11 @@ HovercraftEntity::~HovercraftEntity()
 /*
 @param fSecondsSinceLastUpdate  delta time since last update
 */
-void HovercraftEntity::update(float fSecondsSinceLastUpdate)
+void HovercraftEntity::update(float fTimeInSeconds)
 {
     if (!isInControl)
     {
-        outOfControlTime -= fSecondsSinceLastUpdate;
+        outOfControlTime -= fTimeInSeconds;
         if (outOfControlTime <= 0)
         {
             isInControl = true;
@@ -168,8 +168,8 @@ void HovercraftEntity::update(float fSecondsSinceLastUpdate)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(fSecondsSinceLastUpdate);
-    updateCooldowns(fSecondsSinceLastUpdate);
+    updateCameraLookAts(fTimeInSeconds);
+    updateCooldowns(fTimeInSeconds);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.

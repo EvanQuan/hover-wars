@@ -41,7 +41,6 @@ InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 
 InputHandler::~InputHandler()
 {
-    m_gameManager = nullptr; // TODO remove later once GameManager no longer needed
 }
 
 
@@ -150,6 +149,7 @@ void InputHandler::debugKeyCommands(int key, int action)
         case GLFW_KEY_Y:
             cout << "Disable player 1 for 1 seconds" << endl;
             ENTITY_MANAGER->getPlayer(PLAYER_1)->setLoseControl(1.0f);
+            break;
         }
     }
 }
