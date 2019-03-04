@@ -43,8 +43,8 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             std::cout << "\tactor 0: " << collider << std::endl;
             std::cout << "\tactor 1: " << collided << std::endl;
 
-            ePlayer colliderPlayer = FuncUtils::getValueIfNotDefault(ownerToPlayer, collider[OWNER], PLAYER_INVALID);
-            ePlayer collidedPlayer = FuncUtils::getValueIfNotDefault(ownerToPlayer, collided[OWNER], PLAYER_INVALID);
+            eHovercraft colliderPlayer = FuncUtils::getValueIfNotDefault(ownerToHovercraft, collider[OWNER], HOVERCRAFT_INVALID);
+            eHovercraft collidedPlayer = FuncUtils::getValueIfNotDefault(ownerToHovercraft, collided[OWNER], HOVERCRAFT_INVALID);
             // NOTE: Is there something more efficient than an if, else-if chain to do here?
 
             // If something hits something else, actor0 will always be a dynamic object:
@@ -52,8 +52,12 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             // - bot
             // - rocket
             // So we need to distinguish between them
+            if (collider[TYPE] == C_TYPE_HOVERCRAFT) {
+                if (collided[TYPE] == C_TYPE_HOVERCRAFT) {
+                    // TODO
+                }
+            }
             if (collider[TYPE] == C_TYPE_PLAYER) {
-                colliderPlayer = ownerToPlayer.at(collider[OWNER]);
                 // Check what the player collided with...
                 if (collided[TYPE] == C_TYPE_WORLD) {   // World type (include wall, ground and other object)
                     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);

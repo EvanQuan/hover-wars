@@ -124,21 +124,23 @@ Actor names are composed of 2 characters. The order of tokens are:
 2. Subtype or Owner
 */
 // Type
-#define TYPE_WORLD   "w"
-#define TYPE_POWERUP "p"
-#define TYPE_TRAIL   "t"
-#define TYPE_PLAYER  "P"
-#define TYPE_BOT     "b"
-#define TYPE_ROCKET  "r"
-#define TYPE_SPIKES  "s"
+#define TYPE_WORLD      "w"
+#define TYPE_POWERUP    "p"
+#define TYPE_TRAIL      "t"
+#define TYPE_PLAYER     "P"
+#define TYPE_HOVERCRAFT "h"
+#define TYPE_BOT        "b"
+#define TYPE_ROCKET     "r"
+#define TYPE_SPIKES     "s"
 
-#define C_TYPE_WORLD   'w'
-#define C_TYPE_POWERUP 'p'
-#define C_TYPE_TRAIL   't'
-#define C_TYPE_PLAYER  'P'
-#define C_TYPE_BOT     'b'
-#define C_TYPE_ROCKET  'r'
-#define C_TYPE_SPIKES  's'
+#define C_TYPE_WORLD      'w'
+#define C_TYPE_POWERUP    'p'
+#define C_TYPE_TRAIL      't'
+#define C_TYPE_PLAYER     'P'
+#define C_TYPE_BOT        'b'
+#define C_TYPE_HOVERCRAFT 'h'
+#define C_TYPE_ROCKET     'r'
+#define C_TYPE_SPIKES     's'
 
 // Subtype
 #define SUBTYPE_WALL          "W"
