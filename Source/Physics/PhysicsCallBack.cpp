@@ -40,8 +40,10 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             const char* collider = actor0->getName();
             const char* collided = actor1->getName();
 
+#ifndef NDEBUG
             std::cout << "\tactor 0: " << collider << std::endl;
             std::cout << "\tactor 1: " << collided << std::endl;
+#endif
 
             eHovercraft colliderPlayer = FuncUtils::getValueIfNotDefault(ownerToHovercraft, collider[OWNER], HOVERCRAFT_INVALID);
             eHovercraft collidedPlayer = FuncUtils::getValueIfNotDefault(ownerToHovercraft, collided[OWNER], HOVERCRAFT_INVALID);
