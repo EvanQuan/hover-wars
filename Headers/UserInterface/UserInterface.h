@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "GameStats.h"
 
 #define IMAGE_ROCKET "textures/hud/rocket.png"
 #define IMAGE_TRAIL "textures/hud/trail.png"
@@ -46,7 +45,7 @@ public:
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
-    void displayMessage(std::string text);
+    void displayMessage(ePlayer player, std::string text);
 
 
 private:
@@ -78,7 +77,7 @@ private:
     std::string timeToString();
     
     // Message
-    void renderMessage();
+    void renderMessages();
 
     // Score
     void initializeScores();
@@ -120,10 +119,10 @@ private:
 
     Unit : seconds
     */
-    std::string m_sMessage;
-    float m_fMessageTime;
+    std::string m_sMessages[MAX_PLAYER_COUNT];
+    float m_fMessageTimes[MAX_PLAYER_COUNT];
 
-    float m_fScoreUpdateTime;
+    float m_fScoreUpdateTimes[MAX_PLAYER_COUNT];
 
     int m_iDisplayCount;
 
@@ -132,10 +131,6 @@ private:
     int m_iHeight;
 
     // Singleton Pointers
-    /*
-    Retrieve game stats to display
-    */
-    GameStats *m_pGameStats;
     /*
     The UI needs to render its own components
     */

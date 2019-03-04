@@ -1,5 +1,6 @@
 #include "GameStats.h"
 #include "SoundManager.h"
+#include "UserInterface/UserInterface.h"
 
 /*
 Number of killstreaks against another player to count as domination
@@ -36,9 +37,9 @@ risky as you will lose more points.
 */
 #define POINTS_LOST_PER_KILLSTREAK 10
 /*
-Notifies everyone once a player hits a milestone.
+Notifies a killstreak message once player hits a milestone.
 */
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE DOMINATION_COUNT
 
 
 // Singleton instance
@@ -334,9 +335,11 @@ void GameStats::addKillstreak(ePlayer playerAttacker, ePlayer playerHit)
     // Update attacker's current total killstreak
     increaseCurrentTotalKillstreak(playerAttacker);
     // notify if attacker reached current total killstreak milestone
-    if (stats[playerAttacker][KILLSTREAK_CURRENT] % CURRENT_TOTAL_KILLSTREAK_MILESTONE == 0)
+    int killstreak = stats[playerAttacker][KILLSTREAK_CURRENT];
+    if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
+        USER_INTERFACE->displayMessage(playerAttacker, "You have a killstreak of " + std::to_string(killstreak));
     }
 
     // Update attacker's current total killstreak against hit
@@ -425,6 +428,8 @@ Enable playerAttacker's domaination status against playerHit
 void GameStats::dominate(ePlayer playerAttacker, ePlayer playerHit)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
+    // Ad hoc for single player
+    USER_INTERFACE->displayMessage(playerAttacker, "You now are dominating Player " + std::to_string(playerHit + 1));
     stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = true;
 }
 /*
@@ -433,6 +438,8 @@ Disable playerWasDominating's domination status against playerToGetRevenge.
 void GameStats::revenge(ePlayer playerToGetRevenge, ePlayer playerWasDominating)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
+    // Ad hoc for single player
+    USER_INTERFACE->displayMessage(playerToGetRevenge, "You got revenge from Player " + std::to_string(playerWasDominating + 1));
     stats[playerWasDominating][IS_DOMINATING_PLAYER_1 + playerToGetRevenge] = false;
 }
 
