@@ -55,9 +55,6 @@
 
 #### Other
 
-**P** - Pause the game
-
-
 **Left Click** - Spawns a particle Emitter at the mouse intersection with the xz-plane @ yAxis = 0
 
 **Right Click** - Holding down Right Click and moving the mouse will allow you to adjust the camera around the vehicle
@@ -88,15 +85,63 @@
 
 **Keypad 4** - Set User Interface display count to 4
 
-#### XBOX Controller
+**R** - Player 1 hits player 2
 
-Currently, basic driving is implemented. The controls are:
+**T** - Player 2 hits player 1
+
+#### XBOX Controller
 
 **Left Joystick** - Applies a force on the vehicle in that direction on the xz-plane, WRT to Vehicle space.
 
 **Right Joystick** - Rotates the vehicle left or right.
 
-**RT** - Drops a particle emitter at the vehicle's current location until released.
+**Right Trigger** - Press to fire rocket
+
+- Implemented
+    - Controls
+    - Cooldown
+    - Sound
+    - Internal collision detection
+    - Collision processing
+- Not implemented
+    - Physics
+    - Rendering
+
+**Right Bumper** - Hold to switch to alternate camera
+
+- Fully implemented
+
+**Left Trigger** - Hold to activate flame trail
+
+- Implemented
+    - Controls
+    - Fuel gauge
+    - Graphics
+    - Sound
+    - Internal collision detection
+    - Collision processing
+- Not implemented
+    - Physics collision detection
+
+**Left Bumper** - Press to activate spikes
+
+- Implemented
+    - Controls
+    - Cooldown
+    - Sound
+    - Internal collision detection
+    - Collision processing
+    - Physics collision detection
+- Not implemented
+    - Graphics
+
+**X, Y, A, B** - Directional dash
+
+- Fully implemented
+
+**D-pad** - Honk
+
+- Fully implemented
 
 ## Write-Up:
 
