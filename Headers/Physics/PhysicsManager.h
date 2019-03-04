@@ -57,6 +57,8 @@ public:
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
+    // 
+    bool isInAir(PxVehicleNoDrive *vehicle);
     int timesStepped = 0;
 private:
     PxSimulationEventCallback *cb;

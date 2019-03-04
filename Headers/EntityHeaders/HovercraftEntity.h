@@ -135,7 +135,15 @@ public:
     */
     float* getCooldowns() { return m_fCooldowns; };
 
+    /*
+    Set lose control until seconds runs out or manually reactivated with
+    setGainControl(), whichever happens first
+    */
     void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
+    /*
+    Gain control of hovercraft
+    */
+    void setGainControl() { isInControl = true; };
 
     bool hasSpikesActivated() const { return m_bSpikesActivated; };
 
@@ -232,6 +240,7 @@ private:
     */
     bool isInControl;
     float outOfControlTime;
+    bool lowEnoughToMove;
 
     void updateVulnerability(float fTimeInSeconds);
     bool m_bInvincible;
