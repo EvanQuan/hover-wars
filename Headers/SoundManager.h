@@ -6,6 +6,8 @@
 #include "fmod.hpp"
 #include "fmod_errors.h"
 
+#include "EntityHeaders/Entity.h"
+
 /*
 Manages all sounds. Provides an interfaces for other classes to play sound
 events.
@@ -59,6 +61,7 @@ public:
     };
 
     void play(eSoundEvent sound);
+    void handleCollisionSound(Entity* collider, Entity* collided);
 
     // TODO figure out sound at locations
     void play(eSoundEvent sound, vec3 location);
@@ -97,6 +100,9 @@ private:
 
     SoundManager();
     void updateChannels();
+
+    bool handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
+    void handleContextCollisionSound(Entity* collider, Entity* collided);
 
     int errorCheck(FMOD_RESULT result);
 

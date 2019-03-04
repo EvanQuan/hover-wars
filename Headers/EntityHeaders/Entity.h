@@ -13,15 +13,19 @@ public:
 
     virtual void update(float fTimeInMilliseconds) = 0;
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const = 0;
+    // virtual void handleCollision(const Entity* pOther) const;
+    virtual void handleCollision(Entity* pOther);
 
     // Getters/Setters
     vec3 getPosition() const { return m_vPosition; }
     int getID() const { return m_iID; }
+    const char* getName() const { return m_sName.c_str(); }
     eEntityTypes getType() const { return m_eType; }
 
 protected:
     vec3 m_vPosition;
     int m_iID;
+    string m_sName;
     unsigned int m_iTransformationIndex;
     eEntityTypes m_eType;
 };

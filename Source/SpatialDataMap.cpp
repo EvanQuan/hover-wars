@@ -125,19 +125,19 @@ void SpatialDataMap::initializeMap(float fLength, float fWidth, float fTileSize)
 }
 
 // Populate Spatial Data Map with Entities in the scene.
-void SpatialDataMap::populateStaticMap(const vector<unique_ptr<Entity>>* pMasterEntityList)
+void SpatialDataMap::populateStaticMap(const unordered_map<int, unique_ptr<Entity>>* pMasterEntityList)
 {
     // Local Variables
     unsigned int iXMin, iXMax, iYMin, iYMax; // Indices for determining Entity Position.
 
-    for (vector<unique_ptr<Entity>>::const_iterator iter = pMasterEntityList->begin();
+    for (unordered_map<int, unique_ptr<Entity>>::const_iterator iter = pMasterEntityList->begin();
         iter != pMasterEntityList->end();
         ++iter)
     {
         // Add Entity to Spatial Map
-        if (getMapIndices(iter->get(), &iXMin, &iXMax, &iYMin, &iYMax)) // Verify the Indices received are valid.
+        if (getMapIndices(iter->second.get(), &iXMin, &iXMax, &iYMin, &iYMax)) // Verify the Indices received are valid.
         {
-            addEntity(iter->get(), iXMin, iXMax, iYMin, iYMax);
+            addEntity(iter->second.get(), iXMin, iXMax, iYMin, iYMax);
         }
     }
 

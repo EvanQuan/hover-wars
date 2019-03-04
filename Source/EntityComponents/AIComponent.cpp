@@ -95,7 +95,21 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     float angle = atan2(difference.x,difference.z);
     double botAmount = botRotation + (3.1415926535 / 2);//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
     double modAmount = (botRotation / (3.1415926535 * 2) - floor(botRotation / (3.1415926535 * 2))) * (3.1415926535 * 2) - 3.1415926535;
-    seekPoint = playerPos;
+
+    if (isChasing) {
+        seekPoint = playerPos;
+        if (timeChased > 10) {
+            isChasing = false;
+            seekPoint.x = (float)(rand() % 200 - 100);
+            seekPoint.z = (float)(rand() % 200 - 200);
+            timeChased = 0;
+        }
+    }
+    if (!isChasing && (timeChased > 15)) {
+        isChasing = true;
+        timeChased = 0;
+    }
+    
     if (angle - botRotation > 0.1) {
         a->actionsToTake[1] = -1;
     }
@@ -103,9 +117,6 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
         a->actionsToTake[1] = 1;
     }
     else {
-        if (CurrcoolDown <= 0) {
-            //PHYSICS_MANAGER->createRocketObjects(botPos.x + botToPlayer.x, botPos.y + botToPlayer.y, botPos.z + botToPlayer.z, botToPlayer.x, botToPlayer.y, botToPlayer.z);
-        }
         a->actionsToTake[1] = 0;
     }
     bool isXdistance = false;
@@ -127,11 +138,14 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     else if(isXdistance){
         a->actionsToTake[4] = 1;
     }
+
     //a->actionsToTake[2] = difference.x/100.0f;
     //a->actionsToTake[3] = difference.z/100.0f;
-    std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
-    //std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
+    // std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
+#ifndef NDEBUG
+    std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
     //currentPlace = (1 + currentPlace) % LOOK_AHEAD_FRAMES;
+#endif
 }
 void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown) {
     for (int i = 0; i < MUTATION_SET; i++) {
@@ -152,5 +166,5 @@ void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm:
 }
 void AIComponent::update(float fTimeDeltaInMilliseconds)
 {
-    coolDown -= fTimeDeltaInMilliseconds;
+    timeChased += fTimeDeltaInMilliseconds;
 }

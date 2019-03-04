@@ -32,7 +32,7 @@ Units: seconds
 /*
 Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         3.0f // 1.0f
+#define SPIKES_DURATION         0.5f // 1.0f
 /*
 Total time the trail can be activated from full to empty.
 
@@ -79,7 +79,7 @@ After getting hit, the hovercraft is invulnerable for a duration of time
 
 Unit : seconds
 */
-#define INVINCIBLE_TIME 1.0f
+#define INVINCIBLE_TIME 2.0f
 
 class HovercraftEntity :
     public Entity
@@ -90,6 +90,14 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+
+    // Signifies to this HoverCraft that they were hit by a damaging attack.
+    // Why was this const? I need to change state in order to make the hovercrafts invincible?
+    virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) = 0;
+    // virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
+    // void handleCollision(const Entity* pOther) const;
+    void handleCollision(Entity* pOther);
+
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void initialize(const string& sFileName,
@@ -129,16 +137,16 @@ public:
 
     void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
 
-    bool hasSpikesActivated() { return m_bSpikesActivated; };
+    bool hasSpikesActivated() const { return m_bSpikesActivated; };
 
     /*
     Signifies the hovercraft is vulernable to attack.
     If true, ability collisions will count.
     Otherwise, ignore ability collisions.
     */
-    bool isInvincible() { return invincible; };
+    bool isInvincible() const { return m_bInvincible; };
 
-    bool setInvincile() { invincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
+    void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
     PhysicsComponent* m_pPhysicsComponent;
 private:
     // Private Variables
@@ -183,9 +191,6 @@ private:
     bool isOnCooldown(eAbility ability);
     float m_fCooldowns[COOLDOWN_COUNT];
 
-    bool m_bSpikesActivated;
-    float m_fSecondsSinceSpikesActivated;
-
     /*
     Tracks the state of the flame trail
 
@@ -229,7 +234,19 @@ private:
     float outOfControlTime;
 
     void updateVulnerability(float fTimeInSeconds);
-    bool invincible;
+    bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
+
+// Protected Functions and variables for Child Classes
+protected:
+    GameStats* m_pGmStats;
+
+    //This ID is used for communicating with GameStats
+    unsigned int m_iStatsID;
+    unsigned int getStatsID() const { return m_iStatsID; }
+
+    // Bool Spikes Information
+    bool m_bSpikesActivated;
+    float m_fSecondsSinceSpikesActivated;
 };
 

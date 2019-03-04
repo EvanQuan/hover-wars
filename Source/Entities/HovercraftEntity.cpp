@@ -113,21 +113,21 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
     : Entity(iID, *vPosition, entityType)
 {
     // Initialize base information.
-    m_pSpatialMap = SPATIAL_DATA_MAP;
-    activeCameraIndex = FRONT_CAMERA;
-    m_qCurrentCameraRotation = quat();
-    m_vCurrentCameraPosition = vec3(0.0f);
+    m_pSpatialMap               = SPATIAL_DATA_MAP;
+    m_pGmStats                  = GAME_STATS;
+    activeCameraIndex           = FRONT_CAMERA;
+    m_qCurrentCameraRotation    = quat();
+    m_vCurrentCameraPosition    = vec3(0.0f);
 
     m_fMinimumDistanceBetweenFlames = 5.0f;
 
     m_bSpikesActivated = false;
 
-    invincible = false;
+    m_bInvincible = false;
 
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
-
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -181,7 +181,7 @@ void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
     m_fSecondsLeftUntilVulnerable -= fTimeInSeconds;
     if (m_fSecondsLeftUntilVulnerable <= 0)
     {
-        invincible = false;
+        m_bInvincible = false;
     }
 }
 
@@ -203,8 +203,9 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeComponent(true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
+    m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
+    // The fire trail entity is always at the same location as the hovecraft
     m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
     m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
     
@@ -217,6 +218,42 @@ void HovercraftEntity::initialize(const string& sFileName,
     
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+}
+
+/*
+    Handle Collision Logic in this function. This function is called when someone collides with this Entity.
+    This Entity can tell the other Entity what happens when they collided with this Entity.
+
+    @param pOther   const pointer to the Entity that this entity collided with.
+    @param bVictim  boolean to tell if this entity is the victim or not.
+*/
+// void HovercraftEntity::handleCollision(const Entity* pOther) const
+void HovercraftEntity::handleCollision(Entity* pOther)
+{
+    // Get the Type of the Other Entity
+    eEntityTypes eOtherType = pOther->getType();
+
+    switch (eOtherType)
+    {
+    case PLAYER_ENTITY:
+    case BOT_ENTITY:
+        // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
+        // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
+        HovercraftEntity* pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
+        if (m_bSpikesActivated)
+        {   // Tell the Targetted Entity that they were hit by this bot.
+           pOtherHovercraft->hit(m_eType, m_iStatsID);
+        }
+        if (pOtherHovercraft->hasSpikesActivated())
+            this->hit(pOther->getType(), pOtherHovercraft->getStatsID());
+        break;
+        /*Further Cases:
+        case ROCKET_ENTITY:
+            Get Owner Entity for Rocket (Player or Bot) and call Hit on this Entity to be hit by that player.
+        case EXPLOSION:
+            Get Owner Entity for Explosion (player or Bot) and call Hit on thie Entity to be hit by that player.
+        */
+    }
 }
 
 /********************************************************************************************************\
@@ -330,7 +367,6 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 
             // float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
 
-            // cout << m_vPositionOfLastFlame.x << " " << m_vPositionOfLastFlame.y << " " << m_vPosition << endl;
             if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
             // if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
             {
@@ -454,7 +490,7 @@ void HovercraftEntity::shootRocket()
     PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
     vForce.y = 0;
-    PHYSICS_MANAGER->createRocketObjects(currPos.x + vForce.x, currPos.y + vForce.y, currPos.z + vForce.z, vForce.x, vForce.y, vForce.z);
+    //PHYSICS_MANAGER->createRocketObjects(currPos.x + vForce.x, currPos.y + vForce.y, currPos.z + vForce.z, vForce.x, vForce.y, vForce.z);
     m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
 

@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 #include "EntityHeaders/StaticEntity.h"
+#include "SoundManager.h"
 
 /***********\
  * Defines *
@@ -245,24 +246,33 @@ void EntityManager::setCameraPMVMatrices()
 * Entity Management                                                              *
 \*********************************************************************************/
 
+void EntityManager::dispatchCollision(int iColliderID, int iCollidedID)
+{
+    // Both Entity IDs passed in must exist in the Master Entity List, otherwise they're not Entity IDs
+    assert( m_pMasterEntityList.end() != m_pMasterEntityList.find(iColliderID) &&
+            m_pMasterEntityList.end() != m_pMasterEntityList.find(iCollidedID));
+
+    // Get Pointers to both Entities involved in the collision
+    Entity* pCollider = m_pMasterEntityList[iColliderID].get();
+    Entity* pCollided = m_pMasterEntityList[iCollidedID].get();
+
+    // Handle Impact Sound
+    // SOUND_MANAGER->handleBaseCollisionSound(pCollider->getType(), pCollided->getType());
+    SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
+
+    // Tell the Collided Entity that someone collided with them
+    pCollided->handleCollision(pCollider);
+}
+
 // Fetches the current position of Entity with ID: iEntityID
 vec3 EntityManager::getEntityPosition(int iEntityID)
 {
     // Return Value: Origin as a default if entity not found.
     vec3 vReturn = vec3(0.0f);
 
-    // Iterate through all Entities.
-    for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
-        iter != m_pMasterEntityList.end();
-        ++iter)
-    {
-        // If Entity found, get the position and break from the loop
-        if (iEntityID == (*iter)->getID())
-        {
-            vReturn = (*iter)->getPosition();
-            break;
-        }
-    }
+    // If the Entity Exists with the specified entity ID, return the entity's position.
+    if (m_pMasterEntityList.find(iEntityID) != m_pMasterEntityList.end())
+        vReturn = m_pMasterEntityList[iEntityID]->getPosition();
 
     // Return result.
     return vReturn;
@@ -271,9 +281,15 @@ vec3 EntityManager::getEntityPosition(int iEntityID)
 // Generates a Camera Entity and stores it in the Master Entity List.
 Camera* EntityManager::generateCameraEntity()
 {
-    unique_ptr<Camera> pNewCamera = make_unique<Camera>(getNewEntityID());
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize Camera Entity
+    unique_ptr<Camera> pNewCamera = make_unique<Camera>(iNewEntityID);
     Camera* pReturnCamera = pNewCamera.get();
-    m_pMasterEntityList.push_back(move(pNewCamera));
+
+    // Store Camera in Master Entity List
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewCamera)));
 
     return pReturnCamera;
 }
@@ -281,32 +297,57 @@ Camera* EntityManager::generateCameraEntity()
 // Generates a Static Plane Entity into the world.
 void EntityManager::generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize Plane Entity
+    unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, pObjectProperties, sShaderType);
-    m_pMasterEntityList.push_back(move(pNewPlane));
+
+    // Store Plane Entity in Master Entity List
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewPlane)));
 }
 
 // Generates a Static Plane Entity into the world.
 void EntityManager::generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and initialize Sphere Static Entity
+    unique_ptr<StaticEntity> pNewSphere = make_unique<StaticEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewSphere->loadAsSphere(fRadius, pObjectProperties, sShaderType);
-    m_pMasterEntityList.push_back(move(pNewSphere));
+
+    // Store new Sphere Static Entity in master Entity List
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewSphere)));
 }
 
+// Generates a Static Cube object
 void EntityManager::generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
 {
-    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize Static Cube Entity
+    unique_ptr<StaticEntity> pNewCube = make_unique<StaticEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewCube->loadAsCube(pObjectProperties, vDimensions, sShaderType);
-    m_pMasterEntityList.push_back(move(pNewCube));
+
+    // Store New Cube Entity in Master Entity List.
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewCube)));
 }
 
 // Generates a Static Mesh at a given location
 void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType )
 {
-    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize Static Mesh Entity.
+    unique_ptr<StaticEntity> pNewMesh = make_unique<StaticEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewMesh->loadFromFile(sMeshLocation, pObjectProperties, sShaderType, fScale);
-    m_pMasterEntityList.push_back(move(pNewMesh));
+
+    // Store new Mesh Entity in Master Entity List.
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewMesh)));
 }
 
 /*
@@ -315,10 +356,16 @@ mesh location and shader type.
 */
 void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
-    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Generate and Initialize Player Entity.
+    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
-    m_pPlayerEntityList.push_back(pNewPlayer.get()); 
-    m_pMasterEntityList.push_back(move(pNewPlayer));
+
+    // Store Player Entity In Player Entity List as well as Master Entity List.
+    m_pPlayerEntityList.push_back(pNewPlayer.get());
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewPlayer)));
 }
 
 /*
@@ -327,18 +374,32 @@ mesh location and shader type.
 */
 void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
 {
-    unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Generate and Initialize a new Bot Entity
+    unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eBot>(m_pBotEntityList.size()));
+
+    // Store Bot Entity in Bot Entity List as well as Master Entity List
     m_pBotEntityList.push_back(pNewBot.get()); 
-    m_pMasterEntityList.push_back(move(pNewBot));
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewBot)));
 }
+
+
 
 // Generates and Returns an Interactable Entity with a specified Position.
 InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)
 {
-    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(getNewEntityID(), vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize new Interactable Entity
+    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(iNewEntityID, vPosition);
     InteractableEntity* pReturnEntity = pNewEntity.get();
-    m_pMasterEntityList.push_back(move(pNewEntity));
+
+    // Store Interactable Entity in Entity List.
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));
 
     // Return InteractableEntity
     return pReturnEntity;
@@ -347,9 +408,15 @@ InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosit
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
 void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation, float m_fMeshScale)
 {
-    unique_ptr<PointLight> pNewLight = make_unique<PointLight>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize New Light Entity
+    unique_ptr<PointLight> pNewLight = make_unique<PointLight>(iNewEntityID, &pObjectProperties->vPosition);
     pNewLight->initialize(fPower, vColor, true, pObjectProperties, sMeshLocation, m_fMeshScale);
-    m_pMasterEntityList.push_back(move(pNewLight));
+
+    // Stopre new Point Light in Master Entity List.
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewLight)));
 }
 
 // Generates a New Directional Light and stores it in the Entity Manager.
@@ -357,23 +424,32 @@ void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectPropertie
 void EntityManager::generateDirectionalLight(const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
                                             float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame)
 {
+    // Only generate a DirectionalLight if one doesn't already exist.
     if (nullptr == m_pDirectionalLight)
     {
-        unique_ptr<DirectionalLight> pNewDirectionalLight = make_unique<DirectionalLight>(getNewEntityID());
+        // Get a new ID for this Entity.
+        int iNewEntityID = getNewEntityID();
+
+        // Generate and initialize a new Directional Light
+        unique_ptr<DirectionalLight> pNewDirectionalLight = make_unique<DirectionalLight>(iNewEntityID);
         pNewDirectionalLight->initialize(vDirection, vAmbientColor, vDiffuseColor, vSpecularColor, fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
 
         // Set the current Directional Light and store inside the Master Entity List.
         m_pDirectionalLight = pNewDirectionalLight.get();
-        m_pMasterEntityList.push_back(move(pNewDirectionalLight));
+        m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewDirectionalLight)));
     }
 }
 
 // Generates a new Spot Light Entity and stores it in the Entity Manager.
 void EntityManager::generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation, float m_fMeshScale)
 {
-    unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(getNewEntityID(), &pObjectProperties->vPosition);
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Generate and Initialize new Spotlight entity
+    unique_ptr<SpotLight> pNewLight = make_unique<SpotLight>(iNewEntityID, &pObjectProperties->vPosition);
     pNewLight->initialize(fPhi, fSoftPhi, true, vColor, vDirection, sMeshLocation, pObjectProperties, m_fMeshScale);
-    m_pMasterEntityList.push_back(move(pNewLight));
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewLight)));
 }
 
 /*
@@ -425,11 +501,12 @@ void EntityManager::updateEnvironment(const GameTime* pTimer)
             iter != m_pPhysicsComponents.end();
             ++iter)
             (*iter)->update(fDeltaTime);
+
         // Iterate through all Entities and call their update with the current time.
-        for (vector<unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
+        for (unordered_map<int, unique_ptr<Entity>>::iterator iter = m_pMasterEntityList.begin();
             iter != m_pMasterEntityList.end();
             ++iter)
-            (*iter)->update(fDeltaTime);
+            iter->second->update(fDeltaTime);
 
         // Iteratre through all Animation Components to update their animations
         for (vector<AnimationComponent*>::iterator iter = m_pAnimationComponents.begin();
@@ -569,6 +646,18 @@ PlayerEntity* EntityManager::getPlayer(ePlayer player)
     return m_pPlayerEntityList.at(player);
 }
 
+PlayerEntity* EntityManager::getPlayer(int iEntityID)
+{
+    for (PlayerEntity* player : m_pPlayerEntityList)
+    {
+        if (player->getID() == iEntityID)
+        {
+            return player;
+        }
+    }
+    return nullptr;
+}
+
 bool EntityManager::botExists(eBot bot)
 {
     return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
@@ -577,6 +666,18 @@ bool EntityManager::botExists(eBot bot)
 BotEntity* EntityManager::getBot(eBot bot)
 {
     return m_pBotEntityList.at(bot);
+}
+
+BotEntity* EntityManager::getBot(int iEntityID)
+{
+    for (BotEntity* bot : m_pBotEntityList)
+    {
+        if (bot->getID() == iEntityID)
+        {
+            return bot;
+        }
+    }
+    return nullptr;
 }
 
 

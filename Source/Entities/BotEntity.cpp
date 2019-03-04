@@ -37,7 +37,7 @@ void BotEntity::toEulerAngle(glm::quat q, double& roll, double& pitch, double& y
 void BotEntity::update(float fTimeInMilliseconds)
 {
     
-    //m_AIComponent->update(fTimeInMilliseconds);
+    m_AIComponent->update(fTimeInMilliseconds);
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
     double x, y, z;
@@ -47,11 +47,8 @@ void BotEntity::update(float fTimeInMilliseconds)
     glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->getPosition();
     glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     Action a;
-    float *coolDowns = getCooldowns();
-    m_AIComponent->popCurrentAction(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z), coolDowns[eCooldown::COOLDOWN_ROCKET],&a);
-    if (a.actionsToTake[4] == 1) {
-        useAbility(eAbility::ABILITY_SPIKES);
-    }
+    m_AIComponent->popCurrentAction(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z), 0.0f,&a);
+
     //std::cout << "BotEntity update: " << a.actionsToTake[0] << ", " << a.actionsToTake[1] << ", " << a.actionsToTake[2] << ", "<< a.actionsToTake[3] << std::endl;
     // fire Rocket, right-left turn, forward-back move,right-left move
     //std::cout << vForce.x <<  "x: " << vForce.y << " y: " << sin(vForce.z) << std::endl;
@@ -68,11 +65,9 @@ void BotEntity::initialize(const string& sFileName,
     const ObjectInfo* pObjectProperties,
     const string& sShaderType,
     float fScale,
-    eBot botID)
+    unsigned int iStatsID)
 {
-    std::cout << "Bot Entity created" << std::endl;
     HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
-    m_eBotID = botID;
     m_AIComponent = ENTITY_MANAGER->generateAIComponent(m_iID);
 
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
@@ -83,3 +78,38 @@ void BotEntity::initialize(const string& sFileName,
     glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     m_AIComponent->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
+
+/*
+    Tells the HovercraftEntity that they were damaged. This is where the Hovercraft Entity will handle its "death" logic and award points to the winner.
+
+    @param  eHitByType      The Entity Type that this Entity was hit by. This entity will either be a bot or a Player
+
+    @TODO   This seems very general and may be able to be reworked with a better design.
+*/
+void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
+{
+    // cout << "Bot " << iNumber << " hit by " << eHitByType << endl;
+    // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
+    GameStats::eAddScoreReason eScoreReason = static_cast<GameStats::eAddScoreReason>(m_iStatsID + GameStats::eAddScoreReason::HIT_BOT_1 - 1);
+
+    // Switch based on who hit the player
+    switch (eHitByType)
+    {
+    case BOT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
+        if (!isInvincible())
+        {
+            m_pGmStats->addScore(static_cast<eBot>(iNumber), eScoreReason);
+        }
+        setInvincible();
+        break;
+    case PLAYER_ENTITY: // Hitting Entity was another player, meaning that the player #iNumber should get points for hitting this player #m_ePlayerID
+        if (!isInvincible())
+        {
+            m_pGmStats->addScore(static_cast<ePlayer>(iNumber), eScoreReason);
+        }
+        setInvincible();
+        break;
+    }
+ 
+}
+

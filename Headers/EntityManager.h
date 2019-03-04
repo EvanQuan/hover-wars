@@ -56,6 +56,7 @@ public:
     void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
+    void dispatchCollision(int iColliderID, int iCollidedID);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);
@@ -82,8 +83,10 @@ public:
     The command handler can get all the players to directly communicate to.
     */
     PlayerEntity* getPlayer(ePlayer player);
+    PlayerEntity* getPlayer(int iEntityID);
     bool playerExists(ePlayer player);
     BotEntity* getBot(eBot bot);
+    BotEntity* getBot(int iEntityID);
     bool botExists(eBot bot);
 
 private:
@@ -99,7 +102,7 @@ private:
     inline int getNewComponentID() { return ++m_iComponentIDPool; }
 
     // Master
-    vector<unique_ptr<Entity>>                      m_pMasterEntityList;
+    unordered_map<int, unique_ptr<Entity>>          m_pMasterEntityList;    // Key = Entity ID
     vector<unique_ptr<EntityComponent>>             m_pMasterComponentList;
     // Phycis
     vector<PhysicsComponent*>                       m_pPhysicsComponents;   // 

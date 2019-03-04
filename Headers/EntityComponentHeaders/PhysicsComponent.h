@@ -35,7 +35,7 @@ public:
     void moveGlobal(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
+    void initializeComponent(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();

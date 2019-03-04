@@ -48,6 +48,7 @@ private:
     int currentPlace = 0;
     int iEntityID;
     int iComponentID;
-    float coolDown;
+    float timeChased;
+    bool isChasing = true;
 };
 

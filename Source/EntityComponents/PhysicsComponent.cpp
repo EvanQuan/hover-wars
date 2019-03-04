@@ -18,7 +18,7 @@ shortly afterwards.
 
 Speed : meters/second
 */
-#define MAX_DASH_SPEED 500
+#define MAX_DASH_SPEED 1000
 /*
 The amount of time the player can be in MAX_DASH_SPEED after dashing.
 
@@ -41,12 +41,13 @@ The greater the force, the faster it will accelerate.
 
 2000 @ 1000 kg, 50 grav
 
+20000.0f @ 2000kg, 50 grav
 Force : Newtons
 */
-#define MOVEMENT_FORCE 20000.0f
+#define MOVEMENT_FORCE 1000.0f // 
 /*
 1000000.0f @ 300 kg
-
+3000000.0f @ 2000 kg 50 g
 */
 #define DASH_FORCE 3000000.0f
 /*
@@ -112,7 +113,7 @@ Move a player according to x, y coordinates where
 void PhysicsComponent::move(float x, float y) {   
     // if ((x != 0 || y != 0) && !isInAir) {
     // if ((x != 0 || y != 0)) {
-    // if (!isInAir) {
+    if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
@@ -121,7 +122,10 @@ void PhysicsComponent::move(float x, float y) {
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         setSteerAngle(angle);
-   // }
+    }
+}
+PxTransform PhysicsComponent::getGlobalPose() {
+    return body->getGlobalPose();
 }
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
@@ -135,9 +139,6 @@ void PhysicsComponent::moveGlobal(float x, float y) {
         gVehicleNoDrive->setSteerAngle(2, angle);
         gVehicleNoDrive->setSteerAngle(3, angle);
     }
-}
-PxTransform PhysicsComponent::getGlobalPose() {
-    return body->getGlobalPose();
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
@@ -210,11 +211,11 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeComponent(bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
+void PhysicsComponent::initializeComponent(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
 {
     // Set up Internal Static qualifier.
     m_bStatic = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
+    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
     body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
 }

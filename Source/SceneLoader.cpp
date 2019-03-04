@@ -34,6 +34,7 @@
 #define CUBE                   "cube"
 #define SHADER                 "shader"
 #define CUBE                   "cube"
+#define NAME                   "name"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -380,22 +381,16 @@ void SceneLoader::handleProperty( vector< string >& sData, const string& sIndica
     string sDataTrimmed = trimString( sData[ 0 ] );
 
     if (MATERIAL == sIndicator)
-    {
         grabMaterial(sData);
-    }
     else if (BOUNDING == sIndicator)
-    {
         grabBoundingBox(sData);
-    }
     else if (MESH == sIndicator)
     {
         m_sMeshProperty = sDataTrimmed;
         m_fMeshScaleProperty = sData.size() > 1 ? stof(sData[1]) : 1.0f;
     }
     else if (SHADER == sIndicator)
-    {
         m_sShaderProperty = sDataTrimmed;
-    }
 }
 
 // Grabs a Material from the given data
@@ -498,7 +493,7 @@ string SceneLoader::trimString( const string& sStr )
 void SceneLoader::clearProperties() // Clear any properties
 {
     // Clear Basic Properties
-    m_sMeshProperty = m_sShaderProperty = "";
+    m_sMeshProperty = m_sShaderProperty = m_sNameProperty = "";
     m_fMeshScaleProperty = 1.0f;
 
     // Clear Material Properties
