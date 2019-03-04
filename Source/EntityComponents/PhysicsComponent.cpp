@@ -49,7 +49,7 @@ Force : Newtons
 1000000.0f @ 300 kg
 3000000.0f @ 2000 kg 50 g
 */
-#define DASH_FORCE 3000000.0f
+#define DASH_FORCE 6000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -113,7 +113,7 @@ Move a player according to x, y coordinates where
 void PhysicsComponent::move(float x, float y) {   
     // if ((x != 0 || y != 0) && !isInAir) {
     // if ((x != 0 || y != 0)) {
-    if (!isInAir) {
+    // if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
@@ -122,7 +122,7 @@ void PhysicsComponent::move(float x, float y) {
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         setSteerAngle(angle);
-    }
+    // }
 }
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
@@ -154,10 +154,10 @@ void PhysicsComponent::dash(float x, float y) {
     setSteerAngle(angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    if (!isInAir) {
+    // if (!isInAir) {
     // TODO Find out why this is a problem? Initially the player is in the air and can't turn?
         gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-    }
+    // }
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
