@@ -61,3 +61,23 @@ std::string FuncUtils::to_string(float value, int decimalPlaces)
     stream << fixed << setprecision(decimalPlaces) << value;
     return stream.str();
 }
+
+eHovercraft FuncUtils::playerToHovercraft(ePlayer player)
+{
+    return (eHovercraft) player;
+}
+
+eHovercraft FuncUtils::botToHovercraft(eBot bot)
+{
+    return (eHovercraft) (bot + HOVERCRAFT_BOT_1);
+}
+
+ePlayer FuncUtils::hovercraftToPlayer(eHovercraft hovercraft)
+{
+    return hovercraft < HOVERCRAFT_BOT_1 ? (ePlayer)hovercraft : PLAYER_INVALID;
+}
+
+eBot FuncUtils::hovercraftToBot(eHovercraft hovercraft)
+{
+    return (HOVERCRAFT_BOT_1 <= hovercraft) && (hovercraft <= HOVERCRAFT_BOT_4) ? (eBot) (hovercraft - HOVERCRAFT_BOT_1) : BOT_INVALID;
+}
