@@ -29,7 +29,7 @@ Base points for picking up a power up
 /*
 Base points lost for getting hit
 */
-#define POINTS_LOST_GOT_HIT 10
+#define POINTS_LOST_GOT_HIT 30
 /*
 Additional points lost per own killstreak. This makes having a large killstreak
 risky as you will lose more points.
@@ -298,8 +298,8 @@ void GameStats::addScore(ePlayer playerAttacker, int points)
 
 void GameStats::removeScore(ePlayer playerHit, int points)
 {
-    stats[playerHit][SCORE_CHANGE] = points;
-    stats[playerHit][SCORE_CURRENT];
+    stats[playerHit][SCORE_CHANGE] = -points;
+    stats[playerHit][SCORE_CURRENT] -= points;
 }
 
 

@@ -62,12 +62,12 @@ Unit : seconds
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
 
-#define SCORE_UPDATE_DURATION   2.0f
-#define SCORE_UPDATE_X          SCORE_X + 100.0f
-#define SCORE_UPDATE_Y          SCORE_Y - 50.0f
-#define SCORE_UPDATE_SCALE      1.0f
-#define SCORE_UPDATE_ADD_COLOR  COLOR_GREEN
-#define SCORE_UPDATE_SUB_COLOR  COLOR_RED
+#define SCORE_CHANGE_DURATION   2.0f
+#define SCORE_CHANGE_X          SCORE_X + 110.0f
+#define SCORE_CHANGE_Y          SCORE_Y - 50.0f
+#define SCORE_CHANGE_SCALE      1.0f
+#define SCORE_CHANGE_ADD_COLOR  COLOR_GREEN
+#define SCORE_CHANGE_SUB_COLOR  COLOR_RED
 
 #define MESSAGE_DURATION        3.0f
 #define MESSAGE_X               900.0f
@@ -313,7 +313,7 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
         // system("CLS");
 
         updateGameTime(fSecondsSinceLastUpdate);
-        updateScores();
+        // updateScores();
         // updateCooldowns();
     }
 }
@@ -400,6 +400,14 @@ void UserInterface::renderScores()
     // TODO put this in the proper place, font, scale etc.
     std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::SCORE_CURRENT));
     renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
+    renderScoreChange();
+}
+
+void UserInterface::renderScoreChange()
+{
+    int scoreChange = m_pGameStats->get(PLAYER_1, GameStats::eStat::SCORE_CHANGE);
+    bool scoreIncreased = scoreChange > 0;
+    renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) , SCORE_CHANGE_X, SCORE_CHANGE_Y, SCORE_CHANGE_SCALE, scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
 }
 
 void UserInterface::updateCooldowns()

@@ -85,6 +85,7 @@ private:
     void updateScores();
     void updateScore(ePlayer player, int score);
     void renderScores();
+    void renderScoreChange();
 
     // Cooldowns
     void initializeCooldowns();
