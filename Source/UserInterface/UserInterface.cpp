@@ -62,6 +62,11 @@ Unit : seconds
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
 
+#define MESSAGE_DURATION        3.0f
+#define MESSAGE_X               900.0f
+#define MESSAGE_Y               800.0f
+#define MESSAGE_SCALE           1.0f
+#define MESSAGE_COLOR           COLOR_WHITE
 
 /*************\
  * Constants *
@@ -97,7 +102,7 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     initFreeType();
     initializeVBOs();
 
-    m_iGameTime = ROUND_TIME;
+    m_fGameTime = ROUND_TIME;
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -278,6 +283,11 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
 }
 
+void UserInterface::displayMessage(std::string text)
+{
+    m_sMessage = text;
+    m_fMessageTime = MESSAGE_DURATION;
+}
 /*
 This visually updates the UserInterface to all value changes since last update.
 
@@ -312,6 +322,7 @@ void UserInterface::render()
     renderGameTime();
     renderScores();
     renderCooldowns();
+    renderMessage();
 }
 
 /*
@@ -320,7 +331,8 @@ void UserInterface::render()
 void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
-    m_iGameTime -= fSecondsSinceLastUpdate;
+    m_fGameTime -= fSecondsSinceLastUpdate;
+    m_fMessageTime -= fSecondsSinceLastUpdate;
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round
 
@@ -345,10 +357,18 @@ it more than every render update (ie. no reason to update it every game update)
 */
 std::string UserInterface::timeToString()
 {
-    int total = (int) m_iGameTime;
+    int total = (int) m_fGameTime;
     int seconds = total % SECONDS_PER_MINUTE;
     int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
     return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+}
+
+void UserInterface::renderMessage()
+{
+    if (m_fMessageTime > 0)
+    {
+        renderText(m_sMessage, MESSAGE_X, MESSAGE_Y, MESSAGE_SCALE, MESSAGE_COLOR);
+    }
 }
 
 /*

@@ -46,6 +46,8 @@ public:
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
+    void displayMessage(std::string text);
+
 
 private:
     UserInterface(int iWidth, int iHeight);                                 // Default Constructor
@@ -75,6 +77,8 @@ private:
     void renderGameTime();
     std::string timeToString();
     
+    // Message
+    void renderMessage();
 
     // Score
     void initializeScores();
@@ -109,7 +113,15 @@ private:
 
     Unit : seconds
     */
-    float m_iGameTime;
+    float m_fGameTime;
+
+    /*
+    Tracks how long the message has been displayed for
+
+    Unit : seconds
+    */
+    std::string m_sMessage;
+    float m_fMessageTime;
 
     int m_iDisplayCount;
 

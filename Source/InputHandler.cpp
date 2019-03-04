@@ -150,6 +150,10 @@ void InputHandler::debugKeyCommands(int key, int action)
         case GLFW_KEY_Y:
             cout << "Disable player 1 for 1 seconds" << endl;
             ENTITY_MANAGER->getPlayer(PLAYER_1)->setLoseControl(1.0f);
+            break;
+        case GLFW_KEY_U:
+            USER_INTERFACE->displayMessage("This is a message");
+            break;
         }
     }
 }
