@@ -120,6 +120,10 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 
     m_fMinimumDistanceBetweenFlames = 5.0f;
 
+    m_bSpikesActivated = false;
+
+    outOfControlTime = 0.0f;
+
     initializeCooldowns();
 }
 
@@ -135,8 +139,17 @@ HovercraftEntity::~HovercraftEntity()
 /*
 @param fSecondsSinceLastUpdate  delta time since last update
 */
-void HovercraftEntity::update(float fTimeInMilliseconds)
+void HovercraftEntity::update(float fSecondsSinceLastUpdate)
 {
+    if (!isInControl)
+    {
+        outOfControlTime -= fSecondsSinceLastUpdate;
+        if (outOfControlTime <= 0)
+        {
+            isInControl = true;
+        }
+    }
+
     // New Transformation Matrix
     mat4 m4NewTransform = mat4(1.0f);
 
@@ -155,7 +168,8 @@ void HovercraftEntity::update(float fTimeInMilliseconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
-    updateCameraLookAts(fTimeInMilliseconds);
+    updateCameraLookAts(fSecondsSinceLastUpdate);
+    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -215,7 +229,6 @@ void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
 {
     updateCameraRotation(fSecondsSinceLastUpdate);
     updateCameraPosition(fSecondsSinceLastUpdate);
-    updateCooldowns(fSecondsSinceLastUpdate);
 }
 
 void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
@@ -260,7 +273,19 @@ void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
         m_fCooldowns[i] = newCooldown > 0.0f ? newCooldown : 0.0f;
     }
     updateTrail(fSecondsSinceLastUpdate);
-    // check flame trail separately
+    updateSpikes(fSecondsSinceLastUpdate);
+}
+
+void HovercraftEntity::updateSpikes(float fSecondsSinceLastUpdate)
+{
+    if (m_bSpikesActivated)
+    {
+        m_fSecondsSinceSpikesActivated += fSecondsSinceLastUpdate;
+    }
+    if (m_fSecondsSinceSpikesActivated > SPIKES_DURATION)
+    {
+        m_bSpikesActivated = false;
+    }
 }
 
 /*
@@ -390,12 +415,18 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 
 void HovercraftEntity::move(float x, float y)
 {
-    m_pPhysicsComponent->move(x, y);
+    if (isInControl)
+    {
+        m_pPhysicsComponent->move(x, y);
+    }
 }
 
 void HovercraftEntity::turn(float x)
 {
-    m_pPhysicsComponent->rotatePlayer(x);
+    if (isInControl)
+    {
+        m_pPhysicsComponent->rotatePlayer(x);
+    }
 }
 
 /*
@@ -418,6 +449,9 @@ void HovercraftEntity::activateSpikes()
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+    
+    m_bSpikesActivated = true;
+    m_fSecondsSinceSpikesActivated = 0.0f;
 
 }
 

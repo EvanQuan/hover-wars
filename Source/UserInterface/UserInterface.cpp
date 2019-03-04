@@ -391,8 +391,9 @@ void UserInterface::renderCooldowns()
     renderText("Flame: " + trailPercentString + "%", TRAIL_X, TRAIL_Y, TRAIL_SCALE, color);
 
     renderCooldown("Rocket", eCooldown::COOLDOWN_ROCKET, cooldowns, ROCKET_X, ROCKET_Y, ROCKET_SCALE);
-    renderCooldown("Spikes", eCooldown::COOLDOWN_SPIKES, cooldowns, SPIKES_X, SPIKES_Y, SPIKES_SCALE);
+    renderCooldown("Spikes" + std::string(player->hasSpikesActivated() ? " enabled" : ""), eCooldown::COOLDOWN_SPIKES, cooldowns, SPIKES_X, SPIKES_Y, SPIKES_SCALE);
     renderCooldown("Dash", eCooldown::COOLDOWN_DASH, cooldowns, DASH_X, DASH_Y, DASH_SCALE);
+
     //  renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
