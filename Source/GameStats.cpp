@@ -256,7 +256,7 @@ Update the scores from the result of playerAttacker hitting playerHit
 void GameStats::updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit)
 {
     addScore(playerAttacker, getScoreGainedForAttacker(playerAttacker, playerHit));
-    stats[playerHit][SCORE_CURRENT] -= getScoreLostForHit(playerAttacker, playerHit);
+    removeScore(playerHit, getScoreLostForHit(playerAttacker, playerHit));
 }
 
 /*
@@ -291,9 +291,17 @@ Add to a player's score.
 */
 void GameStats::addScore(ePlayer playerAttacker, int points)
 {
+    stats[playerAttacker][SCORE_CHANGE] = points;
     stats[playerAttacker][SCORE_CURRENT] += points;
     stats[playerAttacker][SCORE_TOTAL] += points;
 }
+
+void GameStats::removeScore(ePlayer playerHit, int points)
+{
+    stats[playerHit][SCORE_CHANGE] = points;
+    stats[playerHit][SCORE_CURRENT];
+}
+
 
 /*
 Update the attacker's total kills, and total kills against hit player

@@ -144,6 +144,7 @@ private:
     int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
     int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
     void addScore(ePlayer playerAttacker, int points);
+    void removeScore(ePlayer playerHit, int points);
 
     // Kills
     void updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit);
