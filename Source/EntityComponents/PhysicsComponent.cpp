@@ -49,7 +49,7 @@ Force : Newtons
 1000000.0f @ 300 kg
 3000000.0f @ 2000 kg 50 g
 */
-#define DASH_FORCE 3000000.0f
+#define DASH_FORCE 6000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.

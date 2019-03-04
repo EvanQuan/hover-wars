@@ -17,6 +17,8 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 #define ABILITY_COUNT           COOLDOWN_COUNT
 
 
+#define LOSE_CONTROL_COLLISION_TIME 0.8f
+#define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
 // Fire Defines
 #define FIRE_HEIGHT             2.0
 #define FIRE_WIDTH              2.0
@@ -152,6 +154,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
             isInControl = true;
         }
     }
+    lowEnoughToMove = m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
 
     // New Transformation Matrix
     mat4 m4NewTransform = mat4(1.0f);
@@ -232,20 +235,29 @@ void HovercraftEntity::handleCollision(Entity* pOther)
 {
     // Get the Type of the Other Entity
     eEntityTypes eOtherType = pOther->getType();
-
+    HovercraftEntity* pOtherHovercraft;
     switch (eOtherType)
     {
     case PLAYER_ENTITY:
     case BOT_ENTITY:
         // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
         // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
-        HovercraftEntity* pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
+        pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->hit(m_eType, m_iStatsID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
+        {
             this->hit(pOther->getType(), pOtherHovercraft->getStatsID());
+        }
+
+        // Momentarily lose control of vehicle to prevent air moving
+        setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        break;
+    case PLANE_ENTITY:
+        setGainControl();
         break;
         /*Further Cases:
         case ROCKET_ENTITY:
@@ -464,15 +476,18 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 
 void HovercraftEntity::move(float x, float y)
 {
-    if (isInControl)
+    if (lowEnoughToMove)
+    // if (isInControl)
     {
         m_pPhysicsComponent->move(x, y);
+        // cout << m_pPhysicsComponent->getPosition().y << endl;
     }
 }
 
 void HovercraftEntity::turn(float x)
 {
-    if (isInControl)
+    if (lowEnoughToMove)
+    // if (isInControl)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
