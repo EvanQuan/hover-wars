@@ -290,6 +290,15 @@ Points lost per killstreak **10**
     - The round ends when the timer hits 0:00
     - Once the round ends, the player with the highest score wins
 
+### User Interface
+
+- Implemented
+  - Abilities statuses
+  - Score
+    - Score change
+  - Game time
+  - Domination, revenge, killstreak messages
+
 
 ### Sound
 
