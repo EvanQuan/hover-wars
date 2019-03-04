@@ -113,7 +113,7 @@ Move a player according to x, y coordinates where
 void PhysicsComponent::move(float x, float y) {   
     // if ((x != 0 || y != 0) && !isInAir) {
     // if ((x != 0 || y != 0)) {
-    // if (!isInAir) {
+    if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
@@ -122,7 +122,7 @@ void PhysicsComponent::move(float x, float y) {
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
         setSteerAngle(angle);
-   // }
+    }
 }
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {

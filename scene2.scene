@@ -180,8 +180,10 @@ plane {
 }
 
 # Mesh
+# Having the player start off the ground sort of fixes the initial
+# is in air bug
 player {
-    0 0 0.1
+    0 5 0
     +mesh {
         models/big_dodge.obj
         0.25
@@ -196,7 +198,7 @@ player {
     }
     +bounding {
         box
-        2.0 5.0 2.5 
+        2.0 5.0 2.5
     }
 }
 
