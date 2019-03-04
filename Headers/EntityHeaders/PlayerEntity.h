@@ -15,7 +15,8 @@ public:
                     unsigned int iStatsID);
 
     // Overridden function for handling a hit by an opposing entity
-    void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
+    void hit(eEntityTypes eHitByType, unsigned int iNumber);
+    // void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
 
     /*
     Track ability usage for players

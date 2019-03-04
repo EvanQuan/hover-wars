@@ -29,16 +29,24 @@ HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
 
     @TODO   This seems very general and may be able to be reworked with a better design.
 */
-void PlayerEntity::hit(eEntityTypes eHitByType, unsigned int iNumber) const
+void PlayerEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 {
     // Switch based on who hit the player
     switch (eHitByType)
     {
     case BOT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
-        m_pGmStats->addScore(static_cast<eBot>(iNumber), static_cast<GameStats::eAddScoreReason>(m_iStatsID));
+        if (!isInvincible())
+        {
+            m_pGmStats->addScore(static_cast<eBot>(iNumber), static_cast<GameStats::eAddScoreReason>(m_iStatsID));
+        }
         break;
+        setInvincible();
     case PLAYER_ENTITY: // Hitting Entity was another player, meaning that the player #iNumber should get points for hitting this player #m_ePlayerID
-        m_pGmStats->addScore(static_cast<ePlayer>(iNumber), static_cast<GameStats::eAddScoreReason>(m_iStatsID));
+        if (!isInvincible())
+        {
+            m_pGmStats->addScore(static_cast<ePlayer>(iNumber), static_cast<GameStats::eAddScoreReason>(m_iStatsID));
+        }
         break;
+        setInvincible();
     }
 }

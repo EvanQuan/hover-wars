@@ -15,7 +15,8 @@ public:
                     unsigned int iStatsID);
 
     // Overridden virtual functions inherited from parent
-    void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
+    void hit(eEntityTypes eHitByType, unsigned int iNumber);
+    // void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
     void update(float fTimeInMilliseconds);
 private:
     int lastStep = -1;

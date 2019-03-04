@@ -123,7 +123,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 
     m_bSpikesActivated = false;
 
-    invincible = false;
+    m_bInvincible = false;
 
     outOfControlTime = 0.0f;
 
@@ -181,7 +181,7 @@ void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
     m_fSecondsLeftUntilVulnerable -= fTimeInSeconds;
     if (m_fSecondsLeftUntilVulnerable <= 0)
     {
-        invincible = false;
+        m_bInvincible = false;
     }
 }
 
@@ -227,7 +227,8 @@ void HovercraftEntity::initialize(const string& sFileName,
     @param pOther   const pointer to the Entity that this entity collided with.
     @param bVictim  boolean to tell if this entity is the victim or not.
 */
-void HovercraftEntity::handleCollision(const Entity* pOther) const
+// void HovercraftEntity::handleCollision(const Entity* pOther) const
+void HovercraftEntity::handleCollision(Entity* pOther)
 {
     // Get the Type of the Other Entity
     eEntityTypes eOtherType = pOther->getType();
@@ -237,7 +238,8 @@ void HovercraftEntity::handleCollision(const Entity* pOther) const
     case PLAYER_ENTITY:
     case BOT_ENTITY:
         // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
-        const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
+        // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
+        HovercraftEntity* pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->hit(m_eType, m_iStatsID);

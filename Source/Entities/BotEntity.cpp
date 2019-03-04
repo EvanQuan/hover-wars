@@ -85,7 +85,7 @@ void BotEntity::initialize(const string& sFileName,
 
     @TODO   This seems very general and may be able to be reworked with a better design.
 */
-void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber) const
+void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 {
     // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
     GameStats::eAddScoreReason eScoreReason = static_cast<GameStats::eAddScoreReason>(m_iStatsID + GameStats::eAddScoreReason::HIT_BOT_1 - 1);
@@ -94,10 +94,18 @@ void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber) const
     switch (eHitByType)
     {
     case BOT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
-        m_pGmStats->addScore(static_cast<eBot>(iNumber), eScoreReason);
+        if (!isInvincible())
+        {
+            m_pGmStats->addScore(static_cast<eBot>(iNumber), eScoreReason);
+        }
+        setInvincible();
         break;
     case PLAYER_ENTITY: // Hitting Entity was another player, meaning that the player #iNumber should get points for hitting this player #m_ePlayerID
-        m_pGmStats->addScore(static_cast<ePlayer>(iNumber), eScoreReason);
+        if (!isInvincible())
+        {
+            m_pGmStats->addScore(static_cast<ePlayer>(iNumber), eScoreReason);
+        }
+        setInvincible();
         break;
     }
 }

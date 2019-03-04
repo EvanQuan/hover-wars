@@ -92,8 +92,11 @@ public:
     void update(float fTimeInMilliseconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
-    void handleCollision(const Entity* pOther) const;
+    // Why was this const? I need to change state in order to make the hovercrafts invincible?
+    virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) = 0;
+    // virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
+    // void handleCollision(const Entity* pOther) const;
+    void handleCollision(Entity* pOther);
 
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
@@ -141,9 +144,9 @@ public:
     If true, ability collisions will count.
     Otherwise, ignore ability collisions.
     */
-    bool isInvincible() { return invincible; };
+    bool isInvincible() const { return m_bInvincible; };
 
-    bool setInvincile() { invincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
+    void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
     PhysicsComponent* m_pPhysicsComponent;
 private:
     // Private Variables
@@ -231,7 +234,7 @@ private:
     float outOfControlTime;
 
     void updateVulnerability(float fTimeInSeconds);
-    bool invincible;
+    bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
 // Protected Functions and variables for Child Classes
