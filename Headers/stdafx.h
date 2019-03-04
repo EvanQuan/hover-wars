@@ -68,6 +68,8 @@ using namespace physx;
 #define KEYS                349
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
 #define MAX_PLAYER_COUNT    4
+#define MAX_BOT_COUNT       4
+#define MAX_HOVERCRAFT_COUNT 8
 #define XBOX_CONTROLLER     "Xbox"
 #define EMPTY_CONTROLLER    "Empty Controller"
 // m_pJoystickAxes
@@ -121,20 +123,35 @@ Actor names are composed of 2 characters. The order of tokens are:
 
 2. Subtype or Owner
 */
-// Type TODO to implememnt
-#define TYPE_WORLD   "w"
-#define TYPE_POWERUP "p"
-#define TYPE_TRAIL   "t"
-#define TYPE_PLAYER  "P"
-#define TYPE_BOT     "b"
-#define TYPE_ROCKET  "r"
-#define TYPE_SPIKES  "s"
+// Type
+#define TYPE_WORLD      "w"
+#define TYPE_POWERUP    "p"
+#define TYPE_TRAIL      "t"
+#define TYPE_PLAYER     "P"
+#define TYPE_HOVERCRAFT "h"
+#define TYPE_BOT        "b"
+#define TYPE_ROCKET     "r"
+#define TYPE_SPIKES     "s"
 
-// Subtype TODO to implememnt
-#define SUBTYPE_WALL "W"
-#define SUBTYPE_GROUND "g"
+#define C_TYPE_WORLD      'w'
+#define C_TYPE_POWERUP    'p'
+#define C_TYPE_TRAIL      't'
+#define C_TYPE_PLAYER     'P'
+#define C_TYPE_BOT        'b'
+#define C_TYPE_HOVERCRAFT 'h'
+#define C_TYPE_ROCKET     'r'
+#define C_TYPE_SPIKES     's'
+
+// Subtype
+#define SUBTYPE_WALL          "W"
+#define SUBTYPE_GROUND        "g"
 #define SUBTYPE_POWERUP_SPEED "S"
-// Owner TODO to implement
+
+#define C_SUBTYPE_WALL          'W'
+#define C_SUBTYPE_GROUND        'g'
+#define C_SUBTYPE_POWERUP_SPEED 'S'
+
+// Owner
 #define OWNER_PLAYER_1 "1"
 #define OWNER_PLAYER_2 "2"
 #define OWNER_PLAYER_3 "3"
@@ -144,8 +161,16 @@ Actor names are composed of 2 characters. The order of tokens are:
 #define OWNER_BOT_3    "7"
 #define OWNER_BOT_4    "8"
 
+#define C_OWNER_PLAYER_1 '1'
+#define C_OWNER_PLAYER_2 '2'
+#define C_OWNER_PLAYER_3 '3'
+#define C_OWNER_PLAYER_4 '4'
+#define C_OWNER_BOT_1    '5'
+#define C_OWNER_BOT_2    '6'
+#define C_OWNER_BOT_3    '7'
+#define C_OWNER_BOT_4    '8'
+
 // Don't use these
-#define TYPE_WORLD   "w"
 #define NAME_PLAYER  "p"
 #define NAME_BOT     "b"
 #define NAME_ROCKET  "r"
