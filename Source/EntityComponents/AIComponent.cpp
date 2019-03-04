@@ -107,10 +107,14 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
             seekPoint.z = (float)(rand() % 200);
             timeChased = 0;
         }
-    }else if (timeChased > 2) {
-        std::cout << "chasing = true" << std::endl;
+        
+    }
+    else if (timeChased > 20 || (abs(botPos.z - playerPos.z) < DISTANCE_BOX * 6 && abs(botPos.x - playerPos.x) < DISTANCE_BOX * 6)) {
         isChasing = true;
         timeChased = 0;
+    }
+    if (!isChasing && abs(botPos.z - seekPoint.z) < DISTANCE_BOX && abs(botPos.x - seekPoint.x) < DISTANCE_BOX) {
+        isChasing = true;
     }
 
     if (angle - botRotation > 0.01) {
@@ -145,7 +149,7 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     //a->actionsToTake[3] = difference.z/100.0f;
     // std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
 #ifndef NDEBUG
-    //std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
+    std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
     //currentPlace = (1 + currentPlace) % LOOK_AHEAD_FRAMES;
 #endif
 }
