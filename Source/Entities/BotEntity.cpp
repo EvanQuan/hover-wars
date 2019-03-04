@@ -87,6 +87,7 @@ void BotEntity::initialize(const string& sFileName,
 */
 void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 {
+    // cout << "Bot " << iNumber << " hit by " << eHitByType << endl;
     // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
     GameStats::eAddScoreReason eScoreReason = static_cast<GameStats::eAddScoreReason>(m_iStatsID + GameStats::eAddScoreReason::HIT_BOT_1 - 1);
 

@@ -83,8 +83,10 @@ public:
     The command handler can get all the players to directly communicate to.
     */
     PlayerEntity* getPlayer(ePlayer player);
+    PlayerEntity* getPlayer(int iEntityID);
     bool playerExists(ePlayer player);
     BotEntity* getBot(eBot bot);
+    BotEntity* getBot(int iEntityID);
     bool botExists(eBot bot);
 
 private:

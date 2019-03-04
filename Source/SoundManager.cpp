@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "SoundManager.h"
+#include "EntityHeaders/BotEntity.h"
+#include "EntityManager.h"
+#include "EntityHeaders/PlayerEntity.h"
 
 // Bank paths
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
@@ -8,7 +11,7 @@
 /*
 @Stephen What does this impact? Describe why this is here.
 */
-#define MAX_CHANNELS 10
+#define MAX_CHANNELS 20
 #define NO_EXTRA_DRIVER_DATA 0
 
 // Initialize Static Instance Variable
@@ -70,13 +73,16 @@ void SoundManager::play(eSoundEvent sound)
 
 /*
     Determine Entity Types resulting in Collision and play a resulting sound for the collision.
-    Handle any logic between collisions to determin sound here.
+    Handle any logic between collisions to determine sound here.
 
     @param eColliderType    The Entity Type of the Collider
     @param eCollidedType    The Entity Type of the Collided
+    @return true if both collider and collided are hovercrafts
 */
-void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType)
+bool SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType)
 {
+    // Context-specific sounds require specific information about the entities, specifically
+    // if they are players
     switch (eColliderType)
     {
     case eEntityTypes::PLAYER_ENTITY:                   // Waterfall for Player and Bot Entities
@@ -86,6 +92,7 @@ void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes
         case eEntityTypes::PLAYER_ENTITY:               
         case eEntityTypes::BOT_ENTITY:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
+            return true;
             break;
         case eEntityTypes::STATIC_ENTITY:
         case eEntityTypes::PLANE_ENTITY:
@@ -93,11 +100,71 @@ void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes
             break;
         }
         break;
-    case eEntityTypes::STATIC_ENTITY:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
-    case eEntityTypes::PLANE_ENTITY:
-        play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);
-        break;
+//    case eEntityTypes::STATIC_ENTITY:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
+//    case eEntityTypes::PLANE_ENTITY:
+//        play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);
+//        break;
     }
+    return false;
+}
+
+void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
+{
+    eEntityTypes colliderType = collider->getType();
+    eEntityTypes collidedType = collided->getType();
+    // TODO this will be reorganized
+    // Base collision sounds only require type
+    if (handleBaseCollisionSound(colliderType, collidedType))
+    {
+        // For some reason this check is not enough?
+        if (((colliderType == eEntityTypes::BOT_ENTITY) || (colliderType == eEntityTypes::PLAYER_ENTITY))
+            && (collidedType == eEntityTypes::BOT_ENTITY) || (collidedType == eEntityTypes::PLAYER_ENTITY))
+        {
+            handleContextCollisionSound(collider, collided);
+        }
+    }
+
+
+}
+
+/*
+At this point, assumes both collider and collided are hovercrafts of some kind.
+*/
+void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collided)
+{
+    // TODO refactor all of this
+    bool spikeImpact = false;
+    PlayerEntity* player = ENTITY_MANAGER->getPlayer(collider->getID());
+    BotEntity* bot;
+    if (nullptr != player)
+    {
+        spikeImpact = player->hasSpikesActivated();
+    } 
+    else
+    {
+        bot = ENTITY_MANAGER->getBot(collider->getID());
+        spikeImpact = bot->hasSpikesActivated();
+    }
+
+    if (!spikeImpact)
+    {
+        player = ENTITY_MANAGER->getPlayer(collided->getID());
+        if (nullptr != player)
+        {
+            spikeImpact = player->hasSpikesActivated();
+        } 
+        else
+        {
+            bot = ENTITY_MANAGER->getBot(collided->getID());
+            spikeImpact = bot->hasSpikesActivated();
+        }
+    }
+
+    if (spikeImpact)
+    {
+        play(eSoundEvent::SOUND_SPIKES_IMPACT);
+    }
+
 }
 
 /*

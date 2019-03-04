@@ -17,7 +17,8 @@ Entity::Entity(const Entity& pCopy)
     m_vPosition = pCopy.m_vPosition;
 }
 
-void Entity::handleCollision(const Entity* pOther) const
+// void Entity::handleCollision(const Entity* pOther) const
+void Entity::handleCollision(Entity* pOther)
 {
     /*Default, not implemented*/
 }

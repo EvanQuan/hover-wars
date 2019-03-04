@@ -367,7 +367,6 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 
             // float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
 
-            // cout << m_vPositionOfLastFlame.x << " " << m_vPositionOfLastFlame.y << " " << m_vPosition << endl;
             if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
             // if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
             {

@@ -54,10 +54,15 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
 #endif
 
             // Simply play sound when collided with ground
-            if (GROUND_ID == iCollidedID || GROUND_ID == iColliderID )
-                SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
+            if (GROUND_ID == iCollidedID || GROUND_ID == iColliderID)
+            {
+                // Do not play ground collision sounds
+                // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
+            }
             else    // Tell the Entity Manager to Dispatch the  Collision between the two colliding entities
+            {
                 m_pEntMngr->dispatchCollision(iColliderID, iCollidedID);
+            }
         }
     }
 }
