@@ -301,7 +301,18 @@ Update the attacker's total kills, and total kills against hit player
 void GameStats::updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit)
 {
     stats[playerAttacker][TOTAL_KILLS]++;
-    stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_1 + playerHit]++;
+    if (playerHit == PLAYER_1) {
+        stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_1 + playerHit]++;
+    }
+    else if (playerHit == PLAYER_2) {
+        stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_2 + playerHit]++;
+    }
+    else if (playerHit == PLAYER_3) {
+        stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_3 + playerHit]++;
+    }
+    else if (playerHit == PLAYER_4) {
+        stats[playerAttacker][TOTAL_KILLS_AGAINST_PLAYER_4 + playerHit]++;
+    }
 }
 
 /*
