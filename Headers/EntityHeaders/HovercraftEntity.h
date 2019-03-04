@@ -17,6 +17,7 @@
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 
+// TODO move macros only used in .cpp
 /*
 Cooldowns
 

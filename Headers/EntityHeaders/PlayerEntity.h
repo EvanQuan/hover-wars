@@ -20,6 +20,7 @@ public:
 
     /*
     Track ability usage for players
+     TODO Move to Hovecraft, since all hovercrafts have ability tracking
     */
     bool useAbility(eAbility ability)
     {

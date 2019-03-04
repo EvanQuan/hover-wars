@@ -28,6 +28,7 @@ HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
     @param  eHitByType      The Entity Type that this Entity was hit by. This entity will either be a bot or a Player
 
     @TODO   This seems very general and may be able to be reworked with a better design.
+            No longer make the player/bot distinction since GameStats doesn't care about difference
 */
 void PlayerEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 {

@@ -272,7 +272,12 @@ void UserInterface::initializeVBOs()
 {
     // Generate Vertex Array
     glGenVertexArrays(1, &m_iVertexArray);
+    // dynamic draw, keep this ready, because we will draw this alot
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, sizeof(vec4), GL_DYNAMIC_DRAW);    // Generate the Vertex Buffer and store some space on the GPU for Text Rendering.
+
+    // chunk size  4 - internally treats each section as a float, it goes through 4 floats in each cunk
+    // 
+    // offset is 0
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
 }
 
@@ -475,12 +480,17 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
+    // m_pShdrMngr->setUniformBool()// shader, name, value
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
+    // TODO
+    // Need a different shader for images
+    // Change the texture class to store height and width, loaded dynamically
+    // Create a quad similar to text
     // Iterate through all Characters
     string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
@@ -489,6 +499,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         Character ch = m_pCharacters[*c];
 
         // Calculate Position offset by the bearings of the glyph
+        // x and y in screen space
         GLfloat xpos = x + ch.bearing.x * scale;
         GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
@@ -504,6 +515,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
+        // TODO, use triangle strip instead to reduce vertices to 4
         // Update VBO for each character
         // Triangle 1:
         /*
@@ -546,6 +558,9 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+/*
+Use hashmap for image intead of image filepath directly
+*/
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
 
