@@ -155,7 +155,7 @@ void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collide
         } 
         else
         {
-            bot = ENTITY_MANAGER->getBot(collider->getID());
+            bot = ENTITY_MANAGER->getBot(collided->getID());
             spikeImpact = bot->hasSpikesActivated();
         }
     }
