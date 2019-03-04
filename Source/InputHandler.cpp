@@ -41,7 +41,6 @@ InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 
 InputHandler::~InputHandler()
 {
-    m_gameManager = nullptr; // TODO remove later once GameManager no longer needed
 }
 
 
