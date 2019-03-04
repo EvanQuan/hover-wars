@@ -89,6 +89,7 @@ void SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityT
         {
         case eEntityTypes::PLAYER_ENTITY:               
         case eEntityTypes::BOT_ENTITY:
+
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
 
             break;
@@ -110,8 +111,15 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     // TODO this will be reorganized
     // Base collision sounds only require type
     handleBaseCollisionSound(collider->getType(), collider->getType());
+    handleContextCollisionSound(collider, collided);
+
+
 }
 
+void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collided)
+{
+    
+}
 
 
 /*

@@ -61,7 +61,6 @@ public:
     };
 
     void play(eSoundEvent sound);
-    void handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
     void handleCollisionSound(Entity* collider, Entity* collided);
 
     // TODO figure out sound at locations
@@ -101,6 +100,9 @@ private:
 
     SoundManager();
     void updateChannels();
+
+    void handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
+    void handleContextCollisionSound(Entity* collider, Entity* collided);
 
     int errorCheck(FMOD_RESULT result);
 
