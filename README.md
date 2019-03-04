@@ -203,7 +203,8 @@ Alternate camera
 
 
 **Stats**
-- All in game stat tracking is fully implemented
+- All in game stat tracking is fully implemented in order for the game to run
+
 ```
 Player:
     Score:
@@ -228,6 +229,48 @@ Player:
         Total abilities used
         Count of each ability used
 ```
+
+To test this, run in `Debug` mode and press:
+
+
+**R** - Player 1 hits Player 2
+
+**T** - Player 2 hits Player 1
+
+This demonstrates how players gain and lose points based on their current
+killstreaks, dominations and revenges.
+
+
+Domination
+- If player A kills player B 3 times in a row without being killed by player
+  B, player A will `dominate` player B.
+
+Revenge
+- If player A is dominating player B, and player B kills player A, player
+  B gets `revenge` on player A. Player A no longer dominates player B.
+
+Killstreak
+- Number of kills a player has in a row without being killed by anyone
+
+Points are tracked as as followed (are open to change):
+
+Base points gained for killing a bot (10)
+
+Base points gained for killing a player (50)
+
+Points gained for getting revenge 100
+
+Points gained per killstreak 20
+- This stacks
+
+Points gained for picking up a powerup 10
+
+Base points lost for getting killed 30
+
+Points lost per killstreak 10
+- This stacks
+
+
 
 **Game Time**
 - Implemented
