@@ -151,6 +151,41 @@ When you load up the program, you'll see a textured plane with a white spot ligh
 
 The world loads in from the file scene2.scene and can be modified as per the rules stated at the top of that file.
 
+### Game Rules
+
+Stats
+- All in game stat tracking is fully implemented
+```
+Player:
+    Score:
+        Current score
+        Change in score
+        Total score
+    Kills:
+        Total kills
+        Total kills against players
+        Total kills against each player
+        Total kills against bots
+    Dominations:
+        Current dominations between players
+    Killstreaks:
+        Current total killstreak
+        Current killstreak between players
+        Largest total killstreak
+        Largest total killstreak between players
+    Powerups:
+        Total powerups picked up
+    Abilities:
+        Total abilities used
+        Count of each ability used
+```
+
+Game Time
+- Implemented
+    - The round timer tracks time correctly
+- Not implemented
+    - The round ends when the timer hits 0:00
+
 
 ### Sound
 
