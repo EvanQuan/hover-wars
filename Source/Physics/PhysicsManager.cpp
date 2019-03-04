@@ -32,8 +32,8 @@ This determines the threshold for a force to begin moving the car from neutral
 We want this to be relatively small or even 0 since whenever we apply a force
 to the car, we typically would want it to move.
 */
-#define CAR_STATIC_FRICTION 0.0f // 0.35f
-#define WORLD_STATIC_FRICTION 0.0f // 0.35f
+#define CAR_STATIC_FRICTION 0.00f // 0.35f
+#define WORLD_STATIC_FRICTION 0.00f // 0.35f
 /*
 Coefficient of dynamic friction
 
@@ -53,7 +53,7 @@ objects bounce away.
 
 This should be relatively high to make car collisions satisfying.
 */
-#define CAR_RESTITUTION 0.1f // 0.2f
+#define CAR_RESTITUTION 1.0f // 0.2f
 
 /*
 World Restituti8on
@@ -83,7 +83,7 @@ explosions or collisions.
 
 Mass : kilograms
 */
-#define CHASSIS_MASS = 10000.0f // 1000
+#define CHASSIS_MASS 2000.0 // 1000
 
 
 /****************************************************************************\
@@ -135,12 +135,17 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     //Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
     //The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
     //Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
-    const PxF32 chassisMass = 300.0f;
+    const PxF32 chassisMass = CHASSIS_MASS;
     const PxVec3 chassisMOI
     ((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
         (chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
         (chassisDims.x*chassisDims.x + chassisDims.y*chassisDims.y)*chassisMass / 12.0f);
-    const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*1.5f + 0.65f, 0.25f);
+    //  The rogin is at center of the chassis mesh
+    // Set the center of mas to be below this point and a little towards the front
+    // x - side
+    // y - height
+    // z - front
+    const PxVec3 chassisCMOffset=PxVec3(0.0f, -chassisDims.y*1.5f + 0.65f, 0.25f);
 
     //Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
     //Moment of inertia is just the moment of inertia of a cylinder.
@@ -148,7 +153,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     const PxF32 wheelRadius = 0.5f;
     const PxF32 wheelWidth = 0.4f;
     const PxF32 wheelMOI = 0.5f*wheelMass*wheelRadius*wheelRadius;
-    const PxU32 nbWheels = 4;
+    const PxU32 nbWheels = WHEEL_COUNT;
 
     snippetvehicle::VehicleDesc vehicleDesc;
 
@@ -222,10 +227,10 @@ void PhysicsManager::initPhysics(bool interactive)
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
     gPvd = PxCreatePvd(*gFoundation);
-#ifdef _DEBUG
+// #ifdef _DEBUG
     PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
     gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-#endif
+// #endif
 
     gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -316,9 +321,9 @@ void PhysicsManager::cleanupPhysics()
         gPhysics->release();
         PxPvdTransport* transport = gPvd->getTransport();
         gPvd->release();
-#ifdef _DEBUG
+// #ifdef _DEBUG
         transport->release();
-#endif
+// #endif
         //manager->release();
         gFoundation->release();
 
@@ -518,6 +523,10 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
+//    cout << "1: " << wheelQueryResults[0].isInAir
+//        << " 2: " << wheelQueryResults[1].isInAir
+//        << " 3: " << wheelQueryResults[2].isInAir
+//        << " 4: " << wheelQueryResults[3].isInAir << endl;
     return wheelQueryResults[0].isInAir
         && wheelQueryResults[1].isInAir
         && wheelQueryResults[2].isInAir
