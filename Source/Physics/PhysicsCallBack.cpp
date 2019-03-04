@@ -153,6 +153,67 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                     // check if player spikes is on or not for both actor
                     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
                     // TODO: need to work on here
+                    // check collider's spikes is on or not
+                    bool spikesON = false;
+                    if (collider[1] == '1') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_1)->hasSpikesActivated();
+                    }
+                    else if (collider[1] == '2') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_2)->hasSpikesActivated();
+                    }
+                    else if (collider[1] == '3') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_3)->hasSpikesActivated();
+                    }
+                    else if (collider[1] == '4') {
+                        spikesON = ENTITY_MANAGER->getPlayer(PLAYER_4)->hasSpikesActivated();
+                    }
+                    // action
+                    if (spikesON) {
+                        if (collided[1] == '1') {
+                            if (collider[1] == '2') {
+                                GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
+                            }
+                            else if (collider[1] == '3') {
+                                GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_PLAYER_1);
+                            }
+                            else if (collider[1] == '4') {
+                                GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_1);
+                            }
+                        }
+                        else if (collided[1] == '2') {
+                            if (collider[1] == '1') {
+                                GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
+                            }
+                            else if (collider[1] == '3') {
+                                GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_PLAYER_2);
+                            }
+                            else if (collider[1] == '4') {
+                                GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_2);
+                            }
+                        }
+                        else if (collided[1] == '3') {
+                            if (collider[1] == '1') {
+                                GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_3);
+                            }
+                            else if (collider[1] == '2') {
+                                GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_3);
+                            }
+                            else if (collider[1] == '4') {
+                                GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_PLAYER_3);
+                            }
+                        }
+                        else if (collided[1] == '4') {
+                            if (collider[1] == '1') {
+                                GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_4);
+                            }
+                            else if (collider[1] == '2') {
+                                GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_4);
+                            }
+                            else if (collider[1] == '3') {
+                                GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_PLAYER_4);
+                            }
+                        }
+                    }
                 }
             }
             

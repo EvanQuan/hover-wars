@@ -443,7 +443,7 @@ PxRigidStatic *PhysicsManager::createCubeObject(float x,float y, float z, float 
     body->attachShape(*shape);
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(TYPE_BOT OWNER_BOT_2);
+    body->setName(TYPE_PLAYER OWNER_PLAYER_2);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(float x, float y, float z, float radius) {
