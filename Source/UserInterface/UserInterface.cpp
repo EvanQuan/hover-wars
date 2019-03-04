@@ -62,6 +62,13 @@ Unit : seconds
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
 
+#define SCORE_UPDATE_DURATION   2.0f
+#define SCORE_UPDATE_X          SCORE_X + 100.0f
+#define SCORE_UPDATE_Y          SCORE_Y - 50.0f
+#define SCORE_UPDATE_SCALE      1.0f
+#define SCORE_UPDATE_ADD_COLOR  COLOR_GREEN
+#define SCORE_UPDATE_SUB_COLOR  COLOR_RED
+
 #define MESSAGE_DURATION        3.0f
 #define MESSAGE_X               900.0f
 #define MESSAGE_Y               800.0f
@@ -306,7 +313,7 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
         // system("CLS");
 
         updateGameTime(fSecondsSinceLastUpdate);
-        // updateScores();
+        updateScores();
         // updateCooldowns();
     }
 }
@@ -376,21 +383,22 @@ Update the scores for all display count players
 */
 void UserInterface::updateScores()
 {
-    // for (int player = 0; player < m_iDisplayCount; player++)
-    // {
-        // updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
-    // }
+    for (int player = 0; player < m_iDisplayCount; player++)
+    {
+        updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::SCORE_CURRENT));
+    }
 }
 
 void UserInterface::updateScore(ePlayer player, int score)
 {
+    
     // cout << "Player " << (player + 1) << " score: " << score << endl;
 }
 
 void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
-    std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE));
+    std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::SCORE_CURRENT));
     renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
 }
 

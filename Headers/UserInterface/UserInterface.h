@@ -107,7 +107,6 @@ private:
     // VBO and VAO for rendering
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
-    map<int, int> scores;
     /*
     NOTE: this may need to change in the future.
 
@@ -122,6 +121,8 @@ private:
     */
     std::string m_sMessage;
     float m_fMessageTime;
+
+    float m_fScoreUpdateTime;
 
     int m_iDisplayCount;
 
