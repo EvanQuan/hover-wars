@@ -115,4 +115,9 @@ namespace FuncUtils
     @return string of float with specified decimal places
     */
     std::string to_string(float value, int decimalPlaces);
+
+    eHovercraft playerToHovercraft(ePlayer player);
+    eHovercraft botToHovercraft(eBot bot);
+    ePlayer hovercraftToPlayer(eHovercraft hovercraft);
+    eBot hovercraftToBot(eHovercraft hovercraft);
 }

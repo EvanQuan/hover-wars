@@ -54,6 +54,10 @@ public:
         KILLS_TOTAL_AGAINST_PLAYER_2,
         KILLS_TOTAL_AGAINST_PLAYER_3,
         KILLS_TOTAL_AGAINST_PLAYER_4,
+        KILLS_TOTAL_AGAINST_BOT_1,
+        KILLS_TOTAL_AGAINST_BOT_2,
+        KILLS_TOTAL_AGAINST_BOT_3,
+        KILLS_TOTAL_AGAINST_BOT_4,
         KILLS_TOTAL_AGAINST_BOTS,
         IS_DOMINATING_PLAYER_1,
         IS_DOMINATING_PLAYER_2,
@@ -64,11 +68,19 @@ public:
         KILLSTREAK_CURRENT_AGAINST_PLAYER_2,
         KILLSTREAK_CURRENT_AGAINST_PLAYER_3,
         KILLSTREAK_CURRENT_AGAINST_PLAYER_4,
+        KILLSTREAK_CURRENT_AGAINST_BOT_1,
+        KILLSTREAK_CURRENT_AGAINST_BOT_2,
+        KILLSTREAK_CURRENT_AGAINST_BOT_3,
+        KILLSTREAK_CURRENT_AGAINST_BOT_4,
         KILLSTREAK_LARGEST,
         KILLSTREAK_LARGEST_AGAINST_PLAYER_1,
         KILLSTREAK_LARGEST_AGAINST_PLAYER_2,
         KILLSTREAK_LARGEST_AGAINST_PLAYER_3,
         KILLSTREAK_LARGEST_AGAINST_PLAYER_4,
+        KILLSTREAK_LARGEST_AGAINST_BOT_1,
+        KILLSTREAK_LARGEST_AGAINST_BOT_2,
+        KILLSTREAK_LARGEST_AGAINST_BOT_3,
+        KILLSTREAK_LARGEST_AGAINST_BOT_4,
         POWERUPS_TOTAL_PICKED_UP,
         ABILITIES_TOTAL_USED,
         ABILITY_ROCKET_USED,
@@ -80,7 +92,10 @@ public:
 
     enum eAddScoreReason
     {
-        HIT_BOT = 0,
+        HIT_BOT_1 = 0,
+        HIT_BOT_2,
+        HIT_BOT_3,
+        HIT_BOT_4,
         HIT_PLAYER_1,
         HIT_PLAYER_2,
         HIT_PLAYER_3,
@@ -137,7 +152,7 @@ private:
     float cooldowns[MAX_PLAYER_COUNT][COOLDOWN_COUNT];
 
     // Actions
-    void hitBot(ePlayer playerAttacker);
+    void hitBot(ePlayer playerAttacker, eBot botHit);
     void hitPlayer(ePlayer playerAttacker, ePlayer playerHit);
     // Score
     void updateAttackerAndHitScore(ePlayer playerAttacker, ePlayer playerHit);
@@ -178,6 +193,26 @@ private:
         {HIT_PLAYER_2, PLAYER_2},
         {HIT_PLAYER_3, PLAYER_3},
         {HIT_PLAYER_4, PLAYER_4},
+    };
+
+    unordered_map<eAddScoreReason, eBot> scoreReasonToBot = 
+    {
+        {HIT_BOT_1, BOT_1},
+        {HIT_BOT_2, BOT_2},
+        {HIT_BOT_3, BOT_3},
+        {HIT_BOT_4, BOT_4},
+    };
+
+    unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 
+    {
+        {HIT_PLAYER_1,  HOVERCRAFT_PLAYER_1},
+        {HIT_PLAYER_2,  HOVERCRAFT_PLAYER_2},
+        {HIT_PLAYER_3,  HOVERCRAFT_PLAYER_3},
+        {HIT_PLAYER_4,  HOVERCRAFT_PLAYER_4},
+        {HIT_BOT_1,     HOVERCRAFT_BOT_1},
+        {HIT_BOT_2,     HOVERCRAFT_BOT_2},
+        {HIT_BOT_3,     HOVERCRAFT_BOT_3},
+        {HIT_BOT_4,     HOVERCRAFT_BOT_4},
     };
 };
 

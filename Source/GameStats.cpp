@@ -161,8 +161,11 @@ void GameStats::addScore(ePlayer player, eAddScoreReason reason)
 {
     switch (reason)
     {
-    case HIT_BOT:
-        hitBot(player);
+    case HIT_BOT_1:
+    case HIT_BOT_2:
+    case HIT_BOT_3:
+    case HIT_BOT_4:
+        hitBot(player, scoreReasonToBot.at(reason));
         break;
     case HIT_PLAYER_1:
     case HIT_PLAYER_2:
@@ -205,7 +208,7 @@ void GameStats::useAbility(ePlayer player, eAbility ability)
 /*
 Signifies that playerAttacker hit a bot.
 */
-void GameStats::hitBot(ePlayer playerAttacker)
+void GameStats::hitBot(ePlayer playerAttacker, eBot botHit)
 {
     addScore(playerAttacker, POINTS_GAINED_HIT_BOT);
 }
