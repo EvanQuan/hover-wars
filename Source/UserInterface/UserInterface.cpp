@@ -1,4 +1,5 @@
 #include "UserInterface/UserInterface.h"
+#include "GameStats.h"
 #include "EntityManager.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
@@ -62,6 +63,18 @@ Unit : seconds
 #define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
 
+#define SCORE_CHANGE_DURATION   2.0f
+#define SCORE_CHANGE_X          SCORE_X + 110.0f
+#define SCORE_CHANGE_Y          SCORE_Y - 50.0f
+#define SCORE_CHANGE_SCALE      1.0f
+#define SCORE_CHANGE_ADD_COLOR  COLOR_GREEN
+#define SCORE_CHANGE_SUB_COLOR  COLOR_RED
+
+#define MESSAGE_DURATION        3.0f
+#define MESSAGE_X               900.0f
+#define MESSAGE_Y               800.0f
+#define MESSAGE_SCALE           1.0f
+#define MESSAGE_COLOR           COLOR_WHITE
 
 /*************\
  * Constants *
@@ -86,7 +99,6 @@ UserInterface* UserInterface::m_pInstance = nullptr;
 UserInterface::UserInterface(int iWidth, int iHeight)
 {
     // Get Singleton Handles
-    m_pGameStats = GameStats::getInstance();
     m_pShdrMngr = SHADER_MANAGER;
 
     updateWidthAndHeight(iWidth, iHeight);
@@ -97,7 +109,7 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     initFreeType();
     initializeVBOs();
 
-    m_iGameTime = ROUND_TIME;
+    m_fGameTime = ROUND_TIME;
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -120,7 +132,6 @@ UserInterface* UserInterface::getInstance()
 
 UserInterface::~UserInterface()
 {
-    m_pGameStats = nullptr;
     m_pShdrMngr = nullptr;
 
     // Clean up VBO and VAO
@@ -278,6 +289,11 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
 }
 
+void UserInterface::displayMessage(ePlayer player, std::string text)
+{
+    m_sMessages[player] = text;
+    m_fMessageTimes[player] = MESSAGE_DURATION;
+}
 /*
 This visually updates the UserInterface to all value changes since last update.
 
@@ -312,6 +328,7 @@ void UserInterface::render()
     renderGameTime();
     renderScores();
     renderCooldowns();
+    renderMessages();
 }
 
 /*
@@ -320,7 +337,12 @@ void UserInterface::render()
 void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
-    m_iGameTime -= fSecondsSinceLastUpdate;
+    m_fGameTime -= fSecondsSinceLastUpdate;
+
+    for (int player = 0; player < m_iDisplayCount; player++)
+    {
+        m_fMessageTimes[player] -= fSecondsSinceLastUpdate;
+    }
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round
 
@@ -345,10 +367,22 @@ it more than every render update (ie. no reason to update it every game update)
 */
 std::string UserInterface::timeToString()
 {
-    int total = (int) m_iGameTime;
+    int total = (int) m_fGameTime;
     int seconds = total % SECONDS_PER_MINUTE;
     int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
     return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+}
+
+void UserInterface::renderMessages()
+{
+    for (int player = 0; player < m_iDisplayCount; player++)
+    {
+        if (m_fMessageTimes[player] > 0)
+        {
+            renderText(m_sMessages[player], MESSAGE_X, MESSAGE_Y, MESSAGE_SCALE, MESSAGE_COLOR);
+        }
+
+    }
 }
 
 /*
@@ -356,22 +390,31 @@ Update the scores for all display count players
 */
 void UserInterface::updateScores()
 {
-    // for (int player = 0; player < m_iDisplayCount; player++)
-    // {
-        // updateScore((ePlayer) player, m_pGameStats->get((ePlayer) player, GameStats::CURRENT_SCORE));
-    // }
+    for (int player = 0; player < m_iDisplayCount; player++)
+    {
+        updateScore((ePlayer) player, GAME_STATS->get((ePlayer) player, GameStats::SCORE_CURRENT));
+    }
 }
 
 void UserInterface::updateScore(ePlayer player, int score)
 {
+    
     // cout << "Player " << (player + 1) << " score: " << score << endl;
 }
 
 void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
-    std::string score = std::to_string(m_pGameStats->get(PLAYER_1, GameStats::eStat::CURRENT_SCORE));
+    std::string score = std::to_string(GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CURRENT));
     renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
+    renderScoreChange();
+}
+
+void UserInterface::renderScoreChange()
+{
+    int scoreChange = GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CHANGE);
+    bool scoreIncreased = scoreChange >= 0;
+    renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) , SCORE_CHANGE_X, SCORE_CHANGE_Y, SCORE_CHANGE_SCALE, scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
 }
 
 void UserInterface::updateCooldowns()

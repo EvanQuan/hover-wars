@@ -51,7 +51,7 @@
 
 **Left Shift** - Trail
 
-**'** - Spikes
+**Left Control** - Spikes
 
 #### Other
 

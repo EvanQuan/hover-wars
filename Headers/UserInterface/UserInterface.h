@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "GameStats.h"
 
 #define IMAGE_ROCKET "textures/hud/rocket.png"
 #define IMAGE_TRAIL "textures/hud/trail.png"
@@ -46,6 +45,8 @@ public:
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
+    void displayMessage(ePlayer player, std::string text);
+
 
 private:
     UserInterface(int iWidth, int iHeight);                                 // Default Constructor
@@ -75,12 +76,15 @@ private:
     void renderGameTime();
     std::string timeToString();
     
+    // Message
+    void renderMessages();
 
     // Score
     void initializeScores();
     void updateScores();
     void updateScore(ePlayer player, int score);
     void renderScores();
+    void renderScoreChange();
 
     // Cooldowns
     void initializeCooldowns();
@@ -103,13 +107,22 @@ private:
     // VBO and VAO for rendering
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
-    map<int, int> scores;
     /*
     NOTE: this may need to change in the future.
 
     Unit : seconds
     */
-    float m_iGameTime;
+    float m_fGameTime;
+
+    /*
+    Tracks how long the message has been displayed for
+
+    Unit : seconds
+    */
+    std::string m_sMessages[MAX_PLAYER_COUNT];
+    float m_fMessageTimes[MAX_PLAYER_COUNT];
+
+    float m_fScoreUpdateTimes[MAX_PLAYER_COUNT];
 
     int m_iDisplayCount;
 
@@ -118,10 +131,6 @@ private:
     int m_iHeight;
 
     // Singleton Pointers
-    /*
-    Retrieve game stats to display
-    */
-    GameStats *m_pGameStats;
     /*
     The UI needs to render its own components
     */

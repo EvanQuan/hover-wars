@@ -69,7 +69,8 @@ int main()
             // Initialize Sound
             m_soundManager = SOUND_MANAGER;
             m_soundManager->loadFiles();
-            m_soundManager->play(SoundManager::MUSIC_INGAME);
+            // TODO renable later
+            // m_soundManager->play(SoundManager::MUSIC_INGAME);
 
             // Main loop
             m_gameManager->resetTime();

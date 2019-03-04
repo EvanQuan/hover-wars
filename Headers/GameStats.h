@@ -7,6 +7,7 @@ Stores and calculates all in-game stats.
 Player:
     Score:
         Current score
+        Change in score
         Total score
     Kills:
         Total kills
@@ -45,30 +46,31 @@ public:
     */
     enum eStat
     {
-        CURRENT_SCORE = 0,
-        TOTAL_SCORE,
-        TOTAL_KILLS,
-        TOTAL_KILLS_AGAINST_PLAYER_1,
-        TOTAL_KILLS_AGAINST_PLAYER_2,
-        TOTAL_KILLS_AGAINST_PLAYER_3,
-        TOTAL_KILLS_AGAINST_PLAYER_4,
-        TOTAL_KILLS_AGAINST_BOTS,
+        SCORE_CURRENT = 0,
+        SCORE_CHANGE,
+        SCORE_TOTAL,
+        KILLS_TOTAL,
+        KILLS_TOTAL_AGAINST_PLAYER_1,
+        KILLS_TOTAL_AGAINST_PLAYER_2,
+        KILLS_TOTAL_AGAINST_PLAYER_3,
+        KILLS_TOTAL_AGAINST_PLAYER_4,
+        KILLS_TOTAL_AGAINST_BOTS,
         IS_DOMINATING_PLAYER_1,
         IS_DOMINATING_PLAYER_2,
         IS_DOMINATING_PLAYER_3,
         IS_DOMINATING_PLAYER_4,
-        CURRENT_TOTAL_KILLSTREAK,
-        CURRENT_KILLSTREAK_AGAINST_PLAYER_1,
-        CURRENT_KILLSTREAK_AGAINST_PLAYER_2,
-        CURRENT_KILLSTREAK_AGAINST_PLAYER_3,
-        CURRENT_KILLSTREAK_AGAINST_PLAYER_4,
-        LARGEST_TOTAL_KILLSTREAK,
-        LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_1,
-        LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_2,
-        LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_3,
-        LARGEST_TOTAL_KILLSTREAK_AGAINST_PLAYER_4,
-        TOTAL_POWERUPS_PICKED_UP,
-        TOTAL_ABILITIES_USED,
+        KILLSTREAK_CURRENT,
+        KILLSTREAK_CURRENT_AGAINST_PLAYER_1,
+        KILLSTREAK_CURRENT_AGAINST_PLAYER_2,
+        KILLSTREAK_CURRENT_AGAINST_PLAYER_3,
+        KILLSTREAK_CURRENT_AGAINST_PLAYER_4,
+        KILLSTREAK_LARGEST,
+        KILLSTREAK_LARGEST_AGAINST_PLAYER_1,
+        KILLSTREAK_LARGEST_AGAINST_PLAYER_2,
+        KILLSTREAK_LARGEST_AGAINST_PLAYER_3,
+        KILLSTREAK_LARGEST_AGAINST_PLAYER_4,
+        POWERUPS_TOTAL_PICKED_UP,
+        ABILITIES_TOTAL_USED,
         ABILITY_ROCKET_USED,
         ABILITY_SPIKES_USED,
         ABILITY_TRAIL_USED,
@@ -142,6 +144,7 @@ private:
     int getScoreGainedForAttacker(ePlayer playerAttacker, ePlayer playerHit);
     int getScoreLostForHit(ePlayer playerAttacker, ePlayer playerHit);
     void addScore(ePlayer playerAttacker, int points);
+    void removeScore(ePlayer playerHit, int points);
 
     // Kills
     void updateAttackerAndHitKills(ePlayer playerAttacker, ePlayer playerHit);
