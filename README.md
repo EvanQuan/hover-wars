@@ -57,7 +57,6 @@
 
 **P** - Pause the game
 
-
 **Left Click** - Spawns a particle Emitter at the mouse intersection with the xz-plane @ yAxis = 0
 
 **Right Click** - Holding down Right Click and moving the mouse will allow you to adjust the camera around the vehicle
@@ -77,6 +76,10 @@
 **F** - Toggle Wireframe Mode
 
 **C** - Toggle Debug Camera for current player
+
+**B** - Toggle Bounding Box rendering
+
+**M** - Toggle Spatial Map Debug rendering
 
 **Keypad 0** - Set User Interface display count to 0
 
@@ -104,11 +107,17 @@ Currently, basic driving is implemented. The controls are:
 
 ## Write-Up:
 
-Objects in the world now have Materials attached to their meshes. These Materials consists of a diffuse map, a specular map or shade and a shininess value. Full lighting is implemented, including Directional Lighting, Point Lighting and Spot Lighting. The current maximum set to be rendered in the scene is 1 Directional Light, 4 Point Lights and 4 Spot Lights; these will probably increase later on.
+Since Milestone 2:
+Font Rendering: The TTF file for the font is parsed using FreeType and saved into an internal bitmap layout of all the valid characters for rendering text. Then each glyph information (uv offset/size, bearing, advance) is stored in a hashmap for indexing into the bitmap. This allows us to render full lines of text with 1 draw call as opposed to having a texture for each glyph and a draw call for each character. 
 
-When you load up the program, you'll see a textured plane with a white spot light just overhead of the origin. The World Axis is rendered at the origin for reference/testing purposes and 3 point lights are rendered as Axis parameters as well. You'll see quite a few bunnies in the positive xzy quadrant that are testing the static instanced rendering. Holding the right mouse button down and moving the mouse will rotate the camera around the vehicle. If you look higher towards the bunnies, you'll also see a billboard testing object. It renders locked to the up normal vector and facing the camera. It uses the current default texture settings.
+Spatial Data Map: There's a basic Spatial Data Map in place that is intended to be utilized for pathfinding and other necessities. On scene load, all the entities are given to the spatial data map who populates a static map as well as a hashtable listing the spatial parameters for each entity in the scene. Dynamic Entities are updated as they move while static entities are left untouched within the static data map. While running in debug mode, you can view a visual representation of the spatial data structure by pressing 'm'. This rendering is rather expensive and is only available in debug mode. The color codes are as follows:
 
-The world loads in from the file scene2.scene and can be modified as per the rules stated at the top of that file.
+    - Red: This represents a Static Entity. Pathfinding will probably treat these spaces as unpassable terrain for finding a path to their target.
+    - White: This represents the Space a Point Light covers. I had intended to speed up lighting calculations by only using lights that the entity is near. This is currently not the case, but it may be revisted in the future.
+    - Purple: This represents a Spot Light. We had a vision for the aesthetic to be gritty and cyber-punky. We wanted Spotlights to cast shadows as dynamic entities crossed under them. In order to limit shadow calculations, I wanted to have a default shadow map for each light and only calculate shadows for spotlights that have a dynamic entity within their space. This may not make it to release.
+    - Jade: This represents a dynamic entity. Dynamic Entities cover multiple spaces based on their spatial dimensions and it's important that they stay updated every frame.
+
+Shadow Mapping: The directional light in the scene casts shadows. The shadow map is specified in the scene that loaded in under the directional light entity entry. The texture size for the shadow is rather large to avoid overly pixellated shadows. Also, a smoothing kernel is applied to the shadows to soften their edges and blend with the fragment colors in a nicer way.
 
 ## Team
 
