@@ -76,7 +76,9 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     //evaluation += (playerPos - botPos).length() * DISTANCE_REDUCTION_EVAL;
     return evaluation;
 }
-#define DISTANCE_BOX 10
+#define DISTANCE_BOX 4
+float timeChased = 0;
+bool isChasing = false;
 glm::vec3 seekPoint = vec3(200,0,30);
 void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown, Action *a) {
     memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
@@ -87,11 +89,30 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     //    performMutation(playerPos, playerVel, botPos, botVel, botRotation, CurrcoolDown);
     //}
     vec3 difference = botPos - playerPos;
+    difference.x = seekPoint.x;
+    difference.z = seekPoint.z;
+    difference.y = seekPoint.y;
+
     difference /= difference.length();
-    float angle = atan2(difference.x,difference.z);
+    float angle = atan2(difference.x, difference.z);
     double botAmount = botRotation + (3.1415926535 / 2);//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
     double modAmount = (botRotation / (3.1415926535 * 2) - floor(botRotation / (3.1415926535 * 2))) * (3.1415926535 * 2) - 3.1415926535;
-    seekPoint = playerPos;
+   
+
+    if (isChasing) {
+        seekPoint = playerPos;
+        if (timeChased > 5) {
+            isChasing = false;
+            seekPoint.x = (float)(rand() % 200 - 100);
+            seekPoint.z = (float)(rand() % 200);
+            timeChased = 0;
+        }
+    }else if (timeChased > 2) {
+        std::cout << "chasing = true" << std::endl;
+        isChasing = true;
+        timeChased = 0;
+    }
+
     if (angle - botRotation > 0.01) {
         a->actionsToTake[1] = -1;
     }
@@ -107,17 +128,24 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     else if ((botPos.x - seekPoint.x) < -DISTANCE_BOX) {
         a->actionsToTake[2] = 1;
     }
+    else {
+        a->actionsToTake[2] = 0;
+    }
     if ((botPos.z - seekPoint.z) > DISTANCE_BOX) {
         a->actionsToTake[3] = -1;
     }
     else if ((botPos.z - seekPoint.z) < -DISTANCE_BOX) {
         a->actionsToTake[3] = 1;
     }
+    else {
+        a->actionsToTake[3] = 0;
+    }
+
     //a->actionsToTake[2] = difference.x/100.0f;
     //a->actionsToTake[3] = difference.z/100.0f;
     // std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
 #ifndef NDEBUG
-    std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
+    //std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
     //currentPlace = (1 + currentPlace) % LOOK_AHEAD_FRAMES;
 #endif
 }
@@ -140,5 +168,5 @@ void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm:
 }
 void AIComponent::update(float fTimeDeltaInMilliseconds)
 {
-    
+    timeChased += fTimeDeltaInMilliseconds;
 }

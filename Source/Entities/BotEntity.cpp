@@ -35,7 +35,7 @@ void BotEntity::toEulerAngle(glm::quat q, double& roll, double& pitch, double& y
 void BotEntity::update(float fTimeInMilliseconds)
 {
     
-    //m_AIComponent->update(fTimeInMilliseconds);
+    m_AIComponent->update(fTimeInMilliseconds);
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
     double x, y, z;
