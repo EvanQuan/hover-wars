@@ -198,7 +198,7 @@ void GameStats::useAbility(ePlayer player, eAbility ability)
         stats[player][ABILITY_DASH_USED]++;
         break;
     }
-    stats[player][TOTAL_ABILITIES_USED]++;
+    stats[player][ABILITIES_TOTAL_USED]++;
 }
 
 /*
@@ -243,7 +243,7 @@ void GameStats::debugPlayer(ePlayer player)
         << "\t\tis dominating Player 1: " << isDominating(player, PLAYER_2) << endl
         << "\t\tis dominating Player 2: " << isDominating(player, PLAYER_3) << endl
         << "\t\tis dominating Player 3: " << isDominating(player, PLAYER_4) << endl
-        << "\t\ttotal abilities used: " << stats[player][TOTAL_ABILITIES_USED] << endl
+        << "\t\ttotal abilities used: " << stats[player][ABILITIES_TOTAL_USED] << endl
         << "\t\ttotal rockets used: " << stats[player][ABILITY_ROCKET_USED] << endl
         << "\t\ttotal spikes used: " << stats[player][ABILITY_SPIKES_USED] << endl
         << "\t\ttotal trails used: " << stats[player][ABILITY_TRAIL_USED] << endl
@@ -443,5 +443,5 @@ Add to the player's total power up count
 */
 void GameStats::addPowerupCount(ePlayer player)
 {
-    stats[player][TOTAL_POWERUPS_PICKED_UP]++;
+    stats[player][POWERUPS_TOTAL_PICKED_UP]++;
 }
