@@ -4,6 +4,7 @@
 #include <map>
 #include <unordered_map>
 #include <random>
+#include "Enums/ePlayer.h"
 
 /*
 Provides non-class specific functions for data manipulation.

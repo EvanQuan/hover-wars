@@ -141,16 +141,16 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                     if (spikesON) {
                         SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_IMPACT);
                         if (collider[OWNER] == '1') {
-                            GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT);
+                            GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT_1);
                         }
                         else if (collider[OWNER] == '2') {
-                            GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT);
+                            GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT_1);
                         }
                         else if (collider[OWNER] == '3') {
-                            GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT);
+                            GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT_1);
                         }
                         else if (collider[OWNER] == '4') {
-                            GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT);
+                            GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT_1);
                         }
                     }
                     else {
@@ -232,16 +232,16 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 }
                 else if (collided[0] == 't' || collided[0] == 'r') {  // Trail, Rocket type (treat as same damage for now)
                     if (collided[1] == '1') {
-                        GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                     else if (collided[1] == '2') {
-                        GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                     else if (collided[1] == '3') {
-                        GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                     else if (collided[1] == '4') {
-                        GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                 }
                 else if (collided[0] == 'b') {  // Bot type
@@ -262,16 +262,16 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 else if (collided[0] == 'b') {
                     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_EXPLOSION);
                     if (collider[1] == '1') {
-                        GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                     else if (collider[1] == '2') {
-                        GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_2, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                     else if (collider[1] == '3') {
-                        GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_3, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                     else if (collider[1] == '4') {
-                        GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT);
+                        GAME_STATS->addScore(PLAYER_4, GameStats::eAddScoreReason::HIT_BOT_1);
                     }
                 }
                 else if (collided[0] == 'P') {
