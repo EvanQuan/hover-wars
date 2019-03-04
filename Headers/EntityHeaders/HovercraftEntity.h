@@ -74,6 +74,13 @@ Unit: seconds
 */
 #define TRAIL_RECHARGE_COOLDOWN 0.5f
 
+/*
+After getting hit, the hovercraft is invulnerable for a duration of time
+
+Unit : seconds
+*/
+#define INVINCIBLE_TIME 1.0f
+
 class HovercraftEntity :
     public Entity
 {
@@ -129,9 +136,9 @@ public:
     If true, ability collisions will count.
     Otherwise, ignore ability collisions.
     */
-    bool isVulnerable() { return vulnerable; };
+    bool isInvincible() { return invincible; };
 
-    bool setVulernable(bool vulernable) { this->vulnerable = vulnerable; };
+    bool setInvincile() { invincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
 private:
     // Private Variables
     int activeCameraIndex;
@@ -221,6 +228,8 @@ private:
     bool isInControl;
     float outOfControlTime;
 
-    bool vulnerable;
+    void updateVulnerability(float fTimeInSeconds);
+    bool invincible;
+    float m_fSecondsLeftUntilVulnerable;
 };
 

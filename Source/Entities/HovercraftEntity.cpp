@@ -122,7 +122,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes 
 
     m_bSpikesActivated = false;
 
-    vulnerable = true;
+    invincible = false;
 
     outOfControlTime = 0.0f;
 
@@ -173,6 +173,16 @@ void HovercraftEntity::update(float fTimeInSeconds)
     m_vPosition = vNewPosition;
     updateCameraLookAts(fTimeInSeconds);
     updateCooldowns(fTimeInSeconds);
+    updateVulnerability(fTimeInSeconds);
+}
+
+void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
+{
+    m_fSecondsLeftUntilVulnerable -= fTimeInSeconds;
+    if (m_fSecondsLeftUntilVulnerable <= 0)
+    {
+        invincible = false;
+    }
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.

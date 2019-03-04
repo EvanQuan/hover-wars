@@ -132,6 +132,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                     }
 
                     if (spikesON) {
+                        SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_IMPACT);
                         if (collider[1] == '1') {
                             GAME_STATS->addScore(PLAYER_1, GameStats::eAddScoreReason::HIT_BOT);
                         }
