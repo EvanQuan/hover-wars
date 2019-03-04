@@ -34,7 +34,8 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
     /* Not Implemented */
 }
 
-void InteractableEntity::handleCollision(const Entity* pOther) const
+// void InteractableEntity::handleCollision(const Entity* pOther) const
+void InteractableEntity::handleCollision(Entity* pOther)
 {
     /* Not Implemented */
 }

@@ -80,7 +80,7 @@ void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes
     switch (eColliderType)
     {
     case eEntityTypes::PLAYER_ENTITY:                   // Waterfall for Player and Bot Entities
-    case eEntityTypes::BOT_ENTITY:
+    // case eEntityTypes::BOT_ENTITY:
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
         case eEntityTypes::PLAYER_ENTITY:               
@@ -88,13 +88,13 @@ void SoundManager::handleCollisionSound(eEntityTypes eColliderType, eEntityTypes
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
             break;
         case eEntityTypes::STATIC_ENTITY:
-        case eEntityTypes::PLANE_ENTITY:
+        // case eEntityTypes::PLANE_ENTITY:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
             break;
         }
         break;
     case eEntityTypes::STATIC_ENTITY:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
-    case eEntityTypes::PLANE_ENTITY:
+    // case eEntityTypes::PLANE_ENTITY:
         play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);
         break;
     }

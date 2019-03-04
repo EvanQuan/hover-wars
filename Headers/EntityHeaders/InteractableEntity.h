@@ -21,7 +21,8 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
-    void handleCollision(const Entity* pOther) const;
+    // void handleCollision(const Entity* pOther) const;
+    void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Game Specific Logic for Interacting with Object

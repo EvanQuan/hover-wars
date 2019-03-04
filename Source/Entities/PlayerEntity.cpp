@@ -31,6 +31,7 @@ HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
 */
 void PlayerEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 {
+    cout << "Player " << iNumber << " hit by " << eHitByType << endl;
     // Switch based on who hit the player
     switch (eHitByType)
     {
