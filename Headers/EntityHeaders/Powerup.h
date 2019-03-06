@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include "Entity.h"
+#include "InteractableEntity.h"
 #include "MeshManager.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
@@ -12,27 +12,28 @@
 //        Idea: these entities, when a player collides with them, will send a message to that player 
 //            telling them what happens as a result of this collision. Different messages can be generated
 //            by inheriting from this class and defining their own message.
-class InteractableEntity
-    : public Entity
+class Powerup
+    : public InteractableEntity
 {
 public:
-    // Constructor / Destructor
-    InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityTypes eIEType);
-    virtual ~InteractableEntity();
+    Powerup(int iID, int iOwnerID, const vec3* vPosition);
+    virtual ~Powerup();
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
+    // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
-protected:
-    // Protected Variables
-    int m_iOwnerID;
+    // Game Specific Logic for Interacting with Object
+    void getInteractionResult() const { /*Not Implemented*/ }
+private:
     Mesh* m_pBillboardMesh;
+    ObjectInfo m_pObjectInfo;
 
-    // Entity Components
-    RenderComponent* m_pRenderComponent;
-    PhysicsComponent* m_pPhysicsComponent;
+    vec3 m_vDimensions;
+
+    RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
+    // PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
     AnimationComponent* m_pAnimationComponent;
-
 };

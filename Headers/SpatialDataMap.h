@@ -1,9 +1,13 @@
 #pragma once
 #include "stdafx.h"
 #include "EntityHeaders/StaticEntity.h"
-#include "EntityHeaders/InteractableEntity.h"
 #include "EntityHeaders/SpotLight.h"
 #include "EntityHeaders/PointLight.h"
+
+/************************\
+ * Forward Declarations *
+\************************/
+class FlameTrail;
 
 // Name: SpatialDataMap
 // Written By: James Coté
@@ -41,7 +45,7 @@ private:
         vector< const StaticEntity* > pLocalEntities;
         vector< const SpotLight* > pLocalSpotLights;
         vector< const PointLight* > pLocalPointLights;
-        vector< const InteractableEntity* > pLocalInteractableEntities;
+        vector< const FlameTrail* > pLocalInteractableEntities;
         unsigned int iStaticSize;
     };
 

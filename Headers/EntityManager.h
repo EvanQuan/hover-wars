@@ -54,9 +54,11 @@ public:
     void generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
     void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
-    InteractableEntity* generateInteractableEntity(const vec3* vPosition);
     vec3 getEntityPosition(int iEntityID);
     void dispatchCollision(int iColliderID, int iCollidedID);
+
+    // Interactable Entity Generation Functions
+    FlameTrail* generateFlameTrail(const vec3* vPosition, int iOwnerID);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);

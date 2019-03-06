@@ -389,14 +389,14 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 
 
 // Generates and Returns an Interactable Entity with a specified Position.
-InteractableEntity* EntityManager::generateInteractableEntity(const vec3* vPosition)
+FlameTrail* EntityManager::generateFlameTrail(const vec3* vPosition, int iOwnerID )
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<InteractableEntity> pNewEntity = make_unique<InteractableEntity>(iNewEntityID, vPosition);
-    InteractableEntity* pReturnEntity = pNewEntity.get();
+    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition);
+    FlameTrail* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));

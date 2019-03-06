@@ -1,5 +1,6 @@
 #include "SpatialDataMap.h"
 #include "ShaderManager.h"
+#include "EntityHeaders/FlameTrail.h"
 
 /*************\
  * Constants *
@@ -167,8 +168,8 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
         {
             switch (vEntity->getType())
             {
-            case INTERACTABLE_ENTITY:
-                m_pSpatialMap[x][y].pLocalInteractableEntities.push_back(static_cast<const InteractableEntity*>(vEntity));  // Push the Interactable Entity into the spatial map.
+            case FLAME_TRAIL_ENTITY:
+                m_pSpatialMap[x][y].pLocalInteractableEntities.push_back(static_cast<const FlameTrail*>(vEntity));  // Push the Interactable Entity into the spatial map.
                 break;
             case POINT_LIGHT_ENTITY:
                 m_pSpatialMap[x][y].pLocalPointLights.push_back(static_cast<const PointLight*>(vEntity));                   // Push the Static Entity into the spatial map.
@@ -180,8 +181,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
                 m_pSpatialMap[x][y].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
 #ifdef _DEBUG
-            case BOT_ENTITY:
-            case PLAYER_ENTITY:
+            case HOVERCRAFT_ENTITY:
                 // Add this entry to the Dynamic Indices Map.
                 if (m_pDynamicIndicesMap.find(vEntity->getID()) == m_pDynamicIndicesMap.end())
                     m_pDynamicIndicesMap.insert(make_pair(vEntity->getID(), sDynamicDrawInfo()));
@@ -220,7 +220,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
 
 #ifdef _DEBUG
     // Generate IBO if the Entity was a PLAYER_ENTITY
-    if (PLAYER_ENTITY == vEntity->getType() || BOT_ENTITY == vEntity->getType() )
+    if (HOVERCRAFT_ENTITY == vEntity->getType() )
         m_pDynamicIndicesMap[vEntity->getID()].iDynamicIBO =
         SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.data(),
                                          m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), GL_DYNAMIC_DRAW);
