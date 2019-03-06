@@ -1,5 +1,6 @@
 #include "EntityComponentHeaders/AIComponent.h"
 #include <time.h>       /* time */
+#include "Physics/PhysicsManager.h"
 
 
 AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
@@ -23,10 +24,11 @@ AIComponent::~AIComponent() {
 
 }
 void AIComponent::genRandomAction(Action *action) {
-    action->actionsToTake[0] = rand() % 2;
-    action->actionsToTake[1] = rand() % 3 - 1;
-    action->actionsToTake[2] = rand() % 3 - 1;
-    action->actionsToTake[3] = rand() % 3 - 1;
+    action->actionsToTake[0] = (float) (rand() % 2);
+    action->actionsToTake[1] = (float) (rand() % 3 - 1);
+    action->actionsToTake[2] = (float) (rand() % 3 - 1);
+    action->actionsToTake[3] = (float) (rand() % 3 - 1);
+    action->actionsToTake[4] = (float) (rand() % 2);
 }
 void AIComponent::mutateSet(int setIndex,int mutations) {
     for (int i = 0; i < mutations; i++) {
@@ -41,8 +43,8 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
        // botPos.x += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[2] * 10;
        // botPos.y += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[3] * 10;
-        float rot = frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[1] * 0.01;
-        rot = rot - floor(rot * (2 * 3.14159))/ (2 * 3.14159);
+        float rot = frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[1] * 0.01f;
+        rot = rot - (float)(floor(rot * (2 * 3.14159))/ (2 * 3.14159));
         botRotation += rot;
         //if (frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[0] == 1) {
             glm::vec3 rocketDir = glm::vec3(cos(botRotation),sin(botRotation),0);
@@ -50,7 +52,7 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
                 playerVel.x = 0.00001f;
            // }
             //if (playerVel.y == 0) {
-                playerVel.y = 0.00001f;
+                playerVel.y = 0.00001f; 
             //}
             float mRocket = rocketDir.y / rocketDir.x;
             float mPlayer = playerVel.y / playerVel.x;
@@ -64,7 +66,7 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
             vec3 intersectionPoint = vec3(intersectionX, intersectionX * mPlayer + negXPlayer + playerPos.y,0);
             vec3 difference = botPos-playerPos;
             difference/=difference.length();
-            framesTaken = (intersectionPoint - playerPos).x / playerVel.x;
+            framesTaken = ((intersectionPoint - playerPos).x / playerVel.x) - ((intersectionPoint - botPos).x / playerVel.x);
             if ((intersectionX < 0 && rocketDir.x < 0) || (intersectionX > 0 && rocketDir.x > 0)) {
                 //evaluation = 50 / framesTaken;
             }
@@ -77,8 +79,6 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     return evaluation;
 }
 #define DISTANCE_BOX 4
-float timeChased = 0;
-bool isChasing = false;
 glm::vec3 seekPoint = vec3(200,0,30);
 void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown, Action *a) {
     memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
@@ -89,43 +89,37 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     //    performMutation(playerPos, playerVel, botPos, botVel, botRotation, CurrcoolDown);
     //}
     vec3 difference = botPos - playerPos;
-    difference.x = seekPoint.x;
-    difference.z = seekPoint.z;
-    difference.y = seekPoint.y;
-
+    vec3 botToPlayer = playerPos - botPos;
+    botToPlayer /= botToPlayer.length();
     difference /= difference.length();
-    float angle = atan2(difference.x, difference.z);
+    float angle = atan2(difference.x,difference.z);
     double botAmount = botRotation + (3.1415926535 / 2);//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
     double modAmount = (botRotation / (3.1415926535 * 2) - floor(botRotation / (3.1415926535 * 2))) * (3.1415926535 * 2) - 3.1415926535;
-   
 
     if (isChasing) {
         seekPoint = playerPos;
-        if (timeChased > 5) {
+        if (timeChased > 10) {
             isChasing = false;
             seekPoint.x = (float)(rand() % 200 - 100);
-            seekPoint.z = (float)(rand() % 200);
+            seekPoint.z = (float)(rand() % 200 - 200);
             timeChased = 0;
         }
-        
     }
-    else if (timeChased > 20 || (abs(botPos.z - playerPos.z) < DISTANCE_BOX * 6 && abs(botPos.x - playerPos.x) < DISTANCE_BOX * 6)) {
+    if (!isChasing && (timeChased > 3)) {
         isChasing = true;
         timeChased = 0;
     }
-    if (!isChasing && abs(botPos.z - seekPoint.z) < DISTANCE_BOX && abs(botPos.x - seekPoint.x) < DISTANCE_BOX) {
-        isChasing = true;
-    }
-
-    if (angle - botRotation > 0.01) {
+    
+    if (angle - botRotation > 0.1) {
         a->actionsToTake[1] = -1;
     }
-    else if (angle - botRotation < -0.01) {
+    else if (angle - botRotation < -0.1) {
         a->actionsToTake[1] = 1;
     }
     else {
         a->actionsToTake[1] = 0;
     }
+    bool isXdistance = false;
     if ((botPos.x - seekPoint.x) > DISTANCE_BOX) {
         a->actionsToTake[2] = -1;
     }
@@ -133,7 +127,7 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
         a->actionsToTake[2] = 1;
     }
     else {
-        a->actionsToTake[2] = 0;
+        isXdistance = true;
     }
     if ((botPos.z - seekPoint.z) > DISTANCE_BOX) {
         a->actionsToTake[3] = -1;
@@ -141,8 +135,8 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     else if ((botPos.z - seekPoint.z) < -DISTANCE_BOX) {
         a->actionsToTake[3] = 1;
     }
-    else {
-        a->actionsToTake[3] = 0;
+    else if(isXdistance){
+        a->actionsToTake[4] = 1;
     }
 
     //a->actionsToTake[2] = difference.x/100.0f;
@@ -157,7 +151,7 @@ void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm:
     for (int i = 0; i < MUTATION_SET; i++) {
         if (i != currentBest) {
             //sets all others sets equal to the current best set
-            memcpy(frames[i], frames[currentBest], sizeof(Action) * LOOK_AHEAD_FRAMES);
+            memcpy(frames[i], frames[currentBest], sizeof(Action) * LOOK_AHEAD_FRAMES); 
             //mutates each set
             mutateSet(i, MUTATIONS_PER_FRAME);
 

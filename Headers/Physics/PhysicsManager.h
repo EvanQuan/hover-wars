@@ -12,6 +12,7 @@
 #include <vector>
 
 #define WHEEL_COUNT 4
+#define ROCKET_SPEED 50
 /***************************************************************
  * Name: PhysicsManager
  * Written by: James Cote, Austin Eaton, Evan Quan
@@ -48,10 +49,11 @@ public:
     // Scene Setting Functions
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
-    physx::PxRigidStatic *createMeshObject(const char* sEntityID, float x, float y, float z,float scale, string filename);
-    physx::PxRigidStatic *createCubeObject(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
+    physx::PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, float y, float z, float scale, string filename);
+    physx::PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(const char* sEntityID, float x, float y, float z, float radius);
+    physx::PxRigidDynamic *createRocketObjects(float x, float y, float z, float dirX, float dirY, float dirZ);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);

@@ -124,10 +124,13 @@ void PhysicsComponent::move(float x, float y) {
         setSteerAngle(angle);
     // }
 }
+PxTransform PhysicsComponent::getGlobalPose() {
+    return body->getGlobalPose();
+}
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
         PxVec3 vForce = PxVec3(y, 0, x);
-        body->addForce(vForce * MOVEMENT_FORCE/4);
+        body->addForce(vForce * MOVEMENT_FORCE/7);
 
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
@@ -136,9 +139,6 @@ void PhysicsComponent::moveGlobal(float x, float y) {
         gVehicleNoDrive->setSteerAngle(2, angle);
         gVehicleNoDrive->setSteerAngle(3, angle);
     }
-}
-PxTransform PhysicsComponent::getGlobalPose() {
-    return body->getGlobalPose();
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement

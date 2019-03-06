@@ -8,15 +8,6 @@
 
 1. The Libraries and Settings should all be set up in the VS project.
 
-### Compiling on Linux:
-
-**NOT TESTED**
-1. In the file EnvSpec.h: You'll need to switch the comment from Defining
-   Windows to Defining Linux.
-
-2. The included Makefile should generate a run file that will launch the
-   program.
-
 ## Controls
 
 #### Keyboard
@@ -212,7 +203,9 @@ Alternate camera
 
 
 **Stats**
-- All in game stat tracking is fully implemented
+- All in game stat tracking is fully implemented in order for the game rules
+  to work
+
 ```
 Player:
     Score:
@@ -238,11 +231,75 @@ Player:
         Count of each ability used
 ```
 
+To test this, run in `Debug` mode and press:
+
+
+**R** - Player 1 hits Player 2
+
+**T** - Player 2 hits Player 1
+
+This demonstrates how players gain and lose points based on their current
+killstreaks, dominations and revenges.
+
+
+Domination
+- If player A kills player B 3 times in a row without being killed by player
+  B, player A will `dominate` player B.
+
+Revenge
+- If player A is dominating player B, and player B kills player A, player
+  B gets `revenge` on player A. Player A no longer dominates player B.
+
+Killstreak
+- Number of kills a player has in a row without being killed by anyone
+
+**Points**
+
+Points are tracked as as followed (are open to change):
+
+Base points gained for killing a bot **10**
+
+Base points gained for killing a player **50**
+- It is more rewarding to hit another player than a bot
+
+Points gained for getting revenge **100**
+- This gives an incentive to players to seek revenge other other players
+- Provides a means for players who are not performing too well to catch up,
+  but only if they have the skill to perform that kill
+
+Points gained per killstreak **20**
+- This stacks
+- This rewards players who can obtain a high killstreak
+
+Points gained for picking up a powerup **10**
+- Minor extra incentive to pick up powerups
+
+Base points lost for getting killed **30**
+- Should be less points than a kill, not too much
+
+Points lost per killstreak **10**
+- This stacks
+- This makes it risky to those with highstreaks as they will also lose more
+  points on death
+
+
 **Game Time**
 - Implemented
     - The round timer tracks time correctly
 - Not implemented
     - The round ends when the timer hits 0:00
+    - Once the round ends, the player with the highest score wins
+
+### User Interface
+
+- Implemented
+  - Abilities statuses
+  - Score
+    - Score change
+  - Game time
+  - Domination, revenge, killstreak messages
+- Not implemented
+  - Abilities images
 
 
 ### Sound
@@ -269,9 +326,15 @@ Collision sounds
 - Domination/Revenge
     - Domination and revenge sounds play when players dominate another player or get revenge
 
+- AI 
+	-The AI works on a basic follow model. 
+	-it oscillates between following the player and seeking a random point on the map.
+	-The goal of this AI is to collide with the player with spikes engaged. 
+	-This will result in the AI gaining a point.
+
 ## Team
 
-[Austin Easton](https://github.com/austinen)
+[Austin Eaton](https://github.com/austinen)
 
 [Evan Quan](https://github.com/EvanQuan)
 
