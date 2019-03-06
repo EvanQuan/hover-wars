@@ -237,6 +237,21 @@
     <ClInclude Include="Headers\Enums\eCooldown.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\Explosion.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\FlameTrail.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\Powerup.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\Rocket.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\EntityHeaders\Spikes.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -394,6 +409,21 @@
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\AIComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Explosion.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\FlameTrail.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Powerup.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Rocket.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entities\Spikes.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
