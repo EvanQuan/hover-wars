@@ -5,8 +5,8 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-Powerup::Powerup(int iID, const vec3* vPosition)
-    : InteractableEntity( iID, vPosition )
+Powerup::Powerup(int iID, int iOwnerID, const vec3* vPosition)
+    : InteractableEntity( iID, iOwnerID, vPosition, POWERUP_ENTITY )
 {
     // aLl interactable entities need collision detection
     // m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);

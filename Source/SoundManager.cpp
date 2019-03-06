@@ -85,12 +85,10 @@ bool SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityT
     // if they are players
     switch (eColliderType)
     {
-    case eEntityTypes::PLAYER_ENTITY:                   // Waterfall for Player and Bot Entities
-    case eEntityTypes::BOT_ENTITY:
+    case eEntityTypes::HOVERCRAFT_ENTITY:               
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
-        case eEntityTypes::PLAYER_ENTITY:               
-        case eEntityTypes::BOT_ENTITY:
+        case eEntityTypes::HOVERCRAFT_ENTITY:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
             return true;
             break;
@@ -117,8 +115,8 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     if (handleBaseCollisionSound(colliderType, collidedType))
     {
         // For some reason this check is not enough?
-        if (((colliderType == eEntityTypes::BOT_ENTITY) || (colliderType == eEntityTypes::PLAYER_ENTITY))
-            && (collidedType == eEntityTypes::BOT_ENTITY) || (collidedType == eEntityTypes::PLAYER_ENTITY))
+        if (((colliderType == eEntityTypes::HOVERCRAFT_ENTITY))
+            && (collidedType == eEntityTypes::HOVERCRAFT_ENTITY))
         {
             handleContextCollisionSound(collider, collided);
         }

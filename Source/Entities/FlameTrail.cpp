@@ -5,8 +5,8 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-FlameTrail::FlameTrail(int iID, const vec3* vPosition)
-    : InteractableEntity( iID, vPosition )
+FlameTrail::FlameTrail(int iID, int iOwnerID, const vec3* vPosition)
+    : InteractableEntity( iID, iOwnerID, vPosition, FLAME_TRAIL_ENTITY )
 {
     // aLl interactable entities need collision detection
     // m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
@@ -49,10 +49,7 @@ void FlameTrail::loadAsBillboard(float fHeight, float fWidth)
 {
     m_pObjectInfo.sObjMaterial.fShininess = 0.0f;
     m_pObjectInfo.sObjMaterial.sDiffuseMap = vSpriteInformation[eSpriteEnum::FIRE_SPRITE].sSheetLocation;
-    // Define collision information
-    m_pObjectInfo.sObjBoundingBox.eType = eBoundingBoxTypes::CUBIC_BOX;
-    m_pObjectInfo.sObjBoundingBox.vDimensions = glm::vec3(fWidth, fWidth, fHeight); // test value
-
+    
     vec3 vTempPos = vec3(5.0f);
     vec3 vTempNormal = vec3(0.0f, 1.0f, 0.0f);
     // Generate the Mesh

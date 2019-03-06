@@ -16,7 +16,7 @@ class Powerup
     : public InteractableEntity
 {
 public:
-    Powerup(int iID, const vec3* vPosition);
+    Powerup(int iID, int iOwnerID, const vec3* vPosition);
     virtual ~Powerup();
 
     // Implementation of inherited functionality

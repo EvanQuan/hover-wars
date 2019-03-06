@@ -16,7 +16,7 @@ class FlameTrail
     : public InteractableEntity
 {
 public:
-    FlameTrail(int iID, const vec3* vPosition);
+    FlameTrail(int iID, int iOwnerID, const vec3* vPosition);
     virtual ~FlameTrail();
 
     // Implementation of inherited functionality

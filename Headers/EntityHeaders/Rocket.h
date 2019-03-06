@@ -16,7 +16,7 @@ class Rocket
     : public InteractableEntity
 {
 public:
-    Rocket(int iID, const vec3* vPosition);
+    Rocket(int iID, int iOwnerID, const vec3* vPosition);
     virtual ~Rocket();
 
     // Implementation of inherited functionality

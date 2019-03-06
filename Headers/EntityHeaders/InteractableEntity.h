@@ -16,35 +16,23 @@ class InteractableEntity
     : public Entity
 {
 public:
-    InteractableEntity(int iID, const vec3* vPosition);
+    // Constructor / Destructor
+    InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityTypes eIEType);
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality
     void update(float fTimeInMilliseconds);
-    // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
-    // Game Specific Logic for Interacting with Object
-    void getInteractionResult() const { /*Not Implemented*/ }
-
-    void loadAsBillboard(float fHeight, float fWidth);
-    void addBillboard(const vec3* vNormal, const vec3* vPosition);
-
-    void loadAsPowerup(vec3* dimensions);
-private:
-    // Private Copy Constructor and Assignment Operator
-    InteractableEntity(const InteractableEntity& pCopy);
-    InteractableEntity& operator=(const InteractableEntity& pCopy);
-
-    GLuint m_iVertexArray;
-
+protected:
+    // Protected Variables
+    int m_iOwnerID;
     Mesh* m_pBillboardMesh;
-    ObjectInfo m_pObjectInfo;
 
-    vec3 m_vDimensions;
-
-    RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
-    // PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
+    // Entity Components
+    RenderComponent* m_pRenderComponent;
+    PhysicsComponent* m_pPhysicsComponent;
     AnimationComponent* m_pAnimationComponent;
+
 };

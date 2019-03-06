@@ -111,8 +111,8 @@ const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(BACK_CAMERA_OFFSET, 0, 0);
 
 // Hovercraft Entity Default Constructor.
 //  Call the base class Entity Constructor
-HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType)
-    : Entity(iID, *vPosition, entityType)
+HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
+    : Entity(iID, *vPosition, HOVERCRAFT_ENTITY)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
@@ -209,7 +209,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = ENTITY_MANAGER->generateInteractableEntity(&m_vPosition);
+    m_pFireTrail = ENTITY_MANAGER->generateFlameTrail(&m_vPosition, m_iID);
     m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
     
     // Generate Camera Components
@@ -238,8 +238,7 @@ void HovercraftEntity::handleCollision(Entity* pOther)
     HovercraftEntity* pOtherHovercraft;
     switch (eOtherType)
     {
-    case PLAYER_ENTITY:
-    case BOT_ENTITY:
+    case HOVERCRAFT_ENTITY:
         // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
         // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
