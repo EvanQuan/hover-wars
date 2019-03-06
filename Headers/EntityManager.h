@@ -58,11 +58,11 @@ public:
     void dispatchCollision(int iColliderID, int iCollidedID);
 
     // Interactable Entity Generation Functions
-    FlameTrail* generateFlameTrail(const vec3* vPosition, int iOwnerID);
+    FlameTrail* generateFlameTrail(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);
-    RenderComponent* generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode);
+    RenderComponent* generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bRenderShadows, ShaderManager::eShaderType eType, GLenum eMode);
     LightingComponent* generateLightingComponent(int iEntityID);
     PhysicsComponent* generatePhysicsComponent(int iEntityID);
     AnimationComponent* generateAnimationComponent(int iEntityID);

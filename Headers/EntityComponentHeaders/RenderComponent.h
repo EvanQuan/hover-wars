@@ -16,7 +16,7 @@ class RenderComponent
     : public EntityComponent
 {
 public:
-    RenderComponent(int iEntityID, int iComponentID, bool bStaticDraw,
+    RenderComponent(int iEntityID, int iComponentID, bool bRenderShadows,
                     ShaderManager::eShaderType eType, GLenum eMode);
     virtual ~RenderComponent();
 
@@ -30,6 +30,9 @@ public:
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponent( Mesh const  * pMesh );
 
+    // Check to see if this render component should be rendered for shadows.
+    bool castsShadows() { return m_bRenderShadows; }
+
 private:
     // Private Copy Constructor and Assignment operator overload.
     RenderComponent(const RenderComponent* pCopy);
@@ -42,7 +45,7 @@ private:
     GLenum m_eMode;
     GLsizei m_iCount;
     Mesh const * m_pMesh;
-    bool m_bUsingIndices, m_bUsingInstanced;
+    bool m_bUsingIndices, m_bUsingInstanced, m_bRenderShadows;
     ShaderManager* m_pShdrMngr;
     ShaderManager::eShaderType m_eShaderType;
 };

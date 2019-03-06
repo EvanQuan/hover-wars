@@ -177,7 +177,10 @@ void EntityManager::doRender()
     for (unordered_map<Mesh const*, RenderComponent*>::iterator pIter = m_pRenderingComponents.begin();
         pIter != m_pRenderingComponents.end();
         ++pIter)
-        (*pIter).second->render();
+    {
+        if (!m_bShadowDraw || (*pIter).second->castsShadows());
+            (*pIter).second->render();
+    }
 
     // Don't render these if only doing a shadow pass
     if (!m_bShadowDraw)
@@ -186,16 +189,17 @@ void EntityManager::doRender()
         if (nullptr != m_pEmtrEngn)
         {
            m_pEmtrEngn->renderEmitters();
-        }
+        } 
 
+        USER_INTERFACE->render();
+
+#ifdef _DEBUG
         // Draw the Spatial Map for debuggin
         if (m_bDrawSpatialMap)
         {
             m_pSpatialMap->drawMap();
         }
 
-        USER_INTERFACE->render();
-#ifdef _DEBUG
         renderAxis();
 #endif
     }
@@ -389,13 +393,13 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 
 
 // Generates and Returns an Interactable Entity with a specified Position.
-FlameTrail* EntityManager::generateFlameTrail(const vec3* vPosition, int iOwnerID )
+FlameTrail* EntityManager::generateFlameTrail(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition);
+    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition, fFlameHeight, fFlameWidth);
     FlameTrail* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
@@ -545,7 +549,7 @@ CameraComponent* EntityManager::generateCameraComponent( int iEntityID )
 
 // Generates a new Render Component, stores it in the Rendering Components list and Master Components list.
 //    Manages component with a unique pointer stored internally in the Master Components list.
-RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bStaticDraw, ShaderManager::eShaderType eType, GLenum eMode)
+RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh const* pMeshKey, bool bRenderShadows, ShaderManager::eShaderType eType, GLenum eMode)
 {
     // Generate new Render Component
     RenderComponent* pReturnComponent;
@@ -560,7 +564,7 @@ RenderComponent* EntityManager::generateRenderComponent(int iEntityID, Mesh cons
     else    // Otherwise, if it hasn't been found, create the new render component and associate it with that Mesh Pointer.
     {
         // Initialize new Unique_Ptr for Render Component.
-        unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bStaticDraw, eType, eMode);
+        unique_ptr<RenderComponent> pNewRenderComponent = make_unique<RenderComponent>(iEntityID, getNewComponentID(), bRenderShadows, eType, eMode);
         pNewRenderComponent->initializeComponent(pMeshKey);    // Initialize Render Component
 
         // Grab return Pointer and store Component within Entity Manager.

@@ -39,6 +39,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 //      Default: tells the other entity that they've been hit.
 void InteractableEntity::handleCollision(Entity* pOther)
 {
+    // Tell the Hovercraft Entity that they were hit by the owner of this Interactable Entity
     if (HOVERCRAFT_ENTITY == pOther->getType())
         static_cast<HovercraftEntity*>(pOther)->hit(m_eType, m_iOwnerID);
 }

@@ -16,12 +16,13 @@ class FlameTrail
     : public InteractableEntity
 {
 public:
-    FlameTrail(int iID, int iOwnerID, const vec3* vPosition);
+    FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
+                float fHeight, float fWidth);
     virtual ~FlameTrail();
 
     // Implementation of inherited functionality
+    void initialize();
     void update(float fTimeInMilliseconds);
-    // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
@@ -29,18 +30,9 @@ public:
     void getInteractionResult() const { /*Not Implemented*/ }
 
     void loadAsBillboard(float fHeight, float fWidth);
-    void addBillboard(const vec3* vNormal, const vec3* vPosition);
+    void spawnFlame(const vec3* vNormal, const vec3* vPosition);
 
     void loadAsPowerup(vec3* dimensions);
 private:
-    GLuint m_iVertexArray;
-
-    Mesh* m_pBillboardMesh;
-    ObjectInfo m_pObjectInfo;
-
-    vec3 m_vDimensions;
-
-    RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
-    // PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
-    AnimationComponent* m_pAnimationComponent;
+    float m_fHeight, m_fWidth;
 };

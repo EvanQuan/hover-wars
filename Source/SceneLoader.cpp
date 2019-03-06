@@ -496,13 +496,6 @@ void SceneLoader::clearProperties() // Clear any properties
     m_sMeshProperty = m_sShaderProperty = m_sNameProperty = "";
     m_fMeshScaleProperty = 1.0f;
 
-    // Clear Material Properties
-    m_pObjectProperties.sObjMaterial.fShininess = 1.0f;
-    m_pObjectProperties.sObjMaterial.sDiffuseMap =  m_pObjectProperties.sObjMaterial.sOptionalSpecMap = "";
-    m_pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(0.0f);
-    m_pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(0.0f);
-
-    // Clear Bounding Box Properties
-    m_pObjectProperties.sObjBoundingBox.eType = DEFAULT_TYPE;
-    m_pObjectProperties.sObjBoundingBox.vDimensions = vec3(0.0f);
+    // Reset the Object Properties
+    m_pObjectProperties.loadDefaults();
 }

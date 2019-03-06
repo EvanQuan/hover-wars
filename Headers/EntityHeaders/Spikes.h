@@ -26,7 +26,7 @@ public:
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
 private:
-    Mesh* m_pBillboardMesh;
+    Mesh* m_pMesh;
     ObjectInfo m_pObjectInfo;
 
     vec3 m_vDimensions;

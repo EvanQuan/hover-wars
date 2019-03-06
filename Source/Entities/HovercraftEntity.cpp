@@ -202,15 +202,15 @@ void HovercraftEntity::initialize(const string& sFileName,
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = ENTITY_MANAGER->generateFlameTrail(&m_vPosition, m_iID);
-    m_pFireTrail->loadAsBillboard(FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = ENTITY_MANAGER->generateFlameTrail(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail->initialize();
     
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
@@ -419,7 +419,7 @@ void HovercraftEntity::createTrailInstance()
     vec3 vNormal;
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
     vNormal = m4TransformMat[1];
-    m_pFireTrail->addBillboard(&vNormal, &m_vPosition);
+    m_pFireTrail->spawnFlame(&vNormal, &m_vPosition);
 
 }
 

@@ -21,14 +21,15 @@ public:
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality
-    void update(float fTimeInMilliseconds);
-    void handleCollision(Entity* pOther);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
+    virtual void initialize() = 0;
+    virtual void update(float fTimeInMilliseconds);
+    virtual void handleCollision(Entity* pOther);
+    virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
 protected:
     // Protected Variables
     int m_iOwnerID;
-    Mesh* m_pBillboardMesh;
+    Mesh* m_pMesh;
 
     // Entity Components
     RenderComponent* m_pRenderComponent;
