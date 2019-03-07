@@ -53,10 +53,9 @@ void Rocket::handleCollision(Entity* pOther)
  * Rocket Functionality                                                                          *
 \*************************************************************************************************/
 
-void Rocket::launchRocket(const vec3* vPosition, const vec3* vDirection, float fDuration)
+void Rocket::launchRocket(const mat4* m4InitialTransform, float fDuration)
 {
-    cout << "Rocket Launched! Position: " << to_string(*vPosition) << "; Direction: " << to_string(*vDirection) << "\n";
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
-    m_pEmitterEngine->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
+    m_iTransformationIndex = m_pMesh->addInstance(m4InitialTransform);
 }
 

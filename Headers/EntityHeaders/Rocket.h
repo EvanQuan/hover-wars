@@ -33,7 +33,7 @@ public:
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Rocket Functionality
-    void launchRocket(const vec3* vPosition, const vec3* vDirection, float fDuration);
+    void launchRocket(const mat4* m4InitialTransform, float fDuration);
 
 private:
     float           m_fRocketDuration;
