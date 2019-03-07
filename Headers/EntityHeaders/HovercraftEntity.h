@@ -4,7 +4,7 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
-#include "InteractableEntity.h"
+#include "FlameTrail.h"
 #include "SpatialDataMap.h"
 #include "GameStats.h"
 #include <queue>
@@ -86,7 +86,7 @@ class HovercraftEntity :
     public Entity
 {
 public:
-    HovercraftEntity(int iID, const vec3* vPosition, eEntityTypes entityType);
+    HovercraftEntity(int iID, const vec3* vPosition);
     virtual ~HovercraftEntity();
 
     // Implementation of inherited functionality
@@ -165,7 +165,7 @@ private:
     RenderComponent* m_pRenderComponent;
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
-    InteractableEntity* m_pFireTrail;
+    FlameTrail* m_pFireTrail;
 
     /*
     These should lag behind

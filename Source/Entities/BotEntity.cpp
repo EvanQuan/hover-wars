@@ -4,7 +4,7 @@
 
 
 BotEntity::BotEntity(int iID, const vec3* vPosition)
-    : HovercraftEntity(iID, vPosition, BOT_ENTITY)
+    : HovercraftEntity(iID, vPosition)
 {
 
 }
@@ -94,21 +94,21 @@ void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 
     // Switch based on who hit the player
     switch (eHitByType)
-    {
-    case BOT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
+    {   // TODO: Fix these Cases to handle one entity type
+    case HOVERCRAFT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
         if (!isInvincible())
         {
             m_pGmStats->addScore(static_cast<eBot>(iNumber), eScoreReason);
         }
         setInvincible();
         break;
-    case PLAYER_ENTITY: // Hitting Entity was another player, meaning that the player #iNumber should get points for hitting this player #m_ePlayerID
-        if (!isInvincible())
-        {
-            m_pGmStats->addScore(static_cast<ePlayer>(iNumber), eScoreReason);
-        }
-        setInvincible();
-        break;
+    //case PLAYER_ENTITY: // Hitting Entity was another player, meaning that the player #iNumber should get points for hitting this player #m_ePlayerID
+    //    if (!isInvincible())
+    //    {
+    //        m_pGmStats->addScore(static_cast<ePlayer>(iNumber), eScoreReason);
+    //    }
+    //    setInvincible();
+    //    break;
     }
  
 }
