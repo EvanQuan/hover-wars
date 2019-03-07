@@ -29,13 +29,14 @@ const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 #define DURATION_OFFSET     (DIMENSION_OFFSET + sizeof(vec2))
 
 // Basic Constructor
-Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, const ObjectInfo* pObjectProperties, manager_cookie)
+Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, float fScale, const ObjectInfo* pObjectProperties, manager_cookie)
 {
     m_sManagerKey = sManagerKey;
     m_bStaticMesh = bStaticMesh;
     m_pShdrMngr = SHADER_MANAGER;
     m_vNegativeOffset = m_vPositiveOffset = vec3(0.0f);
     glGenVertexArrays(1, &m_iVertexArray);
+    m_m4ScaleMatrix = scale(vec3(fScale));
 
     loadObjectInfo(pObjectProperties);
 }
@@ -66,16 +67,21 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, float fScale)
     // Store Mesh in GPU
     if (bReturnValue)
     {
-        // Apply Scale before Translation
+        // Save Scale Matrix
         m_m4ScaleMatrix = scale(vec3(fScale));
-        mat4 m4Transformation = m_m4ScaleMatrix * mat4(1.0f);
 
-        // Translation
-        if (vec3(0.f) != vPosition)
-            m4Transformation = translate(vPosition) * m4Transformation;
+        // Add Transformation for Static Objects
+        if (m_bStaticMesh)
+        {
+            mat4 m4Transformation = m_m4ScaleMatrix * mat4(1.0f);
 
-        // Store initial transformation
-        m_m4ListOfInstances.push_back(m4Transformation);
+            // Translation
+            if (vec3(0.f) != vPosition)
+                m4Transformation = translate(vPosition) * m4Transformation;
+
+            // Store initial transformation
+            m_m4ListOfInstances.push_back(m4Transformation);
+        }
 
         // Initialize VBOs
         initalizeVBOs();
@@ -114,19 +120,23 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
     // Generate Indices
     m_pIndices = { 0, 1, 2, 1, 2, 3 };
 
-    // Translation Matrix
-    mat4 m4TranslationMatrix = getRotationMat4ToNormal(&vNormal);
-
-    // If translation is necessary, translate plane.
-    if (vec3(0.f) != vPosition)
-        m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
-
     // Set Spatial Cube/Plane
     m_vNegativeOffset = m_pVertices.front();
     m_vPositiveOffset = m_pVertices.back();
 
-    // Store Initial Transformation Matrix
-    m_m4ListOfInstances.push_back(m4TranslationMatrix);
+    // Store Initial Transformation Matrix for Static Meshes
+    if (m_bStaticMesh)
+    {
+        // Translation Matrix
+        mat4 m4TranslationMatrix = getRotationMat4ToNormal(&vNormal);
+
+        // If translation is necessary, translate plane.
+        if (vec3(0.f) != vPosition)
+            m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
+
+        // Store Transformation to List
+        m_m4ListOfInstances.push_back(m4TranslationMatrix);
+    }
 
     // Load Mesh into GPU
     initalizeVBOs();
@@ -183,15 +193,19 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
     m_vNegativeOffset = vec3(-fRadius, -fRadius, -fRadius);
     m_vPositiveOffset = vec3(fRadius, fRadius, fRadius);
 
-    // Initial Transformation Matrix
-    mat4 m4InitialTransformation = mat4(1.0f);
+    // Store Initial Transformation if Static Mesh
+    if (m_bStaticMesh)
+    {
+        // Initial Transformation Matrix
+        mat4 m4InitialTransformation = mat4(1.0f);
 
-    // Translate to Position if Sphere is a Static Mesh.
-    if (vec3(0.f) != vPosition)
-        m4InitialTransformation = translate(vPosition) * m4InitialTransformation;
+        // Translate to Position if Sphere is a Static Mesh.
+        if (vec3(0.f) != vPosition)
+            m4InitialTransformation = translate(vPosition) * m4InitialTransformation;
 
-    // Store Initial Transformation Matrix
-    m_m4ListOfInstances.push_back(m4InitialTransformation);
+        // Store Initial Transformation Matrix
+        m_m4ListOfInstances.push_back(m4InitialTransformation);
+    }
 
     // Store Mesh in GPU
     initalizeVBOs();
@@ -331,15 +345,19 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
     m_vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
     m_vNegativeOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
 
-    // Initial Transformation Matrix
-    mat4 m4InitialTransformationMatrix = mat4(1.0f);
+    // Store initial Transformation if Static Mesh
+    if (m_bStaticMesh)
+    {
+        // Initial Transformation Matrix
+        mat4 m4InitialTransformationMatrix = mat4(1.0f);
 
-    // Translation
-    if (vec3(0.0f) != vPosition)
-        m4InitialTransformationMatrix = translate(vPosition);
+        // Translation
+        if (vec3(0.0f) != vPosition)
+            m4InitialTransformationMatrix = translate(vPosition);
 
-    // Store Initial Transformation Matrix in Transformation vector
-    m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
+        // Store Initial Transformation Matrix in Transformation vector
+        m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
+    }
 
     initalizeVBOs();
 }
@@ -660,13 +678,17 @@ unsigned int Mesh::addInstance(const mat4* m4Transform)
 {
     // Local Variables
     unsigned int iReturnIndex;
+    mat4 m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;
 
     // Add new Transformation
     iReturnIndex = m_m4ListOfInstances.size();          // Return the Index of the Instance for updating
-    m_m4ListOfInstances.push_back(*m4Transform);   // Add the New instance to the Instance Buffer
+    m_m4ListOfInstances.push_back(m4ScaledTransform);   // Add the New instance to the Instance Buffer
 
     // Load VBO with new Data.
     loadInstanceData(m_m4ListOfInstances.data(), m_m4ListOfInstances.size());
+
+    // Add the Same instance for the Bounding Box
+    addBBInstance(m4Transform);
 
     // Return the New Instance
     return iReturnIndex;
@@ -677,19 +699,21 @@ unsigned int Mesh::addInstance(const mat4* m4Transform)
 void Mesh::updateInstance(const mat4* m4Transform, unsigned int iTransformIndex)
 {
     // Ensure the specified index is a valid index.
-    assert(iTransformIndex < m_m4ListOfInstances.size());
-    mat4 m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;    // Scale transformation with Scale MAtrix for the model.
+    if (iTransformIndex < m_m4ListOfInstances.size())
+    {
+        mat4 m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;    // Scale transformation with Scale MAtrix for the model.
 
-    // Update the local List of Instances with the updated Transformation.
-    m_m4ListOfInstances[iTransformIndex] = m4ScaledTransform;
+        // Update the local List of Instances with the updated Transformation.
+        m_m4ListOfInstances[iTransformIndex] = m4ScaledTransform;
 
-    // Update the VBO with the new transformation
-    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, iTransformIndex * sizeof(mat4), sizeof(mat4), &m4ScaledTransform);
+        // Update the VBO with the new transformation
+        glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+        glBufferSubData(GL_ARRAY_BUFFER, iTransformIndex * sizeof(mat4), sizeof(mat4), &m4ScaledTransform);
 
-    // Update the Bounding Box Transformation if the Bounding Box is loaded.
-    if (m_sBoundingBox.isLoaded())
-        m_sBoundingBox.updateInstance(m4Transform, iTransformIndex);
+        // Update the Bounding Box Transformation if the Bounding Box is loaded.
+        if (m_sBoundingBox.isLoaded())
+            m_sBoundingBox.updateInstance(m4Transform, iTransformIndex);
+    }
 }
 
 // Returns a Rotation Matrix to rotate an object from a World Coordinate System to a Local

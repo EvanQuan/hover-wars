@@ -211,6 +211,11 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
+    // Set up Mesh for Initial Transformation drawing.
+    mat4 m4InitialTransform;
+    m_pPhysicsComponent->getTransformMatrix(&m4InitialTransform);
+    m_iTransformationIndex = m_pMesh->addInstance(&m4InitialTransform);
+
     // The fire trail entity is always at the same location as the hovecraft
     m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();

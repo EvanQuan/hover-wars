@@ -65,6 +65,9 @@ private:
         void generateCubicBox(float fHeight, float fWidth, float fDepth);
     } m_sBoundingBox;
 
+    // Adds an Instance for Bounding Box Drawing
+    void addBBInstance(const mat4* m4Transformation);
+
     // Mesh Information and GPU VAO/VBOs
     vector<unsigned int> m_pIndices;
     vector< vec3 > m_pVertices, m_pNormals;
@@ -103,7 +106,7 @@ private:
     struct manager_cookie {};
 
 public:
-    explicit Mesh(const string &sFileName, bool bStaticMesh, const ObjectInfo* pObjectProperties, manager_cookie);
+    explicit Mesh(const string &sFileName, bool bStaticMesh, float fScale, const ObjectInfo* pObjectProperties, manager_cookie);
     virtual ~Mesh();
     void loadInstanceData(const void* pData, unsigned int iSize);
 
@@ -140,7 +143,6 @@ public:
 
     // Bounding Box Functionality
     void generateCubicBoundingBox(float fHeight, float fWidth, float fDepth) { m_sBoundingBox.generateCubicBox(fHeight, fWidth, fDepth); }
-    void addBBInstance(const mat4* m4Transformation);
     bool usingBoundingBox() const { return m_sBoundingBox.isLoaded(); }
     GLuint getBBVertexArray() const { return m_sBoundingBox.iVertexArray; }
     GLuint getBBCount() const { return m_sBoundingBox.pIndices.size(); }
