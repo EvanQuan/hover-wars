@@ -42,7 +42,7 @@ The front camera should be facing the hovercraft's backside.
 
 theta : degrees
 */
-#define FRONT_CAMERA_LONGITUDE  -90.0f
+#define FRONT_CAMERA_LONGITUDE  180.0f
 
 /*
 Determines the vertical angle the camera is tracking the hovercraft.
@@ -70,7 +70,7 @@ If negative, the camera will look behind the car's centre.
 Distance between look-at position and camera.
 */
 #define FRONT_CAMERA_RADIUS     10.0f   // r        meters
-#define BACK_CAMERA_LONGITUDE   -90.0f  // theta    degrees
+#define BACK_CAMERA_LONGITUDE   FRONT_CAMERA_LONGITUDE  // theta    degrees
 
 /*
 This determines the pitch that the camera 
@@ -109,8 +109,8 @@ const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATI
 The position of the camera relative to the position of the player. Both vectors
 will be added together to form the final camera position.
 */
-const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(FRONT_CAMERA_OFFSET, 0, 0);
-const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(BACK_CAMERA_OFFSET, 0, 0);
+const vec3 FRONT_CAMERA_POSITION_OFFSET = vec3(0, 0, FRONT_CAMERA_OFFSET);
+const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(0, 0, BACK_CAMERA_OFFSET);
 
 // Hovercraft Entity Default Constructor.
 //  Call the base class Entity Constructor
@@ -207,9 +207,14 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
+    vec3 vNegCorner, vPosCorner;
+    getSpatialDimensions(&vNegCorner, &vPosCorner);
+    ObjectInfo::BoundingBox sBounding;
+    sBounding.vDimensions = vPosCorner - vNegCorner;
+    
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
+    m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
 
     // Set up Mesh for Initial Transformation drawing.
     mat4 m4InitialTransform;

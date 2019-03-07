@@ -49,6 +49,7 @@ private:
         vector< unsigned int> pIndices;
         GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
         vec3 vNegativeOffset, vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
+        eBoundingBoxTypes eType;
 
         // Check to see if the Bounding Box is loaded.
         bool isLoaded() const { return 0 != iVertexArray; }
@@ -63,6 +64,7 @@ private:
 
         // Generation Functions
         void generateCubicBox(float fHeight, float fWidth, float fDepth);
+        void generateCubicBox(const vec3* vNegativeOffset, const vec3* vPositiveOffset);
     } m_sBoundingBox;
 
     // Adds an Instance for Bounding Box Drawing

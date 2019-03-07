@@ -479,6 +479,8 @@ void SceneLoader::grabBoundingBox(vector< string >& sData)
         case CUBIC_BOX:
             CURRENT_PROPERTIES_DEF.pObjectProperties.sObjBoundingBox.vDimensions = vec3(stof(sData[1])/*Height*/, stof(sData[2])/*Length*/, stof(sData[3])/*Depth*/);   // Dimensions of a Cubic Box
             break;
+        case SPATIAL_CALC:
+            break;
         default:    // Unsure how this happened, output an error message.
             cout << "Error: Double Check Bounding Box parameters:{ \n";
             for (vector<string>::iterator iter = sData.begin();

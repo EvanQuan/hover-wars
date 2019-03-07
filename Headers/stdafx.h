@@ -187,7 +187,8 @@ Actor names are composed of 2 characters. The order of tokens are:
 // Mapping potential types from the scene loader to corresponding enums
 const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 {
-    make_pair("box", CUBIC_BOX)
+    make_pair("box", CUBIC_BOX),
+    make_pair("spatial", SPATIAL_CALC)
 };
 
 /* Manager Defines */

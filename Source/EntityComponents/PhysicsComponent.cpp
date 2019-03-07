@@ -148,7 +148,7 @@ void PhysicsComponent::dash(float x, float y) {
     isDashing = true;
 
     PxTransform globalTransform = body->getGlobalPose();
-    PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+    PxVec3 vForce = globalTransform.q.rotate(PxVec3(x, 0, y));
     body->addForce(vForce * DASH_FORCE);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);

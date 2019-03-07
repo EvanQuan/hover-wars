@@ -6,5 +6,6 @@
 enum eBoundingBoxTypes
 {
     CUBIC_BOX,
+    SPATIAL_CALC,
     DEFAULT_TYPE
 };

@@ -81,8 +81,8 @@
 
 rocket {
 	+mesh {
-         models/missile.obj
-         0.01
+         models/rocket2.obj
+         1.0
      }
      +material {
          textures/defaultTexture.png
@@ -199,8 +199,8 @@ plane {
 player {
     0 5 0
     +mesh {
-        models/big_dodge.obj
-        0.25
+        models/hovercraft/HoverCar.obj
+        0.012
     }
     +material {
         textures/tronBase.png
@@ -211,8 +211,7 @@ player {
         blinn_phong_shdr
     }
     +bounding {
-        box
-        2.0 5.0 2.5
+        spatial
     }
 }
 

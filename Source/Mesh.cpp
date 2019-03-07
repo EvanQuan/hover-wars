@@ -70,6 +70,10 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, float fScale)
         // Save Scale Matrix
         m_m4ScaleMatrix = scale(vec3(fScale));
 
+        // Set Bounding Box Rendering information if Spatial Calculation Type Specified
+        if (SPATIAL_CALC == m_sBoundingBox.eType)
+            m_sBoundingBox.generateCubicBox(&m_vNegativeOffset, &m_vPositiveOffset);
+
         // Add Transformation for Static Objects
         if (m_bStaticMesh)
         {
@@ -123,6 +127,9 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
     // Set Spatial Cube/Plane
     m_vNegativeOffset = m_pVertices.front();
     m_vPositiveOffset = m_pVertices.back();
+
+    if (SPATIAL_CALC == m_sBoundingBox.eType)
+        m_sBoundingBox.generateCubicBox(0.0f, static_cast<float>(iWidth), static_cast<float>(iHeight));
 
     // Store Initial Transformation Matrix for Static Meshes
     if (m_bStaticMesh)
@@ -192,6 +199,13 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
     // Compute Spatial Cube
     m_vNegativeOffset = vec3(-fRadius, -fRadius, -fRadius);
     m_vPositiveOffset = vec3(fRadius, fRadius, fRadius);
+
+    // Generate Cubic Bounding Box if specified
+    if (SPATIAL_CALC == m_sBoundingBox.eType)
+    {
+        float fRadius2 = fRadius * 2.0f;
+        m_sBoundingBox.generateCubicBox(fRadius2, fRadius2, fRadius2);
+    }
 
     // Store Initial Transformation if Static Mesh
     if (m_bStaticMesh)
@@ -343,7 +357,11 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
 
     // Compute Spatial Cube
     m_vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
-    m_vNegativeOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
+    m_vPositiveOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
+
+    // Generate Cubic Bounding Box using Spatial Cube settings if requested.
+    if (SPATIAL_CALC == m_sBoundingBox.eType)   
+        m_sBoundingBox.generateCubicBox(fHeight, fWidth, fDepth);
 
     // Store initial Transformation if Static Mesh
     if (m_bStaticMesh)
@@ -643,8 +661,8 @@ bool Mesh::loadObj(const string& sFileName)
             (*vNormIter) = normalize((*vNormIter));
 
         // Store computed Spatial Range
-        m_vNegativeOffset = vec3(vXRange.x, vYRange.x, vZRange.x);  // Min
-        m_vPositiveOffset = vec3(vXRange.y, vYRange.y, vZRange.y);  // Max
+        m_vNegativeOffset = m_m4ScaleMatrix * vec4(vXRange.x, vYRange.x, vZRange.x, 1.0f);  // Min
+        m_vPositiveOffset = m_m4ScaleMatrix * vec4(vXRange.y, vYRange.y, vZRange.y, 1.0f);  // Max
     }
 
     return bReturnValue;
@@ -790,6 +808,7 @@ void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const ve
     {
         // Generate Translation Matrix for starting position
         mat4 m4Translation = translate(*vStartingPosition);
+        m_sBoundingBox.eType = pBoundingBox->eType;
 
         // Nothing Set in the Bounding Box type? Don't evaluate further
         switch (pBoundingBox->eType)
@@ -943,6 +962,36 @@ void Mesh::sBoundingBox::generateCubicBox(float fHeight, float fWidth, float fDe
     // Store the Spatial information
     vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
     vPositiveOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
+
+    // Initialize Bounding Box VBOs
+    initVBOs();
+}
+
+void Mesh::sBoundingBox::generateCubicBox(const vec3* vNegativeOffset, const vec3* vPositiveOffset)
+{
+    // Store all 8 Vertices for the Cubic Box
+    pVertices = {
+        vec3(vNegativeOffset->x, vPositiveOffset->y, vPositiveOffset->z),
+        vec3(vPositiveOffset->x, vPositiveOffset->y, vPositiveOffset->z),
+        vec3(vPositiveOffset->x, vNegativeOffset->y, vPositiveOffset->z),
+        vec3(vNegativeOffset->x, vNegativeOffset->y, vPositiveOffset->z),
+        vec3(vNegativeOffset->x, vPositiveOffset->y, vNegativeOffset->z),
+        vec3(vPositiveOffset->x, vPositiveOffset->y, vNegativeOffset->z),
+        vec3(vNegativeOffset->x, vNegativeOffset->y, vNegativeOffset->z),
+        vec3(vPositiveOffset->x, vNegativeOffset->y, vNegativeOffset->z)
+    };
+
+    // Set up the Indices for Drawing lines
+    pIndices = {
+        0, 1, 0, 3, 0, 4, // Top Left Front Corner
+        1, 2, 1, 5, 2, 3,
+        2, 7, 3, 6, 4, 5,
+        6, 7, 4, 6, 5, 7
+    };
+
+    // Store the Spatial information
+    this->vNegativeOffset = *vNegativeOffset;
+    this->vPositiveOffset = *vPositiveOffset;
 
     // Initialize Bounding Box VBOs
     initVBOs();
