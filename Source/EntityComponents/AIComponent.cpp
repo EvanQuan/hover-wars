@@ -93,6 +93,7 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
     botToPlayer /= botToPlayer.length();
     difference /= difference.length();
     float angle = atan2(difference.x,difference.z);
+    double angleBetween = angle - botRotation < angle - botRotation + (3.1415926535 * 2) ? angle - botRotation : angle - botRotation + (3.1415926535 * 2);
     double botAmount = botRotation + (3.1415926535 / 2);//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
     double modAmount = (botRotation / (3.1415926535 * 2) - floor(botRotation / (3.1415926535 * 2))) * (3.1415926535 * 2) - 3.1415926535;
 
@@ -110,10 +111,10 @@ void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm
         timeChased = 0;
     }
     
-    if (angle - botRotation > 0.1) {
+    if (angleBetween > 0.1) {
         a->actionsToTake[1] = -1;
     }
-    else if (angle - botRotation < -0.1) {
+    else if (angleBetween < -0.1) {
         a->actionsToTake[1] = 1;
     }
     else {

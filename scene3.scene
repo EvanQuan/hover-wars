@@ -1,0 +1,533 @@
+# ============================================================
+# Scene file for rendering
+#
+# Instructions for reading this file:
+#   - lines beginning with ‘#’ are comments
+#   - all positions are expressed in world coords
+#
+# ============================================================
+# Lighting Instructions
+#
+# Lights can be described as:
+#       point_light         { x y z  r g b  p } 
+#           - "x y z"   = the Position of the light in World Space
+#           - "r g b"   = the color of the light
+#           - "p"       = power of the light
+#       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
+#           - "dX dY dZ"    = the direction of the light source
+#           - "aR aG aB"    = the ambient color of the light source
+#           - "dR dG dB"    = the diffuse color of the light source
+#           - "sR sG sB"    = the specular color of the light source
+#           - "P nP fP"     = The Position Offset (P) for the source of the Shadow Map
+#                           = As well as the Near Plane (nP) and the Far Plane (fP)
+#           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
+#       spotlight           { x y z  dX dY dZ  r g b  Phi  *softPhi* }
+#           - "x y z"       = the position of the light source
+#           - "dX dY dZ"    = the direction of the spotlight
+#           - "r g b"       = the color of the spotlight
+#           - "Phi"         = the cutoff angle (in degrees) specifying the radius of the spotlight
+#           - "*softPhi*"   = (Optional) a degree from the cutoff angle to smooth out hard edges, default is 5
+#
+# ============================================================
+# Object Instructions
+#
+# Many different objects can be specified with the following syntax:
+#       player  { x y z }
+#           - "x y z"               = the initial position of the player
+#       bot     { x y z }
+#           - "x y z"               = the initial position of the bot
+#       plane   { x y z  nX nY nZ  height  width }
+#           - "x y z"               = the position of the plane
+#           - "nX nY nZ"            = the normal of the plane
+#                                   = the plane will be rotated to align with its normal
+#           - "height  width"       = the height and width of the plane
+#       sphere  { x y z  r }
+#           - "x y z"               = the position of the sphere
+#           - "r"                   = the radius of the sphere
+#       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
+#           - "x y z"               = the position of the cube
+#           - "height width depth"  = Specifies the dimensions of the cube
+#       static_mesh { x y z... }
+#           - "x y z..."            = the position of the mesh
+#                                   = multiple positions can be specified for instanced rendering
+#
+# ============================================================
+# Attributes
+#
+# For any object, additional attributes can be given in-line to specify additional
+#   aspects of an object. Those that can't be used for an object will be ignored.
+#
+#       +material   { <diffuse map location> <*specular map location*> S }
+#           - specifies a texture to use for the object.
+#           - <diffuse map location>    = specifies a texture to use as a diffuse map for the object
+#           - <*specular map location*> = (Optional) specifies a texture to use as a specular map.
+#                                       = (Optional) if specified as 3 floats, a texture of that shade will be generated.
+#           - S                         = specifies the shininess of the material
+#       +mesh       { <mesh location>  s }
+#           - specifies a mesh .obj that will be loaded for the object
+#           - if a mesh is expected, but no mesh is given, a cube will be used as default.
+#           - "s"                   = the scale of the mesh *Optional: Default is 1.0f*
+#       +shader     { <shader type> }
+#           - These are application specific and types are specified in
+#               ShaderManager.cpp.
+#           - if shader type is incorrect, or shader not specified, a simple
+#               diffuse shader will be used (PLANE_SHADER internally).
+#           - TODO: list valid <shader type> inputs here.
+#       +bounding   { "box"  h w l }
+#           - "box" :> specifies a cubic box to bound the object 
+#                   :> <h w l> - height width length as floats
+# ============================================================
+
+directional_light {
+    -1 -1 -1
+    0 0 0
+    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    1000.0 1.0 1200.0
+    8192 8192 100.0
+}
+
+point_light {
+    65 5 -24.5
+    0.0 0.0 1.0
+    20.0
+}
+point_light {
+    65 5 24.5
+    0.0 0.0 1.0
+    20.0
+}
+
+
+
+point_light {
+    -65 5 -24.5
+    1.0 0.0 0.0
+    20.0
+}
+point_light {
+    -65 5 24.5
+    1.0 0.0 0.0
+    20.0
+}
+
+
+
+point_light {
+    -24.5 5 65
+    0.0 1.0 0.0
+    20.0
+}
+point_light {
+    24.5 5 65
+    0.0 1.0 0.0
+    20.0
+}
+
+
+point_light {
+    -24.5 5 -65
+    0.6 0.2 0.8
+    20.0
+}
+point_light {
+    24.5 5 -65
+    0.6 0.2 0.8
+    20.0
+}
+
+point_light {
+    0 5 -140
+    0.6 0.2 0.8
+    20.0
+}
+
+#Indices:
+#       0 - Num_Boids
+#       1 - Avoid Radius
+#       2 - Cohesion Radius
+#       3 - Gather Radius
+#       4 - Min Speed (length)
+#       5 - Max Speed (length)
+#       6 - Boundary Radius
+#       7 - Delta T
+#       8 - Scale
+#       9 - Texture Location (Optional)
+#       10 - Mesh Location (Optional)
+#boids {
+#   10000
+#   0.5 1.0 1.50
+#   5.0 8.0
+#   30.0 0.0005 1.0
+#   textures-256-256/fig-10c.png
+#   models/paper_airplane.obj
+#}
+
+## bottom
+plane {
+    0 0 0
+    0 1 0
+    10000 10000
+    +material {
+        textures/groundSeamless.jpg
+        0 0 0
+        0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
+# Mesh
+# Having the player start off the ground sort of fixes the initial
+# is in air bug
+player {
+    0 5 0
+    +mesh {
+        models/big_dodge.obj
+        0.25
+    }
+    +material {
+        textures/tronBase.png
+        0.1 0.1 0.1
+        20.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        box
+        2.0 5.0 2.5
+    }
+}
+
+#player {
+#    0 0 0
+#    +mesh {
+#        models/missile.obj
+#        0.01
+#    }
+#    +material {
+#        textures/tronBase.png
+#        0.1 0.1 0.1
+#        20.0
+#    }
+#    +shader {
+#        blinn_phong_shdr
+#    }
+#    +bounding {
+#        box
+#        2.0 5.0 2.5 
+#    }
+#}
+
+# These player bounding box values are more accurate, but result in wacky physics
+# 1.2 3.8 1.8
+
+#       cube    { x y z  height  width  depth }
+#           - "x y z"               = the position of the cube
+#           - "height width depth"  = Specifies the dimensions of the cube
+
+cube {
+    65 5 65
+    10 80 80
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    65 5 -65
+    10 80 80
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    -65 5 -65
+    10 80 80
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    -65 5 65
+    10 80 80
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+# Wall
+# Player should not be able to pass this
+cube {
+    141 5 0
+    10 2 50
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    141 5 98
+    10 2 86
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    141 5 -98
+    10 2 86
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    166 5 55
+    10 52 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    166 5 -55
+    10 52 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    192 5 0
+    10 2 110
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+
+
+
+
+
+cube {
+    -141 5 0
+    10 2 50
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -141 5 98
+    10 2 86
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -141 5 -98
+    10 2 86
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -166 5 55
+    10 52 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -166 5 -55
+    10 52 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    -192 5 0
+    10 2 110
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+
+
+
+
+
+
+
+cube {
+    0 5 -141
+    10 50 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    98 5 -141
+    10 86 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -98 5 -141
+    10 86 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    55 5 -166
+    10 2 52
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -55 5 -166
+    10 2 52
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    0 5 -192
+    10 110 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+
+
+
+
+
+cube {
+    0 5 141
+    10 50 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    98 5 141
+    10 86 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -98 5 141
+    10 86 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    55 5 166
+    10 2 52
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+cube {
+    -55 5 166
+    10 2 52
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+cube {
+    0 5 192
+    10 110 2
+    +bounding {
+        box
+        10.0 50.0 4.0
+    }
+}
+
+# bump
+# Player should be able to move over this?
+# cube {
+#     20 0 20
+#     0.25 2 2
+#     +bounding {
+#         box
+#         0.25 2.0 2.0
+#     }
+# }
+
+# Rocket
+# static_mesh {
+#     -20 1 1
+#     +mesh {
+#         models/missile.obj
+#         0.01
+#     }
+#     +material {
+#         textures/defaultTexture.png
+#         0.0
+#     }
+#     +shader {
+#         blinn_phong_shdr
+#     }
+# }
+
+# Other ships
+#static_mesh {
+#    -20 2 10
+#    +mesh {
+#        models/hovercraft/HoverCar.obj
+#        0.012
+#    }
+#    +material {
+#        textures/defaultTexture.png
+#        0.0
+#    }
+#    +shader {
+#        blinn_phong_shdr
+#    }
+#}
+
+# Set Spatial Map information for the Scene
+# values are: length, width and tile size in that order.
+#   This will only be evaluated once and multiple specifications of the spatial_map will ignored.
+spatial_map {
+    380 380 10
+}
