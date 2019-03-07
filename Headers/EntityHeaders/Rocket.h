@@ -5,6 +5,10 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 
+
+// Forward Declarations
+class EmitterEngine;
+
 // Name: InteractableEntity
 // Written by: James Cote
 // Description: General Entity for objects that players can interact with.
@@ -16,22 +20,22 @@ class Rocket
     : public InteractableEntity
 {
 public:
-    Rocket(int iID, int iOwnerID, const vec3* vPosition);
+    Rocket(int iID, int iOwnerID);
     virtual ~Rocket();
 
     // Implementation of inherited functionality
-    void initialize() { /*Not Implemented yet*/ }
+    void initialize(const string& sFileName,
+                    const ObjectInfo* pObjectProperties,
+                    const string& sShaderType,
+                    float fScale);
     void update(float fTimeInMilliseconds);
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
+    // Rocket Functionality
+    void launchRocket(const vec3* vPosition, const vec3* vDirection, float fDuration);
+
 private:
-    Mesh* m_pMesh;
-    ObjectInfo m_pObjectInfo;
-
-    vec3 m_vDimensions;
-
-    RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
-    // PhysicsComponent* m_pPhysicsComponent; // Component for handling Physics for the Entity
-    AnimationComponent* m_pAnimationComponent;
+    float           m_fRocketDuration;
+    EmitterEngine*  m_pEmitterEngine;
 };

@@ -4,10 +4,15 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
-#include "FlameTrail.h"
 #include "SpatialDataMap.h"
 #include "GameStats.h"
 #include <queue>
+
+/************************\
+ * Forward Declarations *
+\************************/
+class FlameTrail;
+class Rocket;
 
 /***********\
  * Defines *
@@ -165,6 +170,7 @@ private:
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     FlameTrail* m_pFireTrail;
+    Rocket* m_pRocket;
 
     /*
     These should lag behind

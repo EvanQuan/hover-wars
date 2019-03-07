@@ -1,15 +1,13 @@
 #include "EntityHeaders/Rocket.h"
-#include "DataStructures/SpriteSheetDatabase.h"
 #include "EntityManager.h"
-
-using namespace SpriteSheetDatabase;
+#include "EmitterEngine.h"
+#include "SoundManager.h"
 
 // Default Constructor
-Rocket::Rocket(int iID, int iOwnerID, const vec3* vPosition)
-    : InteractableEntity( iID, iOwnerID, vPosition, ROCKET_ENTITY )
+Rocket::Rocket(int iID, int iOwnerID)
+    : InteractableEntity( iID, iOwnerID, vec3(0.0), ROCKET_ENTITY )
 {
-    // aLl interactable entities need collision detection
-    // m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pEmitterEngine = EMITTER_ENGINE;
 }
 
 // Destructor
@@ -19,8 +17,16 @@ Rocket::~Rocket()
 }
 
 /****************************************************************\
- * Inherited Pure Virtual Functions                                *
+ * Inherited Pure Virtual Functions                             *
 \****************************************************************/
+
+void Rocket::initialize(const string& sFileName,
+                        const ObjectInfo* pObjectProperties,
+                        const string& sShaderType,
+                        float fScale)
+{
+    InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);  
+}
 
 void Rocket::update(float fTimeInMilliseconds)
 {
@@ -37,6 +43,20 @@ void Rocket::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
 // void Rocket::handleCollision(const Entity* pOther) const
 void Rocket::handleCollision(Entity* pOther)
 {
-    /* Not Implemented */
+    // Tell the Other Entity that they've been hit via the Inherited Collision Handler
+    InteractableEntity::handleCollision(pOther);
+
+    // clear Rocket Rendering; Remove Instance from Mesh
+}
+
+/*************************************************************************************************\
+ * Rocket Functionality                                                                          *
+\*************************************************************************************************/
+
+void Rocket::launchRocket(const vec3* vPosition, const vec3* vDirection, float fDuration)
+{
+    cout << "Rocket Launched! Position: " << to_string(*vPosition) << "; Direction: " << to_string(*vDirection) << "\n";
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+    m_pEmitterEngine->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
 }
 

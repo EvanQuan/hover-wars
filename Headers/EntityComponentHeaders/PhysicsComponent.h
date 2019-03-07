@@ -45,6 +45,9 @@ public:
     void getTransformMatrix(mat4* pReturnTransformMatrix);
     glm::vec3 PhysicsComponent::getPosition();
     PxTransform getGlobalPose();
+
+    // Returns the Direction Vector of the current Physics Object
+    void getDirectionVector(vec3* vReturnVector);
 private:
     bool isInAir;
     /*

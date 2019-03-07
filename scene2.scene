@@ -79,6 +79,20 @@
 # ============================================================
 
 
+rocket {
+	+mesh {
+         models/missile.obj
+         0.01
+     }
+     +material {
+         textures/defaultTexture.png
+         0.0
+     }
+     +shader {
+         blinn_phong_shdr
+     }
+}
+
 directional_light {
     -1 -1 -1
     0 0 0

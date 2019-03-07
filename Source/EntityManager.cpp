@@ -1,5 +1,7 @@
 #include "EntityManager.h"
 #include "EntityHeaders/StaticEntity.h"
+#include "EntityHeaders/Rocket.h"
+#include "EntityHeaders/FlameTrail.h"
 #include "SoundManager.h"
 
 /***********\
@@ -178,7 +180,7 @@ void EntityManager::doRender()
         pIter != m_pRenderingComponents.end();
         ++pIter)
     {
-        if (!m_bShadowDraw || (*pIter).second->castsShadows());
+        if (!m_bShadowDraw || (*pIter).second->castsShadows())     // Render depending on Shadow Settings of the current render and the render component
             (*pIter).second->render();
     }
 
@@ -390,10 +392,8 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewBot)));
 }
 
-
-
 // Generates and Returns an Interactable Entity with a specified Position.
-FlameTrail* EntityManager::generateFlameTrail(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth)
+FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
@@ -401,6 +401,23 @@ FlameTrail* EntityManager::generateFlameTrail(const vec3* vPosition, int iOwnerI
     // Create and Initialize new Interactable Entity
     unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition, fFlameHeight, fFlameWidth);
     FlameTrail* pReturnEntity = pNewEntity.get();
+
+    // Store Interactable Entity in Entity List.
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));
+
+    // Return InteractableEntity
+    return pReturnEntity;
+}
+
+Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
+{
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize new Interactable Entity
+    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID );
+    pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
+    Rocket* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));

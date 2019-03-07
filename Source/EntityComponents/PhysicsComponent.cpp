@@ -127,6 +127,7 @@ void PhysicsComponent::move(float x, float y) {
 PxTransform PhysicsComponent::getGlobalPose() {
     return body->getGlobalPose();
 }
+
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
         PxVec3 vForce = PxVec3(y, 0, x);
@@ -254,4 +255,12 @@ glm::vec3 PhysicsComponent::getPosition() {
 glm::vec3 PhysicsComponent::getLinearVelocity() {
     physx::PxVec3 velocity = body->getLinearVelocity();
     return glm::vec3(velocity.x, velocity.y, velocity.z);
+}
+
+void PhysicsComponent::getDirectionVector(vec3* vReturnVector)
+{
+    PxQuat pRotationQuaternion = body->getGlobalPose().q;       // Get the Rotation Quaternion for the current global pose
+    PxVec3 vPxReturn = PxVec3(0.0f, 0.0f, 1.0f);                // We Want a forward vector (1 in z-axis) rotated with the global quaternion
+    vPxReturn = pRotationQuaternion.rotate(vPxReturn);          // Rotate the Forward Vector
+    memcpy(vReturnVector, &vPxReturn, sizeof(vec3));            // Copy PxVec3 to the return Vec3
 }

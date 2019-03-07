@@ -21,7 +21,7 @@ public:
     virtual ~FlameTrail();
 
     // Implementation of inherited functionality
-    void initialize();
+    virtual void initialize();
     void update(float fTimeInMilliseconds);
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
@@ -29,7 +29,6 @@ public:
     // Game Specific Logic for Interacting with Object
     void getInteractionResult() const { /*Not Implemented*/ }
 
-    void loadAsBillboard(float fHeight, float fWidth);
     void spawnFlame(const vec3* vNormal, const vec3* vPosition);
 
     void loadAsPowerup(vec3* dimensions);

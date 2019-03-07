@@ -20,6 +20,12 @@
 #include "SpatialDataMap.h"
 #include "UserInterface/UserInterface.h"
 
+/************************\
+ * Forward Declarations *
+\************************/
+class FlameTrail;
+class Rocket;
+
 // Environment Manager
 // Manages all objects in an environment
 // Written by: James Coté, Evan Quan
@@ -58,7 +64,8 @@ public:
     void dispatchCollision(int iColliderID, int iCollidedID);
 
     // Interactable Entity Generation Functions
-    FlameTrail* generateFlameTrail(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);
+    FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);
+    Rocket* generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);

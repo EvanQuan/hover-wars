@@ -54,4 +54,14 @@ struct ObjectInfo
         // Reset Position
         vPosition = vec3(0.0f);
     }
+
+    // Assignment Operator overload for Copying 
+    ObjectInfo& operator=(const ObjectInfo& pCopy)
+    {
+        vPosition       = pCopy.vPosition;
+        sObjBoundingBox = pCopy.sObjBoundingBox;
+        sObjMaterial    = pCopy.sObjMaterial;
+
+        return *this;
+    }
 };

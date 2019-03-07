@@ -1,4 +1,7 @@
 #include "EntityHeaders/HovercraftEntity.h"
+#include "EntityHeaders/FlameTrail.h"
+#include "EntityHeaders/Rocket.h"
+#include "SceneLoader.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
 #include "SoundManager.h"
@@ -209,8 +212,11 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = ENTITY_MANAGER->generateFlameTrail(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
+
+    // Create Rocket Mesh
+    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
     
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
@@ -497,14 +503,18 @@ Shoot a rocket and put it on cool down.
 */
 void HovercraftEntity::shootRocket()
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+    vec3 vForwardVector;
+    m_pPhysicsComponent->getDirectionVector(&vForwardVector);
+    m_pRocket->launchRocket(&m_vPosition, &vForwardVector, 1.0f);
 
-    EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
-    vec3 currPos = m_pPhysicsComponent->getPosition();
-    PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
-    PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
-    vForce.y = 0;
-    //PHYSICS_MANAGER->createRocketObjects(currPos.x + vForce.x, currPos.y + vForce.y, currPos.z + vForce.z, vForce.x, vForce.y, vForce.z);
+   // SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+
+    //EMITTER_ENGINE->generateEmitter(m_vPosition, vec3(0, 1, 0), 60.f, 5.0f, 5, false, 2.0f);
+    //vec3 currPos = m_pPhysicsComponent->getPosition();
+    //PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
+    //PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
+    //vForce.y = 0;
+    ////PHYSICS_MANAGER->createRocketObjects(currPos.x + vForce.x, currPos.y + vForce.y, currPos.z + vForce.z, vForce.x, vForce.y, vForce.z);
     m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
 

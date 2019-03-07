@@ -5,8 +5,8 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityTypes eIEType)
-    : Entity( iID, *vPosition, eIEType )
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityTypes eIEType)
+    : Entity( iID, vPosition, eIEType )
 {
     m_iOwnerID = iOwnerID;  // Set the Owner ID for the Interactable Entity
 }
@@ -18,8 +18,22 @@ InteractableEntity::~InteractableEntity()
 }
 
 /****************************************************************\
- * Inherited Pure Virtual Functions                                *
+ * Inherited Pure Virtual Functions                             *
 \****************************************************************/
+
+void InteractableEntity::initialize(const string& sFileName,
+                                    const ObjectInfo* pObjectProperties,
+                                    const string& sShaderType,
+                                    float fScale)
+{
+    // Load Mesh and Rendering Component
+    m_pMesh             = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
+    m_pRenderComponent  = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+
+    // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
+    //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    //m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
+}
 
 void InteractableEntity::update(float fTimeInMilliseconds)
 {
