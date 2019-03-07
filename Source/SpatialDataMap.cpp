@@ -263,7 +263,12 @@ void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pN
     if (bChange)
         computeNewDynamicPosition(pEntity, pNewPos);
 }
+float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2) {
+    return abs(pos1->x - pos2->x) + abs(pos1->y - pos2->y);
+}
+void SpatialDataMap::computePath(const vec2* pos1, const vec2* pos2) {
 
+}
 void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3* pNewPos)
 {
     // Local Variables

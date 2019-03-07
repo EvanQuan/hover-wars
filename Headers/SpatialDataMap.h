@@ -23,7 +23,7 @@ public:
     void initializeMap(float fLength, float fWidth, float fTileSize);
     void populateStaticMap(const unordered_map<int, unique_ptr<Entity>>* pMasterEntityList);
     void clearMap();
-
+    void computePath(const vec2* pos1, const vec2* pos2);
     // Update Dynamic Entities
     void updateDynamicPosition(const Entity* pEntity, const vec3* pNewPos);
 
@@ -34,6 +34,7 @@ public:
     bool isInitialized() { return m_bIsInitialized; }
 
 private:
+    float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2);
     static SpatialDataMap* m_pInstance;
     SpatialDataMap();                                           // Singleton Implementation
     SpatialDataMap(const SpatialDataMap* pCopy);                // Copy Constructor Overload
