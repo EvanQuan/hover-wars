@@ -397,7 +397,7 @@ void UserInterface::updateScores()
 {
     for (int player = 0; player < m_iDisplayCount; player++)
     {
-        updateScore((ePlayer) player, GAME_STATS->get((ePlayer) player, GameStats::SCORE_CURRENT));
+        updateScore(static_cast<eHovercraft>(player), GAME_STATS->get(static_cast<eHovercraft>(player), GameStats::SCORE_CURRENT));
     }
 }
 
@@ -410,14 +410,16 @@ void UserInterface::updateScore(ePlayer player, int score)
 void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
-    std::string score = std::to_string(GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CURRENT));
+    // Ad hoc for single player
+    std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1, GameStats::eStat::SCORE_CURRENT));
     renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
     renderScoreChange();
 }
 
 void UserInterface::renderScoreChange()
 {
-    int scoreChange = GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CHANGE);
+    // Ad hoc for single player
+    int scoreChange = GAME_STATS->get(HOVERCRAFT_PLAYER_1, GameStats::eStat::SCORE_CHANGE);
     bool scoreIncreased = scoreChange >= 0;
     renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) , SCORE_CHANGE_X, SCORE_CHANGE_Y, SCORE_CHANGE_SCALE, scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
 }
@@ -431,6 +433,7 @@ void UserInterface::renderCooldowns()
     // TODO put this in the proper place, font, scale etc.
     // This formatting is all temporary
     // 0 - 100
+    // Ad hoc for single player
     PlayerEntity* player = ENTITY_MANAGER->getPlayer(PLAYER_1);
     float* cooldowns = player->getCooldowns();
     float trailPercent = player->getTrailGaugePercent();

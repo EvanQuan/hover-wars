@@ -26,7 +26,7 @@ public:
     {
         if (HovercraftEntity::useAbility(ability))
         {
-            GAME_STATS->useAbility(static_cast<ePlayer>(m_iStatsID), ability);
+            GAME_STATS->useAbility(static_cast<eHovercraft>(m_iStatsID), ability);
             return true;
         }
         return false;
