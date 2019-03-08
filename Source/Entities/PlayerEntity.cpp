@@ -39,7 +39,7 @@ void PlayerEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
     case HOVERCRAFT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
         if (!isInvincible())
         {
-            m_pGmStats->addScore(static_cast<eBot>(iNumber), static_cast<GameStats::eAddScoreReason>(m_iStatsID));
+            m_pGmStats->addScore(static_cast<eHovercraft>(iNumber), static_cast<GameStats::eAddScoreReason>(m_iStatsID));
         }
         setInvincible();
         break;
