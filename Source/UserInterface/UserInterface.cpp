@@ -272,7 +272,12 @@ void UserInterface::initializeVBOs()
 {
     // Generate Vertex Array
     glGenVertexArrays(1, &m_iVertexArray);
+    // dynamic draw, keep this ready, because we will draw this alot
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, sizeof(vec4), GL_DYNAMIC_DRAW);    // Generate the Vertex Buffer and store some space on the GPU for Text Rendering.
+
+    // chunk size  4 - internally treats each section as a float, it goes through 4 floats in each cunk
+    // 
+    // offset is 0
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
 }
 
@@ -289,10 +294,10 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
 }
 
-void UserInterface::displayMessage(ePlayer player, std::string text)
+void UserInterface::displayMessage(eHovercraft hovercraft, std::string text)
 {
-    m_sMessages[player] = text;
-    m_fMessageTimes[player] = MESSAGE_DURATION;
+    m_sMessages[hovercraft] = text;
+    m_fMessageTimes[hovercraft] = MESSAGE_DURATION;
 }
 /*
 This visually updates the UserInterface to all value changes since last update.
@@ -392,11 +397,11 @@ void UserInterface::updateScores()
 {
     for (int player = 0; player < m_iDisplayCount; player++)
     {
-        updateScore((ePlayer) player, GAME_STATS->get((ePlayer) player, GameStats::SCORE_CURRENT));
+        updateScore(static_cast<eHovercraft>(player), GAME_STATS->get(static_cast<eHovercraft>(player), GameStats::SCORE_CURRENT));
     }
 }
 
-void UserInterface::updateScore(ePlayer player, int score)
+void UserInterface::updateScore(eHovercraft hovecraft, int score)
 {
     
     // cout << "Player " << (player + 1) << " score: " << score << endl;
@@ -405,14 +410,16 @@ void UserInterface::updateScore(ePlayer player, int score)
 void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
-    std::string score = std::to_string(GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CURRENT));
+    // Ad hoc for single player
+    std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1, GameStats::eStat::SCORE_CURRENT));
     renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
     renderScoreChange();
 }
 
 void UserInterface::renderScoreChange()
 {
-    int scoreChange = GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CHANGE);
+    // Ad hoc for single player
+    int scoreChange = GAME_STATS->get(HOVERCRAFT_PLAYER_1, GameStats::eStat::SCORE_CHANGE);
     bool scoreIncreased = scoreChange >= 0;
     renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) , SCORE_CHANGE_X, SCORE_CHANGE_Y, SCORE_CHANGE_SCALE, scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
 }
@@ -426,7 +433,8 @@ void UserInterface::renderCooldowns()
     // TODO put this in the proper place, font, scale etc.
     // This formatting is all temporary
     // 0 - 100
-    PlayerEntity* player = ENTITY_MANAGER->getPlayer(PLAYER_1);
+    // Ad hoc for single player
+    HovercraftEntity* player = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1);
     float* cooldowns = player->getCooldowns();
     float trailPercent = player->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));
@@ -475,12 +483,17 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
+    // m_pShdrMngr->setUniformBool()// shader, name, value
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
+    // TODO
+    // Need a different shader for images
+    // Change the texture class to store height and width, loaded dynamically
+    // Create a quad similar to text
     // Iterate through all Characters
     string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
@@ -489,6 +502,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         Character ch = m_pCharacters[*c];
 
         // Calculate Position offset by the bearings of the glyph
+        // x and y in screen space
         GLfloat xpos = x + ch.bearing.x * scale;
         GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
@@ -504,6 +518,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
+        // TODO, use triangle strip instead to reduce vertices to 4
         // Update VBO for each character
         // Triangle 1:
         /*
@@ -546,6 +561,9 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+/*
+Use hashmap for image intead of image filepath directly
+*/
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
 

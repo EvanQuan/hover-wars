@@ -69,7 +69,7 @@ using namespace physx;
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
 #define MAX_PLAYER_COUNT    4
 #define MAX_BOT_COUNT       4
-#define MAX_HOVERCRAFT_COUNT 8
+#define MAX_HOVERCRAFT_COUNT MAX_PLAYER_COUNT + MAX_BOT_COUNT
 #define XBOX_CONTROLLER     "Xbox"
 #define EMPTY_CONTROLLER    "Empty Controller"
 // m_pJoystickAxes

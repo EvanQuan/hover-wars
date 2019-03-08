@@ -179,6 +179,37 @@ void HovercraftEntity::update(float fTimeInSeconds)
     updateVulnerability(fTimeInSeconds);
 }
 
+/*
+    Tells the HovercraftEntity that they were damaged. This is where the
+    Hovercraft Entity will handle its "death" logic and award points to the
+    attacker.
+
+    @param  eHitByType      The Entity Type that this Entity was hit by. This
+                            entity will either be a bot or a player
+    @param  iNumber         
+*/
+void HovercraftEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
+{
+    // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
+    // Switch based on who hit the player
+    switch (eHitByType)
+    {
+    case HOVERCRAFT_ENTITY:
+    // Hitting Entity was a bot, meaning that the bot #iNumber should get
+    // points for hitting this player #m_ePlayerID
+        // TODO make sure that iNumber actually corresponds to values
+        // useable by GameStats
+        if (!isInvincible())
+        {
+            // TODO NOTE what 
+            m_pGmStats->addScore(static_cast<eHovercraft>(iNumber),
+                static_cast<GameStats::eAddScoreReason>(m_eHovercraftID));
+        }
+        setInvincible();
+        break;
+    }
+}
+
 void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
 {
     m_fSecondsLeftUntilVulnerable -= fTimeInSeconds;
@@ -198,7 +229,8 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
 void HovercraftEntity::initialize(const string& sFileName,
                                   const ObjectInfo* pObjectProperties,
                                   const string& sShaderType,
-                                  float fScale)
+                                  float fScale,
+                                  eHovercraft eHovercraftID)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
@@ -221,11 +253,14 @@ void HovercraftEntity::initialize(const string& sFileName,
     
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    m_eHovercraftID = eHovercraftID;
 }
 
 /*
-    Handle Collision Logic in this function. This function is called when someone collides with this Entity.
-    This Entity can tell the other Entity what happens when they collided with this Entity.
+    Handle Collision Logic in this function. This function is called when
+    someone collides with this Entity. This Entity can tell the other Entity
+    what happens when they collided with this Entity.
 
     @param pOther   const pointer to the Entity that this entity collided with.
     @param bVictim  boolean to tell if this entity is the victim or not.
@@ -239,16 +274,16 @@ void HovercraftEntity::handleCollision(Entity* pOther)
     switch (eOtherType)
     {
     case HOVERCRAFT_ENTITY:
-        // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
-        // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
+        // Cast the other Entity to a Hovercraft Entity (We know this is
+        // possible because of the two cases)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->hit(m_eType, m_iStatsID);
+           pOtherHovercraft->hit(m_eType, m_eHovercraftID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->hit(pOther->getType(), pOtherHovercraft->getStatsID());
+            this->hit(pOther->getType(), pOtherHovercraft->getHovercraftID());
         }
 
         // Momentarily lose control of vehicle to prevent air moving

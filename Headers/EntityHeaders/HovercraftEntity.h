@@ -17,6 +17,7 @@
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 
+// TODO move macros only used in .cpp
 /*
 Cooldowns
 
@@ -92,8 +93,7 @@ public:
     void update(float fTimeInMilliseconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    // Why was this const? I need to change state in order to make the hovercrafts invincible?
-    virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) = 0;
+    void hit(eEntityTypes eHitByType, unsigned int iNumber);
     // virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
     // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
@@ -103,7 +103,8 @@ public:
     void initialize(const string& sFileName,
                     const ObjectInfo* pObjectProperties,
                     const string& sShaderType,
-                    float fScale);
+                    float fScale,
+                    eHovercraft eHovercraftID);
 
     bool useAbility(eAbility ability);
     void move(float x, float y);
@@ -122,36 +123,26 @@ public:
     void toggleActiveCamera() { activeCameraIndex = !activeCameraIndex; }
 
     // Get ability statuses for UI
-    /*
-    Get the status of the flame in percent.
-    @return 1.0f if full, 0.0f if empty, or intermediate value if in between
-    */
+    // Get the status of the flame in percent.
+    // @return 1.0f if full, 0.0f if empty, or intermediate value if in between
     float getTrailGaugePercent() { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
 
-    /*
-    Get all the cooldowns to be used by the UI.
+    // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
-    @return an array of all ability cooldowns.
-    */
+    // @return an array of all ability cooldowns.
     float* getCooldowns() { return m_fCooldowns; };
 
-    /*
-    Set lose control until seconds runs out or manually reactivated with
-    setGainControl(), whichever happens first
-    */
+    // Set lose control until seconds runs out or manually reactivated with
+    // setGainControl(), whichever happens first
     void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
-    /*
-    Gain control of hovercraft
-    */
+    // Gain control of hovercraft
     void setGainControl() { isInControl = true; };
 
     bool hasSpikesActivated() const { return m_bSpikesActivated; };
 
-    /*
-    Signifies the hovercraft is vulernable to attack.
-    If true, ability collisions will count.
-    Otherwise, ignore ability collisions.
-    */
+    // Signifies the hovercraft is vulernable to attack.
+    // If true, ability collisions will count.
+    // Otherwise, ignore ability collisions.
     bool isInvincible() const { return m_bInvincible; };
 
     void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
@@ -250,9 +241,9 @@ private:
 protected:
     GameStats* m_pGmStats;
 
-    //This ID is used for communicating with GameStats
-    unsigned int m_iStatsID;
-    unsigned int getStatsID() const { return m_iStatsID; }
+    // This ID is used for communicating with GameStats
+    eHovercraft m_eHovercraftID;
+    eHovercraft getHovercraftID() const { return m_eHovercraftID; }
 
     // Bool Spikes Information
     bool m_bSpikesActivated;

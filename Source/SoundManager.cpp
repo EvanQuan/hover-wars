@@ -2,7 +2,6 @@
 #include "SoundManager.h"
 #include "EntityHeaders/BotEntity.h"
 #include "EntityManager.h"
-#include "EntityHeaders/PlayerEntity.h"
 
 // Bank paths
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
@@ -127,38 +126,24 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 
 /*
 At this point, assumes both collider and collided are hovercrafts of some kind.
+
+@NOTE: This will be unneeded when interactable entities become further
+       developed. As all abilities will be interactable entitise, context
+       collisions will be determined in handleBaseCollisionSound.
 */
 void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collided)
 {
-    // TODO refactor all of this
-    bool spikeImpact = false;
-    PlayerEntity* player = ENTITY_MANAGER->getPlayer(collider->getID());
-    BotEntity* bot;
-    if (nullptr != player)
+    if ((collider->getType() != eEntityTypes::HOVERCRAFT_ENTITY)
+        || collider->getType() != eEntityTypes::HOVERCRAFT_ENTITY)
     {
-        spikeImpact = player->hasSpikesActivated();
-    } 
-    else
-    {
-        bot = ENTITY_MANAGER->getBot(collider->getID());
-        spikeImpact = bot->hasSpikesActivated();
+        return;
     }
 
-    if (!spikeImpact)
-    {
-        player = ENTITY_MANAGER->getPlayer(collided->getID());
-        if (nullptr != player)
-        {
-            spikeImpact = player->hasSpikesActivated();
-        } 
-        else
-        {
-            bot = ENTITY_MANAGER->getBot(collided->getID());
-            spikeImpact = bot->hasSpikesActivated();
-        }
-    }
+    HovercraftEntity* colliderHovercraft = static_cast<HovercraftEntity*>(collider);
+    HovercraftEntity* collidedHovercraft = static_cast<HovercraftEntity*>(collided);
 
-    if (spikeImpact)
+    if (colliderHovercraft->hasSpikesActivated()
+        || collidedHovercraft->hasSpikesActivated())
     {
         play(eSoundEvent::SOUND_SPIKES_IMPACT);
     }

@@ -135,9 +135,6 @@
     <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\PlayerEntity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\PointLight.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
@@ -327,9 +324,6 @@
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\InteractableEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\PlayerEntity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\PointLight.cpp">

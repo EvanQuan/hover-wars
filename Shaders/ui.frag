@@ -3,6 +3,8 @@ uniform vec3 textColor;
 // Texture to sample from
 uniform sampler2D text;	
 
+// 
+
 // Output Fragment color
 out vec4 color;
 
@@ -10,6 +12,7 @@ out vec4 color;
 void main()
 {
     color = vec4(textColor, texture(text, TexCoords).r);
-	//color = vec4(texture(text, TexCoords).xyz, 1.0);
-	//color = vec4(1.0);
+	// use uniform boolean to determine whether an image or text is being rendered
+	// ShaderManager will set this value
+	//color = texture(text, TexCoords);
 }

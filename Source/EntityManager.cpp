@@ -360,8 +360,8 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize Player Entity.
-    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
+    unique_ptr<HovercraftEntity> pNewPlayer = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pPlayerEntityList.size()));
 
     // Store Player Entity In Player Entity List as well as Master Entity List.
     m_pPlayerEntityList.push_back(pNewPlayer.get());
@@ -379,7 +379,7 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 
     // Generate and Initialize a new Bot Entity
     unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eBot>(m_pBotEntityList.size()));
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pBotEntityList.size()));
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List
     m_pBotEntityList.push_back(pNewBot.get()); 
@@ -636,51 +636,27 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 * Command Management                                                             *
 \*********************************************************************************/
 
-bool EntityManager::playerExists(ePlayer player)
+bool EntityManager::playerExists(eHovercraft player)
 {
     return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
-PlayerEntity* EntityManager::getPlayer(ePlayer player)
+/*
+*/
+HovercraftEntity* EntityManager::getPlayer(eHovercraft player)
 {
     return m_pPlayerEntityList.at(player);
 }
 
-PlayerEntity* EntityManager::getPlayer(int iEntityID)
-{
-    for (PlayerEntity* player : m_pPlayerEntityList)
-    {
-        if (player->getID() == iEntityID)
-        {
-            return player;
-        }
-    }
-    return nullptr;
-}
-
-bool EntityManager::botExists(eBot bot)
+bool EntityManager::botExists(eHovercraft bot)
 {
     return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
 }
 
-BotEntity* EntityManager::getBot(eBot bot)
+HovercraftEntity* EntityManager::getBot(eHovercraft bot)
 {
     return m_pBotEntityList.at(bot);
 }
-
-BotEntity* EntityManager::getBot(int iEntityID)
-{
-    for (BotEntity* bot : m_pBotEntityList)
-    {
-        if (bot->getID() == iEntityID)
-        {
-            return bot;
-        }
-    }
-    return nullptr;
-}
-
-
 
 /*********************************************************************************\
 * Camera Management                                                              *
