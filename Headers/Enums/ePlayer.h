@@ -2,6 +2,7 @@
 
 /*
 Represents a player in the game.
+@Deprecated
 */
 enum ePlayer
 {
@@ -15,6 +16,7 @@ enum ePlayer
 
 /*
 Represents a bot in the game.
+@Deprecated
 */
 enum eBot
 {
@@ -26,6 +28,11 @@ enum eBot
     BOT_INVALID,
 };
 
+/*
+There are 8 possible hovercrafts.
+0-3 correspond to players
+4-7 correspond to bots
+*/
 enum eHovercraft
 {
     HOVERCRAFT_PLAYER_1 = 0,

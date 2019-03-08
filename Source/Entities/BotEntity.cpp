@@ -48,8 +48,8 @@ void BotEntity::update(float fTimeInMilliseconds)
     toEulerAngle(m_pPhysicsComponent->getRotation(),x,y,z);
     PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
-    glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->getPosition();
-    glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
+    glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
+    glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     Action a;
     m_AIComponent->popCurrentAction(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z), 0.0f,&a);
 
@@ -78,8 +78,8 @@ void BotEntity::initialize(const string& sFileName,
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
     PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
-    glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->getPosition();
-    glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(ePlayer::PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
+    glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
+    glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     m_AIComponent->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 

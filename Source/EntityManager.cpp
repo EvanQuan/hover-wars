@@ -636,51 +636,27 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 * Command Management                                                             *
 \*********************************************************************************/
 
-bool EntityManager::playerExists(ePlayer player)
+bool EntityManager::playerExists(eHovercraft player)
 {
     return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
-PlayerEntity* EntityManager::getPlayer(ePlayer player)
+/*
+*/
+HovercraftEntity* EntityManager::getPlayer(eHovercraft player)
 {
     return m_pPlayerEntityList.at(player);
 }
 
-PlayerEntity* EntityManager::getPlayer(int iEntityID)
-{
-    for (PlayerEntity* player : m_pPlayerEntityList)
-    {
-        if (player->getID() == iEntityID)
-        {
-            return player;
-        }
-    }
-    return nullptr;
-}
-
-bool EntityManager::botExists(eBot bot)
+bool EntityManager::botExists(eHovercraft bot)
 {
     return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
 }
 
-BotEntity* EntityManager::getBot(eBot bot)
+HovercraftEntity* EntityManager::getBot(eHovercraft bot)
 {
     return m_pBotEntityList.at(bot);
 }
-
-BotEntity* EntityManager::getBot(int iEntityID)
-{
-    for (BotEntity* bot : m_pBotEntityList)
-    {
-        if (bot->getID() == iEntityID)
-        {
-            return bot;
-        }
-    }
-    return nullptr;
-}
-
-
 
 /*********************************************************************************\
 * Camera Management                                                              *

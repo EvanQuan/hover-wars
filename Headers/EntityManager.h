@@ -81,15 +81,11 @@ public:
     void renderEnvironment( );
     void updateEnvironment(const GameTime* pTimer);
     
-    /*
-    The command handler can get all the players to directly communicate to.
-    */
-    PlayerEntity* getPlayer(ePlayer player);
-    PlayerEntity* getPlayer(int iEntityID);
-    bool playerExists(ePlayer player);
-    BotEntity* getBot(eBot bot);
-    BotEntity* getBot(int iEntityID);
-    bool botExists(eBot bot);
+    // The command handler can get all the players to directly communicate to.
+    HovercraftEntity* getPlayer(eHovercraft player);
+    bool playerExists(eHovercraft player);
+    HovercraftEntity* getBot(eHovercraft bot);
+    bool botExists(eHovercraft bot);
 
 private:
     EntityManager();
@@ -110,10 +106,12 @@ private:
     vector<PhysicsComponent*>                       m_pPhysicsComponents;   // 
     // AI's
     vector<AIComponent*>                            m_pAIComponents;   // TBH I have no idea why we want/need these? please clarify and I will remove
-    // Players
-    vector<PlayerEntity*>                           m_pPlayerEntityList;    
-    // Bots
-    vector<BotEntity*>                              m_pBotEntityList;    
+    // The CommandHandler uses this to determine which hovercrafts are
+    // registered to receive input from
+    vector<HovercraftEntity*>                       m_pPlayerEntityList;    
+    // The AI uses this to determine which hovercrafts are registered to
+    // receive input from
+    vector<HovercraftEntity*>                       m_pBotEntityList;    
     // Rendering
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
     // Cameras
