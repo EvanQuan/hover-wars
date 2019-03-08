@@ -120,60 +120,25 @@ void GameStats::initializeCooldowns()
 }
 
 /*
-Get a stat. For example:
-
-    int killstreak = gameStats.get(PLAYER_1, CURRENT_KILLSTREAKS_AGAINST_PLAYER_2);
-
-will retrieve Player 1's current killstreaks against player 2.
-@pure
+Get a stat.
 */
-int GameStats::get(ePlayer player, eStat stat)
-{
-    return stats[FuncUtils::playerToHovercraft(player)][stat];
-}
-int GameStats::get(eBot bot, eStat stat)
-{
-    return stats[FuncUtils::botToHovercraft(bot)][stat];
-}
-int GameStats::get(eHovercraft hovercraft, eStat stat)
+int GameStats::get(eHovercraft hovercraft, eStat stat) const
 {
     return stats[hovercraft][stat];
 }
 
 /*
-Get a cooldown. For example:
-
-     = gameStats.get(PLAYER_1, COOLDOWN_ROCKET);
-
-will retrieve Player 1's current killstreaks against player 2.
-@pure
+Get a cooldown.
 */
-float GameStats::get(ePlayer player, eCooldown cooldown)
-{
-    return cooldowns[FuncUtils::playerToHovercraft(player)][cooldown];
-}
-float GameStats::get(eBot bot, eCooldown cooldown)
-{
-    return cooldowns[FuncUtils::botToHovercraft(bot)][cooldown];
-}
-float GameStats::get(eHovercraft hovercraft, eCooldown cooldown)
+float GameStats::get(eHovercraft hovercraft, eCooldown cooldown) const
 {
     return cooldowns[hovercraft][cooldown];
 }
 
 /*
 @return true is ability is ready to be used
-@pure
 */
-bool GameStats::isOnCooldown(ePlayer player, eCooldown cooldown)
-{
-    return isOnCooldown(FuncUtils::playerToHovercraft(player), cooldown);
-}
-bool GameStats::isOnCooldown(eBot bot, eCooldown cooldown)
-{
-    return isOnCooldown(FuncUtils::botToHovercraft(bot), cooldown);
-}
-bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown)
+bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const
 {
     return cooldowns[hovercraft][cooldown] <= 0.0f;
 }
@@ -181,14 +146,6 @@ bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown)
 /*
 Add score to the specified player for the specified reason.
 */
-void GameStats::addScore(ePlayer player, eAddScoreReason reason)
-{
-    addScore(FuncUtils::playerToHovercraft(player), reason);
-}
-void GameStats::addScore(eBot bot, eAddScoreReason reason)
-{
-    addScore(FuncUtils::botToHovercraft(bot), reason);
-}
 void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
 {
     switch (reason)
@@ -213,16 +170,8 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
 }
 
 /*
-Track that the player used an ability.
+Track that the hovecraft used an ability.
 */
-void GameStats::useAbility(ePlayer player, eAbility ability)
-{
-    useAbility(FuncUtils::playerToHovercraft(player), ability);
-}
-void GameStats::useAbility(eBot bot, eAbility ability)
-{
-    useAbility(FuncUtils::botToHovercraft(bot), ability);
-}
 void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 {
     switch (ability)
@@ -246,13 +195,6 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
     stats[hovercraft][ABILITIES_TOTAL_USED]++;
 }
 
-/*
-Signifies that attacker hit a bot.
-*/
-// void GameStats::hitBot(ePlayer attacker, eBot botHit)
-// {
-    // addScore(attacker, POINTS_GAINED_HIT_BOT);
-// }
 /*
 Signifies that attacker hit hit
 
@@ -418,7 +360,7 @@ void GameStats::updateLargestTotalKillstreak(eHovercraft hovercraft)
     }
 }
 
-int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft playerHit)
+int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft playerHit) const
 {
     return stats[attacker][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + playerHit];
 }
@@ -450,7 +392,7 @@ NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4
 
 @return true if playerToCheck is dominating hit
 */
-bool GameStats::isDominating(eHovercraft playerAttacker, eHovercraft playerHit)
+bool GameStats::isDominating(eHovercraft playerAttacker, eHovercraft playerHit) const
 {
     return stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit];
 }
@@ -460,7 +402,7 @@ attacker can start domination against playerHIt if
 1. attacker's killstreak against hit is at least DOMINATION_COUNT
 2. attacker is not already dominating hit
 */
-bool GameStats::canStartDomination(eHovercraft playerAttacker, eHovercraft playerHit)
+bool GameStats::canStartDomination(eHovercraft playerAttacker, eHovercraft playerHit) const
 {
     return getCurrentKillstreakAgainst(playerAttacker, playerHit) >= DOMINATION_COUNT
         && !isDominating(playerAttacker, playerHit);
