@@ -36,7 +36,11 @@ void BotEntity::toEulerAngle(glm::quat q, double& roll, double& pitch, double& y
 
 void BotEntity::update(float fTimeInMilliseconds)
 {
-    
+    //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(18,21),vec2(18,19));
+    //std::cout << "path size: " << path.size() << std::endl;
+    //unsigned int minX, minY, maxX, maxY;
+    //SPATIAL_DATA_MAP->getMapIndices(this,&minX,&minY,&maxX,&maxY);
+    //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
     m_AIComponent->update(fTimeInMilliseconds);
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();

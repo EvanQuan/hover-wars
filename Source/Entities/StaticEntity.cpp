@@ -65,7 +65,7 @@ void StaticEntity::loadAsCube(const ObjectInfo* pObjectProperties, const vec3* v
     vec3 boundingBox = pObjectProperties->sObjBoundingBox.vDimensions;
     boundingBox *= 0.5; // TODO
     std::cout <<"here load As Cube: Static Entity: " << vDimensions->x << " " << vDimensions->y << " " << vDimensions->z << std::endl;
-    PHYSICS_MANAGER->createCubeObject(this->getName(), pObjectProperties->vPosition.x , pObjectProperties->vPosition.y, pObjectProperties->vPosition.z, vDimensions->x * 0.5, vDimensions->y * 0.5, vDimensions->z * 0.5);
+    PHYSICS_MANAGER->createCubeObject(this->getName(), pObjectProperties->vPosition.x , pObjectProperties->vPosition.y, pObjectProperties->vPosition.z, boundingBox.x, boundingBox .y, boundingBox.z);
 }
 
 // Load a Static Mesh from a given file
