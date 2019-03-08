@@ -49,30 +49,14 @@ execute that command.
 @param player   to execute command on
 @param command  to execute
 */
-void CommandHandler::executeIfPlayerExists(ePlayer player, eFixedCommand command)
+void CommandHandler::executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command)
 {
-    if ((command == COMMAND_INVALID_FIXED) || (!ENTITY_MANAGER->playerExists(player)))
+    if ((command == COMMAND_INVALID_FIXED) || (!ENTITY_MANAGER->playerExists(hovercraft)))
     {
         return;
     }
-    PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
-    executeValidPlayer(playerEntity, command);
-}
-
-/*
-Make a bot execute a fixed command.
-
-@param bot      to execute command on
-@param command  to execute
-*/
-void CommandHandler::executeIfBotExists(eBot bot, eFixedCommand command)
-{
-    if ((command == COMMAND_INVALID_FIXED) || (!ENTITY_MANAGER->botExists(bot)))
-    {
-        return;
-    }
-    BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
-    executeValidBot(botEntity, command);
+    HovercraftEntity* playerEntity = ENTITY_MANAGER->getPlayer(hovercraft);
+    executeValidHovercraft(playerEntity, command);
 }
 
 /*
@@ -81,7 +65,7 @@ Make a player execute a fixed command.
 @param player       to execute command on
 @param command      to execute
 */
-void CommandHandler::executeValidPlayer(PlayerEntity *player, eFixedCommand command)
+void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command)
 {
     switch (command)
     {
@@ -93,13 +77,13 @@ void CommandHandler::executeValidPlayer(PlayerEntity *player, eFixedCommand comm
     case COMMAND_DASH_FORWARD:
     case COMMAND_DASH_LEFT:
     case COMMAND_DASH_RIGHT:
-        player->useAbility(m_fixedCommandToAbility.at(command));
+        hovercraft->useAbility(m_fixedCommandToAbility.at(command));
         break;
     case COMMAND_CAMERA_FRONT:
-        player->setActiveCameraToFront();
+        hovercraft->setActiveCameraToFront();
         break;
     case COMMAND_CAMERA_BACK:
-        player->setActiveCameraToBack();
+        hovercraft->setActiveCameraToBack();
         break;
     case COMMAND_MENU_BACK:
        break;
@@ -133,16 +117,16 @@ void CommandHandler::executeValidPlayer(PlayerEntity *player, eFixedCommand comm
         debugToggleWireframe();
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_1;
+        GAME_MANAGER->m_eKeyboardHovercraft = PLAYER_1;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_2;
+        GAME_MANAGER->m_eKeyboardHovercraft = PLAYER_2;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_3;
+        GAME_MANAGER->m_eKeyboardHovercraft = PLAYER_3;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
+        GAME_MANAGER->m_eKeyboardHovercraft = PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         ENTITY_MANAGER->toggleDebugCamera();
@@ -170,98 +154,6 @@ void CommandHandler::executeValidPlayer(PlayerEntity *player, eFixedCommand comm
         break;
 #endif
     }
-}
-
-void CommandHandler::executeValidBot(BotEntity *bot, eFixedCommand command)
-{
-    switch (command)
-    {
-    case COMMAND_ABILITY_ROCKET:
-    case COMMAND_ABILITY_SPIKES:
-    case COMMAND_ABILITY_TRAIL_ACTIVATE:
-    case COMMAND_ABILITY_TRAIL_DEACTIVATE:
-    case COMMAND_DASH_BACK:
-    case COMMAND_DASH_FORWARD:
-    case COMMAND_DASH_LEFT:
-    case COMMAND_DASH_RIGHT:
-        bot->useAbility(m_fixedCommandToAbility.at(command));
-        break;
-    case COMMAND_CAMERA_FRONT:
-        bot->setActiveCameraToFront();
-        break;
-    case COMMAND_CAMERA_BACK:
-        bot->setActiveCameraToBack();
-        break;
-    case COMMAND_MENU_BACK:
-       break;
-    case COMMAND_MENU_PAUSE:
-       break;
-    case COMMAND_MENU_START:
-       break;
-
-    // Since the honk sound is played directly and all players hear the same
-    // thing, we don't actually need to relate anything to the hovercraft
-    // itself.
-    case COMMAND_HONK_UP:
-        SOUND_MANAGER->play(SoundManager::SOUND_HONK_UP);
-        break;
-    case COMMAND_HONK_RIGHT:
-        SOUND_MANAGER->play(SoundManager::SOUND_HONK_RIGHT);
-        break;
-    case COMMAND_HONK_DOWN:
-        SOUND_MANAGER->play(SoundManager::SOUND_HONK_DOWN);
-        break;
-    case COMMAND_HONK_LEFT:
-        SOUND_MANAGER->play(SoundManager::SOUND_HONK_LEFT);
-        break;
-
-    case COMMAND_CLOSE_WINDOW:
-        glfwSetWindowShouldClose(m_pWindow, GL_TRUE);
-        break;
-#ifndef NDEBUG
-
-    case COMMAND_DEBUG_TOGGLE_WIREFRAME:
-        debugToggleWireframe();
-        break;
-    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_1;
-        break;
-    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_2;
-        break;
-    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_3;
-        break;
-    case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
-        GAME_MANAGER->m_eKeyboardPlayer = PLAYER_4;
-        break;
-    case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
-        ENTITY_MANAGER->toggleDebugCamera();
-        break;
-    case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
-        ENTITY_MANAGER->toggleBBDrawing();
-        break;
-    case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
-        ENTITY_MANAGER->toggleSpatialMapDrawing();
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
-        break;
-#endif
-    }
-
 }
 
 /*
@@ -287,32 +179,14 @@ Axes values are normalized and follow Cartesian coordinates:
 @param x        x-coordinate
 @param y        y-coordinate
 */
-void CommandHandler::executeIfPlayerExists(ePlayer player, eVariableCommand command, float x, float y)
+void CommandHandler::executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y)
 {
-    if ((command == COMMAND_INVALID_VARIABLE) || (!ENTITY_MANAGER->playerExists(player)))
+    if ((command == COMMAND_INVALID_VARIABLE) || (!ENTITY_MANAGER->playerExists(hovercraft)))
     {
         return;
     }
-    PlayerEntity* playerEntity = ENTITY_MANAGER->getPlayer(player);
+    HovercraftEntity* playerEntity = ENTITY_MANAGER->getPlayer(hovercraft);
     executeValidHovercraft(playerEntity, command, x, y);
-}
-
-/*
-Make a bot execute a variable command.
-
-@param bot      to execute command on
-@param command  to execute
-@param x        x-coordinate
-@param y        y-coordinate
-*/
-void CommandHandler::executeIfBotExists(eBot bot, eVariableCommand command, float x, float y)
-{
-    if ((command == COMMAND_INVALID_VARIABLE) || (!ENTITY_MANAGER->botExists(bot)))
-    {
-        return;
-    }
-    BotEntity* botEntity = ENTITY_MANAGER->getBot(bot);
-    executeValidHovercraft(botEntity, command, x, y);
 }
 
 /*
@@ -342,7 +216,6 @@ Execute all the commands for a given frame. This should be called every frame up
 void CommandHandler::executeAllCommands()
 {
     executeInputCommands();
-    executeAllBotCommands();
 }
 
 /*
@@ -407,7 +280,7 @@ void CommandHandler::executeKeyboardCommands()
             m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        executeIfPlayerExists(GAME_MANAGER->m_eKeyboardPlayer, m_pFixedCommand);
+        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft, m_pFixedCommand);
         // Check for cummulative movement commands, which are only executed once
         // all movement keys are checked.
         switch (m_pFixedCommand)
@@ -449,11 +322,11 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)
     {
-        executeIfPlayerExists(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_MOVE, xMove, yMove);
+        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        executeIfPlayerExists(GAME_MANAGER->m_eKeyboardPlayer, COMMAND_TURN, xTurn, yTurn);
+        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft, COMMAND_TURN, xTurn, yTurn);
     }
 }
 
@@ -478,14 +351,14 @@ void CommandHandler::executeJoystickCommands()
                 switch (buttons[button])
                 {
                 case InputHandler::INPUT_JUST_PRESSED:
-                    executeIfPlayerExists((ePlayer) joystickID, justPressedButtonToFixedCommand(button));
+                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), justPressedButtonToFixedCommand(button));
                     m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
-                    executeIfPlayerExists((ePlayer) joystickID, repeatButtonToFixedCommand(button));
+                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), repeatButtonToFixedCommand(button));
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
-                    executeIfPlayerExists((ePlayer) joystickID, justReleasedButtonToFixedCommand(button));
+                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), justReleasedButtonToFixedCommand(button));
                     m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_RELEASED;
                     break;
                 }
@@ -495,11 +368,11 @@ void CommandHandler::executeJoystickCommands()
             // Joystick axes will not be remappable, so no need to make code generalizable
             if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
             {
-                executeIfPlayerExists((ePlayer) joystickID, COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
             }
             if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
             {
-                executeIfPlayerExists((ePlayer) joystickID, COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
             }
         }
     }
@@ -516,12 +389,4 @@ void CommandHandler::debugToggleWireframe()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-/*
-TODO
-*/
-void CommandHandler::executeAllBotCommands()
-{
-
 }

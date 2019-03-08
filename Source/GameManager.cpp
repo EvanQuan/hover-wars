@@ -29,7 +29,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fFrameTime = duration<float>(0.0f);
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
-    m_eKeyboardPlayer = PLAYER_1;
+    m_eKeyboardHovercraft = PLAYER_1;
 }
 
 /*

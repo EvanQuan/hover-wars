@@ -36,7 +36,9 @@ public:
     void zoomCamera(float fDelta);
     void intersectPlane(float fX, float fY);
 
-    ePlayer m_eKeyboardPlayer;
+    // The keyboard corresponds to its own hovercraft
+    // which might be shared with a joystick
+    eHovercraft m_eKeyboardHovercraft;
 #ifndef NDEBUG
     // User interface is public for debug puprposes
     // so that debug commands can change the UI directly.

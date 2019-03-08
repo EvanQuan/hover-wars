@@ -13,9 +13,9 @@
 
 /* CLASS */
 /*
-Receives user command initiates appropriate actions that correspond to that command.
-Usually these commands would come from InputHandler (user input), but may come
-from other means for test purposes.
+Receives user command initiates appropriate actions that correspond to that
+command. Usually these commands would come from InputHandler (user input), but
+may come from other means for test purposes.
 
 @author Evan Quan
 */
@@ -25,10 +25,8 @@ public:
     static CommandHandler* getInstance(GLFWwindow *rWindow);
     ~CommandHandler();
 
-    void executeIfPlayerExists(ePlayer player, eFixedCommand command);
-    void executeIfPlayerExists(ePlayer player, eVariableCommand command, float x, float y);
-    void executeIfBotExists(eBot bot, eFixedCommand command);
-    void executeIfBotExists(eBot bot, eVariableCommand command, float x, float y);
+    void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
+    void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y);
     /*
     Execute all commands for a given frame.
     */
@@ -37,11 +35,6 @@ public:
     Execute all commands from user input (keyboard, mouse, controllers).
     */
     void executeInputCommands();
-
-    /*
-    Executre all commands from bots
-    */
-    void executeAllBotCommands();
 
     // For input debugging
     std::map<eFixedCommand, const char*> eFixedCommandToString =
@@ -80,6 +73,9 @@ private:
     GameManager *m_pGameManager;
     InputHandler *m_pInputHandler;
     GLFWwindow* m_pWindow;
+    // Only player hovercrafts receive input from the CommandHandler.
+    // Bots receive input from their AI components.
+    std::vector<HovercraftEntity*> players;
 
     /*
     C++ has object slicing, so using a polymorphic approach here requires
@@ -88,14 +84,14 @@ private:
     single switch statement. As a result, we might as well just break it up
     into each execute command.
     */
-    void executeValidPlayer(PlayerEntity *player, eFixedCommand command);
+    void executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command);
 
-    void executeValidBot(BotEntity *bot, eFixedCommand command);
 
     /*
     This assumes no polymorphic stuff is happening for movement
     */
-    void executeValidHovercraft(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y);
+    void executeValidHovercraft(HovercraftEntity *hovercraft,
+                                eVariableCommand command, float x, float y);
 
     // Internal variables
     // For keyboard command handling
@@ -115,7 +111,8 @@ private:
     */
     static eFixedCommand pressedKeyToFixedCommand(int key)
     {
-        return FuncUtils::getValueIfNotDefault(m_pInstance->m_pressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_pressedKeyToFixedCommand,
+                                               key, COMMAND_INVALID_FIXED);
 
     };
     /*
@@ -123,7 +120,8 @@ private:
     */
     static eFixedCommand justPressedKeyToFixedCommand(int key)
     {
-        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand,
+                                                               key, COMMAND_INVALID_FIXED);
         // If the command is invalid, then check for repeat commands next
         return COMMAND_INVALID_FIXED == result ? pressedKeyToFixedCommand(key) : result;
     };
@@ -132,7 +130,8 @@ private:
     */
     static eFixedCommand justReleasedKeyToFixedCommand(int key)
     {
-        return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedKeyToFixedCommand, key, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedKeyToFixedCommand,
+                                               key, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
@@ -140,7 +139,8 @@ private:
     */
     static eFixedCommand repeatButtonToFixedCommand(int button)
     {
-        return FuncUtils::getValueIfNotDefault(m_pInstance->m_repeatButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+        return FuncUtils::getValueIfNotDefault(m_pInstance->m_repeatButtonToFixedCommand,
+                                               button, COMMAND_INVALID_FIXED);
     };
     /*
     Convert a joystick button to its corresponding eFixedCommand
