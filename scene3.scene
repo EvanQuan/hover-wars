@@ -104,7 +104,6 @@ point_light {
 }
 
 
-
 point_light {
     -65 5 -24.5
     1.0 0.0 0.0
@@ -215,6 +214,25 @@ player {
     }
 }
 
+#bot {
+#     50 5 0.1
+#    +mesh {
+#         models/big_dodge.obj
+#         0.25
+#     }
+#     +material {
+#         textures/tronBase.png
+#         0.1 0.1 0.1
+#         20.0
+#     }
+#     +shader {
+#         blinn_phong_shdr
+#     }
+#     +bounding {
+#         box
+#         2.0 2.5 5.0
+#     }
+#}
 #player {
 #    0 0 0
 #    +mesh {
