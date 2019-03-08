@@ -294,10 +294,10 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
 }
 
-void UserInterface::displayMessage(ePlayer player, std::string text)
+void UserInterface::displayMessage(eHovercraft hovercraft, std::string text)
 {
-    m_sMessages[player] = text;
-    m_fMessageTimes[player] = MESSAGE_DURATION;
+    m_sMessages[hovercraft] = text;
+    m_fMessageTimes[hovercraft] = MESSAGE_DURATION;
 }
 /*
 This visually updates the UserInterface to all value changes since last update.
@@ -401,7 +401,7 @@ void UserInterface::updateScores()
     }
 }
 
-void UserInterface::updateScore(ePlayer player, int score)
+void UserInterface::updateScore(eHovercraft hovecraft, int score)
 {
     
     // cout << "Player " << (player + 1) << " score: " << score << endl;

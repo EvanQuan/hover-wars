@@ -45,7 +45,7 @@ public:
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
-    void displayMessage(ePlayer player, std::string text);
+    void displayMessage(eHovercraft hovercraft, std::string text);
 
 
 private:
@@ -82,7 +82,7 @@ private:
     // Score
     void initializeScores();
     void updateScores();
-    void updateScore(ePlayer player, int score);
+    void updateScore(eHovercraft hovercraft, int score);
     void renderScores();
     void renderScoreChange();
 
@@ -119,10 +119,10 @@ private:
 
     Unit : seconds
     */
-    std::string m_sMessages[MAX_PLAYER_COUNT];
-    float m_fMessageTimes[MAX_PLAYER_COUNT];
+    std::string m_sMessages[MAX_HOVERCRAFT_COUNT];
+    float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
 
-    float m_fScoreUpdateTimes[MAX_PLAYER_COUNT];
+    float m_fScoreUpdateTimes[MAX_HOVERCRAFT_COUNT];
 
     int m_iDisplayCount;
 
