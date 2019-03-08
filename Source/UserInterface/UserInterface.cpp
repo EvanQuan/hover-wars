@@ -434,7 +434,7 @@ void UserInterface::renderCooldowns()
     // This formatting is all temporary
     // 0 - 100
     // Ad hoc for single player
-    PlayerEntity* player = ENTITY_MANAGER->getPlayer(PLAYER_1);
+    HovercraftEntity* player = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1);
     float* cooldowns = player->getCooldowns();
     float trailPercent = player->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));
