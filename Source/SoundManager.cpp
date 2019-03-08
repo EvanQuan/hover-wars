@@ -2,7 +2,6 @@
 #include "SoundManager.h"
 #include "EntityHeaders/BotEntity.h"
 #include "EntityManager.h"
-#include "EntityHeaders/PlayerEntity.h"
 
 // Bank paths
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"

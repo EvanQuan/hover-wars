@@ -1,6 +1,10 @@
 #pragma once
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityComponentHeaders/AIComponent.h"
+/*
+@Deprecated This will be deleted once all AI related calculated are moved
+outside of this class.
+*/
 class BotEntity :
     public HovercraftEntity
 {
@@ -12,7 +16,7 @@ public:
                     const ObjectInfo* pObjectProperties,
                     const string& sShaderType,
                     float fScale,
-                    unsigned int iStatsID);
+                    eHovercraft eHovercraftID);
 
     // Overridden virtual functions inherited from parent
     void hit(eEntityTypes eHitByType, unsigned int iNumber);

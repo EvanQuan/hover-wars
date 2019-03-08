@@ -360,8 +360,8 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize Player Entity.
-    unique_ptr<PlayerEntity> pNewPlayer = make_unique<PlayerEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<ePlayer>(m_pPlayerEntityList.size()));
+    unique_ptr<HovercraftEntity> pNewPlayer = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pPlayerEntityList.size()));
 
     // Store Player Entity In Player Entity List as well as Master Entity List.
     m_pPlayerEntityList.push_back(pNewPlayer.get());
@@ -379,7 +379,7 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 
     // Generate and Initialize a new Bot Entity
     unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eBot>(m_pBotEntityList.size()));
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pBotEntityList.size()));
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List
     m_pBotEntityList.push_back(pNewBot.get()); 

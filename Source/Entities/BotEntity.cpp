@@ -3,6 +3,10 @@
 #include "Enums/eCooldown.h"
 
 
+/*
+@Deprecated This will be deleted once all AI related calculated are moved
+outside of this class.
+*/
 BotEntity::BotEntity(int iID, const vec3* vPosition)
     : HovercraftEntity(iID, vPosition)
 {
@@ -69,9 +73,10 @@ void BotEntity::initialize(const string& sFileName,
     const ObjectInfo* pObjectProperties,
     const string& sShaderType,
     float fScale,
-    unsigned int iStatsID)
+    eHovercraft eHovercraftID)
 {
-    HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
+    HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale, eHovercraftID);
+
     m_AIComponent = ENTITY_MANAGER->generateAIComponent(m_iID);
 
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
@@ -94,7 +99,7 @@ void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
 {
     // cout << "Bot " << iNumber << " hit by " << eHitByType << endl;
     // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
-    GameStats::eAddScoreReason eScoreReason = static_cast<GameStats::eAddScoreReason>(m_iStatsID + GameStats::eAddScoreReason::HIT_BOT_1 - 1);
+    GameStats::eAddScoreReason eScoreReason = static_cast<GameStats::eAddScoreReason>(m_eHovercraftID + GameStats::eAddScoreReason::HIT_BOT_1 - 1);
 
     // Switch based on who hit the player
     switch (eHitByType)

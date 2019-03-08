@@ -98,8 +98,6 @@ private:
     eFixedCommand m_pFixedCommand;
     eVariableCommand m_pVariableCommand;
 
-    vector<PlayerEntity*> m_pPlayerEntityList;
-
     void executeKeyboardCommands();
     void executeJoystickCommands();
 
