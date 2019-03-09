@@ -19,6 +19,10 @@ Number of extra points gained when a player gets revenge
 */
 #define POINTS_GAINED_HIT_REVENGE 100
 /*
+Number of extra points gained when a player gets the first kill
+*/
+#define POINTS_GAINED_FIRST_BLOOD 150
+/*
 Players gain additional points against other players based on their current
 total killstreak. This gives players an incentive to not get hit.
 */
@@ -95,6 +99,7 @@ void GameStats::initialize()
 {
     initializeStats();
     initializeCooldowns();
+    firstBloodHappened = false;
 }
 
 void GameStats::initializeStats()
@@ -253,10 +258,20 @@ Get the score for playerAtacker to gain if they hit hit
 */
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
-    int basePoints = FuncUtils::hovercraftToPlayer(attacker) != PLAYER_INVALID ? POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
+    int basePoints = FuncUtils::hovercraftToPlayer(attacker) != PLAYER_INVALID ?
+        POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
-    return basePoints + killstreakBonus + revengeBonus;
+    int firstBloodBonus;
+    if (firstBloodHappened) {
+        firstBloodBonus = 0;
+    } else {
+        firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
+        firstBloodHappened = true;
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
+        USER_INTERFACE->displayMessage(attacker, "First blood");
+    }
+    return basePoints + killstreakBonus + revengeBonus + firstBloodBonus;
 }
 
 /*

@@ -140,15 +140,15 @@ void InputHandler::debugKeyCommands(int key, int action)
             // Testing game stats kill updates
         case GLFW_KEY_R:
             cout << "R" << endl;
-            GAME_STATS->addScore(ePlayer::PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
+            GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
             break;
         case GLFW_KEY_T:
             cout << "T" << endl;
-            GAME_STATS->addScore(ePlayer::PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
+            GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
             break;
         case GLFW_KEY_Y:
             cout << "Disable player 1 for 1 seconds" << endl;
-            ENTITY_MANAGER->getPlayer(PLAYER_1)->setLoseControl(1.0f);
+            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->setLoseControl(1.0f);
             break;
         }
     }
