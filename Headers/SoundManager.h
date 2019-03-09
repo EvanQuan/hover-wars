@@ -46,6 +46,7 @@ public:
         SOUND_MUSIC_INGAME_LOOP,
         SOUND_MUSIC_PAUSE_LOOP,
 
+        SOUND_KILL_FIRST_BLOOD,
         SOUND_KILL_DOMINATION,
         SOUND_KILL_REVENGE,
         SOUND_KILL_NEMESIS,
@@ -191,6 +192,8 @@ private:
         {SOUND_TRAIL,                    { "event:/trail/trail",
                                          }},
         {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
+                                         }},
+        {SOUND_KILL_FIRST_BLOOD,         { "event:/kill/firstblood",
                                          }},
         {SOUND_KILL_DOMINATION,          { "event:/kill/domination",
                                          }},

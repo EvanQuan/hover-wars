@@ -31,7 +31,8 @@ Player:
         Count of each ability used
 
 Game:
-    
+    Kills
+        First blood
 
 Gets values from EntityManager to update stats as the game progresses.
 Gives information to UserInterface to display the correct values.
@@ -150,6 +151,9 @@ private:
     int stats[MAX_HOVERCRAFT_COUNT][STAT_COUNT];
 
     float cooldowns[MAX_HOVERCRAFT_COUNT][COOLDOWN_COUNT];
+
+    // Tracks first blood
+    bool firstBloodHappened;
 
     // Actions
     // void hitBot(eHovercraft attacker, eBot hit);
