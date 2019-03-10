@@ -66,7 +66,7 @@ Coordinate system:
 
 #define DASH_SCALE              1.0f
 
-#define SCORE_CHANGE_DURATION   2.0f
+#define SCORE_CHANGE_DURATION   1.0f
 #define SCORE_CHANGE_SCALE      1.0f
 #define SCORE_CHANGE_ADD_COLOR  COLOR_GREEN
 #define SCORE_CHANGE_SUB_COLOR  COLOR_RED
@@ -102,9 +102,8 @@ UserInterface::UserInterface(int iWidth, int iHeight)
 
     updateWidthAndHeight(iWidth, iHeight);
 
-    // m_iDisplayCount = 0;
     setDisplayCount(1);
-    // initializeUserInterface();
+
     initFreeType();
     initializeVBOs();
 
@@ -331,6 +330,10 @@ void UserInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
         displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eStat::KILLSTREAK_CURRENT)));
         break;
+    case KILL_MESSAGE_KILL:
+        m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
+        m_fScoreChangeTimes[hit] = SCORE_CHANGE_DURATION;
+        break;
     }
 }
 
@@ -394,9 +397,10 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
     for (int player = 0; player < m_iDisplayCount; player++)
     {
         m_fMessageTimes[player] -= fSecondsSinceLastUpdate;
+        m_fScoreChangeTimes[player] -= fSecondsSinceLastUpdate;
     }
     // TODO make sure time does not become negative, or if it does, it signifies
-    // the end of the round
+    // the end of the round. Not sure if its worth the cost to check.
 
 }
 
@@ -439,7 +443,18 @@ void UserInterface::renderMessages()
                 m_vComponentCoordinates[COMPONENT_MESSAGE][Y],
                 MESSAGE_SCALE, MESSAGE_COLOR);
         }
+        if (m_fScoreChangeTimes[player] > 0)
+        {
 
+            int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
+                                              GameStats::eStat::SCORE_CHANGE);
+            bool scoreIncreased = scoreChange >= 0;
+            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
+                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE][X],
+                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE][Y],
+                        SCORE_CHANGE_SCALE,
+                        scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+        }
     }
 }
 
@@ -472,20 +487,6 @@ void UserInterface::renderScores()
                m_vComponentCoordinates[COMPONENT_SCORE][X],
                m_vComponentCoordinates[COMPONENT_SCORE][Y],
                SCORE_SCALE, SCORE_COLOR);
-    renderScoreChange();
-}
-
-void UserInterface::renderScoreChange()
-{
-    // Ad hoc for single player
-    int scoreChange = GAME_STATS->get(HOVERCRAFT_PLAYER_1,
-                      GameStats::eStat::SCORE_CHANGE);
-    bool scoreIncreased = scoreChange >= 0;
-    renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
-                m_vComponentCoordinates[COMPONENT_SCORE_CHANGE][X],
-                m_vComponentCoordinates[COMPONENT_SCORE_CHANGE][Y],
-                SCORE_CHANGE_SCALE,
-                scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
 }
 
 void UserInterface::updateCooldowns()
