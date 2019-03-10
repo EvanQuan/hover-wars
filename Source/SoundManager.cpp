@@ -21,23 +21,28 @@ SoundManager* SoundManager::m_pInstance = nullptr;
  * Constructors                                                          *
 \*************************************************************************/
 SoundManager::SoundManager() {
-    mpStudioSystem = NULL;
-    errorCheck(FMOD::Studio::System::create(&mpStudioSystem));     // Create the studio system object.
-    errorCheck(mpStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
-    // 5 - max channels
-    // FMOD_STUDIO_INIT_LIVEUPDATE
-    // 0 - no extra driver data
+    m_pStudioSystem = nullptr;
+    errorCheck(FMOD::Studio::System::create(&m_pStudioSystem));     // Create the studio system object.
 
-    mpSystem = NULL;
-    errorCheck(mpStudioSystem->getLowLevelSystem(&mpSystem));      // Setup low level system;
+    m_pSystem = nullptr;
+    // Set a random seed, or the random music loop will be deterministic
+    errorCheck(m_pStudioSystem->getLowLevelSystem(&m_pSystem));      // Setup low level system;
+    advancedSettings = new FMOD_ADVANCEDSETTINGS();
+    advancedSettings->cbSize = sizeof(FMOD_ADVANCEDSETTINGS);
+    advancedSettings->randomSeed = FuncUtils::random(0, std::numeric_limits<int>::max());
+    errorCheck(m_pSystem->setAdvancedSettings(advancedSettings));
+
+    errorCheck(m_pStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
+
 }
 
 /*************************************************************************\
  * Destructor                                                            *
 \*************************************************************************/
 SoundManager::~SoundManager() {
-    errorCheck(mpStudioSystem->unloadAll());   // Unloads all currently loaded banks.
-    errorCheck(mpStudioSystem->release());     // Closes and frees a system object and its resources.
+    errorCheck(m_pStudioSystem->unloadAll());   // Unloads all currently loaded banks.
+    errorCheck(m_pStudioSystem->release());     // Closes and frees a system object and its resources.
+    delete advancedSettings;
 }
 
 SoundManager* SoundManager::getInstance() {
@@ -52,10 +57,10 @@ SoundManager* SoundManager::getInstance() {
 \*************************************************************************/
 
 /*
-Play a sound in the world. That sound can have any number of
-instances played simultaneously.
+    Play a sound in the world. That sound can have any number of
+    instances played simultaneously.
 
-@param sound    to play
+    @param sound    to play
 */
 void SoundManager::play(eSoundEvent sound)
 {
@@ -78,27 +83,27 @@ void SoundManager::play(eSoundEvent sound)
     @param eCollidedType    The Entity Type of the Collided
     @return true if both collider and collided are hovercrafts
 */
-bool SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType)
+bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType)
 {
     // Context-specific sounds require specific information about the entities, specifically
     // if they are players
     switch (eColliderType)
     {
-    case eEntityTypes::HOVERCRAFT_ENTITY:               
+    case eEntityType::ENTITY_HOVERCRAFT:               
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
-        case eEntityTypes::HOVERCRAFT_ENTITY:
+        case eEntityType::ENTITY_HOVERCRAFT:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
             return true;
             break;
-        case eEntityTypes::STATIC_ENTITY:
-        case eEntityTypes::PLANE_ENTITY:
+        case eEntityType::ENTITY_STATIC:
+        case eEntityType::ENTITY_PLANE:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
             break;
         }
         break;
-//    case eEntityTypes::STATIC_ENTITY:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
-//    case eEntityTypes::PLANE_ENTITY:
+//    case eEntityType::ENTITY_STATIC:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
+//    case eEntityType::ENTITY_PLANE:
 //        play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);
 //        break;
     }
@@ -107,15 +112,15 @@ bool SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityT
 
 void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 {
-    eEntityTypes colliderType = collider->getType();
-    eEntityTypes collidedType = collided->getType();
+    eEntityType colliderType = collider->getType();
+    eEntityType collidedType = collided->getType();
     // TODO this will be reorganized
     // Base collision sounds only require type
     if (handleBaseCollisionSound(colliderType, collidedType))
     {
         // For some reason this check is not enough?
-        if (((colliderType == eEntityTypes::HOVERCRAFT_ENTITY))
-            && (collidedType == eEntityTypes::HOVERCRAFT_ENTITY))
+        if (((colliderType == eEntityType::ENTITY_HOVERCRAFT))
+            && (collidedType == eEntityType::ENTITY_HOVERCRAFT))
         {
             handleContextCollisionSound(collider, collided);
         }
@@ -125,16 +130,16 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 }
 
 /*
-At this point, assumes both collider and collided are hovercrafts of some kind.
+    At this point, assumes both collider and collided are hovercrafts of some kind.
 
-@NOTE: This will be unneeded when interactable entities become further
-       developed. As all abilities will be interactable entitise, context
-       collisions will be determined in handleBaseCollisionSound.
+    @NOTE: This will be unneeded when interactable entities become further
+           developed. As all abilities will be interactable entitise, context
+           collisions will be determined in handleBaseCollisionSound.
 */
 void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collided)
 {
-    if ((collider->getType() != eEntityTypes::HOVERCRAFT_ENTITY)
-        || collider->getType() != eEntityTypes::HOVERCRAFT_ENTITY)
+    if ((collider->getType() != eEntityType::ENTITY_HOVERCRAFT)
+        || collider->getType() != eEntityType::ENTITY_HOVERCRAFT)
     {
         return;
     }
@@ -151,22 +156,22 @@ void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collide
 }
 
 /*
-Play a sound at a specified location in the world.
+    Play a sound at a specified location in the world.
 
-@param sound    to play
-@param location in world-space
+    @param sound    to play
+    @param location in world-space
 */
 void SoundManager::play(eSoundEvent sound, vec3 location)
 {
 }
 
 /*
-Begin looping a sound for a specified entityID. That entity can only loop one
-instance of each sound for each loopID.
+    Begin looping a sound for a specified entityID. That entity can only loop one
+    instance of each sound for each loopID.
 
-@param sound    to play
-@param entityID that the sound belongs to
-@param loopID   to start looping
+    @param sound    to play
+    @param entityID that the sound belongs to
+    @param loopID   to start looping
 */
 void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 {
@@ -178,12 +183,12 @@ void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 }
 
 /*
-If the sound is looping for a specified entityID for the specified loopID, end
-that loop.
+    If the sound is looping for a specified entityID for the specified loopID, end
+    that loop.
 
-@param sound    to play
-@param entityID that the sound belongs to
-@param loopID   to stop looping
+    @param sound    to play
+    @param entityID that the sound belongs to
+    @param loopID   to stop looping
 */
 void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 {
@@ -194,13 +199,13 @@ void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 }
 
 /*
-Begin looping a sound for a specified entityID at a specified location. That
-entity can only loop one instance of each sound for each loopID.
+    Begin looping a sound for a specified entityID at a specified location. That
+    entity can only loop one instance of each sound for each loopID.
 
-@param sound    to play
-@param location in world-space
-@param entityID that the sound belongs to
-@param loopID   to start looping
+    @param sound    to play
+    @param location in world-space
+    @param entityID that the sound belongs to
+    @param loopID   to start looping
 */
 void SoundManager::startLoop(eSoundEvent sound, vec3 location, int entityID, int loopID)
 {
@@ -208,12 +213,12 @@ void SoundManager::startLoop(eSoundEvent sound, vec3 location, int entityID, int
 }
 
 /*
-If the sound is looping for a specified entityID for a specified loopID, end that loop.
+    If the sound is looping for a specified entityID for a specified loopID, end that loop.
 
-@param sound    to play
-@param location in world-space
-@param entityID that the sound belongs to
-@param loopID   to stop looping
+    @param sound    to play
+    @param location in world-space
+    @param entityID that the sound belongs to
+    @param loopID   to stop looping
 */
 void SoundManager::endLoop(eSoundEvent sound, vec3 location, int entityID, int loopID)
 {
@@ -224,11 +229,11 @@ void SoundManager::endLoop(eSoundEvent sound, vec3 location, int entityID, int l
  * Private                                                               *
 \*************************************************************************/
 /*
-Load all the audio files needed.
+    Load all the audio files needed.
 
-For some reason, if this is called in the constructor, the program crashes. To
-avoid this, this is called after the Singleton instance is first instantiated
-in main().
+    For some reason, if this is called in the constructor, the program crashes.
+    To avoid this, this is called after the Singleton instance is first
+    instantiated in main().
 */
 void SoundManager::loadFiles() {
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
@@ -237,6 +242,11 @@ void SoundManager::loadFiles() {
     loadAllEvents();
 }
 
+/*
+    Update channels to start or stop playing sounds based on play() calls since
+    the last time this was called. As a result, this sould be called AFTER
+    every time play() called to ensure it is played immediately.
+*/
 void SoundManager::updateChannels() {
     vector<ChannelMap::iterator> vStoppedChannels;
     for (auto it = mChannels.begin(); it != mChannels.end(); ++it)
@@ -252,16 +262,16 @@ void SoundManager::updateChannels() {
     {
         mChannels.erase(it);
     }
-    errorCheck(mpStudioSystem->update());
+    errorCheck(m_pStudioSystem->update());
 }
 
 /*
-Load a sound.
+    Load a sound.
 
-@param sSoundName   file path to the sound
-@param b3d          true if 3D sound, else 2D
-@param bLooping     true if sound is to be looped, else not looped
-@param bStream      ???????
+    @param sSoundName   file path to the sound
+    @param b3d          true if 3D sound, else 2D
+    @param bLooping     true if sound is to be looped, else not looped
+    @param bStream      ???????
 */
 void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, bool bStream) {
     auto tFoundIt = mSounds.find(sSoundName);
@@ -275,7 +285,7 @@ void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, 
     mode |= bStream ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;      // Stream is more for background music?
 
     FMOD::Sound* pSound = nullptr;
-    errorCheck(mpSystem->createSound(sSoundName.c_str(), mode, nullptr, &pSound));
+    errorCheck(m_pSystem->createSound(sSoundName.c_str(), mode, nullptr, &pSound));
 
     // Store new sound
     if (pSound) {
@@ -284,9 +294,9 @@ void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, 
 }
 
 /*
-Unload a sound. If the sound was not loaded, do nothing.
+    Unload a sound. If the sound was not loaded, do nothing.
 
-@param sSoundName   filepath of sound to unload
+    @param sSoundName   filepath of sound to unload
 */
 void SoundManager::unloadSound(const string& sSoundName) {
     auto tFoundIt = mSounds.find(sSoundName);
@@ -311,7 +321,7 @@ int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, fl
     }
 
     FMOD::Channel* pChannel = nullptr;
-    errorCheck(mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));      // Play sound and paused at the beginning
+    errorCheck(m_pSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));      // Play sound and paused at the beginning
 
     if (pChannel) {
         FMOD_MODE currMode;
@@ -351,7 +361,7 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
         return;
     }
     FMOD::Studio::Bank* pBank;
-    errorCheck(mpStudioSystem->loadBankFile(sBankName.c_str(), flags, &pBank));
+    errorCheck(m_pStudioSystem->loadBankFile(sBankName.c_str(), flags, &pBank));
 
     if (pBank) {
         mBanks[sBankName] = pBank;
@@ -386,7 +396,7 @@ void SoundManager::loadEvent(const string& sEventName) {
         //return;
     //}
     FMOD::Studio::EventDescription* pEventDescription = nullptr;
-    errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+    errorCheck(m_pStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
     if (nullptr != pEventDescription) {
         FMOD::Studio::EventInstance* pEventInstance = nullptr;
         errorCheck(pEventDescription->createInstance(&pEventInstance));
@@ -400,13 +410,13 @@ void SoundManager::loadEvent(const string& sEventName) {
 
 
 /*
-Play an event.
+    Play an event.
 
-Currently, only one instance of each event can play at a time, as additional
-concurrent calls will just reset the event's audio back to the start instead of
-overlapping a new instance.
+    Currently, only one instance of each event can play at a time, as additional
+    concurrent calls will just reset the event's audio back to the start instead of
+    overlapping a new instance.
 
-@param sEventName   
+    @param sEventName   
 */
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
@@ -445,7 +455,7 @@ void SoundManager::playEvent(const string& sEventName) {
             }
             // Create event instance with same event description
             FMOD::Studio::EventDescription* pEventDescription = nullptr;
-            errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+            errorCheck(m_pStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
             if (nullptr != pEventDescription) {
                 FMOD::Studio::EventInstance* pEventInstance = nullptr;
                 errorCheck(pEventDescription->createInstance(&pEventInstance));
@@ -465,6 +475,8 @@ void SoundManager::playEvent(const string& sEventName) {
 /*
 Testing things out
 https://books.google.ca/books?id=VfxNDwAAQBAJ&pg=PT373&lpg=PT373&dq=fmod::studio:eventInstance+getplaybackstate&source=bl&ots=Dlb4f5O3pe&sig=ACfU3U3_eWkbAVazGIRgrqwPHPdr2_0CyA&hl=en&sa=X&ved=2ahUKEwi2lrnWvtbgAhWIuZ4KHXguDvsQ6AEwCHoECAIQAQ#v=onepage&q=fmod%3A%3Astudio%3AeventInstance%20getplaybackstate&f=false
+
+@Deprecated
 */
 void SoundManager::playEventDirect(const string& sEventName) {
     mEvents[sEventName]->start();

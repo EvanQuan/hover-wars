@@ -262,10 +262,13 @@
     </object>
     <object class="SingleSound" id="{e6689c51-6a5b-4e19-998d-d3ec476a443c}">
         <property name="start">
-            <value>2080</value>
+            <value>2082.5</value>
         </property>
         <property name="length">
-            <value>196.75428571428571</value>
+            <value>194.25428571428571</value>
+        </property>
+        <property name="timelockedOffset">
+            <value>2.5</value>
         </property>
         <relationship name="audioFile">
             <destination>{9c540b12-4da8-4e1f-92a5-03558ff697aa}</destination>
@@ -349,7 +352,7 @@
             <destination>{72d20a30-8d20-44a5-8dea-a7b7e87c6fdb}</destination>
         </relationship>
         <relationship name="markerTrack">
-            <destination>{b2c8783a-5e14-4444-906e-9e7844435018}</destination>
+            <destination>{18900428-056b-414f-abf9-f2bcd177cde6}</destination>
         </relationship>
     </object>
     <object class="TransitionMarker" id="{6d1e7a2e-b377-4387-a125-216e649a53b8}">
@@ -673,7 +676,7 @@
     </object>
     <object class="NamedMarker" id="{08803bcd-e94e-4abb-8e84-0c70e8d6caf1}">
         <property name="position">
-            <value>2080</value>
+            <value>2082.5</value>
         </property>
         <property name="name">
             <value>08</value>

@@ -17,7 +17,7 @@ class InteractableEntity
 {
 public:
     // Constructor / Destructor
-    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityTypes eIEType);
+    InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityType eIEType);
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality

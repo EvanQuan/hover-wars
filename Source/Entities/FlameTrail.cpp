@@ -6,7 +6,7 @@ using namespace SpriteSheetDatabase;
 
 // Default Constructor
 FlameTrail::FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
-                            float fHeight, float fWidth )
+                       float fHeight, float fWidth )
     : InteractableEntity( iID, iOwnerID, *vPosition, FLAME_TRAIL_ENTITY )
 {
     m_fHeight = fHeight;

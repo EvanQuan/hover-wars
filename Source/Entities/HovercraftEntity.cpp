@@ -115,7 +115,7 @@ const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(0, 0, BACK_CAMERA_OFFSET);
 // Hovercraft Entity Default Constructor.
 //  Call the base class Entity Constructor
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
-    : Entity(iID, *vPosition, HOVERCRAFT_ENTITY)
+    : Entity(iID, *vPosition, ENTITY_HOVERCRAFT)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
@@ -186,13 +186,13 @@ void HovercraftEntity::update(float fTimeInSeconds)
                             entity will either be a bot or a player
     @param  iNumber         
 */
-void HovercraftEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
+void HovercraftEntity::getHitBy(eEntityType eHitByType, unsigned int iNumber)
 {
     // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
     // Switch based on who hit the player
     switch (eHitByType)
     {
-    case HOVERCRAFT_ENTITY:
+    case ENTITY_HOVERCRAFT:
     // Hitting Entity was a bot, meaning that the bot #iNumber should get
     // points for hitting this player #m_ePlayerID
         // TODO make sure that iNumber actually corresponds to values
@@ -310,11 +310,11 @@ void HovercraftEntity::initialize(const string& sFileName,
 void HovercraftEntity::handleCollision(Entity* pOther)
 {
     // Get the Type of the Other Entity
-    eEntityTypes eOtherType = pOther->getType();
+    eEntityType eOtherType = pOther->getType();
     HovercraftEntity* pOtherHovercraft;
     switch (eOtherType)
     {
-    case HOVERCRAFT_ENTITY:
+    case ENTITY_HOVERCRAFT:
         // Cast the other Entity to a Hovercraft Entity (We know this is
         // possible because of the two cases)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
@@ -331,16 +331,16 @@ void HovercraftEntity::handleCollision(Entity* pOther)
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
-    case POWERUP_ENTITY:
+    case ENTITY_POWERUP:
         // Random for now
         setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
-    case PLANE_ENTITY:
+    case ENTITY_PLANE:
         // TODO still not sure if we're doing the gain control or the elevation check
         // to make collisions less wonky
         setGainControl();
         break;
         /*Further Cases:
-        case ROCKET_ENTITY:
+        case ENTITY_ROCKET:
             Get Owner Entity for Rocket (Player or Bot) and call Hit on this Entity to be hit by that player.
         case EXPLOSION:
             Get Owner Entity for Explosion (player or Bot) and call Hit on thie Entity to be hit by that player.

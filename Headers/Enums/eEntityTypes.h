@@ -1,20 +1,20 @@
 #pragma once
 
 /*
-    Represents Possible types of entities for differentiating the base class.
+    Represents possible types of entities for differentiating the base class.
 */
-enum eEntityTypes
+enum eEntityType
 {
-    DIRECTIONAL_LIGHT_ENTITY,
-    SPOT_LIGHT_ENTITY,
-    POINT_LIGHT_ENTITY,
-    PLANE_ENTITY,
-    STATIC_ENTITY,
-    PICKUP_ENTITY,
-    HOVERCRAFT_ENTITY,
-    CAMERA_ENTITY,
-    FLAME_TRAIL_ENTITY,
-    SPIKES_ENTITY,
-    ROCKET_ENTITY,
-    POWERUP_ENTITY
+    ENTITY_DIRECTIONAL_LIGHT,
+    ENTITY_SPOT_LIGHT,
+    ENTITY_POINT_LIGHT,
+    ENTITY_PLANE,
+    ENTITY_STATIC,
+    ENTITY_PICKUP,
+    ENTITY_HOVERCRAFT,
+    ENTITY_CAMERA,
+    ENTITY_FLAME_TRAIL,
+    ENTITY_SPIKES,
+    ENTITY_ROCKET,
+    ENTITY_POWERUP
 };
