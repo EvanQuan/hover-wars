@@ -33,6 +33,7 @@ public:
         KILL_MESSAGE_DOMINATION,
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
+        KILL_MESSAGE_KILL,
     };
 
     static UserInterface* getInstance(int iWidth, int iHeight);
@@ -114,7 +115,6 @@ private:
     void updateScores();
     void updateScore(eHovercraft hovercraft, int score);
     void renderScores();
-    void renderScoreChange();
 
     // Cooldowns
     void initializeCooldowns();
@@ -152,7 +152,12 @@ private:
     std::string m_sMessages[MAX_HOVERCRAFT_COUNT];
     float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
 
-    float m_fScoreUpdateTimes[MAX_HOVERCRAFT_COUNT];
+    /*
+    Score updates appear temporarily just as messages are
+
+    Unit : seconds
+    */
+    float m_fScoreChangeTimes[MAX_HOVERCRAFT_COUNT];
 
     int m_iDisplayCount;
 
@@ -179,7 +184,7 @@ private:
         // 6 Score Change
         {0.47f, 0.58f},
         // 7 Message
-        {0.4f, 0.65f}
+        {0.36f, 0.65f}
     };
     // Store the values so they do not need to be calculated every frame.
     float m_vComponentCoordinates[COMPONENT_COUNT][UI_COMPONENT_COORDINATES];

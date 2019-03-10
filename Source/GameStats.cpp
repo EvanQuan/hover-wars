@@ -158,13 +158,10 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
     case HIT_BOT_2:
     case HIT_BOT_3:
     case HIT_BOT_4:
-        // hitBot(hovecraft, scoreReasonToBot.at(reason));
-        // break;
     case HIT_PLAYER_1:
     case HIT_PLAYER_2:
     case HIT_PLAYER_3:
     case HIT_PLAYER_4:
-        // hitPlayer(hovecraft, scoreReasonToPlayer.at(reason));
         hit(hovercraft, scoreReasonToHovercraft.at(reason));
         break;
     case PICKUP_POWERUP:
@@ -211,6 +208,8 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
+
+    USER_INTERFACE->displayMessage(attacker, hit, UserInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
     cout << "Player " << attacker << " hit Player " << attacker << endl;
