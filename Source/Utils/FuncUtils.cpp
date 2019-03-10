@@ -85,10 +85,11 @@ double FuncUtils::getRoll(glm::quat q)
 double FuncUtils::getPitch(glm::quat q)
 {
     double sinp = +2.0 * (q.w * q.y - q.z * q.x);
-    if (fabs(sinp) >= 1)
+    if (fabs(sinp) >= 1) {
         return copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-    else
+    } else {
         return asin(sinp);
+    }
 }
 
 /*

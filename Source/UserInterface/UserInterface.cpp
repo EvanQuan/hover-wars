@@ -552,6 +552,10 @@ void UserInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 
 {
     /* TODO */
 }
+void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
+{
+    renderText(std::to_string(text), x, y, scale, color);
+}
 /*
 Render text to the screen.
 
@@ -567,10 +571,6 @@ Window coordinates in pixels
 @param scale    text, where 1.0 is the default size
 @param color    rgb colors of the text
 */
-void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
-{
-    renderText(std::to_string(text), x, y, scale, color);
-}
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
     // Vector for storing VBO data.
