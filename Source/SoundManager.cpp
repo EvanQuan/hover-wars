@@ -21,23 +21,28 @@ SoundManager* SoundManager::m_pInstance = nullptr;
  * Constructors                                                          *
 \*************************************************************************/
 SoundManager::SoundManager() {
-    mpStudioSystem = NULL;
-    errorCheck(FMOD::Studio::System::create(&mpStudioSystem));     // Create the studio system object.
-    errorCheck(mpStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
-    // 5 - max channels
-    // FMOD_STUDIO_INIT_LIVEUPDATE
-    // 0 - no extra driver data
+    m_pStudioSystem = nullptr;
+    errorCheck(FMOD::Studio::System::create(&m_pStudioSystem));     // Create the studio system object.
 
-    mpSystem = NULL;
-    errorCheck(mpStudioSystem->getLowLevelSystem(&mpSystem));      // Setup low level system;
+    m_pSystem = nullptr;
+    // Set a random seed, or the random music loop will be deterministic
+    errorCheck(m_pStudioSystem->getLowLevelSystem(&m_pSystem));      // Setup low level system;
+    advancedSettings = new FMOD_ADVANCEDSETTINGS();
+    advancedSettings->cbSize = sizeof(FMOD_ADVANCEDSETTINGS);
+    advancedSettings->randomSeed = FuncUtils::random(0, std::numeric_limits<int>::max());
+    errorCheck(m_pSystem->setAdvancedSettings(advancedSettings));
+
+    errorCheck(m_pStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
+
 }
 
 /*************************************************************************\
  * Destructor                                                            *
 \*************************************************************************/
 SoundManager::~SoundManager() {
-    errorCheck(mpStudioSystem->unloadAll());   // Unloads all currently loaded banks.
-    errorCheck(mpStudioSystem->release());     // Closes and frees a system object and its resources.
+    errorCheck(m_pStudioSystem->unloadAll());   // Unloads all currently loaded banks.
+    errorCheck(m_pStudioSystem->release());     // Closes and frees a system object and its resources.
+    delete advancedSettings;
 }
 
 SoundManager* SoundManager::getInstance() {
@@ -252,7 +257,7 @@ void SoundManager::updateChannels() {
     {
         mChannels.erase(it);
     }
-    errorCheck(mpStudioSystem->update());
+    errorCheck(m_pStudioSystem->update());
 }
 
 /*
@@ -275,7 +280,7 @@ void SoundManager::loadSound(const string& sSoundName, bool b3d, bool bLooping, 
     mode |= bStream ? FMOD_CREATESTREAM : FMOD_CREATECOMPRESSEDSAMPLE;      // Stream is more for background music?
 
     FMOD::Sound* pSound = nullptr;
-    errorCheck(mpSystem->createSound(sSoundName.c_str(), mode, nullptr, &pSound));
+    errorCheck(m_pSystem->createSound(sSoundName.c_str(), mode, nullptr, &pSound));
 
     // Store new sound
     if (pSound) {
@@ -311,7 +316,7 @@ int SoundManager::playSounds(const string& sSoundName, const vec3& vPosition, fl
     }
 
     FMOD::Channel* pChannel = nullptr;
-    errorCheck(mpSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));      // Play sound and paused at the beginning
+    errorCheck(m_pSystem->playSound(tFoundIt->second, nullptr, true, &pChannel));      // Play sound and paused at the beginning
 
     if (pChannel) {
         FMOD_MODE currMode;
@@ -351,7 +356,7 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
         return;
     }
     FMOD::Studio::Bank* pBank;
-    errorCheck(mpStudioSystem->loadBankFile(sBankName.c_str(), flags, &pBank));
+    errorCheck(m_pStudioSystem->loadBankFile(sBankName.c_str(), flags, &pBank));
 
     if (pBank) {
         mBanks[sBankName] = pBank;
@@ -386,7 +391,7 @@ void SoundManager::loadEvent(const string& sEventName) {
         //return;
     //}
     FMOD::Studio::EventDescription* pEventDescription = nullptr;
-    errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+    errorCheck(m_pStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
     if (nullptr != pEventDescription) {
         FMOD::Studio::EventInstance* pEventInstance = nullptr;
         errorCheck(pEventDescription->createInstance(&pEventInstance));
@@ -445,7 +450,7 @@ void SoundManager::playEvent(const string& sEventName) {
             }
             // Create event instance with same event description
             FMOD::Studio::EventDescription* pEventDescription = nullptr;
-            errorCheck(mpStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
+            errorCheck(m_pStudioSystem->getEvent(sEventName.c_str(), &pEventDescription));
             if (nullptr != pEventDescription) {
                 FMOD::Studio::EventInstance* pEventInstance = nullptr;
                 errorCheck(pEventDescription->createInstance(&pEventInstance));

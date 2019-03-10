@@ -84,8 +84,10 @@ private:
     
     static SoundManager* m_pInstance;
 
-    FMOD::Studio::System* mpStudioSystem;   // FMOD Studio API
-    FMOD::System* mpSystem;  // FMOD Low Level API
+    FMOD_ADVANCEDSETTINGS* advancedSettings;
+
+    FMOD::Studio::System* m_pStudioSystem;   // FMOD Studio API
+    FMOD::System* m_pSystem;  // FMOD Low Level API
 
     int mnNextChannelId;
 
@@ -213,8 +215,6 @@ private:
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
                                          }},
-        // {MUSIC_INGAME,                   { "event:/background/music_loop",
-        //                                  }},
     };
 };
 
