@@ -294,7 +294,12 @@ void HovercraftEntity::handleCollision(Entity* pOther)
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
+    case POWERUP_ENTITY:
+        // Random for now
+        setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
     case PLANE_ENTITY:
+        // TODO still not sure if we're doing the gain control or the elevation check
+        // to make collisions less wonky
         setGainControl();
         break;
         /*Further Cases:
