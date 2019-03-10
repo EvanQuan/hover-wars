@@ -29,9 +29,9 @@ void BotEntity::update(float fTimeInSeconds)
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
     glm::quat rotation = m_pPhysicsComponent->getRotation();
-    double x = FuncUtils::getRoll(rotation);
-    double y = FuncUtils::getPitch(rotation);
-    double z = FuncUtils::getYaw(rotation);
+    // double x = FuncUtils::getRoll(rotation);
+    // double y = FuncUtils::getPitch(rotation);
+    // double z = FuncUtils::getYaw(rotation);
 
     PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
