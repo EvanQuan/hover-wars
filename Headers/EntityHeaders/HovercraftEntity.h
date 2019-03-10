@@ -111,10 +111,10 @@ public:
     void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
-    vec3 getCameraPosition() { return m_vCurrentCameraPosition; }
-    quat getCameraRotation() { return m_qCurrentCameraRotation; }
+    vec3 getCameraPosition() const { return m_vCurrentCameraPosition; }
+    quat getCameraRotation() const { return m_qCurrentCameraRotation; }
 
-    const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCameraIndex]; }
+    const CameraComponent* getActiveCameraComponent() const { return m_pCmrComponents[activeCameraIndex]; }
 
     // The player has a front and back camera, which can be toggled as the
     // active camera
@@ -125,7 +125,7 @@ public:
     // Get ability statuses for UI
     // Get the status of the flame in percent.
     // @return 1.0f if full, 0.0f if empty, or intermediate value if in between
-    float getTrailGaugePercent() { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
+    float getTrailGaugePercent() const { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
 
     // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
