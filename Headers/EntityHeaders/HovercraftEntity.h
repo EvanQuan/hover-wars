@@ -241,6 +241,7 @@ private:
     float m_fSecondsLeftUntilVulnerable;
 
 // Protected Functions and variables for Child Classes
+// NOTE: Ideally there are no child classes
 protected:
     GameStats* m_pGmStats;
 
@@ -251,5 +252,9 @@ protected:
     // Bool Spikes Information
     bool m_bSpikesActivated;
     float m_fSecondsSinceSpikesActivated;
+
+    // Tracks enabled powerups for this hovercraft
+    void initializePowerups();
+    bool m_bPowerupsEnabled[POWERUP_COUNT];
 };
 

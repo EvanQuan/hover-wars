@@ -130,6 +130,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
+    initializePowerups();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -315,6 +316,14 @@ void HovercraftEntity::initializeCooldowns()
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
+}
+
+void HovercraftEntity::initializePowerups()
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_bPowerupsEnabled[powerup] = false;
+    }
 }
 
 /*
