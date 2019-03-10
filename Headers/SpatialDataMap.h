@@ -13,7 +13,7 @@ class FlameTrail;
 // Written By: James Coté
 // Description: A Mapping Structure for Objects in the scene. Allows for sorting of objects for tailored rendering techniques
 //  as well as pathfinding.
-class SpatialDataMap
+class SpatialDataMap final
 {
 public:
     static SpatialDataMap* getInstance();

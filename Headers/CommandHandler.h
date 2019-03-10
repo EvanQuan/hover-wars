@@ -19,7 +19,7 @@ may come from other means for test purposes.
 
 @author Evan Quan
 */
-class CommandHandler
+class CommandHandler final
 {
 public:
     static CommandHandler* getInstance(GLFWwindow *rWindow);

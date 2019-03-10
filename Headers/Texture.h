@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "ShaderManager.h"
 
-class Texture
+class Texture final
 {
 private:
     // Private Copy Constructor and Assignment Operator
@@ -44,4 +44,3 @@ public:
     // Gets the Hash Key for the texture for referencing in the Texture Manager
     const string& getFileName() { return m_sManagerKey; }
 };
-

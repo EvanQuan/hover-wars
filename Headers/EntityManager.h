@@ -22,7 +22,7 @@
 // Environment Manager
 // Manages all objects in an environment
 // Written by: James Coté, Evan Quan
-class EntityManager
+class EntityManager final
 {
 public:
     // Singleton instance retrieval and Destructor
