@@ -169,20 +169,20 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
         {
             switch (vEntity->getType())
             {
-            case FLAME_TRAIL_ENTITY:
+            case ENTITY_FLAME_TRAIL:
                 m_pSpatialMap[x][y].pLocalInteractableEntities.push_back(static_cast<const FlameTrail*>(vEntity));  // Push the Interactable Entity into the spatial map.
                 break;
-            case POINT_LIGHT_ENTITY:
+            case ENTITY_POINT_LIGHT:
                 m_pSpatialMap[x][y].pLocalPointLights.push_back(static_cast<const PointLight*>(vEntity));                   // Push the Static Entity into the spatial map.
                 break;
-            case SPOT_LIGHT_ENTITY:
+            case ENTITY_SPOT_LIGHT:
                 m_pSpatialMap[x][y].pLocalSpotLights.push_back(static_cast<const SpotLight*>(vEntity));                     // Push the Static Entity into the spatial map.
                 break;
-            case STATIC_ENTITY:
+            case ENTITY_STATIC:
                 m_pSpatialMap[x][y].pLocalEntities.push_back(static_cast<const StaticEntity*>(vEntity));                    // Push the Static Entity into the spatial map.
                 break;
 #ifdef _DEBUG
-            case HOVERCRAFT_ENTITY:
+            case ENTITY_HOVERCRAFT:
                 // Add this entry to the Dynamic Indices Map.
                 if (m_pDynamicIndicesMap.find(vEntity->getID()) == m_pDynamicIndicesMap.end())
                     m_pDynamicIndicesMap.insert(make_pair(vEntity->getID(), sDynamicDrawInfo()));
@@ -221,7 +221,7 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
 
 #ifdef _DEBUG
     // Generate IBO if the Entity was a PLAYER_ENTITY
-    if (HOVERCRAFT_ENTITY == vEntity->getType() )
+    if (ENTITY_HOVERCRAFT == vEntity->getType() )
         m_pDynamicIndicesMap[vEntity->getID()].iDynamicIBO =
         SHADER_MANAGER->genIndicesBuffer(m_iMapVertexArray, m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.data(),
                                          m_pDynamicIndicesMap[vEntity->getID()].pDynamicIndices.size() * sizeof(unsigned int), GL_DYNAMIC_DRAW);

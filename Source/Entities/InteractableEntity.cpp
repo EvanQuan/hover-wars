@@ -5,7 +5,7 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityTypes eIEType)
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityType eIEType)
     : Entity( iID, *vPosition, eIEType )
 {
     m_iOwnerID = iOwnerID;  // Set the Owner ID for the Interactable Entity
@@ -39,7 +39,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 //      Default: tells the other entity that they've been hit.
 void InteractableEntity::handleCollision(Entity* pOther)
 {
-    if (HOVERCRAFT_ENTITY == pOther->getType())
+    if (ENTITY_HOVERCRAFT == pOther->getType())
         static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, m_iOwnerID);
 }
 

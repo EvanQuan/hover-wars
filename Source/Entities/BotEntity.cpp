@@ -95,7 +95,7 @@ void BotEntity::initialize(const string& sFileName,
 
     @TODO   This seems very general and may be able to be reworked with a better design.
 */
-void BotEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
+void BotEntity::getHitBy(eEntityType eHitByType, unsigned int iNumber)
 {
     // cout << "Bot " << iNumber << " hit by " << eHitByType << endl;
     // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
@@ -104,7 +104,7 @@ void BotEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
     // Switch based on who hit the player
     switch (eHitByType)
     {   // TODO: Fix these Cases to handle one entity type
-    case HOVERCRAFT_ENTITY:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
+    case ENTITY_HOVERCRAFT:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
         if (!isInvincible())
         {
             m_pGmStats->addScore(static_cast<eHovercraft>(iNumber), eScoreReason);
