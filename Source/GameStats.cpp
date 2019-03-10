@@ -1,5 +1,4 @@
 #include "GameStats.h"
-#include "SoundManager.h"
 #include "UserInterface/UserInterface.h"
 
 /*
@@ -268,8 +267,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
         firstBloodHappened = true;
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
-        USER_INTERFACE->displayMessage(attacker, "First blood");
+        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     return basePoints + killstreakBonus + revengeBonus + firstBloodBonus;
 }
@@ -339,8 +337,7 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
-        USER_INTERFACE->displayMessage(attacker, "You have a killstreak of " + std::to_string(killstreak));
+        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
     }
 
     // Update attacker's current total killstreak against hit
@@ -375,9 +372,9 @@ void GameStats::updateLargestTotalKillstreak(eHovercraft hovercraft)
     }
 }
 
-int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft playerHit) const
+int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit) const
 {
-    return stats[attacker][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + playerHit];
+    return stats[attacker][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + hit];
 }
 
 /*
@@ -403,13 +400,11 @@ void GameStats::resetKillstreak(eHovercraft hit, eHovercraft attacker)
 Check whether playerToCheck has a large enough killstreak against hit to
 count as dominating.
 
-NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
-
 @return true if playerToCheck is dominating hit
 */
-bool GameStats::isDominating(eHovercraft playerAttacker, eHovercraft playerHit) const
+bool GameStats::isDominating(eHovercraft attacker, eHovercraft hit) const
 {
-    return stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit];
+    return stats[attacker][IS_DOMINATING_PLAYER_1 + hit];
 }
 
 /*
@@ -417,31 +412,35 @@ attacker can start domination against playerHIt if
 1. attacker's killstreak against hit is at least DOMINATION_COUNT
 2. attacker is not already dominating hit
 */
-bool GameStats::canStartDomination(eHovercraft playerAttacker, eHovercraft playerHit) const
+bool GameStats::canStartDomination(eHovercraft attacker, eHovercraft hit) const
 {
-    return getCurrentKillstreakAgainst(playerAttacker, playerHit) >= DOMINATION_COUNT
-        && !isDominating(playerAttacker, playerHit);
+    return getCurrentKillstreakAgainst(attacker, hit) >= DOMINATION_COUNT
+        && !isDominating(attacker, hit);
 }
 
 /*
 Enable attacker's domaination status against hit
+
+@param attacker     to get domination
+@param hit          to be dominated
 */
-void GameStats::dominate(eHovercraft playerAttacker, eHovercraft playerHit)
+void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
     // Ad hoc for single player
-    USER_INTERFACE->displayMessage(playerAttacker, "You now are dominating Player " + std::to_string(playerHit + 1));
-    stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = true;
+    USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
+    stats[attacker][IS_DOMINATING_PLAYER_1 + hit] = true;
 }
 /*
 Disable playerWasDominating's domination status against playerToGetRevenge.
+
+@param attacker     to get revenge
+@param hit          was dominating
 */
-void GameStats::revenge(eHovercraft playerToGetRevenge, eHovercraft playerWasDominating)
+void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
     // Ad hoc for single player
-    USER_INTERFACE->displayMessage(playerToGetRevenge, "You got revenge from Player " + std::to_string(playerWasDominating + 1));
-    stats[playerWasDominating][IS_DOMINATING_PLAYER_1 + playerToGetRevenge] = false;
+    USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_REVENGE);
+    stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;
 }
 
 
