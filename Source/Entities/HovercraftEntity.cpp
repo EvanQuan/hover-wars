@@ -31,7 +31,7 @@ Determines from what horizontal angle the camera is tracking the hovercraft.
                    90
                   -270
                     |
-                    v                 
+                    v
      180 -----> hovercraft  <----- 0
     -180            ^              360
                     |
@@ -73,7 +73,7 @@ Distance between look-at position and camera.
 #define BACK_CAMERA_LONGITUDE   FRONT_CAMERA_LONGITUDE  // theta    degrees
 
 /*
-This determines the pitch that the camera 
+This determines the pitch that the camera
 */
 #define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
 
@@ -146,7 +146,7 @@ HovercraftEntity::~HovercraftEntity()
 \****************************************************************/
 
 /*
-@param fTimeInSeconds   delta time since last update
+    @param fTimeInSeconds   delta time since last update
 */
 void HovercraftEntity::update(float fTimeInSeconds)
 {
@@ -287,7 +287,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     getSpatialDimensions(&vNegCorner, &vPosCorner);
     ObjectInfo::BoundingBox sBounding;
     sBounding.vDimensions = vPosCorner - vNegCorner;
-    
+
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
@@ -303,14 +303,14 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // Create Rocket Mesh
     m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
-    
+
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
         m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
         m_pCmrComponents[i]->setLookAt(m_vPosition);
     }
-    
+
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
 
@@ -435,7 +435,7 @@ void HovercraftEntity::updateCameraPosition(float fTimeInSeconds)
     {
         float fSpring = SPRING_MOVEMENT_CONSTANT * (length(cameraLength) - CAMERA_REST_LENGTH);
         m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fTimeInSeconds);
-      
+
         // Update all the camera look at and rotation values based on the averaging calculations.
         m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
         m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
@@ -503,7 +503,7 @@ void HovercraftEntity::updateTrail(float fTimeInSeconds)
         m_fSecondsSinceLastFlame += fTimeInSeconds;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
-    
+
             float newGaugeValue = m_fTrailGauge - fTimeInSeconds;
 
             if (newGaugeValue > TRAIL_GAUGE_EMPTY)
@@ -697,7 +697,7 @@ void HovercraftEntity::activateSpikes()
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
-    
+
     m_bSpikesActivated = true;
     m_fSecondsSinceSpikesActivated = 0.0f;
 
