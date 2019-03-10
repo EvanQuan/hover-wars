@@ -1,7 +1,7 @@
 #include "EntityHeaders/Entity.h"
 
 // Default Constructor
-Entity::Entity(int iID, vec3 vPosition, eEntityTypes eType)
+Entity::Entity(int iID, vec3 vPosition, eEntityType eType)
 {
     m_iID = iID;
     m_vPosition = vPosition;

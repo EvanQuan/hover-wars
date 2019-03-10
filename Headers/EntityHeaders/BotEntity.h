@@ -19,8 +19,8 @@ public:
                     eHovercraft eHovercraftID);
 
     // Overridden virtual functions inherited from parent
-    void getHitBy(eEntityTypes eHitByType, unsigned int iNumber);
-    // void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
+    void getHitBy(eEntityType eHitByType, unsigned int iNumber);
+    // void hit(eEntityType eHitByType, unsigned int iNumber) const;
     void update(float fTimeInMilliseconds);
 private:
     int lastStep = -1;

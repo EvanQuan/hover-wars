@@ -78,27 +78,27 @@ void SoundManager::play(eSoundEvent sound)
     @param eCollidedType    The Entity Type of the Collided
     @return true if both collider and collided are hovercrafts
 */
-bool SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType)
+bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType)
 {
     // Context-specific sounds require specific information about the entities, specifically
     // if they are players
     switch (eColliderType)
     {
-    case eEntityTypes::HOVERCRAFT_ENTITY:               
+    case eEntityType::ENTITY_HOVERCRAFT:               
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
-        case eEntityTypes::HOVERCRAFT_ENTITY:
+        case eEntityType::ENTITY_HOVERCRAFT:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
             return true;
             break;
-        case eEntityTypes::STATIC_ENTITY:
-        case eEntityTypes::PLANE_ENTITY:
+        case eEntityType::ENTITY_STATIC:
+        case eEntityType::ENTITY_PLANE:
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
             break;
         }
         break;
-//    case eEntityTypes::STATIC_ENTITY:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
-//    case eEntityTypes::PLANE_ENTITY:
+//    case eEntityType::ENTITY_STATIC:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
+//    case eEntityType::ENTITY_PLANE:
 //        play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);
 //        break;
     }
@@ -107,15 +107,15 @@ bool SoundManager::handleBaseCollisionSound(eEntityTypes eColliderType, eEntityT
 
 void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 {
-    eEntityTypes colliderType = collider->getType();
-    eEntityTypes collidedType = collided->getType();
+    eEntityType colliderType = collider->getType();
+    eEntityType collidedType = collided->getType();
     // TODO this will be reorganized
     // Base collision sounds only require type
     if (handleBaseCollisionSound(colliderType, collidedType))
     {
         // For some reason this check is not enough?
-        if (((colliderType == eEntityTypes::HOVERCRAFT_ENTITY))
-            && (collidedType == eEntityTypes::HOVERCRAFT_ENTITY))
+        if (((colliderType == eEntityType::ENTITY_HOVERCRAFT))
+            && (collidedType == eEntityType::ENTITY_HOVERCRAFT))
         {
             handleContextCollisionSound(collider, collided);
         }
@@ -133,8 +133,8 @@ At this point, assumes both collider and collided are hovercrafts of some kind.
 */
 void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collided)
 {
-    if ((collider->getType() != eEntityTypes::HOVERCRAFT_ENTITY)
-        || collider->getType() != eEntityTypes::HOVERCRAFT_ENTITY)
+    if ((collider->getType() != eEntityType::ENTITY_HOVERCRAFT)
+        || collider->getType() != eEntityType::ENTITY_HOVERCRAFT)
     {
         return;
     }
