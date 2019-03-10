@@ -188,6 +188,9 @@ private:
     // Cooldowns
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
+    /*
+
+    */
     float m_fCooldowns[COOLDOWN_COUNT];
 
     /*

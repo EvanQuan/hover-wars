@@ -49,9 +49,11 @@ execute that command.
 @param player   to execute command on
 @param command  to execute
 */
-void CommandHandler::executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command)
+void CommandHandler::executeIfHovercraftExists(eHovercraft hovercraft,
+                                               eFixedCommand command)
 {
-    if ((command == COMMAND_INVALID_FIXED) || (!ENTITY_MANAGER->playerExists(hovercraft)))
+    if ((command == COMMAND_INVALID_FIXED)
+        || (!ENTITY_MANAGER->playerExists(hovercraft)))
     {
         return;
     }
@@ -65,7 +67,8 @@ Make a player execute a fixed command.
 @param player       to execute command on
 @param command      to execute
 */
-void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command)
+void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft,
+                                            eFixedCommand command)
 {
     switch (command)
     {
@@ -179,9 +182,12 @@ Axes values are normalized and follow Cartesian coordinates:
 @param x        x-coordinate
 @param y        y-coordinate
 */
-void CommandHandler::executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y)
+void CommandHandler::executeIfHovercraftExists(eHovercraft hovercraft,
+                                               eVariableCommand command,
+                                               float x, float y)
 {
-    if ((command == COMMAND_INVALID_VARIABLE) || (!ENTITY_MANAGER->playerExists(hovercraft)))
+    if ((command == COMMAND_INVALID_VARIABLE)
+        || (!ENTITY_MANAGER->playerExists(hovercraft)))
     {
         return;
     }
@@ -197,7 +203,9 @@ Make a player execute a variable command.
 @param x            x-coordinate
 @param y            y-coordinate
 */
-void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft, eVariableCommand command, float x, float y)
+void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft,
+                                            eVariableCommand command,
+                                            float x, float y)
 {
     switch (command)
     {
@@ -211,7 +219,8 @@ void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft, eVaria
 }
 
 /*
-Execute all the commands for a given frame. This should be called every frame update.
+Execute all the commands for a given frame. This should be called every frame
+update.
 */
 void CommandHandler::executeAllCommands()
 {
@@ -280,7 +289,8 @@ void CommandHandler::executeKeyboardCommands()
             m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft, m_pFixedCommand);
+        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft,
+                                  m_pFixedCommand);
         // Check for cummulative movement commands, which are only executed once
         // all movement keys are checked.
         switch (m_pFixedCommand)
@@ -322,11 +332,13 @@ void CommandHandler::executeKeyboardCommands()
 
     if (!bMovementNeutral)
     {
-        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft, COMMAND_MOVE, xMove, yMove);
+        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft,
+                                  COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft, COMMAND_TURN, xTurn, yTurn);
+        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft,
+                                  COMMAND_TURN, xTurn, yTurn);
     }
 }
 
@@ -337,13 +349,16 @@ void CommandHandler::executeJoystickCommands()
 {
     m_pInputHandler->updateJoysticks();
 
-    for (int joystickID = GLFW_JOYSTICK_1; joystickID < MAX_PLAYER_JOYSTICK; joystickID++)
+    for (int joystickID = GLFW_JOYSTICK_1;
+         joystickID < MAX_PLAYER_JOYSTICK;
+         joystickID++)
     {
         int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
         if (joystickIsPresent)
         {
             const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-            InputHandler::eInputState *buttons = m_pInputHandler->m_joystickButtons[joystickID];
+            InputHandler::eInputState *buttons =
+                m_pInputHandler->m_joystickButtons[joystickID];
 
             // Check buttons
             for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
@@ -351,28 +366,40 @@ void CommandHandler::executeJoystickCommands()
                 switch (buttons[button])
                 {
                 case InputHandler::INPUT_JUST_PRESSED:
-                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), justPressedButtonToFixedCommand(button));
-                    m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_PRESSED;
+                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
+                                              justPressedButtonToFixedCommand(button));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] =
+                        InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
-                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), repeatButtonToFixedCommand(button));
+                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
+                                              repeatButtonToFixedCommand(button));
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
-                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), justReleasedButtonToFixedCommand(button));
-                    m_pInputHandler->m_joystickButtons[joystickID][button] = InputHandler::INPUT_RELEASED;
+                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
+                                              justReleasedButtonToFixedCommand(button));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] =
+                        InputHandler::INPUT_RELEASED;
                     break;
                 }
             }
 
             // Check axes
-            // Joystick axes will not be remappable, so no need to make code generalizable
+            // Joystick axes will not be remappable, so no need to make code
+            // generalizable
             if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
             {
-                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), COMMAND_MOVE, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
+                                          COMMAND_MOVE,
+                                          axes[AXIS_LEFT_STICK_X],
+                                          axes[AXIS_LEFT_STICK_Y]);
             }
             if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
             {
-                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID), COMMAND_TURN, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
+                                          COMMAND_TURN,
+                                          axes[AXIS_RIGHT_STICK_X],
+                                          axes[AXIS_RIGHT_STICK_Y]);
             }
         }
     }
@@ -385,8 +412,9 @@ void CommandHandler::debugToggleWireframe()
     bWireFrameEnabled = !bWireFrameEnabled;
 
     // Set Polygon mode based on current setting.
-    if (bWireFrameEnabled)
+    if (bWireFrameEnabled) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else
+    } else {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 }
