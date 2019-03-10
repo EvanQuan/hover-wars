@@ -147,14 +147,6 @@ HovercraftEntity::~HovercraftEntity()
 */
 void HovercraftEntity::update(float fTimeInSeconds)
 {
-    if (!isInControl)
-    {
-        outOfControlTime -= fTimeInSeconds;
-        if (outOfControlTime <= 0)
-        {
-            isInControl = true;
-        }
-    }
     lowEnoughToMove = m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
 
     // New Transformation Matrix
@@ -175,9 +167,11 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
+    updateInControl(fTimeInSeconds);
     updateCameraLookAts(fTimeInSeconds);
     updateCooldowns(fTimeInSeconds);
     updateVulnerability(fTimeInSeconds);
+    updatePowerups(fTimeInSeconds);
 }
 
 /*
@@ -218,6 +212,15 @@ void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
     {
         m_bInvincible = false;
     }
+}
+
+void HovercraftEntity::updatePowerups(float fTimeInSeconds)
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
+    }
+
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -322,7 +325,7 @@ void HovercraftEntity::initializePowerups()
 {
     for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
     {
-        m_bPowerupsEnabled[powerup] = false;
+        m_vPowerupsEnabled[powerup] = 0;
     }
 }
 
@@ -363,6 +366,18 @@ void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
         // Update all the camera look at and rotation values based on the averaging calculations.
         m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
         m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+    }
+}
+
+void HovercraftEntity::updateInControl(float fTimeInSeconds)
+{
+    if (!isInControl)
+    {
+        outOfControlTime -= fTimeInSeconds;
+        if (outOfControlTime <= 0)
+        {
+            isInControl = true;
+        }
     }
 }
 

@@ -82,6 +82,14 @@ Unit : seconds
 */
 #define INVINCIBLE_TIME 2.0f
 
+/*
+The duration a powerup lasts for.
+@TODO maybe move this to the powerup entity?
+
+Unit : seconds
+*/
+#define POWERUP_TIME 10.0f
+
 class HovercraftEntity :
     public Entity
 {
@@ -147,6 +155,9 @@ public:
 
     void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
     PhysicsComponent* m_pPhysicsComponent;
+
+    void setPowerup(ePowerup powerup) { m_vPowerupsEnabled[powerup] = POWERUP_TIME; }
+    bool hasPowerup(ePowerup powerup) const { return m_vPowerupsEnabled[powerup] > 0; }
 private:
     // Private Variables
     int activeCameraIndex;
@@ -232,6 +243,7 @@ private:
     If true, car is able to receive and act upon movement input.
     Else, not movement input is processed.
     */
+    void updateInControl(float fTimeInSeconds);
     bool isInControl;
     float outOfControlTime;
     bool lowEnoughToMove;
@@ -255,6 +267,7 @@ protected:
 
     // Tracks enabled powerups for this hovercraft
     void initializePowerups();
-    bool m_bPowerupsEnabled[POWERUP_COUNT];
+    void updatePowerups(float fTimeInSeconds);
+    float m_vPowerupsEnabled[POWERUP_COUNT];
 };
 
