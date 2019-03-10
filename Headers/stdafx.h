@@ -61,6 +61,7 @@ using namespace physx;
 #define INPUT_SIZE          128
 #define RELEASE_ENV         "Scenes/release.scene" // file path
 #define DEBUG_ENV           "Scenes/debug.scene"   // file path
+#define DEBUG_NO_AI_ENV     "Scenes/debug_no_ai.scene"   // file path
 #define LIGHT_MOVE_FACTOR   0.05f
 #define PI                  3.14159265f
 #define PI_2                6.28318530718f
