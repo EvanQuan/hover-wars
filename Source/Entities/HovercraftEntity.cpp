@@ -231,6 +231,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
+        break;
     }
 }
 
@@ -239,6 +240,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
+        break;
     }
 }
 

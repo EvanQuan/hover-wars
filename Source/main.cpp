@@ -63,7 +63,11 @@ int main()
             m_inputHandler = InputHandler::getInstance(m_window);
 
             // Initialize Graphics
-            iRunning = !m_gameManager->initializeGraphics( STARTING_ENV );
+#ifdef NDEBUG
+            iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
+#else
+            iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
+#endif
             m_shaderManager = SHADER_MANAGER;
 
             // Initialize Sound
