@@ -88,7 +88,7 @@ The duration a powerup lasts for.
 
 Unit : seconds
 */
-#define POWERUP_TIME 10.0f
+#define POWERUP_TIME 20.0f
 
 class HovercraftEntity :
     public Entity
@@ -156,7 +156,7 @@ public:
     void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
     PhysicsComponent* m_pPhysicsComponent;
 
-    void setPowerup(ePowerup powerup) { m_vPowerupsEnabled[powerup] = POWERUP_TIME; }
+    void setPowerup(ePowerup powerup);
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsEnabled[powerup] > 0; }
 private:
     // Private Variables
@@ -268,6 +268,8 @@ protected:
     // Tracks enabled powerups for this hovercraft
     void initializePowerups();
     void updatePowerups(float fTimeInSeconds);
+    void enablePowerup(ePowerup powerup);
+    void disablePowerup(ePowerup powerup);
     float m_vPowerupsEnabled[POWERUP_COUNT];
 };
 

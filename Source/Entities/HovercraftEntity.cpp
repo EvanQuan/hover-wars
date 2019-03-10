@@ -219,8 +219,25 @@ void HovercraftEntity::updatePowerups(float fTimeInSeconds)
     for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
     {
         m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
+        if (m_vPowerupsEnabled[powerup] <= 0)
+        {
+            disablePowerup(static_cast<ePowerup>(powerup));
+        }
     }
+}
 
+void HovercraftEntity::enablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    }
+}
+
+void HovercraftEntity::disablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    }
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -553,6 +570,12 @@ void HovercraftEntity::turn(float x)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
+}
+
+void HovercraftEntity::setPowerup(ePowerup powerup)
+{
+    m_vPowerupsEnabled[powerup] = POWERUP_TIME;
+    enablePowerup(powerup);
 }
 
 /*
