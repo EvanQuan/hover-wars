@@ -11,7 +11,7 @@ Get the magnitude of a vector represented by its x and y coordinates
 @param float    y coordinate
 @return the magnitude of the <x, y> vector
 */
-float FuncUtils::magnitude(float x, float y)
+float FuncUtils::getMagnitude(float x, float y)
 {
     return sqrt((x * x) + (y * y));
 }
@@ -60,6 +60,48 @@ std::string FuncUtils::to_string(float value, int decimalPlaces)
     stringstream stream;
     stream << fixed << setprecision(decimalPlaces) << value;
     return stream.str();
+}
+
+#define M_PI 3.1415926535
+/*
+    Get the roll (x-axis rotation) from a specified quaterion
+
+    @param q        to get roll
+    @return roll of q
+*/
+double FuncUtils::getRoll(glm::quat q)
+{
+    double sinr_cosp = +2.0 * (q.w * q.x + q.y * q.z);
+    double cosr_cosp = +1.0 - 2.0 * (q.x * q.x + q.y * q.y);
+    return atan2(sinr_cosp, cosr_cosp);
+}
+
+/*
+    Get the pitch (y-axis rotation) from a specified quaterion
+
+    @param q        to get pitch
+    @return pitch of q
+*/
+double FuncUtils::getPitch(glm::quat q)
+{
+    double sinp = +2.0 * (q.w * q.y - q.z * q.x);
+    if (fabs(sinp) >= 1)
+        return copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+    else
+        return asin(sinp);
+}
+
+/*
+    Get the yaw (z-axiz rotation) from a specified quaterion
+
+    @param q        to get yaw
+    @return yaw of q
+*/
+double FuncUtils::getYaw(glm::quat q)
+{
+    double siny_cosp = +2.0 * (q.w * q.z + q.x * q.y);
+    double cosy_cosp = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);
+    return atan2(siny_cosp, cosy_cosp);
 }
 
 eHovercraft FuncUtils::playerToHovercraft(ePlayer player)

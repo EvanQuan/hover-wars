@@ -1,10 +1,17 @@
 #pragma once
 
 /* INCLUDES */
+#define GLM_ENABLE_EXPERIMENTAL
 #include <map>
 #include <unordered_map>
 #include <random>
 #include "Enums/ePlayer.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/ext.hpp>
 
 /*
 Provides non-class specific functions for data manipulation.
@@ -85,7 +92,7 @@ namespace FuncUtils
     @param float    y coordinate
     @return the magnitude of the <x, y> vector
     */
-    float magnitude(float x, float y);
+    float getMagnitude(float x, float y);
 
     /*
     Check if two floats are equal. This is more accurate, but slower than using
@@ -116,6 +123,28 @@ namespace FuncUtils
     @return string of float with specified decimal places
     */
     std::string to_string(float value, int decimalPlaces);
+
+    /*
+        Get the roll (x-axis rotation) from a specified quaterion
+
+        @param q        to get roll
+        @return roll of q
+    */
+    double getRoll(glm::quat q);
+    /*
+        Get the pitch (y-axis rotation) from a specified quaterion
+
+        @param q        to get pitch
+        @return pitch of q
+    */
+    double getPitch(glm::quat q);
+    /*
+        Get the yaw (z-axis rotation) from a specified quaterion
+
+        @param q        to get yaw
+        @return yaw of q
+    */
+    double getYaw(glm::quat q);
 
     eHovercraft playerToHovercraft(ePlayer player);
     eHovercraft botToHovercraft(eBot bot);

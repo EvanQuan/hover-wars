@@ -24,7 +24,6 @@ public:
     void update(float fTimeInSeconds);
 private:
     int lastStep = -1;
-    void toEulerAngle(glm::quat q, double& roll, double& pitch, double& yaw);
     AIComponent *m_AIComponent;
     glm::vec3 playerPos;
     glm::vec3 playerVel;

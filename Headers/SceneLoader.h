@@ -8,7 +8,7 @@
 class Rocket;
 
 // Solely Generates Objects and assigns IDs to them.
-class SceneLoader
+class SceneLoader final
 {
 public:
     static SceneLoader* getInstance();

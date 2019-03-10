@@ -5,7 +5,7 @@
 /*
 Receives and stores user input (mouse, keyboard and controller).
 */
-class InputHandler
+class InputHandler final
 {
 public:
 

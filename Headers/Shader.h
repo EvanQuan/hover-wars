@@ -10,7 +10,7 @@
  *  the Shader to initialize properly. Once initialized, the Shader class will maintain the program handle
  *  for the Shader and will unload the shader once the class is destructed.
 \****************************************************************************************************/
-class Shader
+class Shader final
 {
 public:
     // Enum to signify type of Shader
