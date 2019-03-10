@@ -114,7 +114,7 @@ public:
     {
         COOLDOWN_ROCKET = 0,
         COOLDOWN_SPIKES,
-        COOLDOWN_TRAIL,
+        COOLDOWN_TRAIL_ACTIVATE,
         COOLDOWN_DASH,
         COOLDOWN_COUNT,
     };

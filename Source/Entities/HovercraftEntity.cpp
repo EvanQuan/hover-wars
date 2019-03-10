@@ -562,6 +562,7 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
+    cout << "Activate trail" << endl;
     // Trail start sound does always begin, as we cannot guarantee there is
     // any fuel due to trail recharge cooldown. Need to check fuel first.
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
@@ -579,12 +580,14 @@ Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {
+    cout << "Deactivate trail" << endl;
     SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
     m_bTrailActivated = false;
 }
 
 void HovercraftEntity::dash(eAbility direction)
 {
+    cout << "Dash" << endl;
     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {
