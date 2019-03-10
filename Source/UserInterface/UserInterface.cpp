@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "SoundManager.h"
 
 
 /***********\
@@ -294,6 +295,47 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
 }
 
+/*
+Display a message for a givne hovercraft's UI for a short duration.
+Depending on the message type, a sound may be played, and an alternate message
+may be played for other displayed UI's.
+
+@param attacker     of kill
+@param hit          of kill
+@param message      to display
+*/
+void UserInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message)
+{
+    switch (message)
+    {
+    case KILL_MESSAGE_DOMINATION:
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
+        displayMessage(attacker, "You are now dominating Player " + std::to_string(hit + 1));
+        displayMessage(hit, "Player " + std::to_string(attacker + 1) + " is now dominating you");
+        break;
+    case KILL_MESSAGE_FIRST_BLOOD:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
+        displayMessage(attacker, "You got first blood against Player " + std::to_string(hit + 1));
+        break;
+    case KILL_MESSAGE_REVENGE:
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
+        displayMessage(attacker, "You got revenge from Player " + std::to_string(hit + 1));
+        displayMessage(hit, "Player " + std::to_string(attacker + 1) + " got revenge from you");
+        break;
+    case KILL_MESSAGE_KILLSTREAK:
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
+        displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eStat::KILLSTREAK_CURRENT)));
+        break;
+    }
+}
+
+/*
+Display a message for a given hovercraft's UI for a short duration.
+
+@param hovercraft   to display message for. This message is only displayed if
+                    this hovercraft's UI is displayed.
+@param text         to display
+*/
 void UserInterface::displayMessage(eHovercraft hovercraft, std::string text)
 {
     m_sMessages[hovercraft] = text;

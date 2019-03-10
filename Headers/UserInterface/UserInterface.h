@@ -21,6 +21,15 @@ Retrieves its values from GameStats
 class UserInterface
 {
 public:
+
+    enum eKillMessage
+    {
+        KILL_MESSAGE_FIRST_BLOOD = 0,
+        KILL_MESSAGE_DOMINATION,
+        KILL_MESSAGE_REVENGE,
+        KILL_MESSAGE_KILLSTREAK,
+    };
+
     static UserInterface* getInstance(int iWidth, int iHeight);
     static UserInterface* getInstance();
 
@@ -45,8 +54,7 @@ public:
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
-    void displayMessage(eHovercraft hovercraft, std::string text);
-
+    void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
 
 private:
     UserInterface(int iWidth, int iHeight);                                 // Default Constructor
@@ -60,6 +68,7 @@ private:
 
     void setScore(int joystickID, int score);
 
+    void displayMessage(eHovercraft hovercraft, std::string text);
     /*
     Other classes should not be able to directly tell the UI to render text or
     images. Instead, the UI gathers the necessary information from other
