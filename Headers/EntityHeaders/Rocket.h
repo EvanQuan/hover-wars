@@ -28,7 +28,7 @@ public:
                     const ObjectInfo* pObjectProperties,
                     const string& sShaderType,
                     float fScale);
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 

@@ -26,7 +26,7 @@ DirectionalLight::~DirectionalLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void DirectionalLight::update(float fTimeInMilliseconds)
+void DirectionalLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

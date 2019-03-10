@@ -24,7 +24,7 @@ SpotLight::~SpotLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void SpotLight::update(float fTimeInMilliseconds)
+void SpotLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

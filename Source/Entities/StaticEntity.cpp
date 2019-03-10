@@ -18,7 +18,7 @@ StaticEntity::~StaticEntity()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void StaticEntity::update(float fTimeInMilliseconds)
+void StaticEntity::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

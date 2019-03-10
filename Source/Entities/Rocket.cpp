@@ -28,7 +28,7 @@ void Rocket::initialize(const string& sFileName,
     InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);  
 }
 
-void Rocket::update(float fTimeInMilliseconds)
+void Rocket::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

@@ -31,7 +31,6 @@ public:
 
     void spawnFlame(const vec3* vNormal, const vec3* vPosition);
 
-    void loadAsPowerup(vec3* dimensions);
 private:
     float m_fHeight, m_fWidth;
 };

@@ -18,7 +18,7 @@ public:
     virtual ~SpotLight();
 
     // Implementation of inherited functionality
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Function to Initialize the Light.

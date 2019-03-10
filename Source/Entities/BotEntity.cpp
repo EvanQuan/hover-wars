@@ -38,14 +38,13 @@ void BotEntity::toEulerAngle(glm::quat q, double& roll, double& pitch, double& y
     yaw = atan2(siny_cosp, cosy_cosp);
 }
 
-void BotEntity::update(float fTimeInMilliseconds)
-{
+void BotEntity::update(float fTimeInSeconds) {
     //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(18,21),vec2(18,19));
     //std::cout << "path size: " << path.size() << std::endl;
     //unsigned int minX, minY, maxX, maxY;
     //SPATIAL_DATA_MAP->getMapIndices(this,&minX,&minY,&maxX,&maxY);
     //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
-    m_AIComponent->update(fTimeInMilliseconds);
+    m_AIComponent->update(fTimeInSeconds);
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
     double x, y, z;
@@ -66,7 +65,7 @@ void BotEntity::update(float fTimeInMilliseconds)
     if (a.actionsToTake[2] != 0 || a.actionsToTake[3] != 0) {
         m_pPhysicsComponent->moveGlobal(a.actionsToTake[3],a.actionsToTake[2]);
     }
-    HovercraftEntity::update(fTimeInMilliseconds);
+    HovercraftEntity::update(fTimeInSeconds);
   
 }
 void BotEntity::initialize(const string& sFileName,

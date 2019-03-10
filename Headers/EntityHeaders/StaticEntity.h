@@ -18,7 +18,7 @@ public:
     virtual ~StaticEntity();
 
     // Implementation of inherited functionality
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType);

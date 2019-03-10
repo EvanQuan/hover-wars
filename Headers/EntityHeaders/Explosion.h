@@ -19,7 +19,7 @@ public:
 
     // Implementation of inherited functionality
     void initialize() { /*Not Implemented yet*/ }
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 

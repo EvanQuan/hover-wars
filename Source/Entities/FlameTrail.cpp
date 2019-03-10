@@ -42,7 +42,7 @@ void FlameTrail::initialize()
 
 }
 
-void FlameTrail::update(float fTimeInMilliseconds)
+void FlameTrail::update(float fTimeInSeconds)
 {
     // Update the Physics for the flame trail based on current Flame Trail
 }

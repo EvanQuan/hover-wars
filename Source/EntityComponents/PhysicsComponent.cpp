@@ -178,7 +178,7 @@ PhysicsComponent::~PhysicsComponent()
 //    Maybe this needs to update aspects of the particular physics related to its entity?
 //    Maybe this just needs to communicate to the Physics Manager to grab and store updated 
 //    information that will be gathered by the Entity when they need it?
-void PhysicsComponent::update(float fTimeDeltaInSeconds)
+void PhysicsComponent::update(float fTimeInSeconds)
 {
     //PxVec3 vel = body->getLinearVelocity();
     //std::cout << vel.magnitude() << std::endl;
@@ -187,7 +187,7 @@ void PhysicsComponent::update(float fTimeDeltaInSeconds)
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
     // gVehicleNoDrive->
-    m_fSecondsSinceLastDash += fTimeDeltaInSeconds;
+    m_fSecondsSinceLastDash += fTimeInSeconds;
 
     if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
     {
@@ -195,7 +195,7 @@ void PhysicsComponent::update(float fTimeDeltaInSeconds)
     }
 
 
-    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInSeconds);
+    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     // if (isInAir) {
         // cout << isInAir << endl;
     // }

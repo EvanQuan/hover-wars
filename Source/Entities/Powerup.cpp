@@ -22,7 +22,7 @@ Powerup::~Powerup()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void Powerup::update(float fTimeInMilliseconds)
+void Powerup::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

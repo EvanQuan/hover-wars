@@ -35,7 +35,7 @@ void InteractableEntity::initialize(const string& sFileName,
     //m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 }
 
-void InteractableEntity::update(float fTimeInMilliseconds)
+void InteractableEntity::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }
@@ -54,7 +54,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 void InteractableEntity::handleCollision(Entity* pOther)
 {
     if (ENTITY_HOVERCRAFT == pOther->getType())
-        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, m_iOwnerID);
+        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, static_cast<eHovercraft>(m_iOwnerID));
 }
 
 

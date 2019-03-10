@@ -28,7 +28,6 @@
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
-    <ClInclude Include="Headers\EntityComponentHeaders\RocketPhysicsComponent.h" />
     <ClInclude Include="Headers\EntityHeaders\BotEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\Camera.h" />
     <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h" />
@@ -105,7 +104,6 @@
     <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
-    <ClCompile Include="Source\EntityComponents\RocketPhysicsComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\GameStats.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />

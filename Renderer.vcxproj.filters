@@ -225,9 +225,6 @@
     <ClInclude Include="Headers\Physics\PhysicsCallBack.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\RocketPhysicsComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
@@ -397,9 +394,6 @@
     </ClCompile>
     <ClCompile Include="Source\Physics\PhysicsCallBack.cpp">
       <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\RocketPhysicsComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\AIComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>

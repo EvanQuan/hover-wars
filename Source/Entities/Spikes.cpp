@@ -22,7 +22,7 @@ Spikes::~Spikes()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void Spikes::update(float fTimeInMilliseconds)
+void Spikes::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

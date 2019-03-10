@@ -24,7 +24,7 @@ PointLight::~PointLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void PointLight::update(float fTimeInMilliseconds)
+void PointLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

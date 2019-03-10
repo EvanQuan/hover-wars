@@ -18,7 +18,7 @@ Explosion::~Explosion()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void Explosion::update(float fTimeInMilliseconds)
+void Explosion::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }
