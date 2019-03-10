@@ -161,7 +161,7 @@ private:
     // Score
     void updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit);
     int getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit);
-    int getScoreLostForHit(eHovercraft attacker, eHovercraft hit);
+    int getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const;
     void addScore(eHovercraft attacker, int points);
     void removeScore(eHovercraft hit, int points);
 
