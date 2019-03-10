@@ -1,0 +1,82 @@
+newmtl RRUpWings
+Ns 1
+Ka 0 0 0
+Kd 0.784314 0.141176 0
+Ks 0 0 0
+d 1
+newmtl RRTopWing
+Ns 1
+Ka 0 0 0
+Kd 0.784314 0.141176 0
+Ks 0 0 0
+d 1
+newmtl RRBodyPaint1
+Ns 100
+Ka 0 0 0
+Kd 0.784314 0.141176 0
+Ks 0 0 0
+d 1
+newmtl RRBodyPaint2
+Ns 1
+Ka 0 0 0
+Kd 0.784314 0.141176 0
+Ks 0 0 0
+d 1
+newmtl RRInterior1
+Ns 100
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd RRInterior1.jpg
+d 1
+newmtl RRCanopyGlass
+Ns 100
+Ka 0 0 0
+Kd 0 0.5019 0.752941
+Ks 0 0 0
+d 0.339806
+newmtl RRSilver
+Ns 100
+Ka 0 0 0
+Kd 0.752941 0.752941 0.752941
+Ks 0 0 0
+d 1
+newmtl RRSideWings
+Ns 1
+Ka 0 0 0
+Kd 0.784314 0.141176 0
+Ks 0 0 0
+d 1
+newmtl RRBodyPaint3
+Ns 1
+Ka 0 0 0
+Kd 0.752941 0.752941 0.752941
+Ks 0 0 0
+d 1
+newmtl RRWobbler
+Ns 1
+Ka 0 0 0
+Kd 0 0.501915 0.752941
+Ks 0 0 0
+d 1
+newmtl RRNumberPlate
+Ns 100
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd RRNumberPlate.jpg
+d 1
+newmtl RRLights
+Ns 100
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd RRLights.jpg
+d 1
+newmtl RRInterior2
+Ns 100
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+map_Kd RRInterior2.jpg
+d 1
