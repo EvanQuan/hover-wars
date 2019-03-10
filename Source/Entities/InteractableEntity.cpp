@@ -5,7 +5,7 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityTypes eIEType)
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityType eIEType)
     : Entity( iID, vPosition, eIEType )
 {
     m_iOwnerID = iOwnerID;  // Set the Owner ID for the Interactable Entity

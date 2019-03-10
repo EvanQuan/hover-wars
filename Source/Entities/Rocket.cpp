@@ -5,7 +5,7 @@
 
 // Default Constructor
 Rocket::Rocket(int iID, int iOwnerID)
-    : InteractableEntity( iID, iOwnerID, vec3(0.0), ROCKET_ENTITY )
+    : InteractableEntity( iID, iOwnerID, vec3(0.0), ENTITY_ROCKET )
 {
     m_pEmitterEngine = EMITTER_ENGINE;
 }

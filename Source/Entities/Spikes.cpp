@@ -6,7 +6,7 @@ using namespace SpriteSheetDatabase;
 
 // Default Constructor
 Spikes::Spikes(int iID, int iOwnerID, const vec3* vPosition)
-    : InteractableEntity( iID, iOwnerID, *vPosition, SPIKES_ENTITY )
+    : InteractableEntity( iID, iOwnerID, *vPosition, ENTITY_SPIKES )
 {
     // aLl interactable entities need collision detection
     // m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
