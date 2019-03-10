@@ -55,7 +55,7 @@ void InteractableEntity::handleCollision(Entity* pOther)
 {
     // Tell the Hovercraft Entity that they were hit by the owner of this Interactable Entity
     if (HOVERCRAFT_ENTITY == pOther->getType())
-        static_cast<HovercraftEntity*>(pOther)->hit(m_eType, m_iOwnerID);
+        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, m_iOwnerID);
 }
 
 

@@ -1,7 +1,8 @@
 #include "SpatialDataMap.h"
 #include "ShaderManager.h"
 #include "EntityHeaders/FlameTrail.h"
-
+#include <queue>
+#include <stack>
 /*************\
  * Constants *
 \*************/
@@ -263,7 +264,193 @@ void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pN
     if (bChange)
         computeNewDynamicPosition(pEntity, pNewPos);
 }
+float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2) {
+    return abs(pos1->x - pos2->x) + abs(pos1->y - pos2->y);
+}
+bool SpatialDataMap::isValid(int x,int y) {
+    return /*m_pSpatialMap.size() < x && x >= 0 && m_pSpatialMap[x].size() < y && y >= 0 &&*/m_pSpatialMap[x][y].pLocalEntities.size() == 0;
+}
+bool SpatialDataMap::isDestination(int x, int y,vec2 dest) {
+    return x == dest.x && y == dest.y;
+}
+double SpatialDataMap::calculateH(int x, int y, sSpatialCell dest) {
+    double H = (sqrt((x - dest.x)*(x - dest.x)
+        + (y - dest.y)*(y - dest.y)));
+    return H;
+}
+vector<vec2> emptyVectorArray; // bad practice but saves us having to reinstacate every frame
+vector<vec2> SpatialDataMap::makePath(sSpatialCell dest) {
+    try {
+        cout << "Found a path" << endl;
+        int x = dest.x;
+        int y = dest.y;
+        stack<vec2> path;
+        vector<vec2> usablePath;
 
+        while (!(m_pSpatialMap[x][y].parentX == x && m_pSpatialMap[x][y].parentY == y)
+            && m_pSpatialMap[x][y].x != -1 && m_pSpatialMap[x][y].y != -1)
+        {
+            path.push(vec2(m_pSpatialMap[x][y].x, m_pSpatialMap[x][y].y));
+            int tempX = m_pSpatialMap[x][y].parentX;
+            int tempY = m_pSpatialMap[x][y].parentY;
+            x = tempX;
+            y = tempY;
+
+        }
+        path.push(vec2(m_pSpatialMap[x][y].x, m_pSpatialMap[x][y].y));
+
+        while (!path.empty()) {
+            vec2 top = path.top();
+            path.pop();
+            usablePath.emplace_back(top);
+        }
+        return usablePath;
+    }
+    catch (const exception& e) {
+        cout << e.what() << endl;
+    }
+    return emptyVectorArray;
+}
+// A Function to find the shortest path between 
+// a given source cell to a destination cell according 
+// to A* Search Algorithm 
+vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
+    if (isValid((int) dest.x, (int)dest.y) == false) {
+        std::cout << "Destination is an obstacle" << std::endl;
+        return emptyVectorArray;
+        //Destination is invalid
+    }
+    if (isDestination((int) player.x, (int) player.y, dest)) {
+        std::cout << "You are the destination" << std::endl;
+        return emptyVectorArray;
+        //You clicked on yourself
+    }
+    vector<vector<bool>> closedList;
+    for (unsigned int i = 0; i < m_pSpatialMap.size(); i++) {
+        vector<bool> type;
+        for (unsigned int j = 0; j < m_pSpatialMap[0].size(); j++) {
+            type.push_back(false);
+        }
+        closedList.push_back(type);
+    }
+    //Initialize whole map
+    //Node allMap[50][25];
+    for (unsigned int x = 0; x < m_pSpatialMap.size(); x++) {
+        vector<bool> type;
+        for (unsigned int y = 0; y < m_pSpatialMap[0].size(); y++) {
+            m_pSpatialMap[x][y].fCost = FLT_MAX;
+            m_pSpatialMap[x][y].gCost = FLT_MAX;
+            m_pSpatialMap[x][y].hCost = FLT_MAX;
+            m_pSpatialMap[x][y].parentX = -1;
+            m_pSpatialMap[x][y].parentY = -1;
+            m_pSpatialMap[x][y].x = x;
+            m_pSpatialMap[x][y].y = y;
+            type.push_back(false);
+
+        }
+        closedList.push_back(type);
+    }
+
+    //Initialize our starting list
+    int x = (int)player.x;
+    int y = (int)player.y;
+    m_pSpatialMap[x][y].fCost = 0.0;
+    m_pSpatialMap[x][y].gCost = 0.0;
+    m_pSpatialMap[x][y].hCost = 0.0;
+    m_pSpatialMap[x][y].parentX = x;
+    m_pSpatialMap[x][y].parentY = y;
+
+    vector<sSpatialCell> openList;
+    openList.emplace_back(m_pSpatialMap[x][y]);
+    bool destinationFound = false;
+    while (!openList.empty()) {
+        sSpatialCell node;
+        do {
+            //This do-while loop could be replaced with extracting the first
+            //element from a set, but you'd have to make the openList a set.
+            //To be completely honest, I don't remember the reason why I do
+            //it with a vector, but for now it's still an option, although
+            //not as good as a set performance wise.
+            double temp = FLT_MAX;
+            vector<sSpatialCell>::iterator itNode;
+            for (vector<sSpatialCell>::iterator it = openList.begin();
+                it != openList.end(); it = next(it)) { 
+                sSpatialCell n = *it;
+                if (n.fCost < temp) {
+                    temp = n.fCost;
+                    itNode = it;
+                }
+            }
+            node = *itNode;
+            openList.erase(itNode);
+        } while (isValid(node.x, node.y) == false);
+
+        x = node.x;
+        y = node.y;
+        closedList[x][y] = true;
+
+        //For each neighbour starting from North-West to South-East
+        for (int newX = -1; newX <= 1; newX++) {
+            for (int newY = -1; newY <= 1; newY++) {
+                double gNew, hNew, fNew;
+                if (isValid(x + newX, y + newY)) {
+                    if (isDestination(x + newX, y + newY, dest))
+                    {
+                        //Destination found - make path
+                        m_pSpatialMap[x + newX][y + newY].parentX = x;
+                        m_pSpatialMap[x + newX][y + newY].parentY = y;
+                        destinationFound = true;
+                        return makePath(m_pSpatialMap[(int)dest.x][(int)dest.y]);
+                    }
+                    else if (closedList[x + newX][y + newY] == false)
+                    {
+                        gNew = node.gCost + 1.0;
+                        hNew = calculateH(x + newX, y + newY, m_pSpatialMap[(int)dest.x][(int)dest.y]);
+                        fNew = gNew + hNew;
+                        // Check if this path is better than the one already present
+                        if (m_pSpatialMap[x + newX][y + newY].fCost == FLT_MAX ||
+                            m_pSpatialMap[x + newX][y + newY].fCost > fNew)
+                        {
+                            // Update the details of this neighbour node
+                            m_pSpatialMap[x + newX][y + newY].fCost = fNew;
+                            m_pSpatialMap[x + newX][y + newY].gCost = gNew;
+                            m_pSpatialMap[x + newX][y + newY].hCost = hNew;
+                            m_pSpatialMap[x + newX][y + newY].parentX = x;
+                            m_pSpatialMap[x + newX][y + newY].parentY = y;
+                            openList.emplace_back(m_pSpatialMap[x + newX][y + newY]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    std::cout << "Destination not found" << std::endl;
+    return emptyVectorArray;
+}
+bool SpatialDataMap::getNearestCar(int currID,vector<int> IDs, vec2 &minPos) {
+    vec2 mPos(0, 0);
+    for (int id : IDs) {
+        if (currID == id) {
+            pair<unsigned int, unsigned int> loc = m_pEntityMap[currID][0];
+            mPos.x = (float)loc.first;
+            mPos.y = (float)loc.second;
+        }
+    }
+    float minValue = 100000;
+    for (int id : IDs) {
+        if (currID != id) {
+            pair<unsigned int, unsigned int> loc = m_pEntityMap[currID][0];
+            vec2 currPos(0, 0);
+            currPos.x = (float) loc.first;
+            currPos.y = (float) loc.second;
+            if (float currValue = evaluateDistance(&mPos,&currPos) < minValue) {
+                minPos = currPos;
+                minValue = currValue;
+            }
+        }
+    }
+    return minValue == 100000;
+}
 void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3* pNewPos)
 {
     // Local Variables

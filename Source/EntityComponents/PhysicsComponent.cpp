@@ -11,6 +11,7 @@ does not infinitely accelerate as they move.
 Speed : meters/second
 */
 #define MAX_NORMAL_SPEED 30
+#define MAX_POWERUP_SPEED 50
 
 /*
 The maximum speed the player can travel while dashing. This returns back to MAX_SPEED
@@ -44,7 +45,12 @@ The greater the force, the faster it will accelerate.
 20000.0f @ 2000kg, 50 grav
 Force : Newtons
 */
-#define MOVEMENT_FORCE 1000.0f // 
+#ifndef NDEBUG
+#define MOVEMENT_FORCE 100000.0f //
+#else
+#define MOVEMENT_FORCE 1000.0f //
+#endif // !1
+
 /*
 1000000.0f @ 300 kg
 3000000.0f @ 2000 kg 50 g
@@ -64,8 +70,8 @@ Force : Newtons
 //      Parameters: iEntityID - ID reference for Entity that initializes this Component.
 //                              Necessary for messaging or associating events with this entity 
 //                              as needed.
-//                  iComponentID - ID reference for this Component to identify it within the
-//                                 Entity Manager if needed.
+//               iComponentID - ID reference for this Component to identify it within the
+//                              Entity Manager if needed.
 
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     : EntityComponent(iEntityID, iComponentID)
@@ -131,14 +137,11 @@ PxTransform PhysicsComponent::getGlobalPose() {
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
         PxVec3 vForce = PxVec3(y, 0, x);
-        body->addForce(vForce * MOVEMENT_FORCE/7);
+        body->addForce(vForce * MOVEMENT_FORCE/7); // NOTE: Why are we dividing by 7?
 
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
-        gVehicleNoDrive->setSteerAngle(0, angle);
-        gVehicleNoDrive->setSteerAngle(1, angle);
-        gVehicleNoDrive->setSteerAngle(2, angle);
-        gVehicleNoDrive->setSteerAngle(3, angle);
+        setSteerAngle(angle);
     }
 }
 void PhysicsComponent::dash(float x, float y) {

@@ -7,6 +7,11 @@
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
 
+// x, y
+#define UI_COMPONENT_COORDINATES 2
+#define X 0
+#define Y 1
+
 // Forward Declaration
 class ShaderManager;
 class Texture;
@@ -21,6 +26,16 @@ Retrieves its values from GameStats
 class UserInterface
 {
 public:
+
+    enum eKillMessage
+    {
+        KILL_MESSAGE_FIRST_BLOOD = 0,
+        KILL_MESSAGE_DOMINATION,
+        KILL_MESSAGE_REVENGE,
+        KILL_MESSAGE_KILLSTREAK,
+        KILL_MESSAGE_KILL,
+    };
+
     static UserInterface* getInstance(int iWidth, int iHeight);
     static UserInterface* getInstance();
 
@@ -45,10 +60,24 @@ public:
 
     void updateWidthAndHeight(int iWidth, int iHeight);
 
-    void displayMessage(ePlayer player, std::string text);
-
+    void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
 
 private:
+
+    // Used for m_vComponentScaling and m_vComponentCoordinates
+    enum eUIComponent
+    {
+        COMPONENT_TIME = 0,
+        COMPONENT_TRAIL,
+        COMPONENT_SPIKES,
+        COMPONENT_ROCKET,
+        COMPONENT_DASH,
+        COMPONENT_SCORE,
+        COMPONENT_SCORE_CHANGE,
+        COMPONENT_MESSAGE,
+        COMPONENT_COUNT
+    };
+
     UserInterface(int iWidth, int iHeight);                                 // Default Constructor
     UserInterface(const UserInterface* pCopy);                              // Default Copy Constructor
     UserInterface& operator=(const UserInterface* pCopy) {return (*this); } // Assignment Operator.
@@ -60,12 +89,14 @@ private:
 
     void setScore(int joystickID, int score);
 
+    void displayMessage(eHovercraft hovercraft, std::string text);
     /*
     Other classes should not be able to directly tell the UI to render text or
     images. Instead, the UI gathers the necessary information from other
     classes, such as GameStats, where it decides what text and images needs to
     be updated during its update() call.
     */
+    void renderComponent(eUIComponent component, GLfloat scale, vec3 color);
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
@@ -82,9 +113,8 @@ private:
     // Score
     void initializeScores();
     void updateScores();
-    void updateScore(ePlayer player, int score);
+    void updateScore(eHovercraft hovercraft, int score);
     void renderScores();
-    void renderScoreChange();
 
     // Cooldowns
     void initializeCooldowns();
@@ -119,16 +149,45 @@ private:
 
     Unit : seconds
     */
-    std::string m_sMessages[MAX_PLAYER_COUNT];
-    float m_fMessageTimes[MAX_PLAYER_COUNT];
+    std::string m_sMessages[MAX_HOVERCRAFT_COUNT];
+    float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
 
-    float m_fScoreUpdateTimes[MAX_PLAYER_COUNT];
+    /*
+    Score updates appear temporarily just as messages are
+
+    Unit : seconds
+    */
+    float m_fScoreChangeTimes[MAX_HOVERCRAFT_COUNT];
 
     int m_iDisplayCount;
 
     // Window reference
     int m_iWidth;
     int m_iHeight;
+
+    // Determines how each UI component is scaled based on window dimensions
+    // These values are empirically determined and are open to adjustment
+    const float m_vComponentScaling[COMPONENT_COUNT][UI_COMPONENT_COORDINATES] =
+    {
+        // 0 Time
+        {0.47f, 0.9f},
+        // 1 Trail
+        {0.2f, 0.3f},
+        // 2 Spikes
+        {0.2f, 0.2f},
+        // 3 Rocket
+        {0.7f, 0.3f},
+        // 4 Dash
+        {0.7f, 0.2f},
+        // 5 Score
+        {0.2f, 0.9f},
+        // 6 Score Change
+        {0.47f, 0.58f},
+        // 7 Message
+        {0.36f, 0.65f}
+    };
+    // Store the values so they do not need to be calculated every frame.
+    float m_vComponentCoordinates[COMPONENT_COUNT][UI_COMPONENT_COORDINATES];
 
     // Singleton Pointers
     /*

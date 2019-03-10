@@ -59,7 +59,8 @@ using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE          128
-#define STARTING_ENV        "scene2.scene"  // file path
+#define RELEASE_ENV         "Scenes/release.scene" // file path
+#define DEBUG_ENV           "Scenes/debug.scene"   // file path
 #define LIGHT_MOVE_FACTOR   0.05f
 #define PI                  3.14159265f
 #define PI_2                6.28318530718f
@@ -69,7 +70,7 @@ using namespace physx;
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
 #define MAX_PLAYER_COUNT    4
 #define MAX_BOT_COUNT       4
-#define MAX_HOVERCRAFT_COUNT 8
+#define MAX_HOVERCRAFT_COUNT MAX_PLAYER_COUNT + MAX_BOT_COUNT
 #define XBOX_CONTROLLER     "Xbox"
 #define EMPTY_CONTROLLER    "Empty Controller"
 // m_pJoystickAxes

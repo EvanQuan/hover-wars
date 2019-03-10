@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "SoundManager.h"
 
 
 /***********\
@@ -31,48 +32,46 @@
 
 #define COOLDOWN_READY          "Ready"
 #define COOLDOWN_DECIMAL_PLACES 1
-#define SCORE_X                 100.0f
-#define SCORE_Y                 1000.0f
 #define SCORE_SCALE             1.0f
 #define SCORE_COLOR             COLOR_WHITE
 
 // Game time
 #define SECONDS_PER_MINUTE      60
 /*
+This determines the length of time of a single round.
+The timer will begin at this time and count down.
+
 Unit : seconds
 */
 #define ROUND_TIME              5 * SECONDS_PER_MINUTE
-#define TIME_X                  900.0f
-#define TIME_Y                  1000.0f
+
+/*
+All user interface components have a location relative to the window dimensions
+to ensure that the UI scales with window resizes.
+
+Coordinate system:
+
+(0, 1)                  (1, 1) 
+
+(x=0, y=0)              (1, 0)
+*/
 #define TIME_SCALE              1.0f
 #define TIME_COLOR              COLOR_WHITE
 
-#define TRAIL_X                 250.0f
-#define TRAIL_Y                 150.0f
 #define TRAIL_SCALE             1.0f
 
-#define ROCKET_X                1400.0f
-#define ROCKET_Y                150.0f
 #define ROCKET_SCALE            1.0f
 
-#define SPIKES_X                250.0f
-#define SPIKES_Y                100.0f
 #define SPIKES_SCALE            1.0f
 
-#define DASH_X                  1400.0f
-#define DASH_Y                  100.0f
 #define DASH_SCALE              1.0f
 
-#define SCORE_CHANGE_DURATION   2.0f
-#define SCORE_CHANGE_X          SCORE_X + 110.0f
-#define SCORE_CHANGE_Y          SCORE_Y - 50.0f
+#define SCORE_CHANGE_DURATION   1.0f
 #define SCORE_CHANGE_SCALE      1.0f
 #define SCORE_CHANGE_ADD_COLOR  COLOR_GREEN
 #define SCORE_CHANGE_SUB_COLOR  COLOR_RED
 
 #define MESSAGE_DURATION        3.0f
-#define MESSAGE_X               900.0f
-#define MESSAGE_Y               800.0f
 #define MESSAGE_SCALE           1.0f
 #define MESSAGE_COLOR           COLOR_WHITE
 
@@ -103,9 +102,8 @@ UserInterface::UserInterface(int iWidth, int iHeight)
 
     updateWidthAndHeight(iWidth, iHeight);
 
-    // m_iDisplayCount = 0;
     setDisplayCount(1);
-    // initializeUserInterface();
+
     initFreeType();
     initializeVBOs();
 
@@ -272,7 +270,12 @@ void UserInterface::initializeVBOs()
 {
     // Generate Vertex Array
     glGenVertexArrays(1, &m_iVertexArray);
+    // dynamic draw, keep this ready, because we will draw this alot
     m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, nullptr, sizeof(vec4), GL_DYNAMIC_DRAW);    // Generate the Vertex Buffer and store some space on the GPU for Text Rendering.
+
+    // chunk size  4 - internally treats each section as a float, it goes through 4 floats in each cunk
+    // 
+    // offset is 0
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
 }
 
@@ -287,12 +290,64 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     // Update UI Projection Matrix Uniform for UI Shader
     mat4 m4UIProjection = ortho(0.0f, static_cast<GLfloat>(m_iWidth), 0.0f, static_cast<GLfloat>(m_iHeight), 0.0f, 1.0f);
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
+
+    // Update and store all component coordinates
+    for (int component = 0; component < COMPONENT_COUNT; component++)
+    {
+        m_vComponentCoordinates[component][X] = m_iWidth * m_vComponentScaling[component][X];
+        m_vComponentCoordinates[component][Y] = m_iHeight * m_vComponentScaling[component][Y];
+    }
 }
 
-void UserInterface::displayMessage(ePlayer player, std::string text)
+/*
+Display a message for a givne hovercraft's UI for a short duration.
+Depending on the message type, a sound may be played, and an alternate message
+may be played for other displayed UI's.
+
+@param attacker     of kill
+@param hit          of kill
+@param message      to display
+*/
+void UserInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message)
 {
-    m_sMessages[player] = text;
-    m_fMessageTimes[player] = MESSAGE_DURATION;
+    switch (message)
+    {
+    case KILL_MESSAGE_DOMINATION:
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
+        displayMessage(attacker, "You are now dominating Player " + std::to_string(hit + 1));
+        displayMessage(hit, "Player " + std::to_string(attacker + 1) + " is now dominating you");
+        break;
+    case KILL_MESSAGE_FIRST_BLOOD:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
+        displayMessage(attacker, "You got first blood against Player " + std::to_string(hit + 1));
+        break;
+    case KILL_MESSAGE_REVENGE:
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
+        displayMessage(attacker, "You got revenge from Player " + std::to_string(hit + 1));
+        displayMessage(hit, "Player " + std::to_string(attacker + 1) + " got revenge from you");
+        break;
+    case KILL_MESSAGE_KILLSTREAK:
+        SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
+        displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eStat::KILLSTREAK_CURRENT)));
+        break;
+    case KILL_MESSAGE_KILL:
+        m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
+        m_fScoreChangeTimes[hit] = SCORE_CHANGE_DURATION;
+        break;
+    }
+}
+
+/*
+Display a message for a given hovercraft's UI for a short duration.
+
+@param hovercraft   to display message for. This message is only displayed if
+                    this hovercraft's UI is displayed.
+@param text         to display
+*/
+void UserInterface::displayMessage(eHovercraft hovercraft, std::string text)
+{
+    m_sMessages[hovercraft] = text;
+    m_fMessageTimes[hovercraft] = MESSAGE_DURATION;
 }
 /*
 This visually updates the UserInterface to all value changes since last update.
@@ -342,9 +397,10 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
     for (int player = 0; player < m_iDisplayCount; player++)
     {
         m_fMessageTimes[player] -= fSecondsSinceLastUpdate;
+        m_fScoreChangeTimes[player] -= fSecondsSinceLastUpdate;
     }
     // TODO make sure time does not become negative, or if it does, it signifies
-    // the end of the round
+    // the end of the round. Not sure if its worth the cost to check.
 
 }
 
@@ -357,7 +413,10 @@ For now, the game time is going up from 0. Later this should count down.
 */
 void UserInterface::renderGameTime()
 {
-    renderText(timeToString(), TIME_X, TIME_Y, TIME_SCALE, TIME_COLOR);
+    renderText(timeToString(),
+               m_vComponentCoordinates[COMPONENT_TIME][X],
+               m_vComponentCoordinates[COMPONENT_TIME][Y],
+               TIME_SCALE, TIME_COLOR);
 
 }
 
@@ -379,9 +438,23 @@ void UserInterface::renderMessages()
     {
         if (m_fMessageTimes[player] > 0)
         {
-            renderText(m_sMessages[player], MESSAGE_X, MESSAGE_Y, MESSAGE_SCALE, MESSAGE_COLOR);
+            renderText(m_sMessages[player],
+                m_vComponentCoordinates[COMPONENT_MESSAGE][X],
+                m_vComponentCoordinates[COMPONENT_MESSAGE][Y],
+                MESSAGE_SCALE, MESSAGE_COLOR);
         }
+        if (m_fScoreChangeTimes[player] > 0)
+        {
 
+            int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
+                                              GameStats::eStat::SCORE_CHANGE);
+            bool scoreIncreased = scoreChange >= 0;
+            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
+                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE][X],
+                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE][Y],
+                        SCORE_CHANGE_SCALE,
+                        scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+        }
     }
 }
 
@@ -392,11 +465,13 @@ void UserInterface::updateScores()
 {
     for (int player = 0; player < m_iDisplayCount; player++)
     {
-        updateScore((ePlayer) player, GAME_STATS->get((ePlayer) player, GameStats::SCORE_CURRENT));
+        updateScore(static_cast<eHovercraft>(player),
+                    GAME_STATS->get(static_cast<eHovercraft>(player),
+                    GameStats::SCORE_CURRENT));
     }
 }
 
-void UserInterface::updateScore(ePlayer player, int score)
+void UserInterface::updateScore(eHovercraft hovecraft, int score)
 {
     
     // cout << "Player " << (player + 1) << " score: " << score << endl;
@@ -405,16 +480,13 @@ void UserInterface::updateScore(ePlayer player, int score)
 void UserInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
-    std::string score = std::to_string(GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CURRENT));
-    renderText("Score: " + score, SCORE_X, SCORE_Y, SCORE_SCALE, SCORE_COLOR);
-    renderScoreChange();
-}
-
-void UserInterface::renderScoreChange()
-{
-    int scoreChange = GAME_STATS->get(PLAYER_1, GameStats::eStat::SCORE_CHANGE);
-    bool scoreIncreased = scoreChange >= 0;
-    renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) , SCORE_CHANGE_X, SCORE_CHANGE_Y, SCORE_CHANGE_SCALE, scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+    // Ad hoc for single player
+    std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1,
+                        GameStats::eStat::SCORE_CURRENT));
+    renderText("Score: " + score,
+               m_vComponentCoordinates[COMPONENT_SCORE][X],
+               m_vComponentCoordinates[COMPONENT_SCORE][Y],
+               SCORE_SCALE, SCORE_COLOR);
 }
 
 void UserInterface::updateCooldowns()
@@ -426,26 +498,59 @@ void UserInterface::renderCooldowns()
     // TODO put this in the proper place, font, scale etc.
     // This formatting is all temporary
     // 0 - 100
-    PlayerEntity* player = ENTITY_MANAGER->getPlayer(PLAYER_1);
+    // Ad hoc for single player
+    HovercraftEntity* player = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1);
     float* cooldowns = player->getCooldowns();
     float trailPercent = player->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));
-    vec3 color = trailPercent == 1.0 ? COLOR_READY : trailPercent == 0.0 ? COLOR_NOT_READY : COLOR_MID_READY;
-    renderText("Flame: " + trailPercentString + "%", TRAIL_X, TRAIL_Y, TRAIL_SCALE, color);
-
-    renderCooldown("Rocket", eCooldown::COOLDOWN_ROCKET, cooldowns, ROCKET_X, ROCKET_Y, ROCKET_SCALE);
-    renderCooldown("Spikes" + std::string(player->hasSpikesActivated() ? " enabled" : ""), eCooldown::COOLDOWN_SPIKES, cooldowns, SPIKES_X, SPIKES_Y, SPIKES_SCALE);
-    renderCooldown("Dash", eCooldown::COOLDOWN_DASH, cooldowns, DASH_X, DASH_Y, DASH_SCALE);
+    vec3 trailColor = trailPercent == 1.0 ?
+        COLOR_READY : trailPercent == 0.0 ?
+        COLOR_NOT_READY : COLOR_MID_READY;
+    renderText("Flame: " + trailPercentString + "%",
+               m_vComponentCoordinates[COMPONENT_TRAIL][X],
+               m_vComponentCoordinates[COMPONENT_TRAIL][Y],
+               TRAIL_SCALE,
+               trailColor);
+    renderCooldown("Rocket",
+                   eCooldown::COOLDOWN_ROCKET,
+                   cooldowns,
+                   m_vComponentCoordinates[COMPONENT_ROCKET][X],
+                   m_vComponentCoordinates[COMPONENT_ROCKET][Y],
+                   ROCKET_SCALE);
+    renderCooldown("Spikes" + std::string(player->hasSpikesActivated() ? " enabled" : ""),
+                   eCooldown::COOLDOWN_SPIKES,
+                   cooldowns,
+                   m_vComponentCoordinates[COMPONENT_SPIKES][X],
+                   m_vComponentCoordinates[COMPONENT_SPIKES][Y],
+                   SPIKES_SCALE);
+    renderCooldown("Dash",
+                   eCooldown::COOLDOWN_DASH,
+                   cooldowns,
+                   m_vComponentCoordinates[COMPONENT_DASH][X],
+                   m_vComponentCoordinates[COMPONENT_DASH][Y],
+                   DASH_SCALE);
 
     //  renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
-void UserInterface::renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale)
+void UserInterface::renderCooldown(std::string label,
+                                   eCooldown cooldown,
+                                   float* cooldowns,
+                                   GLfloat x, GLfloat y, GLfloat scale)
 {
     bool isReady = cooldowns[cooldown] == 0;
     std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::to_string(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
     renderText(label + ": " + cooldownString, x, y, scale, color);
+}
+
+
+/*
+
+*/
+void UserInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 color)
+{
+    /* TODO */
 }
 /*
 Render text to the screen.
@@ -475,12 +580,17 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
+    // m_pShdrMngr->setUniformBool()// shader, name, value
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
+    // TODO
+    // Need a different shader for images
+    // Change the texture class to store height and width, loaded dynamically
+    // Create a quad similar to text
     // Iterate through all Characters
     string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
@@ -489,6 +599,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         Character ch = m_pCharacters[*c];
 
         // Calculate Position offset by the bearings of the glyph
+        // x and y in screen space
         GLfloat xpos = x + ch.bearing.x * scale;
         GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
@@ -504,6 +615,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
+        // TODO, use triangle strip instead to reduce vertices to 4
         // Update VBO for each character
         // Triangle 1:
         /*
@@ -546,9 +658,11 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+/*
+Use hashmap for image intead of image filepath directly
+*/
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-
 
 }
 

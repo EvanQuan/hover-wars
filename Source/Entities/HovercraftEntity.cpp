@@ -133,6 +133,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
+    initializePowerups();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -149,14 +150,6 @@ HovercraftEntity::~HovercraftEntity()
 */
 void HovercraftEntity::update(float fTimeInSeconds)
 {
-    if (!isInControl)
-    {
-        outOfControlTime -= fTimeInSeconds;
-        if (outOfControlTime <= 0)
-        {
-            isInControl = true;
-        }
-    }
     lowEnoughToMove = m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
 
     // New Transformation Matrix
@@ -177,9 +170,42 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
+    updateInControl(fTimeInSeconds);
     updateCameraLookAts(fTimeInSeconds);
     updateCooldowns(fTimeInSeconds);
     updateVulnerability(fTimeInSeconds);
+    updatePowerups(fTimeInSeconds);
+}
+
+/*
+    Tells the HovercraftEntity that they were damaged. This is where the
+    Hovercraft Entity will handle its "death" logic and award points to the
+    attacker.
+
+    @param  eHitByType      The Entity Type that this Entity was hit by. This
+                            entity will either be a bot or a player
+    @param  iNumber         
+*/
+void HovercraftEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
+{
+    // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
+    // Switch based on who hit the player
+    switch (eHitByType)
+    {
+    case HOVERCRAFT_ENTITY:
+    // Hitting Entity was a bot, meaning that the bot #iNumber should get
+    // points for hitting this player #m_ePlayerID
+        // TODO make sure that iNumber actually corresponds to values
+        // useable by GameStats
+        if (!isInvincible())
+        {
+            // TODO NOTE what 
+            m_pGmStats->addScore(static_cast<eHovercraft>(iNumber),
+                static_cast<GameStats::eAddScoreReason>(m_eHovercraftID));
+        }
+        setInvincible();
+        break;
+    }
 }
 
 void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
@@ -188,6 +214,36 @@ void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
     if (m_fSecondsLeftUntilVulnerable <= 0)
     {
         m_bInvincible = false;
+    }
+}
+
+void HovercraftEntity::updatePowerups(float fTimeInSeconds)
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
+        if (m_vPowerupsEnabled[powerup] <= 0)
+        {
+            disablePowerup(static_cast<ePowerup>(powerup));
+        }
+    }
+}
+
+void HovercraftEntity::enablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        break;
+    }
+}
+
+void HovercraftEntity::disablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        break;
     }
 }
 
@@ -201,7 +257,8 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
 void HovercraftEntity::initialize(const string& sFileName,
                                   const ObjectInfo* pObjectProperties,
                                   const string& sShaderType,
-                                  float fScale)
+                                  float fScale,
+                                  eHovercraft eHovercraftID)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
@@ -237,11 +294,14 @@ void HovercraftEntity::initialize(const string& sFileName,
     
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    m_eHovercraftID = eHovercraftID;
 }
 
 /*
-    Handle Collision Logic in this function. This function is called when someone collides with this Entity.
-    This Entity can tell the other Entity what happens when they collided with this Entity.
+    Handle Collision Logic in this function. This function is called when
+    someone collides with this Entity. This Entity can tell the other Entity
+    what happens when they collided with this Entity.
 
     @param pOther   const pointer to the Entity that this entity collided with.
     @param bVictim  boolean to tell if this entity is the victim or not.
@@ -255,23 +315,28 @@ void HovercraftEntity::handleCollision(Entity* pOther)
     switch (eOtherType)
     {
     case HOVERCRAFT_ENTITY:
-        // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
-        // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
+        // Cast the other Entity to a Hovercraft Entity (We know this is
+        // possible because of the two cases)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->hit(m_eType, m_iStatsID);
+           pOtherHovercraft->getHitBy(m_eType, m_eHovercraftID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->hit(pOther->getType(), pOtherHovercraft->getStatsID());
+            this->getHitBy(pOther->getType(), pOtherHovercraft->getHovercraftID());
         }
 
         // Momentarily lose control of vehicle to prevent air moving
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
+    case POWERUP_ENTITY:
+        // Random for now
+        setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
     case PLANE_ENTITY:
+        // TODO still not sure if we're doing the gain control or the elevation check
+        // to make collisions less wonky
         setGainControl();
         break;
         /*Further Cases:
@@ -296,6 +361,14 @@ void HovercraftEntity::initializeCooldowns()
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
+}
+
+void HovercraftEntity::initializePowerups()
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] = 0;
+    }
 }
 
 /*
@@ -335,6 +408,18 @@ void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
         // Update all the camera look at and rotation values based on the averaging calculations.
         m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
         m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+    }
+}
+
+void HovercraftEntity::updateInControl(float fTimeInSeconds)
+{
+    if (!isInControl)
+    {
+        outOfControlTime -= fTimeInSeconds;
+        if (outOfControlTime <= 0)
+        {
+            isInControl = true;
+        }
     }
 }
 
@@ -495,7 +580,6 @@ void HovercraftEntity::move(float x, float y)
     // if (isInControl)
     {
         m_pPhysicsComponent->move(x, y);
-        // cout << m_pPhysicsComponent->getPosition().y << endl;
     }
 }
 
@@ -506,6 +590,12 @@ void HovercraftEntity::turn(float x)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
+}
+
+void HovercraftEntity::setPowerup(ePowerup powerup)
+{
+    m_vPowerupsEnabled[powerup] = POWERUP_TIME;
+    enablePowerup(powerup);
 }
 
 /*
