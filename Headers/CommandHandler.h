@@ -33,7 +33,7 @@ public:
     void executeInputCommands();
 
     // For input debugging
-    std::map<eFixedCommand, const char*> eFixedCommandToString =
+    unordered_map<eFixedCommand, const char*> eFixedCommandToString =
     {
         {COMMAND_ABILITY_ROCKET,         "Rocket"},
         {COMMAND_ABILITY_SPIKES,         "Spikes"},
@@ -54,7 +54,7 @@ public:
 #endif
     };
 
-    std::map<eVariableCommand, const char*> eVariableCommandToString =
+    unordered_map<eVariableCommand, const char*> eVariableCommandToString =
     {
         {COMMAND_MOVE,             "Move"},
         {COMMAND_TURN,             "Turn"},
@@ -133,7 +133,7 @@ private:
 
     // These commands are issued if the player has just pressed, or is continuing
     // to press these keys
-    map<int, eFixedCommand> m_pressedKeyToFixedCommand =
+    unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
         {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
@@ -147,7 +147,7 @@ private:
     };
 
     // These commands are issued only if the player has just pressed these keys
-    map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
+    unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
@@ -178,13 +178,13 @@ private:
 #endif
     };
 
-    map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
+    unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand =
     {
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_DEACTIVATE},
         {GLFW_KEY_COMMA,        COMMAND_CAMERA_FRONT},
     };
 
-    map<int, eFixedCommand> m_repeatButtonToFixedCommand =
+    unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand =
     {
         {BUTTON_BACK,           COMMAND_MENU_BACK},
         {BUTTON_LEFT_STICK,     COMMAND_INVALID_FIXED},
@@ -202,7 +202,7 @@ private:
 #endif
     };
 
-    map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
+    unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand =
     {
         {BUTTON_LEFT_BUMPER,    COMMAND_ABILITY_SPIKES},
         {BUTTON_A,              COMMAND_DASH_BACK},
@@ -220,14 +220,14 @@ private:
         {TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
     };
 
-    map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
+    unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand =
     {
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
         {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_DEACTIVATE},
     };
 
 
-    map<eFixedCommand, eAbility> m_fixedCommandToAbility =
+    unordered_map<eFixedCommand, eAbility> m_fixedCommandToAbility =
     {
         {COMMAND_ABILITY_ROCKET,            ABILITY_ROCKET},
         {COMMAND_ABILITY_SPIKES,            ABILITY_SPIKES},
