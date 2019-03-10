@@ -188,7 +188,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
                             entity will either be a bot or a player
     @param  iNumber         
 */
-void HovercraftEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
+void HovercraftEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
 {
     // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
     // Switch based on who hit the player
@@ -279,11 +279,11 @@ void HovercraftEntity::handleCollision(Entity* pOther)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->hit(m_eType, m_eHovercraftID);
+           pOtherHovercraft->getHitBy(m_eType, m_eHovercraftID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->hit(pOther->getType(), pOtherHovercraft->getHovercraftID());
+            this->getHitBy(pOther->getType(), pOtherHovercraft->getHovercraftID());
         }
 
         // Momentarily lose control of vehicle to prevent air moving

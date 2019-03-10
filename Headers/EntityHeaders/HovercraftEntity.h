@@ -93,7 +93,7 @@ public:
     void update(float fTimeInMilliseconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    void hit(eEntityTypes eHitByType, unsigned int iNumber);
+    void getHitBy(eEntityTypes eHitByType, unsigned int iNumber);
     // virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
     // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);

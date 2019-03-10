@@ -95,7 +95,7 @@ void BotEntity::initialize(const string& sFileName,
 
     @TODO   This seems very general and may be able to be reworked with a better design.
 */
-void BotEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
+void BotEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
 {
     // cout << "Bot " << iNumber << " hit by " << eHitByType << endl;
     // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
