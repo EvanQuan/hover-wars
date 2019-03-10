@@ -21,10 +21,9 @@ public:
     // Overridden virtual functions inherited from parent
     void getHitBy(eEntityType eHitByType, unsigned int iNumber);
     // void hit(eEntityType eHitByType, unsigned int iNumber) const;
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
 private:
     int lastStep = -1;
-    void toEulerAngle(glm::quat q, double& roll, double& pitch, double& yaw);
     AIComponent *m_AIComponent;
     glm::vec3 playerPos;
     glm::vec3 playerVel;

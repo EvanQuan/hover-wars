@@ -15,7 +15,7 @@ class UserInterface;
 // Purpose: Manages Game States and handles initialization of a level and handling of
 //      Main menu interfacing
 // Written by: James Coté
-class GameManager
+class GameManager final
 {
 public:
     static GameManager* getInstance(GLFWwindow *rWindow);

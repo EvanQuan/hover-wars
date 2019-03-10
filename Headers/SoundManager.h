@@ -15,7 +15,7 @@ events.
 @author Evan Quan
 @author Jianan Ding
 */
-class SoundManager
+class SoundManager final
 {
 public:
     ~SoundManager();

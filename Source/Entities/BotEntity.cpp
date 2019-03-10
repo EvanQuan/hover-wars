@@ -17,39 +17,22 @@ BotEntity::~BotEntity()
 {
 
 }
-#define M_PI 3.1415926535
-void BotEntity::toEulerAngle(glm::quat q, double& roll, double& pitch, double& yaw)
-{
-    // roll (x-axis rotation)
-    double sinr_cosp = +2.0 * (q.w * q.x + q.y * q.z);
-    double cosr_cosp = +1.0 - 2.0 * (q.x * q.x + q.y * q.y);
-    roll = atan2(sinr_cosp, cosr_cosp);
 
-    // pitch (y-axis rotation)
-    double sinp = +2.0 * (q.w * q.y - q.z * q.x);
-    if (fabs(sinp) >= 1)
-        pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-    else
-        pitch = asin(sinp);
-
-    // yaw (z-axis rotation)
-    double siny_cosp = +2.0 * (q.w * q.z + q.x * q.y);
-    double cosy_cosp = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);
-    yaw = atan2(siny_cosp, cosy_cosp);
-}
-
-void BotEntity::update(float fTimeInMilliseconds)
+void BotEntity::update(float fTimeInSeconds)
 {
     //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(18,21),vec2(18,19));
     //std::cout << "path size: " << path.size() << std::endl;
     //unsigned int minX, minY, maxX, maxY;
     //SPATIAL_DATA_MAP->getMapIndices(this,&minX,&minY,&maxX,&maxY);
     //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
-    m_AIComponent->update(fTimeInMilliseconds);
+    m_AIComponent->update(fTimeInSeconds);
     glm::vec3 botVel = m_pPhysicsComponent->getLinearVelocity();
     glm::vec3 botPos = m_pPhysicsComponent->getPosition();
-    double x, y, z;
-    toEulerAngle(m_pPhysicsComponent->getRotation(),x,y,z);
+    glm::quat rotation = m_pPhysicsComponent->getRotation();
+    double x = FuncUtils::getRoll(rotation);
+    double y = FuncUtils::getPitch(rotation);
+    double z = FuncUtils::getYaw(rotation);
+
     PxTransform globalTransform = m_pPhysicsComponent->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
     glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
@@ -66,7 +49,7 @@ void BotEntity::update(float fTimeInMilliseconds)
     if (a.actionsToTake[2] != 0 || a.actionsToTake[3] != 0) {
         m_pPhysicsComponent->moveGlobal(a.actionsToTake[3],a.actionsToTake[2]);
     }
-    HovercraftEntity::update(fTimeInMilliseconds);
+    HovercraftEntity::update(fTimeInSeconds);
   
 }
 void BotEntity::initialize(const string& sFileName,

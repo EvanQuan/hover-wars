@@ -10,7 +10,7 @@
 //          manipulation and properly initializes and destroys created Shaders.
 // Current Issues: Uniform variables hard-coded.
 // Written by: James Coté
-class ShaderManager
+class ShaderManager final
 {
 public:
     // Enum for Shaders

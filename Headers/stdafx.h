@@ -62,7 +62,7 @@ using namespace physx;
 #define RELEASE_ENV         "Scenes/release.scene" // file path
 #define DEBUG_ENV           "Scenes/debug.scene"   // file path
 #define LIGHT_MOVE_FACTOR   0.05f
-#define PI                  3.14159265f
+#define PI                  3.1415926535f
 #define PI_2                6.28318530718f
 #define DEGREES_TO_RADIANS  0.01745329251f
 
