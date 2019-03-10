@@ -82,6 +82,14 @@ Unit : seconds
 */
 #define INVINCIBLE_TIME 2.0f
 
+/*
+The duration a powerup lasts for.
+@TODO maybe move this to the powerup entity?
+
+Unit : seconds
+*/
+#define POWERUP_TIME 20.0f
+
 class HovercraftEntity :
     public Entity
 {
@@ -93,7 +101,7 @@ public:
     void update(float fTimeInMilliseconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    void hit(eEntityTypes eHitByType, unsigned int iNumber);
+    void getHitBy(eEntityTypes eHitByType, unsigned int iNumber);
     // virtual void hit(eEntityTypes eHitByType, unsigned int iNumber) const = 0;
     // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
@@ -111,10 +119,10 @@ public:
     void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
-    vec3 getCameraPosition() { return m_vCurrentCameraPosition; }
-    quat getCameraRotation() { return m_qCurrentCameraRotation; }
+    vec3 getCameraPosition() const { return m_vCurrentCameraPosition; }
+    quat getCameraRotation() const { return m_qCurrentCameraRotation; }
 
-    const CameraComponent* getActiveCameraComponent() { return m_pCmrComponents[activeCameraIndex]; }
+    const CameraComponent* getActiveCameraComponent() const { return m_pCmrComponents[activeCameraIndex]; }
 
     // The player has a front and back camera, which can be toggled as the
     // active camera
@@ -125,7 +133,7 @@ public:
     // Get ability statuses for UI
     // Get the status of the flame in percent.
     // @return 1.0f if full, 0.0f if empty, or intermediate value if in between
-    float getTrailGaugePercent() { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
+    float getTrailGaugePercent() const { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
 
     // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
@@ -147,6 +155,9 @@ public:
 
     void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
     PhysicsComponent* m_pPhysicsComponent;
+
+    void setPowerup(ePowerup powerup);
+    bool hasPowerup(ePowerup powerup) const { return m_vPowerupsEnabled[powerup] > 0; }
 private:
     // Private Variables
     int activeCameraIndex;
@@ -232,6 +243,7 @@ private:
     If true, car is able to receive and act upon movement input.
     Else, not movement input is processed.
     */
+    void updateInControl(float fTimeInSeconds);
     bool isInControl;
     float outOfControlTime;
     bool lowEnoughToMove;
@@ -241,6 +253,7 @@ private:
     float m_fSecondsLeftUntilVulnerable;
 
 // Protected Functions and variables for Child Classes
+// NOTE: Ideally there are no child classes
 protected:
     GameStats* m_pGmStats;
 
@@ -251,5 +264,12 @@ protected:
     // Bool Spikes Information
     bool m_bSpikesActivated;
     float m_fSecondsSinceSpikesActivated;
+
+    // Tracks enabled powerups for this hovercraft
+    void initializePowerups();
+    void updatePowerups(float fTimeInSeconds);
+    void enablePowerup(ePowerup powerup);
+    void disablePowerup(ePowerup powerup);
+    float m_vPowerupsEnabled[POWERUP_COUNT];
 };
 

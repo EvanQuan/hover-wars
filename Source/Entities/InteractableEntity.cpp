@@ -40,7 +40,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 void InteractableEntity::handleCollision(Entity* pOther)
 {
     if (HOVERCRAFT_ENTITY == pOther->getType())
-        static_cast<HovercraftEntity*>(pOther)->hit(m_eType, m_iOwnerID);
+        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, m_iOwnerID);
 }
 
 

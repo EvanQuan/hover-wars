@@ -130,6 +130,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
+    initializePowerups();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -146,14 +147,6 @@ HovercraftEntity::~HovercraftEntity()
 */
 void HovercraftEntity::update(float fTimeInSeconds)
 {
-    if (!isInControl)
-    {
-        outOfControlTime -= fTimeInSeconds;
-        if (outOfControlTime <= 0)
-        {
-            isInControl = true;
-        }
-    }
     lowEnoughToMove = m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
 
     // New Transformation Matrix
@@ -174,9 +167,11 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
+    updateInControl(fTimeInSeconds);
     updateCameraLookAts(fTimeInSeconds);
     updateCooldowns(fTimeInSeconds);
     updateVulnerability(fTimeInSeconds);
+    updatePowerups(fTimeInSeconds);
 }
 
 /*
@@ -188,7 +183,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
                             entity will either be a bot or a player
     @param  iNumber         
 */
-void HovercraftEntity::hit(eEntityTypes eHitByType, unsigned int iNumber)
+void HovercraftEntity::getHitBy(eEntityTypes eHitByType, unsigned int iNumber)
 {
     // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
     // Switch based on who hit the player
@@ -216,6 +211,36 @@ void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
     if (m_fSecondsLeftUntilVulnerable <= 0)
     {
         m_bInvincible = false;
+    }
+}
+
+void HovercraftEntity::updatePowerups(float fTimeInSeconds)
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
+        if (m_vPowerupsEnabled[powerup] <= 0)
+        {
+            disablePowerup(static_cast<ePowerup>(powerup));
+        }
+    }
+}
+
+void HovercraftEntity::enablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        break;
+    }
+}
+
+void HovercraftEntity::disablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        break;
     }
 }
 
@@ -279,18 +304,23 @@ void HovercraftEntity::handleCollision(Entity* pOther)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->hit(m_eType, m_eHovercraftID);
+           pOtherHovercraft->getHitBy(m_eType, m_eHovercraftID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->hit(pOther->getType(), pOtherHovercraft->getHovercraftID());
+            this->getHitBy(pOther->getType(), pOtherHovercraft->getHovercraftID());
         }
 
         // Momentarily lose control of vehicle to prevent air moving
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
+    case POWERUP_ENTITY:
+        // Random for now
+        setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
     case PLANE_ENTITY:
+        // TODO still not sure if we're doing the gain control or the elevation check
+        // to make collisions less wonky
         setGainControl();
         break;
         /*Further Cases:
@@ -315,6 +345,14 @@ void HovercraftEntity::initializeCooldowns()
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
+}
+
+void HovercraftEntity::initializePowerups()
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] = 0;
+    }
 }
 
 /*
@@ -354,6 +392,18 @@ void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
         // Update all the camera look at and rotation values based on the averaging calculations.
         m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
         m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
+    }
+}
+
+void HovercraftEntity::updateInControl(float fTimeInSeconds)
+{
+    if (!isInControl)
+    {
+        outOfControlTime -= fTimeInSeconds;
+        if (outOfControlTime <= 0)
+        {
+            isInControl = true;
+        }
     }
 }
 
@@ -514,7 +564,6 @@ void HovercraftEntity::move(float x, float y)
     // if (isInControl)
     {
         m_pPhysicsComponent->move(x, y);
-        // cout << m_pPhysicsComponent->getPosition().y << endl;
     }
 }
 
@@ -525,6 +574,12 @@ void HovercraftEntity::turn(float x)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
+}
+
+void HovercraftEntity::setPowerup(ePowerup powerup)
+{
+    m_vPowerupsEnabled[powerup] = POWERUP_TIME;
+    enablePowerup(powerup);
 }
 
 /*
@@ -562,7 +617,6 @@ Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
-    cout << "Activate trail" << endl;
     // Trail start sound does always begin, as we cannot guarantee there is
     // any fuel due to trail recharge cooldown. Need to check fuel first.
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
@@ -580,14 +634,12 @@ Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {
-    cout << "Deactivate trail" << endl;
     SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
     m_bTrailActivated = false;
 }
 
 void HovercraftEntity::dash(eAbility direction)
 {
-    cout << "Dash" << endl;
     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {

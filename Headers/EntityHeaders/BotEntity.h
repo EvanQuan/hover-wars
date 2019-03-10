@@ -19,7 +19,7 @@ public:
                     eHovercraft eHovercraftID);
 
     // Overridden virtual functions inherited from parent
-    void hit(eEntityTypes eHitByType, unsigned int iNumber);
+    void getHitBy(eEntityTypes eHitByType, unsigned int iNumber);
     // void hit(eEntityTypes eHitByType, unsigned int iNumber) const;
     void update(float fTimeInMilliseconds);
 private:
