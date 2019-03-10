@@ -27,13 +27,9 @@ public:
 
     void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
     void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y);
-    /*
-    Execute all commands for a given frame.
-    */
+    // Execute all commands for a given frame.
     void executeAllCommands();
-    /*
-    Execute all commands from user input (keyboard, mouse, controllers).
-    */
+    // Execute all commands from user input (keyboard, mouse, controllers).
     void executeInputCommands();
 
     // For input debugging
@@ -77,19 +73,7 @@ private:
     // Bots receive input from their AI components.
     std::vector<HovercraftEntity*> players;
 
-    /*
-    C++ has object slicing, so using a polymorphic approach here requires
-    static or dynamic casts. While possible, it will end up creating a switch
-    statement for players and bots, or a condition check within each case of a
-    single switch statement. As a result, we might as well just break it up
-    into each execute command.
-    */
     void executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command);
-
-
-    /*
-    This assumes no polymorphic stuff is happening for movement
-    */
     void executeValidHovercraft(HovercraftEntity *hovercraft,
                                 eVariableCommand command, float x, float y);
 
@@ -104,18 +88,14 @@ private:
     void debugToggleWireframe();
     bool bWireFrameEnabled;
 
-    /*
-    Convert a pressed key to its corresponding eFixedCommand
-    */
+    // Convert a pressed key to its corresponding eFixedCommand
     static eFixedCommand pressedKeyToFixedCommand(int key)
     {
         return FuncUtils::getValueIfNotDefault(m_pInstance->m_pressedKeyToFixedCommand,
                                                key, COMMAND_INVALID_FIXED);
 
     };
-    /*
-    Convert a just pressed key to its corresponding eFixedCommand
-    */
+    // Convert a just pressed key to its corresponding eFixedCommand
     static eFixedCommand justPressedKeyToFixedCommand(int key)
     {
         eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedKeyToFixedCommand,
@@ -123,46 +103,36 @@ private:
         // If the command is invalid, then check for repeat commands next
         return COMMAND_INVALID_FIXED == result ? pressedKeyToFixedCommand(key) : result;
     };
-    /*
-    Convert a pressed key to its corresponding eFixedCommand
-    */
+    // Convert a pressed key to its corresponding eFixedCommand
     static eFixedCommand justReleasedKeyToFixedCommand(int key)
     {
         return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedKeyToFixedCommand,
                                                key, COMMAND_INVALID_FIXED);
     };
-    /*
-    Convert a joystick button to its corresponding eFixedCommand
-    if it is PRESSED OR REPEATED
-    */
+    // Convert a joystick button to its corresponding eFixedCommand
+    // if it is PRESSED OR REPEATED
     static eFixedCommand repeatButtonToFixedCommand(int button)
     {
         return FuncUtils::getValueIfNotDefault(m_pInstance->m_repeatButtonToFixedCommand,
                                                button, COMMAND_INVALID_FIXED);
     };
-    /*
-    Convert a joystick button to its corresponding eFixedCommand
-    if it was just pressed.
-    */
+    // Convert a joystick button to its corresponding eFixedCommand
+    // if it was just pressed.
     static eFixedCommand justPressedButtonToFixedCommand(int button)
     {
         eFixedCommand result = FuncUtils::getValueIfNotDefault(m_pInstance->m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
         // If the command is invalid, then check for repeat commands next
         return COMMAND_INVALID_FIXED == result ? repeatButtonToFixedCommand(button) : result;
     };
-    /*
-    Convert a joystick button to its corresponding eFixedCommand
-    if it was just released.
-    */
+    // Convert a joystick button to its corresponding eFixedCommand
+    // if it was just released.
     static eFixedCommand justReleasedButtonToFixedCommand(int button)
     {
         return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
 
-    /*
-    These commands are issued if the player has just pressed, or is continuing
-    to press these keys
-    */
+    // These commands are issued if the player has just pressed, or is continuing
+    // to press these keys
     map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
@@ -176,9 +146,7 @@ private:
         {GLFW_KEY_L,            COMMAND_TURN_RIGHT},
     };
 
-    /*
-    These commands are issued only if the player has just pressed these keys
-    */
+    // These commands are issued only if the player has just pressed these keys
     map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
