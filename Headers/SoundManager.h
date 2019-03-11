@@ -15,7 +15,7 @@ events.
 @author Evan Quan
 @author Jianan Ding
 */
-class SoundManager
+class SoundManager final
 {
 public:
     ~SoundManager();
@@ -46,6 +46,7 @@ public:
         SOUND_MUSIC_INGAME_LOOP,
         SOUND_MUSIC_PAUSE_LOOP,
 
+        SOUND_KILL_FIRST_BLOOD,
         SOUND_KILL_DOMINATION,
         SOUND_KILL_REVENGE,
         SOUND_KILL_NEMESIS,
@@ -83,8 +84,10 @@ private:
     
     static SoundManager* m_pInstance;
 
-    FMOD::Studio::System* mpStudioSystem;   // FMOD Studio API
-    FMOD::System* mpSystem;  // FMOD Low Level API
+    FMOD_ADVANCEDSETTINGS* advancedSettings;
+
+    FMOD::Studio::System* m_pStudioSystem;   // FMOD Studio API
+    FMOD::System* m_pSystem;  // FMOD Low Level API
 
     int mnNextChannelId;
 
@@ -101,7 +104,7 @@ private:
     SoundManager();
     void updateChannels();
 
-    bool handleBaseCollisionSound(eEntityTypes eColliderType, eEntityTypes eCollidedType);
+    bool handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType);
     void handleContextCollisionSound(Entity* collider, Entity* collided);
 
     int errorCheck(FMOD_RESULT result);
@@ -192,6 +195,8 @@ private:
                                          }},
         {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
                                          }},
+        {SOUND_KILL_FIRST_BLOOD,         { "event:/kill/firstblood",
+                                         }},
         {SOUND_KILL_DOMINATION,          { "event:/kill/domination",
                                          }},
         {SOUND_KILL_NEMESIS,             { "event:/kill/nemesis",
@@ -210,8 +215,6 @@ private:
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
                                          }},
-        // {MUSIC_INGAME,                   { "event:/background/music_loop",
-        //                                  }},
     };
 };
 

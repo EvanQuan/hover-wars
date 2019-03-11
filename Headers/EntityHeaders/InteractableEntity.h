@@ -17,7 +17,7 @@ class InteractableEntity
 {
 public:
     // Constructor / Destructor
-    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityTypes eIEType);
+    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityType eIEType);
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality
@@ -25,7 +25,7 @@ public:
                             const ObjectInfo* pObjectProperties,
                             const string& sShaderType,
                             float fScale);
-    virtual void update(float fTimeInMilliseconds);
+    virtual void update(float fTimeInSeconds);
     virtual void handleCollision(Entity* pOther);
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 

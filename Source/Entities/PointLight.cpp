@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 PointLight::PointLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition, POINT_LIGHT_ENTITY )
+    : Entity( iID, *vPosition, ENTITY_POINT_LIGHT )
 {
     
 }
@@ -24,7 +24,7 @@ PointLight::~PointLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void PointLight::update(float fTimeInMilliseconds)
+void PointLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

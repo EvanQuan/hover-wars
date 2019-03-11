@@ -15,7 +15,7 @@ class UserInterface;
 // Purpose: Manages Game States and handles initialization of a level and handling of
 //      Main menu interfacing
 // Written by: James Coté
-class GameManager
+class GameManager final
 {
 public:
     static GameManager* getInstance(GLFWwindow *rWindow);
@@ -36,7 +36,9 @@ public:
     void zoomCamera(float fDelta);
     void intersectPlane(float fX, float fY);
 
-    ePlayer m_eKeyboardPlayer;
+    // The keyboard corresponds to its own hovercraft
+    // which might be shared with a joystick
+    eHovercraft m_eKeyboardHovercraft;
 #ifndef NDEBUG
     // User interface is public for debug puprposes
     // so that debug commands can change the UI directly.

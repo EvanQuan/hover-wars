@@ -18,7 +18,7 @@
 //        The file name of the texture is used as the unique hashmap handle.
 //        This class is also a singleton so only 1 instance of TextureManager can be loaded at a time.
 // Written By: James Coté
-class TextureManager
+class TextureManager final
 {
 public:
     // Singleton Implementation: returns instance of TextureManager

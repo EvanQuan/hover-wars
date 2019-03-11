@@ -9,7 +9,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 SpotLight::SpotLight(int iID, const vec3* vPosition) 
-    : Entity( iID, *vPosition, SPOT_LIGHT_ENTITY )
+    : Entity( iID, *vPosition, ENTITY_SPOT_LIGHT )
 {
     
 }
@@ -24,7 +24,7 @@ SpotLight::~SpotLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void SpotLight::update(float fTimeInMilliseconds)
+void SpotLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

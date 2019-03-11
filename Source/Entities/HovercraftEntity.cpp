@@ -31,7 +31,7 @@ Determines from what horizontal angle the camera is tracking the hovercraft.
                    90
                   -270
                     |
-                    v                 
+                    v
      180 -----> hovercraft  <----- 0
     -180            ^              360
                     |
@@ -73,7 +73,7 @@ Distance between look-at position and camera.
 #define BACK_CAMERA_LONGITUDE   FRONT_CAMERA_LONGITUDE  // theta    degrees
 
 /*
-This determines the pitch that the camera 
+This determines the pitch that the camera
 */
 #define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
 
@@ -115,7 +115,7 @@ const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(0, 0, BACK_CAMERA_OFFSET);
 // Hovercraft Entity Default Constructor.
 //  Call the base class Entity Constructor
 HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
-    : Entity(iID, *vPosition, HOVERCRAFT_ENTITY)
+    : Entity(iID, *vPosition, ENTITY_HOVERCRAFT)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
@@ -133,6 +133,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
     outOfControlTime = 0.0f;
 
     initializeCooldowns();
+    initializePowerups();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -145,18 +146,10 @@ HovercraftEntity::~HovercraftEntity()
 \****************************************************************/
 
 /*
-@param fSecondsSinceLastUpdate  delta time since last update
+    @param fTimeInSeconds   delta time since last update
 */
 void HovercraftEntity::update(float fTimeInSeconds)
 {
-    if (!isInControl)
-    {
-        outOfControlTime -= fTimeInSeconds;
-        if (outOfControlTime <= 0)
-        {
-            isInControl = true;
-        }
-    }
     lowEnoughToMove = m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
 
     // New Transformation Matrix
@@ -177,17 +170,99 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
+    updateInControl(fTimeInSeconds);
     updateCameraLookAts(fTimeInSeconds);
     updateCooldowns(fTimeInSeconds);
     updateVulnerability(fTimeInSeconds);
+    updatePowerups(fTimeInSeconds);
 }
 
+/*
+    Tells the HovercraftEntity that they were damaged. This is where the
+    Hovercraft Entity will handle its "death" logic and award points to the
+    attacker.
+
+    @param  eHitByType      The Entity Type that this Entity was hit by. This
+                            entity will either be a bot or a player
+    @param  attacker        to award points to
+*/
+void HovercraftEntity::getHitBy(eEntityType eHitByType, eHovercraft attacker)
+{
+    // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
+    // Switch based on who hit the player
+    switch (eHitByType)
+    {
+    case ENTITY_HOVERCRAFT:
+        if (!isInvincible())
+        {
+            // m_eHovercraftID happens to match up the eAddScoreReason for hitting
+            // that hovercraft. If we cast the ID, then the attacker is awarded points
+            // for attacking this hovercraft.
+            m_pGmStats->addScore(attacker,
+                static_cast<GameStats::eAddScoreReason>(m_eHovercraftID));
+        }
+        setInvincible();
+        break;
+    }
+}
+
+/*
+    Update the vulnerability status.
+    The hovercraft is only invulnerable for a duration until they are
+    vulernable again.
+*/
 void HovercraftEntity::updateVulnerability(float fTimeInSeconds)
 {
     m_fSecondsLeftUntilVulnerable -= fTimeInSeconds;
     if (m_fSecondsLeftUntilVulnerable <= 0)
     {
         m_bInvincible = false;
+    }
+}
+
+/*
+    Update the powerup statuses.
+    Each powerup only lasts for a duration until they expire, losing
+    the effect.
+*/
+void HovercraftEntity::updatePowerups(float fTimeInSeconds)
+{
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
+        if (m_vPowerupsEnabled[powerup] <= 0)
+        {
+            disablePowerup(static_cast<ePowerup>(powerup));
+        }
+    }
+}
+
+/*
+    Enable a powerup. Once enabled, the powerup provides benefits to the
+    hovercraft.
+
+    @param powerup  to enable
+*/
+void HovercraftEntity::enablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        break;
+    }
+}
+
+/*
+    Disable a powerup. The powerup effect is lost.
+
+    @param powerup  to disable
+*/
+void HovercraftEntity::disablePowerup(ePowerup powerup)
+{
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        break;
     }
 }
 
@@ -201,7 +276,8 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
 void HovercraftEntity::initialize(const string& sFileName,
                                   const ObjectInfo* pObjectProperties,
                                   const string& sShaderType,
-                                  float fScale)
+                                  float fScale,
+                                  eHovercraft eHovercraftID)
 {
     // Load Mesh and Rendering Component
     m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
@@ -211,7 +287,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     getSpatialDimensions(&vNegCorner, &vPosCorner);
     ObjectInfo::BoundingBox sBounding;
     sBounding.vDimensions = vPosCorner - vNegCorner;
-    
+
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
@@ -227,55 +303,62 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // Create Rocket Mesh
     m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
-    
+
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
         m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
         m_pCmrComponents[i]->setLookAt(m_vPosition);
     }
-    
+
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    m_eHovercraftID = eHovercraftID;
 }
 
 /*
-    Handle Collision Logic in this function. This function is called when someone collides with this Entity.
-    This Entity can tell the other Entity what happens when they collided with this Entity.
+    Handle Collision Logic in this function. This function is called when
+    someone collides with this Entity. This Entity can tell the other Entity
+    what happens when they collided with this Entity.
 
     @param pOther   const pointer to the Entity that this entity collided with.
     @param bVictim  boolean to tell if this entity is the victim or not.
 */
-// void HovercraftEntity::handleCollision(const Entity* pOther) const
 void HovercraftEntity::handleCollision(Entity* pOther)
 {
     // Get the Type of the Other Entity
-    eEntityTypes eOtherType = pOther->getType();
+    eEntityType eOtherType = pOther->getType();
     HovercraftEntity* pOtherHovercraft;
     switch (eOtherType)
     {
-    case HOVERCRAFT_ENTITY:
-        // Cast the other Entity to a Hovercraft Entity (We know this is possible because of the two cases)
-        // const HovercraftEntity* pOtherHovercraft = static_cast<const HovercraftEntity*>(pOther);
+    case ENTITY_HOVERCRAFT:
+        // Cast the other Entity to a Hovercraft Entity (We know this is
+        // possible because of the two cases)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->hit(m_eType, m_iStatsID);
+           pOtherHovercraft->getHitBy(m_eType, m_eHovercraftID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->hit(pOther->getType(), pOtherHovercraft->getStatsID());
+            this->getHitBy(pOther->getType(), pOtherHovercraft->getHovercraftID());
         }
 
         // Momentarily lose control of vehicle to prevent air moving
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
-    case PLANE_ENTITY:
-        setGainControl();
+    case ENTITY_POWERUP:
+        // Random for now
+        setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
+    case ENTITY_PLANE:
+        // TODO still not sure if we're doing the gain control or the elevation check
+        // to make collisions less wonky
+        // setGainControl();
         break;
         /*Further Cases:
-        case ROCKET_ENTITY:
+        case ENTITY_ROCKET:
             Get Owner Entity for Rocket (Player or Bot) and call Hit on this Entity to be hit by that player.
         case EXPLOSION:
             Get Owner Entity for Explosion (player or Bot) and call Hit on thie Entity to be hit by that player.
@@ -287,6 +370,9 @@ void HovercraftEntity::handleCollision(Entity* pOther)
  * Private Functions                                                                                    *
 \********************************************************************************************************/
 
+/*
+    Initialize all ability cooldowns and fills the flame trail gauge to full.
+*/
 void HovercraftEntity::initializeCooldowns()
 {
     for (int ability = 0; ability < ABILITY_COUNT; ability++)
@@ -299,16 +385,31 @@ void HovercraftEntity::initializeCooldowns()
 }
 
 /*
-Updates an average for this player's cameras. This is what makes the camera
-sway as the player moves.
+    Disables all powerups.
 */
-void HovercraftEntity::updateCameraLookAts(float fSecondsSinceLastUpdate)
+void HovercraftEntity::initializePowerups()
 {
-    updateCameraRotation(fSecondsSinceLastUpdate);
-    updateCameraPosition(fSecondsSinceLastUpdate);
+    for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
+    {
+        m_vPowerupsEnabled[powerup] = 0;
+        disablePowerup(static_cast<ePowerup>(powerup));
+    }
 }
 
-void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
+/*
+    Updates the location for this hovercraft's cameras. This is what makes the
+    camera sway as the hovercraft moves to make it seem more natural.
+*/
+void HovercraftEntity::updateCameraLookAts(float fTimeInSeconds)
+{
+    updateCameraRotation(fTimeInSeconds);
+    updateCameraPosition(fTimeInSeconds);
+}
+
+/*
+    Ensure the camera is looking at the hovercraft
+*/
+void HovercraftEntity::updateCameraRotation(float fTimeInSeconds)
 {
     quat qCurrRotation = m_pPhysicsComponent->getRotation();
     if (qCurrRotation != m_qCurrentCameraRotation)
@@ -316,22 +417,25 @@ void HovercraftEntity::updateCameraRotation(float fSecondsSinceLastUpdate)
         quat cameraRotationDirection = qCurrRotation - m_qCurrentCameraRotation;
         float fSpring = SPRING_ROTATION_CONSTANT * (length(cameraRotationDirection) - CAMERA_REST_LENGTH);
 
-        m_qCurrentCameraRotation += (normalize(cameraRotationDirection) * fSpring) * fSecondsSinceLastUpdate;
+        m_qCurrentCameraRotation += (normalize(cameraRotationDirection) * fSpring) * fTimeInSeconds;
 
         m_pCmrComponents[FRONT_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
         m_pCmrComponents[BACK_CAMERA]->setRotationQuat(m_qCurrentCameraRotation);
     }
 }
 
-void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
+/*
+    Ensure the camera is close enough to the hovercraft
+*/
+void HovercraftEntity::updateCameraPosition(float fTimeInSeconds)
 {
     vec3 cameraLength = m_vPosition - m_vCurrentCameraPosition;
 
     if (vec3(0.0f) != cameraLength) // Don't proceed if there's no change.
     {
         float fSpring = SPRING_MOVEMENT_CONSTANT * (length(cameraLength) - CAMERA_REST_LENGTH);
-        m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fSecondsSinceLastUpdate);
-      
+        m_vCurrentCameraPosition += (normalize(cameraLength) * fSpring) * (fTimeInSeconds);
+
         // Update all the camera look at and rotation values based on the averaging calculations.
         m_pCmrComponents[FRONT_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * FRONT_CAMERA_POSITION_OFFSET);
         m_pCmrComponents[BACK_CAMERA]->setLookAt(m_vCurrentCameraPosition + m_qCurrentCameraRotation * BACK_CAMERA_POSITION_OFFSET);
@@ -339,25 +443,45 @@ void HovercraftEntity::updateCameraPosition(float fSecondsSinceLastUpdate)
 }
 
 /*
-This will decrease the cooldown value all all abilities by the time that has
-passed.
+    Hovercrafts only lose control after a duration. If the duration is exceed,
+    regain control.
 */
-void HovercraftEntity::updateCooldowns(float fSecondsSinceLastUpdate)
+void HovercraftEntity::updateInControl(float fTimeInSeconds)
+{
+    if (!isInControl)
+    {
+        outOfControlTime -= fTimeInSeconds;
+        if (outOfControlTime <= 0)
+        {
+            isInControl = true;
+        }
+    }
+}
+
+/*
+    This will decrease the cooldown value all all abilities by the time that
+    has passed.
+*/
+void HovercraftEntity::updateCooldowns(float fTimeInSeconds)
 {
     for (int i = 0; i < ABILITY_COUNT; i++)
     {
-        float newCooldown = m_fCooldowns[i] - fSecondsSinceLastUpdate;
+        float newCooldown = m_fCooldowns[i] - fTimeInSeconds;
         m_fCooldowns[i] = newCooldown > 0.0f ? newCooldown : 0.0f;
     }
-    updateTrail(fSecondsSinceLastUpdate);
-    updateSpikes(fSecondsSinceLastUpdate);
+    updateTrail(fTimeInSeconds);
+    updateSpikes(fTimeInSeconds);
 }
 
-void HovercraftEntity::updateSpikes(float fSecondsSinceLastUpdate)
+/*
+    Spikes last for some duration after being activated.
+    If activated, check if they should be deactivated since last update.
+*/
+void HovercraftEntity::updateSpikes(float fTimeInSeconds)
 {
     if (m_bSpikesActivated)
     {
-        m_fSecondsSinceSpikesActivated += fSecondsSinceLastUpdate;
+        m_fSecondsSinceSpikesActivated += fTimeInSeconds;
     }
     if (m_fSecondsSinceSpikesActivated > SPIKES_DURATION)
     {
@@ -366,21 +490,21 @@ void HovercraftEntity::updateSpikes(float fSecondsSinceLastUpdate)
 }
 
 /*
-Update the flame indepently over other abilities. Create particles at a
-constant rate if activated, and drain from the gauge.
-Otherwise, recharge.
+    Update the flame indepently over other abilities. Create particles at a
+    constant rate if activated, and drain from the gauge.
+    Otherwise, recharge.
 
-@TODO break this up into more functions
+    @TODO break this up into more functions
 */
-void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
+void HovercraftEntity::updateTrail(float fTimeInSeconds)
 {
     if (m_bTrailActivated)
     {
-        m_fSecondsSinceLastFlame += fSecondsSinceLastUpdate;
+        m_fSecondsSinceLastFlame += fTimeInSeconds;
         if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
         {
-    
-            float newGaugeValue = m_fTrailGauge - fSecondsSinceLastUpdate;
+
+            float newGaugeValue = m_fTrailGauge - fTimeInSeconds;
 
             if (newGaugeValue > TRAIL_GAUGE_EMPTY)
             {
@@ -403,12 +527,12 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
     }
     else
     {
-        m_fSecondsSinceTrailDeactivated += fSecondsSinceLastUpdate;
+        m_fSecondsSinceTrailDeactivated += fTimeInSeconds;
 
         if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN
             && m_fTrailGauge < TRAIL_GAUGE_FULL)
         {
-            float newGaugeValue = m_fTrailGauge + (fSecondsSinceLastUpdate * TRAIL_RECHARGE_MULTIPLIER);
+            float newGaugeValue = m_fTrailGauge + (fTimeInSeconds * TRAIL_RECHARGE_MULTIPLIER);
             if (newGaugeValue < TRAIL_GAUGE_FULL)
             {
                 m_fTrailGauge = newGaugeValue;
@@ -422,7 +546,7 @@ void HovercraftEntity::updateTrail(float fSecondsSinceLastUpdate)
 }
 
 /*
-Create 1 flame entity
+    Create 1 flame entity at the hovercraft location.
 */
 void HovercraftEntity::createTrailInstance()
 {
@@ -440,12 +564,16 @@ void HovercraftEntity::createTrailInstance()
 }
 
 /*
-@return true if ability successfully used
+    Use an ability. If the ability if off cooldown, the call with be ignored.
+
+    @param ability  to use
+    @return true if ability successfully used
 */
 bool HovercraftEntity::useAbility(eAbility ability)
 {
-    if (isOnCooldown(ability))
+    if (isOnCooldown(ability)) {
         return false;
+    }
 
     switch (ability)
     {
@@ -474,7 +602,10 @@ bool HovercraftEntity::useAbility(eAbility ability)
 }
 
 /*
-@return true is the ability on cooldown and cannot be used.
+    Check if an ability is on cooldown.
+
+    @param ability  to check if on cooldown
+    @return true is the ability on cooldown and cannot be used.
 */
 bool HovercraftEntity::isOnCooldown(eAbility ability)
 {
@@ -489,16 +620,43 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
     return m_fCooldowns[ability >= COOLDOWN_COUNT ? COOLDOWN_DASH : ability] > 0;
 }
 
+/*
+    Move the hovercraft along the x-y plane (horizontal). Movement commands
+    will ignore if the hovercraft is too high off the ground.
+
+    Map view:
+                  y = 1
+                    ^
+                    |
+    x = -1 <--- hovercraft ---> x = 1
+                    |
+                    v
+                  y = -1
+
+    @param x    x-coordinate to move
+    @param y    y-coordinate to move
+*/
 void HovercraftEntity::move(float x, float y)
 {
     if (lowEnoughToMove)
     // if (isInControl)
     {
         m_pPhysicsComponent->move(x, y);
-        // cout << m_pPhysicsComponent->getPosition().y << endl;
     }
 }
 
+/*
+    Turn the hovercraft horizontally.  The larger the direction magnitude, the
+    faster the turn in either direction.
+
+    Map view:
+                  x = 0
+                    ^
+                    |
+    x = -1 <--- hovercraft ---> x = 1
+
+    @param x    direction to turn
+*/
 void HovercraftEntity::turn(float x)
 {
     if (lowEnoughToMove)
@@ -509,7 +667,19 @@ void HovercraftEntity::turn(float x)
 }
 
 /*
-Shoot a rocket and put it on cool down.
+    Set a powerup to enable. Once enabled, it provides the powerup benefits for
+    a set duration before being disabled and the benefits are lost.
+
+    @param powerup  to enable
+*/
+void HovercraftEntity::setPowerup(ePowerup powerup)
+{
+    m_vPowerupsEnabled[powerup] = POWERUP_TIME;
+    enablePowerup(powerup);
+}
+
+/*
+    Shoot a rocket and put it on cool down.
 */
 void HovercraftEntity::shootRocket()
 {
@@ -520,21 +690,21 @@ void HovercraftEntity::shootRocket()
 }
 
 /*
-Activate spikes and put it on cool down.
+    Activate spikes and put it on cool down.
 */
 void HovercraftEntity::activateSpikes()
 {
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
-    
+
     m_bSpikesActivated = true;
     m_fSecondsSinceSpikesActivated = 0.0f;
 
 }
 
 /*
-Activate trail and drain from the fuel gauge until it is deactivated.
+    Activate trail and drain from the fuel gauge until it is deactivated.
 */
 void HovercraftEntity::activateTrail()
 {
@@ -551,7 +721,7 @@ void HovercraftEntity::activateTrail()
 }
 
 /*
-Deactivate the trail and start recharging the fuel gauge.
+    Deactivate the trail and start recharging the fuel gauge.
 */
 void HovercraftEntity::deactivateTrail()
 {

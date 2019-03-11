@@ -33,7 +33,7 @@ public:
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 
     //    moreso for it to hold and manage the physics information for the entity while providing functions that allow
     //    the entity to query their physics component for desired information.
-    void update(float fTimeDeltaInMilliseconds); // Overloading Parent's virtual update function
+    void update(float fTimeInSeconds); // Overloading Parent's virtual update function
     void popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown, Action *a);
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.

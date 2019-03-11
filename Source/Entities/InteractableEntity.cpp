@@ -5,7 +5,7 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityTypes eIEType)
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityType eIEType)
     : Entity( iID, vPosition, eIEType )
 {
     m_iOwnerID = iOwnerID;  // Set the Owner ID for the Interactable Entity
@@ -35,7 +35,7 @@ void InteractableEntity::initialize(const string& sFileName,
     //m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
 }
 
-void InteractableEntity::update(float fTimeInMilliseconds)
+void InteractableEntity::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }
@@ -53,9 +53,8 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 //      Default: tells the other entity that they've been hit.
 void InteractableEntity::handleCollision(Entity* pOther)
 {
-    // Tell the Hovercraft Entity that they were hit by the owner of this Interactable Entity
-    if (HOVERCRAFT_ENTITY == pOther->getType())
-        static_cast<HovercraftEntity*>(pOther)->hit(m_eType, m_iOwnerID);
+    if (ENTITY_HOVERCRAFT == pOther->getType())
+        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, static_cast<eHovercraft>(m_iOwnerID));
 }
 
 

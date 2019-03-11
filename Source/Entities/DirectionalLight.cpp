@@ -11,7 +11,7 @@ const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
 DirectionalLight::DirectionalLight(int iID) 
-    : Entity( iID, vec3( -1.0 ), DIRECTIONAL_LIGHT_ENTITY )
+    : Entity( iID, vec3( -1.0 ), ENTITY_DIRECTIONAL_LIGHT )
 {
     
 }
@@ -26,7 +26,7 @@ DirectionalLight::~DirectionalLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void DirectionalLight::update(float fTimeInMilliseconds)
+void DirectionalLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

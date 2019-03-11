@@ -20,10 +20,10 @@ AnimationComponent::~AnimationComponent()
 }
 
 // Overloaded Update Function
-void AnimationComponent::update(float fTimeDeltaInMilliseconds)
+void AnimationComponent::update(float fTimeInSeconds)
 {
     // Add Timestep to Animation GameTime.
-    m_fAnimTime += fTimeDeltaInMilliseconds;
+    m_fAnimTime += fTimeInSeconds;
     bool bUpdateAnimation = m_fAnimTime >= ANIMATION_SPEED;
     bool bDeletionFlag = false;
 
@@ -41,7 +41,7 @@ void AnimationComponent::update(float fTimeDeltaInMilliseconds)
             if (iter->fDuration > 0.0f)
             {
                 // Decrement Duration
-                iter->fDuration -= fTimeDeltaInMilliseconds;
+                iter->fDuration -= fTimeInSeconds;
                 bDeletionFlag |= iter->fDuration <= 0;
 
                 // Animate the Sprite on the Animation Speed.

@@ -1,5 +1,4 @@
 #include "GameStats.h"
-#include "SoundManager.h"
 #include "UserInterface/UserInterface.h"
 
 /*
@@ -18,6 +17,10 @@ Base points gained for hitting a player
 Number of extra points gained when a player gets revenge
 */
 #define POINTS_GAINED_HIT_REVENGE 100
+/*
+Number of extra points gained when a player gets the first kill
+*/
+#define POINTS_GAINED_FIRST_BLOOD 150
 /*
 Players gain additional points against other players based on their current
 total killstreak. This gives players an incentive to not get hit.
@@ -95,8 +98,12 @@ void GameStats::initialize()
 {
     initializeStats();
     initializeCooldowns();
+    firstBloodHappened = false;
 }
 
+/*
+Set all stats to 0
+*/
 void GameStats::initializeStats()
 {
     for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
@@ -108,6 +115,9 @@ void GameStats::initializeStats()
     }
 }
 
+/*
+Set all cooldown timings to 0
+*/
 void GameStats::initializeCooldowns()
 {
     for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
@@ -120,60 +130,28 @@ void GameStats::initializeCooldowns()
 }
 
 /*
-Get a stat. For example:
+Get a stat about a specified hovercraft.
 
-    int killstreak = gameStats.get(PLAYER_1, CURRENT_KILLSTREAKS_AGAINST_PLAYER_2);
-
-will retrieve Player 1's current killstreaks against player 2.
-@pure
+@param hovercraft   to get stat about
+@param stat         to retrieve
 */
-int GameStats::get(ePlayer player, eStat stat)
-{
-    return stats[FuncUtils::playerToHovercraft(player)][stat];
-}
-int GameStats::get(eBot bot, eStat stat)
-{
-    return stats[FuncUtils::botToHovercraft(bot)][stat];
-}
-int GameStats::get(eHovercraft hovercraft, eStat stat)
+int GameStats::get(eHovercraft hovercraft, eStat stat) const
 {
     return stats[hovercraft][stat];
 }
 
 /*
-Get a cooldown. For example:
-
-     = gameStats.get(PLAYER_1, COOLDOWN_ROCKET);
-
-will retrieve Player 1's current killstreaks against player 2.
-@pure
+Get a cooldown.
 */
-float GameStats::get(ePlayer player, eCooldown cooldown)
-{
-    return cooldowns[FuncUtils::playerToHovercraft(player)][cooldown];
-}
-float GameStats::get(eBot bot, eCooldown cooldown)
-{
-    return cooldowns[FuncUtils::botToHovercraft(bot)][cooldown];
-}
-float GameStats::get(eHovercraft hovercraft, eCooldown cooldown)
+float GameStats::get(eHovercraft hovercraft, eCooldown cooldown) const
 {
     return cooldowns[hovercraft][cooldown];
 }
 
 /*
 @return true is ability is ready to be used
-@pure
 */
-bool GameStats::isOnCooldown(ePlayer player, eCooldown cooldown)
-{
-    return isOnCooldown(FuncUtils::playerToHovercraft(player), cooldown);
-}
-bool GameStats::isOnCooldown(eBot bot, eCooldown cooldown)
-{
-    return isOnCooldown(FuncUtils::botToHovercraft(bot), cooldown);
-}
-bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown)
+bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const
 {
     return cooldowns[hovercraft][cooldown] <= 0.0f;
 }
@@ -181,14 +159,6 @@ bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown)
 /*
 Add score to the specified player for the specified reason.
 */
-void GameStats::addScore(ePlayer player, eAddScoreReason reason)
-{
-    addScore(FuncUtils::playerToHovercraft(player), reason);
-}
-void GameStats::addScore(eBot bot, eAddScoreReason reason)
-{
-    addScore(FuncUtils::botToHovercraft(bot), reason);
-}
 void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
 {
     switch (reason)
@@ -197,13 +167,10 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
     case HIT_BOT_2:
     case HIT_BOT_3:
     case HIT_BOT_4:
-        // hitBot(hovecraft, scoreReasonToBot.at(reason));
-        // break;
     case HIT_PLAYER_1:
     case HIT_PLAYER_2:
     case HIT_PLAYER_3:
     case HIT_PLAYER_4:
-        // hitPlayer(hovecraft, scoreReasonToPlayer.at(reason));
         hit(hovercraft, scoreReasonToHovercraft.at(reason));
         break;
     case PICKUP_POWERUP:
@@ -213,16 +180,13 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
 }
 
 /*
-Track that the player used an ability.
+Track that the hovecraft used an ability.
+This is used to track all the past abilities the hovercraft has used for that
+round, which may be needed if post-round achievements are implemented.
+
+@param hovercraft   that used ability
+@param ability      used
 */
-void GameStats::useAbility(ePlayer player, eAbility ability)
-{
-    useAbility(FuncUtils::playerToHovercraft(player), ability);
-}
-void GameStats::useAbility(eBot bot, eAbility ability)
-{
-    useAbility(FuncUtils::botToHovercraft(bot), ability);
-}
 void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 {
     switch (ability)
@@ -247,14 +211,8 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 }
 
 /*
-Signifies that attacker hit a bot.
-*/
-// void GameStats::hitBot(ePlayer attacker, eBot botHit)
-// {
-    // addScore(attacker, POINTS_GAINED_HIT_BOT);
-// }
-/*
-Signifies that attacker hit hit
+Signifies that the attacker hovecraft hit the hit hovercraft
+Upon getting hit, the attacker gains score, and the hit hovercraft loses score
 
 Updates killstreaks and scores.
 */
@@ -265,6 +223,8 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
+
+    USER_INTERFACE->displayMessage(attacker, hit, UserInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
     cout << "Player " << attacker << " hit Player " << attacker << endl;
@@ -306,24 +266,36 @@ void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 
 /*
 Get the score for playerAtacker to gain if they hit hit
+Checks for first blood.
 
-@pure
+@param attacker     to gain score
+@param hit          that attacker hit
 */
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
-    int basePoints = FuncUtils::hovercraftToPlayer(attacker) != PLAYER_INVALID ? POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
+    int basePoints = FuncUtils::hovercraftToPlayer(attacker) != PLAYER_INVALID ?
+        POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
-    return basePoints + killstreakBonus + revengeBonus;
+    int firstBloodBonus;
+    if (firstBloodHappened) {
+        firstBloodBonus = 0;
+    } else {
+        firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
+        firstBloodHappened = true;
+        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
+    }
+    return basePoints + killstreakBonus + revengeBonus + firstBloodBonus;
 }
 
 /*
 Get the score for hit to lose if hit by attacker
 hit cannot lose more points than they have.
 
-@pure
+@param attacker     that caused hit to lose score
+@param hit          to lose score
 */
-int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit)
+int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const
 {
     int basePoints = POINTS_LOST_GOT_HIT;
     int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
@@ -370,7 +342,6 @@ void GameStats::updateAttackerAndHitKillstreak(eHovercraft attacker, eHovercraft
 /*
 Add to a attacker's killstreak against hit.
 hit's domination streak against attacker ends.
-NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
 
 This does not moditfy hit's data
 */
@@ -382,8 +353,7 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
-        USER_INTERFACE->displayMessage(FuncUtils::hovercraftToPlayer(attacker), "You have a killstreak of " + std::to_string(killstreak));
+        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
     }
 
     // Update attacker's current total killstreak against hit
@@ -418,14 +388,17 @@ void GameStats::updateLargestTotalKillstreak(eHovercraft hovercraft)
     }
 }
 
-int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft playerHit)
+int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit) const
 {
-    return stats[attacker][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + playerHit];
+    return stats[attacker][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + hit];
 }
 
 /*
 Reset a hit's killstreak against attacker.
-NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
+May end a domination if exists.
+
+@param hit      to reset killstreak to 0
+@param attacker that ended hit's killstreak
 */
 void GameStats::resetKillstreak(eHovercraft hit, eHovercraft attacker)
 {
@@ -443,54 +416,62 @@ void GameStats::resetKillstreak(eHovercraft hit, eHovercraft attacker)
 }
 
 /*
-Check whether playerToCheck has a large enough killstreak against hit to
+Check whether attacker has a large enough killstreak against hit to
 count as dominating.
 
-NOTE: Only use PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4 
-
-@return true if playerToCheck is dominating hit
+@return true if attacker is dominating hit
 */
-bool GameStats::isDominating(eHovercraft playerAttacker, eHovercraft playerHit)
+bool GameStats::isDominating(eHovercraft attacker, eHovercraft hit) const
 {
-    return stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit];
+    return stats[attacker][IS_DOMINATING_PLAYER_1 + hit];
 }
 
 /*
 attacker can start domination against playerHIt if
 1. attacker's killstreak against hit is at least DOMINATION_COUNT
 2. attacker is not already dominating hit
+
+@param attacker     to check if can start domination on hit
+@param hit          to check if can be dominated by attacker
 */
-bool GameStats::canStartDomination(eHovercraft playerAttacker, eHovercraft playerHit)
+bool GameStats::canStartDomination(eHovercraft attacker, eHovercraft hit) const
 {
-    return getCurrentKillstreakAgainst(playerAttacker, playerHit) >= DOMINATION_COUNT
-        && !isDominating(playerAttacker, playerHit);
+    return getCurrentKillstreakAgainst(attacker, hit) >= DOMINATION_COUNT
+        && !isDominating(attacker, hit);
 }
 
 /*
 Enable attacker's domaination status against hit
+
+@param attacker     to get domination
+@param hit          to be dominated
 */
-void GameStats::dominate(eHovercraft playerAttacker, eHovercraft playerHit)
+void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
 {
-    ePlayer player = FuncUtils::hovercraftToPlayer(playerAttacker);
-    SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
     // Ad hoc for single player
-    USER_INTERFACE->displayMessage(FuncUtils::hovercraftToPlayer(playerAttacker), "You now are dominating Player " + std::to_string(playerHit + 1));
-    stats[playerAttacker][IS_DOMINATING_PLAYER_1 + playerHit] = true;
+    USER_INTERFACE->displayMessage(attacker, hit,
+                                   UserInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
+    stats[attacker][IS_DOMINATING_PLAYER_1 + hit] = true;
 }
 /*
-Disable playerWasDominating's domination status against playerToGetRevenge.
+Disable hit's domination status against attacker.
+
+@param attacker     to get revenge on hit
+@param hit          was dominating attacker
 */
-void GameStats::revenge(eHovercraft playerToGetRevenge, eHovercraft playerWasDominating)
+void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
-    // Ad hoc for single player
-    USER_INTERFACE->displayMessage(FuncUtils::hovercraftToPlayer(playerToGetRevenge), "You got revenge from Player " + std::to_string(playerWasDominating + 1));
-    stats[playerWasDominating][IS_DOMINATING_PLAYER_1 + playerToGetRevenge] = false;
+    USER_INTERFACE->displayMessage(attacker, hit,
+                                   UserInterface::eKillMessage::KILL_MESSAGE_REVENGE);
+    stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;
 }
 
 
 /*
-Denotes a player has picked up a power up
+Denotes a player has picked up a power up.
+Increases the powerup count, and adds the score for picking up the powerup.
+
+@param hovercraft   to pickup powerup
 */
 void GameStats::pickupPowerup(eHovercraft hovercraft)
 {
@@ -500,6 +481,8 @@ void GameStats::pickupPowerup(eHovercraft hovercraft)
 
 /*
 Add to the player's total power up count
+
+@param hovercraft   to add powerup count
 */
 void GameStats::addPowerupCount(eHovercraft hovercraft)
 {

@@ -72,7 +72,7 @@ void RenderComponent::render()
 }
 
 // Overloaded Update Function
-void RenderComponent::update(float fTimeDeltaInMilliseconds)
+void RenderComponent::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

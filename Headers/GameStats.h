@@ -31,7 +31,8 @@ Player:
         Count of each ability used
 
 Game:
-    
+    Kills
+        First blood
 
 Gets values from EntityManager to update stats as the game progresses.
 Gives information to UserInterface to display the correct values.
@@ -113,7 +114,7 @@ public:
     {
         COOLDOWN_ROCKET = 0,
         COOLDOWN_SPIKES,
-        COOLDOWN_TRAIL,
+        COOLDOWN_TRAIL_ACTIVATE,
         COOLDOWN_DASH,
         COOLDOWN_COUNT,
     };
@@ -123,32 +124,13 @@ public:
     void update(float fSecondsSinceLastUpdate);
 
     // Stats
-    int get(ePlayer player, eStat stat);
-    void addScore(ePlayer player, eAddScoreReason reason);
-
-    // Cooldowns
-    float get(ePlayer player, eCooldown cooldown);
-    void useAbility(ePlayer player, eAbility ability);
-    bool isOnCooldown(ePlayer player, eCooldown cooldown);
-
-    // Stats
-    int get(eBot bot, eStat stat);
-    void addScore(eBot bot, eAddScoreReason reason);
-
-    // Cooldowns
-    float get(eBot bot, eCooldown cooldown);
-    void useAbility(eBot bot, eAbility ability);
-    bool isOnCooldown(eBot bot, eCooldown cooldown);
-
-    // Not sure if this should be public or private
-    // Stats
-    int get(eHovercraft hovercraft, eStat stat);
+    int get(eHovercraft hovercraft, eStat stat) const;
     void addScore(eHovercraft hovercraft, eAddScoreReason reason);
 
     // Cooldowns
-    float get(eHovercraft hovercraft, eCooldown cooldown);
+    float get(eHovercraft hovercraft, eCooldown cooldown) const;
     void useAbility(eHovercraft hovercraft, eAbility ability);
-    bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown);
+    bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const;
 
     void initialize();
 
@@ -170,13 +152,16 @@ private:
 
     float cooldowns[MAX_HOVERCRAFT_COUNT][COOLDOWN_COUNT];
 
+    // Tracks first blood
+    bool firstBloodHappened;
+
     // Actions
     // void hitBot(eHovercraft attacker, eBot hit);
     void hit(eHovercraft attacker, eHovercraft hit);
     // Score
     void updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit);
     int getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit);
-    int getScoreLostForHit(eHovercraft attacker, eHovercraft hit);
+    int getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const;
     void addScore(eHovercraft attacker, int points);
     void removeScore(eHovercraft hit, int points);
 
@@ -188,13 +173,13 @@ private:
     void updateAttackerAndHitKillstreak(eHovercraft attacker, eHovercraft hit);
     void addKillstreak(eHovercraft attacker, eHovercraft hit);
     void increaseCurrentTotalKillstreak(eHovercraft attacker);
-    int getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit);
+    int getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit) const;
     void updateLargestTotalKillstreak(eHovercraft hovercraft);
     void resetKillstreak(eHovercraft attacker, eHovercraft hit);
 
     // Domination
-    bool isDominating(eHovercraft attacker, eHovercraft hit);
-    bool canStartDomination(eHovercraft attacker, eHovercraft hit);
+    bool isDominating(eHovercraft attacker, eHovercraft hit) const;
+    bool canStartDomination(eHovercraft attacker, eHovercraft hit) const;
     void dominate(eHovercraft attacker, eHovercraft hit);
 
     // Revenge
@@ -205,22 +190,6 @@ private:
     void addPowerupCount(eHovercraft hovercraft);
 
     void debug(eHovercraft hovercraft);
-
-    unordered_map<eAddScoreReason, ePlayer> scoreReasonToPlayer = 
-    {
-        {HIT_PLAYER_1, PLAYER_1},
-        {HIT_PLAYER_2, PLAYER_2},
-        {HIT_PLAYER_3, PLAYER_3},
-        {HIT_PLAYER_4, PLAYER_4},
-    };
-
-    unordered_map<eAddScoreReason, eBot> scoreReasonToBot = 
-    {
-        {HIT_BOT_1, BOT_1},
-        {HIT_BOT_2, BOT_2},
-        {HIT_BOT_3, BOT_3},
-        {HIT_BOT_4, BOT_4},
-    };
 
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 
     {

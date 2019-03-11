@@ -13,7 +13,7 @@ typedef duration<long, std::ratio<1, 60>> sixtieth_of_a_sec;
  * GameTime Class: Maintains the Time for the game logic.
  * Written by: James Cote, Evan Quan
 \************************************************************/
-class GameTime
+class GameTime final
 {
 public:
 

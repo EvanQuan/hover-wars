@@ -24,7 +24,7 @@ public:
     void render();
 
     // Inherited update frunction from EntityComponent
-    void update(float fTimeDeltaInMilliseconds);
+    void update(float fTimeInSeconds);
     void updateCount(GLsizei iNewCount) { m_iCount = iNewCount; }
 
     // Initializes the proper buffers on the GPU for rendering.

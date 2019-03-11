@@ -10,7 +10,7 @@
  *              and will unload them once they finish.
  * Written By: James Coté
 \**********************************************************/
-class EmitterEngine
+class EmitterEngine final
 {
 public:
     // Singleton Implementation

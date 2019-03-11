@@ -5,7 +5,7 @@
 
 // Default Constructor
 Rocket::Rocket(int iID, int iOwnerID)
-    : InteractableEntity( iID, iOwnerID, vec3(0.0), ROCKET_ENTITY )
+    : InteractableEntity( iID, iOwnerID, vec3(0.0), ENTITY_ROCKET )
 {
     m_pEmitterEngine = EMITTER_ENGINE;
 }
@@ -28,7 +28,7 @@ void Rocket::initialize(const string& sFileName,
     InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);  
 }
 
-void Rocket::update(float fTimeInMilliseconds)
+void Rocket::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

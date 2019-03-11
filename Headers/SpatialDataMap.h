@@ -13,7 +13,7 @@ class FlameTrail;
 // Written By: James Coté
 // Description: A Mapping Structure for Objects in the scene. Allows for sorting of objects for tailored rendering techniques
 //  as well as pathfinding.
-class SpatialDataMap
+class SpatialDataMap final
 {
 public:
     static SpatialDataMap* getInstance();
@@ -23,7 +23,7 @@ public:
     void initializeMap(float fLength, float fWidth, float fTileSize);
     void populateStaticMap(const unordered_map<int, unique_ptr<Entity>>* pMasterEntityList);
     void clearMap();
-
+    void computePath(const vec2* pos1, const vec2* pos2);
     // Update Dynamic Entities
     void updateDynamicPosition(const Entity* pEntity, const vec3* pNewPos);
 
@@ -32,12 +32,18 @@ public:
 
     // Checks for SpatialMap
     bool isInitialized() { return m_bIsInitialized; }
+    vector<vec2> aStarSearch(vec2 player, vec2 dest);
+    bool getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax); // Returns the Map Indices from a given Entity.
 
 private:
+    float evaluateDistance(const vec2* pos1, const vec2* pos2);
+    bool isDestination(int x, int y,vec2 dest);
     static SpatialDataMap* m_pInstance;
+    bool isValid(int x, int y);
     SpatialDataMap();                                           // Singleton Implementation
     SpatialDataMap(const SpatialDataMap* pCopy);                // Copy Constructor Overload
     SpatialDataMap& operator=(const SpatialDataMap* pCopy);     // Assignment Operator overload
+
     // Static Data for each Cell
     struct sSpatialCell
     {
@@ -47,8 +53,13 @@ private:
         vector< const PointLight* > pLocalPointLights;
         vector< const FlameTrail* > pLocalInteractableEntities;
         unsigned int iStaticSize;
+        int parentX = -1;
+        int parentY = -1;
+        double fCost, gCost, hCost;
+        int x, y;
     };
-
+    double calculateH(int x, int y, sSpatialCell dest);
+    vector<vec2> makePath(sSpatialCell dest);
     // Mapping of Cells in 2D array.
     vector< vector< sSpatialCell > > m_pSpatialMap;
     unsigned int m_iMaxX, m_iMaxY;
@@ -63,12 +74,11 @@ private:
 
     // Private Functions
     void generateGridVBOs();
-    bool getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax ); // Returns the Map Indices from a given Entity.
     void addEntity(const Entity* vEntity, unsigned int iXMin, unsigned int iXMax, unsigned int iYMin, unsigned int iYMax); // Add The Entity to the Spatial Map as well as the EntityMap.
     void getVectToPos(const vec3* vWorldPosition, vec2* vToPos);
     void computeNewDynamicPosition(const Entity* vEntity, const vec3* vNewPos);
     void addSquareIndices(vector<unsigned int>* pIndicesBuffer, unsigned int iXIndex, unsigned int iYIndex);
-
+    bool getNearestCar(int currID, vector<int> IDs, vec2 &minPos);
 #ifdef _DEBUG
     // data for debug rendering
     vector< vec3 > m_pVertices;
@@ -86,4 +96,3 @@ private:
     GLuint m_iMapVertexArray, m_iMapVertexBuffer, m_iMapIndicesBuffer, m_iPopulatedIndicesBuffer, m_iMapInstanceBuffer;
 #endif
 };
-

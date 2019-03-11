@@ -46,8 +46,10 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             const char* collided = actor1->getName();
 
             // Get Entity IDs
-            int iColliderID = (*collider == 'g' ? GROUND_ID : stoi(collider));
-            int iCollidedID = (*collided == 'g' ? GROUND_ID : stoi(collided));
+            // The ground has its own special ID since its not treated the same
+            // as the other entities
+            int iColliderID = (*collider == C_SUBTYPE_GROUND ? GROUND_ID : stoi(collider));
+            int iCollidedID = (*collided == C_SUBTYPE_GROUND ? GROUND_ID : stoi(collided));
 #ifndef NDEBUG
             std::cout << "\tactor 0: " << collider << std::endl;
             std::cout << "\tactor 1: " << collided << std::endl;

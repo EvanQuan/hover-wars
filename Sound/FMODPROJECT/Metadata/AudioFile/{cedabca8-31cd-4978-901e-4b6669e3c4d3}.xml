@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="AudioFile" id="{cedabca8-31cd-4978-901e-4b6669e3c4d3}">
+        <property name="assetPath">
+            <value>UI/mvm_used_powerup.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>3.3333333333333335</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{181fe279-8f98-4648-9db6-bcacf47e740f}</destination>
+        </relationship>
+    </object>
+</objects>

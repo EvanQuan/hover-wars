@@ -135,9 +135,6 @@
     <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\PlayerEntity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\PointLight.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
@@ -227,9 +224,6 @@
     </ClInclude>
     <ClInclude Include="Headers\Physics\PhysicsCallBack.h">
       <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\RocketPhysicsComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
@@ -329,9 +323,6 @@
     <ClCompile Include="Source\Entities\InteractableEntity.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\PlayerEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Entities\PointLight.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -403,9 +394,6 @@
     </ClCompile>
     <ClCompile Include="Source\Physics\PhysicsCallBack.cpp">
       <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\RocketPhysicsComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
     <ClCompile Include="Source\EntityComponents\AIComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>

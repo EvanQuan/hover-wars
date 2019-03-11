@@ -31,7 +31,7 @@ const vec3 DEFAULT_POS = vec3(-90.0f, 60.0f, START_RADIUS); // (Theta, Phi, Radi
 
 // Constructor
 Camera::Camera( int iID )
-    : Entity( iID, vec3(0.0f), CAMERA_ENTITY )
+    : Entity( iID, vec3(0.0f), ENTITY_CAMERA )
 {
     EntityManager* pEntMngr = ENTITY_MANAGER;
     m_bSteadyCam = false;
@@ -53,7 +53,7 @@ Camera::~Camera()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void Camera::update(float fTimeInMilliseconds)
+void Camera::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

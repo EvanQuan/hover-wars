@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "Mesh.h"
 
-class MeshManager
+class MeshManager final
 {
 public:
     // creates/returns singleton instance of MeshManager
