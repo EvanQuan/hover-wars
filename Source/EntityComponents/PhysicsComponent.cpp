@@ -116,7 +116,7 @@ void PhysicsComponent::move(float x, float y) {
     // if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
-        PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+        PxVec3 vForce = globalTransform.q.rotate(PxVec3(x, 0, y));
         body->addForce(vForce * MOVEMENT_FORCE);
         
         // TODO find out the angle in a better way
@@ -216,7 +216,7 @@ void PhysicsComponent::initializeComponent(const char* sEntityID, bool bStatic, 
 {
     // Set up Internal Static qualifier.
     m_bStatic = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
+    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
     body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
 }
