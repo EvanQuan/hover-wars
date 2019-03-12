@@ -47,10 +47,10 @@
 #### Other
 
 **Left Click** - Spawns a particle Emitter at the mouse intersection with the
-		 xz-plane @ yAxis = 0
+             xz-plane @ yAxis = 0
 
 **Right Click** - Holding down Right Click and moving the mouse will allow you
-		  to adjust the camera around the vehicle
+              to adjust the camera around the vehicle
 
 #### Debug Commands (for Debug mode only)
 
@@ -89,7 +89,7 @@
 #### XBOX Controller
 
 **Left Joystick** - Applies a force on the vehicle in that direction on the
-		    xz-plane, WRT to Vehicle space.
+                xz-plane, WRT to Vehicle space.
 
 **Right Joystick** - Rotates the vehicle left or right.
 
@@ -266,7 +266,7 @@ Base points gained for killing a player **50**
 - It is more rewarding to hit another player than a bot
 
 Points gained for getting the first kill of the round (first blood) **150**
-- Incentivizes aggressive play at the start of the round.
+- Incentivize aggressive play at the start of the round.
 
 Points gained for getting revenge **100**
 - This gives an incentive to players to seek revenge other other players
@@ -316,7 +316,7 @@ Music
 Collision sounds
 - Different entities result in different collision sound events.
     - Hovercraft against hovercraft
-    - Hovecraft against world
+    - Hovercraft against world
     - Rocket against hovercraft (implemented, but not testable)
     - Flame against hovercraft (implemented, but not testable)
     - Spikes against hovercraft
