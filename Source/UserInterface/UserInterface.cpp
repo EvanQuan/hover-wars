@@ -617,7 +617,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
-        // TODO, use triangle strip instead to reduce vertices to 4
+        // TODO, delete this
         // Update VBO for each character
         // Triangle 1:
         /*
@@ -627,9 +627,9 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             |  \
             0---1
         */
-        vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
-        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
-        vTextOutput.push_back(vCorners[TOP_LEFT]);
+        //vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
+        //vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
+        //vTextOutput.push_back(vCorners[TOP_LEFT]);
 
         // Triangle 2
         /*
@@ -639,11 +639,23 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
                \|
                 0
         */
-        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
-        vTextOutput.push_back(vCorners[TOP_RIGHT]);
-        vTextOutput.push_back(vCorners[TOP_LEFT]);
+        //vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
+        //vTextOutput.push_back(vCorners[TOP_RIGHT]);
+        //vTextOutput.push_back(vCorners[TOP_LEFT]);
 
-        // vTextOutput
+        // Triangle strip
+        /*
+            
+            2---3
+            |\  |
+            | \ |
+            |  \|
+            0---1
+        */
+        vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
+        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
+        vTextOutput.push_back(vCorners[TOP_LEFT]);
+        vTextOutput.push_back(vCorners[TOP_RIGHT]);
 
         // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
         x += (ch.advance >> 6) * scale; // >> 6 == 1/64 (2^6 = 64)
@@ -655,8 +667,8 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Render Quad
-    glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
-    // glDrawArrays(GL_TRIANGLE_STRIP, 0, vTextOutput.size());
+    // glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, vTextOutput.size());
 
     // Clean up OpenGL
     glBindVertexArray(0);
