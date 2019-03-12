@@ -659,11 +659,37 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
 }
 
 /*
-Use hashmap for image intead of image filepath directly
+TODO Use hashmap for image instead of image filepath directly
+Render image to the screen.
+
+Window coordinates in pixels
+(0, height)     (width, height)
+
+
+(0, 0)          (width, 0)
+
+@param filepath of image
+@param x        x-coordinate of the bottom-left corner of text, in pixels
+@param y        y-coordinate of the bottom-left corner of text, in pixels
+@param scale    image, where 1.0 is the default size
 */
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
+    // This implementation is close to renderText.
 
+    // Vector for storing VBO data.
+    vector<vec4> vTextOutput;
+
+    // Set up OpenGL for Rendering
+    glBindVertexArray(m_iVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
+    // m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
+    // m_pShdrMngr->setUniformBool()// shader, name, value
+
+    // Bind Texture.
+    glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
+    SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 }
 
 /*
