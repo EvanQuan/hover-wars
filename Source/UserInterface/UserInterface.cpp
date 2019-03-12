@@ -589,10 +589,6 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
-    // TODO
-    // Need a different shader for images
-    // Change the texture class to store height and width, loaded dynamically
-    // Create a quad similar to text
     // Iterate through all Characters
     string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
@@ -616,32 +612,6 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos,      ypos + h,   ch.uvOffset.x,                  ch.uvOffset.y),
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
-
-        // TODO, delete this
-        // Update VBO for each character
-        // Triangle 1:
-        /*
-            2
-            |\
-            | \ 
-            |  \
-            0---1
-        */
-        //vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
-        //vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
-        //vTextOutput.push_back(vCorners[TOP_LEFT]);
-
-        // Triangle 2
-        /*
-            2---1
-             \  |
-              \ |
-               \|
-                0
-        */
-        //vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
-        //vTextOutput.push_back(vCorners[TOP_RIGHT]);
-        //vTextOutput.push_back(vCorners[TOP_LEFT]);
 
         // Triangle strip
         /*
@@ -667,7 +637,6 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Render Quad
-    // glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, vTextOutput.size());
 
     // Clean up OpenGL
@@ -692,6 +661,9 @@ Window coordinates in pixels
 */
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
+    // Change the texture class to store height and width, loaded dynamically
+    // Create a quad similar to text
+
     // This implementation is close to renderText.
 
     // Vector for storing VBO data.
