@@ -56,6 +56,11 @@
     <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
+    <ClInclude Include="Headers\Menus\EndMenu.h" />
+    <ClInclude Include="Headers\Menus\GameMenu.h" />
+    <ClInclude Include="Headers\Menus\MainMenu.h" />
+    <ClInclude Include="Headers\Menus\Menu.h" />
+    <ClInclude Include="Headers\Menus\PauseMenu.h" />
     <ClInclude Include="Headers\Physics\PhysicsCallBack.h" />
     <ClInclude Include="Headers\Physics\PhysicsManager.h" />
     <ClInclude Include="Headers\Mesh.h" />
@@ -110,6 +115,11 @@
     <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\Menus\EndMenu.cpp" />
+    <ClCompile Include="Source\Menus\GameMenu.cpp" />
+    <ClCompile Include="Source\Menus\MainMenu.cpp" />
+    <ClCompile Include="Source\Menus\Menu.cpp" />
+    <ClCompile Include="Source\Menus\PauseMenu.cpp" />
     <ClCompile Include="Source\Physics\PhysicsCallBack.cpp" />
     <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Source\main.cpp" />
