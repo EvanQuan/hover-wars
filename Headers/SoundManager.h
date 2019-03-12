@@ -59,6 +59,7 @@ public:
         SOUND_HONK_LEFT,
 
         MUSIC_INGAME,
+        MUSIC_PAUSE,
     };
 
     void play(eSoundEvent sound);
@@ -214,6 +215,8 @@ private:
         {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
+                                         }},
+        {MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
                                          }},
     };
 };

@@ -412,11 +412,10 @@ void SoundManager::loadEvent(const string& sEventName) {
 /*
     Play an event.
 
-    Currently, only one instance of each event can play at a time, as additional
-    concurrent calls will just reset the event's audio back to the start instead of
-    overlapping a new instance.
+    Multiple instances of each event can be played to allow for events to overlap.
 
-    @param sEventName   
+    @param sEventName   path to event to play. All valid paths are recorded in
+                        the eventToSound map.
 */
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);

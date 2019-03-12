@@ -76,6 +76,7 @@ int main()
             // TODO renable later
 #ifdef NDEBUG
             m_soundManager->play(SoundManager::MUSIC_INGAME);
+            // m_soundManager->play(SoundManager::MUSIC_PAUSE);
 #endif
 
             // Main loop
