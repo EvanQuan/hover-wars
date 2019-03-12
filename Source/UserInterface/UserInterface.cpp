@@ -580,7 +580,9 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
-    // m_pShdrMngr->setUniformBool()// shader, name, value
+    // Is text, not an image. This distinguishment needs to be made since images and
+    // text share the same shader.
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", false);
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
@@ -641,6 +643,8 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         vTextOutput.push_back(vCorners[TOP_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_LEFT]);
 
+        // vTextOutput
+
         // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
         x += (ch.advance >> 6) * scale; // >> 6 == 1/64 (2^6 = 64)
     }
@@ -652,6 +656,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
 
     // Render Quad
     glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
+    // glDrawArrays(GL_TRIANGLE_STRIP, 0, vTextOutput.size());
 
     // Clean up OpenGL
     glBindVertexArray(0);
@@ -683,13 +688,29 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
-    // m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
-    // m_pShdrMngr->setUniformBool()// shader, name, value
+    // TODO check if this needs to be set at all?
+    // COLOR_WHITE is an arbitrary filler color
+    m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &COLOR_WHITE);
+    // Is an image, not text. This distinguishment needs to be made since images and
+    // text share the same shader.
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
+
+    // Update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, vTextOutput.size() * sizeof(vec4), vTextOutput.data(), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Render Quad
+    glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
+
+    // Clean up OpenGL
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 /*
