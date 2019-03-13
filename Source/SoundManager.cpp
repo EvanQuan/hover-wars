@@ -568,19 +568,39 @@ void SoundManager::setSpeedParameter(float speed) {
     updateChannels();
 }
 
-void SoundManager::pauseAll(bool pause) {
-    if (pause) {
+void SoundManager::pauseAll() {
+    if (isPaused) {
+        isPaused = false;
+    }
+    else {
+        isPaused = true;
+    }
+
+    if (isPaused) {
         // Pause all the playing event, and play pause music
         for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
         {
             it->second->setPaused(true);
         }
-        play(SOUND_MUSIC_PAUSE_LOOP);
+        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+        tFoundIt->second->setPaused(false);
+        playEvent(getPath(MUSIC_PAUSE));
     }
     else {
         // Unpause event and end pause music
-
+        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+        {
+            bool eventPaused;
+            it->second->getPaused(&eventPaused);
+            if (eventPaused) {
+                it->second->setPaused(false);
+            }
+            else {
+                it->second->setPaused(true);
+            }
+        }
     }
+    updateChannels();
 }
 
 void SoundManager::upPosition() {

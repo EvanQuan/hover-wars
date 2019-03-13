@@ -87,7 +87,7 @@ public:
     // Change to private method
     void setSpeedParameter(float speed);
 
-    void pauseAll(bool pause);
+    void pauseAll();
 
     void upPosition();
     void downPosition();
@@ -148,6 +148,7 @@ private:
     bool isEventPlaying(const string& sEventName) const;
     float dbToVolume(float db);
     float volumeTodB(float volume);
+    bool isPaused = false;
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
@@ -208,6 +209,8 @@ private:
         {SOUND_TRAIL,                    { "event:/trail/trail",
                                          }},
         {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
+                                         }},
+        {SOUND_MUSIC_PAUSE_LOOP,         { "event:/background/music_loop_pause",
                                          }},
         {SOUND_KILL_FIRST_BLOOD,         { "event:/kill/firstblood",
                                          }},

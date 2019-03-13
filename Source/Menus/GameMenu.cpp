@@ -169,6 +169,7 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
        break;
     case COMMAND_MENU_PAUSE:
         GAME_MANAGER->togglePaused();
+        SOUND_MANAGER->pauseAll();
         // nextMenu(PauseMenu::getInstance());
        break;
     case COMMAND_MENU_START:
