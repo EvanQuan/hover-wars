@@ -108,7 +108,6 @@ private:
     unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand =
     {
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
-        {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
         {GLFW_KEY_ENTER,        COMMAND_MENU_START},
         {GLFW_KEY_W,            COMMAND_MOVE_FORWARD},
         {GLFW_KEY_A,            COMMAND_MOVE_LEFT},
@@ -121,6 +120,7 @@ private:
     // These commands are issued only if the player has just pressed these keys
     unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand =
     {
+        {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_LEFT_CONTROL, COMMAND_ABILITY_SPIKES},
