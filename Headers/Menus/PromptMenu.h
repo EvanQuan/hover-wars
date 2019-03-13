@@ -38,9 +38,13 @@ private:
     float m_fSecondsToNextRepeat;
 
     eFixedCommand joystickStateToPromptDirection(float x, float y);
+
 protected:
     PromptMenu();
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
+
+    virtual void select() = 0;
+    virtual void back() = 0;
 
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
 

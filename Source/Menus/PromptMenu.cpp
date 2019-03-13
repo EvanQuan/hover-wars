@@ -78,7 +78,30 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
 {
     switch (command)
     {
-        
+    case COMMAND_PROMPT_UP:
+        int columns = m_vPrompts.at(m_iCurrentPromptX).size();
+        m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        break;
+    case COMMAND_PROMPT_LEFT:
+        int rows = m_vPrompts.size();
+        m_iCurrentPromptX = (m_iCurrentPromptX - 1) % rows;
+        break;
+    case COMMAND_PROMPT_DOWN:
+        int columns = m_vPrompts.at(m_iCurrentPromptX).size();
+        m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        break;
+    case COMMAND_PROMPT_RIGHT:
+        int rows = m_vPrompts.size();
+        m_iCurrentPromptX = (m_iCurrentPromptX + 1) % rows;
+        break;
+    case COMMAND_PROMPT_SELECT:
+        select();
+        break;
+    case COMMAND_PROMPT_BACK:
+        back();
+        break;
+    case COMMAND_CLOSE_WINDOW:
+        glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
     }
 }
 

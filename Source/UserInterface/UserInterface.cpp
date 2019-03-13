@@ -661,7 +661,7 @@ Window coordinates in pixels
 */
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-    Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
+    // Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
     // image->bindTexture(ShaderManager::eShaderType::UI_SHDR, );
     // Change the texture class to store height and width, loaded dynamically
     // Create a quad similar to text
@@ -680,6 +680,9 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     // Is an image, not text. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
+
+    // ??? TODO
+    // Texture loading stuff goes here?
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
