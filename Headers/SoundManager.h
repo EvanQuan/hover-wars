@@ -91,6 +91,9 @@ public:
 
     void upPosition();
     void downPosition();
+
+    void start();
+    void update();
 private:
 
     FMOD_3D_ATTRIBUTES testAttrubute;

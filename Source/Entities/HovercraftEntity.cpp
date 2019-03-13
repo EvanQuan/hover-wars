@@ -642,8 +642,6 @@ void HovercraftEntity::move(float x, float y)
     // if (isInControl)
     {
         m_pPhysicsComponent->move(x, y);
-        // make speed go from 0 to 1
-        SOUND_MANAGER->setSpeedParameter(getSpeed() / 30);
     }
 }
 

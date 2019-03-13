@@ -91,6 +91,8 @@ bool GameManager::renderGraphics()
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update();
 
+    SOUND_MANAGER->update();
+
     // Update Environment if the gamee is not paused
     // includes UI
     if (!paused)

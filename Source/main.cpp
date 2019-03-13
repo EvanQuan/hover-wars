@@ -75,9 +75,10 @@ int main()
             m_soundManager->loadFiles();
             // TODO renable later
 #ifdef NDEBUG
-            m_soundManager->play(SoundManager::MUSIC_INGAME);
+            // m_soundManager->play(SoundManager::MUSIC_INGAME);
             // m_soundManager->play(SoundManager::MUSIC_PAUSE);
 #endif
+            m_soundManager->start();
 
             // Main loop
             m_gameManager->resetTime();
