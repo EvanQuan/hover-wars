@@ -1,3 +1,20 @@
 #include "Menus/Menu.h"
+#include "CommandHandler.h"
 
-// Singleton instance
+Menu::Menu()
+{
+
+}
+
+Menu::~Menu()
+{
+    // Nothing to delete
+}
+
+/*
+Change the CommandHandler's next menu
+*/
+void Menu::nextMenu(Menu* next)
+{
+    COMMAND_HANDLER->m_pCurrentMenu = next;
+}

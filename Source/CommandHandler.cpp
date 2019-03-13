@@ -1,4 +1,5 @@
 #include "CommandHandler.h"
+#include "Menus/GameMenu.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
@@ -21,8 +22,20 @@ Get Singleton instance
 CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
 {
     if (nullptr == m_pInstance)
+    {
         m_pInstance = new CommandHandler(rWindow);
+        // Set current menu is done after after the constructor to prevent
+        // mutual recursion
+        m_pInstance->setCurrentMenu(GameMenu::getInstance());
+    }
 
+    return m_pInstance;
+}
+
+// Assumes instances has already been instantiated beforehand
+CommandHandler* CommandHandler::getInstance()
+{
+    assert(nullptr != m_pInstance);
     return m_pInstance;
 }
 
@@ -33,10 +46,15 @@ CommandHandler::~CommandHandler()
 {
     // Delete all menu instances, which are created as needed as the player
     // navigates between menus
-    for (Menu* m : menuInstances)
+    for (Menu* m : m_vMenuInstances)
     {
         delete m;
     }
+}
+
+void CommandHandler::setCurrentMenu(Menu* menu)
+{
+    m_pCurrentMenu = menu;
 }
 
 /*
@@ -224,9 +242,15 @@ void CommandHandler::executeValidHovercraft(HovercraftEntity *hovercraft,
 Execute all the commands for a given frame. This should be called every frame
 update.
 */
-void CommandHandler::executeAllCommands()
+void CommandHandler::update()
 {
-    executeInputCommands();
+    m_pCurrentMenu->update();
+    // executeInputCommands();
+}
+
+void CommandHandler::addMenu(Menu* menu)
+{
+    m_vMenuInstances.push_back(menu);
 }
 
 /*

@@ -39,6 +39,12 @@ InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
     return m_pInstance;
 }
 
+InputHandler* InputHandler::getInstance()
+{
+    assert(nullptr != m_pInstance);
+    return m_pInstance;
+}
+
 InputHandler::~InputHandler()
 {
 }

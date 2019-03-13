@@ -22,6 +22,7 @@ public:
     };
 
     static InputHandler* getInstance(GLFWwindow *rWindow);
+    static InputHandler* getInstance();
     ~InputHandler();
 
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

@@ -6,7 +6,8 @@
 #include "GameManager.h"
 #include "InputHandler.h"
 #include "SoundManager.h"
-#include "Menus/Menu.h"
+// #include "Menus/Menu.h"
+class Menu;
 
 #ifndef NDEBUG
     #include "UserInterface/UserInterface.h"
@@ -24,10 +25,17 @@ class CommandHandler final
 {
 public:
     static CommandHandler* getInstance(GLFWwindow *rWindow);
+    static CommandHandler* getInstance();
     ~CommandHandler();
 
     // Execute all commands for a given frame.
-    void executeAllCommands();
+    void update();
+
+    void addMenu(Menu* menu);
+    void setCurrentMenu(Menu* menu);
+
+    GLFWwindow* m_pWindow;
+    Menu* m_pCurrentMenu;
 private:
     // Singleton Variables
     CommandHandler(GLFWwindow *rWindow);
@@ -35,7 +43,6 @@ private:
     EntityManager *m_pEntityManager;
     GameManager *m_pGameManager;
     InputHandler *m_pInputHandler;
-    GLFWwindow* m_pWindow;
     // Only player hovercrafts receive input from the CommandHandler.
     // Bots receive input from their AI components.
     std::vector<HovercraftEntity*> players;
@@ -51,7 +58,7 @@ private:
                                 eVariableCommand command, float x, float y);
 
     // For memory management
-    vector<Menu*> menuInstances;
+    vector<Menu*> m_vMenuInstances;
 
     // Internal variables
     // For keyboard command handling

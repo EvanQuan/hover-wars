@@ -89,7 +89,7 @@ bool GameManager::renderGraphics()
     // Execute all commands for this frame
     // These should be done before the environment updates so that the
     // environemnt can respond to the commands issued this frame.
-    m_pCommandHandler->executeAllCommands();
+    m_pCommandHandler->update();
 
     // Update Environment
     // includes UI
