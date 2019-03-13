@@ -60,6 +60,7 @@ public:
         SOUND_HONK_LEFT,
 
         MUSIC_INGAME,
+        MUSIC_PAUSE,
     };
 
     void play(eSoundEvent sound);
@@ -86,8 +87,13 @@ public:
     // Change to private method
     void setSpeedParameter(float speed);
 
+    void pauseAll();
+
     void upPosition();
     void downPosition();
+
+    void start();
+    void update();
 private:
 
     FMOD_3D_ATTRIBUTES testAttrubute;
@@ -145,6 +151,7 @@ private:
     bool isEventPlaying(const string& sEventName) const;
     float dbToVolume(float db);
     float volumeTodB(float volume);
+    bool isPaused = false;
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
@@ -206,6 +213,8 @@ private:
                                          }},
         {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
                                          }},
+        {SOUND_MUSIC_PAUSE_LOOP,         { "event:/background/music_loop_pause",
+                                         }},
         {SOUND_KILL_FIRST_BLOOD,         { "event:/kill/firstblood",
                                          }},
         {SOUND_KILL_DOMINATION,          { "event:/kill/domination",
@@ -225,6 +234,8 @@ private:
         {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
+                                         }},
+        {MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
                                          }},
     };
 };

@@ -11,7 +11,7 @@ public:
     Entity(const Entity& pCopy);
     virtual ~Entity();
 
-    virtual void update(float fTimeInMilliseconds) = 0;
+    virtual void update(float fTimeInSeconds) = 0;
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const = 0;
     // virtual void handleCollision(const Entity* pOther) const;
     virtual void handleCollision(Entity* pOther);

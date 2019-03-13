@@ -28,7 +28,7 @@ LightingComponent::~LightingComponent()
 }
 
 // Overloaded Update Function
-void LightingComponent::update(float fTimeDeltaInMilliseconds)
+void LightingComponent::update(float fTimeInSeconds)
 {
 
 }

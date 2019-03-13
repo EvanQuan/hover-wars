@@ -46,9 +46,11 @@
 
 #### Other
 
-**Left Click** - Spawns a particle Emitter at the mouse intersection with the xz-plane @ yAxis = 0
+**Left Click** - Spawns a particle Emitter at the mouse intersection with the
+             xz-plane @ yAxis = 0
 
-**Right Click** - Holding down Right Click and moving the mouse will allow you to adjust the camera around the vehicle
+**Right Click** - Holding down Right Click and moving the mouse will allow you
+              to adjust the camera around the vehicle
 
 #### Debug Commands (for Debug mode only)
 
@@ -86,7 +88,8 @@
 
 #### XBOX Controller
 
-**Left Joystick** - Applies a force on the vehicle in that direction on the xz-plane, WRT to Vehicle space.
+**Left Joystick** - Applies a force on the vehicle in that direction on the
+                xz-plane, WRT to Vehicle space.
 
 **Right Joystick** - Rotates the vehicle left or right.
 
@@ -262,6 +265,9 @@ Base points gained for killing a bot **10**
 Base points gained for killing a player **50**
 - It is more rewarding to hit another player than a bot
 
+Points gained for getting the first kill of the round (first blood) **150**
+- Incentivize aggressive play at the start of the round.
+
 Points gained for getting revenge **100**
 - This gives an incentive to players to seek revenge other other players
 - Provides a means for players who are not performing too well to catch up,
@@ -310,27 +316,33 @@ Music
 Collision sounds
 - Different entities result in different collision sound events.
     - Hovercraft against hovercraft
-    - Hovecraft against world
+    - Hovercraft against world
     - Rocket against hovercraft (implemented, but not testable)
     - Flame against hovercraft (implemented, but not testable)
     - Spikes against hovercraft
     - Hovercraft and powerup (not implemented)
-- Sound events can randomize between a pool of available sound for that sound event to increase variance. Random sound pools implemented for.
+- Sound events can randomize between a pool of available sound for that sound
+  event to increase variance. Random sound pools implemented for.
     - Hovercraft against hovercraft
     - Hovercraft against world
     - Spike activation
+
+- First blood
+    - First blood sound plays when the first kill is made
 
 - Killstreaks
     - Killstreak sound plays when players reaches a high killstreak
     
 - Domination/Revenge
-    - Domination and revenge sounds play when players dominate another player or get revenge
+    - Domination and revenge sounds play when players dominate another player
+      or get revenge
 
 - AI 
-	-The AI works on a basic follow model. 
-	-it oscillates between following the player and seeking a random point on the map.
-	-The goal of this AI is to collide with the player with spikes engaged. 
-	-This will result in the AI gaining a point.
+    - The AI works on a basic follow model. 
+    - It oscillates between following the player and seeking a random point on
+      the map.
+    - The goal of this AI is to collide with the player with spikes engaged. 
+    - This will result in the AI gaining a point.
 
 ## Team
 

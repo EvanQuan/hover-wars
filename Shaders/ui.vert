@@ -6,8 +6,13 @@ layout (location = 0) in vec4 vertex;	// <vec2 pos, vec2 tex>
 uniform mat4 UIProjection;
 out vec2 TexCoords;
 
-/*
- * Do not alter the position of anything.
+/**
+ * User Interface Shader.
+ *
+ * Used for all the text and images of the user interface.
+ * Since the UI should always be visible as the camera moves,
+ * we do not want to alter the position of anything.
+ * This maintains all the vertices unaltered in screen space.
  */
 void main(void)
 {

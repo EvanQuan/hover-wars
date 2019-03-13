@@ -412,11 +412,10 @@ void SoundManager::loadEvent(const string& sEventName) {
 /*
     Play an event.
 
-    Currently, only one instance of each event can play at a time, as additional
-    concurrent calls will just reset the event's audio back to the start instead of
-    overlapping a new instance.
+    Multiple instances of each event can be played to allow for events to overlap.
 
-    @param sEventName   
+    @param sEventName   path to event to play. All valid paths are recorded in
+                        the eventToSound map.
 */
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
@@ -564,11 +563,41 @@ void SoundManager::setSpeedParameter(float speed) {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
 
     if (speed >= 0.0 && speed <= 1.0) {
-        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0 * speed));
+        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0f * speed));
     }
     updateChannels();
 }
 
+void SoundManager::pauseAll() {
+    // Toggle pause status
+    isPaused = !isPaused;
+
+    if (isPaused) {
+        // Pause all the playing event, and play pause music
+        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+        {
+            it->second->setPaused(true);
+        }
+        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+        tFoundIt->second->setPaused(false);
+        playEvent(getPath(MUSIC_PAUSE));
+    }
+    else {
+        // Unpause event and end pause music
+        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+        {
+            bool eventPaused;
+            it->second->getPaused(&eventPaused);
+            it->second->setPaused(!eventPaused);
+        }
+        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+        tFoundIt->second->setPaused(true);
+        tFoundIt->second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+    }
+    updateChannels();
+}
+
+// @Deprecated
 void SoundManager::upPosition() {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
     vec3 testingP = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getPosition();
@@ -580,9 +609,22 @@ void SoundManager::upPosition() {
     updateChannels();
 }
 
+// @Deprecated
 void SoundManager::downPosition() {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
-    testAttrubute.position.x-10;
+    testAttrubute.position.x -= 10;
     tFoundIt->second->set3DAttributes(&testAttrubute);
     updateChannels();
+}
+
+void SoundManager::start() {
+    play(MUSIC_INGAME);
+    play(SOUND_HOVERCAR_ENGINE);
+}
+
+// Call every frame (or more often)
+void SoundManager::update() {
+    // make speed go from 0 to 1
+    // Balance volume of engine sound with music
+    setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30);
 }

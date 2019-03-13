@@ -58,6 +58,12 @@
     <Filter Include="Header Files\UserInterface">
       <UniqueIdentifier>{01228060-9855-449b-87bb-94d878aa52d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Menus">
+      <UniqueIdentifier>{4949155c-1faa-4f21-a005-91beb815752d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Menus">
+      <UniqueIdentifier>{284b2245-30e6-4ad0-8326-4ac1014ddc70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\ImageReader.h">
@@ -225,9 +231,6 @@
     <ClInclude Include="Headers\Physics\PhysicsCallBack.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\RocketPhysicsComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h">
       <Filter>Header Files\EntityComponentHeaders</Filter>
     </ClInclude>
@@ -248,6 +251,24 @@
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\Spikes.h">
       <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\EndMenu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\GameMenu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\MainMenu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\Menu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\PauseMenu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\PromptMenu.h">
+      <Filter>Header Files\Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -398,9 +419,6 @@
     <ClCompile Include="Source\Physics\PhysicsCallBack.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\EntityComponents\RocketPhysicsComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
     <ClCompile Include="Source\EntityComponents\AIComponent.cpp">
       <Filter>Source Files\EntityComponents</Filter>
     </ClCompile>
@@ -418,6 +436,24 @@
     </ClCompile>
     <ClCompile Include="Source\Entities\Spikes.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\EndMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\GameMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\MainMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\Menu.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\PauseMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\PromptMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

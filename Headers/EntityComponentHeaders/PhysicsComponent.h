@@ -29,7 +29,7 @@ public:
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 
     //    moreso for it to hold and manage the physics information for the entity while providing functions that allow
     //    the entity to query their physics component for desired information.
-    void update(float fTimeDeltaInMilliseconds); // Overloading Parent's virtual update function
+    void update(float fTimeInSeconds); // Overloading Parent's virtual update function
 
     void move(float x, float y);
     void moveGlobal(float x, float y);
@@ -45,6 +45,9 @@ public:
     void getTransformMatrix(mat4* pReturnTransformMatrix);
     glm::vec3 PhysicsComponent::getPosition();
     PxTransform getGlobalPose();
+
+    // Returns the Direction Vector of the current Physics Object
+    void getDirectionVector(vec3* vReturnVector);
 private:
     bool isInAir;
     /*

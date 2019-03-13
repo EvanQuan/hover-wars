@@ -61,6 +61,7 @@ using namespace physx;
 #define INPUT_SIZE          128
 #define RELEASE_ENV         "Scenes/release.scene" // file path
 #define DEBUG_ENV           "Scenes/debug.scene"   // file path
+#define DEBUG_NO_AI_ENV     "Scenes/debug_no_ai.scene"   // file path
 #define LIGHT_MOVE_FACTOR   0.05f
 #define PI                  3.1415926535f
 #define PI_2                6.28318530718f
@@ -188,10 +189,12 @@ Actor names are composed of 2 characters. The order of tokens are:
 // Mapping potential types from the scene loader to corresponding enums
 const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 {
-    make_pair("box", CUBIC_BOX)
+    make_pair("box", CUBIC_BOX),
+    make_pair("spatial", SPATIAL_CALC)
 };
 
 /* Manager Defines */
+#define COMMAND_HANDLER     CommandHandler::getInstance()
 #define EMITTER_ENGINE      EmitterEngine::getInstance()
 #define ENTITY_MANAGER      EntityManager::getInstance()
 #define GAME_MANAGER        GameManager::getInstance()
@@ -200,8 +203,8 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define PHYSICS_MANAGER     PhysicsManager::getInstance()
 #define SCENE_LOADER        SceneLoader::getInstance()
 #define SHADER_MANAGER      ShaderManager::getInstance()
-#define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
 #define SOUND_MANAGER       SoundManager::getInstance()
+#define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
 #define TEXTURE_MANAGER     TextureManager::getInstance()
 #define USER_INTERFACE      UserInterface::getInstance()
 

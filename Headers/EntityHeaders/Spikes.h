@@ -20,13 +20,13 @@ public:
     virtual ~Spikes();
 
     // Implementation of inherited functionality
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
     // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
 private:
-    Mesh* m_pBillboardMesh;
+    Mesh* m_pMesh;
     ObjectInfo m_pObjectInfo;
 
     vec3 m_vDimensions;

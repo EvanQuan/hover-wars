@@ -51,8 +51,8 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             int iColliderID = (*collider == C_SUBTYPE_GROUND ? GROUND_ID : stoi(collider));
             int iCollidedID = (*collided == C_SUBTYPE_GROUND ? GROUND_ID : stoi(collided));
 #ifndef NDEBUG
-            std::cout << "\tactor 0: " << collider << std::endl;
-            std::cout << "\tactor 1: " << collided << std::endl;
+            // std::cout << "\tactor 0: " << collider << std::endl;
+            // std::cout << "\tactor 1: " << collided << std::endl;
 #endif
 
             // Simply play sound when collided with ground

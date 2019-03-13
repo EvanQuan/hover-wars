@@ -9,12 +9,13 @@ const vec4 BOUNDING_BOX_COLOR = vec4(0.2235294117647059, 1.0, 0.0784313725490196
 // Default Constructor:
 //        Requires an EntityID for the Entity that the component is a part of
 //            and a ComponentID issued by the EntityManager.
-RenderComponent::RenderComponent(int iEntityID, int iComponentID, bool bStaticDraw, 
+RenderComponent::RenderComponent(int iEntityID, int iComponentID, bool bRenderShadows,
                                  ShaderManager::eShaderType eType, GLenum eMode )
     : EntityComponent( iEntityID, iComponentID )
 {
     m_bUsingIndices = false;
     m_bUsingInstanced = false;
+    m_bRenderShadows = bRenderShadows;
     m_eShaderType = eType;
     m_eMode = eMode;
     m_pShdrMngr = SHADER_MANAGER;
@@ -71,7 +72,7 @@ void RenderComponent::render()
 }
 
 // Overloaded Update Function
-void RenderComponent::update(float fTimeDeltaInMilliseconds)
+void RenderComponent::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

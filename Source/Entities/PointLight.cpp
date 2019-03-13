@@ -24,7 +24,7 @@ PointLight::~PointLight()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void PointLight::update(float fTimeInMilliseconds)
+void PointLight::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }
@@ -55,7 +55,7 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
     }
 
     // Create a Render Component
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, bStatic, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);
 
     // Create and Initialize the Lighting Component.
     m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);

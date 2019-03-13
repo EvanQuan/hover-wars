@@ -122,7 +122,7 @@ void PhysicsComponent::move(float x, float y) {
     // if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
-        PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+        PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
         body->addForce(vForce * MOVEMENT_FORCE);
         
         // TODO find out the angle in a better way
@@ -133,6 +133,7 @@ void PhysicsComponent::move(float x, float y) {
 PxTransform PhysicsComponent::getGlobalPose() {
     return body->getGlobalPose();
 }
+
 void PhysicsComponent::moveGlobal(float x, float y) {
     if ((x != 0 || y != 0)) {
         PxVec3 vForce = PxVec3(y, 0, x);
@@ -150,7 +151,7 @@ void PhysicsComponent::dash(float x, float y) {
     isDashing = true;
 
     PxTransform globalTransform = body->getGlobalPose();
-    PxVec3 vForce = globalTransform.q.rotate(PxVec3(y, 0, x));
+    PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
     body->addForce(vForce * DASH_FORCE);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);
@@ -177,7 +178,7 @@ PhysicsComponent::~PhysicsComponent()
 //    Maybe this needs to update aspects of the particular physics related to its entity?
 //    Maybe this just needs to communicate to the Physics Manager to grab and store updated 
 //    information that will be gathered by the Entity when they need it?
-void PhysicsComponent::update(float fTimeDeltaInSeconds)
+void PhysicsComponent::update(float fTimeInSeconds)
 {
     //PxVec3 vel = body->getLinearVelocity();
     //std::cout << vel.magnitude() << std::endl;
@@ -186,7 +187,7 @@ void PhysicsComponent::update(float fTimeDeltaInSeconds)
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
     // gVehicleNoDrive->
-    m_fSecondsSinceLastDash += fTimeDeltaInSeconds;
+    m_fSecondsSinceLastDash += fTimeInSeconds;
 
     if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
     {
@@ -194,7 +195,7 @@ void PhysicsComponent::update(float fTimeDeltaInSeconds)
     }
 
 
-    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeDeltaInSeconds);
+    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     // if (isInAir) {
         // cout << isInAir << endl;
     // }
@@ -218,7 +219,7 @@ void PhysicsComponent::initializeComponent(const char* sEntityID, bool bStatic, 
 {
     // Set up Internal Static qualifier.
     m_bStatic = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.y,bb->vDimensions.x, bb->vDimensions.z);
+    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
     body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
 }
@@ -257,4 +258,12 @@ glm::vec3 PhysicsComponent::getPosition() {
 glm::vec3 PhysicsComponent::getLinearVelocity() {
     physx::PxVec3 velocity = body->getLinearVelocity();
     return glm::vec3(velocity.x, velocity.y, velocity.z);
+}
+
+void PhysicsComponent::getDirectionVector(vec3* vReturnVector)
+{
+    PxQuat pRotationQuaternion = body->getGlobalPose().q;       // Get the Rotation Quaternion for the current global pose
+    PxVec3 vPxReturn = PxVec3(0.0f, 0.0f, 1.0f);                // We Want a forward vector (1 in z-axis) rotated with the global quaternion
+    vPxReturn = pRotationQuaternion.rotate(vPxReturn);          // Rotate the Forward Vector
+    memcpy(vReturnVector, &vPxReturn, sizeof(vec3));            // Copy PxVec3 to the return Vec3
 }

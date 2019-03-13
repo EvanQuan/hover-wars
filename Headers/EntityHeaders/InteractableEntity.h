@@ -17,18 +17,22 @@ class InteractableEntity
 {
 public:
     // Constructor / Destructor
-    InteractableEntity(int iID, int iOwnerID, const vec3* vPosition, eEntityType eIEType);
+    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityType eIEType);
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality
-    void update(float fTimeInMilliseconds);
-    void handleCollision(Entity* pOther);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
+    virtual void initialize(const string& sFileName,
+                            const ObjectInfo* pObjectProperties,
+                            const string& sShaderType,
+                            float fScale);
+    virtual void update(float fTimeInSeconds);
+    virtual void handleCollision(Entity* pOther);
+    virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
 protected:
     // Protected Variables
     int m_iOwnerID;
-    Mesh* m_pBillboardMesh;
+    Mesh* m_pMesh;
 
     // Entity Components
     RenderComponent* m_pRenderComponent;

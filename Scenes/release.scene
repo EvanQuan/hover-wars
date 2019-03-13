@@ -194,11 +194,30 @@ plane {
 # Mesh
 # Having the player start off the ground sort of fixes the initial
 # is in air bug
+# player {
+#     0 5 0
+#     +mesh {
+#         models/big_dodge.obj
+#         0.25
+#     }
+#     +material {
+#         textures/tronBase.png
+#         0.1 0.1 0.1
+#         20.0
+#     }
+#     +shader {
+#         blinn_phong_shdr
+#     }
+#     +bounding {
+#         box
+#         2.0 5.0 2.5
+#     }
+# }
 player {
     0 5 0
     +mesh {
-        models/big_dodge.obj
-        0.25
+        models/hovercraft/HoverCar.obj
+        0.012
     }
     +material {
         textures/tronBase.png
@@ -209,8 +228,7 @@ player {
         blinn_phong_shdr
     }
     +bounding {
-        box
-        2.0 5.0 2.5
+        spatial
     }
 }
 
