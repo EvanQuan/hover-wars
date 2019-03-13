@@ -104,6 +104,8 @@ void Menu::updateJoystickCommands()
 {
     m_pInputHandler->updateJoysticks();
 
+    eFixedCommand command;
+
     for (int joystickID = GLFW_JOYSTICK_1;
         joystickID < MAX_PLAYER_JOYSTICK;
         joystickID++)
@@ -115,24 +117,35 @@ void Menu::updateJoystickCommands()
             InputHandler::eInputState *buttons =
                 m_pInputHandler->m_joystickButtons[joystickID];
 
+            eHovercraft hovercraft = static_cast<eHovercraft>(joystickID);
+
             // Check buttons
             for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
             {
                 switch (buttons[button])
                 {
                 case InputHandler::INPUT_JUST_PRESSED:
-                    executeButtonFixedCommand(static_cast<eHovercraft>(joystickID),
-                        justPressedButtonToFixedCommand(buttons[button]));
+                    command = justPressedButtonToFixedCommand(button);
+                    if (command != COMMAND_INVALID_FIXED)
+                    {
+                        executeButtonFixedCommand(hovercraft, command);
+                    }
                     m_pInputHandler->m_joystickButtons[joystickID][button] =
                         InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
-                    executeButtonFixedCommand(static_cast<eHovercraft>(joystickID),
-                        repeatButtonToFixedCommand(buttons[button]));
+                    command = repeatButtonToFixedCommand(button);
+                    if (command != COMMAND_INVALID_FIXED)
+                    {
+                        executeButtonFixedCommand(hovercraft, command);
+                    }
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
-                    executeButtonFixedCommand(static_cast<eHovercraft>(joystickID),
-                        justReleasedButtonToFixedCommand(buttons[button]));
+                    command = justReleasedButtonToFixedCommand(button);
+                    if (command != COMMAND_INVALID_FIXED)
+                    {
+                        executeButtonFixedCommand(hovercraft, command);
+                    }
                     m_pInputHandler->m_joystickButtons[joystickID][button] =
                         InputHandler::INPUT_RELEASED;
                     break;
@@ -142,11 +155,11 @@ void Menu::updateJoystickCommands()
             // Check axes
             if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
             {
-                updateLeftStick(static_cast<eHovercraft>(joystickID), axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+                updateLeftStick(hovercraft, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
             }
             if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
             {
-                updateRightStick(static_cast<eHovercraft>(joystickID), axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+                updateRightStick(hovercraft, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
             }
         }
     }
