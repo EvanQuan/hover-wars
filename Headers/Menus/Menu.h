@@ -57,6 +57,15 @@ protected:
     virtual void updateKeyboardCommands() = 0;
     virtual void updateJoystickCommands() = 0;
 
+    virtual void updateKeyJustPressed(int key, int button) = 0;
+    virtual void updateKeyPressed(int key, int button) = 0;
+    virtual void updateKeyJustReleased(int key, int button) = 0;
+    // TODO make only deal with FixedCommand after key loop
+
+    virtual void updateButtonJustPressed(int joystickID, int button) = 0;
+    virtual void updateButtonPressed(int joystickID, int button) = 0;
+    virtual void updateButtonJustReleased(int joystickID, int button) = 0;
+
     InputHandler *m_pInputHandler;
 
     // Only player hovercrafts receive input from the Menu.
