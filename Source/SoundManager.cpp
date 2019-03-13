@@ -599,6 +599,9 @@ void SoundManager::pauseAll() {
                 it->second->setPaused(true);
             }
         }
+        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+        tFoundIt->second->setPaused(true);
+        tFoundIt->second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
     }
     updateChannels();
 }
