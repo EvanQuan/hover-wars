@@ -11,6 +11,11 @@
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <vector>
 
+enum ePhysicsAxis
+{
+
+};
+
 #define WHEEL_COUNT 4
 #define ROCKET_SPEED 50
 /***************************************************************

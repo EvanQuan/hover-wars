@@ -6,6 +6,9 @@
 /***********\
 * Defines *
 \***********/
+#define CURRENT_PROPERTIES_DEF     SceneLoader::m_sProperties[SceneLoader::CURRENT_PROPERTIES]
+#define ROCKET_PROPERTIES_DEF      SceneLoader::m_sProperties[SceneLoader::ROCKET_PROPERTIES]
+
 #define MAX_CHARS_PER_LINE     256
 #define MAX_SPHERE_PARAMS      4
 #define MAX_CUBE_PARAMS        6
@@ -35,6 +38,7 @@
 #define SHADER                 "shader"
 #define CUBE                   "cube"
 #define NAME                   "name"
+#define ROCKET                 "rocket"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -42,7 +46,7 @@ SceneLoader* SceneLoader::m_pInstance = nullptr;
 // Private Constructor
 SceneLoader::SceneLoader()
 {
-    clearProperties();
+    resetAllProperties();
 }
 
 // Returns the singleton instance of the Object Factory
@@ -66,9 +70,9 @@ void SceneLoader::createSphere( vector< string > sData, int iLength )
     // Create the Sphere if we're given the correct # of values
     if ( iLength == MAX_SPHERE_PARAMS )
     {
-        m_pObjectProperties.vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );    // Position of Sphere
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );    // Position of Sphere
 
-        ENTITY_MANAGER->generateStaticSphere(&m_pObjectProperties, stof(sData[3]), m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticSphere(&CURRENT_PROPERTIES_DEF.pObjectProperties, stof(sData[3]), CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
         outputError(SPHERE, sData);
@@ -83,11 +87,11 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
 
     if (iLength == MAX_PLANE_PARAMS)
     {
-        m_pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);        // Position of Plane
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);        // Position of Plane
         vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
         iHeight = stoi(sData[6]);
         iWidth = stoi(sData[7]);
-        ENTITY_MANAGER->generateStaticPlane(&m_pObjectProperties, iHeight, iWidth, &vNormal, m_sShaderProperty);
+        ENTITY_MANAGER->generateStaticPlane(&CURRENT_PROPERTIES_DEF.pObjectProperties, iHeight, iWidth, &vNormal, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
     {
@@ -137,14 +141,14 @@ void SceneLoader::createPointLight(vector< string > sData, int iLength)
 
     if (MAX_POINT_LIGHT_PARAMS == iLength)
     {
-        m_pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         pColor = vec3(stof(sData[3])/*R*/, stof(sData[4])/*G*/, stof(sData[5])/*B*/);
         fPower = stof(sData[6])/*P*/;
 
         // Set the Diffuse Color of the Material
-        m_pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(pColor * fPower, 1.0);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(pColor * fPower, 1.0);
 
-        ENTITY_MANAGER->generateStaticPointLight( &m_pObjectProperties, fPower, &pColor, m_sMeshProperty, m_fMeshScaleProperty);
+        ENTITY_MANAGER->generateStaticPointLight( &CURRENT_PROPERTIES_DEF.pObjectProperties, fPower, &pColor, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty);
     }
     else
         outputError(POINT_LIGHT, sData);
@@ -167,14 +171,14 @@ void SceneLoader::createSpotLight(vector< string > sData, int iLength)
     // Grab Data and give to Entity Manager
     if (MAX_SPOTLIGHT_PARAMS == iLength)
     {
-        m_pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         vDirection = vec3( stof(sData[3])/*dX*/, stof(sData[4])/*dY*/, stof(sData[5])/*dZ*/);
         vColor = vec3( stof(sData[6])/*R*/, stof(sData[7])/*G*/, stof(sData[8])/*B*/);
 
         // Set the Diffuse color of the material.
-        m_pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(vColor, 1.0);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(vColor, 1.0);
 
-        ENTITY_MANAGER->generateStaticSpotLight(&m_pObjectProperties, stof(sData[9]), fSoftCutoff, &vColor, &vDirection, m_sMeshProperty, m_fMeshScaleProperty);
+        ENTITY_MANAGER->generateStaticSpotLight(&CURRENT_PROPERTIES_DEF.pObjectProperties, stof(sData[9]), fSoftCutoff, &vColor, &vDirection, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty);
     }
     else
     {
@@ -189,10 +193,10 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 
     if (MAX_CUBE_PARAMS == iLength)
     {
-        m_pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
 
-        ENTITY_MANAGER->generateStaticCube(&m_pObjectProperties, &vDimensions);
+        ENTITY_MANAGER->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions);
     }
     else
         outputError(CUBE, sData);
@@ -203,9 +207,9 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 //        object from a scene file.
 void SceneLoader::createPlayer(vector< string > sData, int iLength)
 {
-    m_pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
+    CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
 
-    ENTITY_MANAGER->generatePlayerEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
+    ENTITY_MANAGER->generatePlayerEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
 }
 
 // Generates a Bot Object at a given position
@@ -213,9 +217,9 @@ void SceneLoader::createPlayer(vector< string > sData, int iLength)
 //        object from a scene file.
 void SceneLoader::createBot(vector< string > sData, int iLength)
 {
-    m_pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
+    CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
 
-    ENTITY_MANAGER->generateBotEntity(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty );
+    ENTITY_MANAGER->generateBotEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
 }
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
@@ -223,9 +227,21 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
     // Add a number of Static Meshes with the same Properties to all specified positions.
     for (unsigned int i = 0; i + 3 <= iLength; i += 3)
     {
-        m_pObjectProperties.vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);    // Position of Mesh
-        ENTITY_MANAGER->generateStaticMesh(&m_pObjectProperties, m_sMeshProperty, m_fMeshScaleProperty, m_sShaderProperty);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);    // Position of Mesh
+        ENTITY_MANAGER->generateStaticMesh(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
+}
+
+// Saves the Information for a Rocket Mesh from the Scene Loader
+void SceneLoader::saveRocketInfo()
+{
+    ROCKET_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
+}
+
+// Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
+Rocket* SceneLoader::createRocketMesh( int iOwnerID )
+{
+    return ENTITY_MANAGER->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
 }
 
 // Initializes the Spatial Data Map for the scene
@@ -255,6 +271,9 @@ void SceneLoader::loadFromFile( string sFileName )
     // Parse File if opened properly
     if ( inFile.good() )
     {
+        // Reset all Properties first
+        resetAllProperties();
+
         // Parse to eof
         while ( !inFile.eof() )
         {
@@ -343,7 +362,7 @@ void SceneLoader::pullData( ifstream& inFile, vector< string >& sReturnData )
                 sReturnData.push_back( sParser );
             }
         }
-    } while ( "}" != sReturnData.back() );                  // Repeat until end delimiter
+    } while ( sReturnData.empty() || "}" != sReturnData.back() );                  // Repeat until end delimiter
 
                                                             // remove "}" from end of Data List
     sReturnData.pop_back();
@@ -371,6 +390,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         initializeSpatialMap(sData, sData.size());
     else if (CUBE == sIndicator)                        // Parse Cube
         createCube(sData, sData.size());
+    else if (ROCKET == sIndicator)                      // Parse Rocket information
+        saveRocketInfo();
 
     clearProperties();
 }
@@ -386,11 +407,11 @@ void SceneLoader::handleProperty( vector< string >& sData, const string& sIndica
         grabBoundingBox(sData);
     else if (MESH == sIndicator)
     {
-        m_sMeshProperty = sDataTrimmed;
-        m_fMeshScaleProperty = sData.size() > 1 ? stof(sData[1]) : 1.0f;
+        CURRENT_PROPERTIES_DEF.sMeshLocation = sDataTrimmed;
+        CURRENT_PROPERTIES_DEF.fScaleProperty = sData.size() > 1 ? stof(sData[1]) : 1.0f;
     }
     else if (SHADER == sIndicator)
-        m_sShaderProperty = sDataTrimmed;
+        CURRENT_PROPERTIES_DEF.sShaderProperty = sDataTrimmed;
 }
 
 // Grabs a Material from the given data
@@ -408,19 +429,19 @@ void SceneLoader::grabMaterial(vector< string >& sData)
     switch (sData.size())
     {
     case 2:    // Diffuse Map and Shininess Value
-        m_pObjectProperties.sObjMaterial.sDiffuseMap = sData[0];
-        m_pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(0.0f);
-        m_pObjectProperties.sObjMaterial.fShininess = stof(sData[1]);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.sDiffuseMap = sData[0];
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(0.0f);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.fShininess = stof(sData[1]);
         break;
     case 3: // Diffuse Map, Spec Map location and Shininess Value
-        m_pObjectProperties.sObjMaterial.sDiffuseMap = sData[0];
-        m_pObjectProperties.sObjMaterial.sOptionalSpecMap = sData[1];
-        m_pObjectProperties.sObjMaterial.fShininess = stof(sData[2]);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.sDiffuseMap = sData[0];
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.sOptionalSpecMap = sData[1];
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.fShininess = stof(sData[2]);
         break;
     case 5: // Diffuse Map, Spec Map Shade and Shininess Value
-        m_pObjectProperties.sObjMaterial.sDiffuseMap = sData[0];
-        m_pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(stof(sData[1]), stof(sData[2]), stof(sData[3]), 0.0f);
-        m_pObjectProperties.sObjMaterial.fShininess = stof(sData[4]);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.sDiffuseMap = sData[0];
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(stof(sData[1]), stof(sData[2]), stof(sData[3]), 0.0f);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.fShininess = stof(sData[4]);
         break;
     default:
         cout << "Error: Double Check Material parameters:{ \n";
@@ -450,13 +471,15 @@ void SceneLoader::grabBoundingBox(vector< string >& sData)
     else
     {
         // Grab eNum via the string identifier read in from scene file.
-        m_pObjectProperties.sObjBoundingBox.eType = BOUNDING_BOX_MAP.at(sData[0]);
+        CURRENT_PROPERTIES_DEF.pObjectProperties.sObjBoundingBox.eType = BOUNDING_BOX_MAP.at(sData[0]);
 
         // Handle Bounding Box Type
-        switch (m_pObjectProperties.sObjBoundingBox.eType)
+        switch (CURRENT_PROPERTIES_DEF.pObjectProperties.sObjBoundingBox.eType)
         {
         case CUBIC_BOX:
-            m_pObjectProperties.sObjBoundingBox.vDimensions = vec3(stof(sData[1])/*Height*/, stof(sData[2])/*Length*/, stof(sData[3])/*Depth*/);   // Dimensions of a Cubic Box
+            CURRENT_PROPERTIES_DEF.pObjectProperties.sObjBoundingBox.vDimensions = vec3(stof(sData[1])/*Height*/, stof(sData[2])/*Length*/, stof(sData[3])/*Depth*/);   // Dimensions of a Cubic Box
+            break;
+        case SPATIAL_CALC:
             break;
         default:    // Unsure how this happened, output an error message.
             cout << "Error: Double Check Bounding Box parameters:{ \n";
@@ -492,17 +515,12 @@ string SceneLoader::trimString( const string& sStr )
 // Clear Any Properties that have been created on the last data parse.
 void SceneLoader::clearProperties() // Clear any properties
 {
-    // Clear Basic Properties
-    m_sMeshProperty = m_sShaderProperty = m_sNameProperty = "";
-    m_fMeshScaleProperty = 1.0f;
+    CURRENT_PROPERTIES_DEF.resetProperties();
+}
 
-    // Clear Material Properties
-    m_pObjectProperties.sObjMaterial.fShininess = 1.0f;
-    m_pObjectProperties.sObjMaterial.sDiffuseMap =  m_pObjectProperties.sObjMaterial.sOptionalSpecMap = "";
-    m_pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(0.0f);
-    m_pObjectProperties.sObjMaterial.vOptionalSpecShade = vec4(0.0f);
-
-    // Clear Bounding Box Properties
-    m_pObjectProperties.sObjBoundingBox.eType = DEFAULT_TYPE;
-    m_pObjectProperties.sObjBoundingBox.vDimensions = vec3(0.0f);
+// Clear All Properties, designed to be called before loading a new scene
+void SceneLoader::resetAllProperties() 
+{
+    for( unsigned int eIndex = 0; eIndex < MAX_PROPERTIES; ++eIndex )
+        m_sProperties[eIndex].resetProperties();
 }

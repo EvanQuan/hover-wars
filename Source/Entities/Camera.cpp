@@ -53,7 +53,7 @@ Camera::~Camera()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void Camera::update(float fTimeInMilliseconds)
+void Camera::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

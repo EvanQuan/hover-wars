@@ -18,7 +18,7 @@ StaticEntity::~StaticEntity()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void StaticEntity::update(float fTimeInMilliseconds)
+void StaticEntity::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }
@@ -38,7 +38,7 @@ void StaticEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCo
 void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType)
 {
     m_pMesh = MESH_MANAGER->generatePlaneMesh(&m_iTransformationIndex, true, iHeight, iWidth, pObjectProperties, *vNormal);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
 
     m_eType = ENTITY_PLANE; // Set the Entity Type to Plane to avoid reference within the Spatial Map.
 

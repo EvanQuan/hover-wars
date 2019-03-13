@@ -580,17 +580,15 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindVertexArray(m_iVertexArray);
     glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &color);
-    // m_pShdrMngr->setUniformBool()// shader, name, value
+    // Is text, not an image. This distinguishment needs to be made since images and
+    // text share the same shader.
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", false);
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
     glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
     SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
-    // TODO
-    // Need a different shader for images
-    // Change the texture class to store height and width, loaded dynamically
-    // Create a quad similar to text
     // Iterate through all Characters
     string::const_iterator c;
     for (c = text.begin(); c != text.end(); ++c)
@@ -615,35 +613,81 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
-        // TODO, use triangle strip instead to reduce vertices to 4
-        // Update VBO for each character
-        // Triangle 1:
+        // Triangle strip
         /*
-            2
-            |\
-            | \ 
-            |  \
+            
+            2---3
+            |\  |
+            | \ |
+            |  \|
             0---1
         */
         vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
         vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_LEFT]);
-
-        // Triangle 2
-        /*
-            2---1
-             \  |
-              \ |
-               \|
-                0
-        */
-        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_RIGHT]);
-        vTextOutput.push_back(vCorners[TOP_LEFT]);
 
         // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
         x += (ch.advance >> 6) * scale; // >> 6 == 1/64 (2^6 = 64)
     }
+
+    // Update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, vTextOutput.size() * sizeof(vec4), vTextOutput.data(), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Render Quad
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, vTextOutput.size());
+
+    // Clean up OpenGL
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+/*
+TODO Use hashmap for image instead of image filepath directly
+Render image to the screen.
+
+Window coordinates in pixels
+(0, height)     (width, height)
+
+
+(0, 0)          (width, 0)
+
+@param filepath of image
+@param x        x-coordinate of the bottom-left corner of text, in pixels
+@param y        y-coordinate of the bottom-left corner of text, in pixels
+@param scale    image, where 1.0 is the default size
+*/
+void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
+{
+    // Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
+    // image->bindTexture(ShaderManager::eShaderType::UI_SHDR, );
+    // Change the texture class to store height and width, loaded dynamically
+    // Create a quad similar to text
+
+    // This implementation is close to renderText.
+
+    // Vector for storing VBO data.
+    vector<vec4> vTextOutput;
+
+    // Set up OpenGL for Rendering
+    glBindVertexArray(m_iVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
+    // TODO check if this needs to be set at all?
+    // COLOR_WHITE is an arbitrary filler color
+    m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &COLOR_WHITE);
+    // Is an image, not text. This distinguishment needs to be made since images and
+    // text share the same shader.
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
+
+    // ??? TODO
+    // Texture loading stuff goes here?
+
+    // Bind Texture.
+    glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
+    SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
@@ -656,14 +700,6 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     // Clean up OpenGL
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-/*
-Use hashmap for image intead of image filepath directly
-*/
-void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
-{
-
 }
 
 /*

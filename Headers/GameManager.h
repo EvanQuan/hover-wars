@@ -46,6 +46,10 @@ public:
     UserInterface* m_pUserInterface;
 #endif
 
+    bool isPaused() const { return paused; }
+    void setPaused(bool paused) { this->paused = paused; }
+    void togglePaused() { paused = !paused; }
+
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 
@@ -78,6 +82,9 @@ private:
     ShaderManager* m_pShaderManager;
     CommandHandler* m_pCommandHandler;
     GameTime m_pTimer;
+
+    // If the game is paused, the environment will not update
+    bool paused;
 
 #ifdef NDEBUG
     // User interface is normally private.

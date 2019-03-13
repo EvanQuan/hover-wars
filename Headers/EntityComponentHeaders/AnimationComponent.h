@@ -23,7 +23,7 @@ public:
     virtual ~AnimationComponent();
 
     // Inherited update frunction from EntityComponent
-    void update(float fTimeDeltaInMilliseconds);
+    void update(float fTimeInSeconds);
 
     // Allows the user to add a billboard at a given position.
     void addBillboard(const vec3* vPosition, const vec3* vNormal);

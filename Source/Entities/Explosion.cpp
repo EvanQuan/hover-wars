@@ -2,7 +2,7 @@
 
 // Default Constructor
 Explosion::Explosion(int iID, int iOwnerID, const vec3* vPosition)
-    : InteractableEntity( iID, iOwnerID, vPosition, ENTITY_ROCKET )
+    : InteractableEntity( iID, iOwnerID, *vPosition, ENTITY_ROCKET )
 {
     // aLl interactable entities need collision detection
     // m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
@@ -18,7 +18,7 @@ Explosion::~Explosion()
  * Inherited Pure Virtual Functions                                *
 \****************************************************************/
 
-void Explosion::update(float fTimeInMilliseconds)
+void Explosion::update(float fTimeInSeconds)
 {
     /* Not Implemented */
 }

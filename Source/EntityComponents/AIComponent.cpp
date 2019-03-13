@@ -165,7 +165,7 @@ void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm:
         }
     }
 }
-void AIComponent::update(float fTimeDeltaInMilliseconds)
+void AIComponent::update(float fTimeInSeconds)
 {
-    timeChased += fTimeDeltaInMilliseconds;
+    timeChased += fTimeInSeconds;
 }

@@ -66,7 +66,7 @@ int main()
 #ifdef NDEBUG
             iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
 #else
-            iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
+            iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
 #endif
             m_shaderManager = SHADER_MANAGER;
 
@@ -76,11 +76,12 @@ int main()
             // TODO renable later
 #ifdef NDEBUG
             m_soundManager->play(SoundManager::MUSIC_INGAME);
+            // m_soundManager->play(SoundManager::MUSIC_PAUSE);
 #endif
 
             // Main loop
             m_gameManager->resetTime();
-            while (iRunning)                
+            while (iRunning)
                 iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
         }
 
@@ -122,7 +123,7 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
     GLFWmonitor* pMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(pMonitor);
 
-    // Set Window Hints based on 
+    // Set Window Hints based on
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);

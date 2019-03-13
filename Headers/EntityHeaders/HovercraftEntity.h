@@ -4,10 +4,15 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "EntityComponentHeaders/CameraComponent.h"
-#include "FlameTrail.h"
 #include "SpatialDataMap.h"
 #include "GameStats.h"
 #include <queue>
+
+/************************\
+ * Forward Declarations *
+\************************/
+class FlameTrail;
+class Rocket;
 
 /***********\
  * Defines *
@@ -98,10 +103,10 @@ public:
     virtual ~HovercraftEntity();
 
     // Implementation of inherited functionality
-    void update(float fTimeInMilliseconds);
+    void update(float fTimeInSeconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    void getHitBy(eEntityType eHitByType, unsigned int iNumber);
+    void getHitBy(eEntityType eHitByType, eHovercraft iNumber);
     // virtual void hit(eEntityType eHitByType, unsigned int iNumber) const = 0;
     // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
@@ -167,6 +172,7 @@ private:
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     FlameTrail* m_pFireTrail;
+    Rocket* m_pRocket;
 
     /*
     These should lag behind
@@ -179,19 +185,19 @@ private:
     quat m_qCurrentCameraRotation;
 
     // Private Functions
-    void updateCameraLookAts(float fSecondsSinceLastUpdate);
-    void updateCameraPosition(float fSecondsSinceLastUpdate);
-    void updateCameraRotation(float fSecondsSinceLastUpdate);
-    void updateCooldowns(float fSecondsSinceLastUpdate);
+    void updateCameraLookAts(float fTimeInSeconds);
+    void updateCameraPosition(float fTimeInSeconds);
+    void updateCameraRotation(float fTimeInSeconds);
+    void updateCooldowns(float fTimeInSeconds);
 
     // Abilities
     void shootRocket();
     void activateSpikes();
-    void updateSpikes(float fSecondsSinceLastUpdate);
+    void updateSpikes(float fTimeInSeconds);
 
     void activateTrail();
     void deactivateTrail();
-    void updateTrail(float fSecondsSinceLastUpdate);
+    void updateTrail(float fTimeInSeconds);
     void createTrailInstance();
 
     void dash(eAbility direction);

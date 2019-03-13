@@ -85,9 +85,8 @@ Mass : kilograms
 */
 #define CHASSIS_MASS 2000.0 // 1000
 
-
 /****************************************************************************\
- * Singleton Implementation                                                    *
+ * Singleton Implementation                                                 *
 \****************************************************************************/
 
 // Initializing Static Physics Manager Singleton 
@@ -488,6 +487,7 @@ PxVehicleNoDrive *PhysicsManager::createPlayerEntity(const char* sEntityID, floa
 
     return gVehicleNoDrive;
 }
+
 /********************************************************************************\
  * Private Functions                                                            *
 \********************************************************************************/

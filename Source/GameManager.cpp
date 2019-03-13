@@ -89,11 +89,14 @@ bool GameManager::renderGraphics()
     // Execute all commands for this frame
     // These should be done before the environment updates so that the
     // environemnt can respond to the commands issued this frame.
-    m_pCommandHandler->executeAllCommands();
+    m_pCommandHandler->update();
 
-    // Update Environment
+    // Update Environment if the gamee is not paused
     // includes UI
-    m_pEntityManager->updateEnvironment(&m_pTimer);
+    if (!paused)
+    {
+        m_pEntityManager->updateEnvironment(&m_pTimer);
+    }
 
     // call function to draw our scene
     while (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
