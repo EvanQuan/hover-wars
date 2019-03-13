@@ -85,7 +85,7 @@ Mass : kilograms
 */
 #define CHASSIS_MASS 2000.0 // 1000
 
-
+// the following are offsets related to the chasis center of mass position
 #define XOFFSET_MULTIPLYER 0
 #define YOFFSET_MULTIPLYER -3.0f
 #define ZOFFSET_MULTIPLYER 0
