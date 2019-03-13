@@ -36,6 +36,8 @@ public:
 private:
     float m_fSecondsToStartRepeat;
     float m_fSecondsToNextRepeat;
+
+    eFixedCommand joystickStateToPromptDirection(float x, float y);
 protected:
     PromptMenu();
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }

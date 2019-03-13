@@ -103,9 +103,9 @@ Get Singleton instance
 */
 Menu* GameMenu::getInstance()
 {
-    if (nullptr == m_pInstance)
+    if (nullptr == m_pInstance) {
         m_pInstance = new GameMenu();
-
+    }
     return m_pInstance;
 }
 

@@ -68,3 +68,59 @@ PromptMenu::PromptMenu() : Menu(
     m_iCurrentPromptX = 0;
     m_iCurrentPromptY = 0;
 }
+
+
+void PromptMenu::setupKeyCommands()
+{
+}
+
+void PromptMenu::executeKeyCommand(eHovercraft hovercraft, eFixedCommand command)
+{
+
+}
+
+void PromptMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+{
+}
+
+void PromptMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+{
+}
+
+void PromptMenu::executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command)
+{
+}
+
+void PromptMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
+{
+}
+
+void PromptMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
+{
+}
+
+/*
+Joysticks can be used to nagivate the menu. Since joystick values are not
+discrete in their direction like keys or buttons are, we need to be able to
+find out what direction the joysticks are headed towards.
+
+@param x    x-coordinate of joystick
+@param y    y-coordinate of joystick
+@return the prompt direction the joystick is moving in
+        COMMAND_PROMPT_RIGHT
+        COMMAND_PROMPT_LEFT
+        COMMAND_PROMPT_UP
+        COMMAND_PROMPT_DOWN
+*/
+eFixedCommand PromptMenu::joystickStateToPromptDirection(float x, float y)
+{
+    if (abs(x) > abs(y)) // x takes priority
+    {
+        return x > 0 ? COMMAND_PROMPT_RIGHT : COMMAND_PROMPT_LEFT;
+    }
+    else // y takes priority
+    {
+        return y > 0 ? COMMAND_PROMPT_UP : COMMAND_PROMPT_DOWN;
+    }
+
+}
