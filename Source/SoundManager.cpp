@@ -563,18 +563,14 @@ void SoundManager::setSpeedParameter(float speed) {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
 
     if (speed >= 0.0 && speed <= 1.0) {
-        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0 * speed));
+        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0f * speed));
     }
     updateChannels();
 }
 
 void SoundManager::pauseAll() {
-    if (isPaused) {
-        isPaused = false;
-    }
-    else {
-        isPaused = true;
-    }
+    // Toggle pause status
+    isPaused = !isPaused;
 
     if (isPaused) {
         // Pause all the playing event, and play pause music
@@ -592,12 +588,7 @@ void SoundManager::pauseAll() {
         {
             bool eventPaused;
             it->second->getPaused(&eventPaused);
-            if (eventPaused) {
-                it->second->setPaused(false);
-            }
-            else {
-                it->second->setPaused(true);
-            }
+            it->second->setPaused(!eventPaused);
         }
         auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
         tFoundIt->second->setPaused(true);
@@ -606,6 +597,7 @@ void SoundManager::pauseAll() {
     updateChannels();
 }
 
+// @Deprecated
 void SoundManager::upPosition() {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
     vec3 testingP = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getPosition();
@@ -617,9 +609,10 @@ void SoundManager::upPosition() {
     updateChannels();
 }
 
+// @Deprecated
 void SoundManager::downPosition() {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
-    testAttrubute.position.x-10;
+    testAttrubute.position.x -= 10;
     tFoundIt->second->set3DAttributes(&testAttrubute);
     updateChannels();
 }
