@@ -31,9 +31,6 @@ private:
     void executeKeyboardCommands();
     void executeJoystickCommands();
 
-    void debugToggleWireframe();
-    bool bWireFrameEnabled;
-
     // Convert a pressed key to its corresponding eFixedCommand
     eFixedCommand pressedKeyToFixedCommand(int key)
     {

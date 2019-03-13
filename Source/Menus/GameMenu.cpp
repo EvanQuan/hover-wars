@@ -12,7 +12,6 @@ GameMenu::GameMenu()
     // NOTE: Do not get an instance of GameManager here or there will be
     // infinite mutual recursion and a call stack overflow
     m_pInputHandler = InputHandler::getInstance();
-    bWireFrameEnabled = false;
 
     COMMAND_HANDLER->addMenu(this);
     // Set current menu
@@ -397,16 +396,3 @@ void GameMenu::executeJoystickCommands()
     }
 }
 
-// Toggles Wireframe drawing
-void GameMenu::debugToggleWireframe()
-{
-    // Toggle Boolean
-    bWireFrameEnabled = !bWireFrameEnabled;
-
-    // Set Polygon mode based on current setting.
-    if (bWireFrameEnabled) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    } else {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-}

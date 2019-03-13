@@ -30,6 +30,9 @@ public:
     ~Menu();
 
     virtual void update() = 0;
+
+private:
+    bool bWireFrameEnabled;
 protected:
     Menu();
 
@@ -38,5 +41,8 @@ protected:
     // Only player hovercrafts receive input from the Menu.
     // Bots receive input from their AI components.
     std::vector<HovercraftEntity*> players;
+
+    // Toggles Wireframe drawing
+    void Menu::debugToggleWireframe();
 
 };
