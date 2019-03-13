@@ -622,7 +622,9 @@ void SoundManager::downPosition() {
 }
 
 void SoundManager::start() {
-    // play(MUSIC_INGAME);
+#ifdef NDEBUG
+    play(MUSIC_INGAME);
+#endif
     play(SOUND_HOVERCAR_ENGINE);
 }
 

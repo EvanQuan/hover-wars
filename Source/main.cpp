@@ -73,11 +73,7 @@ int main()
             // Initialize Sound
             m_soundManager = SOUND_MANAGER;
             m_soundManager->loadFiles();
-            // TODO renable later
-#ifdef NDEBUG
-            // m_soundManager->play(SoundManager::MUSIC_INGAME);
-            // m_soundManager->play(SoundManager::MUSIC_PAUSE);
-#endif
+
             m_soundManager->start();
 
             // Main loop
