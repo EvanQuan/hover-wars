@@ -99,6 +99,7 @@ class HovercraftEntity :
     public Entity
 {
 public:
+
     HovercraftEntity(int iID, const vec3* vPosition);
     virtual ~HovercraftEntity();
 
@@ -163,6 +164,9 @@ public:
 
     void setPowerup(ePowerup powerup);
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsEnabled[powerup] > 0; }
+
+    // Units: m/s
+    float getSpeed() { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
 private:
     // Private Variables
     int activeCameraIndex;

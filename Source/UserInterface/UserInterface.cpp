@@ -483,10 +483,14 @@ void UserInterface::renderScores()
     // Ad hoc for single player
     std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1,
                         GameStats::eStat::SCORE_CURRENT));
-    renderText("Score: " + score,
+    renderText("Score: " + FuncUtils::to_string(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed(), 3),
                m_vComponentCoordinates[COMPONENT_SCORE][X],
                m_vComponentCoordinates[COMPONENT_SCORE][Y],
                SCORE_SCALE, SCORE_COLOR);
+    // renderText("Score: " + score,
+      //          m_vComponentCoordinates[COMPONENT_SCORE][X],
+        //        m_vComponentCoordinates[COMPONENT_SCORE][Y],
+          //      SCORE_SCALE, SCORE_COLOR);
 }
 
 void UserInterface::updateCooldowns()
