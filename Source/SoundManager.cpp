@@ -568,6 +568,21 @@ void SoundManager::setSpeedParameter(float speed) {
     updateChannels();
 }
 
+void SoundManager::pauseAll(bool pause) {
+    if (pause) {
+        // Pause all the playing event, and play pause music
+        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+        {
+            it->second->setPaused(true);
+        }
+        play(SOUND_MUSIC_PAUSE_LOOP);
+    }
+    else {
+        // Unpause event and end pause music
+
+    }
+}
+
 void SoundManager::upPosition() {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
     vec3 testingP = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getPosition();
