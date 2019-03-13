@@ -80,7 +80,6 @@ private:
 
     bool bWireFrameEnabled;
 
-    unordered_map<eVariableCommand, const char*> eVariableCommandToString;
     unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand;
     unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand;
     unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand;
@@ -89,13 +88,12 @@ private:
     unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand;
 protected:
     Menu(
-        unordered_map<eVariableCommand, const char*> eVariableCommandToString,
-        unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand,
-        unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand
+        unordered_map<int, eFixedCommand> pressedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> justPressedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> justReleasedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> repeatButtonToFixedCommand,
+        unordered_map<int, eFixedCommand> justPressedButtonToFixedCommand,
+        unordered_map<int, eFixedCommand> justReleasedButtonToFixedCommand
     );
 
     virtual void nextMenu(Menu* next) final;

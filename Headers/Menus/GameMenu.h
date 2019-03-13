@@ -62,6 +62,13 @@ protected:
         {COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
 #endif
     };
+    // debugging
+    unordered_map<eVariableCommand, const char*> eVariableCommandToString
+    {
+        {COMMAND_MOVE,             "Move"},
+        {COMMAND_TURN,             "Turn"},
+        {COMMAND_INVALID_VARIABLE, "Invalid"},
+    };
 
     unordered_map<eFixedCommand, eAbility> m_fixedCommandToAbility =
     {

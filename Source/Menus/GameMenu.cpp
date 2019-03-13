@@ -7,13 +7,6 @@ GameMenu* GameMenu::m_pInstance = nullptr;
 Constructor
 */
 GameMenu::GameMenu() : Menu(
-    // eVariableCommandToString
-    unordered_map<eVariableCommand, const char*>
-    {
-        {COMMAND_MOVE,             "Move"},
-        {COMMAND_TURN,             "Turn"},
-        {COMMAND_INVALID_VARIABLE, "Invalid"},
-    },
     // m_pressedKeyToFixedCommand
     unordered_map<int, eFixedCommand>
     {
@@ -67,14 +60,14 @@ GameMenu::GameMenu() : Menu(
     unordered_map<int, eFixedCommand>
     {
         {BUTTON_BACK,            COMMAND_MENU_BACK},
-        { BUTTON_LEFT_STICK,     COMMAND_INVALID_FIXED },
-        { BUTTON_RIGHT_STICK,    COMMAND_INVALID_FIXED },
-        { BUTTON_UP,             COMMAND_INVALID_FIXED },
-        { BUTTON_RIGHT,          COMMAND_INVALID_FIXED },
-        { BUTTON_DOWN,           COMMAND_INVALID_FIXED },
-        { BUTTON_LEFT,           COMMAND_INVALID_FIXED },
-        { MAX_BUTTON_INDEX,      COMMAND_INVALID_FIXED },
-        { BUTTON_START,          COMMAND_INVALID_FIXED },
+        {BUTTON_LEFT_STICK,      COMMAND_INVALID_FIXED },
+        {BUTTON_RIGHT_STICK,     COMMAND_INVALID_FIXED },
+        {BUTTON_UP,              COMMAND_INVALID_FIXED },
+        {BUTTON_RIGHT,           COMMAND_INVALID_FIXED },
+        {BUTTON_DOWN,            COMMAND_INVALID_FIXED },
+        {BUTTON_LEFT,            COMMAND_INVALID_FIXED },
+        {MAX_BUTTON_INDEX,       COMMAND_INVALID_FIXED },
+        {BUTTON_START,           COMMAND_INVALID_FIXED },
         },
     // justPressedButtonToFixedCommand
     unordered_map<int, eFixedCommand>
@@ -271,8 +264,8 @@ Axes values are normalized and follow Cartesian coordinates:
 @param y        y-coordinate
 */
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
-                                               eVariableCommand command,
-                                               float x, float y)
+                                         eVariableCommand command,
+                                         float x, float y)
 {
     if ((command == COMMAND_INVALID_VARIABLE)
         || (!ENTITY_MANAGER->playerExists(hovercraft)))

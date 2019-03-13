@@ -41,14 +41,14 @@ protected:
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
     // For keyboard command handling
-    void setupKeyCommands() {}
-    void executeKeyCommand(eHovercraft hovercraft, eFixedCommand command) {}
-    void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) {}
-    void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) {}
+    void setupKeyCommands();
+    void executeKeyCommand(eHovercraft hovercraft, eFixedCommand command);
+    void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
+    void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
 
     // Joystick commands
-    void executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command) {}
-    void updateLeftStick(eHovercraft hovercraft, float x, float y) {}
-    void updateRightStick(eHovercraft hovercraft, float x, float y) {}
+    void executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command);
+    void updateLeftStick(eHovercraft hovercraft, float x, float y);
+    void updateRightStick(eHovercraft hovercraft, float x, float y);
 
 };

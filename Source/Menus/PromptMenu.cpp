@@ -17,12 +17,50 @@
 #define PROMPT_REPEAT_DELAY 0.1f
 
 PromptMenu::PromptMenu() : Menu(
-    unordered_map<eVariableCommand, const char*> {},
+    // pressedKey
+    unordered_map<int, eFixedCommand>
+    {
+        // Movement
+        // NOTE: potentially reuse movement commands
+        {GLFW_KEY_W,     COMMAND_PROMPT_UP},
+        {GLFW_KEY_UP,    COMMAND_PROMPT_UP},
+        {GLFW_KEY_A,     COMMAND_PROMPT_LEFT},
+        {GLFW_KEY_LEFT,  COMMAND_PROMPT_LEFT},
+        {GLFW_KEY_S,     COMMAND_PROMPT_DOWN},
+        {GLFW_KEY_DOWN,  COMMAND_PROMPT_DOWN},
+        {GLFW_KEY_D,     COMMAND_PROMPT_RIGHT},
+        {GLFW_KEY_RIGHT, COMMAND_PROMPT_RIGHT},
+    },
+    // justPressedKey
+    unordered_map<int, eFixedCommand>
+    {
+        // Select
+        {GLFW_KEY_SPACE,     COMMAND_PROMPT_SELECT},
+        {GLFW_KEY_ENTER,     COMMAND_PROMPT_SELECT},
+        {GLFW_KEY_BACKSPACE, COMMAND_PROMPT_BACK},
+        {GLFW_KEY_ESCAPE,    COMMAND_PROMPT_BACK},
+    },
+    // justReleasedKey
     unordered_map<int, eFixedCommand> {},
-    unordered_map<int, eFixedCommand> {},
-    unordered_map<int, eFixedCommand> {},
-    unordered_map<int, eFixedCommand> {},
-    unordered_map<int, eFixedCommand> {},
+    // repeatButton
+    unordered_map<int, eFixedCommand>
+    {
+        {BUTTON_UP,     COMMAND_PROMPT_UP},
+        {BUTTON_LEFT,   COMMAND_PROMPT_LEFT},
+        {BUTTON_DOWN,   COMMAND_PROMPT_DOWN},
+        {BUTTON_RIGHT,  COMMAND_PROMPT_RIGHT},
+    },
+    // justPressedButton
+    unordered_map<int, eFixedCommand>
+    {
+        {BUTTON_A,      COMMAND_PROMPT_SELECT},
+        {TRIGGER_RIGHT, COMMAND_PROMPT_SELECT},
+        {BUTTON_START,  COMMAND_PROMPT_SELECT},
+        {BUTTON_B,      COMMAND_PROMPT_BACK},
+        {TRIGGER_LEFT,  COMMAND_PROMPT_BACK},
+        {BUTTON_BACK,   COMMAND_PROMPT_BACK},
+    },
+    // justReleasedButton
     unordered_map<int, eFixedCommand> {}
 )
 {

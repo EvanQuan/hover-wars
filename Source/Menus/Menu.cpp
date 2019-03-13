@@ -2,22 +2,20 @@
 #include "CommandHandler.h"
 
 Menu::Menu(
-    unordered_map<eVariableCommand, const char*> eVariableCommandToString,
-    unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand,
-    unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand,
-    unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand,
-    unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand,
-    unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand,
-    unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand
+    unordered_map<int, eFixedCommand> pressedKeyToFixedCommand,
+    unordered_map<int, eFixedCommand> justPressedKeyToFixedCommand,
+    unordered_map<int, eFixedCommand> justReleasedKeyToFixedCommand,
+    unordered_map<int, eFixedCommand> repeatButtonToFixedCommand,
+    unordered_map<int, eFixedCommand> justPressedButtonToFixedCommand,
+    unordered_map<int, eFixedCommand> justReleasedButtonToFixedCommand
 )
 {
-    this->eVariableCommandToString = eVariableCommandToString;
-    this->m_pressedKeyToFixedCommand = m_pressedKeyToFixedCommand;
-    this->m_justPressedKeyToFixedCommand = m_justPressedKeyToFixedCommand;
-    this->m_justReleasedKeyToFixedCommand = m_justReleasedKeyToFixedCommand;
-    this->m_repeatButtonToFixedCommand = m_repeatButtonToFixedCommand;
-    this->m_justPressedButtonToFixedCommand = m_justPressedButtonToFixedCommand;
-    this->m_justReleasedButtonToFixedCommand = m_justReleasedButtonToFixedCommand;
+    m_pressedKeyToFixedCommand         = pressedKeyToFixedCommand;
+    m_justPressedKeyToFixedCommand     = justPressedKeyToFixedCommand;
+    m_justReleasedKeyToFixedCommand    = justReleasedKeyToFixedCommand;
+    m_repeatButtonToFixedCommand       = repeatButtonToFixedCommand;
+    m_justPressedButtonToFixedCommand  = justPressedButtonToFixedCommand;
+    m_justReleasedButtonToFixedCommand = justReleasedButtonToFixedCommand;
 
     m_pInputHandler = InputHandler::getInstance();
     bWireFrameEnabled = false;
