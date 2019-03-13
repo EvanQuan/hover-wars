@@ -38,6 +38,8 @@ protected:
 
     void nextMenu(Menu* next);
 
+    InputHandler *m_pInputHandler;
+
     // Only player hovercrafts receive input from the Menu.
     // Bots receive input from their AI components.
     std::vector<HovercraftEntity*> players;

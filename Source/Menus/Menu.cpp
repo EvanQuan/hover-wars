@@ -3,7 +3,8 @@
 
 Menu::Menu()
 {
-     bWireFrameEnabled = false;
+    m_pInputHandler = InputHandler::getInstance();
+    bWireFrameEnabled = false;
 }
 
 Menu::~Menu()

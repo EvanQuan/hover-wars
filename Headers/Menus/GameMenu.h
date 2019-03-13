@@ -14,7 +14,6 @@ private:
     GameMenu();
 
     static GameMenu* m_pInstance;
-    InputHandler *m_pInputHandler;
 
     void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
     void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y);

@@ -8,15 +8,7 @@ Constructor
 */
 GameMenu::GameMenu()
 {
-    // Initializing Base Class
-    // NOTE: Do not get an instance of GameManager here or there will be
-    // infinite mutual recursion and a call stack overflow
-    m_pInputHandler = InputHandler::getInstance();
-
     COMMAND_HANDLER->addMenu(this);
-    // Set current menu
-    // m_pCurrentMenu = GameMenu
-
 }
 
 /*
