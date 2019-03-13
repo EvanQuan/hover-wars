@@ -638,8 +638,7 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 */
 void HovercraftEntity::move(float x, float y)
 {
-    if (lowEnoughToMove)
-    // if (isInControl)
+    if (lowEnoughToMove && isInControl)
     {
         m_pPhysicsComponent->move(x, y);
     }
@@ -659,8 +658,7 @@ void HovercraftEntity::move(float x, float y)
 */
 void HovercraftEntity::turn(float x)
 {
-    if (lowEnoughToMove)
-    // if (isInControl)
+    if (lowEnoughToMove && isInControl)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
