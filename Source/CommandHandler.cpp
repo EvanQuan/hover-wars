@@ -31,12 +31,8 @@ Destructor
 */
 CommandHandler::~CommandHandler()
 {
-    // m_pEntMngr = nullptr;
-    // NOTE: These are deleted in main
-    // m_pInputHandler = nullptr;
-    // m_pGameManager = nullptr;
-
-    // Delete all menus
+    // Delete all menu instances, which are created as needed as the player
+    // navigates between menus
     for (Menu* m : menuInstances)
     {
         delete m;
