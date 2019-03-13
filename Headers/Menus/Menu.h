@@ -29,7 +29,7 @@ class Menu abstract
 public:
     ~Menu();
 
-    virtual void update() = 0;
+    virtual void update() final { updateKeyboardCommands(); updateJoystickCommands(); };
 
 private:
     bool bWireFrameEnabled;
@@ -37,6 +37,9 @@ protected:
     Menu();
 
     void nextMenu(Menu* next);
+
+    virtual void updateKeyboardCommands() = 0;
+    virtual void updateJoystickCommands() = 0;
 
     InputHandler *m_pInputHandler;
 

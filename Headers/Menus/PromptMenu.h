@@ -15,25 +15,31 @@ class PromptMenu abstract : Menu
 public:
     ~PromptMenu();
 
-    // 
-    virtual void update();
-
     /*
         Prompts are laid out in a 2D grid. The user can move between prompts
         within the grid, where the direction of their movement controls move
         the cursor. If the edge of the grid is reached, the cursor loops to the
         opposite end of the same row/column.
 
-        Every prompt menu needs to instantiate a list of prompts.
+        Every prompt menu needs to instantiate a list of prompts. This should
+        be done in the constructor.
+
+        Public to be accessible to the UserInterface
     */
     vector<vector<const char*>> m_vPrompts;
 
+    // x-coordinate of current prompt in m_vPrompts
     int m_iCurrentPromptX;
+    // y-coordinate of current prompt in m_vPrompts
     int m_iCurrentPromptY;
 
 private:
-    PromptMenu();
-
+    float m_fSecondsToStartRepeat;
+    float m_fSecondsToNextRepeat;
 protected:
+    PromptMenu();
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
+
+    void updateKeyboardCommands();
+    void updateJoystickCommands();
 };

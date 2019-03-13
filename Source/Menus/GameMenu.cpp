@@ -213,21 +213,9 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
 }
 
 /*
-Execute all commands specified by user input from keyboard and joysticks.
-*/
-void GameMenu::update()
-{
-#ifdef _DEBUG
-    // system("CLS"); // Clear the terminal TODO: Delete
-#endif
-    executeJoystickCommands();
-    executeKeyboardCommands();
-}
-
-/*
 Execute all commands specified by the keyboard.
 */
-void GameMenu::executeKeyboardCommands()
+void GameMenu::updateKeyboardCommands()
 {
     bool bMovementNeutral = true;
     bool bTurnNeutral = true;
@@ -330,7 +318,7 @@ void GameMenu::executeKeyboardCommands()
 /*
 Execute all commands specified by the controllers
 */
-void GameMenu::executeJoystickCommands()
+void GameMenu::updateJoystickCommands()
 {
     m_pInputHandler->updateJoysticks();
 

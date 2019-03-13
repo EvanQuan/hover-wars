@@ -8,7 +8,6 @@ public:
     ~GameMenu();
 
     static Menu* getInstance();
-    virtual void update();
 
 private:
     GameMenu();
@@ -16,7 +15,8 @@ private:
     static GameMenu* m_pInstance;
 
     void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
-    void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y);
+    void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command,
+                                   float x, float y);
 
     void executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command);
     void executeValidHovercraft(HovercraftEntity *hovercraft,
@@ -27,8 +27,8 @@ private:
     eFixedCommand m_pFixedCommand;
     eVariableCommand m_pVariableCommand;
 
-    void executeKeyboardCommands();
-    void executeJoystickCommands();
+    void updateKeyboardCommands();
+    void updateJoystickCommands();
 
     // Convert a pressed key to its corresponding eFixedCommand
     eFixedCommand pressedKeyToFixedCommand(int key)
