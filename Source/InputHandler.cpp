@@ -137,6 +137,17 @@ void InputHandler::debugKeyCommands(int key, int action)
         case GLFW_KEY_MINUS:
             SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
             break;
+        case GLFW_KEY_DOWN:
+            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);
+            break;
+        case GLFW_KEY_LEFT:
+            //SOUND_MANAGER->increaseSpeedParameter();
+            SOUND_MANAGER->upPosition();
+            break;
+        case GLFW_KEY_RIGHT:
+            //SOUND_MANAGER->decreaseSpeedParameter();
+            SOUND_MANAGER->downPosition();
+            break;
             // Testing game stats kill updates
         case GLFW_KEY_R:
             cout << "R" << endl;

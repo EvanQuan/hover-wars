@@ -40,6 +40,7 @@ public:
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,
         SOUND_HOVERCAR_IMPACT_WORLD,
+        SOUND_HOVERCAR_ENGINE,
         
         SOUND_HOVERCAR_DASH,
 
@@ -80,8 +81,16 @@ public:
 
     void loadFiles();
     void shutDown();
+
+    // TODO
+    // Change to private method
+    void setSpeedParameter(float speed);
+
+    void upPosition();
+    void downPosition();
 private:
-    
+
+    FMOD_3D_ATTRIBUTES testAttrubute;
     static SoundManager* m_pInstance;
 
     FMOD_ADVANCEDSETTINGS* advancedSettings;
@@ -190,6 +199,8 @@ private:
                                            "event:/hovercraft/hovercraft_hit_hovercraft_06",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_07",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_08",
+                                         }},
+        {SOUND_HOVERCAR_ENGINE,          { "event:/hovercraft/hovercraft_engine",
                                          }},
         {SOUND_TRAIL,                    { "event:/trail/trail",
                                          }},
