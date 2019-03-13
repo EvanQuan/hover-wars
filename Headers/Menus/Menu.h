@@ -98,14 +98,15 @@ protected:
 
     virtual void nextMenu(Menu* next) final;
 
+    // Make no distinguishment between joystick and keyboard fixed commands
+    virtual void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
+
     // For keyboard command handling
     virtual void setupKeyCommands() = 0;
-    virtual void executeKeyCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
     virtual void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) = 0;
     virtual void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) = 0;
 
     // Joystick commands
-    virtual void executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
     virtual void updateLeftStick(eHovercraft hovercraft, float x, float y) = 0;
     virtual void updateRightStick(eHovercraft hovercraft, float x, float y) = 0;
 

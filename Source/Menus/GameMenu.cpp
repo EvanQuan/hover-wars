@@ -129,15 +129,13 @@ execute that command.
 @param command  to execute
 */
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
-                                               eFixedCommand command)
+                                         eFixedCommand command)
 {
-    if ((command == COMMAND_INVALID_FIXED)
-        || (!ENTITY_MANAGER->playerExists(hovercraft)))
+    if (ENTITY_MANAGER->playerExists(hovercraft))
     {
-        return;
+        HovercraftEntity* playerEntity = ENTITY_MANAGER->getPlayer(hovercraft);
+        executeValidHovercraft(playerEntity, command);
     }
-    HovercraftEntity* playerEntity = ENTITY_MANAGER->getPlayer(hovercraft);
-    executeValidHovercraft(playerEntity, command);
 }
 
 /*
@@ -147,7 +145,7 @@ Make a player execute a fixed command.
 @param command      to execute
 */
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
-                                            eFixedCommand command)
+                                      eFixedCommand command)
 {
     switch (command)
     {
@@ -309,7 +307,7 @@ void GameMenu::setupKeyCommands()
     yTurn = 0.0f;
 }
 
-void GameMenu::executeKeyCommand(eHovercraft hovercraft, eFixedCommand command)
+void GameMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
     executeIfHovercraftExists(hovercraft, command);
 }
@@ -366,12 +364,6 @@ void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComma
     {
         executeIfHovercraftExists(hovercraft, COMMAND_TURN, xTurn, yTurn);
     }
-}
-
-// TODO remove wrapper, not needed
-void GameMenu::executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command)
-{
-    executeIfHovercraftExists(hovercraft, command);
 }
 
 // TODO remove wrapper, not needed

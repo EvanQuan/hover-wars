@@ -74,9 +74,12 @@ void PromptMenu::setupKeyCommands()
 {
 }
 
-void PromptMenu::executeKeyCommand(eHovercraft hovercraft, eFixedCommand command)
+void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
-
+    switch (command)
+    {
+        
+    }
 }
 
 void PromptMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
@@ -87,16 +90,14 @@ void PromptMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCom
 {
 }
 
-void PromptMenu::executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command)
-{
-}
-
 void PromptMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
 {
+    executeFixedCommand(hovercraft, joystickStateToPromptDirection(x, y));
 }
 
 void PromptMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
 {
+    executeFixedCommand(hovercraft, joystickStateToPromptDirection(x, y));
 }
 
 /*

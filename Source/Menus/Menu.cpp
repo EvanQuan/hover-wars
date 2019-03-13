@@ -92,7 +92,7 @@ void Menu::updateKeyboardCommands()
             fixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        executeKeyCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
+        executeFixedCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
         handleAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
     }
     executeAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
@@ -126,7 +126,7 @@ void Menu::updateJoystickCommands()
                     command = justPressedButtonToFixedCommand(button);
                     if (command != COMMAND_INVALID_FIXED)
                     {
-                        executeButtonFixedCommand(hovercraft, command);
+                        executeFixedCommand(hovercraft, command);
                     }
                     m_pInputHandler->m_joystickButtons[joystickID][button] =
                         InputHandler::INPUT_PRESSED;
@@ -135,14 +135,14 @@ void Menu::updateJoystickCommands()
                     command = repeatButtonToFixedCommand(button);
                     if (command != COMMAND_INVALID_FIXED)
                     {
-                        executeButtonFixedCommand(hovercraft, command);
+                        executeFixedCommand(hovercraft, command);
                     }
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
                     command = justReleasedButtonToFixedCommand(button);
                     if (command != COMMAND_INVALID_FIXED)
                     {
-                        executeButtonFixedCommand(hovercraft, command);
+                        executeFixedCommand(hovercraft, command);
                     }
                     m_pInputHandler->m_joystickButtons[joystickID][button] =
                         InputHandler::INPUT_RELEASED;
