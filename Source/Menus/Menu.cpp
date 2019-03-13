@@ -49,3 +49,105 @@ void Menu::debugToggleWireframe()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }
+
+/*
+Execute all commands specified by the keyboard.
+*/
+void Menu::updateKeyboardCommands()
+{
+    setupKeyCommands();
+    /*
+    Copy the keys at the current snapshot so they can be iterated over while
+    m_keys continues to be updated.
+
+    NOTE: Unless there is some other better way of doing this, directly using
+    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to
+    update through key callbacks as it is being iterated through.
+
+    Considering that keys will typically contain 0-4 elements, this should be
+    fairly cheap.
+    */
+    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
+    eFixedCommand fixedCommand;
+    for (auto it : keys)
+    {
+        // Divide the key states into the 3 types of fixed commands
+        switch (it.second) // value - input state
+        {
+        case InputHandler::INPUT_JUST_PRESSED:
+            /*
+            Just pressed now changed to pressed, as if the key is continued to
+            be pressed next frame, it should read as a key repeat.
+            */
+            m_pInputHandler->m_keys[it.first] = InputHandler::INPUT_PRESSED;
+            fixedCommand = justPressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_PRESSED:
+            fixedCommand = pressedKeyToFixedCommand(it.first);
+            break;
+        case InputHandler::INPUT_JUST_RELEASED:
+            /*
+            Now that the key ha been read as just released, we can now remove
+            it, so it doesn't need to be iterated over again next frame.
+            */
+            m_pInputHandler->m_keys.erase(it.first);
+            fixedCommand = justReleasedKeyToFixedCommand(it.first);
+            break;
+        }
+        executeKeyCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
+        handleAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
+    }
+    executeAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
+}
+
+void Menu::updateJoystickCommands()
+{
+    m_pInputHandler->updateJoysticks();
+
+    for (int joystickID = GLFW_JOYSTICK_1;
+        joystickID < MAX_PLAYER_JOYSTICK;
+        joystickID++)
+    {
+        int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
+        if (joystickIsPresent)
+        {
+            const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
+            InputHandler::eInputState *buttons =
+                m_pInputHandler->m_joystickButtons[joystickID];
+
+            // Check buttons
+            for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
+            {
+                switch (buttons[button])
+                {
+                case InputHandler::INPUT_JUST_PRESSED:
+                    executeButtonFixedCommand(static_cast<eHovercraft>(joystickID),
+                        justPressedButtonToFixedCommand(buttons[button]));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] =
+                        InputHandler::INPUT_PRESSED;
+                    break;
+                case InputHandler::INPUT_PRESSED:
+                    executeButtonFixedCommand(static_cast<eHovercraft>(joystickID),
+                        repeatButtonToFixedCommand(buttons[button]));
+                    break;
+                case InputHandler::INPUT_JUST_RELEASED:
+                    executeButtonFixedCommand(static_cast<eHovercraft>(joystickID),
+                        justReleasedButtonToFixedCommand(buttons[button]));
+                    m_pInputHandler->m_joystickButtons[joystickID][button] =
+                        InputHandler::INPUT_RELEASED;
+                    break;
+                }
+            }
+
+            // Check axes
+            if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
+            {
+                updateLeftStick(static_cast<eHovercraft>(joystickID), axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+            }
+            if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
+            {
+                updateRightStick(static_cast<eHovercraft>(joystickID), axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+            }
+        }
+    }
+}

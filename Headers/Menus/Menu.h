@@ -32,48 +32,8 @@ public:
     virtual void update() final { updateKeyboardCommands(); updateJoystickCommands(); };
 
 private:
-    bool bWireFrameEnabled;
-
-    unordered_map<eVariableCommand, const char*> eVariableCommandToString;
-    unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand;
-    unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand;
-    unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand;
-    unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand;
-    unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand;
-    unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand;
-protected:
-    Menu(
-        unordered_map<eVariableCommand, const char*> eVariableCommandToString,
-        unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand,
-        unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand,
-        unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand
-    );
-
-    void nextMenu(Menu* next);
-
-    virtual void updateKeyboardCommands() = 0;
-    virtual void updateJoystickCommands() = 0;
-
-    virtual void updateKeyJustPressed(int key, int button) = 0;
-    virtual void updateKeyPressed(int key, int button) = 0;
-    virtual void updateKeyJustReleased(int key, int button) = 0;
-    // TODO make only deal with FixedCommand after key loop
-
-    virtual void updateButtonJustPressed(int joystickID, int button) = 0;
-    virtual void updateButtonPressed(int joystickID, int button) = 0;
-    virtual void updateButtonJustReleased(int joystickID, int button) = 0;
-
-    InputHandler *m_pInputHandler;
-
-    // Only player hovercrafts receive input from the Menu.
-    // Bots receive input from their AI components.
-    std::vector<HovercraftEntity*> players;
-
-    // Toggles Wireframe drawing
-    void Menu::debugToggleWireframe();
+    virtual void updateKeyboardCommands() final;
+    virtual void updateJoystickCommands() final;
 
     // Convert a pressed key to its corresponding eFixedCommand
     eFixedCommand pressedKeyToFixedCommand(int key)
@@ -117,4 +77,46 @@ protected:
     {
         return FuncUtils::getValueIfNotDefault(m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
+
+    bool bWireFrameEnabled;
+
+    unordered_map<eVariableCommand, const char*> eVariableCommandToString;
+    unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand;
+    unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand;
+protected:
+    Menu(
+        unordered_map<eVariableCommand, const char*> eVariableCommandToString,
+        unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand
+    );
+
+    virtual void nextMenu(Menu* next) final;
+
+    // For keyboard command handling
+    virtual void setupKeyCommands() = 0;
+    virtual void executeKeyCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
+    virtual void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) = 0;
+    virtual void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) = 0;
+
+    // Joystick commands
+    virtual void executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
+    virtual void updateLeftStick(eHovercraft hovercraft, float x, float y) = 0;
+    virtual void updateRightStick(eHovercraft hovercraft, float x, float y) = 0;
+
+    InputHandler *m_pInputHandler;
+
+    // Only player hovercrafts receive input from the Menu.
+    // Bots receive input from their AI components.
+    std::vector<HovercraftEntity*> players;
+
+    // Toggles Wireframe drawing
+    void Menu::debugToggleWireframe();
 };

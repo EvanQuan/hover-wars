@@ -306,88 +306,56 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     }
 }
 
-/*
-Execute all commands specified by the keyboard.
-*/
-void GameMenu::updateKeyboardCommands()
+void GameMenu::setupKeyCommands()
 {
-    bool bMovementNeutral = true;
-    bool bTurnNeutral = true;
-    float xMove = 0.0f;
-    float yMove = 0.0f;
-    float xTurn = 0.0f;
-    float yTurn = 0.0f;
-    /*
-    Copy the keys at the current snapshot so they can be iterated over while
-    m_keys continues to be updated.
+    bMovementNeutral = true;
+    bTurnNeutral = true;
+    xMove = 0.0f;
+    yMove = 0.0f;
+    xTurn = 0.0f;
+    yTurn = 0.0f;
+}
 
-    NOTE: Unless there is some other better way of doing this, directly using
-    m_pInputHandler->m_keys's iterator will crash, as the map is continuing to
-    update through key callbacks as it is being iterated through.
+void GameMenu::executeKeyCommand(eHovercraft hovercraft, eFixedCommand command)
+{
+    executeIfHovercraftExists(hovercraft, command);
+}
 
-    Considering that keys will typically contain 0-4 elements, this should be
-    fairly cheap.
-    */
-    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
-    for (auto it : keys)
+void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+{
+    // Check for cummulative movement commands, which are only executed once
+    // all movement keys are checked.
+    switch (command)
     {
-        /*
-        Divide the key states into the 3 types of fixed commands
-        */
-        switch (it.second) // value - input state
-        {
-        case InputHandler::INPUT_JUST_PRESSED:
-            /*
-            Just pressed now changed to pressed, as if the key is continued to
-            be pressed next frame, it should read as a key repeat.
-            */
-            m_pInputHandler->m_keys[it.first] = InputHandler::INPUT_PRESSED;
-            m_pFixedCommand = justPressedKeyToFixedCommand(it.first);
-            break;
-        case InputHandler::INPUT_PRESSED:
-            m_pFixedCommand = pressedKeyToFixedCommand(it.first);
-            break;
-        case InputHandler::INPUT_JUST_RELEASED:
-            /*
-            Now that the key ha been read as just released, we can now remove
-            it, so it doesn't need to be iterated over again next frame.
-            */
-            m_pInputHandler->m_keys.erase(it.first);
-            m_pFixedCommand = justReleasedKeyToFixedCommand(it.first);
-            break;
-        }
-        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft,
-                                  m_pFixedCommand);
-        // Check for cummulative movement commands, which are only executed once
-        // all movement keys are checked.
-        switch (m_pFixedCommand)
-        {
-        case COMMAND_MOVE_FORWARD:
-            bMovementNeutral = false;
-            yMove += JOYSTICK_IS_MAX;
-            break;
-        case COMMAND_MOVE_BACK:
-            bMovementNeutral = false;
-            yMove += JOYSTICK_IS_MIN;
-            break;
-        case COMMAND_MOVE_LEFT:
-            bMovementNeutral = false;
-            xMove += JOYSTICK_IS_MIN;
-            break;
-        case COMMAND_MOVE_RIGHT:
-            bMovementNeutral = false;
-            xMove += JOYSTICK_IS_MAX;
-            break;
-        case COMMAND_TURN_LEFT:
-            bTurnNeutral = false;
-            xTurn += JOYSTICK_IS_MIN;
-            break;
-        case COMMAND_TURN_RIGHT:
-            bTurnNeutral = false;
-            xTurn += JOYSTICK_IS_MAX;
-            break;
-        }
+    case COMMAND_MOVE_FORWARD:
+        bMovementNeutral = false;
+        yMove += JOYSTICK_IS_MAX;
+        break;
+    case COMMAND_MOVE_BACK:
+        bMovementNeutral = false;
+        yMove += JOYSTICK_IS_MIN;
+        break;
+    case COMMAND_MOVE_LEFT:
+        bMovementNeutral = false;
+        xMove += JOYSTICK_IS_MIN;
+        break;
+    case COMMAND_MOVE_RIGHT:
+        bMovementNeutral = false;
+        xMove += JOYSTICK_IS_MAX;
+        break;
+    case COMMAND_TURN_LEFT:
+        bTurnNeutral = false;
+        xTurn += JOYSTICK_IS_MIN;
+        break;
+    case COMMAND_TURN_RIGHT:
+        bTurnNeutral = false;
+        xTurn += JOYSTICK_IS_MAX;
+        break;
     }
+}
+
+void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+{
     // This is where keys are handled, it's assumed that xMove and yMove will
     // be binary on/off. Let's use this assumption to our advantage and we can
     // simply if them to the proper size instead of doing a sqrt calculation.
@@ -399,76 +367,28 @@ void GameMenu::updateKeyboardCommands()
 
     if (!bMovementNeutral)
     {
-        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft,
-                                  COMMAND_MOVE, xMove, yMove);
+        executeIfHovercraftExists(hovercraft, COMMAND_MOVE, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        executeIfHovercraftExists(GAME_MANAGER->m_eKeyboardHovercraft,
-                                  COMMAND_TURN, xTurn, yTurn);
+        executeIfHovercraftExists(hovercraft, COMMAND_TURN, xTurn, yTurn);
     }
 }
 
-/*
-Execute all commands specified by the controllers
-*/
-void GameMenu::updateJoystickCommands()
+// TODO remove wrapper, not needed
+void GameMenu::executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
-    m_pInputHandler->updateJoysticks();
-
-    for (int joystickID = GLFW_JOYSTICK_1;
-         joystickID < MAX_PLAYER_JOYSTICK;
-         joystickID++)
-    {
-        int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
-        if (joystickIsPresent)
-        {
-            const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-            InputHandler::eInputState *buttons =
-                m_pInputHandler->m_joystickButtons[joystickID];
-
-            // Check buttons
-            for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
-            {
-                switch (buttons[button])
-                {
-                case InputHandler::INPUT_JUST_PRESSED:
-                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
-                                              justPressedButtonToFixedCommand(button));
-                    m_pInputHandler->m_joystickButtons[joystickID][button] =
-                        InputHandler::INPUT_PRESSED;
-                    break;
-                case InputHandler::INPUT_PRESSED:
-                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
-                                              repeatButtonToFixedCommand(button));
-                    break;
-                case InputHandler::INPUT_JUST_RELEASED:
-                    executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
-                                              justReleasedButtonToFixedCommand(button));
-                    m_pInputHandler->m_joystickButtons[joystickID][button] =
-                        InputHandler::INPUT_RELEASED;
-                    break;
-                }
-            }
-
-            // Check axes
-            // Joystick axes will not be remappable, so no need to make code
-            // generalizable
-            if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
-            {
-                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
-                                          COMMAND_MOVE,
-                                          axes[AXIS_LEFT_STICK_X],
-                                          axes[AXIS_LEFT_STICK_Y]);
-            }
-            if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
-            {
-                executeIfHovercraftExists(static_cast<eHovercraft>(joystickID),
-                                          COMMAND_TURN,
-                                          axes[AXIS_RIGHT_STICK_X],
-                                          axes[AXIS_RIGHT_STICK_Y]);
-            }
-        }
-    }
+    executeIfHovercraftExists(hovercraft, command);
 }
 
+// TODO remove wrapper, not needed
+void GameMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
+{
+    executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
+}
+
+// TODO remove wrapper, not needed
+void GameMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
+{
+    executeIfHovercraftExists(hovercraft, COMMAND_TURN, x, y);
+}

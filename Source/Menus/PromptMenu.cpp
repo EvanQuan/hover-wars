@@ -30,33 +30,3 @@ PromptMenu::PromptMenu() : Menu(
     m_iCurrentPromptX = 0;
     m_iCurrentPromptY = 0;
 }
-
-void PromptMenu::updateKeyboardCommands()
-{
-    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
-    for (auto it : keys)
-    {
-        switch (it.second)
-        {
-        case InputHandler::INPUT_JUST_PRESSED:
-            break;
-        case InputHandler::INPUT_PRESSED:
-            break;
-        case InputHandler::INPUT_JUST_RELEASED:
-            m_pInputHandler->m_keys.erase(it.first);
-            break;
-        }
-    }
-}
-
-void PromptMenu::updateJoystickCommands()
-{
-    m_pInputHandler->updateJoysticks();
-
-    for (int joystickID = GLFW_JOYSTICK_1;
-        joystickID < MAX_PLAYER_JOYSTICK;
-        joystickID++)
-    {
-        int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
-    }
-}

@@ -9,10 +9,29 @@ public:
 
     static Menu* getInstance();
 
+private:
+    bool bMovementNeutral;
+    bool bTurnNeutral;
+    float xMove;
+    float yMove;
+    float xTurn;
+    float yTurn;
 protected:
     GameMenu();
 
     static GameMenu* m_pInstance;
+
+    // For keyboard command handling
+    void setupKeyCommands();
+    void executeKeyCommand(eHovercraft hovercraft, eFixedCommand command);
+    void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
+    void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
+
+    // Joystick commands
+    void executeButtonFixedCommand(eHovercraft hovercraft, eFixedCommand command);
+    void updateLeftStick(eHovercraft hovercraft, float x, float y);
+    void updateRightStick(eHovercraft hovercraft, float x, float y);
+
 
     void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
     void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command,
@@ -21,15 +40,6 @@ protected:
     void executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command);
     void executeValidHovercraft(HovercraftEntity *hovercraft,
                                 eVariableCommand command, float x, float y);
-
-    // Internal variables
-    // For keyboard command handling
-    eFixedCommand m_pFixedCommand;
-    eVariableCommand m_pVariableCommand;
-
-    void updateKeyboardCommands();
-    void updateJoystickCommands();
-
 
     // For input debugging
     unordered_map<eFixedCommand, const char*> eFixedCommandToString =
