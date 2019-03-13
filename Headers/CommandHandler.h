@@ -6,6 +6,7 @@
 #include "GameManager.h"
 #include "InputHandler.h"
 #include "SoundManager.h"
+#include "Menus/Menu.h"
 
 #ifndef NDEBUG
     #include "UserInterface/UserInterface.h"
@@ -25,42 +26,8 @@ public:
     static CommandHandler* getInstance(GLFWwindow *rWindow);
     ~CommandHandler();
 
-    void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
-    void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y);
     // Execute all commands for a given frame.
     void executeAllCommands();
-    // Execute all commands from user input (keyboard, mouse, controllers).
-    void executeInputCommands();
-
-    // For input debugging
-    unordered_map<eFixedCommand, const char*> eFixedCommandToString =
-    {
-        {COMMAND_ABILITY_ROCKET,         "Rocket"},
-        {COMMAND_ABILITY_SPIKES,         "Spikes"},
-        {COMMAND_ABILITY_TRAIL_ACTIVATE, "Trail"},
-        {COMMAND_CAMERA_BACK,            "Camera Back"},
-        {COMMAND_CAMERA_FRONT,           "Camera Front"},
-        {COMMAND_DASH_BACK,              "Dash back"},
-        {COMMAND_DASH_FORWARD,           "Dash Forward"},
-        {COMMAND_DASH_LEFT,              "Dash Left"},
-        {COMMAND_DASH_RIGHT,             "Dash Right"},
-        {COMMAND_MENU_BACK,              "Menu Back"},
-        {COMMAND_MENU_PAUSE,             "Menu Pause"},
-        {COMMAND_MENU_START,             "Menu Start"},
-        {COMMAND_INVALID_FIXED,          "Invalid"},
-#ifndef NDEBUG
-
-        {COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
-#endif
-    };
-
-    unordered_map<eVariableCommand, const char*> eVariableCommandToString =
-    {
-        {COMMAND_MOVE,             "Move"},
-        {COMMAND_TURN,             "Turn"},
-        {COMMAND_INVALID_VARIABLE, "Invalid"},
-    };
-
 private:
     // Singleton Variables
     CommandHandler(GLFWwindow *rWindow);
@@ -73,9 +40,18 @@ private:
     // Bots receive input from their AI components.
     std::vector<HovercraftEntity*> players;
 
+    // Execute all commands from user input (keyboard, mouse, controllers).
+    void executeInputCommands();
+
+    void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
+    void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command, float x, float y);
+
     void executeValidHovercraft(HovercraftEntity *hovercraft, eFixedCommand command);
     void executeValidHovercraft(HovercraftEntity *hovercraft,
                                 eVariableCommand command, float x, float y);
+
+    // For memory management
+    vector<Menu*> menuInstances;
 
     // Internal variables
     // For keyboard command handling
@@ -129,6 +105,35 @@ private:
     static eFixedCommand justReleasedButtonToFixedCommand(int button)
     {
         return FuncUtils::getValueIfNotDefault(m_pInstance->m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+    };
+
+    // For input debugging
+    unordered_map<eFixedCommand, const char*> eFixedCommandToString =
+    {
+        {COMMAND_ABILITY_ROCKET,         "Rocket"},
+        {COMMAND_ABILITY_SPIKES,         "Spikes"},
+        {COMMAND_ABILITY_TRAIL_ACTIVATE, "Trail"},
+        {COMMAND_CAMERA_BACK,            "Camera Back"},
+        {COMMAND_CAMERA_FRONT,           "Camera Front"},
+        {COMMAND_DASH_BACK,              "Dash back"},
+        {COMMAND_DASH_FORWARD,           "Dash Forward"},
+        {COMMAND_DASH_LEFT,              "Dash Left"},
+        {COMMAND_DASH_RIGHT,             "Dash Right"},
+        {COMMAND_MENU_BACK,              "Menu Back"},
+        {COMMAND_MENU_PAUSE,             "Menu Pause"},
+        {COMMAND_MENU_START,             "Menu Start"},
+        {COMMAND_INVALID_FIXED,          "Invalid"},
+#ifndef NDEBUG
+
+        {COMMAND_DEBUG_TOGGLE_WIREFRAME, "Debug Toggle Wireframe"},
+#endif
+    };
+
+    unordered_map<eVariableCommand, const char*> eVariableCommandToString =
+    {
+        {COMMAND_MOVE,             "Move"},
+        {COMMAND_TURN,             "Turn"},
+        {COMMAND_INVALID_VARIABLE, "Invalid"},
     };
 
     // These commands are issued if the player has just pressed, or is continuing

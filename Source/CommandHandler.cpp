@@ -33,8 +33,14 @@ CommandHandler::~CommandHandler()
 {
     // m_pEntMngr = nullptr;
     // NOTE: These are deleted in main
-    m_pInputHandler = nullptr;
-    m_pGameManager = nullptr;
+    // m_pInputHandler = nullptr;
+    // m_pGameManager = nullptr;
+
+    // Delete all menus
+    for (Menu* m : menuInstances)
+    {
+        delete m;
+    }
 }
 
 /*
