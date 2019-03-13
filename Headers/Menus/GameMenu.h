@@ -182,8 +182,8 @@ private:
         {BUTTON_X,              COMMAND_DASH_LEFT},
         {BUTTON_B,              COMMAND_DASH_RIGHT},
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
-        {BUTTON_BACK,           COMMAND_MENU_PAUSE},
-        {BUTTON_START,          COMMAND_MENU_START},
+        {BUTTON_START,          COMMAND_MENU_PAUSE},
+        {BUTTON_BACK,           COMMAND_MENU_START}, // TODO for now until we find a purpose
         {BUTTON_UP,             COMMAND_HONK_UP},
         {BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
         {BUTTON_DOWN,           COMMAND_HONK_DOWN},
