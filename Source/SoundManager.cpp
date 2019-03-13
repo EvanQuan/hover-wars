@@ -618,7 +618,7 @@ void SoundManager::downPosition() {
 }
 
 void SoundManager::start() {
-     play(MUSIC_INGAME);
+    play(MUSIC_INGAME);
     play(SOUND_HOVERCAR_ENGINE);
 }
 

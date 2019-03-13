@@ -122,7 +122,7 @@ void PhysicsComponent::move(float x, float y) {
     // if (!isInAir) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
-        PxVec3 vForce = globalTransform.q.rotate(PxVec3(x, 0, y));
+        PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
         body->addForce(vForce * MOVEMENT_FORCE);
         
         // TODO find out the angle in a better way
@@ -151,7 +151,7 @@ void PhysicsComponent::dash(float x, float y) {
     isDashing = true;
 
     PxTransform globalTransform = body->getGlobalPose();
-    PxVec3 vForce = globalTransform.q.rotate(PxVec3(x, 0, y));
+    PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
     body->addForce(vForce * DASH_FORCE);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);
