@@ -16,8 +16,17 @@
 */
 #define PROMPT_REPEAT_DELAY 0.1f
 
-PromptMenu::PromptMenu()
+PromptMenu::PromptMenu() : Menu(
+    unordered_map<eVariableCommand, const char*> {},
+    unordered_map<int, eFixedCommand> {},
+    unordered_map<int, eFixedCommand> {},
+    unordered_map<int, eFixedCommand> {},
+    unordered_map<int, eFixedCommand> {},
+    unordered_map<int, eFixedCommand> {},
+    unordered_map<int, eFixedCommand> {}
+)
 {
+
     m_iCurrentPromptX = 0;
     m_iCurrentPromptY = 0;
 }
@@ -28,4 +37,18 @@ void PromptMenu::updateKeyboardCommands()
 
 void PromptMenu::updateJoystickCommands()
 {
+    map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
+    for (auto it : keys)
+    {
+        switch (it.second)
+        {
+        case InputHandler::INPUT_JUST_PRESSED:
+            break;
+        case InputHandler::INPUT_PRESSED:
+            break;
+        case InputHandler::INPUT_JUST_RELEASED:
+            m_pInputHandler->m_keys.erase(it.first);
+            break;
+        }
+    }
 }

@@ -33,8 +33,24 @@ public:
 
 private:
     bool bWireFrameEnabled;
+
+    unordered_map<eVariableCommand, const char*> eVariableCommandToString;
+    unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand;
+    unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand;
+    unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand;
 protected:
-    Menu();
+    Menu(
+        unordered_map<eVariableCommand, const char*> eVariableCommandToString,
+        unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand,
+        unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand,
+        unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand
+    );
 
     void nextMenu(Menu* next);
 
@@ -50,4 +66,46 @@ protected:
     // Toggles Wireframe drawing
     void Menu::debugToggleWireframe();
 
+    // Convert a pressed key to its corresponding eFixedCommand
+    eFixedCommand pressedKeyToFixedCommand(int key)
+    {
+        return FuncUtils::getValueIfNotDefault(m_pressedKeyToFixedCommand,
+                                               key, COMMAND_INVALID_FIXED);
+
+    };
+    // Convert a just pressed key to its corresponding eFixedCommand
+    eFixedCommand justPressedKeyToFixedCommand(int key)
+    {
+        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_justPressedKeyToFixedCommand,
+                                                               key, COMMAND_INVALID_FIXED);
+        // If the command is invalid, then check for repeat commands next
+        return COMMAND_INVALID_FIXED == result ? pressedKeyToFixedCommand(key) : result;
+    };
+    // Convert a pressed key to its corresponding eFixedCommand
+    eFixedCommand justReleasedKeyToFixedCommand(int key)
+    {
+        return FuncUtils::getValueIfNotDefault(m_justReleasedKeyToFixedCommand,
+                                               key, COMMAND_INVALID_FIXED);
+    };
+    // Convert a joystick button to its corresponding eFixedCommand
+    // if it is PRESSED OR REPEATED
+    eFixedCommand repeatButtonToFixedCommand(int button)
+    {
+        return FuncUtils::getValueIfNotDefault(m_repeatButtonToFixedCommand,
+                                               button, COMMAND_INVALID_FIXED);
+    };
+    // Convert a joystick button to its corresponding eFixedCommand
+    // if it was just pressed.
+    eFixedCommand justPressedButtonToFixedCommand(int button)
+    {
+        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+        // If the command is invalid, then check for repeat commands next
+        return COMMAND_INVALID_FIXED == result ? repeatButtonToFixedCommand(button) : result;
+    };
+    // Convert a joystick button to its corresponding eFixedCommand
+    // if it was just released.
+    eFixedCommand justReleasedButtonToFixedCommand(int button)
+    {
+        return FuncUtils::getValueIfNotDefault(m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
+    };
 };

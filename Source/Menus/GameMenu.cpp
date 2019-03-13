@@ -6,7 +6,101 @@ GameMenu* GameMenu::m_pInstance = nullptr;
 /*
 Constructor
 */
-GameMenu::GameMenu()
+GameMenu::GameMenu() : Menu(
+    // eVariableCommandToString
+    unordered_map<eVariableCommand, const char*>
+    {
+        {COMMAND_MOVE,             "Move"},
+        {COMMAND_TURN,             "Turn"},
+        {COMMAND_INVALID_VARIABLE, "Invalid"},
+    },
+    // m_pressedKeyToFixedCommand
+    unordered_map<int, eFixedCommand>
+    {
+        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
+        {GLFW_KEY_ENTER,        COMMAND_MENU_START},
+        {GLFW_KEY_W,            COMMAND_MOVE_FORWARD},
+        {GLFW_KEY_A,            COMMAND_MOVE_LEFT},
+        {GLFW_KEY_S,            COMMAND_MOVE_BACK},
+        {GLFW_KEY_D,            COMMAND_MOVE_RIGHT},
+        {GLFW_KEY_J,            COMMAND_TURN_LEFT},
+        {GLFW_KEY_L,            COMMAND_TURN_RIGHT},
+        },
+    // justPressedKeyToFixedCommand
+    unordered_map<int, eFixedCommand>
+    {
+        {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
+        {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
+        {GLFW_KEY_LEFT_CONTROL, COMMAND_ABILITY_SPIKES},
+        {GLFW_KEY_K,            COMMAND_DASH_BACK},
+        {GLFW_KEY_I,            COMMAND_DASH_FORWARD},
+        {GLFW_KEY_H,            COMMAND_DASH_LEFT},
+        {GLFW_KEY_SEMICOLON,    COMMAND_DASH_RIGHT},
+        //
+        {GLFW_KEY_ESCAPE,       COMMAND_CLOSE_WINDOW},
+        {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
+        {GLFW_KEY_COMMA,        COMMAND_CAMERA_BACK},
+#ifndef NDEBUG
+        {GLFW_KEY_C,            COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA},
+        {GLFW_KEY_F,            COMMAND_DEBUG_TOGGLE_WIREFRAME},
+        {GLFW_KEY_1,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1},
+        {GLFW_KEY_2,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2},
+        {GLFW_KEY_3,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3},
+        {GLFW_KEY_4,            COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4},
+        {GLFW_KEY_B,            COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES},
+        {GLFW_KEY_M,            COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP},
+        {GLFW_KEY_KP_0,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0},
+        {GLFW_KEY_KP_1,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1},
+        {GLFW_KEY_KP_2,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2},
+        {GLFW_KEY_KP_3,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3},
+        {GLFW_KEY_KP_4,         COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4},
+#endif
+    },
+    // justReleasedKeyToFixedCommand
+    unordered_map<int, eFixedCommand>
+    {
+        {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_DEACTIVATE},
+        {GLFW_KEY_COMMA,        COMMAND_CAMERA_FRONT},
+    },
+    // repeatButtonToFixedCommand
+    unordered_map<int, eFixedCommand>
+    {
+        {BUTTON_BACK,            COMMAND_MENU_BACK},
+        { BUTTON_LEFT_STICK,     COMMAND_INVALID_FIXED },
+        { BUTTON_RIGHT_STICK,    COMMAND_INVALID_FIXED },
+        { BUTTON_UP,             COMMAND_INVALID_FIXED },
+        { BUTTON_RIGHT,          COMMAND_INVALID_FIXED },
+        { BUTTON_DOWN,           COMMAND_INVALID_FIXED },
+        { BUTTON_LEFT,           COMMAND_INVALID_FIXED },
+        { MAX_BUTTON_INDEX,      COMMAND_INVALID_FIXED },
+        { BUTTON_START,          COMMAND_INVALID_FIXED },
+        },
+    // justPressedButtonToFixedCommand
+    unordered_map<int, eFixedCommand>
+    {
+        {BUTTON_LEFT_BUMPER,    COMMAND_ABILITY_SPIKES},
+        {BUTTON_A,              COMMAND_DASH_BACK},
+        {BUTTON_Y,              COMMAND_DASH_FORWARD},
+        {BUTTON_X,              COMMAND_DASH_LEFT},
+        {BUTTON_B,              COMMAND_DASH_RIGHT},
+        {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
+        {BUTTON_START,          COMMAND_MENU_PAUSE},
+        {BUTTON_BACK,           COMMAND_MENU_START}, // TODO for now until we find a purpose
+        {BUTTON_UP,             COMMAND_HONK_UP},
+        {BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
+        {BUTTON_DOWN,           COMMAND_HONK_DOWN},
+        {BUTTON_LEFT,           COMMAND_HONK_LEFT},
+        {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_ACTIVATE},
+        {TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
+        },
+    // justReleasedButtonToFixedCommand
+    unordered_map<int, eFixedCommand>
+    {
+        {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
+        {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_DEACTIVATE},
+    }
+)
 {
     COMMAND_HANDLER->addMenu(this);
 }

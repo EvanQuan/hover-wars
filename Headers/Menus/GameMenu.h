@@ -9,7 +9,7 @@ public:
 
     static Menu* getInstance();
 
-private:
+protected:
     GameMenu();
 
     static GameMenu* m_pInstance;
@@ -30,48 +30,6 @@ private:
     void updateKeyboardCommands();
     void updateJoystickCommands();
 
-    // Convert a pressed key to its corresponding eFixedCommand
-    eFixedCommand pressedKeyToFixedCommand(int key)
-    {
-        return FuncUtils::getValueIfNotDefault(m_pressedKeyToFixedCommand,
-                                               key, COMMAND_INVALID_FIXED);
-
-    };
-    // Convert a just pressed key to its corresponding eFixedCommand
-    eFixedCommand justPressedKeyToFixedCommand(int key)
-    {
-        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_justPressedKeyToFixedCommand,
-                                                               key, COMMAND_INVALID_FIXED);
-        // If the command is invalid, then check for repeat commands next
-        return COMMAND_INVALID_FIXED == result ? pressedKeyToFixedCommand(key) : result;
-    };
-    // Convert a pressed key to its corresponding eFixedCommand
-    eFixedCommand justReleasedKeyToFixedCommand(int key)
-    {
-        return FuncUtils::getValueIfNotDefault(m_justReleasedKeyToFixedCommand,
-                                               key, COMMAND_INVALID_FIXED);
-    };
-    // Convert a joystick button to its corresponding eFixedCommand
-    // if it is PRESSED OR REPEATED
-    eFixedCommand repeatButtonToFixedCommand(int button)
-    {
-        return FuncUtils::getValueIfNotDefault(m_repeatButtonToFixedCommand,
-                                               button, COMMAND_INVALID_FIXED);
-    };
-    // Convert a joystick button to its corresponding eFixedCommand
-    // if it was just pressed.
-    eFixedCommand justPressedButtonToFixedCommand(int button)
-    {
-        eFixedCommand result = FuncUtils::getValueIfNotDefault(m_justPressedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
-        // If the command is invalid, then check for repeat commands next
-        return COMMAND_INVALID_FIXED == result ? repeatButtonToFixedCommand(button) : result;
-    };
-    // Convert a joystick button to its corresponding eFixedCommand
-    // if it was just released.
-    eFixedCommand justReleasedButtonToFixedCommand(int button)
-    {
-        return FuncUtils::getValueIfNotDefault(m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
-    };
 
     // For input debugging
     unordered_map<eFixedCommand, const char*> eFixedCommandToString =
@@ -166,12 +124,7 @@ private:
         {BUTTON_DOWN,           COMMAND_INVALID_FIXED},
         {BUTTON_LEFT,           COMMAND_INVALID_FIXED},
         {MAX_BUTTON_INDEX,      COMMAND_INVALID_FIXED},
-#ifdef NDEBUG
-
         {BUTTON_START,          COMMAND_INVALID_FIXED},
-#else
-        {BUTTON_START,          COMMAND_DEBUG_TOGGLE_WIREFRAME},
-#endif
     };
 
     unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand =

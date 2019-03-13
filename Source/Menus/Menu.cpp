@@ -1,8 +1,24 @@
 #include "Menus/Menu.h"
 #include "CommandHandler.h"
 
-Menu::Menu()
+Menu::Menu(
+    unordered_map<eVariableCommand, const char*> eVariableCommandToString,
+    unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand,
+    unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand,
+    unordered_map<int, eFixedCommand> m_justReleasedKeyToFixedCommand,
+    unordered_map<int, eFixedCommand> m_repeatButtonToFixedCommand,
+    unordered_map<int, eFixedCommand> m_justPressedButtonToFixedCommand,
+    unordered_map<int, eFixedCommand> m_justReleasedButtonToFixedCommand
+)
 {
+    this->eVariableCommandToString = eVariableCommandToString;
+    this->m_pressedKeyToFixedCommand = m_pressedKeyToFixedCommand;
+    this->m_justPressedKeyToFixedCommand = m_justPressedKeyToFixedCommand;
+    this->m_justReleasedKeyToFixedCommand = m_justReleasedKeyToFixedCommand;
+    this->m_repeatButtonToFixedCommand = m_repeatButtonToFixedCommand;
+    this->m_justPressedButtonToFixedCommand = m_justPressedButtonToFixedCommand;
+    this->m_justReleasedButtonToFixedCommand = m_justReleasedButtonToFixedCommand;
+
     m_pInputHandler = InputHandler::getInstance();
     bWireFrameEnabled = false;
 }
