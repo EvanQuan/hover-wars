@@ -57,5 +57,6 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, float fDuration)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
     m_iTransformationIndex = m_pMesh->addInstance(m4InitialTransform);
+    m_body=  PHYSICS_MANAGER->createRocketObjects(getName(),m4InitialTransform);
 }
 

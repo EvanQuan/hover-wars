@@ -85,7 +85,7 @@ Mass : kilograms
 */
 #define CHASSIS_MASS 2000.0 // 1000
 
-
+// the following are offsets related to the chasis center of mass position
 #define XOFFSET_MULTIPLYER 0
 #define YOFFSET_MULTIPLYER -3.0f
 #define ZOFFSET_MULTIPLYER 0
@@ -93,6 +93,9 @@ Mass : kilograms
 #define XOFFSET_ADDITIVE 0
 #define YOFFSET_ADDITIVE 0.65f
 #define ZOFFSET_ADDITIVE 0.25f
+
+// this is multiplied to direction of the car in order to offset the rocket creation
+#define NORAMLIZED_DISTANCE_ROCKET_MULTIPLIER 3
 
 /****************************************************************************\
  * Singleton Implementation                                                 *
@@ -316,6 +319,9 @@ void PhysicsManager::cleanupPhysics()
         for (PxRigidStatic *object : staticObjects) {
             object->release();
         }
+        for (PxRigidDynamic *object : rockets) {
+            object->release();
+        }
         gBatchQuery->release();
         gVehicleSceneQueryData->free(gAllocator);
         gFrictionPairs->release();
@@ -466,18 +472,38 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
     return body;
 }
 PxRigidDynamic *PhysicsManager::createRocketObjects(float x, float y, float z,float dirX,float dirY,float dirZ) {
-    std::cout << "Rocket Created Physics Manager" << std::endl;
     PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(0.1f,0.5f), *gWorldMaterial);
-    PxTransform localTm(PxVec3(x, y, z));
     PxVec3 rocketVel(dirX, dirY, dirZ);
     rocketVel.normalize();
-    localTm.rotate(rocketVel*20);
+    PxTransform localTm(PxVec3(x, y, z) + rocketVel*3);
     PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
     body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
     body->setLinearVelocity(rocketVel * ROCKET_SPEED);
     body->attachShape(*shape);
     gScene->addActor(*body);
     body->setName(NAME_ROCKET);
+    return body;
+}
+PxRigidDynamic *PhysicsManager::createRocketObjects(const char* sEntityID,const mat4* m4InitialTransform) {
+    PxMat44 mat44;
+
+    // Convert the PxMat44 matrix to a glm::mat4
+    memcpy(&mat44, m4InitialTransform, sizeof(mat4));
+    PxTransform pxTrans = PxTransform(mat44);
+    PxVec3 rocketVel = pxTrans.q.rotate(PxVec3(0, 1, 0));
+    rocketVel.y = 0;
+
+    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(0.1f, 0.5f), *gWorldMaterial);
+    rocketVel.normalize();
+    pxTrans.p += rocketVel * NORAMLIZED_DISTANCE_ROCKET_MULTIPLIER;
+    PxRigidDynamic *body = gPhysics->createRigidDynamic(pxTrans);
+    body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+    body->setLinearVelocity(rocketVel * ROCKET_SPEED);
+    body->attachShape(*shape);
+    gScene->addActor(*body);
+    rockets.push_back(body);
+    body->setName(sEntityID);
+
     return body;
 }
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ) {

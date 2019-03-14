@@ -59,6 +59,7 @@ public:
     physx::PxVehicleNoDrive *createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(const char* sEntityID, float x, float y, float z, float radius);
     physx::PxRigidDynamic *createRocketObjects(float x, float y, float z, float dirX, float dirY, float dirZ);
+    physx::PxRigidDynamic *createRocketObjects(const char* sEntityID,const mat4* m4InitialTransform);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
@@ -69,7 +70,7 @@ private:
     PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
     std::vector<physx::PxRigidStatic *> staticObjects;
-
+    std::vector<physx::PxRigidDynamic *> rockets;
     /*
 
     */
