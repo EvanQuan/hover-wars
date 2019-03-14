@@ -1,6 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/StartMenu.h"
 #include "Menus/PregameMenu.h"
+#include "Menus/GameMenu.h"
 
 // Singleton instance
 MainMenu* MainMenu::m_pInstance = nullptr;
@@ -29,7 +30,9 @@ void MainMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        nextMenu(PregameMenu::getInstance());
+        nextMenu(GameMenu::getInstance());
+        // Should go to PregameMenu, but for now goes straight to ingame
+        // nextMenu(PregameMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:
         nextMenu(MainMenu::getInstance());
