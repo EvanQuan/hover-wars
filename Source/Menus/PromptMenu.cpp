@@ -132,9 +132,10 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         return;
     }
     m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
     int columns;
     int rows;
+    int beforeX = m_iCurrentPromptX;
+    int beforeY = m_iCurrentPromptY;
     switch (direction)
     {
     case COMMAND_PROMPT_UP:
@@ -157,6 +158,14 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         break;
     default:
         return; // end early as it was not a cursor movement command
+    }
+    if ((beforeX != m_iCurrentPromptX) || (beforeY != m_iCurrentPromptY))
+    {
+        // We have modulo checks to keep the cursor looping within valid options
+        // However, if it loops through a dimension with only 1 option, the cursor
+        // hasn't actually changed in practice. As a result, we do not want to play
+        // a cursor move sound to signify the cursor has not moved.
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
     }
     // debug
     cout << "Cursor moved to (" << m_iCurrentPromptX << ", " << m_iCurrentPromptY << ") " << endl;
