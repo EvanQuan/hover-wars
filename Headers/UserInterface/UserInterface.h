@@ -62,6 +62,10 @@ public:
 
     void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
 
+    // Display debug message
+    // Set message to "" to disable debug message
+    void displayDebug(const char* message);
+
 private:
 
     // Used for m_vComponentScaling and m_vComponentCoordinates
@@ -190,8 +194,11 @@ private:
     float m_vComponentCoordinates[COMPONENT_COUNT][UI_COMPONENT_COORDINATES];
 
     // Singleton Pointers
-    /*
-    The UI needs to render its own components
-    */
+    // The UI needs to render its own components
     ShaderManager *m_pShdrMngr;
+
+
+    const char* debugMessage;
+    float debugWidth;
+    float debugHeight;
 };

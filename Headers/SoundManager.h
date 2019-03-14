@@ -61,6 +61,9 @@ public:
 
         MUSIC_INGAME,
         MUSIC_PAUSE,
+
+        SOUND_UI_CURSOR_MOVE,
+        SOUND_UI_CURSOR_SELECT,
     };
 
     void play(eSoundEvent sound);
@@ -155,6 +158,12 @@ private:
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
+    /*
+    Get the event path of the event. If there are multiple event paths for the
+    specified event, pick a random one from the list of valid ones.
+
+    @param event    to get event path from
+    */
     const char* getPath(eSoundEvent event) {
         if (!FuncUtils::contains(eventToSound, event)) {
             return "";
@@ -236,6 +245,18 @@ private:
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
                                          }},
         {MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
+                                         }},
+        {SOUND_UI_CURSOR_MOVE,           { "event:/ui/cursor/cursor_move_01",
+                                           "event:/ui/cursor/cursor_move_02",
+                                           "event:/ui/cursor/cursor_move_03",
+                                           "event:/ui/cursor/cursor_move_04",
+                                           "event:/ui/cursor/cursor_move_05",
+                                         }},
+        {SOUND_UI_CURSOR_SELECT,         { "event:/ui/cursor/cursor_move_01",
+                                           "event:/ui/cursor/cursor_move_02",
+                                           "event:/ui/cursor/cursor_move_03",
+                                           "event:/ui/cursor/cursor_move_04",
+                                           "event:/ui/cursor/cursor_move_05",
                                          }},
     };
 };

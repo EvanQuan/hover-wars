@@ -86,16 +86,19 @@ explosions or collisions.
 
 Mass : kilograms
 */
-#define CHASSIS_MASS 2000.0 // 1000
+#define CHASSIS_MASS 2000.0 // 2000
 
-
+// the following are offsets related to the chasis center of mass position
 #define XOFFSET_MULTIPLYER 0
-#define YOFFSET_MULTIPLYER -3.0f
+#define YOFFSET_MULTIPLYER -3.0f // -3.0f // Original -1.5f
 #define ZOFFSET_MULTIPLYER 0
 
-#define XOFFSET_ADDITIVE 0
-#define YOFFSET_ADDITIVE 0.65f
-#define ZOFFSET_ADDITIVE 0.25f
+#define XOFFSET_ADDITIVE 0      // 0
+#define YOFFSET_ADDITIVE 0.65f  // 0.65f
+#define ZOFFSET_ADDITIVE 0.25f  // 0.25f
+
+// this is multiplied to direction of the car in order to offset the rocket creation
+#define NORAMLIZED_DISTANCE_ROCKET_MULTIPLIER 3
 
 /****************************************************************************\
  * Singleton Implementation                                                 *
@@ -156,7 +159,11 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     // x - side
     // y - height
     // z - front
-    const PxVec3 chassisCMOffset=PxVec3(chassisDims.x*XOFFSET_MULTIPLYER + XOFFSET_ADDITIVE, chassisDims.y*YOFFSET_MULTIPLYER + YOFFSET_ADDITIVE, chassisDims.z*ZOFFSET_MULTIPLYER+ ZOFFSET_ADDITIVE);
+    float offsetX = chassisDims.x*XOFFSET_MULTIPLYER + XOFFSET_ADDITIVE;
+    float offsetY = chassisDims.y*YOFFSET_MULTIPLYER + YOFFSET_ADDITIVE;
+    float offsetZ = chassisDims.z*ZOFFSET_MULTIPLYER + ZOFFSET_ADDITIVE;
+    // cout << offsetX << " " << offsetY << " " << offsetZ << endl;
+    const PxVec3 chassisCMOffset=PxVec3(offsetX, offsetY, offsetZ);
 
     //Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
     //Moment of inertia is just the moment of inertia of a cylinder.
@@ -317,6 +324,9 @@ void PhysicsManager::cleanupPhysics()
             vehicle->free();
         }
         for (PxRigidStatic *object : staticObjects) {
+            object->release();
+        }
+        for (PxRigidDynamic *object : rockets) {
             object->release();
         }
         gBatchQuery->release();

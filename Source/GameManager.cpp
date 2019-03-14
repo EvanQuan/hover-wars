@@ -79,7 +79,8 @@ bool GameManager::renderGraphics()
 {
     // Update Timer
     m_pTimer.updateTimeSinceLastFrame();
-    m_fFrameTime += m_pTimer.getFrameTimeSinceLastFrame();
+    std::chrono::duration<double> fSecondsSinceLastFrame = m_pTimer.getFrameTimeSinceLastFrame();
+    m_fFrameTime += fSecondsSinceLastFrame;
     /*
     Get the delta since the last frame and update based on that delta.
 
@@ -89,7 +90,7 @@ bool GameManager::renderGraphics()
     // Execute all commands for this frame
     // These should be done before the environment updates so that the
     // environemnt can respond to the commands issued this frame.
-    m_pCommandHandler->update();
+    m_pCommandHandler->update(static_cast<float>(fSecondsSinceLastFrame.count()));
 
     SOUND_MANAGER->update();
 
@@ -97,7 +98,7 @@ bool GameManager::renderGraphics()
     // includes UI
     if (!paused)
     {
-        m_pEntityManager->updateEnvironment(&m_pTimer);
+        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
     }
 
     // call function to draw our scene

@@ -132,7 +132,8 @@ void InputHandler::debugKeyCommands(int key, int action)
             SOUND_MANAGER->play(SoundManager::SOUND_TRAIL);
             break;
         case GLFW_KEY_8:
-            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
+            // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
+            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
             break;
         case GLFW_KEY_9:
             SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
@@ -144,15 +145,15 @@ void InputHandler::debugKeyCommands(int key, int action)
             SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
             break;
         case GLFW_KEY_DOWN:
-            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);
+            // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);
             break;
         case GLFW_KEY_LEFT:
             //SOUND_MANAGER->increaseSpeedParameter();
-            SOUND_MANAGER->upPosition();
+            // SOUND_MANAGER->upPosition();
             break;
         case GLFW_KEY_RIGHT:
             //SOUND_MANAGER->decreaseSpeedParameter();
-            SOUND_MANAGER->downPosition();
+            // SOUND_MANAGER->downPosition();
             break;
             // Testing game stats kill updates
         case GLFW_KEY_R:

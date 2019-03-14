@@ -19,6 +19,9 @@ private:
 protected:
     GameMenu();
 
+    // Not time values
+    void updateTimeValues(float fTimeInSeconds) {}
+
     static GameMenu* m_pInstance;
 
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
@@ -54,7 +57,7 @@ protected:
         {COMMAND_DASH_LEFT,              "Dash Left"},
         {COMMAND_DASH_RIGHT,             "Dash Right"},
         {COMMAND_MENU_BACK,              "Menu Back"},
-        {COMMAND_MENU_PAUSE,             "Menu Pause"},
+        {COMMAND_MENU_PAUSE_TOGGLE,      "Menu Pause"},
         {COMMAND_MENU_START,             "Menu Start"},
         {COMMAND_INVALID_FIXED,          "Invalid"},
 #ifndef NDEBUG

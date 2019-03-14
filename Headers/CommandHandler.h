@@ -29,7 +29,7 @@ public:
     ~CommandHandler();
 
     // Execute all commands for a given frame.
-    void update();
+    void update(float fTimeInSeconds);
 
     void addMenu(Menu* menu);
     void setCurrentMenu(Menu* menu);

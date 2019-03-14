@@ -108,6 +108,8 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     initializeVBOs();
 
     m_fGameTime = ROUND_TIME;
+
+    debugMessage = "";
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -287,6 +289,10 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_iWidth = iWidth;
     m_iHeight = iHeight;
 
+    // debug
+    debugWidth =  iWidth * 0.5f;
+    debugHeight =  iHeight * 0.5f;
+
     // Update UI Projection Matrix Uniform for UI Shader
     mat4 m4UIProjection = ortho(0.0f, static_cast<GLfloat>(m_iWidth), 0.0f, static_cast<GLfloat>(m_iHeight), 0.0f, 1.0f);
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
@@ -456,6 +462,16 @@ void UserInterface::renderMessages()
                         scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
         }
     }
+
+    if ("" != debugMessage)
+    {
+        renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
+    }
+}
+
+void UserInterface::displayDebug(const char* message)
+{
+    debugMessage = message;
 }
 
 /*
@@ -483,14 +499,10 @@ void UserInterface::renderScores()
     // Ad hoc for single player
     std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1,
                         GameStats::eStat::SCORE_CURRENT));
-    renderText("Score: " + FuncUtils::to_string(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed(), 3),
+    renderText("Score: " + score,
                m_vComponentCoordinates[COMPONENT_SCORE][X],
                m_vComponentCoordinates[COMPONENT_SCORE][Y],
                SCORE_SCALE, SCORE_COLOR);
-    // renderText("Score: " + score,
-      //          m_vComponentCoordinates[COMPONENT_SCORE][X],
-        //        m_vComponentCoordinates[COMPONENT_SCORE][Y],
-          //      SCORE_SCALE, SCORE_COLOR);
 }
 
 void UserInterface::updateCooldowns()

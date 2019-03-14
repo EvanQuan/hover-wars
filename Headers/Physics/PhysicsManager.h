@@ -70,7 +70,7 @@ private:
     PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
     std::vector<physx::PxRigidStatic *> staticObjects;
-
+    std::vector<physx::PxRigidDynamic *> rockets;
     /*
 
     */

@@ -4,6 +4,8 @@
 #include "MeshManager.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
+#include "PxPhysicsAPI.h"
+#include "PxFoundation.h"
 
 
 // Forward Declarations
