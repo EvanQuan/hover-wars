@@ -270,6 +270,9 @@
     <ClInclude Include="Headers\Menus\PromptMenu.h">
       <Filter>Header Files\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menus\StartMenu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -453,6 +456,9 @@
       <Filter>Source Files\Menus</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menus\PromptMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\StartMenu.cpp">
       <Filter>Source Files\Menus</Filter>
     </ClCompile>
   </ItemGroup>

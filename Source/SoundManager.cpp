@@ -568,7 +568,7 @@ void SoundManager::setSpeedParameter(float speedPercent) {
     updateChannels();
 }
 
-void SoundManager::pauseAll() {
+void SoundManager::togglePaused() {
     // Toggle pause status
     isPaused = !isPaused;
 

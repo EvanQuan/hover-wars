@@ -1,29 +1,28 @@
 #include "Menus/MainMenu.h"
-#include "Menus/MainMenu.h"
-#include "CommandHandler.h"
+#include "Menus/StartMenu.h"
 
 // Singleton instance
-MainMenu* MainMenu::m_pInstance = nullptr;
+StartMenu* StartMenu::m_pInstance = nullptr;
 
-MainMenu::MainMenu() : PromptMenu(
+StartMenu::StartMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
+        { {"Press Start", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
     }
 )
 {
 
 }
 
-Menu* MainMenu::getInstance()
+Menu* StartMenu::getInstance()
 {
     if (nullptr == m_pInstance) {
-        m_pInstance = new MainMenu();
+        m_pInstance = new StartMenu();
     }
     return m_pInstance;
 }
 
-void MainMenu::select(eFixedCommand command)
+void StartMenu::select(eFixedCommand command)
 {
     switch (command)
     {

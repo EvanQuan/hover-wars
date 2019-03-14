@@ -62,6 +62,7 @@
     <ClInclude Include="Headers\Menus\Menu.h" />
     <ClInclude Include="Headers\Menus\PromptMenu.h" />
     <ClInclude Include="Headers\Menus\PauseMenu.h" />
+    <ClInclude Include="Headers\Menus\StartMenu.h" />
     <ClInclude Include="Headers\Physics\PhysicsCallBack.h" />
     <ClInclude Include="Headers\Physics\PhysicsManager.h" />
     <ClInclude Include="Headers\Mesh.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="Source\Menus\Menu.cpp" />
     <ClCompile Include="Source\Menus\PromptMenu.cpp" />
     <ClCompile Include="Source\Menus\PauseMenu.cpp" />
+    <ClCompile Include="Source\Menus\StartMenu.cpp" />
     <ClCompile Include="Source\Physics\PhysicsCallBack.cpp" />
     <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Source\main.cpp" />

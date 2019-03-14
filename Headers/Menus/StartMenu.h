@@ -2,20 +2,21 @@
 
 #include "Menus/PromptMenu.h"
 
-class MainMenu final : PromptMenu
+class StartMenu final : PromptMenu
 {
 public:
     // TODO nothing to destruct?
-    ~MainMenu() {}
+    ~StartMenu() {}
 
     static Menu* getInstance();
 
 private:
-    MainMenu();
+    StartMenu();
 
     void select(eFixedCommand command);
-    // TODO should go back to in game
+
+    // StartMenu cannot go back to anything
     void back() {}
 
-    static MainMenu* m_pInstance;
+    static StartMenu* m_pInstance;
 };

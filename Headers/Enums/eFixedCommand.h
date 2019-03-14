@@ -38,6 +38,7 @@ enum eFixedCommand
     COMMAND_PROMPT_CURSOR_RELEASE,
     COMMAND_PROMPT_SELECT,
     COMMAND_PROMPT_BACK,
+    COMMAND_PROMPT_NEXT_MENU,
 
     COMMAND_MENU_START, // Currently does nothing, may remove or change name in future
 
