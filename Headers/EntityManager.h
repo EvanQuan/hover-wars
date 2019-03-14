@@ -60,7 +60,7 @@ public:
     void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
     vec3 getEntityPosition(int iEntityID);
-    void dispatchCollision(int iColliderID, int iCollidedID);
+    void dispatchCollision(int iColliderID, int iCollidedID, unsigned int iColliderMsg, unsigned int iCollidedMsg);
 
     // Interactable Entity Generation Functions
     FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);

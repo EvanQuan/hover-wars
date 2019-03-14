@@ -107,8 +107,6 @@ public:
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
     void getHitBy(eEntityType eHitByType, eHovercraft iNumber);
-    // virtual void hit(eEntityType eHitByType, unsigned int iNumber) const = 0;
-    // void handleCollision(const Entity* pOther) const;
     void handleCollision(Entity* pOther);
 
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;

@@ -35,7 +35,8 @@ public:
     void moveGlobal(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeComponent(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, glm::vec3 position);
+    void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position);
+    void initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength);
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();
@@ -61,9 +62,10 @@ private:
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;
-    bool m_bStatic;                         // Flag for determining if the Physics Component is Static or Dynamic, I assume this is important and will influence how the Physics component functions under the hood.
+    bool m_bVehicle;
     PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.
     mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
+    unordered_map<string, PxRigidDynamic*> m_pDynamicObjects;
 
     void setDriveTorque(float torque)
     {

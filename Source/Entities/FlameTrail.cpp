@@ -7,7 +7,7 @@ using namespace SpriteSheetDatabase;
 // Default Constructor
 FlameTrail::FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
                        float fHeight, float fWidth )
-    : InteractableEntity( iID, iOwnerID, *vPosition, ENTITY_FLAME_TRAIL )
+    : InteractableEntity( iID, iOwnerID, *vPosition, INTER_FLAME_TRAIL )
 {
     m_fHeight = fHeight;
     m_fWidth = fWidth;
@@ -38,7 +38,7 @@ void FlameTrail::initialize()
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
 
     // Set up Physics Component for a flame trail
-    // m_pPhysicsComponent->initializeComponent(true, m_pMesh, &m_pObjectInfo.sObjBoundingBox, m_vPosition); // PHYSICSTODO
+    // m_pPhysicsComponent->initializeVehicle(true, m_pMesh, &m_pObjectInfo.sObjBoundingBox, m_vPosition); // PHYSICSTODO
 
 }
 

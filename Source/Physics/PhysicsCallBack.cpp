@@ -8,6 +8,7 @@
 #include "SoundManager.h"
 #include "GameStats.h"
 #include "EntityManager.h"
+#include <sstream>
 
 #define TYPE        0
 #define SUBTYPE     1
@@ -37,22 +38,28 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
         // @NOTE what is this if-statement checking for?
         if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
         {
-            // Get each of the two colliding actors
-            physx::PxRigidActor* actor0 = pairHeader.actors[0];
-            physx::PxRigidActor* actor1 = pairHeader.actors[1];
-
             // Determine the results by actor names
-            const char* collider = actor0->getName();
-            const char* collided = actor1->getName();
+            string sCollider = pairHeader.actors[0]->getName();
+            string sCollided = pairHeader.actors[1]->getName();
+
+            // Parse Names
+            istringstream HitterSS(sCollider);
+            vector<string> HitterResults(istream_iterator<string>{HitterSS},
+                                         istream_iterator<string>());
+            istringstream VictimSS(sCollided);
+            vector<string> VictimResults(istream_iterator<string>{VictimSS},
+                                         istream_iterator<string>());
 
             // Get Entity IDs
             // The ground has its own special ID since its not treated the same
             // as the other entities
-            int iColliderID = (*collider == C_SUBTYPE_GROUND ? GROUND_ID : stoi(collider));
-            int iCollidedID = (*collided == C_SUBTYPE_GROUND ? GROUND_ID : stoi(collided));
+            int iColliderID = (HitterResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(HitterResults.front()));
+            int iCollidedID = (VictimResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(VictimResults.front()));
+            unsigned int iColliderMsg = 0, iCollidedMsg = 0;
+
 #ifndef NDEBUG
-            std::cout << "\tactor 0: " << collider << std::endl;
-            std::cout << "\tactor 1: " << collided << std::endl;
+            std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
+            std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
 #endif
 
             // Simply play sound when collided with ground
@@ -63,7 +70,14 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             }
             else    // Tell the Entity Manager to Dispatch the  Collision between the two colliding entities
             {
-                m_pEntMngr->dispatchCollision(iColliderID, iCollidedID);
+                // Catch Messages if available.
+                if (HitterResults.size() > 1)
+                    iColliderMsg = stoi(HitterResults[1]);
+                if (VictimResults.size() > 1)
+                    iCollidedMsg = stoi(VictimResults[1]);
+
+                // Pass information to Entity Manager to handle collision
+                m_pEntMngr->dispatchCollision(iColliderID, iCollidedID, iColliderMsg, iCollidedMsg);
             }
         }
     }

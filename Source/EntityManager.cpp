@@ -252,7 +252,7 @@ void EntityManager::setCameraPMVMatrices()
 * Entity Management                                                              *
 \*********************************************************************************/
 
-void EntityManager::dispatchCollision(int iColliderID, int iCollidedID)
+void EntityManager::dispatchCollision(int iColliderID, int iCollidedID, unsigned int iColliderMsg, unsigned int iCollidedMsg)
 {
     // Both Entity IDs passed in must exist in the Master Entity List, otherwise they're not Entity IDs
     assert( m_pMasterEntityList.end() != m_pMasterEntityList.find(iColliderID) &&
@@ -262,12 +262,19 @@ void EntityManager::dispatchCollision(int iColliderID, int iCollidedID)
     Entity* pCollider = m_pMasterEntityList[iColliderID].get();
     Entity* pCollided = m_pMasterEntityList[iCollidedID].get();
 
+    // Treat Interactable Entities as the target, always.
+    if (eEntityType::ENTITY_INTERACTABLE == pCollider->getType())
+    {
+        swap(pCollider, pCollided);
+        swap(iColliderMsg, iCollidedMsg);
+    }
+
     // Handle Impact Sound
     // SOUND_MANAGER->handleBaseCollisionSound(pCollider->getType(), pCollided->getType());
     SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
 
     // Tell the Collided Entity that someone collided with them
-    pCollided->handleCollision(pCollider);
+    pCollided->handleCollision(pCollider, iColliderMsg, iCollidedMsg);
 }
 
 // Fetches the current position of Entity with ID: iEntityID

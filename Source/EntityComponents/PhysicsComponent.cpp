@@ -79,7 +79,7 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
 #ifdef _DEBUG
     std::cout << "Physics Component constructor 2 vars" << std::endl;
 #endif
-    m_bStatic = false;    // Set a default
+    m_bVehicle = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
 
@@ -187,15 +187,19 @@ void PhysicsComponent::update(float fTimeInSeconds)
         //body->setLinearVelocity(vel * MAX_SPEED);
     }*/
     // gVehicleNoDrive->
-    m_fSecondsSinceLastDash += fTimeInSeconds;
 
-    if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
+    if (m_bVehicle)
     {
-        body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+        m_fSecondsSinceLastDash += fTimeInSeconds;
+
+        if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
+        {
+            body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+        }
+
+
+        isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     }
-
-
-    isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     // if (isInAir) {
         // cout << isInAir << endl;
     // }
@@ -215,13 +219,24 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeComponent(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
+void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
 {
     // Set up Internal Static qualifier.
-    m_bStatic = bStatic;
+    m_bVehicle = bStatic;
     gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
     body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+}
+
+void PhysicsComponent::initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength)
+{
+    // Generate the Rocket in the Physics Manager
+    PxRigidDynamic *pNewRocket = nullptr;
+    m_pPhysicsManager->createRocketObjects(sName, m4Transform, vVelocity, fBBLength, pNewRocket);
+
+    // Store Rocket internally for management.
+    assert(nullptr != pNewRocket);
+    m_pDynamicObjects.insert(make_pair((sName), pNewRocket));
 }
 
 // Returns the Rotation Quaternion for the Entity's body.

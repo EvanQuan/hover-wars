@@ -17,7 +17,7 @@ class InteractableEntity
 {
 public:
     // Constructor / Destructor
-    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityType eIEType);
+    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eInteractType eIEType);
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality
@@ -28,11 +28,13 @@ public:
     virtual void update(float fTimeInSeconds);
     virtual void handleCollision(Entity* pOther);
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
+    eInteractType getInteractableType() const { return m_eInteractableType; }
 
 protected:
     // Protected Variables
     int m_iOwnerID;
     Mesh* m_pMesh;
+    eInteractType m_eInteractableType;
 
     // Entity Components
     RenderComponent* m_pRenderComponent;
