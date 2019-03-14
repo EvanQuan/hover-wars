@@ -8,8 +8,10 @@ PauseMenu* PauseMenu::m_pInstance = nullptr;
 PauseMenu::PauseMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"Continue", eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE},  },
-        { {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW}     },
+        {
+            {"Continue", eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE},
+            {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW}
+        },
     }
 )
 {

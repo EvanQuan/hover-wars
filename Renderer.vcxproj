@@ -60,6 +60,7 @@
     <ClInclude Include="Headers\Menus\GameMenu.h" />
     <ClInclude Include="Headers\Menus\MainMenu.h" />
     <ClInclude Include="Headers\Menus\Menu.h" />
+    <ClInclude Include="Headers\Menus\PregameMenu.h" />
     <ClInclude Include="Headers\Menus\PromptMenu.h" />
     <ClInclude Include="Headers\Menus\PauseMenu.h" />
     <ClInclude Include="Headers\Menus\StartMenu.h" />
@@ -121,6 +122,7 @@
     <ClCompile Include="Source\Menus\GameMenu.cpp" />
     <ClCompile Include="Source\Menus\MainMenu.cpp" />
     <ClCompile Include="Source\Menus\Menu.cpp" />
+    <ClCompile Include="Source\Menus\PregameMenu.cpp" />
     <ClCompile Include="Source\Menus\PromptMenu.cpp" />
     <ClCompile Include="Source\Menus\PauseMenu.cpp" />
     <ClCompile Include="Source\Menus\StartMenu.cpp" />

@@ -11,23 +11,37 @@
 
 #include "..\TestClass.h"
 
+// This sets the window title
+#define PROGRAM_NAME "Hover Wars"
+
 // Function Prototypes
 void ErrorCallback(int error, const char* description);
 void WindowResizeCallback(GLFWwindow* window, int iWidth, int iHeight);
 bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const char* cTitle);
 
+// Organizational function prototypes
+void initializeWindow();
+void initializeGLEW();
+void initializeManagers();
+void reset();
+void startGame();
+void cleanup();
+
+// These are not local variables to main so that other functions can better
+// access them in main.cpp
+GLFWwindow* m_window = 0;
+GameManager* m_gameManager = 0;
+ShaderManager* m_shaderManager = 0;
+InputHandler* m_inputHandler = 0;
+PhysicsManager* m_pPhysicsManager = 0;
+SoundManager* m_soundManager = 0;
+int iRunning;
+int iWindowHeight, iWindowWidth;
+
 // Main entry point for the Graphics System
 int main()
 {
-    // Local Variables
-    int iRunning = glfwInit();
-    int iWindowHeight, iWindowWidth;
-    GLFWwindow* m_window = 0;
-    GameManager* m_gameManager = 0;
-    ShaderManager* m_shaderManager = 0;
-    InputHandler* m_inputHandler = 0;
-    PhysicsManager* m_pPhysicsManager = 0;
-    SoundManager* m_soundManager = 0;
+    iRunning = glfwInit();
 
     // Initialize GL and a window
     if (!iRunning)
@@ -36,74 +50,112 @@ int main()
     }
     else
     {
-        // Set Error Callback and init window
-        glfwSetErrorCallback( ErrorCallback );
-        iRunning = initializeWindow( &m_window, &iWindowHeight, &iWindowWidth, "Hover Wars" );
-
-        // Initialize glew
-        glewExperimental = GL_TRUE;
-        if ( GLEW_OK != glewInit() )
+        initializeWindow();
+        initializeGLEW();
+        if (iRunning) // only succeeds if both glfw and glew are successful
         {
-            cout << "Glew didn't initialize properly.  Exiting program." << endl;
-            cout << "GLEW ERROR: " << glewGetErrorString( iRunning ) << endl;
-            iRunning = false;
+            initializeManagers();
+            reset();
+            startGame();
         }
-        glGetError();
-
-        if (iRunning)
-        {
-            // Initialize Physics
-            m_pPhysicsManager = PHYSICS_MANAGER;
-            m_pPhysicsManager->initPhysics(true);
-
-            // Bind window to Game Manager
-            m_gameManager = GameManager::getInstance(m_window);
-
-            // Initialize the InputHandler for mouse, keyboard, controllers
-            m_inputHandler = InputHandler::getInstance(m_window);
-
-            // Initialize Graphics
-#ifdef NDEBUG
-            // iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
-            iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
-#else
-            iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
-#endif
-            m_shaderManager = SHADER_MANAGER;
-
-            // Initialize Sound
-            m_soundManager = SOUND_MANAGER;
-            m_soundManager->loadFiles();
-
-            m_soundManager->start();
-
-            // Main loop
-            m_gameManager->resetTime();
-            while (iRunning)
-                iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
-        }
-
-        // Clean up!
-        if (nullptr != m_gameManager)       // Game Manager
-            delete m_gameManager;
-
-        if (nullptr != m_inputHandler)      // Input Handler
-            delete m_inputHandler;
-
-        if (nullptr != m_pPhysicsManager)   // Physics Manager
-            delete m_pPhysicsManager;
-
-        if (nullptr != m_soundManager)
-            delete m_soundManager;
-
-        glfwDestroyWindow(m_window);
+        cleanup();
     }
+    glfwTerminate();    // Terminate Window
+    return 0;           // Exit program with success
+}
 
-    // Terminate Window
-    glfwTerminate();
+void initializeWindow()
+{
+    // Set Error Callback and init window
+    glfwSetErrorCallback( ErrorCallback );
+    iRunning = initializeWindow( &m_window, &iWindowHeight, &iWindowWidth, PROGRAM_NAME );
+}
 
-    // Exit Program
-    return 0;
+void initializeGLEW()
+{
+    // Initialize glew
+    glewExperimental = GL_TRUE; // TODO unused variable?
+    if ( GLEW_OK != glewInit() )
+    {
+        cout << "Glew didn't initialize properly.  Exiting program." << endl;
+        cout << "GLEW ERROR: " << glewGetErrorString( iRunning ) << endl;
+        iRunning = false;
+    }
+    glGetError();
+}
+
+/*
+    Initialize all core values at startup.
+    This should only be called once at the beginning of the program.
+*/
+void initializeManagers()
+{
+    // Initialize Physics
+    m_pPhysicsManager = PHYSICS_MANAGER;
+    m_pPhysicsManager->initPhysics(true);
+
+    // Bind window to Game Manager
+    m_gameManager = GameManager::getInstance(m_window);
+
+    // Initialize the InputHandler for mouse, keyboard, controllers
+    m_inputHandler = InputHandler::getInstance(m_window);
+
+    m_shaderManager = SHADER_MANAGER;
+
+    // Initialize Sound
+    m_soundManager = SOUND_MANAGER;
+    m_soundManager->loadFiles();
+}
+
+/*
+    Reset all values needed to restart the game.
+    Similar to initialize(), but may be called multiple times during
+    run time to reinitialize values that are needed to reset the game.
+*/
+void reset()
+{
+#ifdef NDEBUG
+    // iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
+    iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
+#else
+    iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
+#endif
+
+}
+
+/*
+    Runs the game. The game loop will run entirely within this function.
+    This function returns onces the game is over, by whatever means.
+*/
+void startGame()
+{
+    m_soundManager->start();
+    // Main loop
+    m_gameManager->resetTime();
+    while (iRunning)
+        iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
+}
+
+/*
+    Delete all singletons
+    Can't have those pesky memory leaks
+*/
+void cleanup()
+{
+    // Clean up!
+    if (nullptr != m_gameManager)       // Game Manager
+        delete m_gameManager;
+
+    if (nullptr != m_inputHandler)      // Input Handler
+        delete m_inputHandler;
+
+    if (nullptr != m_pPhysicsManager)   // Physics Manager
+        delete m_pPhysicsManager;
+
+    if (nullptr != m_soundManager)
+        delete m_soundManager;
+
+    glfwDestroyWindow(m_window);
 }
 
 // For reporting GLFW errors
