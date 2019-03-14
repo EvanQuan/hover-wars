@@ -4,6 +4,7 @@
 #include "MeshManager.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
+#include "DataStructures/SpriteSheetDatabase.h"
 
 // Name: InteractableEntity
 // Written by: James Cote
@@ -23,14 +24,12 @@ public:
     // Implementation of inherited functionality
     virtual void initialize();
     void update(float fTimeInMilliseconds);
-    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
-
-    // Game Specific Logic for Interacting with Object
-    void getInteractionResult() const { /*Not Implemented*/ }
 
     void spawnFlame(const vec3* vNormal, const vec3* vPosition);
 
 private:
-    float m_fHeight, m_fWidth;
+    float                                               m_fHeight,
+                                                        m_fWidth;
+    SpriteSheetDatabase::sSpriteSheetInfo               m_sSpriteSheetInfo;
+    unordered_map<string/*HashKey*/, float/*Duration*/> m_pReferenceMap;
 };

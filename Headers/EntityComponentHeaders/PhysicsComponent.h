@@ -37,7 +37,10 @@ public:
     // Various initialization functions as needed.
     void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position);
     void initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength);
+    void initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius);
     void flagForRemoval(string sHashKey) { m_pObjectsFlaggedForRemoval.push_back(sHashKey); }
+    void removeInstance(string sHashKey);
+    void scaleInstance(string sHashKey, float fScale);
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();
@@ -69,7 +72,6 @@ private:
     mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
     unordered_map<string, PxRigidDynamic*>  m_pDynamicObjects;
     vector<string>                          m_pObjectsFlaggedForRemoval;
-    void removeInstance(string sHashKey);
 
     void setDriveTorque(float torque)
     {

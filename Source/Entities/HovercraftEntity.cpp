@@ -19,6 +19,7 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
 #define ROCKET_SPEED            50.0f
+#define FLAME_SPACING           0.25f
 
 
 #define LOSE_CONTROL_COLLISION_TIME 0.8f
@@ -519,22 +520,18 @@ void HovercraftEntity::updateTrail(float fTimeInSeconds)
             float newGaugeValue = m_fTrailGauge - fTimeInSeconds;
 
             if (newGaugeValue > TRAIL_GAUGE_EMPTY)
-            {
                 m_fTrailGauge = newGaugeValue;
-            }
             else
             {
                 m_fTrailGauge = TRAIL_GAUGE_EMPTY;
                 deactivateTrail();
             }
 
-            // float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_pFireTrail->getPosition());
+            float distanceBetweenFlames = distance(m_vPositionOfLastFlame, m_vPosition);
 
-            if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
-            // if (distanceBetweenFlames >= m_fMinimumDistanceBetweenFlames)
-            {
+            // if (m_fSecondsSinceLastFlame > FLAME_INTERVAL)
+            if (distanceBetweenFlames >= FLAME_SPACING)
                 createTrailInstance();
-            }
         }
     }
     else
@@ -562,8 +559,11 @@ void HovercraftEntity::updateTrail(float fTimeInSeconds)
 */
 void HovercraftEntity::createTrailInstance()
 {
+    // Adjust Position to drop flames below HC
+    vec3 vAdjustedPosition = m_vPosition;
+    vAdjustedPosition.y -= 1.0f;
     // Update the position of the last flame
-    // m_vPositionOfLastFlame = m_pFireTrail->getPosition();
+    m_vPositionOfLastFlame = m_vPosition;
     // m_vPositionOfLastFlame = getPosition();
     m_fSecondsSinceLastFlame = 0.0f;
 
@@ -571,8 +571,7 @@ void HovercraftEntity::createTrailInstance()
     vec3 vNormal;
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
     vNormal = m4TransformMat[1];
-    m_pFireTrail->spawnFlame(&vNormal, &m_vPosition);
-
+    m_pFireTrail->spawnFlame(&vNormal, &vAdjustedPosition);
 }
 
 /*
@@ -740,6 +739,7 @@ void HovercraftEntity::deactivateTrail()
 {
     SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
     m_bTrailActivated = false;
+    m_vPositionOfLastFlame = vec3(numeric_limits<float>::max());    // Set Last Position so next spawn will always spawn
 }
 
 void HovercraftEntity::dash(eAbility direction)

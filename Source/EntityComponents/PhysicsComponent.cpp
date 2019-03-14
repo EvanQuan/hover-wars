@@ -253,6 +253,18 @@ void PhysicsComponent::initializeRocket(const char* sName, const mat4* m4Transfo
     m_pDynamicObjects.insert(make_pair((sName), pNewRocket));
 }
 
+// Initializes a new Flame Object in the Physics Manager and stores it in the component to manage locally.
+void PhysicsComponent::initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius)
+{
+    // Generate the Flame in the Physics Manager
+    PxRigidDynamic *pNewFlame = nullptr;
+    m_pPhysicsManager->createFlameObject(sName, vPosition, fHeight, fRadius, &pNewFlame);
+
+    // Store Flame internally for management.
+    assert(nullptr != pNewFlame);
+    m_pDynamicObjects.insert(make_pair((sName), pNewFlame));
+}
+
 // Remove and unload a DynamicBody from the Physics scene with the given Hashkey.
 void PhysicsComponent::removeInstance(string sHashKey)
 {
@@ -262,6 +274,15 @@ void PhysicsComponent::removeInstance(string sHashKey)
         // Release the Instance from the Physics Scene and erase it from the Object List.
         m_pPhysicsManager->removeRigidDynamicObj(m_pDynamicObjects[sHashKey]);
         m_pDynamicObjects.erase(sHashKey);
+    }
+}
+
+void PhysicsComponent::scaleInstance(string sHashKey, float fScale)
+{
+    if (!m_bVehicle && (m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end()))
+    {
+        // Scale the Body of the specified Object
+        PxScaleRigidActor(*m_pDynamicObjects[sHashKey], fScale);
     }
 }
 

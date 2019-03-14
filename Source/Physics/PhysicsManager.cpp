@@ -507,6 +507,32 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     gScene->addActor(*(*pReturnBody));
 }
 
+// Name: createFlameObject
+// Written By: James Coté
+// Description: Generates a Cylindrical bounding box at a given position with a specified Height and Radius 
+void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody)
+{
+    // Generate Cylindrical Shape
+    PxShape* pShape = gPhysics->createShape(PxCapsuleGeometry(fRadius, fHeight), *gWorldMaterial);
+
+    // Generate Transform to given position.
+    PxVec3 pxFlamePos;
+    PxQuat pShapeRotation = PxQuat(1.5708f, PxVec3(0.0f, 0.0f, 1.0f));
+    memcpy(&pxFlamePos, vPosition, sizeof(vec3));
+    pShape->setLocalPose(PxTransform(pShapeRotation));
+    PxTransform pxLocalTransform(pxFlamePos);
+
+    // Set up Physics Body
+    *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
+    (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+    (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+    (*pReturnBody)->attachShape(*pShape);
+    (*pReturnBody)->setName(cName);
+
+    // Add to Scene
+    gScene->addActor(*(*pReturnBody));
+}
+
 // Removes a Rigid Dynamic Object from the scene and releases the actor
 void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor)
 {

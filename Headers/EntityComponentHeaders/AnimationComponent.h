@@ -26,7 +26,7 @@ public:
     void update(float fTimeInSeconds);
 
     // Allows the user to add a billboard at a given position.
-    void addBillboard(const vec3* vPosition, const vec3* vNormal);
+    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal);
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponentAsBillboard( Mesh * pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth );
@@ -40,8 +40,8 @@ private:
 
     // Private Variables
     Mesh * m_pMesh;
-    vector<Mesh::sBillboardInfo>* m_pBillboardListPtr;
-
+    vector<Mesh::sBillboardInfo>*   m_pBillboardListPtr;
+    vector<unsigned int>            m_pBillboardIndexCleanList;
 
     // Sprite HxW is specified as the full sprite width (texture width / num sprites per
     vec2 m_vSpriteHxW, m_vSpriteHxWBorder;

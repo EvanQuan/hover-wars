@@ -51,7 +51,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 //      Default: tells the other entity that they've been hit.
 void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
-    if (ENTITY_HOVERCRAFT == pOther->getType())
+    if (ENTITY_HOVERCRAFT == pOther->getType() && m_iOwnerID != pOther->getID())
         static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, static_cast<eHovercraft>(m_iOwnerID));
 }
 
