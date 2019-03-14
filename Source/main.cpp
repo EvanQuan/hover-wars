@@ -99,6 +99,12 @@ void initializeManagers()
 
     // Initialize the InputHandler for mouse, keyboard, controllers
     m_inputHandler = InputHandler::getInstance(m_window);
+
+    m_shaderManager = SHADER_MANAGER;
+
+    // Initialize Sound
+    m_soundManager = SOUND_MANAGER;
+    m_soundManager->loadFiles();
 }
 
 /*
@@ -114,13 +120,7 @@ void reset()
 #else
     iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
 #endif
-    m_shaderManager = SHADER_MANAGER;
 
-    // Initialize Sound
-    m_soundManager = SOUND_MANAGER;
-    m_soundManager->loadFiles();
-
-    m_soundManager->start();
 }
 
 /*
@@ -129,6 +129,7 @@ void reset()
 */
 void startGame()
 {
+    m_soundManager->start();
     // Main loop
     m_gameManager->resetTime();
     while (iRunning)
