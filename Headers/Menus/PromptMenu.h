@@ -10,7 +10,7 @@
 
     @author Evan Quan
 */
-class PromptMenu abstract : Menu
+class PromptMenu abstract : public Menu
 {
 public:
     ~PromptMenu();
@@ -42,6 +42,8 @@ private:
 
     eFixedCommand joystickStateToPromptDirection(float x, float y);
 
+    void updateTimeValues(float fTimeInSeconds);
+
     void moveCursor(eFixedCommand direction);
     void releaseCursor();
     eFixedCommand m_eCursorDirection;
@@ -50,8 +52,7 @@ protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
-    void updateTimeValues(float fTimeInSeconds);
-    virtual void select() = 0;
+    virtual void select(eFixedCommand command) = 0;
     virtual void back() = 0;
 
     eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).second; }

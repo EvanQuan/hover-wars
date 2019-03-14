@@ -1,4 +1,5 @@
 #include "Menus/GameMenu.h"
+#include "Menus/PauseMenu.h"
 #include "CommandHandler.h"
 
 // Singleton instance
@@ -22,7 +23,7 @@ GameMenu::GameMenu() : Menu(
     // justPressedKeyToFixedCommand
     unordered_map<int, eFixedCommand>
     {
-        {GLFW_KEY_P,            COMMAND_MENU_PAUSE},
+        {GLFW_KEY_P,            COMMAND_MENU_PAUSE_TOGGLE},
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_LEFT_CONTROL, COMMAND_ABILITY_SPIKES},
@@ -78,7 +79,7 @@ GameMenu::GameMenu() : Menu(
         {BUTTON_X,              COMMAND_DASH_LEFT},
         {BUTTON_B,              COMMAND_DASH_RIGHT},
         {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
-        {BUTTON_START,          COMMAND_MENU_PAUSE},
+        {BUTTON_START,          COMMAND_MENU_PAUSE_TOGGLE},
         {BUTTON_BACK,           COMMAND_MENU_START}, // TODO for now until we find a purpose
         {BUTTON_UP,             COMMAND_HONK_UP},
         {BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
@@ -167,7 +168,8 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         break;
     case COMMAND_MENU_BACK:
        break;
-    case COMMAND_MENU_PAUSE:
+    case COMMAND_MENU_PAUSE_TOGGLE:
+        nextMenu(PauseMenu::getInstance());
         GAME_MANAGER->togglePaused();
         SOUND_MANAGER->pauseAll();
         // nextMenu(PauseMenu::getInstance());

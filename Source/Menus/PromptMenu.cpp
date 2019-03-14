@@ -106,13 +106,14 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
     case COMMAND_PROMPT_CURSOR_RELEASE:
         releaseCursor();
     case COMMAND_PROMPT_SELECT:
-        select();
+        select(getCurrentPromptCommand());
         break;
     case COMMAND_PROMPT_BACK:
         back();
         break;
     case COMMAND_CLOSE_WINDOW:
         glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+        break;
     }
 }
 
