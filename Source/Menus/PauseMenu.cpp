@@ -8,8 +8,10 @@ PauseMenu* PauseMenu::m_pInstance = nullptr;
 PauseMenu::PauseMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"Continue", eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE},  },
-        { {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW}     },
+        {
+            {"Continue", eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE},
+            {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW}
+        },
     }
 )
 {
@@ -31,7 +33,7 @@ void PauseMenu::select(eFixedCommand command)
     case COMMAND_MENU_PAUSE_TOGGLE:
         nextMenu(GameMenu::getInstance());
         GAME_MANAGER->togglePaused();
-        SOUND_MANAGER->pauseAll();
+        SOUND_MANAGER->togglePaused();
         break;
     case COMMAND_CLOSE_WINDOW:
         glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);

@@ -1,465 +1,156 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Header Files\EntityComponentHeaders">
-      <UniqueIdentifier>{fcadce33-0064-4d0a-b452-81429c513e92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\EntityComponents">
-      <UniqueIdentifier>{929a9623-930c-4643-9cf4-766a846cf85c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Physics">
-      <UniqueIdentifier>{0c416677-2926-419e-815e-eb7bdeab70e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Physics">
-      <UniqueIdentifier>{f1ea1db2-3783-411c-8d6c-0d0b1f24d104}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\EntityHeaders">
-      <UniqueIdentifier>{4f841631-2c03-4cc6-bea5-3fdd0eea5bda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities">
-      <UniqueIdentifier>{72755986-b017-4af1-8d3f-016b67399074}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Enums">
-      <UniqueIdentifier>{5379aecf-b417-4d72-bec9-ad8dc26d2c44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DataStructures">
-      <UniqueIdentifier>{0c184211-2636-40c9-ae34-b8311e961dab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\snippetvehiclecommon">
-      <UniqueIdentifier>{18c6a556-d17d-436c-911d-559a6a6ec6ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\snippetvehiclecommon">
-      <UniqueIdentifier>{d048e2f4-49d0-47bf-9469-5329cf1881c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Utils">
-      <UniqueIdentifier>{1d4bb0d4-b1c7-4d1c-9923-2d742cdcdeca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{b48e17ff-c23f-42d3-82b9-55413bff086f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\UserInterface">
-      <UniqueIdentifier>{4f1e6834-0d5f-4dc3-808d-0d9f817790a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\UserInterface">
-      <UniqueIdentifier>{01228060-9855-449b-87bb-94d878aa52d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Menus">
-      <UniqueIdentifier>{4949155c-1faa-4f21-a005-91beb815752d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Menus">
-      <UniqueIdentifier>{284b2245-30e6-4ad0-8326-4ac1014ddc70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DataStructures">
-      <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="Source\CommandHandler.cpp" />
+    <ClCompile Include="Source\DataStructures\Bag.cpp" />
+    <ClCompile Include="Source\Emitter.cpp" />
+    <ClCompile Include="Source\EmitterEngine.cpp" />
+    <ClCompile Include="Source\Entities\BotEntity.cpp" />
+    <ClCompile Include="Source\Entities\Camera.cpp" />
+    <ClCompile Include="Source\Entities\DirectionalLight.cpp" />
+    <ClCompile Include="Source\Entities\Entity.cpp" />
+    <ClCompile Include="Source\Entities\Explosion.cpp" />
+    <ClCompile Include="Source\Entities\FlameTrail.cpp" />
+    <ClCompile Include="Source\Entities\HovercraftEntity.cpp" />
+    <ClCompile Include="Source\Entities\InteractableEntity.cpp" />
+    <ClCompile Include="Source\Entities\PointLight.cpp" />
+    <ClCompile Include="Source\Entities\Powerup.cpp" />
+    <ClCompile Include="Source\Entities\Rocket.cpp" />
+    <ClCompile Include="Source\Entities\Spikes.cpp" />
+    <ClCompile Include="Source\Entities\SpotLight.cpp" />
+    <ClCompile Include="Source\Entities\StaticEntity.cpp" />
+    <ClCompile Include="Source\EntityComponents\AIComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\CameraComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\LightingComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp" />
+    <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
+    <ClCompile Include="Source\EntityManager.cpp" />
+    <ClCompile Include="Source\GameStats.cpp" />
+    <ClCompile Include="Source\GameTime.cpp" />
+    <ClCompile Include="Source\GameManager.cpp" />
+    <ClCompile Include="Source\ImageReader.cpp" />
+    <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\Menus\EndMenu.cpp" />
+    <ClCompile Include="Source\Menus\GameMenu.cpp" />
+    <ClCompile Include="Source\Menus\MainMenu.cpp" />
+    <ClCompile Include="Source\Menus\Menu.cpp" />
+    <ClCompile Include="Source\Menus\PromptMenu.cpp" />
+    <ClCompile Include="Source\Menus\PauseMenu.cpp" />
+    <ClCompile Include="Source\Menus\StartMenu.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsCallBack.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
+    <ClCompile Include="Source\MeshManager.cpp" />
+    <ClCompile Include="Source\SceneLoader.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
+    <ClCompile Include="Source\ShaderManager.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicle4WCreate.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleCreate.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleFilterShader.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleNoDriveCreate.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp" />
+    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp" />
+    <ClCompile Include="Source\SoundManager.cpp" />
+    <ClCompile Include="Source\SpatialDataMap.cpp" />
+    <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\TextureManager.cpp" />
+    <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
+    <ClCompile Include="Source\Utils\FuncUtils.cpp" />
+    <ClCompile Include="TestClass.cpp" />
+    <ClCompile Include="Source\Menus\PregameMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\ImageReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\ShaderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\InputHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\TextureManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\MeshManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\CommandHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EmitterEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Emitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\PhysicsManager.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="TestClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Camera.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Entity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\PointLight.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\SpotLight.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\StaticEntity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameStats.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\ePlayer.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eAbility.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\ePowerup.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\DataStructures\Bag.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleConcurrency.h">
-      <Filter>Header Files\snippetvehiclecommon</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleCreate.h">
-      <Filter>Header Files\snippetvehiclecommon</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleFilterShader.h">
-      <Filter>Header Files\snippetvehiclecommon</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h">
-      <Filter>Header Files\snippetvehiclecommon</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h">
-      <Filter>Header Files\snippetvehiclecommon</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h">
-      <Filter>Header Files\snippetvehiclecommon</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eFixedCommand.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eVariableCommand.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\SceneLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\DataStructures\ObjectInfo.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\SpatialDataMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eEntityTypes.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Utils\FuncUtils.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\SoundManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\UserInterface\UserInterface.h">
-      <Filter>Header Files\UserInterface</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\BotEntity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameTime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Physics\PhysicsCallBack.h">
-      <Filter>Header Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h">
-      <Filter>Header Files\EntityComponentHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Enums\eCooldown.h">
-      <Filter>Header Files\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Explosion.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\FlameTrail.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Powerup.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Rocket.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Spikes.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menus\EndMenu.h">
-      <Filter>Header Files\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menus\GameMenu.h">
-      <Filter>Header Files\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menus\MainMenu.h">
-      <Filter>Header Files\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menus\Menu.h">
-      <Filter>Header Files\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menus\PauseMenu.h">
-      <Filter>Header Files\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menus\PromptMenu.h">
-      <Filter>Header Files\Menus</Filter>
-    </ClInclude>
+    <ClInclude Include="Headers\CommandHandler.h" />
+    <ClInclude Include="Headers\DataStructures\Bag.h" />
+    <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
+    <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
+    <ClInclude Include="Headers\Emitter.h" />
+    <ClInclude Include="Headers\EmitterEngine.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\AIComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\AnimationComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\CameraComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\EntityComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h" />
+    <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
+    <ClInclude Include="Headers\EntityHeaders\BotEntity.h" />
+    <ClInclude Include="Headers\EntityHeaders\Camera.h" />
+    <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h" />
+    <ClInclude Include="Headers\EntityHeaders\Entity.h" />
+    <ClInclude Include="Headers\EntityHeaders\Explosion.h" />
+    <ClInclude Include="Headers\EntityHeaders\FlameTrail.h" />
+    <ClInclude Include="Headers\EntityHeaders\HovercraftEntity.h" />
+    <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h" />
+    <ClInclude Include="Headers\EntityHeaders\PointLight.h" />
+    <ClInclude Include="Headers\EntityHeaders\Powerup.h" />
+    <ClInclude Include="Headers\EntityHeaders\Rocket.h" />
+    <ClInclude Include="Headers\EntityHeaders\Spikes.h" />
+    <ClInclude Include="Headers\EntityHeaders\SpotLight.h" />
+    <ClInclude Include="Headers\EntityHeaders\StaticEntity.h" />
+    <ClInclude Include="Headers\EntityManager.h" />
+    <ClInclude Include="Headers\Enums\eAbility.h" />
+    <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h" />
+    <ClInclude Include="Headers\Enums\eCooldown.h" />
+    <ClInclude Include="Headers\Enums\eEntityTypes.h" />
+    <ClInclude Include="Headers\Enums\eFixedCommand.h" />
+    <ClInclude Include="Headers\Enums\ePlayer.h" />
+    <ClInclude Include="Headers\Enums\ePowerup.h" />
+    <ClInclude Include="Headers\Enums\eVariableCommand.h" />
+    <ClInclude Include="Headers\GameStats.h" />
+    <ClInclude Include="Headers\GameTime.h" />
+    <ClInclude Include="Headers\GameManager.h" />
+    <ClInclude Include="Headers\ImageReader.h" />
+    <ClInclude Include="Headers\InputHandler.h" />
+    <ClInclude Include="Headers\Menus\EndMenu.h" />
+    <ClInclude Include="Headers\Menus\GameMenu.h" />
+    <ClInclude Include="Headers\Menus\MainMenu.h" />
+    <ClInclude Include="Headers\Menus\Menu.h" />
+    <ClInclude Include="Headers\Menus\PromptMenu.h" />
+    <ClInclude Include="Headers\Menus\PauseMenu.h" />
+    <ClInclude Include="Headers\Menus\StartMenu.h" />
+    <ClInclude Include="Headers\Physics\PhysicsCallBack.h" />
+    <ClInclude Include="Headers\Physics\PhysicsManager.h" />
+    <ClInclude Include="Headers\Mesh.h" />
+    <ClInclude Include="Headers\MeshManager.h" />
+    <ClInclude Include="Headers\SceneLoader.h" />
+    <ClInclude Include="Headers\Shader.h" />
+    <ClInclude Include="Headers\ShaderManager.h" />
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleConcurrency.h" />
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleCreate.h" />
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleFilterShader.h" />
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleSceneQuery.h" />
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleTireFriction.h" />
+    <ClInclude Include="Headers\snippetvehiclecommon\SnippetVehicleWheelQueryResult.h" />
+    <ClInclude Include="Headers\SoundManager.h" />
+    <ClInclude Include="Headers\SpatialDataMap.h" />
+    <ClInclude Include="Headers\stdafx.h" />
+    <ClInclude Include="Headers\Texture.h" />
+    <ClInclude Include="Headers\TextureManager.h" />
+    <ClInclude Include="Headers\UserInterface\UserInterface.h" />
+    <ClInclude Include="Headers\Utils\FuncUtils.h" />
+    <ClInclude Include="TestClass.h" />
+    <ClInclude Include="Headers\Menus\PregameMenu.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\ImageReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ShaderManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\InputHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\TextureManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\MeshManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\CameraComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\RenderComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\LightingComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\CommandHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\PhysicsManager.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EmitterEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Emitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\EntityComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Camera.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\DirectionalLight.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Entity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\InteractableEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\PointLight.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\SpotLight.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\StaticEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameStats.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DataStructures\Bag.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicle4WCreate.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleCreate.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleFilterShader.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleNoDriveCreate.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleSceneQuery.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTankCreate.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\snippetvehiclecommon\SnippetVehicleTireFriction.cpp">
-      <Filter>Source Files\snippetvehiclecommon</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\AnimationComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SpatialDataMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\FuncUtils.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UserInterface\UserInterface.cpp">
-      <Filter>Source Files\UserInterface</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\BotEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\HovercraftEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SoundManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameTime.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\CommandHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Physics\PhysicsCallBack.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\EntityComponents\AIComponent.cpp">
-      <Filter>Source Files\EntityComponents</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Explosion.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\FlameTrail.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Powerup.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Rocket.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Spikes.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menus\EndMenu.cpp">
-      <Filter>Source Files\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menus\GameMenu.cpp">
-      <Filter>Source Files\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menus\MainMenu.cpp">
-      <Filter>Source Files\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menus\Menu.cpp">
-      <Filter>Source Files\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menus\PauseMenu.cpp">
-      <Filter>Source Files\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menus\PromptMenu.cpp">
-      <Filter>Source Files\Menus</Filter>
-    </ClCompile>
+    <Library Include="Dependencies\FMod\fmodL_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodstudioL_vc.lib" />
+    <Library Include="Dependencies\FMod\fmodstudio_vc.lib" />
+    <Library Include="Dependencies\FMod\fmod_vc.lib" />
+    <Library Include="Dependencies\FMod\libfmod.a" />
+    <Library Include="Dependencies\FMod\libfmodL.a" />
+    <Library Include="Dependencies\FMod\libfmodstudio.a" />
+    <Library Include="Dependencies\FMod\libfmodstudioL.a" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Renderer.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="Renderer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sound\car_start.wav" />
+    <Media Include="Sound\rocket.wav" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -467,27 +158,9 @@
     <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />
     <None Include="Dependencies\FMod\inc\fmod_errors.cs" />
     <None Include="Dependencies\FMod\inc\fmod_studio.cs" />
-    <None Include="Sound\Master Bank.bank" />
-    <None Include="Sound\Master Bank.strings.bank" />
     <None Include="Sound\FMODPROJECT\Build\Desktop\Master Bank.bank" />
     <None Include="Sound\FMODPROJECT\Build\Desktop\Master Bank.strings.bank" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Sound\car_start.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="Sound\rocket.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Dependencies\FMod\fmod_vc.lib" />
-    <Library Include="Dependencies\FMod\fmodL_vc.lib" />
-    <Library Include="Dependencies\FMod\fmodstudio_vc.lib" />
-    <Library Include="Dependencies\FMod\fmodstudioL_vc.lib" />
-    <Library Include="Dependencies\FMod\libfmod.a" />
-    <Library Include="Dependencies\FMod\libfmodL.a" />
-    <Library Include="Dependencies\FMod\libfmodstudio.a" />
-    <Library Include="Dependencies\FMod\libfmodstudioL.a" />
+    <None Include="Sound\Master Bank.bank" />
+    <None Include="Sound\Master Bank.strings.bank" />
   </ItemGroup>
 </Project>

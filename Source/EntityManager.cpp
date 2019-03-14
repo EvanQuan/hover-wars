@@ -510,8 +510,11 @@ void EntityManager::updateEnvironment(std::chrono::duration<double> fSecondsSinc
     constexpr auto pMaxDeltaTime = FRAMERATE;
     float fDeltaTime = 0.0f;
 
-   while (m_fGameTime > seconds{ 0 })
-   {
+   // These updates occur faster than the frame rate.
+   // If there are updates that don't need to be updated more than once per
+   // frame, update them externally in GameMenu::renderGraphics()
+    while (m_fGameTime > seconds{ 0 })
+    {
         // Get the Delta of this time step <= 1/60th of a second (60 fps)
         // Interpolate on steps < 1/60th of a second
         duration<float> pDeltaTime =
@@ -523,7 +526,6 @@ void EntityManager::updateEnvironment(std::chrono::duration<double> fSecondsSinc
         // UPDATES GO HERE
         m_pPhysxMngr->update(fDeltaTime); // PHYSICSTODO: This is where the Physics Update is called.
         m_pEmtrEngn->update(fDeltaTime);
-        USER_INTERFACE->update(fDeltaTime);
 
         for (vector<PhysicsComponent*>::iterator iter = m_pPhysicsComponents.begin();
             iter != m_pPhysicsComponents.end();
@@ -541,7 +543,7 @@ void EntityManager::updateEnvironment(std::chrono::duration<double> fSecondsSinc
             iter != m_pAnimationComponents.end();
             ++iter)
             (*iter)->update(fDeltaTime);
-   }
+    }
 }
 
 /*********************************************************************************\
