@@ -24,7 +24,8 @@ public:
         Every prompt menu needs to instantiate a list of prompts. This should
         be done in the constructor.
 
-        Public to be accessible to the UserInterface
+        Public to be accessible to the UserInterface. Should never be modified
+        after instantiation.
     */
     vector<vector<const char*>> m_vPrompts;
 
@@ -33,19 +34,23 @@ public:
     // y-coordinate of current prompt in m_vPrompts
     int m_iCurrentPromptY;
 
+    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY); }
+
 private:
     float m_fSecondsToStartRepeat;
     float m_fSecondsToNextRepeat;
 
     eFixedCommand joystickStateToPromptDirection(float x, float y);
 
-    const char* moveCursor(eFixedCommand direction);
+    void moveCursor(eFixedCommand direction);
     void releaseCursor();
+    eFixedCommand m_eCursorDirection;
 
 protected:
-    PromptMenu();
+    PromptMenu(vector<vector<const char*>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
+    void updateTimeValues(float fTimeInSeconds);
     virtual void select() = 0;
     virtual void back() = 0;
 

@@ -29,7 +29,9 @@ class Menu abstract
 public:
     ~Menu();
 
-    virtual void update() final { updateKeyboardCommands(); updateJoystickCommands(); };
+    virtual void update(float fTimeInSeconds) final { updateTimeValues(fTimeInSeconds);
+                                                      updateKeyboardCommands();
+                                                      updateJoystickCommands(); };
 
 private:
     virtual void updateKeyboardCommands() final;
@@ -98,6 +100,7 @@ protected:
 
     virtual void nextMenu(Menu* next) final;
 
+    virtual void updateTimeValues(float fTimeInSeconds) = 0;
     // Make no distinguishment between joystick and keyboard fixed commands
     virtual void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
 

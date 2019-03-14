@@ -290,8 +290,8 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_iHeight = iHeight;
 
     // debug
-    debugWidth = iWidth * 0.5;
-    debugHeight = iHeight * 0.5;
+    debugWidth =  iWidth * 0.5f;
+    debugHeight =  iHeight * 0.5f;
 
     // Update UI Projection Matrix Uniform for UI Shader
     mat4 m4UIProjection = ortho(0.0f, static_cast<GLfloat>(m_iWidth), 0.0f, static_cast<GLfloat>(m_iHeight), 0.0f, 1.0f);
@@ -465,7 +465,7 @@ void UserInterface::renderMessages()
 
     if ("" != debugMessage)
     {
-        renderText(debugMessage, debugWidth, debugHeight, 1.0, COLOR_WHITE);
+        renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
     }
 }
 

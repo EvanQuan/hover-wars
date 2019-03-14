@@ -199,6 +199,6 @@ private:
 
 
     const char* debugMessage;
-    int debugWidth;
-    int debugHeight;
+    float debugWidth;
+    float debugHeight;
 };

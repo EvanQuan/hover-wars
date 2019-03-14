@@ -16,7 +16,7 @@
 */
 #define PROMPT_REPEAT_DELAY 0.3f
 
-PromptMenu::PromptMenu() : Menu(
+PromptMenu::PromptMenu(vector<vector<const char*>> vPrompts) : Menu(
     // pressedKey
     unordered_map<int, eFixedCommand>
     {
@@ -79,9 +79,13 @@ PromptMenu::PromptMenu() : Menu(
     }
 )
 {
-
+    m_vPrompts = vPrompts;
+    m_eCursorDirection = COMMAND_INVALID_FIXED;
     m_iCurrentPromptX = 0;
     m_iCurrentPromptY = 0;
+
+    m_fSecondsToNextRepeat = 0;
+    m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
 }
 
 
@@ -91,9 +95,36 @@ void PromptMenu::setupKeyCommands()
 
 void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
+    switch (command)
+    {
+    case COMMAND_PROMPT_UP:
+    case COMMAND_PROMPT_LEFT:
+    case COMMAND_PROMPT_DOWN:
+    case COMMAND_PROMPT_RIGHT:
+        moveCursor(command);
+        break;
+    case COMMAND_PROMPT_CURSOR_RELEASE:
+        releaseCursor();
+    case COMMAND_PROMPT_SELECT:
+        select();
+        break;
+    case COMMAND_PROMPT_BACK:
+        back();
+        break;
+    case COMMAND_CLOSE_WINDOW:
+        glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+    }
+}
+
+void PromptMenu::moveCursor(eFixedCommand direction)
+{
+    if (m_fSecondsToNextRepeat > 0) {
+        return;
+    }
+    m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
     int columns;
     int rows;
-    switch (command)
+    switch (direction)
     {
     case COMMAND_PROMPT_UP:
         columns = m_vPrompts.at(m_iCurrentPromptX).size();
@@ -111,15 +142,28 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         rows = m_vPrompts.size();
         m_iCurrentPromptX = (m_iCurrentPromptX + 1) % rows;
         break;
-    case COMMAND_PROMPT_SELECT:
-    case COMMAND_PROMPT_SELECT:
-        select();
-        break;
-    case COMMAND_PROMPT_BACK:
-        back();
-        break;
-    case COMMAND_CLOSE_WINDOW:
-        glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+    default:
+        return; // end early as it was not a cursor movement command
+    }
+}
+
+/*
+The the user has just released cursor movement, which resets the start repeat
+delay.
+*/
+void PromptMenu::releaseCursor()
+{
+    m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
+    m_fSecondsToNextRepeat = 0;
+    m_eCursorDirection = COMMAND_INVALID_FIXED;
+}
+
+void PromptMenu::updateTimeValues(float fTimeInSeconds)
+{
+    m_fSecondsToStartRepeat -= fTimeInSeconds;
+    if (m_fSecondsToStartRepeat <= 0)
+    {
+        m_fSecondsToNextRepeat -= fTimeInSeconds;
     }
 }
 

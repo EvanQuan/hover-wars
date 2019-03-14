@@ -58,9 +58,9 @@ void CommandHandler::setCurrentMenu(Menu* menu)
 Execute all the commands for a given frame. This should be called every frame
 update.
 */
-void CommandHandler::update()
+void CommandHandler::update(float fTimeInSeconds)
 {
-    m_pCurrentMenu->update();
+    m_pCurrentMenu->update(fTimeInSeconds);
 }
 
 void CommandHandler::addMenu(Menu* menu)

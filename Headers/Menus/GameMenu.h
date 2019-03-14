@@ -19,6 +19,9 @@ private:
 protected:
     GameMenu();
 
+    // Not time values
+    void updateTimeValues(float fTimeInSeconds) {}
+
     static GameMenu* m_pInstance;
 
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
