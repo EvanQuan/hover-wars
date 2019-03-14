@@ -18,6 +18,7 @@ Trail
 Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
+#define ROCKET_SPEED            50.0f
 
 
 #define LOSE_CONTROL_COLLISION_TIME 0.8f
@@ -290,7 +291,7 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
+    m_pPhysicsComponent->initializeVehicle(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
 
     // Set up Mesh for Initial Transformation drawing.
     mat4 m4InitialTransform;
@@ -330,6 +331,7 @@ void HovercraftEntity::handleCollision(Entity* pOther)
     // Get the Type of the Other Entity
     eEntityType eOtherType = pOther->getType();
     HovercraftEntity* pOtherHovercraft;
+    InteractableEntity* pOtherIE;
     switch (eOtherType)
     {
     case ENTITY_HOVERCRAFT:
@@ -349,9 +351,19 @@ void HovercraftEntity::handleCollision(Entity* pOther)
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
-    case ENTITY_POWERUP:
-        // Random for now
-        setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
+    case ENTITY_INTERACTABLE:
+        // Static Cast to an Interactable Entity
+        pOtherIE = static_cast<InteractableEntity*>(pOther);
+
+        // Switch between different Interactable Entity Types
+        switch (pOtherIE->getInteractableType())
+        {
+        case INTER_POWERUP:
+            // Random for now
+            setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
+            break;
+        }
+        break;
     case ENTITY_PLANE:
         // TODO still not sure if we're doing the gain control or the elevation check
         // to make collisions less wonky
@@ -682,8 +694,11 @@ void HovercraftEntity::setPowerup(ePowerup powerup)
 void HovercraftEntity::shootRocket()
 {
     mat4 m4CurrentTransform;
+    vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
-    m_pRocket->launchRocket(&m4CurrentTransform, 1.0f);
+    m_pPhysicsComponent->getDirectionVector(&vVelocity);
+    vVelocity *= ROCKET_SPEED;
+    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, 0.5f);
     m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
 

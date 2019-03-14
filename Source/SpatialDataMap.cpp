@@ -169,8 +169,8 @@ void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsign
         {
             switch (vEntity->getType())
             {
-            case ENTITY_FLAME_TRAIL:
-                m_pSpatialMap[x][y].pLocalInteractableEntities.push_back(static_cast<const FlameTrail*>(vEntity));  // Push the Interactable Entity into the spatial map.
+            case ENTITY_INTERACTABLE:
+                m_pSpatialMap[x][y].pLocalInteractableEntities.push_back(static_cast<const FlameTrail*>(vEntity));          // Push the Interactable Entity into the spatial map.
                 break;
             case ENTITY_POINT_LIGHT:
                 m_pSpatialMap[x][y].pLocalPointLights.push_back(static_cast<const PointLight*>(vEntity));                   // Push the Static Entity into the spatial map.

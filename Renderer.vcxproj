@@ -83,11 +83,9 @@
     <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
-    <ClInclude Include="RocketDynamic.h" />
     <ClInclude Include="TestClass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RocketDynamic.cpp" />
     <ClCompile Include="Source\CommandHandler.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />

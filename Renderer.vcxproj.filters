@@ -270,9 +270,6 @@
     <ClInclude Include="Headers\Menus\PromptMenu.h">
       <Filter>Header Files\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="RocketDynamic.h">
-      <Filter>Header Files\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Menus\StartMenu.h">
       <Filter>Header Files\Menus</Filter>
     </ClInclude>
@@ -460,9 +457,6 @@
     </ClCompile>
     <ClCompile Include="Source\Menus\PromptMenu.cpp">
       <Filter>Source Files\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="RocketDynamic.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menus\StartMenu.cpp">
       <Filter>Source Files\Menus</Filter>
