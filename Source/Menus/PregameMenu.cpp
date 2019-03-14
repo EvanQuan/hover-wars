@@ -1,13 +1,13 @@
-#include "Menus/MainMenu.h"
-#include "Menus/StartMenu.h"
 #include "Menus/PregameMenu.h"
+#include "Menus/MainMenu.h"
 
 // Singleton instance
-MainMenu* MainMenu::m_pInstance = nullptr;
+PregameMenu* PregameMenu::m_pInstance = nullptr;
 
-MainMenu::MainMenu() : PromptMenu(
+PregameMenu::PregameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
+        // TODO
         { {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
         { {"Exit", eFixedCommand::COMMAND_CLOSE_WINDOW},  },
     }
@@ -16,29 +16,26 @@ MainMenu::MainMenu() : PromptMenu(
 
 }
 
-Menu* MainMenu::getInstance()
+Menu* PregameMenu::getInstance()
 {
     if (nullptr == m_pInstance) {
-        m_pInstance = new MainMenu();
+        m_pInstance = new PregameMenu();
     }
     return m_pInstance;
 }
 
-void MainMenu::select(eFixedCommand command)
+void PregameMenu::select(eFixedCommand command)
 {
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        nextMenu(PregameMenu::getInstance());
-        break;
-    case COMMAND_CLOSE_WINDOW:
-        nextMenu(MainMenu::getInstance());
+        // TODO
         break;
     }
 }
 
 // Back returns to the start screen
-void MainMenu::back()
+void PregameMenu::back()
 {
-    nextMenu(StartMenu::getInstance());
+    nextMenu(MainMenu::getInstance());
 }

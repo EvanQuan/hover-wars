@@ -2,20 +2,20 @@
 
 #include "Menus/PromptMenu.h"
 
-class MainMenu final : PromptMenu
+class PregameMenu final : PromptMenu
 {
 public:
     // TODO nothing to destruct?
-    ~MainMenu() {}
+    ~PregameMenu() {}
 
     static Menu* getInstance();
 
 private:
-    MainMenu();
+    PregameMenu();
 
     void select(eFixedCommand command);
 
     void back();
 
-    static MainMenu* m_pInstance;
+    static PregameMenu* m_pInstance;
 };

@@ -7,7 +7,7 @@ StartMenu* StartMenu::m_pInstance = nullptr;
 StartMenu::StartMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"Press Start", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
+        { {"Insert Coin", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
     }
 )
 {
