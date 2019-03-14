@@ -49,8 +49,7 @@ void FlameTrail::update(float fTimeInSeconds)
 
     // Update the Physics for the flame trail based on current Flame Trail
     for (unordered_map<string, float>::iterator pIter = m_pReferenceMap.begin();
-        pIter != m_pReferenceMap.end();
-        ++pIter)
+        pIter != m_pReferenceMap.end();)
     {
         // Track Duration
         pIter->second -= fTimeInSeconds;
@@ -59,21 +58,11 @@ void FlameTrail::update(float fTimeInSeconds)
         if (pIter->second <= 0.0f)      // Delete the Physics Actor
         {
             m_pPhysicsComponent->removeInstance(pIter->first);
-            bFlagForDeletion = true;
+            pIter = m_pReferenceMap.erase(pIter);
         }
-        else if (pIter->second <= 1.0f) // Scale the Physics Actor
-            m_pPhysicsComponent->scaleInstance(pIter->first, pIter->second);
+        else
+            ++pIter;
     }
-
-    // Clean up any References that are subject for deletion.
-    if (bFlagForDeletion)
-        m_pReferenceMap.erase(
-            remove_if(
-                m_pReferenceMap.begin(),
-                m_pReferenceMap.end(),
-                [](float & p) { return p <= 0.f; }
-            ),
-            m_pReferenceMap.end());
 }
 
 /****************************************************************\
@@ -94,5 +83,5 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
 
     // Grab Pointer to HashKey to give to Physics Component as Name.
     unordered_map<string, float>::iterator pIter = m_pReferenceMap.find(sHashKey);
-    m_pPhysicsComponent->initializeFlame(pIter->first.c_str(), vPosition, m_fHeight, m_fWidth);
+    m_pPhysicsComponent->initializeFlame(pIter->first.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
 }

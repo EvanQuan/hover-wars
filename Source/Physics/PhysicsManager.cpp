@@ -517,7 +517,9 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
 
     // Generate Transform to given position.
     PxVec3 pxFlamePos;
+    PxQuat pShapeRotation = PxQuat(1.5708f, PxVec3(0.0f, 0.0f, 1.0f));
     memcpy(&pxFlamePos, vPosition, sizeof(vec3));
+    pShape->setLocalPose(PxTransform(pShapeRotation));
     PxTransform pxLocalTransform(pxFlamePos);
 
     // Set up Physics Body

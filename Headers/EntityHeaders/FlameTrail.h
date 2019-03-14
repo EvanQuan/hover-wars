@@ -30,6 +30,6 @@ public:
 private:
     float                                               m_fHeight,
                                                         m_fWidth;
-    sSpriteSheetInfo                                    m_sSpriteSheetInfo;
+    SpriteSheetDatabase::sSpriteSheetInfo               m_sSpriteSheetInfo;
     unordered_map<string/*HashKey*/, float/*Duration*/> m_pReferenceMap;
 };

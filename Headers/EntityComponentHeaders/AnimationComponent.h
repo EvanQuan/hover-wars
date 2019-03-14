@@ -30,7 +30,6 @@ public:
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponentAsBillboard( Mesh * pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth );
-    void fetchCleanList()
 
 private: 
     // Private Copy Constructor and Assignment operator overload.

@@ -244,7 +244,6 @@ private:
     place the next one.
     */
     vec3 m_vPositionOfLastFlame;
-
     float m_fMinimumDistanceBetweenFlames;
 
     /*
