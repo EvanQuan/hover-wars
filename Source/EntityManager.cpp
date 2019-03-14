@@ -497,9 +497,9 @@ void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
 // Main Update Function
 // This function checks the timer and updates necessary components
 //    in the game world. No rendering is done here.
-void EntityManager::updateEnvironment(const GameTime* pTimer)
+void EntityManager::updateEnvironment(std::chrono::duration<double> fSecondsSinceLastFrame)
 {
-    m_fGameTime += pTimer->getFrameTimeSinceLastFrame();
+    m_fGameTime += fSecondsSinceLastFrame;
     constexpr auto pMaxDeltaTime = FRAMERATE;
     float fDeltaTime = 0.0f;
 

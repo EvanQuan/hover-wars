@@ -37,9 +37,6 @@
     <Filter Include="Header Files\DataStructures">
       <UniqueIdentifier>{0c184211-2636-40c9-ae34-b8311e961dab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\DataStructures">
-      <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\snippetvehiclecommon">
       <UniqueIdentifier>{18c6a556-d17d-436c-911d-559a6a6ec6ca}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,9 @@
     </Filter>
     <Filter Include="Header Files\Menus">
       <UniqueIdentifier>{284b2245-30e6-4ad0-8326-4ac1014ddc70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataStructures">
+      <UniqueIdentifier>{594c5591-d87f-4355-a516-a87336c5ea85}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +270,9 @@
     <ClInclude Include="Headers\Menus\PromptMenu.h">
       <Filter>Header Files\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="RocketDynamic.h">
+      <Filter>Header Files\EntityHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -454,6 +457,9 @@
     </ClCompile>
     <ClCompile Include="Source\Menus\PromptMenu.cpp">
       <Filter>Source Files\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="RocketDynamic.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
