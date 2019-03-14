@@ -37,6 +37,16 @@ namespace FuncUtils
     {
         return m.find(key) != m.end();
     }
+    /*
+    Swaps two variables of the same type.
+    */
+    template <class K>
+    void swap(K LHS, K RHS)
+    {
+        K Temp = LHS;
+        LHS = RHS;
+        RHS = Temp;
+    }
 
     /*
     Check if an unordered map contains a specified key.

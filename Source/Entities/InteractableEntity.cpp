@@ -5,10 +5,11 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eEntityType eIEType)
-    : Entity( iID, vPosition, eIEType )
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eInteractType eIEType)
+    : Entity( iID, vPosition, ENTITY_INTERACTABLE )
 {
-    m_iOwnerID = iOwnerID;  // Set the Owner ID for the Interactable Entity
+    m_iOwnerID          = iOwnerID;  // Set the Owner ID for the Interactable Entity
+    m_eInteractableType = eIEType;
 }
 
 // Destructor
@@ -29,10 +30,7 @@ void InteractableEntity::initialize(const string& sFileName,
     // Load Mesh and Rendering Component
     m_pMesh             = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
     m_pRenderComponent  = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
-
-    // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
-    //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    //m_pPhysicsComponent->initializeComponent(getName(), true, m_pMesh, &(pObjectProperties->sObjBoundingBox), pObjectProperties->vPosition);
+    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
 }
 
 void InteractableEntity::update(float fTimeInSeconds)
@@ -51,7 +49,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 // Written by: James Cote
 // Description: Default functionality for Interactable Entities.
 //      Default: tells the other entity that they've been hit.
-void InteractableEntity::handleCollision(Entity* pOther)
+void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     if (ENTITY_HOVERCRAFT == pOther->getType())
         static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, static_cast<eHovercraft>(m_iOwnerID));

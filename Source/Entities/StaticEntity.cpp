@@ -44,7 +44,7 @@ void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, con
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
-    //m_pPhysicsComponent->initializeComponent(true, m_pMesh); // PHYSICSTODO
+    //m_pPhysicsComponent->initializeVehicle(true, m_pMesh); // PHYSICSTODO
 }
 
 // Load a Sphere with a given Radius
@@ -55,7 +55,7 @@ void StaticEntity::loadAsSphere(float fRadius, const ObjectInfo* pObjectProperti
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
-    //m_pPhysicsComponent->initializeComponent(true, m_pMesh); // PHYSICSTODO
+    //m_pPhysicsComponent->initializeVehicle(true, m_pMesh); // PHYSICSTODO
 }
 
 void StaticEntity::loadAsCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType)
@@ -79,5 +79,5 @@ void StaticEntity::loadFromFile(const string& sFileName, const ObjectInfo* pObje
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
-    //m_pPhysicsComponent->initializeComponent(true, m_pMesh); // PHYSICSTODO
+    //m_pPhysicsComponent->initializeVehicle(true, m_pMesh); // PHYSICSTODO
 }

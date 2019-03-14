@@ -55,8 +55,11 @@ This should be relatively high to make car collisions satisfying.
 */
 #define CAR_RESTITUTION 1.0f // 0.2f
 
+// Definition for for Cap Radius of Rockets
+#define CAP_RADIUS 0.1f
+
 /*
-World Restituti8on
+World Restitution
 
 This should be low to make the world not bouncy.
 */
@@ -475,41 +478,43 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
     body->setName(sEntityID);
     return body;
 }
-PxRigidDynamic *PhysicsManager::createRocketObjects(float x, float y, float z,float dirX,float dirY,float dirZ) {
-    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(0.1f,0.5f), *gWorldMaterial);
-    PxVec3 rocketVel(dirX, dirY, dirZ);
-    rocketVel.normalize();
-    PxTransform localTm(PxVec3(x, y, z) + rocketVel*3);
-    PxRigidDynamic *body = gPhysics->createRigidDynamic(localTm);
-    body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-    body->setLinearVelocity(rocketVel * ROCKET_SPEED);
-    body->attachShape(*shape);
-    gScene->addActor(*body);
-    body->setName(NAME_ROCKET);
-    return body;
+
+// Name: createRocketObjects
+// Written by: James Coté & Austin Eaton
+// Description: Generates a rocket object and launches it in the scene.
+void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody)
+{
+    // Generate Shape for the Rocket.
+    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength - CAP_RADIUS), *gWorldMaterial);
+
+    // Generate Transform to given position.
+    PxMat44 pxTransform;
+    memcpy(&pxTransform, m4Transform, sizeof(mat4));
+    PxTransform pxLocalTransform(pxTransform);
+
+    // Set Velocity
+    PxVec3 pxRocketVel;
+    memcpy(&pxRocketVel, vVelocity, sizeof(vec3));
+
+    // Set up Physics Body
+    *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
+    (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+    (*pReturnBody)->setLinearVelocity(pxRocketVel);
+    (*pReturnBody)->attachShape(*shape);
+    (*pReturnBody)->setName(cName);
+
+    // Add To Scene
+    gScene->addActor(*(*pReturnBody));
 }
-PxRigidDynamic *PhysicsManager::createRocketObjects(const char* sEntityID,const mat4* m4InitialTransform) {
-    PxMat44 mat44;
 
-    // Convert the PxMat44 matrix to a glm::mat4
-    memcpy(&mat44, m4InitialTransform, sizeof(mat4));
-    PxTransform pxTrans = PxTransform(mat44);
-    PxVec3 rocketVel = pxTrans.q.rotate(PxVec3(0, 1, 0));
-    rocketVel.y = 0;
-
-    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(0.1f, 0.5f), *gWorldMaterial);
-    rocketVel.normalize();
-    pxTrans.p += rocketVel * NORAMLIZED_DISTANCE_ROCKET_MULTIPLIER;
-    PxRigidDynamic *body = gPhysics->createRigidDynamic(pxTrans);
-    body->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-    body->setLinearVelocity(rocketVel * ROCKET_SPEED);
-    body->attachShape(*shape);
-    gScene->addActor(*body);
-    rockets.push_back(body);
-    body->setName(sEntityID);
-
-    return body;
+// Removes a Rigid Dynamic Object from the scene and releases the actor
+void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor)
+{
+    gScene->removeActor(*pActor, false);
+    pActor->release();
 }
+
+
 PxVehicleNoDrive *PhysicsManager::createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
     //Create a vehicle that will drive on the plane.
     snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc(PxVec3(sizeX, sizeY, sizeZ));

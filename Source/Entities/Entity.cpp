@@ -18,7 +18,7 @@ Entity::Entity(const Entity& pCopy)
 }
 
 // void Entity::handleCollision(const Entity* pOther) const
-void Entity::handleCollision(Entity* pOther)
+void Entity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     /*Default, not implemented*/
 }

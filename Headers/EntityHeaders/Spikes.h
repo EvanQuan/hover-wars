@@ -22,7 +22,7 @@ public:
     // Implementation of inherited functionality
     void update(float fTimeInSeconds);
     // void handleCollision(const Entity* pOther) const;
-    void handleCollision(Entity* pOther);
+    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
 private:

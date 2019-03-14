@@ -734,6 +734,24 @@ void Mesh::updateInstance(const mat4* m4Transform, unsigned int iTransformIndex)
     }
 }
 
+// Removes an Instance from the Transformation list at the specified index.
+void Mesh::removeInstance(unsigned int iTransformIndex)
+{
+    if (iTransformIndex < m_m4ListOfInstances.size())
+    {
+        // Remove Insatnce
+        m_m4ListOfInstances.erase(m_m4ListOfInstances.begin() + iTransformIndex);
+
+        // Update the VBO with the new transformation
+        glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+        glBufferData(GL_ARRAY_BUFFER, m_m4ListOfInstances.size() * sizeof(mat4), m_m4ListOfInstances.data(), GL_DYNAMIC_DRAW);
+
+        // Apply same to Bounding Box
+        if (m_sBoundingBox.isLoaded())
+            m_sBoundingBox.removeInstance(iTransformIndex);
+    }
+}
+
 // Returns a Rotation Matrix to rotate an object from a World Coordinate System to a Local
 //    coordinate system with a given y-axis normal.
 mat4 Mesh::getRotationMat4ToNormal(const vec3* vNormal)
@@ -905,6 +923,20 @@ void Mesh::sBoundingBox::updateInstance(const mat4* pTransform, unsigned int iIn
     pInstances[iIndex] = *pTransform;
     glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, sizeof(mat4) * iIndex, sizeof(mat4), pTransform);
+}
+
+// Remove Bounding Box instance 
+void Mesh::sBoundingBox::removeInstance(unsigned int iIndex)
+{
+    if (iIndex < pInstances.size())
+    {
+        // Remove from Instance List
+        pInstances.erase(pInstances.begin() + iIndex);
+
+        // Update GPU data.
+        glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
+    }
 }
 
 // Initializes VBOs for the Bounding Box.
