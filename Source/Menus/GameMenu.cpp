@@ -192,11 +192,11 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_HONK_LEFT:
         SOUND_MANAGER->play(SoundManager::SOUND_HONK_LEFT);
         break;
-
+#ifndef NDEBUG
+    // Can only close the game directly in game in debug mode, for convenience
     case COMMAND_CLOSE_WINDOW:
         glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
         break;
-#ifndef NDEBUG
 
     case COMMAND_DEBUG_TOGGLE_WIREFRAME:
         debugToggleWireframe();
