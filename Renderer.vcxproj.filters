@@ -273,6 +273,9 @@
     <ClInclude Include="RocketDynamic.h">
       <Filter>Header Files\EntityHeaders</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menus\StartMenu.h">
+      <Filter>Header Files\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ImageReader.cpp">
@@ -460,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="RocketDynamic.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\StartMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
