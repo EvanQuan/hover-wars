@@ -50,12 +50,12 @@ void Rocket::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
 }
 
 // void Rocket::handleCollision(const Entity* pOther) const
-void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, PxVec3 vNormal, PxVec3 vPosition)
+void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     if (m_iOwnerID != pOther->getID())
     {
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
-        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg, vNormal, vPosition);
+        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
         // clear Rocket Rendering; Remove Instance from Mesh
         m_pMesh->removeInstance(iVictimMsg);

@@ -252,7 +252,7 @@ void EntityManager::setCameraPMVMatrices()
 * Entity Management                                                              *
 \*********************************************************************************/
 
-void EntityManager::dispatchCollision(int iColliderID, int iCollidedID, unsigned int iColliderMsg, unsigned int iCollidedMsg, PxVec3 vNormal, PxVec3 vPosition)
+void EntityManager::dispatchCollision(int iColliderID, int iCollidedID, unsigned int iColliderMsg, unsigned int iCollidedMsg)
 {
     // Both Entity IDs passed in must exist in the Master Entity List, otherwise they're not Entity IDs
     assert( m_pMasterEntityList.end() != m_pMasterEntityList.find(iColliderID) &&
@@ -274,7 +274,7 @@ void EntityManager::dispatchCollision(int iColliderID, int iCollidedID, unsigned
     SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
 
     // Tell the Collided Entity that someone collided with them
-    pCollided->handleCollision(pCollider, iColliderMsg, iCollidedMsg, vNormal, vPosition);
+    pCollided->handleCollision(pCollider, iColliderMsg, iCollidedMsg);
 }
 
 // Fetches the current position of Entity with ID: iEntityID
