@@ -90,7 +90,7 @@ public:
     // Change to private method
     void setSpeedParameter(float speed);
 
-    void pauseAll();
+    void togglePaused();
 
     void upPosition();
     void downPosition();

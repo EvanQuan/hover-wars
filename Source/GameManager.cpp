@@ -96,7 +96,6 @@ bool GameManager::renderGraphics()
 
 
     // Update Environment if the gamee is not paused
-    // includes UI
     if (!paused)
     {
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
