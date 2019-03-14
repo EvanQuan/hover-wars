@@ -13,7 +13,8 @@
 class PromptMenu abstract : public Menu
 {
 public:
-    ~PromptMenu();
+    // TODO nothing to desctruct?
+    ~PromptMenu() {}
 
     /*
         Prompts are laid out in a 2D grid. The user can move between prompts

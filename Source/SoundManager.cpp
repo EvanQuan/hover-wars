@@ -559,11 +559,11 @@ void SoundManager::shutDown() {
 
 // TODO: May need flag for pressing forward button, or not
 // method should be private
-void SoundManager::setSpeedParameter(float speed) {
+void SoundManager::setSpeedParameter(float speedPercent) {
     auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
 
-    if (speed >= 0.0 && speed <= 1.0) {
-        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0f * speed));
+    if ((0.0f <= speedPercent) && (speedPercent <= 1.0f)) {
+        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0f * speedPercent));
     }
     updateChannels();
 }

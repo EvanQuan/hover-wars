@@ -106,6 +106,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
     case COMMAND_PROMPT_CURSOR_RELEASE:
         releaseCursor();
     case COMMAND_PROMPT_SELECT:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
         select(getCurrentPromptCommand());
         break;
     case COMMAND_PROMPT_BACK:
@@ -123,6 +124,7 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         return;
     }
     m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
+    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
     int columns;
     int rows;
     switch (direction)
@@ -146,6 +148,8 @@ void PromptMenu::moveCursor(eFixedCommand direction)
     default:
         return; // end early as it was not a cursor movement command
     }
+    // debug
+    cout << "Cursor moved to " << getCurrentPromptCommand() << " : " << getCurrentPromptCommand() << endl;
 }
 
 /*
