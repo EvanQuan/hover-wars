@@ -7,14 +7,22 @@
 
     Unit : seconds
 */
-#define PROMPT_START_REPEAT_DELAY 1.0f
+#define PROMPT_START_REPEAT_DELAY 0.5f
 /*
     As the prompt repeats, there is a delay betweeen each repeat to ensure the
     cursor does not move too quickly.
 
     Unit : seconds
 */
-#define PROMPT_REPEAT_DELAY 0.3f
+#define PROMPT_REPEAT_DELAY 0.15f
+
+/*
+    To prevent very slight joystick movement from registering as cursor movement,
+    the joystick direction vector must reach a certain magnitude before it
+    registers.
+    The possible magnitudes are between 0.0f - 1.0f
+*/
+#define PROMPT_JOYSTICK_MIN_MAGNITUDE 0.75f
 
 PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts) : Menu(
     // pressedKey
@@ -120,7 +128,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
 
 void PromptMenu::moveCursor(eFixedCommand direction)
 {
-    if (m_fSecondsToNextRepeat > 0) {
+    if (m_fSecondsToNextRepeat > 0.0f) {
         return;
     }
     m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
@@ -131,10 +139,12 @@ void PromptMenu::moveCursor(eFixedCommand direction)
     {
     case COMMAND_PROMPT_UP:
         columns = m_vPrompts.at(m_iCurrentPromptX).size();
-        m_iCurrentPromptY = (((m_iCurrentPromptY - 1) % columns) + columns) % columns;
+        // prevent negative modulo
+        m_iCurrentPromptY = (((m_iCurrentPromptY - 1) % columns) + columns) % columns; 
         break;
     case COMMAND_PROMPT_LEFT:
         rows = m_vPrompts.size();
+        // prevent negative modulo
         m_iCurrentPromptX = (((m_iCurrentPromptX - 1) % rows) + rows) % rows;
         break;
     case COMMAND_PROMPT_DOWN:
@@ -160,14 +170,14 @@ delay.
 void PromptMenu::releaseCursor()
 {
     m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
-    m_fSecondsToNextRepeat = 0;
+    m_fSecondsToNextRepeat = 0.0f;
     m_eCursorDirection = COMMAND_INVALID_FIXED;
 }
 
 void PromptMenu::updateTimeValues(float fTimeInSeconds)
 {
     m_fSecondsToStartRepeat -= fTimeInSeconds;
-    if (m_fSecondsToStartRepeat <= 0)
+    if (m_fSecondsToStartRepeat <= 0.0f)
     {
         m_fSecondsToNextRepeat -= fTimeInSeconds;
     }
@@ -198,14 +208,25 @@ find out what direction the joysticks are headed towards.
 
 @param x    x-coordinate of joystick
 @param y    y-coordinate of joystick
-@return the prompt direction the joystick is moving in
-        COMMAND_PROMPT_RIGHT
-        COMMAND_PROMPT_LEFT
-        COMMAND_PROMPT_UP
-        COMMAND_PROMPT_DOWN
+@return the prompt direction the joystick is moving in.
+        If th magnitude of the joystick is at least
+        PROMPT_JOYSTICK_MIN_MAGNITUDE, the direction can be:
+            COMMAND_PROMPT_RIGHT
+            COMMAND_PROMPT_LEFT
+            COMMAND_PROMPT_UP
+            COMMAND_PROMPT_DOWN
+        Otherwise, the direction will be:
+            COMMAND_INVALID_FIXED
+        and will not register as a direction.
+
 */
 eFixedCommand PromptMenu::joystickStateToPromptDirection(float x, float y)
 {
+    if (FuncUtils::getMagnitude(x, y) < PROMPT_JOYSTICK_MIN_MAGNITUDE)
+    {
+        releaseCursor();
+        return COMMAND_INVALID_FIXED;
+    }
     if (abs(x) > abs(y)) // x takes priority
     {
         return x > 0 ? COMMAND_PROMPT_RIGHT : COMMAND_PROMPT_LEFT;
