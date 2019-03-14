@@ -16,7 +16,7 @@
 */
 #define PROMPT_REPEAT_DELAY 0.3f
 
-PromptMenu::PromptMenu(vector<vector<const char*>> vPrompts) : Menu(
+PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts) : Menu(
     // pressedKey
     unordered_map<int, eFixedCommand>
     {

@@ -27,14 +27,14 @@ public:
         Public to be accessible to the UserInterface. Should never be modified
         after instantiation.
     */
-    vector<vector<const char*>> m_vPrompts;
+    vector<vector<pair<const char*, eFixedCommand>>> m_vPrompts;
 
     // x-coordinate of current prompt in m_vPrompts
     int m_iCurrentPromptX;
     // y-coordinate of current prompt in m_vPrompts
     int m_iCurrentPromptY;
 
-    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY); }
+    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).first; }
 
 private:
     float m_fSecondsToStartRepeat;
@@ -47,12 +47,14 @@ private:
     eFixedCommand m_eCursorDirection;
 
 protected:
-    PromptMenu(vector<vector<const char*>> vPrompts);
+    PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
     void updateTimeValues(float fTimeInSeconds);
     virtual void select() = 0;
     virtual void back() = 0;
+
+    eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).second; }
 
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
 
