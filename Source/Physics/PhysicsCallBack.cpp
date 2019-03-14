@@ -42,6 +42,12 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             string sCollider = pairHeader.actors[0]->getName();
             string sCollided = pairHeader.actors[1]->getName();
 
+            // Get Contact Information
+            PxContactStreamIterator iter(cp.contactPatches, cp.contactPoints, cp.getInternalFaceIndices(), cp.patchCount, cp.contactCount);
+            PxVec3 vNormal = PxVec3(0.0f, 1.0f, 0.0f), vPosition(0.0f);
+            vNormal = iter.getContactNormal();
+            vPosition = iter.getContactPoint();
+
             // Parse Names
             istringstream HitterSS(sCollider);
             vector<string> HitterResults(istream_iterator<string>{HitterSS},
@@ -77,7 +83,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                     iCollidedMsg = stoi(VictimResults[1]);
 
                 // Pass information to Entity Manager to handle collision
-                m_pEntMngr->dispatchCollision(iColliderID, iCollidedID, iColliderMsg, iCollidedMsg);
+                m_pEntMngr->dispatchCollision(iColliderID, iCollidedID, iColliderMsg, iCollidedMsg, vNormal, vPosition);
             }
         }
     }

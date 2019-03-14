@@ -31,7 +31,7 @@ public:
                     const string& sShaderType,
                     float fScale);
     void update(float fTimeInSeconds);
-    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
+    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, PxVec3 vNormal, PxVec3 vPosition);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Rocket Functionality

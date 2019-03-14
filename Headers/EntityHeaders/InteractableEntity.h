@@ -26,7 +26,7 @@ public:
                             const string& sShaderType,
                             float fScale);
     virtual void update(float fTimeInSeconds);
-    virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
+    virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, PxVec3 vNormal, PxVec3 vPosition);
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
     eInteractType getInteractableType() const { return m_eInteractableType; }
 

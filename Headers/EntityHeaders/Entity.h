@@ -14,7 +14,7 @@ public:
     virtual void update(float fTimeInSeconds) = 0;
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const = 0;
     // virtual void handleCollision(const Entity* pOther) const;
-    virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
+    virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, PxVec3 vNormal, PxVec3 vPosition);
 
     // Getters/Setters
     vec3 getPosition() const { return m_vPosition; }

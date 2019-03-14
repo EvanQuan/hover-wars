@@ -35,7 +35,7 @@ void Powerup::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner)
 }
 
 // void Powerup::handleCollision(const Entity* pOther) const
-void Powerup::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
+void Powerup::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, PxVec3 vNormal, PxVec3 vPosition)
 {
     /* Not Implemented */
 }
