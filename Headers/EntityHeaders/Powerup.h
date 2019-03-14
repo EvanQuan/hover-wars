@@ -22,7 +22,7 @@ public:
     // Implementation of inherited functionality
     void initialize() { /*Not Implemented yet*/ }
     void update(float fTimeInSeconds);
-    void handleCollision(Entity* pOther);
+    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Game Specific Logic for Interacting with Object

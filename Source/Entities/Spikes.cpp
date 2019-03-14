@@ -35,7 +35,7 @@ void Spikes::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
 }
 
 // void Spikes::handleCollision(const Entity* pOther) const
-void Spikes::handleCollision(Entity* pOther)
+void Spikes::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     /* Not Implemented */
 }

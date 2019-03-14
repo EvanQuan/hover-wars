@@ -37,6 +37,7 @@ public:
     // Various initialization functions as needed.
     void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position);
     void initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength);
+    void flagForRemoval(string sHashKey) { m_pObjectsFlaggedForRemoval.push_back(sHashKey); }
     vec3 getLinearVelocity();
     quat getRotation();
     void flipVehicle();
@@ -44,6 +45,7 @@ public:
     void jumpVehicle();
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);
+    void getTransformMatrix(string sHashKey, mat4* pReturnTransformMatrix);
     glm::vec3 PhysicsComponent::getPosition();
     PxTransform getGlobalPose();
 
@@ -65,7 +67,9 @@ private:
     bool m_bVehicle;
     PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.
     mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
-    unordered_map<string, PxRigidDynamic*> m_pDynamicObjects;
+    unordered_map<string, PxRigidDynamic*>  m_pDynamicObjects;
+    vector<string>                          m_pObjectsFlaggedForRemoval;
+    void removeInstance(string sHashKey);
 
     void setDriveTorque(float torque)
     {

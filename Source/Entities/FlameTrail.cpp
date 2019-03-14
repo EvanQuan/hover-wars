@@ -55,7 +55,7 @@ void FlameTrail::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorn
 }
 
 // void FlameTrail::handleCollision(const Entity* pOther) const
-void FlameTrail::handleCollision(Entity* pOther)
+void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     /* Not Implemented */
 }

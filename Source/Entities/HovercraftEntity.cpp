@@ -698,7 +698,7 @@ void HovercraftEntity::shootRocket()
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
     m_pPhysicsComponent->getDirectionVector(&vVelocity);
     vVelocity *= ROCKET_SPEED;
-    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, 5.0f);
+    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, 0.5f);
     m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
 }
 

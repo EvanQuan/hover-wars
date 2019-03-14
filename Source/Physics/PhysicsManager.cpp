@@ -472,28 +472,36 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
 // Name: createRocketObjects
 // Written by: James Coté & Austin Eaton
 // Description: Generates a rocket object and launches it in the scene.
-void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic* pReturnBody)
+void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody)
 {
     // Generate Shape for the Rocket.
     PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength - CAP_RADIUS), *gWorldMaterial);
 
     // Generate Transform to given position.
-    PxTransform pxLocalTransform;
-    memcpy(&pxLocalTransform, m4Transform, sizeof(mat4));
+    PxMat44 pxTransform;
+    memcpy(&pxTransform, m4Transform, sizeof(mat4));
+    PxTransform pxLocalTransform(pxTransform);
 
     // Set Velocity
     PxVec3 pxRocketVel;
     memcpy(&pxRocketVel, vVelocity, sizeof(vec3));
 
     // Set up Physics Body
-    pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
-    pReturnBody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-    pReturnBody->setLinearVelocity(pxRocketVel);
-    pReturnBody->attachShape(*shape);
-    pReturnBody->setName(cName);
+    *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
+    (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+    (*pReturnBody)->setLinearVelocity(pxRocketVel);
+    (*pReturnBody)->attachShape(*shape);
+    (*pReturnBody)->setName(cName);
 
     // Add To Scene
-    gScene->addActor(*pReturnBody);
+    gScene->addActor(*(*pReturnBody));
+}
+
+// Removes a Rigid Dynamic Object from the scene and releases the actor
+void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor)
+{
+    gScene->removeActor(*pActor, false);
+    pActor->release();
 }
 
 

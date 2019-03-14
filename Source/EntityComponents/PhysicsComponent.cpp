@@ -166,7 +166,11 @@ void PhysicsComponent::rotatePlayer(float x) {
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
 {
-    /* Not Implemented yet.*/
+    // Clean up any Rigid Dynamic Objects that were created
+    for (unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.begin();
+        pIter != m_pDynamicObjects.end();
+        ++pIter)
+        pIter->second->release();
 }
 
 /************************************************************************************\
@@ -200,6 +204,16 @@ void PhysicsComponent::update(float fTimeInSeconds)
 
         isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     }
+    else
+    {
+        // Clear Dynamic Objects that are flagged for removal.
+        for (vector< string >::iterator pIter = m_pObjectsFlaggedForRemoval.begin();
+            pIter != m_pObjectsFlaggedForRemoval.end();
+            ++pIter)
+            removeInstance(*pIter);
+
+        m_pObjectsFlaggedForRemoval.clear();
+    }
     // if (isInAir) {
         // cout << isInAir << endl;
     // }
@@ -232,11 +246,23 @@ void PhysicsComponent::initializeRocket(const char* sName, const mat4* m4Transfo
 {
     // Generate the Rocket in the Physics Manager
     PxRigidDynamic *pNewRocket = nullptr;
-    m_pPhysicsManager->createRocketObjects(sName, m4Transform, vVelocity, fBBLength, pNewRocket);
+    m_pPhysicsManager->createRocketObjects(sName, m4Transform, vVelocity, fBBLength, &pNewRocket);
 
     // Store Rocket internally for management.
     assert(nullptr != pNewRocket);
     m_pDynamicObjects.insert(make_pair((sName), pNewRocket));
+}
+
+// Remove and unload a DynamicBody from the Physics scene with the given Hashkey.
+void PhysicsComponent::removeInstance(string sHashKey)
+{
+    // Ensure the Instance has been set up first.
+    if (!m_bVehicle && (m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end()))
+    {
+        // Release the Instance from the Physics Scene and erase it from the Object List.
+        m_pPhysicsManager->removeRigidDynamicObj(m_pDynamicObjects[sHashKey]);
+        m_pDynamicObjects.erase(sHashKey);
+    }
 }
 
 // Returns the Rotation Quaternion for the Entity's body.
@@ -265,6 +291,13 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 
         *pReturnTransformMatrix = m_pTransformationMatrix;
     }
+}
+
+// Get the Transformation Matrix for a specified Dynamic Object at a given hash key
+void PhysicsComponent::getTransformMatrix(string sHashKey, mat4* pReturnTransformMatrix)
+{
+    if (!m_bVehicle && m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end())
+        *pReturnTransformMatrix = m_pPhysicsManager->getMat4(m_pDynamicObjects[sHashKey]->getGlobalPose());
 }
 glm::vec3 PhysicsComponent::getPosition() {
     return glm::vec3(body->getGlobalPose().p.x, body->getGlobalPose().p.y, body->getGlobalPose().p.z);
