@@ -159,7 +159,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     float offsetX = chassisDims.x*XOFFSET_MULTIPLYER + XOFFSET_ADDITIVE;
     float offsetY = chassisDims.y*YOFFSET_MULTIPLYER + YOFFSET_ADDITIVE;
     float offsetZ = chassisDims.z*ZOFFSET_MULTIPLYER + ZOFFSET_ADDITIVE;
-    cout << offsetX << " " << offsetY << " " << offsetZ << endl;
+    // cout << offsetX << " " << offsetY << " " << offsetZ << endl;
     const PxVec3 chassisCMOffset=PxVec3(offsetX, offsetY, offsetZ);
 
     //Set up the wheel mass, radius, width, moment of inertia, and number of wheels.

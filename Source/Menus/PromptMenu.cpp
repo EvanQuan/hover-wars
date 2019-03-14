@@ -14,14 +14,13 @@
 
     Unit : seconds
 */
-#define PROMPT_REPEAT_DELAY 0.1f
+#define PROMPT_REPEAT_DELAY 0.3f
 
 PromptMenu::PromptMenu() : Menu(
     // pressedKey
     unordered_map<int, eFixedCommand>
     {
         // Movement
-        // NOTE: potentially reuse movement commands
         {GLFW_KEY_W,     COMMAND_PROMPT_UP},
         {GLFW_KEY_UP,    COMMAND_PROMPT_UP},
         {GLFW_KEY_A,     COMMAND_PROMPT_LEFT},
@@ -41,7 +40,17 @@ PromptMenu::PromptMenu() : Menu(
         {GLFW_KEY_ESCAPE,    COMMAND_PROMPT_BACK},
     },
     // justReleasedKey
-    unordered_map<int, eFixedCommand> {},
+    unordered_map<int, eFixedCommand>
+    {
+        {GLFW_KEY_W,     COMMAND_PROMPT_UP_RELEASE},
+        {GLFW_KEY_UP,    COMMAND_PROMPT_UP_RELEASE},
+        {GLFW_KEY_A,     COMMAND_PROMPT_LEFT_RELEASE},
+        {GLFW_KEY_LEFT,  COMMAND_PROMPT_LEFT_RELEASE},
+        {GLFW_KEY_S,     COMMAND_PROMPT_DOWN_RELEASE},
+        {GLFW_KEY_DOWN,  COMMAND_PROMPT_DOWN_RELEASE},
+        {GLFW_KEY_D,     COMMAND_PROMPT_RIGHT_RELEASE},
+        {GLFW_KEY_RIGHT, COMMAND_PROMPT_RIGHT_RELEASE},
+    },
     // repeatButton
     unordered_map<int, eFixedCommand>
     {
@@ -61,7 +70,13 @@ PromptMenu::PromptMenu() : Menu(
         {BUTTON_BACK,   COMMAND_PROMPT_BACK},
     },
     // justReleasedButton
-    unordered_map<int, eFixedCommand> {}
+    unordered_map<int, eFixedCommand>
+    {
+        {BUTTON_UP,     COMMAND_PROMPT_UP_RELEASE},
+        {BUTTON_LEFT,   COMMAND_PROMPT_LEFT_RELEASE},
+        {BUTTON_DOWN,   COMMAND_PROMPT_DOWN_RELEASE},
+        {BUTTON_RIGHT,  COMMAND_PROMPT_RIGHT_RELEASE},
+    }
 )
 {
 
@@ -76,24 +91,26 @@ void PromptMenu::setupKeyCommands()
 
 void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
+    int columns;
+    int rows;
     switch (command)
     {
-    //case COMMAND_PROMPT_UP:
-        //int columns = m_vPrompts.at(m_iCurrentPromptX).size();
-        //m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
-        //break;
-    //case COMMAND_PROMPT_LEFT:
-        //int rows = m_vPrompts.size();
-        //m_iCurrentPromptX = (m_iCurrentPromptX - 1) % rows;
-        //break;
-    //case COMMAND_PROMPT_DOWN:
-        //int columns = m_vPrompts.at(m_iCurrentPromptX).size();
-        //m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
-        //break;
-    //case COMMAND_PROMPT_RIGHT:
-        //int rows = m_vPrompts.size();
-        //m_iCurrentPromptX = (m_iCurrentPromptX + 1) % rows;
-        //break;
+    case COMMAND_PROMPT_UP:
+        columns = m_vPrompts.at(m_iCurrentPromptX).size();
+        m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        break;
+    case COMMAND_PROMPT_LEFT:
+        rows = m_vPrompts.size();
+        m_iCurrentPromptX = (m_iCurrentPromptX - 1) % rows;
+        break;
+    case COMMAND_PROMPT_DOWN:
+        columns = m_vPrompts.at(m_iCurrentPromptX).size();
+        m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        break;
+    case COMMAND_PROMPT_RIGHT:
+        rows = m_vPrompts.size();
+        m_iCurrentPromptX = (m_iCurrentPromptX + 1) % rows;
+        break;
     case COMMAND_PROMPT_SELECT:
         select();
         break;
