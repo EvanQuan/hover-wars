@@ -61,8 +61,7 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
         m_pMesh->removeInstance(iVictimMsg);
         string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
         m_pPhysicsComponent->flagForRemoval(sHashKey);
-        m_pReferenceMap.erase(sHashKey);
-        
+        m_pReferenceMap.erase(sHashKey);        
     }
 }
 

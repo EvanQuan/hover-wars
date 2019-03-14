@@ -38,7 +38,6 @@ public:
     void launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength);
 
 private:
-    float                                   m_fRocketDuration;
     EmitterEngine*                          m_pEmitterEngine;
     unordered_map<string, unsigned int>     m_pReferenceMap;
 };

@@ -1,5 +1,4 @@
 #include "EntityHeaders/FlameTrail.h"
-#include "DataStructures/SpriteSheetDatabase.h"
 #include "EntityManager.h"
 
 using namespace SpriteSheetDatabase;
@@ -11,6 +10,7 @@ FlameTrail::FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
 {
     m_fHeight = fHeight;
     m_fWidth = fWidth;
+    m_sSpriteSheetInfo = vSpriteInformation[eSpriteEnum::FIRE_SPRITE];
 }
 
 // Destructor
@@ -27,37 +27,53 @@ void FlameTrail::initialize()
 {
     // Local Variables
     ObjectInfo pFlameTrailInfo;
-    pFlameTrailInfo.sObjMaterial.sDiffuseMap = vSpriteInformation[eSpriteEnum::FIRE_SPRITE].sSheetLocation;
+    EntityManager* pEntityManager = ENTITY_MANAGER;
+    pFlameTrailInfo.sObjMaterial.sDiffuseMap = m_sSpriteSheetInfo.sSheetLocation;
 
     // Generate the Mesh
-    m_pMesh                 = MESH_MANAGER->generateBillboardMesh(&pFlameTrailInfo, this);
-    m_pAnimationComponent   = ENTITY_MANAGER->generateAnimationComponent(m_iID);
-    m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &vSpriteInformation[eSpriteEnum::FIRE_SPRITE], m_fHeight, m_fWidth);
+    m_pMesh = MESH_MANAGER->generateBillboardMesh(&pFlameTrailInfo, this);
+    m_pAnimationComponent = pEntityManager->generateAnimationComponent(m_iID);
+    m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &m_sSpriteSheetInfo, m_fHeight, m_fWidth);
 
     // Generate the Render Component
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
+    m_pRenderComponent = pEntityManager->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
 
-    // Set up Physics Component for a flame trail
-    // m_pPhysicsComponent->initializeVehicle(true, m_pMesh, &m_pObjectInfo.sObjBoundingBox, m_vPosition); // PHYSICSTODO
-
+    // Get a Physics Component for this Entity
+    m_pPhysicsComponent = pEntityManager->generatePhysicsComponent(m_iID);
 }
 
 void FlameTrail::update(float fTimeInSeconds)
 {
+    // Local Variables
+    bool bFlagForDeletion = false;
+
     // Update the Physics for the flame trail based on current Flame Trail
-}
+    for (unordered_map<string, float>::iterator pIter = m_pReferenceMap.begin();
+        pIter != m_pReferenceMap.end();
+        ++pIter)
+    {
+        // Track Duration
+        pIter->second -= fTimeInSeconds;
 
-// This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
-//  Static position.
-void FlameTrail::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
-{
-    /* Not Implemented */
-}
+        // Handle Certain Thresholds of the Duration
+        if (pIter->second <= 0.0f)      // Delete the Physics Actor
+        {
+            m_pPhysicsComponent->removeInstance(pIter->first);
+            bFlagForDeletion = true;
+        }
+        else if (pIter->second <= 1.0f) // Scale the Physics Actor
+            m_pPhysicsComponent->scaleInstance(pIter->first, pIter->second);
+    }
 
-// void FlameTrail::handleCollision(const Entity* pOther) const
-void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
-{
-    /* Not Implemented */
+    // Clean up any References that are subject for deletion.
+    if (bFlagForDeletion)
+        m_pReferenceMap.erase(
+            remove_if(
+                m_pReferenceMap.begin(),
+                m_pReferenceMap.end(),
+                [](float & p) { return p <= 0.f; }
+            ),
+            m_pReferenceMap.end());
 }
 
 /****************************************************************\
@@ -69,6 +85,14 @@ void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsi
 //  @vPosition: The Position of the Center-Middle of the Billboard.
 void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
 {
-    // Add a flame
-    m_pAnimationComponent->addBillboard(vPosition, vNormal);
+    // Add a flame To the Animation Component (Also adds it to the Mesh).
+    unsigned int iFlameIndex = m_pAnimationComponent->addBillboard(vPosition, vNormal);
+
+    // Store the duration locally to manage the Physics Component.
+    string sHashKey = to_string(m_iID) + " " + to_string(iFlameIndex);
+    m_pReferenceMap.insert(make_pair(sHashKey, m_sSpriteSheetInfo.fDuration));
+
+    // Grab Pointer to HashKey to give to Physics Component as Name.
+    unordered_map<string, float>::iterator pIter = m_pReferenceMap.find(sHashKey);
+    m_pPhysicsComponent->initializeFlame(pIter->first.c_str(), vPosition, m_fHeight, m_fWidth);
 }
