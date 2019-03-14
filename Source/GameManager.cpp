@@ -83,16 +83,17 @@ bool GameManager::renderGraphics()
     m_fFrameTime += fSecondsSinceLastFrame;
     /*
     Get the delta since the last frame and update based on that delta.
+    Do not confuse this with EntityManager's delta time, which is much smaller
+    since it updates more frequently than every frame update.
 
     Unit: seconds
     */
-
+    float frameDeltaTime = static_cast<float>(fSecondsSinceLastFrame.count());
     // Execute all commands for this frame
-    // These should be done before the environment updates so that the
+    // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
-    m_pCommandHandler->update(static_cast<float>(fSecondsSinceLastFrame.count()));
+    m_pCommandHandler->update(frameDeltaTime);
 
-    SOUND_MANAGER->update();
 
     // Update Environment if the gamee is not paused
     // includes UI
@@ -100,6 +101,16 @@ bool GameManager::renderGraphics()
     {
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
     }
+
+    // Sound needs to update after the EntityManager to reflect in game changes
+    // Cannot be updated inside the EntityManager as sounds can play while game
+    // is paused.
+    SOUND_MANAGER->update();
+    // The user interface should update after the EntityManager and
+    // CommandHandler has changed in order to reflect their changes.
+    // It also cannot update inside the EntityManager since it is able
+    // to be updated while the EntityManager is paused.
+    USER_INTERFACE->update(frameDeltaTime);
 
     // call function to draw our scene
     while (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
