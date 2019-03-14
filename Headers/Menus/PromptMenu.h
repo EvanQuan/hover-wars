@@ -39,6 +39,9 @@ private:
 
     eFixedCommand joystickStateToPromptDirection(float x, float y);
 
+    const char* moveCursor(eFixedCommand direction);
+    void releaseCursor();
+
 protected:
     PromptMenu();
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }

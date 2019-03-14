@@ -42,14 +42,14 @@ PromptMenu::PromptMenu() : Menu(
     // justReleasedKey
     unordered_map<int, eFixedCommand>
     {
-        {GLFW_KEY_W,     COMMAND_PROMPT_UP_RELEASE},
-        {GLFW_KEY_UP,    COMMAND_PROMPT_UP_RELEASE},
-        {GLFW_KEY_A,     COMMAND_PROMPT_LEFT_RELEASE},
-        {GLFW_KEY_LEFT,  COMMAND_PROMPT_LEFT_RELEASE},
-        {GLFW_KEY_S,     COMMAND_PROMPT_DOWN_RELEASE},
-        {GLFW_KEY_DOWN,  COMMAND_PROMPT_DOWN_RELEASE},
-        {GLFW_KEY_D,     COMMAND_PROMPT_RIGHT_RELEASE},
-        {GLFW_KEY_RIGHT, COMMAND_PROMPT_RIGHT_RELEASE},
+        {GLFW_KEY_W,     COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_UP,    COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_A,     COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_LEFT,  COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_S,     COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_DOWN,  COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_D,     COMMAND_PROMPT_CURSOR_RELEASE},
+        {GLFW_KEY_RIGHT, COMMAND_PROMPT_CURSOR_RELEASE},
     },
     // repeatButton
     unordered_map<int, eFixedCommand>
@@ -72,10 +72,10 @@ PromptMenu::PromptMenu() : Menu(
     // justReleasedButton
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_UP,     COMMAND_PROMPT_UP_RELEASE},
-        {BUTTON_LEFT,   COMMAND_PROMPT_LEFT_RELEASE},
-        {BUTTON_DOWN,   COMMAND_PROMPT_DOWN_RELEASE},
-        {BUTTON_RIGHT,  COMMAND_PROMPT_RIGHT_RELEASE},
+        {BUTTON_UP,     COMMAND_PROMPT_CURSOR_RELEASE},
+        {BUTTON_LEFT,   COMMAND_PROMPT_CURSOR_RELEASE},
+        {BUTTON_DOWN,   COMMAND_PROMPT_CURSOR_RELEASE},
+        {BUTTON_RIGHT,  COMMAND_PROMPT_CURSOR_RELEASE},
     }
 )
 {
@@ -111,6 +111,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         rows = m_vPrompts.size();
         m_iCurrentPromptX = (m_iCurrentPromptX + 1) % rows;
         break;
+    case COMMAND_PROMPT_SELECT:
     case COMMAND_PROMPT_SELECT:
         select();
         break;
