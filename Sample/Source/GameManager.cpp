@@ -75,6 +75,9 @@ bool GameManager::renderGraphics()
 	// Handle player input 
 	m_inputHandler->handleInput();
 
+    // Update Sound
+    SOUND_MANAGER->update();
+
 	// Update Environment
 	m_pEntMngr->updateEnvironment(m_pTimer);
 

@@ -58,8 +58,8 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             unsigned int iColliderMsg = 0, iCollidedMsg = 0;
 
 #ifndef NDEBUG
-            std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
-            std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
+            // std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
+            // std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
 #endif
 
             // Simply play sound when collided with ground

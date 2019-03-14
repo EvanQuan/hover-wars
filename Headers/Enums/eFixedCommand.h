@@ -6,6 +6,7 @@ are executed or not), and do not require any extra parameters.
 */
 enum eFixedCommand
 {
+    // In game
     COMMAND_ABILITY_ROCKET,
     COMMAND_ABILITY_SPIKES,
     COMMAND_ABILITY_TRAIL_ACTIVATE,
@@ -18,7 +19,6 @@ enum eFixedCommand
     COMMAND_DASH_RIGHT,
     COMMAND_MENU_BACK,
     COMMAND_MENU_PAUSE,
-    COMMAND_MENU_START,
     COMMAND_INVALID_FIXED,
     COMMAND_MOVE_FORWARD,
     COMMAND_MOVE_RIGHT,
@@ -30,8 +30,17 @@ enum eFixedCommand
     COMMAND_HONK_RIGHT,
     COMMAND_HONK_DOWN,
     COMMAND_HONK_LEFT,
-    //
-    COMMAND_CLOSE_WINDOW, // TODO Remove this later
+    // PromptMenu
+    COMMAND_PROMPT_UP,
+    COMMAND_PROMPT_LEFT,
+    COMMAND_PROMPT_DOWN,
+    COMMAND_PROMPT_RIGHT,
+    COMMAND_PROMPT_SELECT,
+    COMMAND_PROMPT_BACK,
+
+    COMMAND_MENU_START, // Currently does nothing, may remove or change name in future
+
+    COMMAND_CLOSE_WINDOW,
 #ifndef NDEBUG
     COMMAND_DEBUG_TOGGLE_WIREFRAME,
     COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1,

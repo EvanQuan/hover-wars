@@ -40,6 +40,7 @@ public:
         SOUND_HOVERCAR_LOOP,
         SOUND_HOVERCAR_IMPACT_HOVERCAR,
         SOUND_HOVERCAR_IMPACT_WORLD,
+        SOUND_HOVERCAR_ENGINE,
         
         SOUND_HOVERCAR_DASH,
 
@@ -59,6 +60,7 @@ public:
         SOUND_HONK_LEFT,
 
         MUSIC_INGAME,
+        MUSIC_PAUSE,
     };
 
     void play(eSoundEvent sound);
@@ -80,8 +82,21 @@ public:
 
     void loadFiles();
     void shutDown();
+
+    // TODO
+    // Change to private method
+    void setSpeedParameter(float speed);
+
+    void pauseAll();
+
+    void upPosition();
+    void downPosition();
+
+    void start();
+    void update();
 private:
-    
+
+    FMOD_3D_ATTRIBUTES testAttrubute;
     static SoundManager* m_pInstance;
 
     FMOD_ADVANCEDSETTINGS* advancedSettings;
@@ -136,6 +151,7 @@ private:
     bool isEventPlaying(const string& sEventName) const;
     float dbToVolume(float db);
     float volumeTodB(float volume);
+    bool isPaused = false;
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
@@ -191,9 +207,13 @@ private:
                                            "event:/hovercraft/hovercraft_hit_hovercraft_07",
                                            "event:/hovercraft/hovercraft_hit_hovercraft_08",
                                          }},
+        {SOUND_HOVERCAR_ENGINE,          { "event:/hovercraft/hovercraft_engine",
+                                         }},
         {SOUND_TRAIL,                    { "event:/trail/trail",
                                          }},
         {SOUND_MUSIC_INGAME_LOOP,        { "event:/background/ingame_music_loop_01",
+                                         }},
+        {SOUND_MUSIC_PAUSE_LOOP,         { "event:/background/music_loop_pause",
                                          }},
         {SOUND_KILL_FIRST_BLOOD,         { "event:/kill/firstblood",
                                          }},
@@ -214,6 +234,8 @@ private:
         {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
+                                         }},
+        {MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
                                          }},
     };
 };

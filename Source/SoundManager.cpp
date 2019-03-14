@@ -93,12 +93,12 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityTy
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
         case eEntityType::ENTITY_HOVERCRAFT:
-            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
+            //play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
             return true;
             break;
         case eEntityType::ENTITY_STATIC:
         case eEntityType::ENTITY_PLANE:
-            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
+            //play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
             break;
         }
         break;
@@ -412,11 +412,10 @@ void SoundManager::loadEvent(const string& sEventName) {
 /*
     Play an event.
 
-    Currently, only one instance of each event can play at a time, as additional
-    concurrent calls will just reset the event's audio back to the start instead of
-    overlapping a new instance.
+    Multiple instances of each event can be played to allow for events to overlap.
 
-    @param sEventName   
+    @param sEventName   path to event to play. All valid paths are recorded in
+                        the eventToSound map.
 */
 void SoundManager::playEvent(const string& sEventName) {
     auto tFoundIt = mEvents.find(sEventName);
@@ -467,6 +466,10 @@ void SoundManager::playEvent(const string& sEventName) {
             tFoundIt = mEvents.find(sNewEventName);
         }
         // Event not playing, going play tFoundIt
+
+        // 3D testing here
+        testAttrubute.position = FMOD_VECTOR{ 0.0f, 0.0f, 0.0f };
+        tFoundIt->second->set3DAttributes(&testAttrubute);
     }
     tFoundIt->second->start();
     // cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
@@ -552,4 +555,76 @@ int SoundManager::errorCheck(FMOD_RESULT result) {
 
 void SoundManager::shutDown() {
     delete m_pInstance;
+}
+
+// TODO: May need flag for pressing forward button, or not
+// method should be private
+void SoundManager::setSpeedParameter(float speed) {
+    auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
+
+    if (speed >= 0.0 && speed <= 1.0) {
+        errorCheck(tFoundIt->second->setParameterValue("Speed", 5.0f * speed));
+    }
+    updateChannels();
+}
+
+void SoundManager::pauseAll() {
+    // Toggle pause status
+    isPaused = !isPaused;
+
+    if (isPaused) {
+        // Pause all the playing event, and play pause music
+        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+        {
+            it->second->setPaused(true);
+        }
+        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+        tFoundIt->second->setPaused(false);
+        playEvent(getPath(MUSIC_PAUSE));
+    }
+    else {
+        // Unpause event and end pause music
+        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+        {
+            bool eventPaused;
+            it->second->getPaused(&eventPaused);
+            it->second->setPaused(!eventPaused);
+        }
+        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+        tFoundIt->second->setPaused(true);
+        tFoundIt->second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+    }
+    updateChannels();
+}
+
+// @Deprecated
+void SoundManager::upPosition() {
+    auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
+    vec3 testingP = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getPosition();
+    testAttrubute.position.x = testingP.x;
+    testAttrubute.position.y = testingP.y;
+    testAttrubute.position.z = testingP.z;
+    cout << "Car position: " << testAttrubute.position.x << ", "<< testAttrubute.position.y <<", "<< testAttrubute.position.z << endl;
+    tFoundIt->second->set3DAttributes(&testAttrubute);
+    updateChannels();
+}
+
+// @Deprecated
+void SoundManager::downPosition() {
+    auto tFoundIt = mEvents.find(getPath(SOUND_HOVERCAR_ENGINE));
+    testAttrubute.position.x -= 10;
+    tFoundIt->second->set3DAttributes(&testAttrubute);
+    updateChannels();
+}
+
+void SoundManager::start() {
+    play(MUSIC_INGAME);
+    play(SOUND_HOVERCAR_ENGINE);
+}
+
+// Call every frame (or more often)
+void SoundManager::update() {
+    // make speed go from 0 to 1
+    // Balance volume of engine sound with music
+    setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30);
 }

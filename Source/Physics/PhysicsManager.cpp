@@ -88,6 +88,15 @@ Mass : kilograms
 */
 #define CHASSIS_MASS 2000.0 // 1000
 
+
+#define XOFFSET_MULTIPLYER 0
+#define YOFFSET_MULTIPLYER -3.0f
+#define ZOFFSET_MULTIPLYER 0
+
+#define XOFFSET_ADDITIVE 0
+#define YOFFSET_ADDITIVE 0.65f
+#define ZOFFSET_ADDITIVE 0.25f
+
 /****************************************************************************\
  * Singleton Implementation                                                 *
 \****************************************************************************/
@@ -147,7 +156,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
     // x - side
     // y - height
     // z - front
-    const PxVec3 chassisCMOffset=PxVec3(0.0f, -chassisDims.y*1.5f + 0.65f, 0.25f);
+    const PxVec3 chassisCMOffset=PxVec3(chassisDims.x*XOFFSET_MULTIPLYER + XOFFSET_ADDITIVE, chassisDims.y*YOFFSET_MULTIPLYER + YOFFSET_ADDITIVE, chassisDims.z*ZOFFSET_MULTIPLYER+ ZOFFSET_ADDITIVE);
 
     //Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
     //Moment of inertia is just the moment of inertia of a cylinder.
