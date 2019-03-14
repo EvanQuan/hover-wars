@@ -131,11 +131,11 @@ void PromptMenu::moveCursor(eFixedCommand direction)
     {
     case COMMAND_PROMPT_UP:
         columns = m_vPrompts.at(m_iCurrentPromptX).size();
-        m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        m_iCurrentPromptY = (((m_iCurrentPromptY - 1) % columns) + columns) % columns;
         break;
     case COMMAND_PROMPT_LEFT:
         rows = m_vPrompts.size();
-        m_iCurrentPromptX = (m_iCurrentPromptX - 1) % rows;
+        m_iCurrentPromptX = (((m_iCurrentPromptX - 1) % rows) + rows) % rows;
         break;
     case COMMAND_PROMPT_DOWN:
         columns = m_vPrompts.at(m_iCurrentPromptX).size();
@@ -149,7 +149,8 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         return; // end early as it was not a cursor movement command
     }
     // debug
-    cout << "Cursor moved to " << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
+    cout << "Cursor moved to (" << m_iCurrentPromptX << ", " << m_iCurrentPromptY << ") " << endl;
+    cout << "\t" << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
 }
 
 /*
