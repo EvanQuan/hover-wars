@@ -15,6 +15,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Anim_Track.h" />
+    <ClInclude Include="Headers\BoidEngine.h" />
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
@@ -51,23 +56,23 @@
     <ClInclude Include="Headers\Enums\ePlayer.h" />
     <ClInclude Include="Headers\Enums\ePowerup.h" />
     <ClInclude Include="Headers\Enums\eVariableCommand.h" />
+    <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\GameStats.h" />
     <ClInclude Include="Headers\GameTime.h" />
-    <ClInclude Include="Headers\GameManager.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
     <ClInclude Include="Headers\Menus\EndMenu.h" />
     <ClInclude Include="Headers\Menus\GameMenu.h" />
     <ClInclude Include="Headers\Menus\MainMenu.h" />
     <ClInclude Include="Headers\Menus\Menu.h" />
+    <ClInclude Include="Headers\Menus\PauseMenu.h" />
     <ClInclude Include="Headers\Menus\PregameMenu.h" />
     <ClInclude Include="Headers\Menus\PromptMenu.h" />
-    <ClInclude Include="Headers\Menus\PauseMenu.h" />
     <ClInclude Include="Headers\Menus\StartMenu.h" />
-    <ClInclude Include="Headers\Physics\PhysicsCallBack.h" />
-    <ClInclude Include="Headers\Physics\PhysicsManager.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
+    <ClInclude Include="Headers\Physics\PhysicsCallBack.h" />
+    <ClInclude Include="Headers\Physics\PhysicsManager.h" />
     <ClInclude Include="Headers\SceneLoader.h" />
     <ClInclude Include="Headers\Shader.h" />
     <ClInclude Include="Headers\ShaderManager.h" />
@@ -84,7 +89,6 @@
     <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
-    <ClInclude Include="TestClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CommandHandler.cpp" />
@@ -113,24 +117,24 @@
     <ClCompile Include="Source\EntityComponents\PhysicsComponent.cpp" />
     <ClCompile Include="Source\EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
+    <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\GameStats.cpp" />
     <ClCompile Include="Source\GameTime.cpp" />
-    <ClCompile Include="Source\GameManager.cpp" />
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Menus\EndMenu.cpp" />
     <ClCompile Include="Source\Menus\GameMenu.cpp" />
     <ClCompile Include="Source\Menus\MainMenu.cpp" />
     <ClCompile Include="Source\Menus\Menu.cpp" />
+    <ClCompile Include="Source\Menus\PauseMenu.cpp" />
     <ClCompile Include="Source\Menus\PregameMenu.cpp" />
     <ClCompile Include="Source\Menus\PromptMenu.cpp" />
-    <ClCompile Include="Source\Menus\PauseMenu.cpp" />
     <ClCompile Include="Source\Menus\StartMenu.cpp" />
-    <ClCompile Include="Source\Physics\PhysicsCallBack.cpp" />
-    <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
-    <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsCallBack.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Source\SceneLoader.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
@@ -147,35 +151,6 @@
     <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
-    <ClCompile Include="TestClass.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Renderer.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".editorconfig" />
-    <None Include="Dependencies\FMod\inc\fmod.cs" />
-    <None Include="Dependencies\FMod\inc\fmod_dsp.cs" />
-    <None Include="Dependencies\FMod\inc\fmod_errors.cs" />
-    <None Include="Dependencies\FMod\inc\fmod_studio.cs" />
-    <None Include="Sound\FMODPROJECT\Build\Desktop\Master Bank.bank" />
-    <None Include="Sound\FMODPROJECT\Build\Desktop\Master Bank.strings.bank" />
-    <None Include="Sound\Master Bank.bank" />
-    <None Include="Sound\Master Bank.strings.bank" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Sound\car_start.wav" />
-    <Media Include="Sound\rocket.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Dependencies\FMod\fmodL_vc.lib" />
-    <Library Include="Dependencies\FMod\fmodstudioL_vc.lib" />
-    <Library Include="Dependencies\FMod\fmodstudio_vc.lib" />
-    <Library Include="Dependencies\FMod\fmod_vc.lib" />
-    <Library Include="Dependencies\FMod\libfmod.a" />
-    <Library Include="Dependencies\FMod\libfmodL.a" />
-    <Library Include="Dependencies\FMod\libfmodstudio.a" />
-    <Library Include="Dependencies\FMod\libfmodstudioL.a" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}</ProjectGuid>
