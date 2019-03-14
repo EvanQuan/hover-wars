@@ -619,12 +619,12 @@ void SoundManager::downPosition() {
 
 void SoundManager::start() {
     play(MUSIC_INGAME);
-    play(SOUND_HOVERCAR_ENGINE);
+    // play(SOUND_HOVERCAR_ENGINE);
 }
 
 // Call every frame (or more often)
 void SoundManager::update() {
     // make speed go from 0 to 1
     // Balance volume of engine sound with music
-    setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30);
+    // setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30);
 }

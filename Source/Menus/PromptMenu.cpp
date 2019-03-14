@@ -149,7 +149,7 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         return; // end early as it was not a cursor movement command
     }
     // debug
-    cout << "Cursor moved to " << getCurrentPromptCommand() << " : " << getCurrentPromptCommand() << endl;
+    cout << "Cursor moved to " << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
 }
 
 /*
