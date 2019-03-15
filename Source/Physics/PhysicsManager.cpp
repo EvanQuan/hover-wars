@@ -100,6 +100,9 @@ Mass : kilograms
 // this is multiplied to direction of the car in order to offset the rocket creation
 #define NORAMLIZED_DISTANCE_ROCKET_MULTIPLIER 3
 
+// 90 Degrees as Radians
+#define RADIANS_90  1.5708f
+
 /****************************************************************************\
  * Singleton Implementation                                                 *
 \****************************************************************************/
@@ -491,6 +494,7 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     PxMat44 pxTransform;
     memcpy(&pxTransform, m4Transform, sizeof(mat4));
     PxTransform pxLocalTransform(pxTransform);
+    shape->setLocalPose(PxTransform(PxQuat(RADIANS_90, PxVec3(0.0f, 1.0f, 0.0f))));
 
     // Set Velocity
     PxVec3 pxRocketVel;
@@ -517,7 +521,7 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
 
     // Generate Transform to given position.
     PxVec3 pxFlamePos;
-    PxQuat pShapeRotation = PxQuat(1.5708f, PxVec3(0.0f, 0.0f, 1.0f));
+    PxQuat pShapeRotation = PxQuat(RADIANS_90, PxVec3(0.0f, 0.0f, 1.0f));
     memcpy(&pxFlamePos, vPosition, sizeof(vec3));
     pShape->setLocalPose(PxTransform(pShapeRotation));
     PxTransform pxLocalTransform(pxFlamePos);
