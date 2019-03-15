@@ -55,6 +55,7 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 {
     if (m_iOwnerID != pOther->getID())
     {
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
