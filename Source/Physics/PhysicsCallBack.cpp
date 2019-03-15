@@ -57,11 +57,6 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             int iCollidedID = (VictimResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(VictimResults.front()));
             unsigned int iColliderMsg = 0, iCollidedMsg = 0;
 
-#ifndef NDEBUG
-            // std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
-            // std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
-#endif
-
             // Simply play sound when collided with ground
             if (GROUND_ID == iCollidedID || GROUND_ID == iColliderID)
             {
@@ -70,6 +65,13 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
             }
             else    // Tell the Entity Manager to Dispatch the  Collision between the two colliding entities
             {
+
+#ifndef NDEBUG
+                // Player 1: 11
+                // Bot 1: 14
+                // std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
+                // std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
+#endif
                 // Catch Messages if available.
                 if (HitterResults.size() > 1)
                     iColliderMsg = stoi(HitterResults[1]);

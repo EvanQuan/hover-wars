@@ -14,8 +14,8 @@ private:
     PauseMenu();
 
     void select(eFixedCommand command);
-    // TODO should go back to in game
-    void back() {}
+
+    void back();
 
     static PauseMenu* m_pInstance;
 };
