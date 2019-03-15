@@ -327,7 +327,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     @param pOther   const pointer to the Entity that this entity collided with.
     @param bVictim  boolean to tell if this entity is the victim or not.
 */
-void HovercraftEntity::handleCollision(Entity* pOther)
+void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     // Get the Type of the Other Entity
     eEntityType eOtherType = pOther->getType();

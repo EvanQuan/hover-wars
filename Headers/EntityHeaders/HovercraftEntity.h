@@ -38,7 +38,7 @@ Units: seconds
 /*
 Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         0.8f // 1.0f
+#define SPIKES_DURATION         0.5f // 1.0f
 /*
 Total time the trail can be activated from full to empty.
 
@@ -108,7 +108,7 @@ public:
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
     void getHitBy(eEntityType eHitByType, eHovercraft iNumber);
-    void handleCollision(Entity* pOther);
+    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
 
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
