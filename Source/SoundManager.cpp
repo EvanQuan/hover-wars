@@ -10,7 +10,7 @@
 /*
 @Stephen What does this impact? Describe why this is here.
 */
-#define MAX_CHANNELS 20
+#define MAX_CHANNELS 1000 // 10 // 20
 #define NO_EXTRA_DRIVER_DATA 0
 
 // Initialize Static Instance Variable
