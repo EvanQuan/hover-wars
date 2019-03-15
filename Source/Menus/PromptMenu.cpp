@@ -113,6 +113,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         break;
     case COMMAND_PROMPT_CURSOR_RELEASE:
         releaseCursor();
+        break;
     case COMMAND_PROMPT_SELECT:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
         select(getCurrentPromptCommand());
