@@ -29,7 +29,7 @@ void InteractableEntity::initialize(const string& sFileName,
                                     float fScale)
 {
     // Load Mesh and Rendering Component
-    m_pMesh             = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
+    m_pMesh             = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, m_sName, fScale);
     m_pRenderComponent  = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
 }
@@ -52,18 +52,17 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 //      Default: tells the other entity that they've been hit.
 void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
+    // NOTE: Before  it used to look like this:
+    //  static_cast<HovercraftEntity*>(pOther)->getHitBy(static_cast<eHovercraft>(m_iOwnerID));
+
+    // The problem is that m_iOwnerID is the entity ID of the owner, which
+    // is a number that only has meaning to Entity identificaiton and
+    // management. This ID does not relate to the owner's eHovercraft
+    // value, which is what the game stats cares about.
+
+    // As a result, there is no relation between m_iOwnerID and the owner's
+    // eHovercraft value, meaning we cannot just directly cast the m_iOwnerID to an eHovercraft
     if (ENTITY_HOVERCRAFT == pOther->getType() && m_iOwnerID != pOther->getID())
-        // NOTE: Before  it used to look like this:
-        //  static_cast<HovercraftEntity*>(pOther)->getHitBy(static_cast<eHovercraft>(m_iOwnerID));
-
-        // The problem is that m_iOwnerID is the entity ID of the owner, which
-        // is a number that only has meaning to Entity identificaiton and
-        // management. This ID does not relate to the owner's eHovercraft
-        // value, which is what the game stats cares about.
-
-        // As a result, there is no relation between m_iOwnerID and the owner's
-        // eHovercraft value, meaning we cannot just directly cast the m_iOwnerID to an eHovercraft
-
         static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eOwnerHovercraft);
 }
 

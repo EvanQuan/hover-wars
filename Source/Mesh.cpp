@@ -29,7 +29,7 @@ const vec4 DEFAULT_SPEC_COLOR = vec4(vec3(0.f), 1.0f);
 #define DURATION_OFFSET     (DIMENSION_OFFSET + sizeof(vec2))
 
 // Basic Constructor
-Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, float fScale, const ObjectInfo* pObjectProperties, manager_cookie)
+Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, float fScale, const ObjectInfo* pObjectProperties, string sHashKey, manager_cookie)
 {
     m_sManagerKey = sManagerKey;
     m_bStaticMesh = bStaticMesh;
@@ -37,8 +37,9 @@ Mesh::Mesh(const string &sManagerKey, bool bStaticMesh, float fScale, const Obje
     m_vNegativeOffset = m_vPositiveOffset = vec3(0.0f);
     glGenVertexArrays(1, &m_iVertexArray);
     m_m4ScaleMatrix = scale(vec3(fScale));
+    m_m4InstanceMap.clear();
 
-    loadObjectInfo(pObjectProperties);
+    loadObjectInfo(pObjectProperties, sHashKey);
 }
 
 // Delete any buffers that we initialized
@@ -55,7 +56,7 @@ Mesh::~Mesh()
 
 // Load the Mesh from a given file name
 //  Result: Stores the mesh variables into a set of vertices
-bool Mesh::genMesh(const string& sFileName, vec3 vPosition, float fScale)
+bool Mesh::genMesh(const string& sFileName, vec3 vPosition, string sHashKey, float fScale)
 {
     // Return Value
     bool bReturnValue = true;
@@ -84,7 +85,8 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, float fScale)
                 m4Transformation = translate(vPosition) * m4Transformation;
 
             // Store initial transformation
-            m_m4ListOfInstances.push_back(m4Transformation);
+            //m_m4ListOfInstances.push_back(m4Transformation);
+            m_m4InstanceMap.insert(make_pair(sHashKey, m4Transformation));
         }
 
         // Initialize VBOs
@@ -97,7 +99,7 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, float fScale)
 
 // Generate a generic plane at the origin with a given Height and Width
 //    Normals are along the y-axis.
-void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
+void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, string sHashKey)
 {
     // Generate 4 vertices around the origin
     /***********************************
@@ -142,7 +144,8 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
             m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
 
         // Store Transformation to List
-        m_m4ListOfInstances.push_back(m4TranslationMatrix);
+        //m_m4ListOfInstances.push_back(m4TranslationMatrix);
+        m_m4InstanceMap.insert(make_pair(sHashKey, m4TranslationMatrix));
     }
 
     // Load Mesh into GPU
@@ -150,7 +153,7 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal)
 }
 
 // Generates a Sphere Mesh
-void Mesh::genSphere(float fRadius, vec3 vPosition)
+void Mesh::genSphere(float fRadius, vec3 vPosition, string sHashKey)
 {
     // Algorithm pulled from: https://goo.gl/k9Q4mh
     float const R = 1.f / static_cast<float>(MAX_THETA_CUTS - 1);
@@ -218,7 +221,8 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
             m4InitialTransformation = translate(vPosition) * m4InitialTransformation;
 
         // Store Initial Transformation Matrix
-        m_m4ListOfInstances.push_back(m4InitialTransformation);
+        //m_m4ListOfInstances.push_back(m4InitialTransformation);
+        m_m4InstanceMap.insert(make_pair(sHashKey, m4InitialTransformation));
     }
 
     // Store Mesh in GPU
@@ -226,7 +230,7 @@ void Mesh::genSphere(float fRadius, vec3 vPosition)
 }
 
 // Generates a Cube object given a Height, Width and Depth dimension as well as a position.
-void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
+void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition, string sHashKey)
 {
     // Get half sizes of dimensions to set vertices wrt to origin.
     float iHalfHeight = fHeight * 0.5f;
@@ -374,7 +378,8 @@ void Mesh::genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition)
             m4InitialTransformationMatrix = translate(vPosition);
 
         // Store Initial Transformation Matrix in Transformation vector
-        m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
+        // m_m4ListOfInstances.push_back(m4InitialTransformationMatrix);
+        m_m4InstanceMap.insert(make_pair(sHashKey, m4InitialTransformationMatrix));
     }
 
     initalizeVBOs();
@@ -512,8 +517,9 @@ void Mesh::initalizeVBOs()
     }
 
     // Initialize Instance Buffer
-    m_iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(m_iVertexArray, 3, m_m4ListOfInstances.data(),
-                                                        m_m4ListOfInstances.size() * sizeof(mat4), GL_DYNAMIC_DRAW);
+    m_iInstancedBuffer = SHADER_MANAGER->genInstanceBuffer(m_iVertexArray, 3, NULL,
+                                                        m_m4InstanceMap.size() * sizeof(mat4), GL_DYNAMIC_DRAW);
+    loadInstanceBuffer();
 
     // Set up Indices if applicable
     if (!m_pIndices.empty())
@@ -668,18 +674,7 @@ bool Mesh::loadObj(const string& sFileName)
     return bReturnValue;
 }
 
-// Loads instance Data -> an array of transformation Matrices for updating the position of where to draw the mesh.
-void Mesh::loadInstanceData(const void* pData, unsigned int iSize)
-{
-    if (nullptr != pData)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-        glBufferData(GL_ARRAY_BUFFER, iSize * sizeof(mat4), pData, GL_DYNAMIC_DRAW);
-    }
-}
-
-// Taking in a new Position a Rotation Quaternion and a Scale, add a new transformation matrix to the internal list and updates the VBO.
-unsigned int Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale)
+void Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float fScale, string sHashKey)
 {
     // Order as Scale -> Rotation -> Translation
     mat4 m4NewTransform = scale(vec3(fScale));
@@ -687,69 +682,76 @@ unsigned int Mesh::addInstance(const vec3* vPosition, const vec3* vNormal, float
     m4NewTransform = translate(*vPosition) * m4NewTransform;
 
     // Utilize Overloaded Function for functionality.
-    return addInstance(&m4NewTransform);
+    addInstance(&m4NewTransform, sHashKey);
 }
 
 // Take in a new Transformation Matrix, update the internal transform list as well as the VBO
-//    Dynamic Meshes will replace their old transformation and Static Meshes will add a transformation.
-unsigned int Mesh::addInstance(const mat4* m4Transform)
+void Mesh::addInstance(const mat4* m4Transform, string sHashKey)
 {
     // Local Variables
-    unsigned int iReturnIndex;
     mat4 m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;
 
     // Add new Transformation
-    iReturnIndex = m_m4ListOfInstances.size();          // Return the Index of the Instance for updating
-    m_m4ListOfInstances.push_back(m4ScaledTransform);   // Add the New instance to the Instance Buffer
+    m_m4InstanceMap.insert(make_pair(sHashKey, m4ScaledTransform));   // Add the New instance to the Instance Buffer
 
     // Load VBO with new Data.
-    loadInstanceData(m_m4ListOfInstances.data(), m_m4ListOfInstances.size());
+    loadInstanceBuffer();
 
     // Add the Same instance for the Bounding Box
-    addBBInstance(m4Transform);
-
-    // Return the New Instance
-    return iReturnIndex;
+    addBBInstance(m4Transform, sHashKey);
 }
 
-// Updates a Transformation Matrix at a specified index. This will update the transformation
-//      for both the Mesh and the Bounding Box.
-void Mesh::updateInstance(const mat4* m4Transform, unsigned int iTransformIndex)
+// Update the Instance with the specified HashKey.
+void Mesh::updateInstance(const mat4* m4Transform, string sHashKey)
 {
     // Ensure the specified index is a valid index.
-    if (iTransformIndex < m_m4ListOfInstances.size())
+    if (m_m4InstanceMap.find(sHashKey) != m_m4InstanceMap.end())
     {
         mat4 m4ScaledTransform = *m4Transform * m_m4ScaleMatrix;    // Scale transformation with Scale MAtrix for the model.
 
         // Update the local List of Instances with the updated Transformation.
-        m_m4ListOfInstances[iTransformIndex] = m4ScaledTransform;
-
-        // Update the VBO with the new transformation
-        glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, iTransformIndex * sizeof(mat4), sizeof(mat4), &m4ScaledTransform);
+        m_m4InstanceMap[sHashKey] = m4ScaledTransform;
+        loadInstanceBuffer();
 
         // Update the Bounding Box Transformation if the Bounding Box is loaded.
         if (m_sBoundingBox.isLoaded())
-            m_sBoundingBox.updateInstance(m4Transform, iTransformIndex);
+            m_sBoundingBox.updateInstance(m4Transform, sHashKey);
     }
 }
 
 // Removes an Instance from the Transformation list at the specified index.
-void Mesh::removeInstance(unsigned int iTransformIndex)
+void Mesh::removeInstance(string sHashKey)
 {
-    if (iTransformIndex < m_m4ListOfInstances.size())
+    if (m_m4InstanceMap.find(sHashKey) != m_m4InstanceMap.end())
     {
         // Remove Insatnce
-        m_m4ListOfInstances.erase(m_m4ListOfInstances.begin() + iTransformIndex);
+        m_m4InstanceMap.erase(sHashKey);
 
         // Update the VBO with the new transformation
-        glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
-        glBufferData(GL_ARRAY_BUFFER, m_m4ListOfInstances.size() * sizeof(mat4), m_m4ListOfInstances.data(), GL_DYNAMIC_DRAW);
-
+        loadInstanceBuffer();
+        
         // Apply same to Bounding Box
         if (m_sBoundingBox.isLoaded())
-            m_sBoundingBox.removeInstance(iTransformIndex);
+            m_sBoundingBox.removeInstance(sHashKey);
     }
+}
+
+// Pulls Instances from the instance map and stores the data in the Instance Buffer of the GPU.
+void Mesh::loadInstanceBuffer()
+{
+    // Local Variables
+    vector<mat4> pInstanceList;
+    pInstanceList.reserve(m_m4InstanceMap.size());  // Reserve size to avoid unnecessary resizing.
+
+    // Populate Vector
+    for (unordered_map<string, mat4>::iterator pIter = m_m4InstanceMap.begin();
+        pIter != m_m4InstanceMap.end();
+        ++pIter)
+        pInstanceList.push_back(pIter->second);
+
+    // Store data in GPU
+    glBindBuffer(GL_ARRAY_BUFFER, m_iInstancedBuffer);
+    glBufferData(GL_ARRAY_BUFFER, pInstanceList.size() * sizeof(mat4), pInstanceList.data(), GL_DYNAMIC_DRAW);
 }
 
 // Returns a Rotation Matrix to rotate an object from a World Coordinate System to a Local
@@ -781,13 +783,13 @@ mat4 Mesh::getRotationMat4ToNormal(const vec3* vNormal)
 \************************************************************************************/
 
 // Function to Load Mesh Properties from a given ObjectInfo structure
-void Mesh::loadObjectInfo(const ObjectInfo* pObjectProperties)
+void Mesh::loadObjectInfo(const ObjectInfo* pObjectProperties, string sHashkey)
 {
     // Ensure the Object Properties pointer is valid
     if (nullptr != pObjectProperties)
     {
         loadMaterial(&pObjectProperties->sObjMaterial);                                         // Load Mesh Material
-        loadBoundingBox(&pObjectProperties->sObjBoundingBox, &pObjectProperties->vPosition);    // Load Bounding Box
+        loadBoundingBox(&pObjectProperties->sObjBoundingBox, &pObjectProperties->vPosition, sHashkey);    // Load Bounding Box
     }
 }
 
@@ -820,7 +822,7 @@ void Mesh::loadMaterial(const ObjectInfo::Material* pMaterial)
 }
 
 // Load the Bounding Box for the Mesh
-void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition)
+void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition, string sHashKey)
 {
     if (nullptr != pBoundingBox && nullptr != vStartingPosition)
     {
@@ -841,7 +843,7 @@ void Mesh::loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const ve
 
         // Add initial translation for the Bounding Box.
         if (DEFAULT_TYPE != pBoundingBox->eType)
-            addBBInstance(&m4Translation);
+            addBBInstance(&m4Translation, sHashKey);
     }
 }
 
@@ -901,41 +903,38 @@ void Mesh::sBoundingBox::deleteBuffers()
     glDeleteVertexArrays(1, &iVertexArray);
 }
 
-// Loads a new transformation Instance into the Instance buffer
-void Mesh::sBoundingBox::loadInstance(const mat4* pTransform)
+// Loads a new Transformation Instance into the Instance Map and stores it in the GPU
+void Mesh::sBoundingBox::loadInstance(const mat4* pTransform, string sHashKey)
 {
     // Ensure a valid transformation is passed in and that the InstancedBuffer is generated
     assert(nullptr != pTransform && 0 != iInstancedBuffer);
 
     // Add the Transformation to the Instance Vector and load the Instance Vector into the Instance VBO
-    pInstances.push_back(*pTransform);
-    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
+    pInstanceMap.insert(make_pair(sHashKey, *pTransform));
+    loadInstanceBuffer();
 }
 
 // Loads a new transformation Instance into the Instance buffer
-void Mesh::sBoundingBox::updateInstance(const mat4* pTransform, unsigned int iIndex)
+void Mesh::sBoundingBox::updateInstance(const mat4* pTransform, string sHashKey)
 {
     // Ensure a valid transformation is passed in and that the InstancedBuffer is generated
-    assert(nullptr != pTransform && 0 != iInstancedBuffer && iIndex < pInstances.size());
+    assert(nullptr != pTransform && 0 != iInstancedBuffer && pInstanceMap.find(sHashKey) != pInstanceMap.end());
 
     // Add the Transformation to the Instance Vector and load the Instance Vector into the Instance VBO
-    pInstances[iIndex] = *pTransform;
-    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(mat4) * iIndex, sizeof(mat4), pTransform);
+    pInstanceMap[sHashKey] = *pTransform;
+    loadInstanceBuffer();
 }
 
 // Remove Bounding Box instance 
-void Mesh::sBoundingBox::removeInstance(unsigned int iIndex)
+void Mesh::sBoundingBox::removeInstance(string sHashKey)
 {
-    if (iIndex < pInstances.size())
+    if (pInstanceMap.find(sHashKey) != pInstanceMap.end())
     {
         // Remove from Instance List
-        pInstances.erase(pInstances.begin() + iIndex);
+        pInstanceMap.erase(sHashKey);
 
         // Update GPU data.
-        glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(mat4) * pInstances.size(), pInstances.data(), GL_DYNAMIC_DRAW);
+        loadInstanceBuffer();
     }
 }
 
@@ -1032,11 +1031,29 @@ void Mesh::sBoundingBox::generateCubicBox(const vec3* vNegativeOffset, const vec
 // Set the Bounding Box Instance Matrix
 //  If the Mesh is static, add multiple instances
 //  dynamic? replace the current instance
-void Mesh::addBBInstance(const mat4* m4Transformation)
+void Mesh::addBBInstance(const mat4* m4Transformation, string sHashKey)
 {
     if (m_sBoundingBox.isLoaded())
     {
         // Load the new instance
-        m_sBoundingBox.loadInstance(m4Transformation);
+        m_sBoundingBox.loadInstance(m4Transformation, sHashKey);
     }
+}
+
+// Loads the Instance Array for the Bounding Box from the Bounding Box Instance Map.
+void Mesh::sBoundingBox::loadInstanceBuffer()
+{
+    // Local Variables
+    vector<mat4> pInstanceList;
+    pInstanceList.reserve(pInstanceMap.size());  // Reserve size to avoid unnecessary resizing.
+
+    // Populate Vector
+    for (unordered_map<string, mat4>::iterator pIter = pInstanceMap.begin();
+        pIter != pInstanceMap.end();
+        ++pIter)
+        pInstanceList.push_back(pIter->second);
+
+    // Store data in GPU
+    glBindBuffer(GL_ARRAY_BUFFER, iInstancedBuffer);
+    glBufferData(GL_ARRAY_BUFFER, pInstanceList.size() * sizeof(mat4), pInstanceList.data(), GL_DYNAMIC_DRAW);
 }

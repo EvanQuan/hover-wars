@@ -39,7 +39,7 @@ public:
 
 private:
     EmitterEngine*                          m_pEmitterEngine;
-    unordered_map<string, unsigned int>     m_pReferenceMap;
+    vector<string>                          m_pReferenceList;
     unsigned int                            m_iRocketID;
     unsigned int getNewRocketID()           { return ++m_iRocketID; }
 };

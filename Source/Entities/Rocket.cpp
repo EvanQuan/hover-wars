@@ -33,12 +33,12 @@ void Rocket::update(float fTimeInSeconds)
 {
     mat4 m4TransformationMatrix = mat4(1.0f);
 
-    for (unordered_map<string, unsigned int>::const_iterator pIter = m_pReferenceMap.begin();
-        pIter != m_pReferenceMap.end();
+    for (vector<string>::const_iterator pIter = m_pReferenceList.begin();
+        pIter != m_pReferenceList.end();
         ++pIter)
     {
-        m_pPhysicsComponent->getTransformMatrix(pIter->first, &m4TransformationMatrix);
-        m_pMesh->updateInstance(&m4TransformationMatrix, pIter->second);
+        m_pPhysicsComponent->getTransformMatrix(*pIter, &m4TransformationMatrix);
+        m_pMesh->updateInstance(&m4TransformationMatrix, *pIter);
     }
     
 }
@@ -61,9 +61,9 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 
         // clear Rocket Rendering; Remove Instance from Mesh
         string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
-        m_pMesh->removeInstance(m_pReferenceMap[sHashKey]);
+        m_pMesh->removeInstance(sHashKey);
         m_pPhysicsComponent->flagForRemoval(sHashKey);
-        m_pReferenceMap.erase(sHashKey);        
+        m_pReferenceList.erase(remove(m_pReferenceList.begin(), m_pReferenceList.end(), sHashKey));
     }
 }
 
@@ -76,17 +76,16 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     // Play sound for Rocket activation
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
 
-    // Add Instance to the Mesh for rendering new Rocket
-    m_iTransformationIndex = m_pMesh->addInstance(m4InitialTransform);
-
     // Generate Hash Key (<Rocket Entity ID> <Transformation Index>) Transformation index used to differentiate rocket A from rocket B for rendering and physics.
     string sHashKey = to_string(m_iID) + " " + to_string(getNewRocketID());
 
+    // Add Instance to the Mesh for rendering new Rocket
+    m_pMesh->addInstance(m4InitialTransform, sHashKey);
+
     // Save Rocket in Reference Map.
-    m_pReferenceMap.insert(make_pair(sHashKey, m_iTransformationIndex));
-    unordered_map<string, unsigned int>::iterator pIter = m_pReferenceMap.find(sHashKey);
+    m_pReferenceList.push_back(sHashKey);
 
     // Generate Rocket in Physics Scene
-    m_pPhysicsComponent->initializeRocket(pIter->first.c_str(), m4InitialTransform, vVelocity, fBBLength);
+    m_pPhysicsComponent->initializeRocket(m_pReferenceList.back().c_str(), m4InitialTransform, vVelocity, fBBLength);
 }
 

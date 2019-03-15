@@ -6,9 +6,9 @@
 
 //////////////////////////////////////////////////////////////////
 // Name: Mesh.h
-// Class: Container for TriMesh Objects as well as buffers for normals
-//        and indices.
-// Written by: James Cote
+// Class: Container for Meshes as well as buffers for normals, UVs,
+//        indices, Materials, Bounding Boxes and Shader variables.
+// Written by: James Coté
 //////////////////////////////////
 class Mesh
 {
@@ -18,16 +18,17 @@ private:
     Mesh& operator= (const Mesh& pRHS);
 
     // Private Methods
-    bool genMesh(const string& sFileName, vec3 vPosition, float fScale = 1.0f);
-    void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal);
-    void genSphere(float fRadius, vec3 vPosition);
-    void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition);
+    bool genMesh(const string& sFileName, vec3 vPosition, string sHashKey, float fScale = 1.0f);
+    void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, string sHashKey);
+    void genSphere(float fRadius, vec3 vPosition, string sHashKey);
+    void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition, string sHashKey);
     void genBillboard();
     void initalizeVBOs();
     bool loadObj(const string& sFileName);
-    void loadObjectInfo(const ObjectInfo* pObjectProperties);
+    void loadObjectInfo(const ObjectInfo* pObjectProperties, string sHashKey);
     void loadMaterial(const ObjectInfo::Material* pMaterial);
-    void loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition);
+    void loadBoundingBox(const ObjectInfo::BoundingBox* pBoundingBox, const vec3* vStartingPosition, string sHashKey);
+    void loadInstanceBuffer();
 
     // function to generate a quaternion to rotate from y-axis normal to specified normal
     mat4 getRotationMat4ToNormal(const vec3* vNormal);
@@ -44,12 +45,16 @@ private:
     struct sBoundingBox
     {
         // BoundingBox Variables
-        vector<mat4> pInstances;
-        vector<vec3> pVertices;
-        vector< unsigned int> pIndices;
-        GLuint iVertexBuffer, iInstancedBuffer, iVertexArray, iIndicesBuffer;
-        vec3 vNegativeOffset, vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
-        eBoundingBoxTypes eType;
+        //vector<mat4>            pInstances;
+        unordered_map<string, mat4> pInstanceMap;
+        vector<vec3>                pVertices;
+        vector< unsigned int>       pIndices;
+        GLuint                      iVertexBuffer,
+                                    iInstancedBuffer,
+                                    iVertexArray,
+                                    iIndicesBuffer;
+        vec3                        vNegativeOffset, vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
+        eBoundingBoxTypes           eType;
 
         // Check to see if the Bounding Box is loaded.
         bool isLoaded() const { return 0 != iVertexArray; }
@@ -59,9 +64,10 @@ private:
         void initVBOs();        // Initializes VBOs for the Bounding Box.
 
         // Loads a new transformation Instance into the Instance buffer
-        void loadInstance(const mat4* pTransform);
-        void updateInstance(const mat4* pTransform, unsigned int iIndex);
-        void removeInstance(unsigned int iIndex);
+        void loadInstance(const mat4* pTransform, string sHashKey);
+        void updateInstance(const mat4* pTransform, string sHashKey);
+        void removeInstance(string sHashKey);
+        void loadInstanceBuffer();
 
         // Generation Functions
         void generateCubicBox(float fHeight, float fWidth, float fDepth);
@@ -69,23 +75,26 @@ private:
     } m_sBoundingBox;
 
     // Adds an Instance for Bounding Box Drawing
-    void addBBInstance(const mat4* m4Transformation);
+    void addBBInstance(const mat4* m4Transformation, string sHashKey);
 
     // Mesh Information and GPU VAO/VBOs
-    vector<unsigned int> m_pIndices;
-    vector< vec3 > m_pVertices, m_pNormals;
-    vector< vec2 > m_pUVs;
-    GLuint m_iVertexBuffer, m_iInstancedBuffer, m_iIndicesBuffer;
-    GLuint m_iVertexArray;
+    vector<unsigned int>        m_pIndices;
+    vector< vec3 >              m_pVertices,
+                                m_pNormals;
+    vector< vec2 >              m_pUVs;
+    GLuint                      m_iVertexBuffer,
+                                m_iInstancedBuffer,
+                                m_iIndicesBuffer,
+                                m_iVertexArray;
 
     // Spatial Information for Mesh
     vec3 m_vNegativeOffset, m_vPositiveOffset;
 
-    string m_sManagerKey; // Used as key for finding Mesh in MeshManager
-    ShaderManager* m_pShdrMngr;
-    vector<mat4> m_m4ListOfInstances;
-    bool m_bStaticMesh;
-    mat4 m_m4ScaleMatrix;
+    string                      m_sManagerKey;          // Used as key for finding Mesh in MeshManager
+    ShaderManager*              m_pShdrMngr;            // Pointer to Shader Manager for GPU/Shader Interaction
+    unordered_map<string, mat4> m_m4InstanceMap;        // Map for handled Instance Management among multiple objects
+    bool                        m_bStaticMesh;          // Boolean to differentiate between Static and Dynamic Meshes (one is updated on load, others are updated frequently)
+    mat4                        m_m4ScaleMatrix;        // Scale Matrix that is set on load for any updates that need to maintain the scale of the mesh.
 
     // Billboard Information
     struct sBillboardInfo
@@ -109,18 +118,17 @@ private:
     struct manager_cookie {};
 
 public:
-    explicit Mesh(const string &sFileName, bool bStaticMesh, float fScale, const ObjectInfo* pObjectProperties, manager_cookie);
+    explicit Mesh(const string &sFileName, bool bStaticMesh, float fScale, const ObjectInfo* pObjectProperties, string sHashKey, manager_cookie);
     virtual ~Mesh();
-    void loadInstanceData(const void* pData, unsigned int iSize);
 
     // Get Information for drawing elements.
-    GLuint getNumInstances() const { return m_m4ListOfInstances.size(); }
+    GLuint getNumInstances() const { return m_m4InstanceMap.size(); }
     GLuint getCount() const {
-        if (!m_pIndices.empty())
+        if (!m_pIndices.empty())                // Using Indices takes priority
             return m_pIndices.size();
-        else if (!m_pBillboardList.empty())
+        else if (!m_pBillboardList.empty())     // For Billboards
             return m_pBillboardList.size();
-        else
+        else                                    // Otherwise, assume drawing non-instanced
             return m_pVertices.size();
     }
 
@@ -129,10 +137,10 @@ public:
     bool usingInstanced() const { return 0 != m_iInstancedBuffer; }
 
     // Function to add a new Instance Matrix for the Mesh. If the Mesh is dynamic, it will replace the current instance, static will add a new instance.
-    unsigned int addInstance(const vec3* vPosition, const vec3* vNormal, float fScale);    // Specify particular components and a transformation matrix will be generated
-    unsigned int addInstance(const mat4* m4Transform);                                     // Specify a previously generated transformation matrix
-    void updateInstance(const mat4* m4Transform, unsigned int iTransformIndex);           // Updates a Transformation matrix at the given index.
-    void removeInstance(unsigned int iTransformIndex);                                     // Removes a transformation matrix at the given index.
+    void addInstance(const vec3* vPosition, const vec3* vNormal, float fScale, string sHashKey);    // Specify particular components and a transformation matrix will be generated
+    void addInstance(const mat4* m4Transform, string sHashKey);                                             // Add an Instance with a given HashKey
+    void updateInstance(const mat4* m4Transform, string sHashKey);                                          // Updates a Transformation matrix at a given hashkey.
+    void removeInstance(string sHashKey);                                                                   // Removes a transformation matrix at a given hashkey.
 
     // Getters for Mesh Data
     const vector<vec3>& getVertices() const { return m_pVertices; }

@@ -161,7 +161,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
-    m_pMesh->updateInstance(&m4NewTransform, m_iTransformationIndex);
+    m_pMesh->updateInstance(&m4NewTransform, m_sName);
 
     // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
@@ -270,8 +270,9 @@ void HovercraftEntity::initialize(const string& sFileName,
                                   eHovercraft eHovercraftID)
 {
     // Load Mesh and Rendering Component
-    m_pMesh = MESH_MANAGER->loadMeshFromFile(&m_iTransformationIndex, sFileName, pObjectProperties, fScale);
+    m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, m_sName, fScale);
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    m_vPosition = pObjectProperties->vPosition;
 
     vec3 vNegCorner, vPosCorner;
     getSpatialDimensions(&vNegCorner, &vPosCorner);
@@ -285,7 +286,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     // Set up Mesh for Initial Transformation drawing.
     mat4 m4InitialTransform;
     m_pPhysicsComponent->getTransformMatrix(&m4InitialTransform);
-    m_iTransformationIndex = m_pMesh->addInstance(&m4InitialTransform);
+    m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
     m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, eHovercraftID, FIRE_HEIGHT, FIRE_WIDTH);
