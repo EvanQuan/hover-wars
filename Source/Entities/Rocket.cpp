@@ -4,10 +4,11 @@
 #include "SoundManager.h"
 
 // Default Constructor
-Rocket::Rocket(int iID, int iOwnerID)
-    : InteractableEntity( iID, iOwnerID, vec3(0.0), INTER_ROCKET )
+Rocket::Rocket(int iID, int iOwnerID, eHovercraft eOwnerHovercraft)
+    : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, vec3(0.0), INTER_ROCKET )
 {
     m_pEmitterEngine = EMITTER_ENGINE;
+    m_iRocketID = 0;
 }
 
 // Destructor
@@ -54,12 +55,13 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 {
     if (m_iOwnerID != pOther->getID())
     {
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
         // clear Rocket Rendering; Remove Instance from Mesh
-        m_pMesh->removeInstance(iVictimMsg);
         string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
+        m_pMesh->removeInstance(m_pReferenceMap[sHashKey]);
         m_pPhysicsComponent->flagForRemoval(sHashKey);
         m_pReferenceMap.erase(sHashKey);        
     }
@@ -78,7 +80,7 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     m_iTransformationIndex = m_pMesh->addInstance(m4InitialTransform);
 
     // Generate Hash Key (<Rocket Entity ID> <Transformation Index>) Transformation index used to differentiate rocket A from rocket B for rendering and physics.
-    string sHashKey = to_string(m_iID) + " " + to_string(m_iTransformationIndex);
+    string sHashKey = to_string(m_iID) + " " + to_string(getNewRocketID());
 
     // Save Rocket in Reference Map.
     m_pReferenceMap.insert(make_pair(sHashKey, m_iTransformationIndex));

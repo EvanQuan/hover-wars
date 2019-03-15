@@ -22,7 +22,7 @@ class Rocket
     : public InteractableEntity
 {
 public:
-    Rocket(int iID, int iOwnerID);
+    Rocket(int iID, int iOwnerID, eHovercraft eOwnerHovercraft);
     virtual ~Rocket();
 
     // Implementation of inherited functionality
@@ -40,4 +40,6 @@ public:
 private:
     EmitterEngine*                          m_pEmitterEngine;
     unordered_map<string, unsigned int>     m_pReferenceMap;
+    unsigned int                            m_iRocketID;
+    unsigned int getNewRocketID()           { return ++m_iRocketID; }
 };

@@ -239,9 +239,9 @@ void SceneLoader::saveRocketInfo()
 }
 
 // Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
-Rocket* SceneLoader::createRocketMesh( int iOwnerID )
+Rocket* SceneLoader::createRocketMesh( int iOwnerID, eHovercraft eOwnerHovercraft )
 {
-    return ENTITY_MANAGER->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
+    return ENTITY_MANAGER->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID, eOwnerHovercraft);
 }
 
 // Initializes the Spatial Data Map for the scene

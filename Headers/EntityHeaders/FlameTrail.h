@@ -17,7 +17,8 @@ class FlameTrail
     : public InteractableEntity
 {
 public:
-    FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
+    FlameTrail(int iID, int iOwnerID, eHovercraft eOwnerHovercraft,
+                const vec3* vPosition,
                 float fHeight, float fWidth);
     virtual ~FlameTrail();
 
@@ -26,6 +27,8 @@ public:
     void update(float fTimeInMilliseconds);
 
     void spawnFlame(const vec3* vNormal, const vec3* vPosition);
+
+    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
 
 private:
     float                                               m_fHeight,

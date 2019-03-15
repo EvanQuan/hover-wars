@@ -184,28 +184,16 @@ void HovercraftEntity::update(float fTimeInSeconds)
     Hovercraft Entity will handle its "death" logic and award points to the
     attacker.
 
-    @param  eHitByType      The Entity Type that this Entity was hit by. This
-                            entity will either be a bot or a player
     @param  attacker        to award points to
 */
-void HovercraftEntity::getHitBy(eEntityType eHitByType, eHovercraft attacker)
+void HovercraftEntity::getHitBy(eHovercraft attacker)
 {
-    // cout << "Player " << iNumber << " hit by " << eHitByType << endl;
-    // Switch based on who hit the player
-    switch (eHitByType)
-    {
-    case ENTITY_HOVERCRAFT:
-        if (!isInvincible())
-        {
-            // m_eHovercraftID happens to match up the eAddScoreReason for hitting
-            // that hovercraft. If we cast the ID, then the attacker is awarded points
-            // for attacking this hovercraft.
-            m_pGmStats->addScore(attacker,
-                static_cast<GameStats::eAddScoreReason>(m_eHovercraftID));
-        }
-        setInvincible();
-        break;
+    if (isInvincible()) {
+        return;
     }
+    setInvincible();
+    m_pGmStats->addScore(attacker,
+                         static_cast<GameStats::eAddScoreReason>(m_eHovercraftID));
 }
 
 /*
@@ -300,11 +288,11 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_iTransformationIndex = m_pMesh->addInstance(&m4InitialTransform);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, eHovercraftID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
-    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
+    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID, eHovercraftID);
 
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
@@ -341,11 +329,11 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->getHitBy(m_eType, m_eHovercraftID);
+           pOtherHovercraft->getHitBy(m_eHovercraftID);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->getHitBy(pOther->getType(), pOtherHovercraft->getHovercraftID());
+            this->getHitBy(pOtherHovercraft->getHovercraftID());
         }
 
         // Momentarily lose control of vehicle to prevent air moving
@@ -363,6 +351,10 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
             // Random for now
             setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
             break;
+        case INTER_FLAME_TRAIL:
+        case INTER_ROCKET:
+        case INTER_SPIKES:
+            this->getHitBy(static_cast<eHovercraft>(pOtherIE->getOwnerHovercraft()));
         }
         break;
     case ENTITY_PLANE:

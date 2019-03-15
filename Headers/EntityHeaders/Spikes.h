@@ -16,7 +16,7 @@ class Spikes
     : public InteractableEntity
 {
 public:
-    Spikes(int iID, int iOwnerID, const vec3* vPosition);
+    Spikes(int iID, int iOwnerID, eHovercraft eOwnerHovercraft, const vec3* vPosition);
     virtual ~Spikes();
 
     // Implementation of inherited functionality

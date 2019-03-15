@@ -14,7 +14,7 @@ class Explosion
     : public InteractableEntity
 {
 public:
-    Explosion(int iID, int iOwnerID, const vec3* vPosition);
+    Explosion(int iID, int iOwnerID, eHovercraft eOwnerHovercraft, const vec3* vPosition);
     virtual ~Explosion();
 
     // Implementation of inherited functionality
