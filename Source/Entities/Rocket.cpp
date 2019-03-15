@@ -4,8 +4,8 @@
 #include "SoundManager.h"
 
 // Default Constructor
-Rocket::Rocket(int iID, int iOwnerID)
-    : InteractableEntity( iID, iOwnerID, vec3(0.0), INTER_ROCKET )
+Rocket::Rocket(int iID, int iOwnerID, eHovercraft eOwnerHovercraft)
+    : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, vec3(0.0), INTER_ROCKET )
 {
     m_pEmitterEngine = EMITTER_ENGINE;
 }

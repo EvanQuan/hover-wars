@@ -4,9 +4,10 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-FlameTrail::FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
+FlameTrail::FlameTrail(int iID, int iOwnerID, eHovercraft eOwnerHovercraft,
+                       const vec3* vPosition,
                        float fHeight, float fWidth )
-    : InteractableEntity( iID, iOwnerID, *vPosition, INTER_FLAME_TRAIL )
+    : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, *vPosition, INTER_FLAME_TRAIL )
 {
     m_fHeight = fHeight;
     m_fWidth = fWidth;

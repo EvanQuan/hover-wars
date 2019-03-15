@@ -5,10 +5,11 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eInteractType eIEType)
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, eHovercraft eOwnerHovercraft, const vec3& vPosition, eInteractType eIEType)
     : Entity( iID, vPosition, ENTITY_INTERACTABLE )
 {
     m_iOwnerID          = iOwnerID;  // Set the Owner ID for the Interactable Entity
+    m_eOwnerHovercraft  = eOwnerHovercraft;
     m_eInteractableType = eIEType;
 }
 
@@ -52,7 +53,18 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     if (ENTITY_HOVERCRAFT == pOther->getType() && m_iOwnerID != pOther->getID())
-        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eType, static_cast<eHovercraft>(m_iOwnerID));
+        // NOTE: Before  it used to look like this:
+        //  static_cast<HovercraftEntity*>(pOther)->getHitBy(static_cast<eHovercraft>(m_iOwnerID));
+
+        // The problem is that m_iOwnerID is the entity ID of the owner, which
+        // is a number that only has meaning to Entity identificaiton and
+        // management. This ID does not relate to the owner's eHovercraft
+        // value, which is what the game stats cares about.
+
+        // As a result, there is no relation between m_iOwnerID and the owner's
+        // eHovercraft value, meaning we cannot just directly cast the m_iOwnerID to an eHovercraft
+
+        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eOwnerHovercraft);
 }
 
 

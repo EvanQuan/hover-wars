@@ -30,7 +30,7 @@ The time the hovercraft must wait until they can use the ability again.
 
 Units: seconds
 */
-#define ROCKET_COOLDOWN         2.0f
+#define ROCKET_COOLDOWN         0.0f // 2.0f
 #define SPIKES_COOLDOWN         2.0f
 #define TRAIL_COOLDOWN          0.0f
 #define DASH_COOLDOWN           2.0f
@@ -107,7 +107,7 @@ public:
     void update(float fTimeInSeconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    void getHitBy(eEntityType eHitByType, eHovercraft iNumber);
+    void getHitBy(eHovercraft attacker);
     void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
 
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;

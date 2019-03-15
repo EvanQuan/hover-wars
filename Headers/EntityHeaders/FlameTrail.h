@@ -17,7 +17,8 @@ class FlameTrail
     : public InteractableEntity
 {
 public:
-    FlameTrail(int iID, int iOwnerID, const vec3* vPosition,
+    FlameTrail(int iID, int iOwnerID, eHovercraft eOwnerHovercraft,
+                const vec3* vPosition,
                 float fHeight, float fWidth);
     virtual ~FlameTrail();
 

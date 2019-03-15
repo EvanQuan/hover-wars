@@ -270,7 +270,6 @@ void EntityManager::dispatchCollision(int iColliderID, int iCollidedID, unsigned
     }
 
     // Handle Impact Sound
-    // SOUND_MANAGER->handleBaseCollisionSound(pCollider->getType(), pCollided->getType());
     SOUND_MANAGER->handleCollisionSound(pCollider, pCollided);
 
     // Tell the Collided Entity that someone collided with them
@@ -392,7 +391,7 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 
     // Generate and Initialize a new Bot Entity
     unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pBotEntityList.size()));
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pBotEntityList.size() + MAX_PLAYER_COUNT));
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List
     m_pBotEntityList.push_back(pNewBot.get()); 
@@ -400,13 +399,13 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 }
 
 // Generates and Returns an Interactable Entity with a specified Position.
-FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth)
+FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, eHovercraft eOwnerHovercraft, float fFlameHeight, float fFlameWidth)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition, fFlameHeight, fFlameWidth);
+    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, eOwnerHovercraft, vPosition, fFlameHeight, fFlameWidth);
     FlameTrail* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
@@ -416,13 +415,13 @@ FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int i
     return pReturnEntity;
 }
 
-Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
+Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID );
+    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID, eOwnerHovercraft);
     pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
     Rocket* pReturnEntity = pNewEntity.get();
 
