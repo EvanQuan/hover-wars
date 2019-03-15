@@ -28,6 +28,8 @@ public:
 
     void spawnFlame(const vec3* vNormal, const vec3* vPosition);
 
+    void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
+
 private:
     float                                               m_fHeight,
                                                         m_fWidth;

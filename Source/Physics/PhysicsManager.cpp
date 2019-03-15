@@ -297,8 +297,9 @@ void PhysicsManager::initPhysics(bool interactive)
     PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 
     PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics);
-    gScene->addActor(*gGroundPlane);
     gGroundPlane->setName(NAME_GROUND);
+    cout << "\"" << gGroundPlane->getName() << "\"" << endl;
+    gScene->addActor(*gGroundPlane);
     staticObjects.push_back(gGroundPlane);
     
 
@@ -310,7 +311,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //TEST CODE
     //createSphereObject(0,0,0,3);
     //createMeshObject(3,3,3,5,"memeteam.txt");
-    //createPlayerEntity(0,0,0);
+    //createHovercraftEntity(0,0,0);
     //createRocketP(5,5,5,1,0,1);
 }
 
@@ -372,9 +373,10 @@ PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, 
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
+    body->setName(sEntityID);
+    cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(sEntityID);
     return body;
 }
 const int MAXLINE = 256;
@@ -466,9 +468,10 @@ PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x,f
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
+    body->setName(sEntityID);
+    cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(sEntityID);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x, float y, float z, float radius) {
@@ -476,9 +479,10 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
+    body->setName(sEntityID);
+    cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
-    body->setName(sEntityID);
     return body;
 }
 
@@ -508,6 +512,7 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     (*pReturnBody)->setName(cName);
 
     // Add To Scene
+    cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
 }
 
@@ -534,6 +539,7 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
     (*pReturnBody)->setName(cName);
 
     // Add to Scene
+    cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
 }
 
@@ -545,19 +551,23 @@ void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor)
 }
 
 
-PxVehicleNoDrive *PhysicsManager::createPlayerEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
+PxVehicleNoDrive *PhysicsManager::createHovercraftEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ) {
     //Create a vehicle that will drive on the plane.
     snippetvehicle::VehicleDesc vehicleDesc = initVehicleDesc(PxVec3(sizeX, sizeY, sizeZ));
     gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCook);
     PxTransform startTransform(PxVec3(x, y+(vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), z), PxQuat(PxIdentity));
-    gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);
-    gScene->addActor(*gVehicleNoDrive->getRigidDynamicActor());
+
+    PxRigidDynamic* actor = gVehicleNoDrive->getRigidDynamicActor();
+    actor->setGlobalPose(startTransform);
+    actor->setName(sEntityID); // TODO this was just added?, doesn't seem to be the source of the problem
+    cout << "Player: \"" << actor->getName() << "\"" << endl;
+    gScene->addActor(*actor);
     //Set the vehicle to rest in first gear.
     gVehicleNoDrive->setToRestState();
     gVehicleModeTimer = 0.0f;
     gVehicleOrderProgress = 0;
     vehicles.push_back(gVehicleNoDrive);
-    gVehicleNoDrive->getRigidDynamicActor()->setName(sEntityID);
+    // gVehicleNoDrive->getRigidDynamicActor()->setName(sEntityID);
 
     return gVehicleNoDrive;
 }

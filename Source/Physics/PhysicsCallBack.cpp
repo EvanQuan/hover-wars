@@ -39,17 +39,29 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
         if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
         {
             // Determine the results by actor names
-            string sCollider = pairHeader.actors[0]->getName();
-            string sCollided = pairHeader.actors[1]->getName();
+            string sCollider = pairHeader.actors[0]->getName(); // ""
+            string sCollided = pairHeader.actors[1]->getName(); // "14"
 
             // Parse Names
             istringstream HitterSS(sCollider);
             vector<string> HitterResults(istream_iterator<string>{HitterSS},
                                          istream_iterator<string>());
+            // istringstream VictimSS(sCollided);
             istringstream VictimSS(sCollided);
             vector<string> VictimResults(istream_iterator<string>{VictimSS},
                                          istream_iterator<string>());
 
+//            unique_ptr<string> sCollider = make_unique<tring>(pairHeader.actors[0]->getName()); // ""
+//            unique_ptr<string> sCollided = make_unique<string>(pairHeader.actors[1]->getName()); // "14"
+//
+//            // Parse Names
+//            istringstream HitterSS(*sCollider.get());
+//            vector<string> HitterResults(istream_iterator<string>{HitterSS},
+//                                         istream_iterator<string>());
+//            // istringstream VictimSS(sCollided);
+//            istringstream VictimSS(*sCollided.get());
+//            vector<string> VictimResults(istream_iterator<string>{VictimSS},
+//                                         istream_iterator<string>());
             // Get Entity IDs
             // The ground has its own special ID since its not treated the same
             // as the other entities
@@ -81,6 +93,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 // Pass information to Entity Manager to handle collision
                 m_pEntMngr->dispatchCollision(iColliderID, iCollidedID, iColliderMsg, iCollidedMsg);
             }
+
         }
     }
 }

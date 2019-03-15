@@ -237,7 +237,7 @@ void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Me
 {
     // Set up Internal Static qualifier.
     m_bVehicle = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createPlayerEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
+    gVehicleNoDrive = m_pPhysicsManager->createHovercraftEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
     body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
 }
