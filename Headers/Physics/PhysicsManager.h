@@ -66,6 +66,7 @@ public:
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
 
     int timesStepped = 0;
+
 private:
     PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
