@@ -41,3 +41,8 @@ void PauseMenu::select(eFixedCommand command)
     }
 }
 
+
+void PauseMenu::back()
+{
+    select(eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE);
+}

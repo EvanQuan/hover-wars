@@ -22,7 +22,7 @@
     registers.
     The possible magnitudes are between 0.0f - 1.0f
 */
-#define PROMPT_JOYSTICK_MIN_MAGNITUDE 0.75f
+#define PROMPT_JOYSTICK_MIN_MAGNITUDE 0.8f
 
 PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts) : Menu(
     // pressedKey
@@ -118,6 +118,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         select(getCurrentPromptCommand());
         break;
     case COMMAND_PROMPT_BACK:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
         back();
         break;
     case COMMAND_CLOSE_WINDOW:
