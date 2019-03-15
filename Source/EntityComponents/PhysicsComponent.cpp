@@ -246,11 +246,12 @@ void PhysicsComponent::initializeRocket(const char* sName, const mat4* m4Transfo
 {
     // Generate the Rocket in the Physics Manager
     PxRigidDynamic *pNewRocket = nullptr;
-    m_pPhysicsManager->createRocketObjects(sName, m4Transform, vVelocity, fBBLength, &pNewRocket);
+    m_pDynamicObjects.insert(make_pair((sName), pNewRocket)); // Store Rocket internally for management.
+    unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
+    m_pPhysicsManager->createRocketObjects(pIter->first.c_str(), m4Transform, vVelocity, fBBLength, &(pIter->second));
 
-    // Store Rocket internally for management.
-    assert(nullptr != pNewRocket);
-    m_pDynamicObjects.insert(make_pair((sName), pNewRocket));
+    // Ensure the rocket was created properly.
+    assert(nullptr != pIter->second);
 }
 
 // Initializes a new Flame Object in the Physics Manager and stores it in the component to manage locally.
