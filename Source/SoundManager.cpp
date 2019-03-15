@@ -93,12 +93,12 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityTy
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
         case eEntityType::ENTITY_HOVERCRAFT:
-            //play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
+            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
             return true;
             break;
         case eEntityType::ENTITY_STATIC:
         case eEntityType::ENTITY_PLANE:
-            //play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
+            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
             break;
         }
         break;

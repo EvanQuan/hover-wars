@@ -115,8 +115,8 @@ void initializeManagers()
 void reset()
 {
 #ifdef NDEBUG
-    // iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
-    iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
+    iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
+    // iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
 #else
     iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
 #endif
