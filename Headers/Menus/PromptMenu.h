@@ -53,7 +53,13 @@ protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
+    // Process the current selected command.
+    // This is called as the user selects the prompt under the current cursor
+    // location.
     virtual void select(eFixedCommand command) = 0;
+    // The back button(s) have their own behaviour. Ideally this behaviour is
+    // independent of the cursor position, and should move the user to some
+    // other menu.
     virtual void back() = 0;
 
     eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).second; }
