@@ -8,6 +8,7 @@ Rocket::Rocket(int iID, int iOwnerID, eHovercraft eOwnerHovercraft)
     : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, vec3(0.0), INTER_ROCKET )
 {
     m_pEmitterEngine = EMITTER_ENGINE;
+    m_iRocketID = 0;
 }
 
 // Destructor
@@ -78,7 +79,7 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     m_iTransformationIndex = m_pMesh->addInstance(m4InitialTransform);
 
     // Generate Hash Key (<Rocket Entity ID> <Transformation Index>) Transformation index used to differentiate rocket A from rocket B for rendering and physics.
-    string sHashKey = to_string(m_iID) + " " + to_string(m_iTransformationIndex);
+    string sHashKey = to_string(m_iID) + " " + to_string(getNewRocketID());
 
     // Save Rocket in Reference Map.
     m_pReferenceMap.insert(make_pair(sHashKey, m_iTransformationIndex));
