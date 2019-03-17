@@ -30,6 +30,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+
+    // Game starts paused as the player starts in the main menu
+    paused = true;
 }
 
 /*
@@ -74,7 +77,26 @@ GameManager::~GameManager()
         delete m_pCommandHandler;
 }
 
-// Intended to be called every cycle, or when the graphics need to be updated
+/*
+    Start running the game. This call with block until the game loop ends (it
+    will hang the thread). When this call ends, so does the program (in main).
+*/
+void GameManager::start()
+{
+    SOUND_MANAGER->start();
+    resetTime();
+
+    while (renderGraphics());
+
+}
+/*
+    Render the graphics of a single frame to the screen.
+    Intended to be called every cycle, or when the graphics need to be updated
+
+    @return true if the game should continue to run. In other words,
+            renderGraphics() should continue to be called within the rendering
+            loop.
+*/
 bool GameManager::renderGraphics()
 {
     // Update Timer
@@ -95,7 +117,7 @@ bool GameManager::renderGraphics()
     m_pCommandHandler->update(frameDeltaTime);
 
 
-    // Update Environment if the gamee is not paused
+    // Update Environment if the game is not paused
     if (!paused)
     {
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
@@ -112,7 +134,22 @@ bool GameManager::renderGraphics()
     USER_INTERFACE->update(frameDeltaTime);
 
     // call function to draw our scene
-    while (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
+    drawScene();
+
+    // check for Window events
+    glfwPollEvents();
+
+    return !glfwWindowShouldClose(m_pWindow);
+}
+
+/*
+    Draw the scene with a 60 fps lock.
+    In other words, if drawScene() is called over 60 times per second, the
+    scene will not be drawn more than it needs to.
+*/
+void GameManager::drawScene()
+{
+    if (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
     {
         m_fFrameTime = seconds{ 0 };
 
@@ -124,11 +161,6 @@ bool GameManager::renderGraphics()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
-
-    // check for Window events
-    glfwPollEvents();
-
-    return !glfwWindowShouldClose(m_pWindow);
 }
 
 /*

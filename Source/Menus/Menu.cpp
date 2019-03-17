@@ -31,7 +31,7 @@ Change the CommandHandler's next menu
 */
 void Menu::nextMenu(Menu* next)
 {
-    COMMAND_HANDLER->m_pCurrentMenu = next;
+    COMMAND_HANDLER->setCurrentMenu(next);
 }
 
 // Toggles Wireframe drawing

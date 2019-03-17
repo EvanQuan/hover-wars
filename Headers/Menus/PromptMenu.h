@@ -49,6 +49,7 @@ private:
     void releaseCursor();
     eFixedCommand m_eCursorDirection;
 
+
 protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
@@ -61,6 +62,8 @@ protected:
     // independent of the cursor position, and should move the user to some
     // other menu.
     virtual void back() = 0;
+
+    void enter();
 
     eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).second; }
 

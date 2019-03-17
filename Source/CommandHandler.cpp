@@ -1,5 +1,5 @@
 #include "CommandHandler.h"
-#include "Menus/GameMenu.h"
+#include "Menus/StartMenu.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
@@ -21,7 +21,7 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
         m_pInstance = new CommandHandler(rWindow);
         // Set current menu is done after after the constructor to prevent
         // mutual recursion
-        m_pInstance->setCurrentMenu(GameMenu::getInstance());
+        m_pInstance->setCurrentMenu(StartMenu::getInstance());
     }
 
     return m_pInstance;
@@ -51,6 +51,7 @@ CommandHandler::~CommandHandler()
 void CommandHandler::setCurrentMenu(Menu* menu)
 {
     m_pCurrentMenu = menu;
+    menu->enter();
 }
 
 

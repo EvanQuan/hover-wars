@@ -6,7 +6,7 @@
 #include "GameManager.h"
 #include "InputHandler.h"
 #include "SoundManager.h"
-// #include "Menus/Menu.h"
+
 class Menu;
 
 #ifndef NDEBUG
@@ -35,12 +35,12 @@ public:
     void setCurrentMenu(Menu* menu);
 
     GLFWwindow* m_pWindow;
-    Menu* m_pCurrentMenu;
 private:
     // Singleton Variables
     CommandHandler(GLFWwindow *rWindow);
     static CommandHandler* m_pInstance;
 
+    Menu* m_pCurrentMenu;
     // For memory management
     vector<Menu*> m_vMenuInstances;
 };

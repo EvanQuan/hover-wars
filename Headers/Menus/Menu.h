@@ -33,6 +33,8 @@ public:
                                                       updateKeyboardCommands();
                                                       updateJoystickCommands(); };
 
+    virtual void enter() {};
+
 private:
     virtual void updateKeyboardCommands() final;
     virtual void updateJoystickCommands() final;

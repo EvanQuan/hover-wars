@@ -16,6 +16,8 @@ private:
     float yMove;
     float xTurn;
     float yTurn;
+
+    void enter();
 protected:
     GameMenu();
 

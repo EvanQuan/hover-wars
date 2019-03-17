@@ -24,7 +24,6 @@ void initializeWindow();
 void initializeGLEW();
 void initializeManagers();
 void reset();
-void startGame();
 void cleanup();
 
 // These are not local variables to main so that other functions can better
@@ -56,7 +55,7 @@ int main()
         {
             initializeManagers();
             reset();
-            startGame();
+            m_gameManager->start();
         }
         cleanup();
     }
@@ -122,19 +121,6 @@ void reset()
     // iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
 #endif
 
-}
-
-/*
-    Runs the game. The game loop will run entirely within this function.
-    This function returns onces the game is over, by whatever means.
-*/
-void startGame()
-{
-    m_soundManager->start();
-    // Main loop
-    m_gameManager->resetTime();
-    while (iRunning)
-        iRunning = m_gameManager->renderGraphics(); // do Graphics Loop
 }
 
 /*

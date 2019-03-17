@@ -14,7 +14,7 @@
 
     Unit : seconds
 */
-#define PROMPT_REPEAT_DELAY 0.15f
+#define PROMPT_REPEAT_DELAY 0.25f
 
 /*
     To prevent very slight joystick movement from registering as cursor movement,
@@ -175,20 +175,29 @@ void PromptMenu::moveCursor(eFixedCommand direction)
 }
 
 /*
-The the user has just released cursor movement, which resets the start repeat
-delay.
+    The the user has just released cursor movement, which resets the start
+    repeat delay.
 */
 void PromptMenu::releaseCursor()
 {
     m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
-    m_fSecondsToNextRepeat = 0.0f;
+    // m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
     m_eCursorDirection = COMMAND_INVALID_FIXED;
 }
+
+void PromptMenu::enter()
+{
+    m_iCurrentPromptX = 0;
+    m_iCurrentPromptY = 0;
+    cout << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
+}
+
 
 void PromptMenu::updateTimeValues(float fTimeInSeconds)
 {
     m_fSecondsToStartRepeat -= fTimeInSeconds;
-    if (m_fSecondsToStartRepeat <= 0.0f)
+    if ((m_fSecondsToStartRepeat <= 0.0f)
+        && (m_fSecondsToNextRepeat > 0.0f))
     {
         m_fSecondsToNextRepeat -= fTimeInSeconds;
     }
@@ -233,9 +242,13 @@ find out what direction the joysticks are headed towards.
 */
 eFixedCommand PromptMenu::joystickStateToPromptDirection(float x, float y)
 {
-    if (FuncUtils::getMagnitude(x, y) < PROMPT_JOYSTICK_MIN_MAGNITUDE)
+    float magnitude = FuncUtils::getMagnitude(x, y);
+    if (magnitude < PROMPT_JOYSTICK_MIN_MAGNITUDE)
     {
-        releaseCursor();
+        if (magnitude <= 0)
+        {
+            releaseCursor();
+        }
         return COMMAND_INVALID_FIXED;
     }
     if (abs(x) > abs(y)) // x takes priority

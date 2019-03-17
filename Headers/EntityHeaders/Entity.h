@@ -16,11 +16,15 @@ public:
     // virtual void handleCollision(const Entity* pOther) const;
     virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
 
+    // Entit
+    virtual void reinitialize() {}
+
     // Getters/Setters
     vec3 getPosition() const { return m_vPosition; }
     int getID() const { return m_iID; }
     const char* getName() const { return m_sName.c_str(); }
     eEntityType getType() const { return m_eType; }
+
 
 protected:
     vec3 m_vPosition;

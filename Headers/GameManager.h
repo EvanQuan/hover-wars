@@ -24,7 +24,7 @@ public:
     
     // Graphics Application
     bool initializeGraphics( string sFileName );
-    bool renderGraphics();
+    void start();
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height  Settings
@@ -48,13 +48,15 @@ public:
 
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
-    void togglePaused() { paused = !paused; }
 
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 
     GameManager(const GameManager* pCopy);
     static GameManager* m_pInstance;
+
+    bool renderGraphics();
+    void drawScene();
 
     // Window Reference
     GLFWwindow* m_pWindow;
