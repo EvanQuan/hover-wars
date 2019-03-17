@@ -118,6 +118,8 @@ public:
                     float fScale,
                     eHovercraft eHovercraftID);
 
+    void reinitialize();
+
     bool useAbility(eAbility ability);
     void move(float x, float y);
     void turn(float x);
@@ -244,7 +246,7 @@ private:
     place the next one.
     */
     vec3 m_vPositionOfLastFlame;
-    float m_fMinimumDistanceBetweenFlames;
+    // float m_fMinimumDistanceBetweenFlames;
 
     /*
     If true, car is able to receive and act upon movement input.

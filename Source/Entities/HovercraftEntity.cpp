@@ -122,11 +122,22 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
     m_pGmStats                  = GAME_STATS;
+
+    // Unused?
+    // m_fMinimumDistanceBetweenFlames = 5.0f;
+    reinitialize();
+}
+
+HovercraftEntity::~HovercraftEntity()
+{
+
+}
+
+void HovercraftEntity::reinitialize()
+{
     activeCameraIndex           = FRONT_CAMERA;
     m_qCurrentCameraRotation    = quat();
     m_vCurrentCameraPosition    = vec3(0.0f);
-
-    m_fMinimumDistanceBetweenFlames = 5.0f;
 
     m_bSpikesActivated = false;
 
@@ -136,10 +147,6 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
 
     initializeCooldowns();
     initializePowerups();
-}
-
-HovercraftEntity::~HovercraftEntity()
-{
 
 }
 

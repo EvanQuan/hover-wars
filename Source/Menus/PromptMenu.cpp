@@ -175,14 +175,27 @@ void PromptMenu::moveCursor(eFixedCommand direction)
 }
 
 /*
-The the user has just released cursor movement, which resets the start repeat
-delay.
+    The the user has just released cursor movement, which resets the start
+    repeat delay.
 */
 void PromptMenu::releaseCursor()
 {
     m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
     m_fSecondsToNextRepeat = 0.0f;
     m_eCursorDirection = COMMAND_INVALID_FIXED;
+}
+
+/*
+    Switches menu like normal, but also resets cursor position of the current
+    menu incase we ever return to it.
+
+    @param next menu to switch to
+*/
+void PromptMenu::nextMenu(Menu* next)
+{
+    Menu::nextMenu(next);
+    m_iCurrentPromptX = 0;
+    m_iCurrentPromptY = 0;
 }
 
 void PromptMenu::updateTimeValues(float fTimeInSeconds)

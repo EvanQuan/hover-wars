@@ -98,7 +98,7 @@ protected:
         unordered_map<int, eFixedCommand> justReleasedButtonToFixedCommand
     );
 
-    virtual void nextMenu(Menu* next) final;
+    virtual void nextMenu(Menu* next);
 
     virtual void updateTimeValues(float fTimeInSeconds) = 0;
     // Make no distinguishment between joystick and keyboard fixed commands

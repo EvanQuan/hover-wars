@@ -32,7 +32,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
     // Game starts paused as the player starts in the main menu
-    paused = false;
+    paused = true;
 }
 
 /*
@@ -79,7 +79,7 @@ GameManager::~GameManager()
 
 /*
     Start running the game. This call with block until the game loop ends (it
-    will hang the thread).
+    will hang the thread). When this call ends, so does the program (in main).
 */
 void GameManager::start()
 {

@@ -49,6 +49,8 @@ private:
     void releaseCursor();
     eFixedCommand m_eCursorDirection;
 
+    void nextMenu(Menu* next);
+
 protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
