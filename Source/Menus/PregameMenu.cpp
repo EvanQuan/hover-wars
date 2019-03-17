@@ -1,5 +1,6 @@
 #include "Menus/PregameMenu.h"
 #include "Menus/MainMenu.h"
+#include "Menus/GameMenu.h"
 #include "InputHandler.h"
 
 // Singleton instance
@@ -9,8 +10,10 @@ PregameMenu::PregameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         // TODO
-        { {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
-        { {"Exit", eFixedCommand::COMMAND_CLOSE_WINDOW},  },
+        { {"Player count", eFixedCommand::COMMAND_INVALID_FIXED},  },
+        { {"Bot count", eFixedCommand::COMMAND_INVALID_FIXED} },
+        { {"Back", eFixedCommand::COMMAND_PROMPT_BACK} },
+        { {"Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU} },
     }
 )
 {
@@ -34,13 +37,16 @@ void PregameMenu::select(eFixedCommand command)
 {
     switch (command)
     {
+    case COMMAND_PROMPT_BACK:
+        back();
+        break;
     case COMMAND_PROMPT_NEXT_MENU:
-        // TODO
+        nextMenu(GameMenu::getInstance());
         break;
     }
 }
 
-// Back returns to the start screen
+// Back returns to the mainmenu screen
 void PregameMenu::back()
 {
     nextMenu(MainMenu::getInstance());
