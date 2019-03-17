@@ -57,6 +57,7 @@ private:
     static GameManager* m_pInstance;
 
     bool renderGraphics();
+    void drawScene();
 
     // Window Reference
     GLFWwindow* m_pWindow;

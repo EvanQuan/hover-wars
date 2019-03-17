@@ -82,6 +82,7 @@ void GameManager::start()
 {
     SOUND_MANAGER->start();
     resetTime();
+
     while (renderGraphics());
 
 }
@@ -113,7 +114,7 @@ bool GameManager::renderGraphics()
     m_pCommandHandler->update(frameDeltaTime);
 
 
-    // Update Environment if the gamee is not paused
+    // Update Environment if the game is not paused
     if (!paused)
     {
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
@@ -130,7 +131,22 @@ bool GameManager::renderGraphics()
     USER_INTERFACE->update(frameDeltaTime);
 
     // call function to draw our scene
-    while (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
+    drawScene();
+
+    // check for Window events
+    glfwPollEvents();
+
+    return !glfwWindowShouldClose(m_pWindow);
+}
+
+/*
+    Draw the scene with a 60 fps lock.
+    In other words, if drawScene() is called over 60 times per second, the
+    scene will not be drawn more than it needs to.
+*/
+void GameManager::drawScene()
+{
+    if (m_fFrameTime >= sixtieth_of_a_sec{ 1 }) // This locks the framerate to 60 fps
     {
         m_fFrameTime = seconds{ 0 };
 
@@ -142,11 +158,6 @@ bool GameManager::renderGraphics()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
-
-    // check for Window events
-    glfwPollEvents();
-
-    return !glfwWindowShouldClose(m_pWindow);
 }
 
 /*
