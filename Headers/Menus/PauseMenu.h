@@ -17,5 +17,7 @@ private:
 
     void back();
 
+    void enter();
+
     static PauseMenu* m_pInstance;
 };

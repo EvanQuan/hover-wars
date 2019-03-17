@@ -33,6 +33,8 @@ public:
                                                       updateKeyboardCommands();
                                                       updateJoystickCommands(); };
 
+    virtual void enter() {};
+
 private:
     virtual void updateKeyboardCommands() final;
     virtual void updateJoystickCommands() final;
@@ -98,7 +100,7 @@ protected:
         unordered_map<int, eFixedCommand> justReleasedButtonToFixedCommand
     );
 
-    virtual void nextMenu(Menu* next);
+    virtual void nextMenu(Menu* next) final;
 
     virtual void updateTimeValues(float fTimeInSeconds) = 0;
     // Make no distinguishment between joystick and keyboard fixed commands

@@ -10,7 +10,7 @@ MainMenu::MainMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         { {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
-          {"Exit", eFixedCommand::COMMAND_CLOSE_WINDOW}, },
+          {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW}, },
     }
 )
 {
@@ -35,7 +35,7 @@ void MainMenu::select(eFixedCommand command)
         // nextMenu(PregameMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:
-        nextMenu(MainMenu::getInstance());
+        PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);
         break;
     }
 }

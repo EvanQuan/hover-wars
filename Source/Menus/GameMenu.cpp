@@ -7,6 +7,10 @@ GameMenu* GameMenu::m_pInstance = nullptr;
 /*
 Constructor
 */
+void GameMenu::enter()
+{
+    GAME_MANAGER->setPaused(false);
+}
 GameMenu::GameMenu() : Menu(
     // m_pressedKeyToFixedCommand
     unordered_map<int, eFixedCommand>
@@ -170,9 +174,6 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
        break;
     case COMMAND_MENU_PAUSE_TOGGLE:
         nextMenu(PauseMenu::getInstance());
-        GAME_MANAGER->setPaused(true);
-        SOUND_MANAGER->togglePaused();
-        // nextMenu(PauseMenu::getInstance());
        break;
     case COMMAND_MENU_START:
        break;
