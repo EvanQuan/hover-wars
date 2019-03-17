@@ -15,6 +15,8 @@ private:
 
     void select(eFixedCommand command);
 
+    void moveCursor(eFixedCommand command);
+
     void back();
 
     int m_iBotCount;
