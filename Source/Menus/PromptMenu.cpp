@@ -188,7 +188,7 @@ void PromptMenu::releaseCursor()
 void PromptMenu::updateTimeValues(float fTimeInSeconds)
 {
     m_fSecondsToStartRepeat -= fTimeInSeconds;
-    if (m_fSecondsToStartRepeat <= 0.0f)
+    if (m_fSecondsToStartRepeat <= 0.0f && m_fSecondsToNextRepeat > 0.0f)
     {
         m_fSecondsToNextRepeat -= fTimeInSeconds;
     }

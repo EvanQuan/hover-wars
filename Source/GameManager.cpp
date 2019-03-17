@@ -32,7 +32,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
     // Game starts paused as the player starts in the main menu
-    paused = true;
+    paused = false;
 }
 
 /*

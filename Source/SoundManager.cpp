@@ -71,7 +71,6 @@ void SoundManager::play(eSoundEvent sound)
     }
 
     playEvent(eventPath);
-    // playEventDirect(eventPath);
     updateChannels();
 }
 
@@ -472,7 +471,7 @@ void SoundManager::playEvent(const string& sEventName) {
         tFoundIt->second->set3DAttributes(&testAttrubute);
     }
     tFoundIt->second->start();
-    // cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
+    cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
 
 /*
