@@ -1,5 +1,6 @@
 #include "Menus/PregameMenu.h"
 #include "Menus/MainMenu.h"
+#include "InputHandler.h"
 
 // Singleton instance
 PregameMenu* PregameMenu::m_pInstance = nullptr;
@@ -13,7 +14,12 @@ PregameMenu::PregameMenu() : PromptMenu(
     }
 )
 {
-
+    // Note that this is in the constructor, not enter(). While there are
+    // initial bot and player values, these SHOULD persist between menu changes
+    // during runtime because it's annoying to have the values changed away
+    // from what the player chose.
+    m_iBotCount = MAX_BOT_COUNT;
+    m_iPlayerCount = INPUT_HANDLER->getJoystickCount();
 }
 
 Menu* PregameMenu::getInstance()

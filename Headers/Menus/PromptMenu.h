@@ -45,7 +45,6 @@ private:
 
     void updateTimeValues(float fTimeInSeconds);
 
-    void moveCursor(eFixedCommand direction);
     void releaseCursor();
     eFixedCommand m_eCursorDirection;
 
@@ -54,6 +53,8 @@ protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
+    // If overriden, call the parent version
+    virtual void moveCursor(eFixedCommand direction);
     // Process the current selected command.
     // This is called as the user selects the prompt under the current cursor
     // location.

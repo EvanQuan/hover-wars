@@ -109,7 +109,10 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
     case COMMAND_PROMPT_LEFT:
     case COMMAND_PROMPT_DOWN:
     case COMMAND_PROMPT_RIGHT:
-        moveCursor(command);
+        if (m_fSecondsToNextRepeat <= 0)
+        {
+            moveCursor(command);
+        }
         break;
     case COMMAND_PROMPT_CURSOR_RELEASE:
         releaseCursor();
@@ -130,9 +133,9 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
 
 void PromptMenu::moveCursor(eFixedCommand direction)
 {
-    if (m_fSecondsToNextRepeat > 0.0f) {
-        return;
-    }
+    //if (m_fSecondsToNextRepeat > 0.0f) {
+        //return;
+    //}
     m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
     int columns;
     int rows;
