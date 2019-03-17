@@ -74,7 +74,25 @@ GameManager::~GameManager()
         delete m_pCommandHandler;
 }
 
-// Intended to be called every cycle, or when the graphics need to be updated
+/*
+    Start running the game. This call with block until the game loop ends (it
+    will hang the thread).
+*/
+void GameManager::start()
+{
+    SOUND_MANAGER->start();
+    resetTime();
+    while (renderGraphics());
+
+}
+/*
+    Render the graphics of a single frame to the screen.
+    Intended to be called every cycle, or when the graphics need to be updated
+
+    @return true if the game should continue to run. In other words,
+            renderGraphics() should continue to be called within the rendering
+            loop.
+*/
 bool GameManager::renderGraphics()
 {
     // Update Timer

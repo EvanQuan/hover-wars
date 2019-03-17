@@ -24,7 +24,7 @@ public:
     
     // Graphics Application
     bool initializeGraphics( string sFileName );
-    bool renderGraphics();
+    void start();
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height  Settings
@@ -55,6 +55,8 @@ private:
     GameManager(GLFWwindow* rWindow); 
     GameManager(const GameManager* pCopy);
     static GameManager* m_pInstance;
+
+    bool renderGraphics();
 
     // Window Reference
     GLFWwindow* m_pWindow;
