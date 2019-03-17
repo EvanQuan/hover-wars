@@ -48,7 +48,6 @@ public:
 
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
-    void togglePaused() { paused = !paused; }
 
 private:
     // For Singleton Implementation

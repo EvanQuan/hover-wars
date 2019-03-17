@@ -30,6 +30,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+
+    // Game starts paused as the player starts in the main menu
+    paused = true;
 }
 
 /*

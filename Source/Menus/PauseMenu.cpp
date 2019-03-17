@@ -32,7 +32,7 @@ void PauseMenu::select(eFixedCommand command)
     {
     case COMMAND_MENU_PAUSE_TOGGLE:
         nextMenu(GameMenu::getInstance());
-        GAME_MANAGER->togglePaused();
+        GAME_MANAGER->setPaused(false);
         SOUND_MANAGER->togglePaused();
         break;
     case COMMAND_CLOSE_WINDOW:
