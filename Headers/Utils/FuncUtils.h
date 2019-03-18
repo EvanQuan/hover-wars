@@ -184,10 +184,35 @@ namespace FuncUtils
     */
     double getYaw(glm::quat q);
 
+    /*
+        Add increase to value, and keep it within min and max modulo bounds.
+
+        @param value
+        @param increase
+        @param min
+        @param max
+    */
     int addModulo(int value, int increase, int min, int max);
 
+    /*
+        Subtract decrease from value, and keep it within min and max modulo
+        bounds. More expensive than FuncUtils::addModulo()
+
+        @param value
+        @param decrease
+        @param min
+        @param max
+    */
     int subtractModulo(int value, int decrease, int min, int max);
 
+    /*
+        Format time in seconds to form:
+
+            minutes:seconds
+
+        @param seconds  to format
+        @return formatted time
+    */
     std::string timeToString(int seconds);
 
     eHovercraft playerToHovercraft(ePlayer player);
