@@ -3,7 +3,6 @@
 #include "EntityHeaders/Rocket.h"
 #include "EntityHeaders/FlameTrail.h"
 #include "EntityHeaders/Spikes.h"
-#include "EntityHeaders/BotEntity.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
@@ -404,7 +403,7 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize a new Bot Entity
-    unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(iNewEntityID, &pObjectProperties->vPosition);
+    unique_ptr<HovercraftEntity> pNewBot = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
     pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale);
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List

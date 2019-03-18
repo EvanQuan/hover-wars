@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SoundManager.h"
-#include "EntityHeaders/BotEntity.h"
+#include "EntityHeaders/HovercraftEntity.h"
 #include "EntityManager.h"
 
 // Bank paths

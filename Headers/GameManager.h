@@ -6,6 +6,7 @@
 #include <time.h>
 
 // Forward Declarations
+class AIManager;
 class EntityManager;
 class CommandHandler;
 class ShaderManager;
@@ -94,10 +95,11 @@ private:
     bool startedGameOver;
 
     // Manager Pointers
-    EntityManager* m_pEntityManager;
-    ShaderManager* m_pShaderManager;
-    CommandHandler* m_pCommandHandler;
-    GameTime m_pTimer;
+    EntityManager*      m_pEntityManager;
+    ShaderManager*      m_pShaderManager;
+    CommandHandler*     m_pCommandHandler;
+    AIManager*          m_pAIManager;
+    GameTime            m_pTimer;
 
     // If the game is paused, the environment will not update
     bool paused;
