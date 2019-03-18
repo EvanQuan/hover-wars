@@ -4,6 +4,7 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 #include "SoundManager.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 
 /***********\

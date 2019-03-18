@@ -127,7 +127,6 @@ bool GameManager::renderGraphics()
         startedGameOver = true;
     }
 
-
     // Update Environment if the game is not paused
     if (!paused)
     {

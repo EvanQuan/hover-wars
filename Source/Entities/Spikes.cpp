@@ -1,15 +1,31 @@
 #include "EntityHeaders/Spikes.h"
-#include "DataStructures/SpriteSheetDatabase.h"
+#include "EntityComponentHeaders/AnimationComponent.h"
+#include "SoundManager.h"
 #include "EntityManager.h"
 
-using namespace SpriteSheetDatabase;
+/***********\
+ * DEFINES *
+\***********/
+#define NUM_SPIKES      1
+#define FRONT_SPIKES    0
+#define RADIANS_90      1.5708f
+#define POSITION_OFFSET 1.0f
+#define ANIMATION_TIME  1.0f
+
+/*************\
+ * CONSTANTS *
+\*************/
+const vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
+const vec3 ORIGIN(0.0f, 0.0f, 0.0f);
+const quat ROTATIONS[NUM_SPIKES] = { angleAxis(RADIANS_90, UP_VECTOR) };
+const vec3 POSITIONS[NUM_SPIKES] = { vec3(0.0f, 0.0f, POSITION_OFFSET) };
+const float SCALES[NUM_SPIKES]   = { 1.0f };
 
 // Default Constructor
-Spikes::Spikes(int iID, int iOwnerID, eHovercraft eOwnerHovercraft, const vec3* vPosition)
-    : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, *vPosition, INTER_SPIKES )
+Spikes::Spikes(int iID, int iOwnerID, eHovercraft eOwnerHovercraft)
+    : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, vec3(0.0f), INTER_SPIKES )
 {
-    // aLl interactable entities need collision detection
-    // m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pSoundMngr = SOUND_MANAGER;
 }
 
 // Destructor
@@ -18,8 +34,28 @@ Spikes::~Spikes()
     // Nothing to destruct
 }
 
+/*****************************************************************\
+ * Public Spike Functionality                                    *
+\*****************************************************************/
+
+// Initialize the Spikes
+void Spikes::initialize(const string& sFileName,
+                        const ObjectInfo* pObjectProperties,
+                        const string& sShaderType,
+                        float fScale)
+{
+    InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
+
+    // Initialize Animation Component
+    m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
+    m_pAnimationComponent->initializeComponent(m_pMesh);
+    m_pAnimationComponent->addKeyFrame(&ORIGIN, &ROTATIONS[FRONT_SPIKES], SCALES[FRONT_SPIKES], ANIMATION_TIME);
+    m_pAnimationComponent->addKeyFrame(&POSITIONS[FRONT_SPIKES], &ROTATIONS[FRONT_SPIKES],
+                                       SCALES[FRONT_SPIKES], ANIMATION_TIME);
+}
+
 /****************************************************************\
- * Inherited Pure Virtual Functions                                *
+ * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
 void Spikes::update(float fTimeInSeconds)
@@ -31,11 +67,23 @@ void Spikes::update(float fTimeInSeconds)
 //  Static position.
 void Spikes::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
 {
-    /* Not Implemented */
+    m_pMesh->getSpatialDimensions(pNegativeCorner, pPositiveCorner);
 }
 
-// void Spikes::handleCollision(const Entity* pOther) const
+// Overloaded Handle Collision for Spikes
 void Spikes::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
-    /* Not Implemented */
+    InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg );
+    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
+}
+
+/*****************************************************************\
+ * Spikes Functionality                                          *
+\*****************************************************************/
+
+// Activates Spikes
+void Spikes::animateSpikes()
+{
+    m_pAnimationComponent->animateToNextFrame();
+    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_ACTIVATE);
 }

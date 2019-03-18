@@ -1,6 +1,7 @@
 #include "EntityHeaders/FlameTrail.h"
 #include "EntityManager.h"
 #include "SoundManager.h"
+#include "EntityComponentHeaders/AnimationComponent.h"
 
 using namespace SpriteSheetDatabase;
 
@@ -99,7 +100,7 @@ void FlameTrail::update(float fTimeInSeconds)
 void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
 {
     // Add a flame To the Animation Component (Also adds it to the Mesh).
-    unsigned int iFlameIndex = m_pAnimationComponent->addBillboard(vPosition, vNormal);
+     unsigned int iFlameIndex = m_pAnimationComponent->addBillboard(vPosition, vNormal);
 
     // Store the duration locally to manage the Physics Component.
     string sHashKey = to_string(m_iID) + " " + to_string(iFlameIndex);

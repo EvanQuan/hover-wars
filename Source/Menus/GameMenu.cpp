@@ -1,6 +1,7 @@
 #include "Menus/GameMenu.h"
 #include "Menus/PauseMenu.h"
 #include "CommandHandler.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 // Singleton instance
 GameMenu* GameMenu::m_pInstance = nullptr;

@@ -2,8 +2,10 @@
 #include "stdafx.h"
 #include "InputHandler.h"
 #include "GameManager.h"
+#include "EntityHeaders/HovercraftEntity.h"
 #include "EntityManager.h"
 #include "SoundManager.h"
+#include "GameStats.h"
 
 /***********\
  * Defines *
