@@ -47,11 +47,16 @@ void Spikes::initialize(const string& sFileName,
     InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
 
     // Initialize Animation Component
-    m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
-    m_pAnimationComponent->initializeComponent(m_pMesh, this);
-    m_pAnimationComponent->addKeyFrame(&ORIGIN, &ROTATIONS[FRONT_SPIKES], SCALES[FRONT_SPIKES], ANIMATION_TIME);
-    m_pAnimationComponent->addKeyFrame(&POSITIONS[FRONT_SPIKES], &ROTATIONS[FRONT_SPIKES],
-                                       SCALES[FRONT_SPIKES], ANIMATION_TIME);
+    for(unsigned int i = 0; i < NUM_SPIKES; ++i)
+    {
+        m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
+        m_pAnimationComponent->initializeComponent(m_pMesh);
+        m_pAnimationComponent->addKeyFrame(&ORIGIN, &ROTATIONS[i], SCALES[i], ANIMATION_TIME);
+        m_pAnimationComponent->addKeyFrame(&POSITIONS[i], &ROTATIONS[i],
+                                           SCALES[i], ANIMATION_TIME);
+        m_pSpikeAnimations.push_back(m_pAnimationComponent);
+    }
+    
 }
 
 /****************************************************************\
@@ -60,7 +65,8 @@ void Spikes::initialize(const string& sFileName,
 
 void Spikes::update(float fTimeInSeconds)
 {
-    m_vPosition = ENTITY_MANAGER->getEntityPosition(m_iOwnerID);
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+        m_pSpikeAnimations[i]->setWorldTransform(&m_m4WorldTransform);
 }
 
 // This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or

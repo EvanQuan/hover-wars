@@ -35,15 +35,15 @@ public:
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponentAsBillboard( Mesh * pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth );
-    void initializeComponent(Mesh * pMesh, const Entity* pOwnerPtr);
+    void initializeComponent(Mesh * pMesh);
     void addKeyFrame(const vec3* vPosition, const quat* qRotation, float fScale, float fTimeToKeyFrame);
     void animateToNextFrame();
+    void setWorldTransform(const mat4* pWorldTransform) { m_m4WorldTransform = *pWorldTransform; }
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
     AnimationComponent(const AnimationComponent* pCopy);
     AnimationComponent& operator=(const AnimationComponent& pRHS);
-    const Entity* m_pOwnerPtr;
 
     void pickRandomSprite(vec2* vReturnUV);
     void updateBillboard(float fTimeInSeconds);
@@ -70,6 +70,7 @@ private:
 
     // Private Variables
     Mesh * m_pMesh;
+    mat4 m_m4WorldTransform;
     vector<Mesh::sBillboardInfo>*   m_pBillboardListPtr;
     vector<unsigned int>            m_pBillboardIndexCleanList;
 

@@ -18,6 +18,7 @@ AnimationComponent::AnimationComponent(int iEntityID, int iComponentID )
     m_iCurrFrame            = m_iNextFrame = 0;
     m_sMeshInstanceHandle   = to_string(iEntityID) + " " + to_string(iComponentID);
     m_bAnimating            = false;
+    m_m4WorldTransform      = mat4(1.0f);
 }
 
 // Destructor
@@ -47,8 +48,7 @@ void AnimationComponent::updateAnimation(float fTimeInSeconds)
         m_fAnimTime             -= fTimeInSeconds;                          // Update Animation Timer
         m_fInterpolationK       = m_fAnimTime / NEXT_FRAME.fTimeToKeyFrame; // Get Interpolation K
         mat4 m4InterpolatedTransform    = CURR_FRAME.interpolateWithKeyFrame(&NEXT_FRAME, m_fInterpolationK).toTransformationMatrix();
-        vec3 vEntityPosition            = m_pOwnerPtr->getPosition();
-        m4InterpolatedTransform         = translate(vEntityPosition) * m4InterpolatedTransform;
+        m4InterpolatedTransform         = m_m4WorldTransform * m4InterpolatedTransform;
         m_pMesh->updateInstance(&m4InterpolatedTransform, m_sMeshInstanceHandle);
 
         // Update Animation if it's finished.
@@ -145,11 +145,10 @@ void AnimationComponent::setUpNextFrame()
 \*****************************************************************/
 
 // Initializes The animation component simply with a Mesh
-void AnimationComponent::initializeComponent(Mesh * pMesh, const Entity* pOwnerPtr)
+void AnimationComponent::initializeComponent(Mesh * pMesh)
 {
     assert(nullptr != pMesh);
     m_pMesh = pMesh;
-    m_pOwnerPtr = pOwnerPtr;
 }
 
 // Adds a Key Frame to the Animation Component 
@@ -164,7 +163,7 @@ void AnimationComponent::addKeyFrame(const vec3* vPosition,
     if (1 == m_vKeyFrames.size())
     {
         // Get Transformation Matrix
-        mat4 m4Transformation = translate(m_pOwnerPtr->getPosition()) * m_vKeyFrames.front().toTransformationMatrix();
+        mat4 m4Transformation = m_m4WorldTransform * m_vKeyFrames.front().toTransformationMatrix();
 
         // Add Instance to the Mesh.
         m_pMesh->addInstance(&m4Transformation, m_sMeshInstanceHandle);
