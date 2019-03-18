@@ -217,6 +217,9 @@
     <ClInclude Include="Headers\Utils\FuncUtils.h">
       <Filter>Headers\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menus\PostgameMenu.h">
+      <Filter>Headers\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
@@ -396,6 +399,9 @@
     </ClCompile>
     <ClCompile Include="Source\Utils\FuncUtils.cpp">
       <Filter>Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\PostgameMenu.cpp">
+      <Filter>Source\Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

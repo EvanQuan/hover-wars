@@ -35,8 +35,6 @@
 #define SCORE_SCALE             1.0f
 #define SCORE_COLOR             COLOR_WHITE
 
-// Game time
-#define SECONDS_PER_MINUTE      60
 /*
 This determines the length of time of a single round.
 The timer will begin at this time and count down.
@@ -106,8 +104,6 @@ UserInterface::UserInterface(int iWidth, int iHeight)
 
     initFreeType();
     initializeVBOs();
-
-    m_fGameTime = ROUND_TIME;
 
     debugMessage = "";
 }
@@ -378,6 +374,11 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
     }
 }
 
+void UserInterface::reinitialize(float gameTime)
+{
+    m_fGameTime = gameTime;
+}
+
 /*
 Renders the most recently updated state to the screen.
 This this be called every render update, after the environment has been
@@ -399,6 +400,10 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
     m_fGameTime -= fSecondsSinceLastUpdate;
+    if (m_fGameTime < 0)
+    {
+        m_fGameTime = 0;
+    }
 
     for (int player = 0; player < m_iDisplayCount; player++)
     {
@@ -407,7 +412,6 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
     }
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round. Not sure if its worth the cost to check.
-
 }
 
 /*

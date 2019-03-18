@@ -54,6 +54,8 @@ public:
     */
     void update(float fSecondsSinceLastUpdate);
 
+    void reinitialize(float gameTime);
+
     void render();
 
     void setDisplayCount(int count);
