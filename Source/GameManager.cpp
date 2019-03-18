@@ -78,16 +78,16 @@ GameManager::~GameManager()
 }
 
 /*
-    Start running the game. This call with block until the game loop ends (it
-    will hang the thread). When this call ends, so does the program (in main).
+    Start rendering game to screen. This call with block until the game loop
+    ends (it will hang the thread). When this function returns, the program
+    should end.
 */
-void GameManager::start()
+void GameManager::startRendering()
 {
     SOUND_MANAGER->start();
     resetTime();
 
     while (renderGraphics());
-
 }
 /*
     Render the graphics of a single frame to the screen.
@@ -140,6 +140,19 @@ bool GameManager::renderGraphics()
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_pWindow);
+}
+
+/*
+    Initialize everything necessary to start a new game.
+
+    @param playerCount  player hovercrafts to register
+    @param botCount     bot hovercrafts to register
+*/
+void GameManager::initializeNewGame(int playerCount, int botCount)
+{
+    // for now, this simply unpauses the game
+    // TODO implement this
+    paused = false;
 }
 
 /*
