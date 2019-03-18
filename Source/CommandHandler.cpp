@@ -22,7 +22,7 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
         m_pInstance = new CommandHandler(rWindow);
         // Set current menu is done after after the constructor to prevent
         // mutual recursion
-#ifdef _DEBUG
+#ifdef NDEBUG
         m_pInstance->setCurrentMenu(StartMenu::getInstance());
 #else
         // Release

@@ -8,14 +8,20 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Checked|x86 = Checked|x86
+		Debug Optimized|x86 = Debug Optimized|x86
 		Debug|x86 = Debug|x86
+		Release Unoptimized|x86 = Release Unoptimized|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Checked|x86.ActiveCfg = Checked|Win32
 		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Checked|x86.Build.0 = Checked|Win32
+		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Debug Optimized|x86.ActiveCfg = Debug Optimized|Win32
+		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Debug Optimized|x86.Build.0 = Debug Optimized|Win32
 		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Debug|x86.ActiveCfg = Debug|Win32
 		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Debug|x86.Build.0 = Debug|Win32
+		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Release Unoptimized|x86.ActiveCfg = Release Unoptimized|Win32
+		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Release Unoptimized|x86.Build.0 = Release Unoptimized|Win32
 		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Release|x86.ActiveCfg = Release|Win32
 		{6C141890-2C00-4BA8-B8C9-1C8AC5A5FD3B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
