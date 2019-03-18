@@ -114,10 +114,9 @@ public:
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     void initialize(const string& sFileName,
-                    const ObjectInfo* pObjectProperties,
-                    const string& sShaderType,
-                    float fScale,
-                    eHovercraft eHovercraftID);
+        const ObjectInfo* pObjectProperties,
+        const string& sShaderType,
+        float fScale);
 
     void reinitialize();
 
@@ -267,10 +266,6 @@ private:
 // NOTE: Ideally there are no child classes
 protected:
     GameStats* m_pGmStats;
-
-    // This ID is used for communicating with GameStats
-    eHovercraft m_eHovercraftID;
-    eHovercraft getHovercraftID() const { return m_eHovercraftID; }
 
     // Bool Spikes Information
     bool m_bSpikesActivated;

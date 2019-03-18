@@ -17,7 +17,7 @@ class InteractableEntity
 {
 public:
     // Constructor / Destructor
-    InteractableEntity(int iID, int iOwnerID, eHovercraft eOwnerHovercraft, const vec3& vPosition, eInteractType eIEType);
+    InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eInteractType eIEType);
     virtual ~InteractableEntity();
 
     // Implementation of inherited functionality
@@ -30,13 +30,13 @@ public:
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
     eInteractType getInteractableType() const { return m_eInteractableType; }
 
-    eHovercraft getOwnerHovercraft() const { return m_eOwnerHovercraft; }
+    // Needed for awarding the right Hovercraft points for collisions 
+    int getOwnerID() const { return m_iOwnerID; }
 
 protected:
     // Protected Variables
-    int m_iOwnerID; // this may be removed? 
+    int m_iOwnerID;
 
-    eHovercraft m_eOwnerHovercraft;
     Mesh* m_pMesh;
     eInteractType m_eInteractableType;
 

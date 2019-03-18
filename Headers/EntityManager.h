@@ -64,9 +64,9 @@ public:
     void dispatchCollision(int iColliderID, int iCollidedID, unsigned int iColliderMsg, unsigned int iCollidedMsg);
 
     // Interactable Entity Generation Functions
-    FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, eHovercraft eOwnerHovercraft, float fFlameHeight, float fFlameWidth);
-    Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft);
-    Spikes*     generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft);
+    FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);
+    Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
+    Spikes*     generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);

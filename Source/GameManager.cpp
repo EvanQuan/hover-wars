@@ -5,6 +5,7 @@
 #include "ShaderManager.h"
 #include "UserInterface/UserInterface.h"
 #include "Menus/PostgameMenu.h"
+#include "GameStats.h"
 
 // Unit: seconds
 #define GAME_TIME   10
@@ -184,6 +185,7 @@ void GameManager::initializeNewGame(int playerCount, int botCount, float gameTim
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pUserInterface->reinitialize(gameTime);
+    GAME_STATS->reinitialize();
 
 }
 

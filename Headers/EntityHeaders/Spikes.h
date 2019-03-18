@@ -18,7 +18,7 @@ class Spikes
     : public InteractableEntity
 {
 public:
-    Spikes(int iID, int iOwnerID, eHovercraft eOwnerHovercraft);
+    Spikes(int iID, int iOwnerID);
     virtual ~Spikes();
 
     // Public Spike functionality

@@ -22,8 +22,8 @@ const vec3 POSITIONS[NUM_SPIKES] = { vec3(0.0f, 0.0f, POSITION_OFFSET) };
 const float SCALES[NUM_SPIKES]   = { 1.0f };
 
 // Default Constructor
-Spikes::Spikes(int iID, int iOwnerID, eHovercraft eOwnerHovercraft)
-    : InteractableEntity( iID, iOwnerID, eOwnerHovercraft, vec3(0.0f), INTER_SPIKES )
+Spikes::Spikes(int iID, int iOwnerID)
+    : InteractableEntity( iID, iOwnerID, vec3(0.0f), INTER_SPIKES )
 {
     m_pSoundMngr = SOUND_MANAGER;
 }

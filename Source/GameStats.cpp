@@ -95,6 +95,7 @@ void GameStats::update(float fSecondsSinceLastUpdate)
 Initialize all stats and cooldowns to 0.
 
 This should be called at the start of every game, or if the game resets.
+It should also be called AFTER players and bots have been initialized.
 */
 void GameStats::reinitialize()
 {
@@ -137,13 +138,13 @@ void GameStats::correspondEntitiesToHovercrafts()
     entityIDToHovercraft.clear();
     vector<HovercraftEntity*> players = ENTITY_MANAGER->m_pPlayerEntityList;
     vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
-    for (int i = HOVERCRAFT_PLAYER_1; i < players.size(); i++)
+    for (int i = 0; i < players.size(); i++)
     {
         entityIDToHovercraft.insert({players.at(i)->getID(), static_cast<eHovercraft>(i)});
     }
-    for (int i = HOVERCRAFT_BOT_1; i < bots.size(); i++)
+    for (int i = 0; i < bots.size(); i++)
     {
-        entityIDToHovercraft.insert({bots.at(i)->getID(), static_cast<eHovercraft>(i)});
+        entityIDToHovercraft.insert({bots.at(i)->getID(), static_cast<eHovercraft>(i + HOVERCRAFT_BOT_1)});
     }
 }
 

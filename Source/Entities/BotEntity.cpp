@@ -55,10 +55,9 @@ void BotEntity::update(float fTimeInSeconds)
 void BotEntity::initialize(const string& sFileName,
     const ObjectInfo* pObjectProperties,
     const string& sShaderType,
-    float fScale,
-    eHovercraft eHovercraftID)
+    float fScale)
 {
-    HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale, eHovercraftID);
+    HovercraftEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
 
     m_AIComponent = ENTITY_MANAGER->generateAIComponent(m_iID);
 
@@ -70,38 +69,3 @@ void BotEntity::initialize(const string& sFileName,
     glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     m_AIComponent->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
-
-/*
-    Tells the HovercraftEntity that they were damaged. This is where the Hovercraft Entity will handle its "death" logic and award points to the winner.
-
-    @param  eHitByType      The Entity Type that this Entity was hit by. This entity will either be a bot or a Player
-
-    @TODO   This seems very general and may be able to be reworked with a better design.
-*/
-void BotEntity::getHitBy(eEntityType eHitByType, unsigned int iNumber)
-{
-    // cout << "Bot " << iNumber << " hit by " << eHitByType << endl;
-    // Get Score reason (The Other Entity hit this bot) /*Offset the Bot ID with the Add score offsets*/
-    GameStats::eAddScoreReason eScoreReason = static_cast<GameStats::eAddScoreReason>(m_eHovercraftID + GameStats::eAddScoreReason::HIT_BOT_1 - 1);
-
-    // Switch based on who hit the player
-    switch (eHitByType)
-    {   // TODO: Fix these Cases to handle one entity type
-    case ENTITY_HOVERCRAFT:    // Hitting Entity was a bot, meaning that the bot #iNumber should get points for hitting this player #m_ePlayerID
-        if (!isInvincible())
-        {
-            m_pGmStats->addScore(static_cast<eHovercraft>(iNumber), eScoreReason);
-        }
-        setInvincible();
-        break;
-    //case PLAYER_ENTITY: // Hitting Entity was another player, meaning that the player #iNumber should get points for hitting this player #m_ePlayerID
-    //    if (!isInvincible())
-    //    {
-    //        m_pGmStats->addScore(static_cast<ePlayer>(iNumber), eScoreReason);
-    //    }
-    //    setInvincible();
-    //    break;
-    }
- 
-}
-
