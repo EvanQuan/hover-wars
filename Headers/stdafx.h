@@ -66,6 +66,7 @@ using namespace physx;
 #define PI                  3.1415926535f
 #define PI_2                6.28318530718f
 #define DEGREES_TO_RADIANS  0.01745329251f
+#define SECONDS_PER_MINUTE  60
 
 #define KEYS                349
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
