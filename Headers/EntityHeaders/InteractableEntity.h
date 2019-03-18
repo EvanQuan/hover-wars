@@ -44,5 +44,4 @@ protected:
     RenderComponent* m_pRenderComponent;
     PhysicsComponent* m_pPhysicsComponent;
     AnimationComponent* m_pAnimationComponent;
-
 };

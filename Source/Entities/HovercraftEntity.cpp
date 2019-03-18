@@ -1,6 +1,7 @@
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityHeaders/FlameTrail.h"
 #include "EntityHeaders/Rocket.h"
+#include "EntityHeaders/Spikes.h"
 #include "SceneLoader.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
@@ -301,6 +302,9 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // Create Rocket Mesh
     m_pRocket = SCENE_LOADER->createRocketMesh(m_iID, eHovercraftID);
+
+    // Create Spikes Mesh
+    m_pSpikes = SCENE_LOADER->createSpikesMesh(m_iID, eHovercraftID);
 
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)

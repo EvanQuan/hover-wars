@@ -1,4 +1,5 @@
 #include "EntityHeaders/InteractableEntity.h"
+#include "EntityHeaders/HovercraftEntity.h"
 #include "DataStructures/SpriteSheetDatabase.h"
 #include "EntityManager.h"
 

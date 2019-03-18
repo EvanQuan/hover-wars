@@ -1,20 +1,7 @@
 #pragma once
 #include "stdafx.h"
-#include "EntityHeaders/PointLight.h"
-#include "EntityHeaders/DirectionalLight.h"
-#include "EntityHeaders/SpotLight.h"
 #include "SceneLoader.h"
 #include "EmitterEngine.h"
-#include "EntityHeaders/InteractableEntity.h"
-#include "EntityHeaders/Entity.h"
-#include "EntityHeaders/BotEntity.h"
-#include "EntityHeaders/Camera.h"
-#include "EntityComponentHeaders/EntityComponent.h"
-#include "EntityComponentHeaders/CameraComponent.h"
-#include "EntityComponentHeaders/RenderComponent.h"
-#include "EntityComponentHeaders/LightingComponent.h"
-#include "EntityComponentHeaders/PhysicsComponent.h"
-#include "EntityComponentHeaders/AnimationComponent.h"
 #include "Physics/PhysicsManager.h"
 #include "SpatialDataMap.h"
 #include "UserInterface/UserInterface.h"
@@ -24,6 +11,20 @@
 \************************/
 class FlameTrail;
 class Rocket;
+class Spikes;
+class EntityComponent;
+class CameraComponent;
+class RenderComponent;
+class LightingComponent;
+class PhysicsComponent;
+class AnimationComponent;
+class AIComponent;
+class Camera;
+class HovercraftEntity;
+class InteractableEntity;
+class PointLight;
+class DirectionalLight;
+class SpotLight;
 
 // Environment Manager
 // Manages all objects in an environment
@@ -64,7 +65,8 @@ public:
 
     // Interactable Entity Generation Functions
     FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, eHovercraft eOwnerHovercraft, float fFlameHeight, float fFlameWidth);
-    Rocket* generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft);
+    Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft);
+    Spikes*     generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);

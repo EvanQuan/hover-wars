@@ -2,6 +2,20 @@
 #include "EntityHeaders/StaticEntity.h"
 #include "EntityHeaders/Rocket.h"
 #include "EntityHeaders/FlameTrail.h"
+#include "EntityHeaders/Spikes.h"
+#include "EntityHeaders/BotEntity.h"
+#include "EntityComponentHeaders/CameraComponent.h"
+#include "EntityComponentHeaders/RenderComponent.h"
+#include "EntityComponentHeaders/LightingComponent.h"
+#include "EntityComponentHeaders/PhysicsComponent.h"
+#include "EntityComponentHeaders/AnimationComponent.h"
+#include "EntityComponentHeaders/AIComponent.h"
+#include "EntityHeaders/Camera.h"
+#include "EntityHeaders/HovercraftEntity.h"
+#include "EntityHeaders/InteractableEntity.h"
+#include "EntityHeaders/PointLight.h"
+#include "EntityHeaders/DirectionalLight.h"
+#include "EntityHeaders/SpotLight.h"
 #include "SoundManager.h"
 
 /***********\
@@ -424,6 +438,23 @@ Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties,
     unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID, eOwnerHovercraft);
     pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
     Rocket* pReturnEntity = pNewEntity.get();
+
+    // Store Interactable Entity in Entity List.
+    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));
+
+    // Return InteractableEntity
+    return pReturnEntity;
+}
+
+Spikes* EntityManager::generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft)
+{
+    // Get a new ID for this Entity.
+    int iNewEntityID = getNewEntityID();
+
+    // Create and Initialize new Interactable Entity
+    unique_ptr<Spikes> pNewEntity = make_unique<Spikes>(iNewEntityID, iOwnerID, eOwnerHovercraft);
+    pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
+    Spikes* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));
