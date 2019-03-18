@@ -111,7 +111,6 @@ private:
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
     void renderGameTime();
-    std::string timeToString();
     
     // Message
     void renderMessages();

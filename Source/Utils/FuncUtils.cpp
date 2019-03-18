@@ -55,7 +55,7 @@ Convert a float to string, given a specified number of decimal places.
 @param decimalPlaces to include in the string
 @return string of float with specified decimal places
 */
-std::string FuncUtils::to_string(float value, int decimalPlaces)
+std::string FuncUtils::toString(float value, int decimalPlaces)
 {
     stringstream stream;
     stream << fixed << setprecision(decimalPlaces) << value;
@@ -105,25 +105,24 @@ double FuncUtils::getYaw(glm::quat q)
     return atan2(siny_cosp, cosy_cosp);
 }
 
-int FuncUtils::moduloIncrease(int value, int increase, int min, int max)
+int FuncUtils::addModulo(int value, int increase, int min, int max)
 {
-    return min + ((value + increase)  % (max + 1));
+    return FuncUtils::max(min, ((value + increase)  % (max + 1)));
 }
 
-int FuncUtils::moduloDecrease(int value, int decrease, int min, int max)
+int FuncUtils::subtractModulo(int value, int decrease, int min, int max)
 {
     max++;
-    return min + (((value - decrease) % max) + max) % max;
+    return FuncUtils::max(min, (((value - decrease) % max) + max) % max);
 }
 
-int FuncUtils::max(int num1, int num2)
+#define SECONDS_PER_MINUTE 60
+std::string FuncUtils::timeToString(int timeInSeconds)
 {
-    return num1 > num2 ? num1 : num2;
-}
-
-int FuncUtils::min(int num1, int num2)
-{
-    return num1 < num2 ? num1 : num2;
+    int total = (int) timeInSeconds;
+    int seconds = total % SECONDS_PER_MINUTE;
+    int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
+    return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
 }
 
 

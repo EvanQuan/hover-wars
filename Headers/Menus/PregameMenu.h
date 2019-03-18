@@ -21,6 +21,7 @@ private:
 
     int m_iBotCount;
     int m_iPlayerCount;
+    int m_fGameTime;
 
     static PregameMenu* m_pInstance;
 };

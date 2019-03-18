@@ -423,23 +423,11 @@ For now, the game time is going up from 0. Later this should count down.
 */
 void UserInterface::renderGameTime()
 {
-    renderText(timeToString(),
+    renderText(FuncUtils::timeToString(m_fGameTime),
                m_vComponentCoordinates[COMPONENT_TIME][X],
                m_vComponentCoordinates[COMPONENT_TIME][Y],
                TIME_SCALE, TIME_COLOR);
 
-}
-
-/*
-This is calculated in renderGameTime() since there is no reason to calculated
-it more than every render update (ie. no reason to update it every game update)
-*/
-std::string UserInterface::timeToString()
-{
-    int total = (int) m_fGameTime;
-    int seconds = total % SECONDS_PER_MINUTE;
-    int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
-    return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
 }
 
 void UserInterface::renderMessages()
@@ -559,7 +547,7 @@ void UserInterface::renderCooldown(std::string label,
                                    GLfloat x, GLfloat y, GLfloat scale)
 {
     bool isReady = cooldowns[cooldown] == 0;
-    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::to_string(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
+    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
     renderText(label + ": " + cooldownString, x, y, scale, color);
 }
