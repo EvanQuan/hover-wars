@@ -107,13 +107,13 @@ double FuncUtils::getYaw(glm::quat q)
 
 int FuncUtils::addModulo(int value, int increase, int min, int max)
 {
-    return min + ((value + increase)  % (max + 1));
+    return FuncUtils::max(min, ((value + increase)  % (max + 1)));
 }
 
 int FuncUtils::subtractModulo(int value, int decrease, int min, int max)
 {
     max++;
-    return min + (((value - decrease) % max) + max) % max;
+    return FuncUtils::max(min, (((value - decrease) % max) + max) % max);
 }
 
 #define SECONDS_PER_MINUTE 60
