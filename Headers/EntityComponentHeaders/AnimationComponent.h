@@ -8,6 +8,11 @@
 
 using namespace SpriteSheetDatabase;
 
+/************************\
+ * Forward Declarations *
+\************************/
+class Entity;
+
 /************************************************************
 * Name: AnimationComponent
 * Written by: James Cote
@@ -30,7 +35,7 @@ public:
 
     // Initializes the proper buffers on the GPU for rendering.
     void initializeComponentAsBillboard( Mesh * pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth );
-    void initializeComponent(Mesh * pMesh);
+    void initializeComponent(Mesh * pMesh, const Entity* pOwnerPtr);
     void addKeyFrame(const vec3* vPosition, const quat* qRotation, float fScale, float fTimeToKeyFrame);
     void animateToNextFrame();
 
@@ -38,6 +43,7 @@ private:
     // Private Copy Constructor and Assignment operator overload.
     AnimationComponent(const AnimationComponent* pCopy);
     AnimationComponent& operator=(const AnimationComponent& pRHS);
+    const Entity* m_pOwnerPtr;
 
     void pickRandomSprite(vec2* vReturnUV);
     void updateBillboard(float fTimeInSeconds);

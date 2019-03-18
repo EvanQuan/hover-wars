@@ -1,5 +1,6 @@
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "EntityManager.h"
+#include "EntityHeaders/Entity.h"
 
 // DEFINES
 #define ANIMATION_SPEED     (1.0f/60.0f)
@@ -12,11 +13,11 @@
 AnimationComponent::AnimationComponent(int iEntityID, int iComponentID )
     : EntityComponent( iEntityID, iComponentID )
 {
-    m_fAnimTime = 0.0f;
-    m_fInterpolationK = 0.0f;
-    m_iCurrFrame = m_iNextFrame = 0;
-    m_sMeshInstanceHandle = to_string(iEntityID) + " " + to_string(iComponentID);
-    m_bAnimating = false;
+    m_fAnimTime             = 0.0f;
+    m_fInterpolationK       = 0.0f;
+    m_iCurrFrame            = m_iNextFrame = 0;
+    m_sMeshInstanceHandle   = to_string(iEntityID) + " " + to_string(iComponentID);
+    m_bAnimating            = false;
 }
 
 // Destructor
@@ -46,7 +47,7 @@ void AnimationComponent::updateAnimation(float fTimeInSeconds)
         m_fAnimTime             -= fTimeInSeconds;                          // Update Animation Timer
         m_fInterpolationK       = m_fAnimTime / NEXT_FRAME.fTimeToKeyFrame; // Get Interpolation K
         mat4 m4InterpolatedTransform    = CURR_FRAME.interpolateWithKeyFrame(&NEXT_FRAME, m_fInterpolationK).toTransformationMatrix();
-        vec3 vEntityPosition            = ENTITY_MANAGER->getEntityPosition(m_iEntityID);
+        vec3 vEntityPosition            = m_pOwnerPtr->getPosition();
         m4InterpolatedTransform         = translate(vEntityPosition) * m4InterpolatedTransform;
         m_pMesh->updateInstance(&m4InterpolatedTransform, m_sMeshInstanceHandle);
 
@@ -144,10 +145,11 @@ void AnimationComponent::setUpNextFrame()
 \*****************************************************************/
 
 // Initializes The animation component simply with a Mesh
-void AnimationComponent::initializeComponent(Mesh * pMesh)
+void AnimationComponent::initializeComponent(Mesh * pMesh, const Entity* pOwnerPtr)
 {
     assert(nullptr != pMesh);
     m_pMesh = pMesh;
+    m_pOwnerPtr = pOwnerPtr;
 }
 
 // Adds a Key Frame to the Animation Component 
@@ -162,7 +164,7 @@ void AnimationComponent::addKeyFrame(const vec3* vPosition,
     if (1 == m_vKeyFrames.size())
     {
         // Get Transformation Matrix
-        mat4 m4Transformation = m_vKeyFrames.front().toTransformationMatrix();
+        mat4 m4Transformation = translate(m_pOwnerPtr->getPosition()) * m_vKeyFrames.front().toTransformationMatrix();
 
         // Add Instance to the Mesh.
         m_pMesh->addInstance(&m4Transformation, m_sMeshInstanceHandle);
