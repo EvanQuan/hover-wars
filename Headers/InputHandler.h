@@ -33,11 +33,14 @@ public:
 
     void updateJoysticks();
 
+
     // Flag the Mouse for Rotations or Translations (Cannot do both at the same time).
     void mouseTStart() { m_bTranslateFlag = !m_bRotateFlag; }
     void mouseTEnd() { m_bTranslateFlag = false; }
     void mouseRStart() { m_bRotateFlag = !m_bTranslateFlag; };
     void mouseREnd() { m_bRotateFlag = false; }
+
+    int getJoystickCount();
 
     /*
     Keyboard
@@ -59,10 +62,10 @@ public:
     /*
     List of joysticks that are present (detected) by the game.
     Only present controllers are initialized
-    1 - present
+    true - present
     0 - not present
     */
-    int m_pJoystickIsPresent[MAX_PLAYER_COUNT];
+    bool m_pJoystickIsPresent[MAX_PLAYER_COUNT];
     /*
     The number of axes each joystick has. Ideally, every joystick has 4 axes.
     */

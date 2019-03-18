@@ -89,8 +89,8 @@ PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts
 {
     m_vPrompts = vPrompts;
     m_eCursorDirection = COMMAND_INVALID_FIXED;
-    m_iCurrentPromptX = 0;
-    m_iCurrentPromptY = 0;
+    m_iCursorRow = 0;
+    m_iCursorColumn = 0;
 
     m_fSecondsToNextRepeat = 0;
     m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
@@ -109,7 +109,10 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
     case COMMAND_PROMPT_LEFT:
     case COMMAND_PROMPT_DOWN:
     case COMMAND_PROMPT_RIGHT:
-        moveCursor(command);
+        if (m_fSecondsToNextRepeat <= 0)
+        {
+            moveCursor(command);
+        }
         break;
     case COMMAND_PROMPT_CURSOR_RELEASE:
         releaseCursor();
@@ -128,40 +131,125 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
     }
 }
 
+int PromptMenu::getMaxRowCount()
+{
+    return m_vPrompts.size();
+}
+
+
+int PromptMenu::getMaxRowIndex()
+{
+    return getMaxRowCount() - 1;
+}
+
+int PromptMenu::getMaxColumnCount()
+{
+    return m_vPrompts.at(m_iCursorRow).size();
+}
+
+int PromptMenu::getMaxColumnIndex()
+{
+    return getMaxColumnCount() - 1;
+}
+
+/*
+    Move the cursor down 1 row.
+
+    @return true if actually moved down a row
+*/
+bool PromptMenu::moveDownRow()
+{
+    int oldCursorRow = m_iCursorRow;
+    int maxRowCount = getMaxRowCount();
+    // Loop down row
+    m_iCursorRow = (m_iCursorRow + 1) % maxRowCount;
+    // Reset column if necessary
+    int newMaxColumnIndex = getMaxColumnIndex();
+    if (m_iCursorColumn > newMaxColumnIndex)
+    {
+        m_iCursorColumn = newMaxColumnIndex;
+    }
+
+    return oldCursorRow != m_iCursorRow;
+}
+
+/*
+    Move the cursor up 1 row.
+
+    @return true if actually moved up a row
+*/
+bool PromptMenu::moveUpRow()
+{
+    int oldCursorRow = m_iCursorRow;
+    int maxRowCount = getMaxRowCount();
+    // Loop up row, prevent negative modulo
+    m_iCursorRow = (((m_iCursorRow - 1) % maxRowCount) + maxRowCount) % maxRowCount;
+    // Reset column if necessary
+    int newMaxColumnIndex = getMaxColumnIndex();
+    if (m_iCursorColumn > newMaxColumnIndex)
+    {
+        m_iCursorColumn = newMaxColumnIndex;
+    }
+
+    return oldCursorRow != m_iCursorRow;
+
+}
+
+/*
+    Move the cursor right 1 column
+
+    @return true if actually moved right a column
+*/
+bool PromptMenu::moveRightColumn()
+{
+    int oldCursorColumn = m_iCursorColumn;
+    int maxColumnCount = getMaxColumnCount();
+    // Loop right column
+    m_iCursorColumn = (m_iCursorColumn + 1) % maxColumnCount;
+
+    return oldCursorColumn != m_iCursorColumn;
+}
+
+/*
+    Move the cursor left 1 column
+
+    @return true if actually moved left a column
+*/
+bool PromptMenu::moveLeftColumn()
+{
+    int oldCursorColumn = m_iCursorColumn;
+    int maxColumnCount = getMaxColumnCount();
+    // Loop left column, prevent negative modulo
+    m_iCursorColumn = (((m_iCursorColumn - 1) % maxColumnCount) + maxColumnCount) % maxColumnCount;
+
+    return oldCursorColumn != m_iCursorColumn;
+}
+
 void PromptMenu::moveCursor(eFixedCommand direction)
 {
-    if (m_fSecondsToNextRepeat > 0.0f) {
-        return;
-    }
+    //if (m_fSecondsToNextRepeat > 0.0f) {
+        //return;
+    //}
     m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
-    int columns;
-    int rows;
-    int beforeX = m_iCurrentPromptX;
-    int beforeY = m_iCurrentPromptY;
+    bool moved = false;
     switch (direction)
     {
     case COMMAND_PROMPT_UP:
-        columns = m_vPrompts.at(m_iCurrentPromptX).size();
-        // prevent negative modulo
-        m_iCurrentPromptY = (((m_iCurrentPromptY - 1) % columns) + columns) % columns; 
+        moved = moveUpRow();
         break;
     case COMMAND_PROMPT_LEFT:
-        rows = m_vPrompts.size();
-        // prevent negative modulo
-        m_iCurrentPromptX = (((m_iCurrentPromptX - 1) % rows) + rows) % rows;
+        moved = moveLeftColumn();
         break;
     case COMMAND_PROMPT_DOWN:
-        columns = m_vPrompts.at(m_iCurrentPromptX).size();
-        m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        moved = moveDownRow();
         break;
     case COMMAND_PROMPT_RIGHT:
-        rows = m_vPrompts.size();
-        m_iCurrentPromptX = (m_iCurrentPromptX + 1) % rows;
+        moved = moveRightColumn();
         break;
     default:
         return; // end early as it was not a cursor movement command
     }
-    if ((beforeX != m_iCurrentPromptX) || (beforeY != m_iCurrentPromptY))
+    if (moved)
     {
         // We have modulo checks to keep the cursor looping within valid options
         // However, if it loops through a dimension with only 1 option, the cursor
@@ -169,8 +257,8 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         // a cursor move sound to signify the cursor has not moved.
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
         // debug
-        cout << "Cursor moved to (" << m_iCurrentPromptX << ", " << m_iCurrentPromptY << ") " << endl;
-        cout << "\t" << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
+        // cout << "Cursor moved to (" << m_iCursorRow << ", " << m_iCursorColumn << ") " << endl;
+        cout << "> " << getCurrentPrompt() << endl;
     }
 }
 
@@ -187,8 +275,8 @@ void PromptMenu::releaseCursor()
 
 void PromptMenu::enter()
 {
-    m_iCurrentPromptX = 0;
-    m_iCurrentPromptY = 0;
+    m_iCursorRow = 0;
+    m_iCursorColumn = 0;
     cout << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
 }
 

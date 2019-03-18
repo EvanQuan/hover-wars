@@ -10,6 +10,8 @@ PauseMenu::PauseMenu() : PromptMenu(
     {
         {
             {"Continue", eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE},
+        },
+        {
             {"Return to Main Menu", eFixedCommand::COMMAND_PROMPT_NEXT_MENU}
         },
     }
