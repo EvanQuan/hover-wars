@@ -159,6 +159,9 @@ namespace FuncUtils
     int moduloIncrease(int value, int increase, int min, int max);
     int moduloDecrease(int value, int decrease, int min, int max);
 
+    int max(int num1, int num2);
+    int min(int num1, int num2);
+
     eHovercraft playerToHovercraft(ePlayer player);
     eHovercraft botToHovercraft(eBot bot);
     ePlayer hovercraftToPlayer(eHovercraft hovercraft);

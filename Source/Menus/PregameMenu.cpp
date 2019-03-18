@@ -61,19 +61,22 @@ void PregameMenu::back()
 
 void PregameMenu::moveCursor(eFixedCommand direction)
 {
-    PromptMenu::moveCursor(direction);
+    int maxPlayerCount;
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
+            maxPlayerCount = FuncUtils::max(MIN_PLAYER_COUNT, INPUT_HANDLER->getJoystickCount());
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
-                // m_iPlayerCount = ;
+                m_iPlayerCount = FuncUtils::moduloDecrease(m_iPlayerCount, 1, MIN_PLAYER_COUNT, maxPlayerCount);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_iPlayerCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
-                m_iPlayerCount = (m_iPlayerCount + 1) % INPUT_HANDLER->getJoystickCount();
+                m_iPlayerCount = FuncUtils::moduloIncrease(m_iPlayerCount, 1, MIN_PLAYER_COUNT, maxPlayerCount);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_iPlayerCount << endl;
                 break;
             }
             break;
@@ -81,16 +84,20 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
-                m_iBotCount--;
+                m_iBotCount = FuncUtils::moduloDecrease(m_iBotCount, 1, MIN_BOT_COUNT, MAX_BOT_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_iBotCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
-                m_iBotCount++;
+                m_iBotCount = FuncUtils::moduloIncrease(m_iBotCount, 1, MIN_BOT_COUNT, MAX_BOT_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_iBotCount << endl;
                 break;
             }
             break;
     }
+
+    PromptMenu::moveCursor(direction);
 }
 
 

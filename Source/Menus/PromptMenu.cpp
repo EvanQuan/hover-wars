@@ -257,8 +257,8 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         // a cursor move sound to signify the cursor has not moved.
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
         // debug
-        cout << "Cursor moved to (" << m_iCursorRow << ", " << m_iCursorColumn << ") " << endl;
-        cout << "\t" << getCurrentPrompt() << " : " << getCurrentPromptCommand() << endl;
+        // cout << "Cursor moved to (" << m_iCursorRow << ", " << m_iCursorColumn << ") " << endl;
+        cout << "> " << getCurrentPrompt() << endl;
     }
 }
 

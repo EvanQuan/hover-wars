@@ -107,12 +107,23 @@ double FuncUtils::getYaw(glm::quat q)
 
 int FuncUtils::moduloIncrease(int value, int increase, int min, int max)
 {
-    return min + ((value) % max);
+    return min + ((value + increase)  % (max + 1));
 }
 
 int FuncUtils::moduloDecrease(int value, int decrease, int min, int max)
 {
+    max++;
     return min + (((value - decrease) % max) + max) % max;
+}
+
+int FuncUtils::max(int num1, int num2)
+{
+    return num1 > num2 ? num1 : num2;
+}
+
+int FuncUtils::min(int num1, int num2)
+{
+    return num1 < num2 ? num1 : num2;
 }
 
 
