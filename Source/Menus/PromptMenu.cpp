@@ -147,6 +147,12 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         columns = m_vPrompts.at(m_iCurrentPromptX).size();
         // prevent negative modulo
         m_iCurrentPromptY = (((m_iCurrentPromptY - 1) % columns) + columns) % columns; 
+        // Reset column if needed
+        int newMaxColumn = m_vPrompts.at(m_iCurrentPromptX).size() - 1;
+        if (m_iCurrentPromptX > newMaxColumn)
+        {
+            m_iCurrentPromptX = newMaxColumn;
+        }
         break;
     case COMMAND_PROMPT_LEFT:
         rows = m_vPrompts.size();
@@ -156,6 +162,12 @@ void PromptMenu::moveCursor(eFixedCommand direction)
     case COMMAND_PROMPT_DOWN:
         columns = m_vPrompts.at(m_iCurrentPromptX).size();
         m_iCurrentPromptY = (m_iCurrentPromptY + 1) % columns;
+        // Reset column if needed
+        int newMaxColumn = m_vPrompts.at(m_iCurrentPromptX).size() - 1;
+        if (m_iCurrentPromptX > newMaxColumn)
+        {
+            m_iCurrentPromptX = newMaxColumn;
+        }
         break;
     case COMMAND_PROMPT_RIGHT:
         rows = m_vPrompts.size();
