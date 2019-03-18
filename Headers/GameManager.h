@@ -24,7 +24,8 @@ public:
     
     // Graphics Application
     bool initializeGraphics( string sFileName );
-    void start();
+    void startRendering();
+    void initializeNewGame(int playerCount, int botCount);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height  Settings
