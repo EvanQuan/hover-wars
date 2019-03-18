@@ -14,23 +14,23 @@
 #include <glm/ext.hpp>
 
 /*
-Provides non-class specific functions for data manipulation.
+    Provides non-class specific functions for data manipulation.
 
-@author Evan Quan
+    @author Evan Quan
 */
 using namespace std;
 namespace FuncUtils
 {
     /*
-    Check if a map contains a specified key.
+        Check if a map contains a specified key.
 
-    This is a standard method of map in C++20. I can feel the disapointment as
-    you look over this James, since this is such a trivially unnecessary
-    function.
+        This is a standard method of map in C++20. I can feel the disapointment
+        as you look over this James, since this is such a trivially unnecessary
+        function.
 
-    @param map<K, V>    m to check if the key exists
-    @param K            key to check in map
-    @return true if the specified map contains the specified key.
+        @param map<K, V>    m to check if the key exists
+        @param K            key to check in map
+        @return true if the specified map contains the specified key.
     */
     template <class K, class V>
     bool contains(map<K, V> m, K key)
@@ -38,7 +38,7 @@ namespace FuncUtils
         return m.find(key) != m.end();
     }
     /*
-    Swaps two variables of the same type.
+        Swaps two variables of the same type.
     */
     template <class K>
     void swap(K LHS, K RHS)
@@ -49,15 +49,15 @@ namespace FuncUtils
     }
 
     /*
-    Check if an unordered map contains a specified key.
+        Check if an unordered map contains a specified key.
 
-    This is a standard method of map in C++20. I can feel the disapointment as
-    you look over this James, since this is such a trivially unnecessary
-    function.
+        This is a standard method of map in C++20. I can feel the disapointment
+        as you look over this James, since this is such a trivially unnecessary
+        function.
 
-    @param unordered_map<K, V>  m to check if the key exists
-    @param K                    key to check in map
-    @return true if the specified unordered_map contains the specified key.
+        @param unordered_map<K, V>  m to check if the key exists
+        @param K                    key to check in map
+        @return true if the specified unordered_map contains the specified key.
     */
     template <class K, class V>
     bool contains(unordered_map<K, V> m, K key)
@@ -66,13 +66,13 @@ namespace FuncUtils
     }
 
     /*
-    Retrieve the value from the specified key in a given map. If the key/value
-    pair does not exist, return the default value instead.
+        Retrieve the value from the specified key in a given map. If the
+        key/value pair does not exist, return the default value instead.
 
-    @param map<K, V>    m to check if key exists
-    @param K            key to check in map
-    @param V            defaultValue to return if key not present in m
-    @return value to key if present, or default if not present
+        @param map<K, V>    m to check if key exists
+        @param K            key to check in map
+        @param V            defaultValue to return if key not present in m
+        @return value to key if present, or default if not present
     */
     template <class K, class V>
     V getValueIfNotDefault(map<K, V> m, K key, V defaultValue)
@@ -81,13 +81,14 @@ namespace FuncUtils
     }
 
     /*
-    Retrieve the value from the specified key in a given unordered_map. If the
-    key/value pair does not exist, return the default value instead.
+        Retrieve the value from the specified key in a given unordered_map. If
+        the key/value pair does not exist, return the default value instead.
 
-    @param unordered_map<K, V>  m to check if key exists
-    @param K                    key to check in map
-    @param V                    defaultValue to return if key not present in m
-    @return value to key if present, or default if not present
+        @param unordered_map<K, V>  m to check if key exists
+        @param K                    key to check in map
+        @param V                    defaultValue to return if key not present
+                                    in m
+        @return value to key if present, or default if not present
     */
     template <class K, class V>
     V getValueIfNotDefault(unordered_map<K, V> m, K key, V defaultValue)
@@ -107,48 +108,56 @@ namespace FuncUtils
         return value1 < value2 ? value1 : value2;
     }
 
+    /*
+        Bound a value between a min and max value of the same type
+
+        @param value    to bound
+        @param min      that value can be
+        @param max      that value can be
+        @return new value bounded between min and max
+    */
     template <class K>
-    K addBounded(K value1, K value2, K min, K max)
+    K bound(K value, K min, K max)
     {
-        return FuncUtils::min(max, FuncUtils::max(min, value1 + value2));
+        return FuncUtils::min(max, FuncUtils::max(min, value));
     }
 
     /*
-    Get the magnitude of a vector represented by its x and y coordinates
+        Get the magnitude of a vector represented by its x and y coordinates
 
-    @param float    x coordinate
-    @param float    y coordinate
-    @return the magnitude of the <x, y> vector
+        @param float    x coordinate
+        @param float    y coordinate
+        @return the magnitude of the <x, y> vector
     */
     float getMagnitude(float x, float y);
 
     /*
-    Check if two floats are equal. This is more accurate, but slower than using
-    the == operator as such:
+        Check if two floats are equal. This is more accurate, but slower than
+        using the == operator as such:
 
-        bool result = x == y;
+            bool result = x == y;
 
-    Use where accuracy is more important than speed.
+        Use where accuracy is more important than speed.
 
-    @param float    x
-    @param float    y
-    @return true if x and y are equal
+        @param float    x
+        @param float    y
+        @return true if x and y are equal
     */
     bool equals(float x, float y);
 
     /*
-    Get a uniformly distributed int from the start to end range, inclusively
-    @param start    of range, inclusively
-    @param end      of range, inclusively
+        Get a uniformly distributed int from the start to end range, inclusively
+        @param start    of range, inclusively
+        @param end      of range, inclusively
     */
     int random(int start, int end);
 
     /*
-    Convert a float to string, given a specified number of decimal places.
+        Convert a float to string, given a specified number of decimal places.
 
-    @param value of float to convert
-    @param decimalPlaces to include in the string
-    @return string of float with specified decimal places
+        @param value of float to convert
+        @param decimalPlaces to include in the string
+        @return string of float with specified decimal places
     */
     std::string toString(float value, int decimalPlaces);
 
@@ -175,10 +184,35 @@ namespace FuncUtils
     */
     double getYaw(glm::quat q);
 
+    /*
+        Add increase to value, and keep it within min and max modulo bounds.
+
+        @param value
+        @param increase
+        @param min
+        @param max
+    */
     int addModulo(int value, int increase, int min, int max);
 
+    /*
+        Subtract decrease from value, and keep it within min and max modulo
+        bounds. More expensive than FuncUtils::addModulo()
+
+        @param value
+        @param decrease
+        @param min
+        @param max
+    */
     int subtractModulo(int value, int decrease, int min, int max);
 
+    /*
+        Format time in seconds to form:
+
+            minutes:seconds
+
+        @param seconds  to format
+        @return formatted time
+    */
     std::string timeToString(int seconds);
 
     eHovercraft playerToHovercraft(ePlayer player);

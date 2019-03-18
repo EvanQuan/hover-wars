@@ -81,7 +81,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
-            maxPlayerCount = FuncUtils::addBounded(INPUT_HANDLER->getJoystickCount(), 1, MIN_PLAYER_COUNT, MAX_PLAYER_COUNT); // add 1 for keyboard
+            maxPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1, MIN_PLAYER_COUNT, MAX_PLAYER_COUNT); // add 1 for keyboard
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
@@ -115,12 +115,12 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
-                m_fGameTime = FuncUtils::addBounded(m_fGameTime, -GAME_TIME_INTERVAL, MIN_GAME_TIME, MAX_GAME_TIME);
+                m_fGameTime = FuncUtils::bound(m_fGameTime - GAME_TIME_INTERVAL, MIN_GAME_TIME, MAX_GAME_TIME);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
-                m_fGameTime = FuncUtils::addBounded(m_fGameTime, GAME_TIME_INTERVAL, MIN_GAME_TIME, MAX_GAME_TIME);
+                m_fGameTime = FuncUtils::bound(m_fGameTime + GAME_TIME_INTERVAL, MIN_GAME_TIME, MAX_GAME_TIME);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
                 break;

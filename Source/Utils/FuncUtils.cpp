@@ -105,11 +105,28 @@ double FuncUtils::getYaw(glm::quat q)
     return atan2(siny_cosp, cosy_cosp);
 }
 
+/*
+    Add increase to value, and keep it within min and max modulo bounds.
+
+    @param value
+    @param increase
+    @param min
+    @param max
+*/
 int FuncUtils::addModulo(int value, int increase, int min, int max)
 {
     return FuncUtils::max(min, ((value + increase)  % (max + 1)));
 }
 
+/*
+    Subtract decrease from value, and keep it within min and max modulo
+    bounds. More expensive than FuncUtils::addModulo()
+
+    @param value
+    @param decrease
+    @param min
+    @param max
+*/
 int FuncUtils::subtractModulo(int value, int decrease, int min, int max)
 {
     max++;
@@ -117,6 +134,14 @@ int FuncUtils::subtractModulo(int value, int decrease, int min, int max)
 }
 
 #define SECONDS_PER_MINUTE 60
+/*
+    Format time in seconds to form:
+
+        minutes:seconds
+
+    @param seconds  to format
+    @return formatted time
+*/
 std::string FuncUtils::timeToString(int timeInSeconds)
 {
     int total = (int) timeInSeconds;
