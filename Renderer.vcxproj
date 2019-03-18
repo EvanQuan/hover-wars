@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Anim_Track.h" />
+    <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
     <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp" />
     <ClCompile Include="Source\CommandHandler.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />

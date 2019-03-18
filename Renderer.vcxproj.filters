@@ -220,6 +220,9 @@
     <ClInclude Include="Headers\Menus\PostgameMenu.h">
       <Filter>Headers\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h">
+      <Filter>Headers\ArtificialIntelligence</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
@@ -403,6 +406,9 @@
     <ClCompile Include="Source\Menus\PostgameMenu.cpp">
       <Filter>Source\Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp">
+      <Filter>Source\ArtificialIntelligence</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
@@ -461,6 +467,12 @@
     </Filter>
     <Filter Include="Source\Utils">
       <UniqueIdentifier>{aeab1973-b00b-4b05-82f2-3e27e1d9607b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\ArtificialIntelligence">
+      <UniqueIdentifier>{20968ee7-c106-47b8-8d3d-b201fb0d4213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ArtificialIntelligence">
+      <UniqueIdentifier>{df6e2cd2-be58-4e82-8123-6d5cf659fc19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
