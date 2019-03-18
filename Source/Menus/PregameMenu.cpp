@@ -30,7 +30,7 @@ PregameMenu::PregameMenu() : PromptMenu(
             // Even though back is visually on the left, we put start on the
             // left so its defaulted to when we move down
             { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
-            {"Back", eFixedCommand::COMMAND_PROMPT_BACK}
+            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
         },
     }
 )
@@ -81,7 +81,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
-            maxPlayerCount = FuncUtils::max(MIN_PLAYER_COUNT, INPUT_HANDLER->getJoystickCount());
+            maxPlayerCount = FuncUtils::addBounded(INPUT_HANDLER->getJoystickCount(), 1, MIN_PLAYER_COUNT, MAX_PLAYER_COUNT); // add 1 for keyboard
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
