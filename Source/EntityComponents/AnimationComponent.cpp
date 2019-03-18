@@ -1,5 +1,6 @@
 #include "EntityComponentHeaders/AnimationComponent.h"
 #include "EntityManager.h"
+#include "EntityHeaders/Entity.h"
 
 // DEFINES
 #define ANIMATION_SPEED     (1.0f/60.0f)
@@ -12,11 +13,12 @@
 AnimationComponent::AnimationComponent(int iEntityID, int iComponentID )
     : EntityComponent( iEntityID, iComponentID )
 {
-    m_fAnimTime = 0.0f;
-    m_fInterpolationK = 0.0f;
-    m_iCurrFrame = m_iNextFrame = 0;
-    m_sMeshInstanceHandle = to_string(iEntityID) + " " + to_string(iComponentID);
-    m_bAnimating = false;
+    m_fAnimTime             = 0.0f;
+    m_fInterpolationK       = 0.0f;
+    m_iCurrFrame            = m_iNextFrame = 0;
+    m_sMeshInstanceHandle   = to_string(iEntityID) + " " + to_string(iComponentID);
+    m_bAnimating            = false;
+    m_m4WorldTransform      = mat4(1.0f);
 }
 
 // Destructor
@@ -41,21 +43,29 @@ void AnimationComponent::update(float fTimeInSeconds)
 // Update a 3D Mesh Animation
 void AnimationComponent::updateAnimation(float fTimeInSeconds)
 {
+    // Local Variables
+    mat4 m4MeshTransform = mat4(1.0f);
+
+    // Interpolate during an animation if there's more than one key frame
     if (m_bAnimating && (m_iCurrFrame != m_iNextFrame))
     {
         m_fAnimTime             -= fTimeInSeconds;                          // Update Animation Timer
         m_fInterpolationK       = m_fAnimTime / NEXT_FRAME.fTimeToKeyFrame; // Get Interpolation K
-        mat4 m4InterpolatedTransform    = CURR_FRAME.interpolateWithKeyFrame(&NEXT_FRAME, m_fInterpolationK).toTransformationMatrix();
-        vec3 vEntityPosition            = ENTITY_MANAGER->getEntityPosition(m_iEntityID);
-        m4InterpolatedTransform         = translate(vEntityPosition) * m4InterpolatedTransform;
-        m_pMesh->updateInstance(&m4InterpolatedTransform, m_sMeshInstanceHandle);
+        m4MeshTransform = CURR_FRAME.interpolateWithKeyFrame(&NEXT_FRAME, m_fInterpolationK).toTransformationMatrix();
+        m4MeshTransform = m_m4WorldTransform * m4MeshTransform;
+        m_pMesh->updateInstance(&m4MeshTransform, m_sMeshInstanceHandle);
 
         // Update Animation if it's finished.
-        if (0.0f == m_fAnimTime)
+        if (0.0f >= m_fAnimTime)
         {
             m_bAnimating = false;
             setUpNextFrame();
         }
+    }
+    else if (1 <= m_vKeyFrames.size())
+    {
+        m4MeshTransform = m_m4WorldTransform * CURR_FRAME.toTransformationMatrix();
+        m_pMesh->updateInstance(&m4MeshTransform, m_sMeshInstanceHandle);
     }
 }
 
@@ -162,7 +172,7 @@ void AnimationComponent::addKeyFrame(const vec3* vPosition,
     if (1 == m_vKeyFrames.size())
     {
         // Get Transformation Matrix
-        mat4 m4Transformation = m_vKeyFrames.front().toTransformationMatrix();
+        mat4 m4Transformation = m_m4WorldTransform * m_vKeyFrames.front().toTransformationMatrix();
 
         // Add Instance to the Mesh.
         m_pMesh->addInstance(&m4Transformation, m_sMeshInstanceHandle);
@@ -211,6 +221,7 @@ void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, const sSpr
 
     // Store Billboard list and mesh for animation manipulation
     m_pBillboardListPtr = &pMesh->m_pBillboardList;
+    m_bBillboardAnimation = true;
     m_pMesh = pMesh;
 
     // Store information about the sprite sheet and Billboard
@@ -261,16 +272,16 @@ AnimationComponent::sKeyFrame AnimationComponent::sKeyFrame::interpolateWithKeyF
     sKeyFrame sReturnFrame{ *this };
 
     // Interpolate Position
-    sReturnFrame.vPosition *= fKInv;
-    sReturnFrame.vPosition += (pOther->vPosition * fK);
+    sReturnFrame.vPosition *= fK;
+    sReturnFrame.vPosition += (pOther->vPosition * fKInv);
 
     // Interpolate Rotation
-    sReturnFrame.vRotation *= fKInv;
-    sReturnFrame.vRotation += (pOther->vRotation * fK);
+    sReturnFrame.vRotation *= fK;
+    sReturnFrame.vRotation += (pOther->vRotation * fKInv);
 
     // Interpolate Scale
-    sReturnFrame.fScale *= fKInv;
-    sReturnFrame.fScale += (pOther->fScale * fK);
+    sReturnFrame.fScale *= fK;
+    sReturnFrame.fScale += (pOther->fScale * fKInv);
 
     // return result
     return sReturnFrame;

@@ -8,6 +8,11 @@
 
 using namespace SpriteSheetDatabase;
 
+/************************\
+ * Forward Declarations *
+\************************/
+class Entity;
+
 /************************************************************
 * Name: AnimationComponent
 * Written by: James Cote
@@ -33,6 +38,7 @@ public:
     void initializeComponent(Mesh * pMesh);
     void addKeyFrame(const vec3* vPosition, const quat* qRotation, float fScale, float fTimeToKeyFrame);
     void animateToNextFrame();
+    void setWorldTransform(const mat4* pWorldTransform) { m_m4WorldTransform = *pWorldTransform; }
 
 private: 
     // Private Copy Constructor and Assignment operator overload.
@@ -64,6 +70,7 @@ private:
 
     // Private Variables
     Mesh * m_pMesh;
+    mat4 m_m4WorldTransform;
     vector<Mesh::sBillboardInfo>*   m_pBillboardListPtr;
     vector<unsigned int>            m_pBillboardIndexCleanList;
 

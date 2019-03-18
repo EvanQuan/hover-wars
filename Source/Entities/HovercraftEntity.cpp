@@ -167,6 +167,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Get the Transformation from the Physics component
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
+    m_pSpikes->updateWorldTransform(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
     m_pMesh->updateInstance(&m4NewTransform, m_sName);
@@ -500,6 +501,8 @@ void HovercraftEntity::updateSpikes(float fTimeInSeconds)
     if (m_fSecondsSinceSpikesActivated > SPIKES_DURATION)
     {
         m_bSpikesActivated = false;
+        m_fSecondsSinceSpikesActivated = 0.0f;
+        m_pSpikes->animateSpikes();
     }
 }
 
@@ -713,7 +716,7 @@ void HovercraftEntity::activateSpikes()
 
     m_bSpikesActivated = true;
     m_fSecondsSinceSpikesActivated = 0.0f;
-
+    m_pSpikes->animateSpikes();
 }
 
 /*

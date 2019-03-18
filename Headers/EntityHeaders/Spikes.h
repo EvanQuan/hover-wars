@@ -5,6 +5,11 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 
+/***********\
+ * DEFINES *
+\***********/
+#define NUM_SPIKES 4
+
 /************************\
  * Forward Declarations *
 \************************/
@@ -26,6 +31,7 @@ public:
 
     // Implementation of inherited functionality
     void update(float fTimeInSeconds);
+    void updateWorldTransform(const mat4* pWorldTransform) { m_m4WorldTransform = *pWorldTransform; }
     void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
@@ -34,4 +40,6 @@ public:
 
 private:
     SoundManager* m_pSoundMngr;
+    mat4 m_m4WorldTransform;
+    AnimationComponent* m_pSpikeAnimations[NUM_SPIKES];
 };
