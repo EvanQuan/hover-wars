@@ -31,11 +31,11 @@ public:
     vector<vector<pair<const char*, eFixedCommand>>> m_vPrompts;
 
     // x-coordinate of current prompt in m_vPrompts
-    int m_iCurrentPromptX;
+    int m_iCursorRow;
     // y-coordinate of current prompt in m_vPrompts
-    int m_iCurrentPromptY;
+    int m_iCursorColumn;
 
-    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).first; }
+    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).first; }
 
 private:
     float m_fSecondsToStartRepeat;
@@ -44,6 +44,18 @@ private:
     eFixedCommand joystickStateToPromptDirection(float x, float y);
 
     void updateTimeValues(float fTimeInSeconds);
+
+    int getMaxRowIndex();
+    int getMaxColumnIndex();
+
+    int getMaxRowCount();
+    int getMaxColumnCount();
+
+    bool moveDownRow();
+    bool moveUpRow();
+
+    bool moveRightColumn();
+    bool moveLeftColumn();
 
     void releaseCursor();
     eFixedCommand m_eCursorDirection;
@@ -66,7 +78,7 @@ protected:
 
     void enter();
 
-    eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).second; }
+    eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).second; }
 
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
 

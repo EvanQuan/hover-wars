@@ -9,12 +9,16 @@ PregameMenu* PregameMenu::m_pInstance = nullptr;
 PregameMenu::PregameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"Player count", eFixedCommand::COMMAND_INVALID_FIXED},  },
-        { {"Bot count", eFixedCommand::COMMAND_INVALID_FIXED} },
-            // Even though back is visually on the left, we put start on the
-            // left so its defaulted to when we move down
-        { {"Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
-          {"Back", eFixedCommand::COMMAND_PROMPT_BACK} },
+        {
+            {"Player count", eFixedCommand::COMMAND_INVALID_FIXED},
+            { "Bot count", eFixedCommand::COMMAND_INVALID_FIXED },
+                // Even though back is visually on the left, we put start on the
+                // left so its defaulted to when we move down
+            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
+        },
+        {
+            {"Back", eFixedCommand::COMMAND_PROMPT_BACK}
+        },
     }
 )
 {
@@ -55,8 +59,9 @@ void PregameMenu::back()
 
 void PregameMenu::moveCursor(eFixedCommand direction)
 {
-    switch (getCurrentPrompt())
-    {
+    PromptMenu::moveCursor(direction);
+    // switch (getCurrentPrompt())
+    // {
 
-    }
+    // }
 }

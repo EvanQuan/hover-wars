@@ -8,8 +8,10 @@ MainMenu* MainMenu::m_pInstance = nullptr;
 MainMenu::MainMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
-          {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW}, },
+        {
+            {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
+            {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW},
+        },
     }
 )
 {
