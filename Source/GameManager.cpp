@@ -4,6 +4,12 @@
 #include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "UserInterface/UserInterface.h"
+#include "Menus/PostgameMenu.h"
+
+// Unit: seconds
+#define GAME_TIME   10
+// Multiplier of regular time for slow motion
+#define GAME_OVER_TIME 3.0
 
 /*************\
  * Constants *
@@ -78,16 +84,16 @@ GameManager::~GameManager()
 }
 
 /*
-    Start running the game. This call with block until the game loop ends (it
-    will hang the thread). When this call ends, so does the program (in main).
+    Start rendering game to screen. This call with block until the game loop
+    ends (it will hang the thread). When this function returns, the program
+    should end.
 */
-void GameManager::start()
+void GameManager::startRendering()
 {
     SOUND_MANAGER->start();
     resetTime();
 
     while (renderGraphics());
-
 }
 /*
     Render the graphics of a single frame to the screen.
@@ -115,22 +121,43 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
+    m_fGameTime -= frameDeltaTime;
+    if (!startedGameOver && (m_fGameTime < 0))
+    {
+        startedGameOver = true;
+    }
 
     // Update Environment if the game is not paused
     if (!paused)
     {
+        if (startedGameOver)
+        {
+            // Decrease real time
+            m_fGameOverTime -= frameDeltaTime;
+            if (m_fGameOverTime <= 0)
+            {
+                endGame();
+            }
+            else
+            {
+                // Do whatever you want for this duration.
+                // Slow mo?
+                // Music change/fade?
+            }
+        }
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
+
+        // The user interface should update after the EntityManager and
+        // CommandHandler has changed in order to reflect their changes.
+        // It also cannot update inside the EntityManager since it is able
+        // to be updated while the EntityManager is paused.
+        USER_INTERFACE->update(frameDeltaTime);
     }
 
     // Sound needs to update after the EntityManager to reflect in game changes
     // Cannot be updated inside the EntityManager as sounds can play while game
     // is paused.
     SOUND_MANAGER->update();
-    // The user interface should update after the EntityManager and
-    // CommandHandler has changed in order to reflect their changes.
-    // It also cannot update inside the EntityManager since it is able
-    // to be updated while the EntityManager is paused.
-    USER_INTERFACE->update(frameDeltaTime);
 
     // call function to draw our scene
     drawScene();
@@ -139,6 +166,35 @@ bool GameManager::renderGraphics()
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_pWindow);
+}
+
+/*
+    Initialize everything necessary to start a new game.
+
+    @param playerCount  player hovercrafts to register
+    @param botCount     bot hovercrafts to register
+    @param gameTime     of game, in seconds
+*/
+void GameManager::initializeNewGame(int playerCount, int botCount, float gameTime)
+{
+    // for now, this simply unpauses the game
+    // TODO implement this
+    paused = false;
+    startedGameOver = false;
+    m_fGameTime = gameTime;
+    m_fGameOverTime = GAME_OVER_TIME;
+    m_pUserInterface->reinitialize(gameTime);
+
+}
+
+/*
+    End the current game.
+*/
+void GameManager::endGame()
+{
+    // postgame menu
+    paused = true;
+    COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
 }
 
 /*

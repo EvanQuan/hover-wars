@@ -446,6 +446,16 @@ void InputHandler::updateJoysticks()
     }
 }
 
+int InputHandler::getJoystickCount()
+{
+    int count = 0;
+    for (int joystick : m_pJoystickIsPresent)
+    {
+        count += joystick;
+    }
+    return count;
+}
+
 /*
 Convert raw joystick input values to values that the command handler can read and
 alter after processing.

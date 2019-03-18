@@ -36,8 +36,6 @@
 #define SCORE_SCALE             1.0f
 #define SCORE_COLOR             COLOR_WHITE
 
-// Game time
-#define SECONDS_PER_MINUTE      60
 /*
 This determines the length of time of a single round.
 The timer will begin at this time and count down.
@@ -107,8 +105,6 @@ UserInterface::UserInterface(int iWidth, int iHeight)
 
     initFreeType();
     initializeVBOs();
-
-    m_fGameTime = ROUND_TIME;
 
     debugMessage = "";
 }
@@ -379,6 +375,11 @@ void UserInterface::update(float fSecondsSinceLastUpdate)
     }
 }
 
+void UserInterface::reinitialize(float gameTime)
+{
+    m_fGameTime = gameTime;
+}
+
 /*
 Renders the most recently updated state to the screen.
 This this be called every render update, after the environment has been
@@ -400,6 +401,10 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
 {
 
     m_fGameTime -= fSecondsSinceLastUpdate;
+    if (m_fGameTime < 0)
+    {
+        m_fGameTime = 0;
+    }
 
     for (int player = 0; player < m_iDisplayCount; player++)
     {
@@ -408,7 +413,6 @@ void UserInterface::updateGameTime(float fSecondsSinceLastUpdate)
     }
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round. Not sure if its worth the cost to check.
-
 }
 
 /*
@@ -420,23 +424,11 @@ For now, the game time is going up from 0. Later this should count down.
 */
 void UserInterface::renderGameTime()
 {
-    renderText(timeToString(),
+    renderText(FuncUtils::timeToString(m_fGameTime),
                m_vComponentCoordinates[COMPONENT_TIME][X],
                m_vComponentCoordinates[COMPONENT_TIME][Y],
                TIME_SCALE, TIME_COLOR);
 
-}
-
-/*
-This is calculated in renderGameTime() since there is no reason to calculated
-it more than every render update (ie. no reason to update it every game update)
-*/
-std::string UserInterface::timeToString()
-{
-    int total = (int) m_fGameTime;
-    int seconds = total % SECONDS_PER_MINUTE;
-    int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
-    return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
 }
 
 void UserInterface::renderMessages()
@@ -556,7 +548,7 @@ void UserInterface::renderCooldown(std::string label,
                                    GLfloat x, GLfloat y, GLfloat scale)
 {
     bool isReady = cooldowns[cooldown] == 0;
-    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::to_string(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
+    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
     renderText(label + ": " + cooldownString, x, y, scale, color);
 }

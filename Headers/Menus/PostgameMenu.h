@@ -2,26 +2,23 @@
 
 #include "Menus/PromptMenu.h"
 
-class PregameMenu final : PromptMenu
+class PostgameMenu final : PromptMenu
 {
 public:
     // TODO nothing to destruct?
-    ~PregameMenu() {}
+    ~PostgameMenu() {}
 
     static Menu* getInstance();
 
 private:
-    PregameMenu();
+    PostgameMenu();
 
     void select(eFixedCommand command);
-
-    void moveCursor(eFixedCommand command);
 
     void back();
 
     int m_iBotCount;
     int m_iPlayerCount;
-    int m_fGameTime;
 
-    static PregameMenu* m_pInstance;
+    static PostgameMenu* m_pInstance;
 };

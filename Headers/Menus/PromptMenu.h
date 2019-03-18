@@ -31,11 +31,11 @@ public:
     vector<vector<pair<const char*, eFixedCommand>>> m_vPrompts;
 
     // x-coordinate of current prompt in m_vPrompts
-    int m_iCurrentPromptX;
+    int m_iCursorRow;
     // y-coordinate of current prompt in m_vPrompts
-    int m_iCurrentPromptY;
+    int m_iCursorColumn;
 
-    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).first; }
+    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).first; }
 
 private:
     float m_fSecondsToStartRepeat;
@@ -45,7 +45,18 @@ private:
 
     void updateTimeValues(float fTimeInSeconds);
 
-    void moveCursor(eFixedCommand direction);
+    int getMaxRowIndex();
+    int getMaxColumnIndex();
+
+    int getMaxRowCount();
+    int getMaxColumnCount();
+
+    bool moveDownRow();
+    bool moveUpRow();
+
+    bool moveRightColumn();
+    bool moveLeftColumn();
+
     void releaseCursor();
     eFixedCommand m_eCursorDirection;
 
@@ -54,6 +65,8 @@ protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
+    // If overriden, call the parent version
+    virtual void moveCursor(eFixedCommand direction);
     // Process the current selected command.
     // This is called as the user selects the prompt under the current cursor
     // location.
@@ -65,7 +78,7 @@ protected:
 
     void enter();
 
-    eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCurrentPromptX).at(m_iCurrentPromptY).second; }
+    eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).second; }
 
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
 

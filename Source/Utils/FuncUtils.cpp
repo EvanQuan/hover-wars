@@ -55,7 +55,7 @@ Convert a float to string, given a specified number of decimal places.
 @param decimalPlaces to include in the string
 @return string of float with specified decimal places
 */
-std::string FuncUtils::to_string(float value, int decimalPlaces)
+std::string FuncUtils::toString(float value, int decimalPlaces)
 {
     stringstream stream;
     stream << fixed << setprecision(decimalPlaces) << value;
@@ -104,6 +104,27 @@ double FuncUtils::getYaw(glm::quat q)
     double cosy_cosp = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);
     return atan2(siny_cosp, cosy_cosp);
 }
+
+int FuncUtils::addModulo(int value, int increase, int min, int max)
+{
+    return FuncUtils::max(min, ((value + increase)  % (max + 1)));
+}
+
+int FuncUtils::subtractModulo(int value, int decrease, int min, int max)
+{
+    max++;
+    return FuncUtils::max(min, (((value - decrease) % max) + max) % max);
+}
+
+#define SECONDS_PER_MINUTE 60
+std::string FuncUtils::timeToString(int timeInSeconds)
+{
+    int total = (int) timeInSeconds;
+    int seconds = total % SECONDS_PER_MINUTE;
+    int minutes = (total / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE;
+    return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
+}
+
 
 eHovercraft FuncUtils::playerToHovercraft(ePlayer player)
 {

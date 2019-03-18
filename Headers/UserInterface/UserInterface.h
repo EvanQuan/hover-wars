@@ -54,6 +54,8 @@ public:
     */
     void update(float fSecondsSinceLastUpdate);
 
+    void reinitialize(float gameTime);
+
     void render();
 
     void setDisplayCount(int count);
@@ -109,7 +111,6 @@ private:
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
     void renderGameTime();
-    std::string timeToString();
     
     // Message
     void renderMessages();

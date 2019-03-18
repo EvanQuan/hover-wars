@@ -66,10 +66,13 @@ using namespace physx;
 #define PI                  3.1415926535f
 #define PI_2                6.28318530718f
 #define DEGREES_TO_RADIANS  0.01745329251f
+#define SECONDS_PER_MINUTE  60
 
 #define KEYS                349
 #define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
+#define MIN_PLAYER_COUNT    1
 #define MAX_PLAYER_COUNT    4
+#define MIN_BOT_COUNT       0
 #define MAX_BOT_COUNT       4
 #define MAX_HOVERCRAFT_COUNT MAX_PLAYER_COUNT + MAX_BOT_COUNT
 #define XBOX_CONTROLLER     "Xbox"
@@ -199,6 +202,7 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define ENTITY_MANAGER      EntityManager::getInstance()
 #define GAME_MANAGER        GameManager::getInstance()
 #define GAME_STATS          GameStats::getInstance()
+#define INPUT_HANDLER       InputHandler::getInstance()
 #define MESH_MANAGER        MeshManager::getInstance()
 #define PHYSICS_MANAGER     PhysicsManager::getInstance()
 #define SCENE_LOADER        SceneLoader::getInstance()

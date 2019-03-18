@@ -23,7 +23,6 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
 void initializeWindow();
 void initializeGLEW();
 void initializeManagers();
-void reset();
 void cleanup();
 
 // These are not local variables to main so that other functions can better
@@ -54,8 +53,7 @@ int main()
         if (iRunning) // only succeeds if both glfw and glew are successful
         {
             initializeManagers();
-            reset();
-            m_gameManager->start();
+            m_gameManager->startRendering();
         }
         cleanup();
     }
@@ -104,15 +102,8 @@ void initializeManagers()
     // Initialize Sound
     m_soundManager = SOUND_MANAGER;
     m_soundManager->loadFiles();
-}
 
-/*
-    Reset all values needed to restart the game.
-    Similar to initialize(), but may be called multiple times during
-    run time to reinitialize values that are needed to reset the game.
-*/
-void reset()
-{
+    // Initialize graphics from scene file
 #ifdef NDEBUG
     iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
     // iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
@@ -120,7 +111,6 @@ void reset()
     iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
     // iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
 #endif
-
 }
 
 /*

@@ -24,7 +24,8 @@ public:
     
     // Graphics Application
     bool initializeGraphics( string sFileName );
-    void start();
+    void startRendering();
+    void initializeNewGame(int playerCount, int botCount, float gameTime);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height  Settings
@@ -58,6 +59,8 @@ private:
     bool renderGraphics();
     void drawScene();
 
+    void endGame();
+
     // Window Reference
     GLFWwindow* m_pWindow;
 
@@ -78,6 +81,17 @@ private:
     Unit: seconds
     */
     duration<float> m_fMaxDeltaTime;
+
+    /*
+    After the game has ended, there is a duration of slow motion before the
+    game moves to the post game menu.
+
+    Unit: seconds
+    */
+    float m_fGameTime;
+    float m_fGameOverTime;
+    // Signifies of the game has ended
+    bool startedGameOver;
 
     // Manager Pointers
     EntityManager* m_pEntityManager;
