@@ -387,7 +387,7 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
 
     // Generate and Initialize Player Entity.
     unique_ptr<HovercraftEntity> pNewPlayer = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pPlayerEntityList.size()));
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale);
 
     // Store Player Entity In Player Entity List as well as Master Entity List.
     m_pPlayerEntityList.push_back(pNewPlayer.get());
@@ -405,7 +405,7 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 
     // Generate and Initialize a new Bot Entity
     unique_ptr<BotEntity> pNewBot = make_unique<BotEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale, static_cast<eHovercraft>(m_pBotEntityList.size() + MAX_PLAYER_COUNT));
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale);
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List
     m_pBotEntityList.push_back(pNewBot.get()); 
@@ -413,13 +413,13 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 }
 
 // Generates and Returns an Interactable Entity with a specified Position.
-FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, eHovercraft eOwnerHovercraft, float fFlameHeight, float fFlameWidth)
+FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, eOwnerHovercraft, vPosition, fFlameHeight, fFlameWidth);
+    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition, fFlameHeight, fFlameWidth);
     FlameTrail* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
@@ -429,13 +429,13 @@ FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int i
     return pReturnEntity;
 }
 
-Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft)
+Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID, eOwnerHovercraft);
+    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID);
     pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
     Rocket* pReturnEntity = pNewEntity.get();
 
@@ -446,13 +446,13 @@ Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties,
     return pReturnEntity;
 }
 
-Spikes* EntityManager::generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID, eHovercraft eOwnerHovercraft)
+Spikes* EntityManager::generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<Spikes> pNewEntity = make_unique<Spikes>(iNewEntityID, iOwnerID, eOwnerHovercraft);
+    unique_ptr<Spikes> pNewEntity = make_unique<Spikes>(iNewEntityID, iOwnerID);
     pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
     Spikes* pReturnEntity = pNewEntity.get();
 

@@ -15,12 +15,8 @@ public:
     void initialize(const string& sFileName,
                     const ObjectInfo* pObjectProperties,
                     const string& sShaderType,
-                    float fScale,
-                    eHovercraft eHovercraftID);
+                    float fScale);
 
-    // Overridden virtual functions inherited from parent
-    void getHitBy(eEntityType eHitByType, unsigned int iNumber);
-    // void hit(eEntityType eHitByType, unsigned int iNumber) const;
     void update(float fTimeInSeconds);
 private:
     int lastStep = -1;

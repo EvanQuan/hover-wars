@@ -246,15 +246,15 @@ void SceneLoader::saveSpikesInfo()
 }
 
 // Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
-Rocket* SceneLoader::createRocketMesh( int iOwnerID, eHovercraft eOwnerHovercraft )
+Rocket* SceneLoader::createRocketMesh(int iOwnerID)
 {
-    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID, eOwnerHovercraft);
+    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
 }
 
 // Generates a Spikes Entity based off the saved Spikes Properties loaded from the Scene.
-Spikes* SceneLoader::createSpikesMesh(int iOwnerID, eHovercraft eOwnerHovercraft)
+Spikes* SceneLoader::createSpikesMesh(int iOwnerID)
 {
-    return m_pEntityManager->generateSpikesEntity(&SPIKES_PROPERTIES_DEF.pObjectProperties, &SPIKES_PROPERTIES_DEF.sMeshLocation, SPIKES_PROPERTIES_DEF.fScaleProperty, &SPIKES_PROPERTIES_DEF.sShaderProperty, iOwnerID, eOwnerHovercraft);
+    return m_pEntityManager->generateSpikesEntity(&SPIKES_PROPERTIES_DEF.pObjectProperties, &SPIKES_PROPERTIES_DEF.sMeshLocation, SPIKES_PROPERTIES_DEF.fScaleProperty, &SPIKES_PROPERTIES_DEF.sShaderProperty, iOwnerID);
 }
 
 // Initializes the Spatial Data Map for the scene

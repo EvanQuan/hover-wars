@@ -6,11 +6,10 @@
 using namespace SpriteSheetDatabase;
 
 // Default Constructor
-InteractableEntity::InteractableEntity(int iID, int iOwnerID, eHovercraft eOwnerHovercraft, const vec3& vPosition, eInteractType eIEType)
+InteractableEntity::InteractableEntity(int iID, int iOwnerID, const vec3& vPosition, eInteractType eIEType)
     : Entity( iID, vPosition, ENTITY_INTERACTABLE )
 {
     m_iOwnerID          = iOwnerID;  // Set the Owner ID for the Interactable Entity
-    m_eOwnerHovercraft  = eOwnerHovercraft;
     m_eInteractableType = eIEType;
 }
 
@@ -64,7 +63,14 @@ void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderM
     // As a result, there is no relation between m_iOwnerID and the owner's
     // eHovercraft value, meaning we cannot just directly cast the m_iOwnerID to an eHovercraft
     if (ENTITY_HOVERCRAFT == pOther->getType() && m_iOwnerID != pOther->getID())
-        static_cast<HovercraftEntity*>(pOther)->getHitBy(m_eOwnerHovercraft);
+    {
+        eHovercraft owner = GAME_STATS->getEHovercraft(m_iOwnerID);
+        HovercraftEntity* hit = static_cast<HovercraftEntity*>(pOther);
+
+        cout << owner << " hit " << GAME_STATS->getEHovercraft(hit->getID()) << endl;
+
+        hit->getHitBy(owner);
+    }
 }
 
 

@@ -22,7 +22,7 @@ class Rocket
     : public InteractableEntity
 {
 public:
-    Rocket(int iID, int iOwnerID, eHovercraft eOwnerHovercraft);
+    Rocket(int iID, int iOwnerID);
     virtual ~Rocket();
 
     // Implementation of inherited functionality

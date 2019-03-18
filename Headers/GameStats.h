@@ -132,7 +132,9 @@ public:
     void useAbility(eHovercraft hovercraft, eAbility ability);
     bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const;
 
-    void initialize();
+    void reinitialize();
+
+    eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
 
 private:
     GameStats();
@@ -140,6 +142,7 @@ private:
 
     void initializeStats();
     void initializeCooldowns();
+    void correspondEntitiesToHovercrafts();
 
 
     /*
@@ -191,6 +194,7 @@ private:
 
     void debug(eHovercraft hovercraft);
 
+    // @Deprecated, unused, due to perfect correspondance
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 
     {
         {HIT_PLAYER_1,  HOVERCRAFT_PLAYER_1},
@@ -202,6 +206,8 @@ private:
         {HIT_BOT_3,     HOVERCRAFT_BOT_3},
         {HIT_BOT_4,     HOVERCRAFT_BOT_4},
     };
+
+    unordered_map<int, eHovercraft> entityIDToHovercraft;
 };
 
 

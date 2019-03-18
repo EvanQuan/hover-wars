@@ -1,5 +1,7 @@
 #include "GameStats.h"
 #include "UserInterface/UserInterface.h"
+#include "EntityManager.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 /*
 Number of killstreaks against another player to count as domination
@@ -50,7 +52,7 @@ GameStats* GameStats::m_pInstance = nullptr;
 
 GameStats::GameStats()
 {
-    initialize();
+    reinitialize();
 }
 
 GameStats* GameStats::getInstance()
@@ -93,11 +95,13 @@ void GameStats::update(float fSecondsSinceLastUpdate)
 Initialize all stats and cooldowns to 0.
 
 This should be called at the start of every game, or if the game resets.
+It should also be called AFTER players and bots have been initialized.
 */
-void GameStats::initialize()
+void GameStats::reinitialize()
 {
     initializeStats();
     initializeCooldowns();
+    correspondEntitiesToHovercrafts();
     firstBloodHappened = false;
 }
 
@@ -126,6 +130,21 @@ void GameStats::initializeCooldowns()
         {
             cooldowns[player][cooldown] = 0.0f;
         }
+    }
+}
+
+void GameStats::correspondEntitiesToHovercrafts()
+{
+    entityIDToHovercraft.clear();
+    vector<HovercraftEntity*> players = ENTITY_MANAGER->m_pPlayerEntityList;
+    vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
+    for (size_t i = 0, size = players.size(); i < size; ++i)
+    {
+        entityIDToHovercraft.insert({players.at(i)->getID(), static_cast<eHovercraft>(i)});
+    }
+    for (size_t i = 0, size = players.size(); i < size; ++i)
+    {
+        entityIDToHovercraft.insert({bots.at(i)->getID(), static_cast<eHovercraft>(i + HOVERCRAFT_BOT_1)});
     }
 }
 
