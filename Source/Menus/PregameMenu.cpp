@@ -3,6 +3,14 @@
 #include "Menus/GameMenu.h"
 #include "InputHandler.h"
 
+// Default game time as pregame menu is first entered
+#define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE
+#define MAX_GAME_TIME 10 * SECONDS_PER_MINUTE
+#define MIN_GAME_TIME 1 * SECONDS_PER_MINUTE
+
+// Interval of time to change game time
+#define GAME_TIME_INTERVAL 30
+
 // Singleton instance
 PregameMenu* PregameMenu::m_pInstance = nullptr;
 
@@ -14,10 +22,13 @@ PregameMenu::PregameMenu() : PromptMenu(
         },
         {
             { "Bot count", eFixedCommand::COMMAND_PROMPT_SELECT_2 },
-                // Even though back is visually on the left, we put start on the
-                // left so its defaulted to when we move down
         },
         {
+            { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
+        },
+        {
+            // Even though back is visually on the left, we put start on the
+            // left so its defaulted to when we move down
             { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
             {"Back", eFixedCommand::COMMAND_PROMPT_BACK}
         },
@@ -30,6 +41,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     // from what the player chose.
     m_iBotCount = MAX_BOT_COUNT;
     m_iPlayerCount = INPUT_HANDLER->getJoystickCount();
+    m_fGameTime = DEFAULT_GAME_TIME;
 }
 
 Menu* PregameMenu::getInstance()
@@ -50,7 +62,7 @@ void PregameMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_NEXT_MENU:
         // Let GameManager initialize a new game before switching to game menu
         // controls
-        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, 10);
+        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime));
         nextMenu(GameMenu::getInstance());
         break;
     }
@@ -65,6 +77,7 @@ void PregameMenu::back()
 void PregameMenu::moveCursor(eFixedCommand direction)
 {
     int maxPlayerCount;
+    PromptMenu::moveCursor(direction);
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
@@ -72,12 +85,12 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
-                m_iPlayerCount = FuncUtils::moduloDecrease(m_iPlayerCount, 1, MIN_PLAYER_COUNT, maxPlayerCount);
+                m_iPlayerCount = FuncUtils::subtractModulo(m_iPlayerCount, 1, MIN_PLAYER_COUNT, maxPlayerCount);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
-                m_iPlayerCount = FuncUtils::moduloIncrease(m_iPlayerCount, 1, MIN_PLAYER_COUNT, maxPlayerCount);
+                m_iPlayerCount = FuncUtils::addModulo(m_iPlayerCount, 1, MIN_PLAYER_COUNT, maxPlayerCount);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;
@@ -87,20 +100,32 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
-                m_iBotCount = FuncUtils::moduloDecrease(m_iBotCount, 1, MIN_BOT_COUNT, MAX_BOT_COUNT);
+                m_iBotCount = FuncUtils::subtractModulo(m_iBotCount, 1, MIN_BOT_COUNT, MAX_BOT_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iBotCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
-                m_iBotCount = FuncUtils::moduloIncrease(m_iBotCount, 1, MIN_BOT_COUNT, MAX_BOT_COUNT);
+                m_iBotCount = FuncUtils::addModulo(m_iBotCount, 1, MIN_BOT_COUNT, MAX_BOT_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iBotCount << endl;
                 break;
             }
             break;
+        case eFixedCommand::COMMAND_PROMPT_SELECT_3: // game time
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+                m_fGameTime = FuncUtils::addBounded(m_fGameTime, -GAME_TIME_INTERVAL, MIN_GAME_TIME, MAX_GAME_TIME);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
+                break;
+            case COMMAND_PROMPT_RIGHT:
+                m_fGameTime = FuncUtils::addBounded(m_fGameTime, GAME_TIME_INTERVAL, MIN_GAME_TIME, MAX_GAME_TIME);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
+                break;
+            }
     }
-
-    PromptMenu::moveCursor(direction);
 }
 
 

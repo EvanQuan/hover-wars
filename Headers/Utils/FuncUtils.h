@@ -95,6 +95,24 @@ namespace FuncUtils
         return contains(m, key) ? m[key] : defaultValue;
     }
 
+    template <class K>
+    K max(K value1, K value2)
+    {
+        return value1 > value2 ? value1 : value2;
+    }
+
+    template <class K>
+    K min(K value1, K value2)
+    {
+        return value1 < value2 ? value1 : value2;
+    }
+
+    template <class K>
+    K addBounded(K value1, K value2, K min, K max)
+    {
+        return FuncUtils::min(max, FuncUtils::max(min, value1 + value2));
+    }
+
     /*
     Get the magnitude of a vector represented by its x and y coordinates
 
@@ -132,7 +150,8 @@ namespace FuncUtils
     @param decimalPlaces to include in the string
     @return string of float with specified decimal places
     */
-    std::string to_string(float value, int decimalPlaces);
+    std::string toString(float value, int decimalPlaces);
+
 
     /*
         Get the roll (x-axis rotation) from a specified quaterion
@@ -156,11 +175,11 @@ namespace FuncUtils
     */
     double getYaw(glm::quat q);
 
-    int moduloIncrease(int value, int increase, int min, int max);
-    int moduloDecrease(int value, int decrease, int min, int max);
+    int addModulo(int value, int increase, int min, int max);
 
-    int max(int num1, int num2);
-    int min(int num1, int num2);
+    int subtractModulo(int value, int decrease, int min, int max);
+
+    std::string timeToString(int seconds);
 
     eHovercraft playerToHovercraft(ePlayer player);
     eHovercraft botToHovercraft(eBot bot);
