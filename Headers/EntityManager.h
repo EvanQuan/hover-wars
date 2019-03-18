@@ -95,6 +95,19 @@ public:
     HovercraftEntity* getBot(eHovercraft bot);
     bool botExists(eHovercraft bot);
 
+    // GameStats needs to iterate over all players and bots to correspond
+    // EntityIDs with eHovercraft enum values
+    /*
+        The CommandHandler uses this to determine which hovercrafts are
+        registered to receive input from
+    */
+    vector<HovercraftEntity*>                       m_pPlayerEntityList;    
+    /*
+        The AI uses this to determine which hovercrafts are registered to
+        receive input from
+    */
+    vector<HovercraftEntity*>                       m_pBotEntityList;    
+
 private:
     EntityManager();
     EntityManager(const EntityManager* pCopy);
@@ -114,12 +127,6 @@ private:
     vector<PhysicsComponent*>                       m_pPhysicsComponents;   // 
     // AI's
     vector<AIComponent*>                            m_pAIComponents;   // TBH I have no idea why we want/need these? please clarify and I will remove
-    // The CommandHandler uses this to determine which hovercrafts are
-    // registered to receive input from
-    vector<HovercraftEntity*>                       m_pPlayerEntityList;    
-    // The AI uses this to determine which hovercrafts are registered to
-    // receive input from
-    vector<HovercraftEntity*>                       m_pBotEntityList;    
     // Rendering
     unordered_map<Mesh const*, RenderComponent*>    m_pRenderingComponents;
     // Cameras

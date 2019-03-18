@@ -444,7 +444,6 @@ void UserInterface::renderMessages()
         }
         if (m_fScoreChangeTimes[player] > 0)
         {
-
             int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
                                               GameStats::eStat::SCORE_CHANGE);
             bool scoreIncreased = scoreChange >= 0;
