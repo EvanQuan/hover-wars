@@ -8,6 +8,7 @@
 \***********/
 #define CURRENT_PROPERTIES_DEF     SceneLoader::m_sProperties[SceneLoader::CURRENT_PROPERTIES]
 #define ROCKET_PROPERTIES_DEF      SceneLoader::m_sProperties[SceneLoader::ROCKET_PROPERTIES]
+#define SPIKES_PROPERTIES_DEF      SceneLoader::m_sProperties[SceneLoader::SPIKES_PROPERTIES]
 
 #define MAX_CHARS_PER_LINE     256
 #define MAX_SPHERE_PARAMS      4
@@ -39,6 +40,7 @@
 #define CUBE                   "cube"
 #define NAME                   "name"
 #define ROCKET                 "rocket"
+#define SPIKES                 "spikes"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -72,7 +74,7 @@ void SceneLoader::createSphere( vector< string > sData, int iLength )
     {
         CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3( stof( sData[ 0 ] )/*X*/, stof( sData[ 1 ] )/*Y*/, stof( sData[ 2 ] )/*Z*/ );    // Position of Sphere
 
-        ENTITY_MANAGER->generateStaticSphere(&CURRENT_PROPERTIES_DEF.pObjectProperties, stof(sData[3]), CURRENT_PROPERTIES_DEF.sShaderProperty);
+        m_pEntityManager->generateStaticSphere(&CURRENT_PROPERTIES_DEF.pObjectProperties, stof(sData[3]), CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
         outputError(SPHERE, sData);
@@ -91,7 +93,7 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
         vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
         iHeight = stoi(sData[6]);
         iWidth = stoi(sData[7]);
-        ENTITY_MANAGER->generateStaticPlane(&CURRENT_PROPERTIES_DEF.pObjectProperties, iHeight, iWidth, &vNormal, CURRENT_PROPERTIES_DEF.sShaderProperty);
+        m_pEntityManager->generateStaticPlane(&CURRENT_PROPERTIES_DEF.pObjectProperties, iHeight, iWidth, &vNormal, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
     {
@@ -121,7 +123,7 @@ void SceneLoader::createDirectionalLight( vector< string > sData, int iLength )
         iShadowWidth    = stoi(sData[16]);
         fShadowFrame    = stof(sData[17]);
 
-        ENTITY_MANAGER->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor,
+        m_pEntityManager->generateDirectionalLight(&vDirection, &vAmbientColor, &vDiffuseColor, &vSpecularColor,
                                                  fPosition, fNearPlane, fFarPlane, iShadowHeight, iShadowWidth, fShadowFrame);
     }
     else
@@ -148,7 +150,7 @@ void SceneLoader::createPointLight(vector< string > sData, int iLength)
         // Set the Diffuse Color of the Material
         CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(pColor * fPower, 1.0);
 
-        ENTITY_MANAGER->generateStaticPointLight( &CURRENT_PROPERTIES_DEF.pObjectProperties, fPower, &pColor, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty);
+        m_pEntityManager->generateStaticPointLight( &CURRENT_PROPERTIES_DEF.pObjectProperties, fPower, &pColor, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty);
     }
     else
         outputError(POINT_LIGHT, sData);
@@ -178,7 +180,7 @@ void SceneLoader::createSpotLight(vector< string > sData, int iLength)
         // Set the Diffuse color of the material.
         CURRENT_PROPERTIES_DEF.pObjectProperties.sObjMaterial.vOptionalDiffuseColor = vec4(vColor, 1.0);
 
-        ENTITY_MANAGER->generateStaticSpotLight(&CURRENT_PROPERTIES_DEF.pObjectProperties, stof(sData[9]), fSoftCutoff, &vColor, &vDirection, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty);
+        m_pEntityManager->generateStaticSpotLight(&CURRENT_PROPERTIES_DEF.pObjectProperties, stof(sData[9]), fSoftCutoff, &vColor, &vDirection, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty);
     }
     else
     {
@@ -196,7 +198,7 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
         CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
 
-        ENTITY_MANAGER->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions);
+        m_pEntityManager->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions);
     }
     else
         outputError(CUBE, sData);
@@ -209,7 +211,7 @@ void SceneLoader::createPlayer(vector< string > sData, int iLength)
 {
     CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
 
-    ENTITY_MANAGER->generatePlayerEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
+    m_pEntityManager->generatePlayerEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
 }
 
 // Generates a Bot Object at a given position
@@ -219,7 +221,7 @@ void SceneLoader::createBot(vector< string > sData, int iLength)
 {
     CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
 
-    ENTITY_MANAGER->generateBotEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
+    m_pEntityManager->generateBotEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
 }
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
@@ -228,7 +230,7 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
     for (unsigned int i = 0; i + 3 <= iLength; i += 3)
     {
         CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);    // Position of Mesh
-        ENTITY_MANAGER->generateStaticMesh(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
+        m_pEntityManager->generateStaticMesh(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
 }
 
@@ -238,17 +240,28 @@ void SceneLoader::saveRocketInfo()
     ROCKET_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
 }
 
+void SceneLoader::saveSpikesInfo()
+{
+    SPIKES_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
+}
+
 // Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
 Rocket* SceneLoader::createRocketMesh( int iOwnerID, eHovercraft eOwnerHovercraft )
 {
-    return ENTITY_MANAGER->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID, eOwnerHovercraft);
+    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID, eOwnerHovercraft);
+}
+
+// Generates a Spikes Entity based off the saved Spikes Properties loaded from the Scene.
+Spikes* SceneLoader::createSpikesMesh(int iOwnerID, eHovercraft eOwnerHovercraft)
+{
+    return m_pEntityManager->generateSpikesEntity(&SPIKES_PROPERTIES_DEF.pObjectProperties, &SPIKES_PROPERTIES_DEF.sMeshLocation, SPIKES_PROPERTIES_DEF.fScaleProperty, &SPIKES_PROPERTIES_DEF.sShaderProperty, iOwnerID, eOwnerHovercraft);
 }
 
 // Initializes the Spatial Data Map for the scene
 void SceneLoader::initializeSpatialMap(vector< string > sData, unsigned int iLength)
 {
     if (MAX_SPATIAL_MAP_PARAMS == iLength)
-        ENTITY_MANAGER->initializeSpatialMap(stof(sData[0]) /*Length*/, stof(sData[1]) /*Width*/, stof(sData[2]) /*Tile Size*/);
+        m_pEntityManager->initializeSpatialMap(stof(sData[0]) /*Length*/, stof(sData[1]) /*Width*/, stof(sData[2]) /*Tile Size*/);
     else
         outputError(SPATIAL_MAP, sData);
 }
@@ -264,6 +277,10 @@ void SceneLoader::loadFromFile( string sFileName )
     vector< string > sData;
     vector< string > sAdditionalData;
     string sIndicator, sParser;
+
+    // Store Reference to Entity Manager
+    if (nullptr == m_pEntityManager)
+        m_pEntityManager = ENTITY_MANAGER;
 
     // Open File
     inFile.open( sFileName );
@@ -392,6 +409,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createCube(sData, sData.size());
     else if (ROCKET == sIndicator)                      // Parse Rocket information
         saveRocketInfo();
+    else if (SPIKES == sIndicator)                      // Parse Spikes information
+        saveSpikesInfo();
 
     clearProperties();
 }

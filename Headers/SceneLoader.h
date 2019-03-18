@@ -6,6 +6,8 @@
  * Forward Declarations *
 \************************/
 class Rocket;
+class Spikes;
+class EntityManager;
 
 // Solely Generates Objects and assigns IDs to them.
 class SceneLoader final
@@ -25,6 +27,7 @@ public:
     void createBot(vector< string > sData, int iLength);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     Rocket* createRocketMesh(int iOwnerID, eHovercraft eOwnerHovercraft);
+    Spikes* createSpikesMesh(int iOwnerID, eHovercraft eOwnerHovercraft);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
 
@@ -33,6 +36,7 @@ private:
     SceneLoader();
     SceneLoader( SceneLoader* pCopy );
     static SceneLoader* m_pInstance;
+    EntityManager* m_pEntityManager;
 
     enum ePropertyTypes
     {
@@ -51,6 +55,7 @@ private:
         string      sMeshLocation, sShaderProperty;
         float       fScaleProperty;
         ObjectInfo  pObjectProperties;
+        
 
         // Default Constructor
         sMeshProperties()
@@ -89,6 +94,7 @@ private:
     void grabMaterial(vector< string >& sData);
     void grabBoundingBox(vector< string >& sData);
     void saveRocketInfo();
+    void saveSpikesInfo();
     void clearProperties();     // Clear any properties
     void resetAllProperties();
     

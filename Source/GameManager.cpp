@@ -116,7 +116,6 @@ bool GameManager::renderGraphics()
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
 
-
     // Update Environment if the game is not paused
     if (!paused)
     {

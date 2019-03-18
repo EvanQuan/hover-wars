@@ -13,6 +13,7 @@
 \************************/
 class FlameTrail;
 class Rocket;
+class Spikes;
 
 /***********\
  * Defines *
@@ -177,6 +178,7 @@ private:
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
     FlameTrail* m_pFireTrail;
     Rocket* m_pRocket;
+    Spikes* m_pSpikes;
 
     /*
     These should lag behind
