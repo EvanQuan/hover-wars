@@ -501,6 +501,8 @@ void HovercraftEntity::updateSpikes(float fTimeInSeconds)
     if (m_fSecondsSinceSpikesActivated > SPIKES_DURATION)
     {
         m_bSpikesActivated = false;
+        m_fSecondsSinceSpikesActivated = 0.0f;
+        m_pSpikes->animateSpikes();
     }
 }
 
@@ -714,7 +716,7 @@ void HovercraftEntity::activateSpikes()
 
     m_bSpikesActivated = true;
     m_fSecondsSinceSpikesActivated = 0.0f;
-
+    m_pSpikes->animateSpikes();
 }
 
 /*

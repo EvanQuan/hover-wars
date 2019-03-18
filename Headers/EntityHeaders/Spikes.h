@@ -5,6 +5,11 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 
+/***********\
+ * DEFINES *
+\***********/
+#define NUM_SPIKES 4
+
 /************************\
  * Forward Declarations *
 \************************/
@@ -36,5 +41,5 @@ public:
 private:
     SoundManager* m_pSoundMngr;
     mat4 m_m4WorldTransform;
-    vector<AnimationComponent*> m_pSpikeAnimations;
+    AnimationComponent* m_pSpikeAnimations[NUM_SPIKES];
 };
