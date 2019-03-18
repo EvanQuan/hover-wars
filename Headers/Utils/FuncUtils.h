@@ -156,6 +156,9 @@ namespace FuncUtils
     */
     double getYaw(glm::quat q);
 
+    int moduloIncrease(int value, int increase, int min, int max);
+    int moduloDecrease(int value, int decrease, int min, int max);
+
     eHovercraft playerToHovercraft(ePlayer player);
     eHovercraft botToHovercraft(eBot bot);
     ePlayer hovercraftToPlayer(eHovercraft hovercraft);

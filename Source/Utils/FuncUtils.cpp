@@ -105,6 +105,17 @@ double FuncUtils::getYaw(glm::quat q)
     return atan2(siny_cosp, cosy_cosp);
 }
 
+int FuncUtils::moduloIncrease(int value, int increase, int min, int max)
+{
+    return min + ((value) % max);
+}
+
+int FuncUtils::moduloDecrease(int value, int decrease, int min, int max)
+{
+    return min + (((value - decrease) % max) + max) % max;
+}
+
+
 eHovercraft FuncUtils::playerToHovercraft(ePlayer player)
 {
     return (eHovercraft) player;

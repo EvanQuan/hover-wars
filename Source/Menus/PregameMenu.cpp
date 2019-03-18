@@ -10,10 +10,10 @@ PregameMenu::PregameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         {
-            {"Player count", eFixedCommand::COMMAND_INVALID_FIXED},
+            { "Player count", eFixedCommand::COMMAND_PROMPT_SELECT },
         },
         {
-            { "Bot count", eFixedCommand::COMMAND_INVALID_FIXED },
+            { "Bot count", eFixedCommand::COMMAND_PROMPT_SELECT_2 },
                 // Even though back is visually on the left, we put start on the
                 // left so its defaulted to when we move down
         },
@@ -62,8 +62,35 @@ void PregameMenu::back()
 void PregameMenu::moveCursor(eFixedCommand direction)
 {
     PromptMenu::moveCursor(direction);
-    // switch (getCurrentPrompt())
-    // {
-
-    // }
+    switch (getCurrentPromptCommand())
+    {
+        case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+                // m_iPlayerCount = ;
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                break;
+            case COMMAND_PROMPT_RIGHT:
+                m_iPlayerCount = (m_iPlayerCount + 1) % INPUT_HANDLER->getJoystickCount();
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                break;
+            }
+            break;
+        case eFixedCommand::COMMAND_PROMPT_SELECT_2: // Bot
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+                m_iBotCount--;
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                break;
+            case COMMAND_PROMPT_RIGHT:
+                m_iBotCount++;
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                break;
+            }
+            break;
+    }
 }
+
+
