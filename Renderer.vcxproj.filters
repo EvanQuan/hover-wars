@@ -97,9 +97,6 @@
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h">
       <Filter>Headers\EntityComponentHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\BotEntity.h">
-      <Filter>Headers\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\Camera.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
@@ -303,9 +300,6 @@
     </ClCompile>
     <ClCompile Include="Source\DataStructures\Bag.cpp">
       <Filter>Source\DataStructures</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\BotEntity.cpp">
-      <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Camera.cpp">
       <Filter>Source\Entities</Filter>

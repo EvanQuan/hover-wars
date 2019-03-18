@@ -12,10 +12,6 @@ AIManager::AIManager()
 
 AIManager::~AIManager()
 {
-    for (AIComponent* ai : m_vAIComponents)
-    {
-        delete ai;
-    }
     m_vAIComponents.clear();
 }
 
@@ -28,8 +24,9 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-void AIManager::initialize()
+void AIManager::reinitialize()
 {
+    cout << "hi" << endl;
     m_vAIComponents.clear();
     vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
     for (size_t i = 0, size = bots.size(); i < size; i++)

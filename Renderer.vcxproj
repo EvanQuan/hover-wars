@@ -34,7 +34,6 @@
     <ClInclude Include="Headers\EntityComponentHeaders\LightingComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\PhysicsComponent.h" />
     <ClInclude Include="Headers\EntityComponentHeaders\RenderComponent.h" />
-    <ClInclude Include="Headers\EntityHeaders\BotEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\Camera.h" />
     <ClInclude Include="Headers\EntityHeaders\DirectionalLight.h" />
     <ClInclude Include="Headers\EntityHeaders\Entity.h" />
@@ -98,7 +97,6 @@
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
     <ClCompile Include="Source\EmitterEngine.cpp" />
-    <ClCompile Include="Source\Entities\BotEntity.cpp" />
     <ClCompile Include="Source\Entities\Camera.cpp" />
     <ClCompile Include="Source\Entities\DirectionalLight.cpp" />
     <ClCompile Include="Source\Entities\Entity.cpp" />

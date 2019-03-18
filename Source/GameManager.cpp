@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include "GameManager.h"
 #include "CommandHandler.h"
+#include "ArtificialIntelligence/AIManager.h"
 #include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "UserInterface/UserInterface.h"
@@ -25,6 +26,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
     m_pEntityManager    = ENTITY_MANAGER;
+
+    m_pAIManager = AIManager::getInstance();
 
     // Fetch and update Window HxW
     m_pWindow = rWindow;
@@ -82,6 +85,9 @@ GameManager::~GameManager()
 
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
+
+    if (nullptr != m_pAIManager)        // AI Manager
+        delete m_pAIManager;
 }
 
 /*
@@ -122,6 +128,7 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
+    m_pAIManager->update(frameDeltaTime);
     m_fGameTime -= frameDeltaTime;
     if (!startedGameOver && (m_fGameTime < 0))
     {
@@ -186,6 +193,7 @@ void GameManager::initializeNewGame(int playerCount, int botCount, float gameTim
     m_fGameOverTime = GAME_OVER_TIME;
     m_pUserInterface->reinitialize(gameTime);
     GAME_STATS->reinitialize();
+    m_pAIManager->reinitialize();
 
 }
 

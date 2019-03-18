@@ -12,18 +12,14 @@ public:
 
     ~AIManager();
 
-    void initialize();
+    void reinitialize();
 
     void update(float fTimeInSeconds);
 private:
     AIManager();
     static AIManager* m_pInstance;
 
-    int lastStep = -1;
-    // AIComponent *m_AIComponent;
     vector<AIComponent*> m_vAIComponents;
-    // vector<glm::vec3> m_vTargetPositions;
-    // vector<glm::vec3> m_vVelocities;
 
     void initializeAIComponent(HovercraftEntity* bot, AIComponent* ai);
 
