@@ -138,11 +138,11 @@ void GameStats::correspondEntitiesToHovercrafts()
     entityIDToHovercraft.clear();
     vector<HovercraftEntity*> players = ENTITY_MANAGER->m_pPlayerEntityList;
     vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
-    for (int i = 0; i < players.size(); i++)
+    for (size_t i = 0, size = players.size(); i < size; ++i)
     {
         entityIDToHovercraft.insert({players.at(i)->getID(), static_cast<eHovercraft>(i)});
     }
-    for (int i = 0; i < bots.size(); i++)
+    for (size_t i = 0, size = players.size(); i < size; ++i)
     {
         entityIDToHovercraft.insert({bots.at(i)->getID(), static_cast<eHovercraft>(i + HOVERCRAFT_BOT_1)});
     }
