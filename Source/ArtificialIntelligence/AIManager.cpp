@@ -26,7 +26,6 @@ AIManager* AIManager::getInstance()
 
 void AIManager::reinitialize()
 {
-    cout << "hi" << endl;
     m_vAIComponents.clear();
     vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
     for (size_t i = 0, size = bots.size(); i < size; i++)
@@ -75,6 +74,7 @@ void AIManager::update(float fTimeInSeconds)
         PxTransform globalTransform = physics->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
 
+        // @TODO add ability to change targets when we do multiplayer
         glm::vec3 targetPosition = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
         glm::vec3 targetVelocity = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
         Action a;
@@ -83,11 +83,15 @@ void AIManager::update(float fTimeInSeconds)
         //std::cout << "BotEntity update: " << a.actionsToTake[0] << ", " << a.actionsToTake[1] << ", " << a.actionsToTake[2] << ", "<< a.actionsToTake[3] << std::endl;
         // fire Rocket, right-left turn, forward-back move,right-left move
         //std::cout << vForce.x <<  "x: " << vForce.y << " y: " << sin(vForce.z) << std::endl;
-        if (a.actionsToTake[1] != 0) {
-            bot->turn(a.actionsToTake[1]);
+
+        float turnValue = a.actionsToTake[AIComponent::eAction::ACTION_TURN];
+        if (turnValue != 0) {
+            bot->turn(turnValue);
         }
-        if (a.actionsToTake[2] != 0 || a.actionsToTake[3] != 0) {
-            physics->moveGlobal(a.actionsToTake[3],a.actionsToTake[2]);
+        float moveX = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_RIGHT_LEFT];
+        float moveY = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_FORWARDS_BACKWARDS];
+        if ((moveX != 0) || (moveY != 0)) {
+            physics->moveGlobal(moveX, moveY);
         }
         bot->update(fTimeInSeconds);
     }

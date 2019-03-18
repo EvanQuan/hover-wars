@@ -194,7 +194,6 @@ void GameManager::initializeNewGame(int playerCount, int botCount, float gameTim
     m_pUserInterface->reinitialize(gameTime);
     GAME_STATS->reinitialize();
     m_pAIManager->reinitialize();
-
 }
 
 /*

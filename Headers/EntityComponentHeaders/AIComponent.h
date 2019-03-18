@@ -17,14 +17,24 @@ For collisions
 \***************************************************************************************/
 
 // the below are the values for the 4 values
-// fire Rocket, right-left turn, forward-back move,right-left move
+// fire Rocket, right-left turn, forward-back move, right-left move
 struct Action {
+    // @NOTE Why size of 5 instead of 4?
     float actionsToTake[5] = { 0,0,0,0,0 };
+    // float actionsToTake[4] = { 0,0,0,0 };
 };
 class AIComponent :
     public EntityComponent
 {
 public:
+    // For Action indexing
+    enum eAction {
+        ACTION_FIRE_ROCKET = 0,
+        ACTION_TURN,
+        ACTION_MOVE_FORWARDS_BACKWARDS,
+        ACTION_MOVE_RIGHT_LEFT,
+        ACTION_SIZE,
+    };
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
     AIComponent(int iEntityID, int iComponentID);
     virtual ~AIComponent();
