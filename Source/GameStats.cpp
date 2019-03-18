@@ -28,6 +28,13 @@ Players gain additional points against other players based on their current
 total killstreak. This gives players an incentive to not get hit.
 */
 #define POINTS_GAINED_PER_KILLSTREAK 20
+
+/*
+Players gain additional points against other played based on that hit player's
+current total killstreak. This gives players that have high killstreaks higher
+priority targets to attack.
+*/
+#define POINTS_GAINED_PER_HIT_KILLSTREAK 10
 /*
 Base points for picking up a power up
 */
@@ -240,6 +247,7 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     // Update score first
     updateAttackerAndHitScore(attacker, hit);
 
+    // Update kill statuses
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
 
@@ -276,6 +284,9 @@ void GameStats::debug(eHovercraft hovercraft)
 
 /*
 Update the scores from the result of attacker hitting hit
+
+This ONLY updates the score values from the current kill statuses of the
+attacker and hit.
 */
 void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 {
@@ -295,6 +306,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int basePoints = FuncUtils::hovercraftToPlayer(attacker) != PLAYER_INVALID ?
         POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
+    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
     int firstBloodBonus;
     if (firstBloodHappened) {
