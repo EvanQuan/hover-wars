@@ -317,17 +317,17 @@ void UserInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
     {
     case KILL_MESSAGE_DOMINATION:
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION);
-        displayMessage(attacker, "You are now dominating Player " + std::to_string(hit + 1));
-        displayMessage(hit, "Player " + std::to_string(attacker + 1) + " is now dominating you");
+        displayMessage(attacker, "You are now dominating " + m_eHovercraftToString.at(hit));
+        displayMessage(hit, m_eHovercraftToString.at(attacker) + " is now dominating you");
         break;
     case KILL_MESSAGE_FIRST_BLOOD:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
-        displayMessage(attacker, "You got first blood against Player " + std::to_string(hit + 1));
+        displayMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
         break;
     case KILL_MESSAGE_REVENGE:
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
-        displayMessage(attacker, "You got revenge from Player " + std::to_string(hit + 1));
-        displayMessage(hit, "Player " + std::to_string(attacker + 1) + " got revenge from you");
+        displayMessage(attacker, "You got revenge from " + m_eHovercraftToString.at(hit));
+        displayMessage(hit, m_eHovercraftToString.at(attacker) + " got revenge from you");
         break;
     case KILL_MESSAGE_KILLSTREAK:
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);

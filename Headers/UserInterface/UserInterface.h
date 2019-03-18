@@ -202,4 +202,16 @@ private:
     const char* debugMessage;
     float debugWidth;
     float debugHeight;
+
+    const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
+    {
+        {HOVERCRAFT_BOT_1, "Bot Alfa"},
+        {HOVERCRAFT_BOT_2, "Bot Bravo"},
+        {HOVERCRAFT_BOT_3, "Bot Charlie"},
+        {HOVERCRAFT_BOT_4, "Bot Delta"},
+        {HOVERCRAFT_PLAYER_1, "Player 1"},
+        {HOVERCRAFT_PLAYER_2, "Player 2"},
+        {HOVERCRAFT_PLAYER_3, "Player 3"},
+        {HOVERCRAFT_PLAYER_4, "Player 4"},
+    };
 };
