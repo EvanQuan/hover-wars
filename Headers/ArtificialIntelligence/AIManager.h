@@ -1,10 +1,7 @@
 #pragma once
 #include "EntityComponentHeaders/AIComponent.h"
 #include "EntityHeaders/HovercraftEntity.h"
-/*
-@Deprecated This will be deleted once all AI related calculated are moved
-outside of this class.
-*/
+
 class AIManager final
 {
 public:
