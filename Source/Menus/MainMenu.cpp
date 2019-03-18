@@ -10,6 +10,8 @@ MainMenu::MainMenu() : PromptMenu(
     {
         {
             {"New Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
+        },
+        {
             {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW},
         },
     }

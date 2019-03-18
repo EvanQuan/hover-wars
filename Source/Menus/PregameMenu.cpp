@@ -11,12 +11,14 @@ PregameMenu::PregameMenu() : PromptMenu(
     {
         {
             {"Player count", eFixedCommand::COMMAND_INVALID_FIXED},
+        },
+        {
             { "Bot count", eFixedCommand::COMMAND_INVALID_FIXED },
                 // Even though back is visually on the left, we put start on the
                 // left so its defaulted to when we move down
-            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
         },
         {
+            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
             {"Back", eFixedCommand::COMMAND_PROMPT_BACK}
         },
     }
