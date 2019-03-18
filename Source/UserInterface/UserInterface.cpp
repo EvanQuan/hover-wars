@@ -424,7 +424,7 @@ For now, the game time is going up from 0. Later this should count down.
 */
 void UserInterface::renderGameTime()
 {
-    renderText(FuncUtils::timeToString(m_fGameTime),
+    renderText(FuncUtils::timeToString(static_cast<int>(m_fGameTime)),
                m_vComponentCoordinates[COMPONENT_TIME][X],
                m_vComponentCoordinates[COMPONENT_TIME][Y],
                TIME_SCALE, TIME_COLOR);
