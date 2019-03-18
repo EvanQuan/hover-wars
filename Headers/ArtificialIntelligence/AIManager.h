@@ -19,6 +19,5 @@ private:
     vector<AIComponent*> m_vAIComponents;
 
     void initializeAIComponent(HovercraftEntity* bot, AIComponent* ai);
-
 };
 
