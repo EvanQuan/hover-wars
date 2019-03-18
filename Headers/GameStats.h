@@ -134,6 +134,8 @@ public:
 
     void reinitialize();
 
+    eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
+
 private:
     GameStats();
     static GameStats* m_pInstance;
