@@ -162,8 +162,8 @@ public:
     void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
     PhysicsComponent* m_pPhysicsComponent;
 
-    void setPowerup(ePowerup powerup);
-    bool hasPowerup(ePowerup powerup) const { return m_vPowerupsEnabled[powerup] > 0; }
+    void enablePowerup(ePowerup powerup);
+    bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
     float getSpeed() { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
@@ -274,8 +274,8 @@ protected:
     // Tracks enabled powerups for this hovercraft
     void initializePowerups();
     void updatePowerups(float fTimeInSeconds);
-    void enablePowerup(ePowerup powerup);
     void disablePowerup(ePowerup powerup);
-    float m_vPowerupsEnabled[POWERUP_COUNT];
+    float m_vPowerupsTime[POWERUP_COUNT];
+    bool m_vPowerupsEnabled[POWERUP_COUNT];
 };
 

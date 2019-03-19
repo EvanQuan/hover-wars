@@ -135,7 +135,9 @@ void InputHandler::debugKeyCommands(int key, int action)
             break;
         case GLFW_KEY_8:
             // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
-            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+            // SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPEED_BOOST);
+            cout << "hi" << endl;
             break;
         case GLFW_KEY_9:
             SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPAWN);

@@ -10,7 +10,7 @@ shortly afterwards.
 
 Speed : meters/second
 */
-#define MAX_DASH_SPEED 1000
+#define MAX_DASH_SPEED 1500
 /*
 The amount of time the player can be in MAX_DASH_SPEED after dashing.
 

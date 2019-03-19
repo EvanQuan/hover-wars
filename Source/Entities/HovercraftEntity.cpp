@@ -29,6 +29,8 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 #define FIRE_HEIGHT             2.0
 #define FIRE_WIDTH              2.0
 
+#define POWERUP_DURATION        20.0f
+
 /*
 The maximum speed the player can normally travel. This ensures the player
 does not infinitely accelerate as they move.
@@ -36,7 +38,7 @@ does not infinitely accelerate as they move.
 Speed : meters/second
 */
 #define MAX_NORMAL_SPEED 30
-#define MAX_POWERUP_SPEED 50
+#define MAX_POWERUP_SPEED 100
 
 
 /*
@@ -136,7 +138,6 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
 
     // Unused?
     // m_fMinimumDistanceBetweenFlames = 5.0f;
-    reinitialize();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -158,7 +159,6 @@ void HovercraftEntity::reinitialize()
 
     initializeCooldowns();
     initializePowerups();
-
 }
 
 /****************************************************************\
@@ -238,8 +238,8 @@ void HovercraftEntity::updatePowerups(float fTimeInSeconds)
 {
     for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
     {
-        m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
-        if (m_vPowerupsEnabled[powerup] <= 0)
+        m_vPowerupsTime[powerup] -= fTimeInSeconds;
+        if (m_vPowerupsEnabled[powerup] && (m_vPowerupsTime[powerup] <= 0))
         {
             disablePowerup(static_cast<ePowerup>(powerup));
         }
@@ -257,8 +257,17 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
+        m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
+        cout << "speed  powerup enabled" << endl;
         break;
+    default:
+        return;
     }
+    m_vPowerupsEnabled[powerup] = true;
+    m_vPowerupsTime[powerup] = POWERUP_DURATION;
+    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
+    GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
+
 }
 
 /*
@@ -271,8 +280,13 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
+        m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
+        cout << "speed powerup disabled" << endl;
         break;
+    default:
+        return;
     }
+    m_vPowerupsEnabled[powerup] = false;
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -330,6 +344,8 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    reinitialize();
 }
 
 /*
@@ -345,7 +361,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
     // Get the Type of the Other Entity
     eEntityType eOtherType = pOther->getType();
     HovercraftEntity* pOtherHovercraft;
-    InteractableEntity* pOtherIE;
+    // InteractableEntity* pOtherIE;
     switch (eOtherType)
     {
     case ENTITY_HOVERCRAFT:
@@ -422,8 +438,8 @@ void HovercraftEntity::initializePowerups()
 {
     for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
     {
-        m_vPowerupsEnabled[powerup] = 0;
-        disablePowerup(static_cast<ePowerup>(powerup));
+        m_vPowerupsTime[powerup] = 0;
+        m_vPowerupsEnabled[powerup] = false;
     }
 }
 
@@ -693,18 +709,6 @@ void HovercraftEntity::turn(float x)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
-}
-
-/*
-    Set a powerup to enable. Once enabled, it provides the powerup benefits for
-    a set duration before being disabled and the benefits are lost.
-
-    @param powerup  to enable
-*/
-void HovercraftEntity::setPowerup(ePowerup powerup)
-{
-    m_vPowerupsEnabled[powerup] = POWERUP_TIME;
-    enablePowerup(powerup);
 }
 
 /*

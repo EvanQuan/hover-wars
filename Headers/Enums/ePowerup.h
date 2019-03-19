@@ -12,4 +12,5 @@ enum ePowerup
     POWERUP_SPEED_BOOST,
     POWERUP_COUNT,
     POWERUP_NONE,
+    POWERUP_INVALID,
 };
