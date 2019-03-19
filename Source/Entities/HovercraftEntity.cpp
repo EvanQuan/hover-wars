@@ -23,7 +23,7 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 #define FLAME_SPACING           0.25f
 
 
-#define LOSE_CONTROL_COLLISION_TIME 0.8f
+#define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
 #define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
 
 /*
@@ -472,8 +472,8 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         }
 
         // Momentarily lose control of vehicle to prevent air moving
-        // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-        pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME + 5);
+        setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
 //    case ENTITY_INTERACTABLE:
 //        // this never gets called
