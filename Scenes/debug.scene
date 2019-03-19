@@ -80,32 +80,32 @@
 
 # Information for Rockets in this Scene
 rocket {
-	+mesh {
-         models/rocket2.obj
-         1.0
-     }
-     +material {
-         textures/defaultTexture.png
-         0.0
-     }
-     +shader {
-         blinn_phong_shdr
-     }
+    +mesh {
+        models/rocket2.obj
+        1.0
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
 }
 
 # Information for Spikes in this Scene
 spikes {
-	+mesh {
-         models/spikes2.obj
-         1.0
-     }
-     +material {
-         textures/defaultTexture.png
-         0.0
-     }
-     +shader {
-         blinn_phong_shdr
-     }
+    +mesh {
+        models/spikes2.obj
+        1.0
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
 }
 
 directional_light {
@@ -273,43 +273,43 @@ player {
 #     }
 #}
 
-#bot {
-#     50 5 0.1
-#    +mesh {
-#        models/hovercraft/HoverCar.obj
-#        0.012
-#    }
-#    +material {
-#        textures/tronBase.png
-#        0.1 0.1 0.1
-#        20.0
-#    }
-#    +shader {
-#        blinn_phong_shdr
-#    }
-#    +bounding {
-#        spatial
-#    }
-#}
-#
-#bot {
-#     -50 5 0.1
-#    +mesh {
-#        models/hovercraft/HoverCar.obj
-#        0.012
-#    }
-#    +material {
-#        textures/tronBase.png
-#        0.1 0.1 0.1
-#        20.0
-#    }
-#    +shader {
-#        blinn_phong_shdr
-#    }
-#    +bounding {
-#        spatial
-#    }
-#}
+bot {
+     50 5 0.1
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/tronBase.png
+        0.1 0.1 0.1
+        20.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+
+bot {
+     -50 5 0.1
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/tronBase.png
+        0.1 0.1 0.1
+        20.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
 
 #       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
 #           - "x y z"               = the position of the cube

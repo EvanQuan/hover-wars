@@ -35,7 +35,7 @@ public:
     void moveGlobal(float x, float y);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position);
+    void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position, float maxNormalSpeed);
     void initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength);
     void initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius);
     void flagForRemoval(string sHashKey) { m_pObjectsFlaggedForRemoval.push_back(sHashKey); }
@@ -54,8 +54,18 @@ public:
 
     // Returns the Direction Vector of the current Physics Object
     void getDirectionVector(vec3* vReturnVector);
+
+    void setMaxSpeed(float maxSpeed);
+
 private:
     bool isInAir;
+
+    float m_fMaxSpeed;
+    float m_fMaxDashSpeed;
+
+    void setMaxSpeedToNormal();
+    void setMaxSpeedToDash();
+
     /*
     Tracks the last dash to reset the max speed to normal.
     */
