@@ -36,11 +36,7 @@ The greater the force, the faster it will accelerate.
 20000.0f @ 2000kg, 50 grav
 Force : Newtons
 */
-#ifndef NDEBUG
-#define MOVEMENT_FORCE 100000.0f //
-#else
 #define MOVEMENT_FORCE 1000.0f //
-#endif // !1
 
 /*
 1000000.0f @ 300 kg
@@ -67,9 +63,6 @@ Force : Newtons
 PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     : EntityComponent(iEntityID, iComponentID)
 {
-#ifdef _DEBUG
-    std::cout << "Physics Component constructor 2 vars" << std::endl;
-#endif
     m_bVehicle = false;    // Set a default
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
