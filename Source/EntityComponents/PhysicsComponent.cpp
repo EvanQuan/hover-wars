@@ -10,7 +10,7 @@ shortly afterwards.
 
 Speed : meters/second
 */
-#define MAX_DASH_SPEED 1500
+#define MAX_DASH_SPEED 1000
 /*
 The amount of time the player can be in MAX_DASH_SPEED after dashing.
 
@@ -36,7 +36,7 @@ The greater the force, the faster it will accelerate.
 20000.0f @ 2000kg, 50 grav
 Force : Newtons
 */
-#define MOVEMENT_FORCE 1000.0f //
+#define MOVEMENT_FORCE 10000.0f //
 
 /*
 1000000.0f @ 300 kg
@@ -120,14 +120,12 @@ PxTransform PhysicsComponent::getGlobalPose() {
 }
 
 void PhysicsComponent::moveGlobal(float x, float y) {
-    if ((x != 0 || y != 0)) {
-        PxVec3 vForce = PxVec3(y, 0, x);
-        body->addForce(vForce * MOVEMENT_FORCE/7); // NOTE: Why are we dividing by 7?
+    PxVec3 vForce = PxVec3(y, 0, x);
+    body->addForce(vForce * MOVEMENT_FORCE/7); // NOTE: Why are we dividing by 7?
 
-        // TODO find out the angle in a better way
-        float angle = y == 0 ? 0 : -1 * atan(x / y);
-        setSteerAngle(angle);
-    }
+    // TODO find out the angle in a better way
+    float angle = y == 0 ? 0 : -1 * atan(x / y);
+    setSteerAngle(angle);
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement

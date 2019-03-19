@@ -77,9 +77,11 @@ public:
 
     // Set lose control until seconds runs out or manually reactivated with
     // setGainControl(), whichever happens first
-    void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
+    void setLoseControl(float seconds);
     // Gain control of hovercraft
-    void setGainControl() { isInControl = true; };
+    void setGainControl() { inControl = true; };
+
+    bool isInControl() const { return inControl; }
 
     bool hasSpikesActivated() const { return m_bSpikesActivated; };
 
@@ -184,7 +186,7 @@ private:
     Else, not movement input is processed.
     */
     void updateInControl(float fTimeInSeconds);
-    bool isInControl;
+    bool inControl;
     float outOfControlTime;
     bool lowEnoughToMove;
 

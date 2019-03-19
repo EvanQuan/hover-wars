@@ -472,8 +472,8 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         }
 
         // Momentarily lose control of vehicle to prevent air moving
-        setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-        pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME + 5);
         break;
 //    case ENTITY_INTERACTABLE:
 //        // this never gets called
@@ -506,6 +506,14 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         */
     }
 }
+
+void HovercraftEntity::setLoseControl(float seconds)
+{
+    outOfControlTime = seconds;
+    inControl = false;
+    cout << m_iID << " Lost control" << endl;
+}
+
 
 /********************************************************************************************************\
  * Private Functions                                                                                    *
@@ -595,12 +603,13 @@ void HovercraftEntity::updateCameraPosition(float fTimeInSeconds)
 */
 void HovercraftEntity::updateInControl(float fTimeInSeconds)
 {
-    if (!isInControl)
+    if (!inControl)
     {
         outOfControlTime -= fTimeInSeconds;
         if (outOfControlTime <= 0)
         {
-            isInControl = true;
+            inControl = true;
+            cout << m_iID << " gained control" << endl;
         }
     }
 }
@@ -785,7 +794,7 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 */
 void HovercraftEntity::move(float x, float y)
 {
-    if (lowEnoughToMove && isInControl)
+    if (lowEnoughToMove && inControl)
     {
         m_pPhysicsComponent->move(x, y);
     }
@@ -805,7 +814,7 @@ void HovercraftEntity::move(float x, float y)
 */
 void HovercraftEntity::turn(float x)
 {
-    if (lowEnoughToMove && isInControl)
+    if (lowEnoughToMove && inControl)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }

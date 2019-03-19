@@ -286,7 +286,7 @@ player {
 
 # models/hovercraft/RetroRacer_obj/RetroRacerRed.obj
 bot {
-    10 0 0
+    0 0 50
     +mesh {
         models/hovercraft/HoverCar.obj
          0.012

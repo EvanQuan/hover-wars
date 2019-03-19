@@ -91,7 +91,9 @@ void AIManager::update(float fTimeInSeconds)
         float moveX = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_RIGHT_LEFT];
         float moveY = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_FORWARDS_BACKWARDS];
         if ((moveX != 0) || (moveY != 0)) {
-            physics->moveGlobal(moveX, moveY);
+            if (bot->isInControl()) {
+                physics->moveGlobal(moveX, moveY);
+            }
         }
         bot->update(fTimeInSeconds);
     }
