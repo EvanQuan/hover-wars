@@ -127,6 +127,11 @@ private:
     void renderCooldowns();
     void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
 
+    // Menu
+    void renderMenu();
+    void displayOption();
+    void displayCursor();
+
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {
         vec2    uvOffset;   // Offset to index the UV in the bitmap

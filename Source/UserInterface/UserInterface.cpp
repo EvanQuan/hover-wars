@@ -388,10 +388,13 @@ rendered to ensure the UI is on top.
 void UserInterface::render()
 {
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
-    renderGameTime();
-    renderScores();
-    renderCooldowns();
-    renderMessages();
+    //renderGameTime();
+    //renderScores();
+    //renderCooldowns();
+    //renderMessages();
+
+    //renderMenu();
+    renderImage("textures/menu/background.jpg", 0, 0, 100);
 }
 
 /*
@@ -669,15 +672,17 @@ Window coordinates in pixels
 */
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-    // Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
-    // image->bindTexture(ShaderManager::eShaderType::UI_SHDR, );
+    Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
+    // Get texture height and width
+    int iImage_x, iImage_y;
+    image->getTextureDimensions(&iImage_x, &iImage_y);
     // Change the texture class to store height and width, loaded dynamically
     // Create a quad similar to text
 
     // This implementation is close to renderText.
 
     // Vector for storing VBO data.
-    vector<vec4> vTextOutput;
+    vector<vec4> vImageOutput;
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
@@ -689,8 +694,17 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
 
-    // ??? TODO
-    // Texture loading stuff goes here?
+    vec4 vCorners[4] = {
+    vec4(x           ,             y, 0, 0),
+    vec4(x + iImage_x,             0, 0, 0),
+    vec4(0           , y + iImage_y, 0, 0),
+    vec4(x + iImage_x, y + iImage_y, 0, 0)
+    };
+
+    vImageOutput.push_back(vCorners[BOTTOM_LEFT]);
+    vImageOutput.push_back(vCorners[BOTTOM_RIGHT]);
+    vImageOutput.push_back(vCorners[TOP_LEFT]);
+    vImageOutput.push_back(vCorners[TOP_RIGHT]);
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
@@ -699,15 +713,17 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, vTextOutput.size() * sizeof(vec4), vTextOutput.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vImageOutput.size() * sizeof(vec4), vImageOutput.data(), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Render Quad
-    glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, vImageOutput.size());
 
     // Clean up OpenGL
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // image->unbindTexture();
 }
 
 /*
@@ -780,4 +796,23 @@ Initialize all UI components according to the current value of m_iDisplayCount
 void initializeDisplayCount()
 {
     // TODO
+}
+
+// test render menu
+void UserInterface::renderMenu()
+{
+    string menuBackground = "textures/menu/background.jpg";
+    renderImage(menuBackground, 0, 0, 1.0);
+    displayOption();
+    displayCursor();
+}
+
+void UserInterface::displayOption()
+{
+
+}
+
+void UserInterface::displayCursor()
+{
+
 }
