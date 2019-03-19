@@ -131,6 +131,7 @@ private:
     void renderMenu();
     void displayOption();
     void displayCursor();
+    vector<Texture*> v_texturesList;
 
     /// Holds all state information relevant to a character as loaded using FreeType
     struct Character {

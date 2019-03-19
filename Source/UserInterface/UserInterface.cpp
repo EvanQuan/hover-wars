@@ -107,6 +107,8 @@ UserInterface::UserInterface(int iWidth, int iHeight)
     initializeVBOs();
 
     debugMessage = "";
+
+    v_texturesList.push_back(TEXTURE_MANAGER->loadTexture("textures/menu/background.jpg"));
 }
 
 UserInterface* UserInterface::getInstance(int iWidth, int iHeight)
@@ -394,7 +396,7 @@ void UserInterface::render()
     //renderMessages();
 
     //renderMenu();
-    renderImage("textures/menu/background.jpg", 0, 0, 100);
+    renderImage("textures/menu/background.jpg", 0.0f, 0.0f, 1.0f);
 }
 
 /*
@@ -672,14 +674,10 @@ Window coordinates in pixels
 */
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-    Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
     // Get texture height and width
+    Texture* image = v_texturesList[0];
     int iImage_x, iImage_y;
-    image->getTextureDimensions(&iImage_x, &iImage_y);
-    // Change the texture class to store height and width, loaded dynamically
-    // Create a quad similar to text
-
-    // This implementation is close to renderText.
+    image->getTextureDimensions(&iImage_y, &iImage_x);
 
     // Vector for storing VBO data.
     vector<vec4> vImageOutput;
@@ -693,13 +691,22 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     // Is an image, not text. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
-
-    vec4 vCorners[4] = {
-    vec4(x           ,             y, 0, 0),
-    vec4(x + iImage_x,             0, 0, 0),
-    vec4(0           , y + iImage_y, 0, 0),
-    vec4(x + iImage_x, y + iImage_y, 0, 0)
+   
+    /*    vec4 vCorners[4] = {
+    vec4(x           ,            y, x, y),
+    vec4(x + iImage_x,            y, x + iImage_x, y),
+    vec4(x           , y + iImage_y, x, y + iImage_y),
+    vec4(x + iImage_x, y + iImage_y, x + iImage_x, y + iImage_y)
     };
+    */
+   
+    vec4 vCorners[4] = {
+    vec4(x           ,            y,            x, y + iImage_y),
+    vec4(x + iImage_x,            y, x + iImage_x, y + iImage_y),
+    vec4(x           , y + iImage_y,            x,            y),
+    vec4(x + iImage_x, y + iImage_y, x + iImage_x,            y)
+    };
+
 
     vImageOutput.push_back(vCorners[BOTTOM_LEFT]);
     vImageOutput.push_back(vCorners[BOTTOM_RIGHT]);
@@ -707,9 +714,11 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     vImageOutput.push_back(vCorners[TOP_RIGHT]);
 
     // Bind Texture.
-    glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
-    glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
-    SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
+    //glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
+    //glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
+    //SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
+
+    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
@@ -723,7 +732,7 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // image->unbindTexture();
+    image->unbindTexture();
 }
 
 /*
