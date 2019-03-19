@@ -45,7 +45,7 @@ Units: seconds
 /*
 Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         SPIKES_COOLDOWN // 1.0f
+#define SPIKES_DURATION         SPIKES_COOLDOWN * 0.5f // 1.0f
 /*
 Total time the trail can be activated from full to empty.
 
@@ -61,7 +61,7 @@ Represents the trail gauge is empty.
 #define FIRE_HEIGHT             2.0
 #define FIRE_WIDTH              2.0
 
-#define POWERUP_DURATION        20.0f
+#define POWERUP_DURATION        15.0f
 
 /*
 The maximum speed the player can normally travel. This ensures the player
@@ -334,7 +334,15 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
-        cout << "speed  powerup enabled" << endl;
+        break;
+    case POWERUP_ROCKET_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_POWERUP_COOLDOWN;
+        break;
+    case POWERUP_SPIKES_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_POWERUP_COOLDOWN;
+        break;
+    case POWERUP_DASH_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_POWERUP_COOLDOWN;
         break;
     default:
         return;
@@ -343,6 +351,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
     SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
+    cout << powerup << " enabled" << endl;
 
 }
 
@@ -357,12 +366,21 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
-        cout << "speed powerup disabled" << endl;
+        break;
+    case POWERUP_ROCKET_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
+        break;
+    case POWERUP_SPIKES_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+        break;
+    case POWERUP_DASH_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_COOLDOWN;
         break;
     default:
         return;
     }
     m_vPowerupsEnabled[powerup] = false;
+    cout << powerup << " disabled" << endl;
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
