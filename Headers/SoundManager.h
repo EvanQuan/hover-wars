@@ -59,6 +59,9 @@ public:
         SOUND_HONK_DOWN,
         SOUND_HONK_LEFT,
 
+        SOUND_POWERUP_SPAWN,
+        SOUND_POWERUP_PICKUP,
+
         MUSIC_INGAME,
         MUSIC_PAUSE,
 
@@ -241,6 +244,10 @@ private:
         {SOUND_HONK_DOWN,                { "event:/honk/honk_03",
                                          }},
         {SOUND_HONK_LEFT,                { "event:/honk/honk_04",
+                                         }},
+        {SOUND_POWERUP_SPAWN,            { "event:/powerup/powerup_spawn",
+                                         }},
+        {SOUND_POWERUP_PICKUP,           { "event:/powerup/powerup_pickup",
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
                                          }},

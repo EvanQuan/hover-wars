@@ -138,13 +138,13 @@ void InputHandler::debugKeyCommands(int key, int action)
             SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
             break;
         case GLFW_KEY_9:
-            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+            SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPAWN);
             break;
         case GLFW_KEY_0:
-            SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
+            SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
             break;
         case GLFW_KEY_MINUS:
-            SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
+            // SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
             break;
         case GLFW_KEY_DOWN:
             // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);
