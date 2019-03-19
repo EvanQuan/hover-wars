@@ -5,15 +5,6 @@
 #define JUMP_FORCE 200000
 
 /*
-The maximum speed the player can normally travel. This ensures the player
-does not infinitely accelerate as they move.
-
-Speed : meters/second
-*/
-#define MAX_NORMAL_SPEED 30
-#define MAX_POWERUP_SPEED 50
-
-/*
 The maximum speed the player can travel while dashing. This returns back to MAX_SPEED
 shortly afterwards.
 
@@ -84,6 +75,7 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_pTransformationMatrix = mat4(1.0f);
 
     isDashing = false;
+    m_fMaxDashSpeed = MAX_DASH_SPEED;
 }
 
 /*
@@ -146,7 +138,7 @@ void PhysicsComponent::moveGlobal(float x, float y) {
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
-    body->setMaxLinearVelocity(MAX_DASH_SPEED);
+    setMaxSpeedToDash();
     m_fSecondsSinceLastDash = 0.0f;
     isDashing = true;
 
@@ -198,7 +190,7 @@ void PhysicsComponent::update(float fTimeInSeconds)
 
         if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
         {
-            body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+            setMaxSpeedToNormal();
         }
 
 
@@ -233,13 +225,14 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position)
+void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position, float maxNormalSpeed)
 {
     // Set up Internal Static qualifier.
     m_bVehicle = bStatic;
     gVehicleNoDrive = m_pPhysicsManager->createHovercraftEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
-    body->setMaxLinearVelocity(MAX_NORMAL_SPEED);
+
+    setMaxSpeed(maxNormalSpeed);
 }
 
 void PhysicsComponent::initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength)
@@ -336,4 +329,24 @@ void PhysicsComponent::getDirectionVector(vec3* vReturnVector)
     PxVec3 vPxReturn = PxVec3(0.0f, 0.0f, 1.0f);                // We Want a forward vector (1 in z-axis) rotated with the global quaternion
     vPxReturn = pRotationQuaternion.rotate(vPxReturn);          // Rotate the Forward Vector
     memcpy(vReturnVector, &vPxReturn, sizeof(vec3));            // Copy PxVec3 to the return Vec3
+}
+
+void PhysicsComponent::setMaxSpeed(float maxSpeed)
+{
+    m_fMaxSpeed = maxSpeed;
+    if (!isDashing)
+    {
+        // Update normal speed if not dashing
+        setMaxSpeedToNormal();
+    }
+}
+
+void PhysicsComponent::setMaxSpeedToNormal()
+{
+    body->setMaxLinearVelocity(m_fMaxSpeed);
+}
+
+void PhysicsComponent::setMaxSpeedToDash()
+{
+    body->setMaxLinearVelocity(m_fMaxDashSpeed);
 }

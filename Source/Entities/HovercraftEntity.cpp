@@ -30,6 +30,16 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 #define FIRE_WIDTH              2.0
 
 /*
+The maximum speed the player can normally travel. This ensures the player
+does not infinitely accelerate as they move.
+
+Speed : meters/second
+*/
+#define MAX_NORMAL_SPEED 30
+#define MAX_POWERUP_SPEED 50
+
+
+/*
 Determines from what horizontal angle the camera is tracking the hovercraft.
                    90
                   -270
@@ -289,7 +299,12 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeVehicle(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
+    m_pPhysicsComponent->initializeVehicle(getName(),
+                                           true,
+                                           m_pMesh,
+                                           &sBounding,
+                                           pObjectProperties->vPosition,
+                                           MAX_NORMAL_SPEED);
 
     // Set up Mesh for Initial Transformation drawing.
     mat4 m4InitialTransform;
@@ -350,23 +365,24 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
-    case ENTITY_INTERACTABLE:
-        // Static Cast to an Interactable Entity
-        pOtherIE = static_cast<InteractableEntity*>(pOther);
-
-        // Switch between different Interactable Entity Types
-        switch (pOtherIE->getInteractableType())
-        {
-        case INTER_POWERUP:
-            // Random for now
-            setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
-            break;
-        case INTER_FLAME_TRAIL:
-        case INTER_ROCKET:
-        case INTER_SPIKES:
-            this->getHitBy(GAME_STATS->getEHovercraft(pOtherIE->getOwnerID()));
-        }
-        break;
+//    case ENTITY_INTERACTABLE:
+//        // this never gets called
+//        // Static Cast to an Interactable Entity
+//        pOtherIE = static_cast<InteractableEntity*>(pOther);
+//
+//        // Switch between different Interactable Entity Types
+//        switch (pOtherIE->getInteractableType())
+//        {
+//        case INTER_POWERUP:
+//            // Random for now
+//            setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
+//            break;
+//        case INTER_FLAME_TRAIL:
+//        case INTER_ROCKET:
+//        case INTER_SPIKES:
+//            this->getHitBy(GAME_STATS->getEHovercraft(pOtherIE->getOwnerID()));
+//        }
+//        break;
     case ENTITY_PLANE:
         // TODO still not sure if we're doing the gain control or the elevation check
         // to make collisions less wonky
