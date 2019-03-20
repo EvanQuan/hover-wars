@@ -218,9 +218,9 @@ player {
         0.012
     }
     +material {
-        textures/tronBase.png
-        0.1 0.1 0.1
-        20.0
+        textures/HoverCar/UV_map.bmp
+        0.3500 0.3500 0.3500
+        32.0
     }
     +shader {
         blinn_phong_shdr

@@ -24,6 +24,8 @@ private:
     void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition, string sHashKey);
     void genBillboard();
     void initalizeVBOs();
+    void initalizeVBOs(const vector<float>* vVNData, bool bUsingNormals, bool bUsingUVs);
+    void gatherVNData(vector<float>* vVNData, bool* bUsingNormals, bool* bUsingUVs);
     bool loadObj(const string& sFileName);
     void loadObjectInfo(const ObjectInfo* pObjectProperties, string sHashKey);
     void loadMaterial(const ObjectInfo::Material* pMaterial);
