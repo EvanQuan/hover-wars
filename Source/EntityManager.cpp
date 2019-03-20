@@ -694,6 +694,10 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 /*********************************************************************************\
 * Command Management                                                             *
 \*********************************************************************************/
+int EntityManager::getPlayerSize()
+{
+    return m_pPlayerEntityList.size();
+}
 
 bool EntityManager::playerExists(eHovercraft player)
 {

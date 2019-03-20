@@ -34,10 +34,11 @@ public:
     bool isInitialized() { return m_bIsInitialized; }
     vector<vec2> aStarSearch(vec2 player, vec2 dest);
     bool getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax); // Returns the Map Indices from a given Entity.
-
+    float getTileSize() {return m_fTileSize;}
+    glm::vec2 getWorldOffset() { return m_vOriginPos; }
+    vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 player, vec2 dest);
 private:
     float evaluateDistance(const vec2* pos1, const vec2* pos2);
-    bool isDestination(int x, int y,vec2 dest);
     static SpatialDataMap* m_pInstance;
     bool isValid(int x, int y);
     SpatialDataMap();                                           // Singleton Implementation
@@ -57,6 +58,7 @@ private:
         int parentY = -1;
         double fCost, gCost, hCost;
         int x, y;
+        bool visited = false;
     };
     double calculateH(int x, int y, sSpatialCell dest);
     vector<vec2> makePath(sSpatialCell dest);

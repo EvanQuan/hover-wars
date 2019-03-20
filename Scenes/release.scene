@@ -584,7 +584,6 @@ cube {
         10 110 2
     }
 }
-
 # bump
 # Player should be able to move over this?
 # cube {
