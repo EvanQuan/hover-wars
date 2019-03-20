@@ -190,7 +190,7 @@ bool GameManager::renderGraphics()
 void GameManager::initializeNewGame(int playerCount, int botCount, float gameTime)
 {
     // for now, this simply unpauses the game
-    // TODO implement this
+    // TODO implement this - scene loading here
     paused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;

@@ -576,18 +576,20 @@ vector<EndGameStat> GameStats::getEndGameStats()
     return endGameStats;
 }
 
+struct predicateSortByHighestScore
+{
+    inline bool operator() (const EndGameStat& left, const EndGameStat& right)
+    {
+        return (left.afterAwardsScore < right.afterAwardsScore);
+    }
+};
+
 /*
     Sort winners by the highest score after awards, in decreasing order.
 */
 void GameStats::sortByHighestScoreFirst()
 {
-    std::sort(endGameStats.begin(), endGameStats.end(), GameStats::winnerSortFunction);
-}
-
-
-bool GameStats::winnerSortFunction(EndGameStat left, EndGameStat right)
-{
-    return left.afterAwardsScore > right.afterAwardsScore;
+    std::sort(endGameStats.begin(), endGameStats.end(), predicateSortByHighestScore());
 }
 
 /*
