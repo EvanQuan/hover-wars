@@ -14,7 +14,7 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
     }
 
     /* initialize random seed: */
-    srand(static_cast<unsigned int>(time(NULL)));
+    // srand(static_cast<unsigned int>(time(NULL)));
 
 }
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
@@ -26,15 +26,21 @@ AIComponent::~AIComponent() {
 
 }
 void AIComponent::genRandomAction(Action *action) {
-    action->actionsToTake[ACTION_FIRE_ROCKET] = (float) (rand() % 2);
-    action->actionsToTake[ACTION_TURN] = (float) (rand() % 3 - 1);
-    action->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = (float) (rand() % 3 - 1);
-    action->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = (float) (rand() % 3 - 1);
-    action->actionsToTake[ACTION_SIZE] = (float) (rand() % 2);
+    //action->actionsToTake[ACTION_FIRE_ROCKET] = (float) (rand() % 2);
+    //action->actionsToTake[ACTION_TURN] = (float) (rand() % 3 - 1);
+    //action->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = (float) (rand() % 3 - 1);
+    //action->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = (float) (rand() % 3 - 1);
+    //action->actionsToTake[ACTION_SIZE] = (float) (rand() % 2);
+    action->actionsToTake[ACTION_FIRE_ROCKET] = static_cast<float>(FuncUtils::random(0, 1));
+    action->actionsToTake[ACTION_TURN] = static_cast<float>(FuncUtils::random(-1, 1));
+    action->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = static_cast<float>(FuncUtils::random(-1, 1));
+    action->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = static_cast<float>(FuncUtils::random(-1, 1));
+    action->actionsToTake[ACTION_SIZE] = static_cast<float>(FuncUtils::random(0, 1));
 }
 void AIComponent::mutateSet(int setIndex,int mutations) {
     for (int i = 0; i < mutations; i++) {
-        int randomIndex = rand() % LOOK_AHEAD_FRAMES;
+        // int randomIndex = rand() % LOOK_AHEAD_FRAMES;
+        int randomIndex = FuncUtils::random(0, LOOK_AHEAD_FRAMES - 1);
         genRandomAction(&frames[setIndex][randomIndex]);
     }
 
