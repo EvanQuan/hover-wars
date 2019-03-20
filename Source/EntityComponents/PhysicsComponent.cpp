@@ -10,7 +10,7 @@ shortly afterwards.
 
 Speed : meters/second
 */
-#define MAX_DASH_SPEED 1000
+#define MAX_DASH_SPEED 100 // 1000
 /*
 The amount of time the player can be in MAX_DASH_SPEED after dashing.
 
@@ -36,7 +36,7 @@ The greater the force, the faster it will accelerate.
 20000.0f @ 2000kg, 50 grav
 Force : Newtons
 */
-#define MOVEMENT_FORCE 100000.0f //
+#define MOVEMENT_FORCE 1000.0f // 100000
 
 /*
 1000000.0f @ 300 kg
