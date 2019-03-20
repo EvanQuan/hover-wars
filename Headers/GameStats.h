@@ -15,7 +15,7 @@ struct EndGameStat
     int afterAwardsScore;
     // List of awards gained. Composed of the name of the award and the points
     // it awards.
-    vector<string, int> awards;
+    unordered_map<string, int> awards;
 };
 /*
 Stores and calculates all in-game stats.
@@ -75,6 +75,7 @@ public:
         KILLS_TOTAL_AGAINST_BOT_2,
         KILLS_TOTAL_AGAINST_BOT_3,
         KILLS_TOTAL_AGAINST_BOT_4,
+        KILLS_TOTAL_AGAINST_PLAYERS,
         KILLS_TOTAL_AGAINST_BOTS,
         IS_DOMINATING_PLAYER_1,
         IS_DOMINATING_PLAYER_2,
@@ -196,7 +197,11 @@ private:
     void calculateWinners();
     void sortWinners();
     bool winnerSortFunction(EndGameStat left, EndGameStat right);
-    eHovercraft getHighest(eStat stat);
+    vector<eHovercraft> getHovercraftsThatHaveHighest(eStat stat);
+
+    // Award name : function that determines who won the award
+    void setAwards();
+    void awardHighestStat(eStat stat, string name, int points);
 
 
     /*
@@ -247,6 +252,9 @@ private:
     void addPowerupCount(eHovercraft hovercraft);
 
     void debug(eHovercraft hovercraft);
+
+    bool isBot(eHovercraft hovercraft) const;
+    bool isPlayer(eHovercraft hovercraft) const;
 
     // @Deprecated, unused, due to perfect correspondance
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 

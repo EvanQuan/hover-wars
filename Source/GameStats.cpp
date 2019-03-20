@@ -368,6 +368,25 @@ void GameStats::updateAttackerAndHitKills(eHovercraft attacker, eHovercraft hit)
 {
     stats[attacker][KILLS_TOTAL]++;
     stats[attacker][KILLS_TOTAL_AGAINST_PLAYER_1 + hit]++;
+
+    if (isBot(hit))
+    {
+        stats[attacker][KILLS_TOTAL_AGAINST_BOTS]++;
+    }
+    else if (isPlayer(hit))
+    {
+        stats[attacker][KILLS_TOTAL_AGAINST_PLAYERS]++;
+    }
+}
+
+bool GameStats::isBot(eHovercraft hovercraft) const
+{
+    return HOVERCRAFT_BOT_1 <= hovercraft && hovercraft <= HOVERCRAFT_BOT_4;
+}
+
+bool GameStats::isPlayer(eHovercraft hovercraft) const
+{
+    return HOVERCRAFT_PLAYER_1 <= hovercraft && hovercraft <= HOVERCRAFT_PLAYER_4;
 }
 
 /*
@@ -562,19 +581,56 @@ bool GameStats::winnerSortFunction(EndGameStat left, EndGameStat right)
     return left.afterAwardsScore > right.afterAwardsScore;
 }
 
-eHovercraft GameStats::getHighest(eStat stat)
+/*
+
+    @return all the hovercrafts that have the highest value of the specified stat
+*/
+vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
 {
-    int max = 0;
-    eHovercraft highest = HOVERCRAFT_PLAYER_1;
+    int highest = 0;
+    vector<eHovercraft> hovercrafts;
+
     for (int h = HOVERCRAFT_PLAYER_1; h < MAX_HOVERCRAFT_INDEX; h++)
     {
         eHovercraft hovercraft = static_cast<eHovercraft>(h);
         int value = get(hovercraft, stat);
-        if (value > max)
+        if (value > highest)
         {
-            max = value;
-            highest = hovercraft;
+            highest = value;
+            hovercrafts.clear();
+        }
+        if (value >= highest)
+        {
+            hovercrafts.push_back(hovercraft);
         }
     }
-    return highest;
+    return hovercrafts;
+}
+
+/*
+    Award all hovercrafts with the award of having the highest specified stat.
+
+    @param stat     to have the highest value of
+    @param name     of the award
+    @param points   the award gives
+*/
+void GameStats::awardHighestStat(eStat stat, string name, int points)
+{
+    vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
+    for (EndGameStat endStat : endGameStats)
+    {
+        if (FuncUtils::contains(winners, endStat.hovercraft))
+        {
+            endStat.awards[name] = points;
+        }
+    }
+
+}
+
+void GameStats::setAwards()
+{
+    awardHighestStat(KILLS_TOTAL_AGAINST_BOTS, "Ludite", 200);
+    awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS, "Ludite", 200);
+    awardHighestStat(POWERUPS_TOTAL_PICKED_UP, "Hungry for Power", 200);
+    awardHighestStat(KILLSTREAK_LARGEST, "Tactical", 100);
 }
