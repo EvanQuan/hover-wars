@@ -529,3 +529,27 @@ void GameStats::addPowerupCount(eHovercraft hovercraft)
 {
     stats[hovercraft][POWERUPS_TOTAL_PICKED_UP]++;
 }
+
+vector<vector<int>> GameStats::getEndGameStats()
+{
+    endGameStats.clear();
+    calculateEndGameBonuses();
+    calculateWinners();
+    return endGameStats;
+}
+
+void GameStats::calculateEndGameBonuses()
+{
+
+}
+
+void GameStats::calculateWinners()
+{
+
+}
+
+
+void winnerSortFunction(vector<int> left, vector<int> right)
+{
+    // return left.at()
+}

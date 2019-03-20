@@ -102,6 +102,7 @@ private:
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
+    SoundManager*       m_pSoundManager;
 
     // If the game is paused, the environment will not update
     bool paused;

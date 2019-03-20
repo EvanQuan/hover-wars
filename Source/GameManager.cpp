@@ -90,7 +90,7 @@ GameManager::~GameManager()
     if (nullptr != m_pAIManager)        // AI Manager
         delete m_pAIManager;
 
-    if (nullptr != m_pGameStats)        // GameSta
+    if (nullptr != m_pGameStats)        // Game Stats
         delete m_pGameStats;
 }
 

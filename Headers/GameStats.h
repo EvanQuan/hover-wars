@@ -119,6 +119,30 @@ public:
         COOLDOWN_COUNT,
     };
 
+    /*
+        End game stats have different index values than normal stats since they
+        are variable in size.
+
+        Row major order
+            0           1
+        0   Hovercraft  Final score
+        1   Award #1    Award #1 bonus
+        2   Award #2    Award #2 bonus
+        ...
+        N   Award #N    Award #N bonus
+    */
+    enum eEndGameStatRow
+    {
+        ENDGAME_ROW_HOVERCRAFT = 0,
+        ENDGAME_ROW_AWARD      = 1,
+    };
+    enum eEndGameStatColumn
+    {
+        ENDGAME_COLUMN_HOVERCRAFT_ID = 0,
+        ENDGAME_COLUMN_AWARD_NAME    = 0,
+        ENDGAME_COLUMN_SCORE         = 1,
+    };
+
     ~GameStats();
 
     void update(float fSecondsSinceLastUpdate);
@@ -136,6 +160,8 @@ public:
 
     eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
 
+    vector<vector<int>> getEndGameStats();
+
 private:
     GameStats();
     static GameStats* m_pInstance;
@@ -144,6 +170,9 @@ private:
     void initializeCooldowns();
     void correspondEntitiesToHovercrafts();
 
+    void calculateEndGameBonuses();
+    void calculateWinners();
+    void winnerSortFunction(vector<int> left, vector<int> right);
 
     /*
     Overall game stats
@@ -154,6 +183,13 @@ private:
     int stats[MAX_HOVERCRAFT_COUNT][STAT_COUNT];
 
     float cooldowns[MAX_HOVERCRAFT_COUNT][COOLDOWN_COUNT];
+
+    /*
+    End game stats
+
+    Sorted and variable in size, depending on in-game results.
+    */
+    vector<vector<int>> endGameStats;
 
     // Tracks first blood
     bool firstBloodHappened;
