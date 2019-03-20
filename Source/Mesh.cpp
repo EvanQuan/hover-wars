@@ -90,7 +90,7 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, string sHashKey, flo
         }
 
         // Initialize VBOs
-        initalizeVBOs();
+        //initalizeVBOs();
     }
 
     // Return result
@@ -452,8 +452,7 @@ void Mesh::flushBillboards()
     m_pBillboardList.clear();
 }
 
-// Initialize the GPU with Mesh Data and tell it how to read it.
-void Mesh::initalizeVBOs()
+void Mesh::gatherVNData(vector<float>* vVNData, bool* bUsingNormals, bool* bUsingUVs)
 {
     // This function shouldn't be called without passing in Vertex Data.
     assert(!m_pVertices.empty());
@@ -461,57 +460,60 @@ void Mesh::initalizeVBOs()
     // We can use just one VBO since it's assumed that the geometry won't update as often.
     //    Therefore, we'll combine all data into one VBO and set openGL to address the data accordingly.
     // Create a Vector to hold the combined data.
-    vector<float> vVNdata;
-    vVNdata.reserve(m_pVertices.size() * 3 +
+    vVNData->reserve(m_pVertices.size() * 3 +
         m_pNormals.size() * 3 +
         (m_pUVs.size() << 1));
 
     // Boolean values to determine if additional data exists.
-    bool bHaveNormals = !m_pNormals.empty();
-    bool bHaveUVs = !m_pUVs.empty();
-
-    // Calculate Stride for setting up Attributes
-    GLsizei iStride = sizeof(vec3) +
-        (bHaveNormals ? sizeof(vec3) : 0) +
-        (bHaveUVs ? sizeof(vec2) : 0);
+    *bUsingNormals  = !m_pNormals.empty();
+    *bUsingUVs      = !m_pUVs.empty();
 
     // Loop through the received input and set up the array of data for the VBO
     for (unsigned int i = 0; i < m_pVertices.size(); ++i)
     {
         // Vertex Data
-        vVNdata.push_back(m_pVertices[i].x);
-        vVNdata.push_back(m_pVertices[i].y);
-        vVNdata.push_back(m_pVertices[i].z);
+        vVNData->push_back(m_pVertices[i].x);
+        vVNData->push_back(m_pVertices[i].y);
+        vVNData->push_back(m_pVertices[i].z);
 
         // Normal Data
-        if (bHaveNormals)
+        if (*bUsingNormals)
         {
-            vVNdata.push_back(m_pNormals[i].x);
-            vVNdata.push_back(m_pNormals[i].y);
-            vVNdata.push_back(m_pNormals[i].z);
+            vVNData->push_back(m_pNormals[i].x);
+            vVNData->push_back(m_pNormals[i].y);
+            vVNData->push_back(m_pNormals[i].z);
         }
 
         // UV Data
-        if (bHaveUVs)
+        if (*bUsingUVs)
         {
-            vVNdata.push_back(m_pUVs[i].x);
-            vVNdata.push_back(m_pUVs[i].y);
+            vVNData->push_back(m_pUVs[i].x);
+            vVNData->push_back(m_pUVs[i].y);
         }
     }
+}
 
+// Initialize the GPU with Mesh Data and tell it how to read it.
+void Mesh::initalizeVBOs(const vector<float>* vVNData, bool bUsingNormals, bool bUsingUVs)
+{
+    // Calculate Stride for setting up Attributes
+    GLsizei iStride = sizeof(vec3) +
+        (bUsingNormals ? sizeof(vec3) : 0) +
+        (bUsingUVs ? sizeof(vec2) : 0);
+    
     // Generate VBO
-    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, vVNdata.data(), vVNdata.size() * sizeof(float), GL_STATIC_DRAW);
+    m_iVertexBuffer = m_pShdrMngr->genVertexBuffer(m_iVertexArray, vVNData->data(), vVNData->size() * sizeof(float), GL_STATIC_DRAW);
 
     // Set-up Attributes
     // Vertices
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 3, iStride, (void*)0);
     // Normals
-    if (bHaveNormals)
+    if (bUsingNormals)
     {
         m_pShdrMngr->setAttrib(m_iVertexArray, 1, 3, iStride, (void*)sizeof(vec3));
     }
     // UVs
-    if (bHaveUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist.
+    if (bUsingUVs) // Specified index could be 1 or 2 and Start location is Stride - sizeof(vec2) depending on if Normals exist.
     {
         m_pShdrMngr->setAttrib(m_iVertexArray, 2, 2, iStride, (void*)(iStride - sizeof(vec2)));
     }
@@ -533,6 +535,17 @@ void Mesh::initalizeVBOs()
     }
 }
 
+// Gathers and Initializes Generated VBO data
+void Mesh::initalizeVBOs()
+{
+    // Gather Data and Initialize VBOs
+    vector<float> vVNData;
+    bool bUsingNormals, bUsingUVs;
+
+    gatherVNData(&vVNData, &bUsingNormals, &bUsingUVs);
+    initalizeVBOs(&vVNData, bUsingNormals, bUsingUVs);
+}
+
 // Code for Loading a .obj file. Not comprehensive, will generate its own normals and will fail to load any
 //        faces that are not quads or tris. Algorithm modified from original written by Andrew Robert Owens.
 bool Mesh::loadObj(const string& sFileName)
@@ -541,6 +554,9 @@ bool Mesh::loadObj(const string& sFileName)
     ifstream in(sFileName.c_str());
     bool bReturnValue = in.is_open();
     vec2 vXRange, vYRange, vZRange;     // Compute Basic cubic convex hull for Spatial information.
+    vector <float> vVNData;
+    unordered_map<string, unsigned int> pIndexMap;
+    unsigned int iIndexTick = 0;
     vZRange = vYRange = vXRange = vec2(numeric_limits<float>::max(), numeric_limits<float>::min());
 
     // Failed to load file.
@@ -577,7 +593,14 @@ bool Mesh::loadObj(const string& sFileName)
                 vZRange.y = vTempVec.z > vZRange.y ? vTempVec.z : vZRange.y;    // Z Range Max
             }
             else if ("vt" == sToken) // uv-coords
-            {/* Ignored */
+            {
+                ssLine >> vTempVec.x >> vTempVec.y >> vTempVec.z;
+                m_pUVs.push_back(vec2(vTempVec));
+            }
+            else if ("vn" == sToken) // Normal
+            {
+                ssLine >> vTempVec.x >> vTempVec.y >> vTempVec.z;
+                m_pNormals.push_back(vTempVec);
             }
             else if ("g" == sToken) // Group
             {/* Ignored */
@@ -589,7 +612,8 @@ bool Mesh::loadObj(const string& sFileName)
             {
                 // Local Variables for reading face.
                 int iIndices[3] = { -1, -1, -1 };
-                vector< int > vFaceVerts;
+                vector< unsigned int > vFaceVerts;
+                string pTupleKey;
 
                 // Read through rest of line
                 while (ssLine >> sInput)
@@ -607,11 +631,39 @@ bool Mesh::loadObj(const string& sFileName)
 
                     // Convert to 0-based indices
                     iIndices[0] = (-1 == iIndices[0] ? iIndices[0] : iIndices[0] - 1); // Vertex
-                    iIndices[1] = (-1 == iIndices[1] ? iIndices[1] : iIndices[1] - 1); // UV-Coord; Not Used
-                    iIndices[2] = (-1 == iIndices[2] ? iIndices[2] : iIndices[2] - 1); // Normal; Not Used
+                    iIndices[1] = (-1 == iIndices[1] ? iIndices[1] : iIndices[1] - 1); // UV-Coord
+                    iIndices[2] = (-1 == iIndices[2] ? iIndices[2] : iIndices[2] - 1); // Normal
+                    pTupleKey = to_string(iIndices[0]) + to_string(iIndices[1]) + to_string(iIndices[2]);
 
-                    // Only Store the Vertex Indices
-                    vFaceVerts.push_back(iIndices[0]);
+                    // If the Index for this tuple doesn't exist yet, add it to the map.
+                    if (pIndexMap.find(pTupleKey) == pIndexMap.end())
+                    {
+                        // Add Vertex Data
+                        vVNData.push_back(m_pVertices[iIndices[0]].x);
+                        vVNData.push_back(m_pVertices[iIndices[0]].y);
+                        vVNData.push_back(m_pVertices[iIndices[0]].z);
+
+                        // Add Normal Data
+                        if (!m_pNormals.empty())
+                        {
+                            vVNData.push_back(m_pNormals[iIndices[2]].x);
+                            vVNData.push_back(m_pNormals[iIndices[2]].y);
+                            vVNData.push_back(m_pNormals[iIndices[2]].z);
+                        }
+
+                        // Add UV Data
+                        if (!m_pUVs.empty())
+                        {
+                            vVNData.push_back(m_pUVs[iIndices[1]].x);
+                            vVNData.push_back(1.0f - m_pUVs[iIndices[1]].y);
+                        }
+
+                        // Store Index in Index Map
+                        pIndexMap.insert(make_pair(pTupleKey, iIndexTick++));
+                    }
+
+                    // Collect the Face Indices for the Data
+                    vFaceVerts.push_back(pIndexMap[pTupleKey]);
                 }
 
                 // Store Indices; Only handles 3-4 vert faces.
@@ -620,7 +672,7 @@ bool Mesh::loadObj(const string& sFileName)
                     // Triangle
                     for (int i = 0; i < 3; ++i)
                         m_pIndices.push_back(vFaceVerts[i]);
-
+                
                     // Quad
                     if (4 == vFaceVerts.size())
                     {
@@ -644,31 +696,12 @@ bool Mesh::loadObj(const string& sFileName)
         // Close file when finished.
         in.close();
 
-        // Vertices and Indices Loaded, need to compute Normals
-        m_pNormals.resize(m_pVertices.size(), vec3(0.0));
-        for (unsigned int i = 0; i < m_pIndices.size(); i += 3)
-        {
-            assert((i + 2) < m_pIndices.size());
-            vec3 vTri[3] = { m_pVertices[m_pIndices[i]], m_pVertices[m_pIndices[i + 1]], m_pVertices[m_pIndices[i + 2]] };
-
-            // Calculate Triangle Normal: (v1 - v0) x (v2 - v0)
-            vec3 vTriNormal = cross((vTri[1] - vTri[0]), (vTri[2] - vTri[0]));
-
-            // Accumulate Normals Per Vertex;
-            m_pNormals[m_pIndices[i]] += vTriNormal;
-            m_pNormals[m_pIndices[i + 1]] += vTriNormal;
-            m_pNormals[m_pIndices[i + 2]] += vTriNormal;
-        }
-
-        // Normalize all Accumulated Normals
-        for (vector< vec3 >::iterator vNormIter = m_pNormals.begin();
-            vNormIter != m_pNormals.end();
-            ++vNormIter)
-            (*vNormIter) = normalize((*vNormIter));
-
         // Store computed Spatial Range
         m_vNegativeOffset = m_m4ScaleMatrix * vec4(vXRange.x, vYRange.x, vZRange.x, 1.0f);  // Min
         m_vPositiveOffset = m_m4ScaleMatrix * vec4(vXRange.y, vYRange.y, vZRange.y, 1.0f);  // Max
+
+        // Set up special VBOs for Mesh
+        initalizeVBOs(&vVNData, !m_pNormals.empty(), !m_pUVs.empty());
     }
 
     return bReturnValue;

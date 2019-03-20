@@ -80,17 +80,17 @@
 
 # Information for Rockets in this Scene
 rocket {
-    +mesh {
-        models/rocket2.obj
-        1.0
-    }
-    +material {
-        textures/defaultTexture.png
-        0.0
-    }
-    +shader {
-        blinn_phong_shdr
-    }
+	+mesh {
+         models/rocket2.obj
+         1.0
+     }
+     +material {
+         textures/missile/missile_diffuse.jpg
+         1.0
+     }
+     +shader {
+         blinn_phong_shdr
+     }
 }
 
 # Information for Spikes in this Scene
@@ -218,9 +218,9 @@ player {
         0.012
     }
     +material {
-        textures/tronBase.png
-        0.1 0.1 0.1
-        20.0
+        textures/HoverCar/UV_map.bmp
+        0.3500 0.3500 0.3500
+        32.0
     }
     +shader {
         blinn_phong_shdr

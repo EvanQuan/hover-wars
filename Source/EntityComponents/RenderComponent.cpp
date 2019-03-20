@@ -44,8 +44,10 @@ void RenderComponent::render()
         m_pMesh->bindTextures(m_eShaderType);
 
         // Call related glDraw function.
-        if (m_bUsingInstanced)
+        if (m_bUsingInstanced && m_bUsingIndices)
             glDrawElementsInstanced(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, 0, m_pMesh->getNumInstances());
+        else if (m_bUsingInstanced)
+            glDrawArraysInstanced(m_eMode, 0, m_pMesh->getCount(), m_pMesh->getNumInstances());
         else if (m_bUsingIndices)
             glDrawElements(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, nullptr);
         else
