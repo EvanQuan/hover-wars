@@ -128,7 +128,6 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
-    m_pAIManager->update(frameDeltaTime);
     m_fGameTime -= frameDeltaTime;
     if (!startedGameOver && (m_fGameTime < 0))
     {
@@ -153,6 +152,7 @@ bool GameManager::renderGraphics()
                 // Music change/fade?
             }
         }
+        m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
 
         // The user interface should update after the EntityManager and
@@ -198,6 +198,11 @@ void GameManager::initializeNewGame(int playerCount, int botCount, float gameTim
 
 /*
     End the current game.
+
+    - Stop the AI
+    - Stop Physics
+    - Determine the winner
+    - Move to the PostGameMenu
 */
 void GameManager::endGame()
 {

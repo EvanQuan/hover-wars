@@ -24,6 +24,9 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
+/*
+    Initialize everything that's needed for the start of a new game
+*/
 void AIManager::reinitialize()
 {
     m_vAIComponents.clear();
@@ -37,6 +40,9 @@ void AIManager::reinitialize()
     }
 }
 
+/*
+    Initialize a specified hovercraft with an AIComponent.
+*/
 void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 {
     glm::vec3 botVel = bot->m_pPhysicsComponent->getLinearVelocity();
@@ -46,8 +52,13 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
     glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
     glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
-
 }
+
+/*
+    Update all the AI for a given time frame.
+    This should be called every frame in game, but should not be updated out of
+    game (such as when the game is paused, or the players are in other menus).
+*/
 void AIManager::update(float fTimeInSeconds)
 {
     vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
