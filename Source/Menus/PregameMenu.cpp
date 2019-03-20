@@ -18,6 +18,14 @@ PregameMenu::PregameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         {
+            // Even though start is visually on the bottom, we put it on top
+            // so its defaulted to when we enter the menu
+            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
+            // Even though back is visually on the left, we put start on the
+            // left so its defaulted to when we move down
+            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
+        },
+        {
             { "Player count", eFixedCommand::COMMAND_PROMPT_SELECT },
         },
         {
@@ -25,12 +33,6 @@ PregameMenu::PregameMenu() : PromptMenu(
         },
         {
             { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
-        },
-        {
-            // Even though back is visually on the left, we put start on the
-            // left so its defaulted to when we move down
-            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
-            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
         },
     }
 )
