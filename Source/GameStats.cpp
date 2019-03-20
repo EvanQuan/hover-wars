@@ -530,7 +530,7 @@ void GameStats::addPowerupCount(eHovercraft hovercraft)
     stats[hovercraft][POWERUPS_TOTAL_PICKED_UP]++;
 }
 
-vector<vector<int>> GameStats::getEndGameStats()
+vector<EndGameStat> GameStats::getEndGameStats()
 {
     endGameStats.clear();
     calculateEndGameBonuses();
@@ -540,16 +540,41 @@ vector<vector<int>> GameStats::getEndGameStats()
 
 void GameStats::calculateEndGameBonuses()
 {
-
+    
 }
 
 void GameStats::calculateWinners()
 {
+    
+}
 
+/*
+    Sort winners by the highest score after awards, in decreasing order.
+*/
+void GameStats::sortWinners()
+{
+    std::sort(endGameStats.begin(), endGameStats.end(), GameStats::winnerSortFunction);
 }
 
 
-void winnerSortFunction(vector<int> left, vector<int> right)
+bool GameStats::winnerSortFunction(EndGameStat left, EndGameStat right)
 {
-    // return left.at()
+    return left.afterAwardsScore > right.afterAwardsScore;
+}
+
+eHovercraft GameStats::getHighest(eStat stat)
+{
+    int max = 0;
+    eHovercraft highest = HOVERCRAFT_PLAYER_1;
+    for (int h = HOVERCRAFT_PLAYER_1; h < MAX_HOVERCRAFT_INDEX; h++)
+    {
+        eHovercraft hovercraft = static_cast<eHovercraft>(h);
+        int value = get(hovercraft, stat);
+        if (value > max)
+        {
+            max = value;
+            highest = hovercraft;
+        }
+    }
+    return highest;
 }
