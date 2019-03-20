@@ -269,7 +269,7 @@ float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2) {
     return abs(pos1->x - pos2->x) + abs(pos1->y - pos2->y);
 }
 bool SpatialDataMap::isValid(int x,int y) {
-    return x < m_pSpatialMap.size()  && x >= 0 && y < m_pSpatialMap[x].size() && y >= 0 &&m_pSpatialMap[x][y].pLocalEntities.size() == 0;
+    return x < (int)m_pSpatialMap.size()  && x >= 0 && y < (int)m_pSpatialMap[x].size() && y >= 0 && (int)m_pSpatialMap[x][y].pLocalEntities.size() == 0;
 }
 double SpatialDataMap::calculateH(int x, int y, sSpatialCell dest) {
     double H = (sqrt((x - dest.x)*(x - dest.x)
@@ -369,8 +369,8 @@ vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 player, vec2 dest) {
             -1== m_pSpatialMap[temp][(int)currPos.y].parentY) {
             break;
         }
-        currPos.x = m_pSpatialMap[temp][(int)currPos.y].parentX;
-        currPos.y = m_pSpatialMap[temp][(int)currPos.y].parentY;
+        currPos.x = (float)m_pSpatialMap[temp][(int)currPos.y].parentX;
+        currPos.y = (float)m_pSpatialMap[temp][(int)currPos.y].parentY;
     }
     return returnPath;
 }
@@ -483,7 +483,6 @@ vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
     bool destinationFound = false;
     while (!openList.empty()) {
         sSpatialCell node;
-        try {
             do {
                 //This do-while loop could be replaced with extracting the first
                 //element from a set, but you'd have to make the openList a set.
@@ -508,10 +507,7 @@ vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
                 node = *itNode;
                 openList.erase(itNode);
             } while (isValid(node.x, node.y) == false);
-        }
-        catch (const exception& e) {
-            return emptyVectorArray;
-        }
+        
         x = node.x;
         y = node.y;
         closedList[x][y] = true;

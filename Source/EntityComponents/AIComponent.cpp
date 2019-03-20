@@ -103,9 +103,9 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer,HovercraftEntity *b
     //std::cout << "popCurrentAction: " << seekPoint.x << "," << seekPoint.z << std::endl;
     //}
     glm::vec3 nextPos = vec3(0, 0, 0);//mPlayer->getPosition();
-
+            
     if (path.size() >= 2) {
-        for (int i = 0; i < path.size(); i++) {
+        for (int i = 0; i < (int)path.size(); i++) {
             nextPos = vec3(path.at(1).x * SPATIAL_DATA_MAP->getTileSize() + offset.x, 0, path.at(1).y * SPATIAL_DATA_MAP->getTileSize() + offset.y);
             vec3 difference = botPos - nextPos;
             if (difference.length() > DISTANCE_BOX) {
@@ -135,17 +135,17 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer,HovercraftEntity *b
     seekPoint = nextPos;
 
     glm::vec3 playerPos = mPlayer->getPosition();
-    int XvalMul = difference.x / abs(difference.x);
+    int XvalMul = (int)(difference.x / abs(difference.x));
 
     if (yVal > dirVector.z) {
-        a->actionsToTake[1] = 1 * XvalMul;
+        a->actionsToTake[1] = (float) (1 * XvalMul);
     }
     else if(abs(yVal - dirVector.z) < ACCURACY_THRESHOLD){
         a->actionsToTake[1] = 0;
         a->actionsToTake[ACTION_FIRE_ROCKET] = 1;
     }
     else {
-        a->actionsToTake[1] = -1 * XvalMul;
+        a->actionsToTake[1] = (float)(-1 * XvalMul);
     }
     
     bool isXdistance = false;
