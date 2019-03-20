@@ -22,14 +22,15 @@ public:
     void createPointLight( vector< string > sData, int iLength );
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
-    void createPlayer(vector< string > sData, int iLength);
+    void createPlayer();
     void createCube(vector< string > sData, int iLength);
-    void createBot(vector< string > sData, int iLength);
+    void createBot();
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     Rocket* createRocketMesh(int iOwnerID);
     Spikes* createSpikesMesh(int iOwnerID);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
+    void getRandomSpawnPoint(vec3* vPosition);
 
 private:
     // Singleton Implementation
@@ -37,6 +38,8 @@ private:
     SceneLoader( SceneLoader* pCopy );
     static SceneLoader* m_pInstance;
     EntityManager* m_pEntityManager;
+
+    vector<vec3> m_vSpawnPoints;
 
     enum ePropertyTypes
     {
@@ -93,8 +96,8 @@ private:
     void handleProperty( vector< string >& sData, const string& sIndicator );
     void grabMaterial(vector< string >& sData);
     void grabBoundingBox(vector< string >& sData);
-    void saveRocketInfo();
-    void saveSpikesInfo();
+    void saveSpawnPoint(vector< string > sData, int iLength);
+
     void clearProperties();     // Clear any properties
     void resetAllProperties();
     

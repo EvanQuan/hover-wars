@@ -183,7 +183,7 @@ bool GameManager::renderGraphics()
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
 */
-void GameManager::initializeNewGame(int playerCount, int botCount, float gameTime)
+void GameManager::initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, string sFileName)
 {
     // for now, this simply unpauses the game
     // TODO implement this
@@ -194,6 +194,15 @@ void GameManager::initializeNewGame(int playerCount, int botCount, float gameTim
     m_pUserInterface->reinitialize(gameTime);
     GAME_STATS->reinitialize();
     m_pAIManager->reinitialize();
+    m_pEntityManager->initializeEnvironment(sFileName);
+
+    // Spawn Players
+    for (unsigned int i = 0; i < playerCount; i++)
+        SCENE_LOADER->createPlayer();
+
+    // Spawn Bots
+    for (unsigned int i = 0; i < botCount; i++)
+        SCENE_LOADER->createBot();
 }
 
 /*
@@ -255,8 +264,7 @@ bool GameManager::initializeGraphics( string sFileName )
         glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
         m_pUserInterface = UserInterface::getInstance(iWidth, iHeight);
 
-        // Initialize Environment with a new scene
-        m_pEntityManager->initializeEnvironment(sFileName);         
+        // Initialize Environment with a new scene      
         m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
     }
 

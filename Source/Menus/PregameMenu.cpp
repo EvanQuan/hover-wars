@@ -62,7 +62,7 @@ void PregameMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_NEXT_MENU:
         // Let GameManager initialize a new game before switching to game menu
         // controls
-        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime));
+        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime), "Scenes/debug.scene");
         nextMenu(GameMenu::getInstance());
         break;
     }
