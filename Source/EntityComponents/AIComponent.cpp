@@ -26,11 +26,11 @@ AIComponent::~AIComponent() {
 
 }
 void AIComponent::genRandomAction(Action *action) {
-    action->actionsToTake[0] = (float) (rand() % 2);
-    action->actionsToTake[1] = (float) (rand() % 3 - 1);
-    action->actionsToTake[2] = (float) (rand() % 3 - 1);
-    action->actionsToTake[3] = (float) (rand() % 3 - 1);
-    action->actionsToTake[4] = (float) (rand() % 2);
+    action->actionsToTake[ACTION_FIRE_ROCKET] = (float) (rand() % 2);
+    action->actionsToTake[ACTION_TURN] = (float) (rand() % 3 - 1);
+    action->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = (float) (rand() % 3 - 1);
+    action->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = (float) (rand() % 3 - 1);
+    action->actionsToTake[ACTION_SIZE] = (float) (rand() % 2);
 }
 void AIComponent::mutateSet(int setIndex,int mutations) {
     for (int i = 0; i < mutations; i++) {
@@ -46,7 +46,7 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
        // botPos.x += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[2] * 10;
        // botPos.y += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[3] * 10;
         float rot = frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[1] * 0.01f;
-        rot = rot - (float)(floor(rot * (2 * 3.14159))/ (2 * 3.14159));
+        rot = rot - (float)(floor(rot * (PI_2))/ (PI_2));
         botRotation += rot;
         //if (frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[0] == 1) {
             glm::vec3 rocketDir = glm::vec3(cos(botRotation),sin(botRotation),0);
@@ -126,11 +126,10 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer,HovercraftEntity *b
     float yVal = mSlope * dirVector.x;
 
 
-
     float angle = atan(difference.x,difference.z);
-    double angleBetween = angle - botRotation < angle - botRotation + (3.1415926535 * 2) ? angle - botRotation : angle - botRotation + (3.1415926535 * 2);
-    double botAmount = botRotation + (3.1415926535 / 2);//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
-    double modAmount = (botRotation / (3.1415926535 * 2) - floor(botRotation / (3.1415926535 * 2))) * (3.1415926535 * 2) - 3.1415926535;
+    double angleBetween = angle - botRotation < angle - botRotation + (PI_2) ? angle - botRotation : angle - botRotation + (3.1415926535 * 2);
+    double botAmount = botRotation + PI_HALF;//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
+    double modAmount = (botRotation / (PI_2) - floor(botRotation / (PI_2))) * (PI_2) - PI;
 
     seekPoint = nextPos;
 
@@ -138,34 +137,34 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer,HovercraftEntity *b
     int XvalMul = (int)(difference.x / abs(difference.x));
 
     if (yVal > dirVector.z) {
-        a->actionsToTake[1] = (float) (1 * XvalMul);
+        a->actionsToTake[ACTION_TURN] = (float) (1 * XvalMul);
     }
     else if(abs(yVal - dirVector.z) < ACCURACY_THRESHOLD){
-        a->actionsToTake[1] = 0;
+        a->actionsToTake[ACTION_TURN] = 0;
         a->actionsToTake[ACTION_FIRE_ROCKET] = 1;
     }
     else {
-        a->actionsToTake[1] = (float)(-1 * XvalMul);
+        a->actionsToTake[ACTION_TURN] = (float)(-1 * XvalMul);
     }
     
     bool isXdistance = false;
     if ((botPos.x - nextPos.x) > DISTANCE_BOX) {
-        a->actionsToTake[2] = -1;
+        a->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = -1;
     }
     else if ((botPos.x - nextPos.x) < -DISTANCE_BOX) {
-        a->actionsToTake[2] = 1;
+        a->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = 1;
     }
     else {
         isXdistance = true;
     }
     if ((botPos.z - nextPos.z) > DISTANCE_BOX) {
-        a->actionsToTake[3] = -1;
+        a->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = -1;
     }
     else if ((botPos.z - nextPos.z) < -DISTANCE_BOX) {
-        a->actionsToTake[3] = 1;
+        a->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = 1;
     }
     else if(isXdistance){
-        a->actionsToTake[4] = 1;
+        a->actionsToTake[ACTION_SIZE] = 1;
     }
     //a->actionsToTake[2] = difference.x/100.0f;
     //a->actionsToTake[3] = difference.z/100.0f;
