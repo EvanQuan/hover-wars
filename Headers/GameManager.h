@@ -11,6 +11,7 @@ class EntityManager;
 class CommandHandler;
 class ShaderManager;
 class UserInterface;
+class GameStats;
 
 // Class: Game Manager
 // Purpose: Manages Game States and handles initialization of a level and handling of
@@ -100,6 +101,7 @@ private:
     CommandHandler*     m_pCommandHandler;
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
+    GameStats*          m_pGameStats;
 
     // If the game is paused, the environment will not update
     bool paused;

@@ -26,6 +26,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
     m_pEntityManager    = ENTITY_MANAGER;
+    m_pGameStats        = GAME_STATS;
 
     m_pAIManager = AIManager::getInstance();
 
@@ -88,6 +89,9 @@ GameManager::~GameManager()
 
     if (nullptr != m_pAIManager)        // AI Manager
         delete m_pAIManager;
+
+    if (nullptr != m_pGameStats)        // GameSta
+        delete m_pGameStats;
 }
 
 /*
@@ -192,7 +196,7 @@ void GameManager::initializeNewGame(int playerCount, int botCount, float gameTim
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pUserInterface->reinitialize(gameTime);
-    GAME_STATS->reinitialize();
+    m_pGameStats->reinitialize();
     m_pAIManager->reinitialize();
 }
 
