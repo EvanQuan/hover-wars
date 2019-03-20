@@ -112,4 +112,3 @@ private:
     UserInterface* m_pUserInterface;
 #endif
 };
-
