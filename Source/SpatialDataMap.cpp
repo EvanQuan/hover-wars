@@ -150,6 +150,18 @@ void SpatialDataMap::populateStaticMap(const unordered_map<int, unique_ptr<Entit
 #endif
 }
 
+void SpatialDataMap::addDynamicEntity(const Entity* pNewDynamicEntity)
+{
+    // Local Variables
+    unsigned int iXMin, iXMax, iYMin, iYMax; // Indices for determining Entity Position.
+
+    // Add Entity to Spatial Map
+    if (getMapIndices(pNewDynamicEntity, &iXMin, &iXMax, &iYMin, &iYMax)) // Verify the Indices received are valid.
+    {
+        addEntity(pNewDynamicEntity, iXMin, iXMax, iYMin, iYMax);
+    }
+}
+
 // Add The Entity to the Spatial Map as well as the EntityMap.
 void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsigned int iXMax, unsigned int iYMin, unsigned int iYMax)
 {
