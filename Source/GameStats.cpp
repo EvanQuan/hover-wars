@@ -549,28 +549,37 @@ void GameStats::addPowerupCount(eHovercraft hovercraft)
     stats[hovercraft][POWERUPS_TOTAL_PICKED_UP]++;
 }
 
-vector<EndGameStat> GameStats::getEndGameStats()
+/*
+    Fill the vector of endGameStats with EndGameStat values for every
+    hovercraft in the game. We can get the hovercraft and beforeAwardsScore now
+    but will have to initialize afterAwardsScore and awards later.
+*/
+void GameStats::initializeEndGameStats()
 {
     endGameStats.clear();
-    calculateEndGameBonuses();
-    calculateWinners();
+    for (pair<int, eHovercraft> kvpair : entityIDToHovercraft)
+    {
+        EndGameStat stat;
+        stat.hovercraft = kvpair.second;
+        stat.beforeAwardsScore = get(stat.hovercraft, SCORE_CURRENT);
+        stat.afterAwardsScore = stat.beforeAwardsScore;
+        stat.awards.clear();
+        endGameStats.push_back(stat);
+    }
+}
+
+vector<EndGameStat> GameStats::getEndGameStats()
+{
+    initializeEndGameStats();
+    awardAwards();
+    sortByHighestScoreFirst();
     return endGameStats;
-}
-
-void GameStats::calculateEndGameBonuses()
-{
-    
-}
-
-void GameStats::calculateWinners()
-{
-    
 }
 
 /*
     Sort winners by the highest score after awards, in decreasing order.
 */
-void GameStats::sortWinners()
+void GameStats::sortByHighestScoreFirst()
 {
     std::sort(endGameStats.begin(), endGameStats.end(), GameStats::winnerSortFunction);
 }
@@ -582,7 +591,6 @@ bool GameStats::winnerSortFunction(EndGameStat left, EndGameStat right)
 }
 
 /*
-
     @return all the hovercrafts that have the highest value of the specified stat
 */
 vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
@@ -609,28 +617,31 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
 
 /*
     Award all hovercrafts with the award of having the highest specified stat.
+    Increases afterAwardsStat by point value.
 
-    @param stat     to have the highest value of
-    @param name     of the award
-    @param points   the award gives
+    @param stat         to have the highest value of
+    @param name         of the award
+    @param description  of the award
+    @param points       the award gives
 */
-void GameStats::awardHighestStat(eStat stat, string name, int points)
+void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
 {
     vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
     for (EndGameStat endStat : endGameStats)
     {
         if (FuncUtils::contains(winners, endStat.hovercraft))
         {
-            endStat.awards[name] = points;
+            endStat.afterAwardsScore += points;
+            endStat.awards.push_back(make_tuple(name, description, points));
         }
     }
 
 }
 
-void GameStats::setAwards()
+void GameStats::awardAwards()
 {
-    awardHighestStat(KILLS_TOTAL_AGAINST_BOTS, "Ludite", 200);
-    awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS, "Ludite", 200);
-    awardHighestStat(POWERUPS_TOTAL_PICKED_UP, "Hungry for Power", 200);
-    awardHighestStat(KILLSTREAK_LARGEST, "Tactical", 100);
+    awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
+    awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+    awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Hungry for Power", "Most powerups",    200);
+    awardHighestStat(KILLSTREAK_LARGEST,            "Tactical", "Largest killstreak",       100);
 }

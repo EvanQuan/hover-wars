@@ -13,9 +13,9 @@ struct EndGameStat
     int beforeAwardsScore;
     // The score after awards are awarded. This is the final score.
     int afterAwardsScore;
-    // List of awards gained. Composed of the name of the award and the points
-    // it awards.
-    unordered_map<string, int> awards;
+    // List of awards gained. Composed of the name of the award, description of
+    // award the points it awards.
+    vector<tuple<string, string, int>> awards;
 };
 /*
 Stores and calculates all in-game stats.
@@ -121,12 +121,6 @@ public:
         PICKUP_POWERUP,
     };
 
-
-    enum eRemoveScoreReason
-    {
-        HIT = 0,
-    };
-
     enum eCooldown
     {
         COOLDOWN_ROCKET = 0,
@@ -188,20 +182,19 @@ private:
     void correspondEntitiesToHovercrafts();
 
     /*
-    End game stats
+    End game stats and awards
 
     Sorted and variable in size, depending on in-game results.
     */
     vector<EndGameStat> endGameStats;
-    void calculateEndGameBonuses();
-    void calculateWinners();
-    void sortWinners();
+    void initializeEndGameStats();
+    void sortByHighestScoreFirst();
     bool winnerSortFunction(EndGameStat left, EndGameStat right);
     vector<eHovercraft> getHovercraftsThatHaveHighest(eStat stat);
 
     // Award name : function that determines who won the award
-    void setAwards();
-    void awardHighestStat(eStat stat, string name, int points);
+    void awardAwards();
+    void awardHighestStat(eStat stat, string name, string description, int points);
 
 
     /*
@@ -269,6 +262,11 @@ private:
         {HIT_BOT_4,     HOVERCRAFT_BOT_4},
     };
 
+    /*
+        This corresponds the entityIDs to eHovercrafts.
+        This will only be filled with values for hovercrafts that exist in the
+        game.
+    */
     unordered_map<int, eHovercraft> entityIDToHovercraft;
 };
 
