@@ -48,7 +48,6 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
     ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 
 }
-
 void AIManager::update(float fTimeInSeconds)
 {
     vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
@@ -74,11 +73,27 @@ void AIManager::update(float fTimeInSeconds)
         PxTransform globalTransform = physics->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
 
+        int playerNum = eHovercraft::HOVERCRAFT_PLAYER_1;
+        float distanceToNearestPlayer = 1000000;
         // @TODO add ability to change targets when we do multiplayer
-        glm::vec3 targetPosition = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
-        glm::vec3 targetVelocity = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
+        /*for (int i = 0; i < ENTITY_MANAGER->getPlayerSize(); i++) {
+            HovercraftEntity *mPlayer = ENTITY_MANAGER->getPlayer((eHovercraft)i);
+            float dis = (mPlayer->getPosition() - botPos).length();
+            if ((mPlayer->getPosition() - botPos).length() < distanceToNearestPlayer) {
+                distanceToNearestPlayer = dis;
+                playerNum = i;
+            }
+        }*/
+        HovercraftEntity *mPlayer = ENTITY_MANAGER->getPlayer((eHovercraft)playerNum);
+        //glm::vec3 targetPosition = mPlayer->getPosition();
+
+
+        glm::vec3 targetVelocity = mPlayer->m_pPhysicsComponent->getLinearVelocity();
+
+
+        //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(minXPlayer, minYPlayer),vec2(minXBot, minYBot));
         Action a;
-        ai->popCurrentAction(targetPosition, targetVelocity, botPos, botVel, atan2(vForce.x, vForce.z), 0.0f,&a);
+        ai->popCurrentAction(mPlayer, bot,targetVelocity, botPos, botVel, atan2(vForce.x, vForce.z),&a);
 
         //std::cout << "BotEntity update: " << a.actionsToTake[0] << ", " << a.actionsToTake[1] << ", " << a.actionsToTake[2] << ", "<< a.actionsToTake[3] << std::endl;
         // fire Rocket, right-left turn, forward-back move,right-left move
@@ -90,8 +105,13 @@ void AIManager::update(float fTimeInSeconds)
         }
         float moveX = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_RIGHT_LEFT];
         float moveY = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_FORWARDS_BACKWARDS];
-        if ((moveX != 0) || (moveY != 0)) {
-            physics->moveGlobal(moveX, moveY);
+        if (((int)moveX != 0) || ((int)moveY != 0)) {
+            if (bot->isInControl()) {
+                physics->moveGlobal(moveX, moveY);
+            }
+        }
+        if (a.actionsToTake[AIComponent::eAction::ACTION_FIRE_ROCKET] == 1) {
+            bot->useAbility(eAbility::ABILITY_ROCKET);
         }
         bot->update(fTimeInSeconds);
     }

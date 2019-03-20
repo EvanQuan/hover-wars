@@ -95,22 +95,22 @@ rocket {
 
 # Information for Spikes in this Scene
 spikes {
-	+mesh {
-         models/spikes2.obj
-         1.0
-     }
-     +material {
-         textures/defaultTexture.png
-         0.0
-     }
-     +shader {
-         blinn_phong_shdr
-     }
+    +mesh {
+        models/spikes2.obj
+        1.0
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
 }
 
 directional_light {
     -1 -1 -1
-    1 1 1
+    0 0 0
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     1000.0 1.0 1200.0
@@ -273,25 +273,25 @@ player {
 #     }
 #}
 
-#bot {
-#     50 5 0.1
-#    +mesh {
-#        models/hovercraft/HoverCar.obj
-#        0.012
-#    }
-#    +material {
-#        textures/tronBase.png
-#        0.1 0.1 0.1
-#        20.0
-#    }
-#    +shader {
-#        blinn_phong_shdr
-#    }
-#    +bounding {
-#        spatial
-#    }
-#}
-#
+bot {
+     50 5 0.1
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/tronBase.png
+        0.1 0.1 0.1
+        20.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+
 #bot {
 #     -50 5 0.1
 #    +mesh {

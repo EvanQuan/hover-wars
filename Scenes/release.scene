@@ -78,19 +78,34 @@
 #                   :> <h w l> - height width length as floats
 # ============================================================
 
+# Information for Rockets in this Scene
+rocket {
+    +mesh {
+        models/rocket2.obj
+        1.0
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+}
+
 # Information for Spikes in this Scene
 spikes {
-	+mesh {
-         models/spikes.obj
-         1.0
-     }
-     +material {
-         textures/defaultTexture.png
-         0.0
-     }
-     +shader {
-         blinn_phong_shdr
-     }
+    +mesh {
+        models/spikes2.obj
+        1.0
+    }
+    +material {
+        textures/defaultTexture.png
+        0.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
 }
 
 directional_light {
@@ -271,7 +286,7 @@ player {
 
 # models/hovercraft/RetroRacer_obj/RetroRacerRed.obj
 bot {
-    10 0 0
+    0 0 50
     +mesh {
         models/hovercraft/HoverCar.obj
          0.012
@@ -569,7 +584,6 @@ cube {
         10 110 2
     }
 }
-
 # bump
 # Player should be able to move over this?
 # cube {
@@ -578,22 +592,6 @@ cube {
 #     +bounding {
 #         box
 #         0.25 2.0 2.0
-#     }
-# }
-
-# Rocket
-# static_mesh {
-#     -20 1 1
-#     +mesh {
-#         models/missile.obj
-#         0.01
-#     }
-#     +material {
-#         textures/defaultTexture.png
-#         0.0
-#     }
-#     +shader {
-#         blinn_phong_shdr
 #     }
 # }
 

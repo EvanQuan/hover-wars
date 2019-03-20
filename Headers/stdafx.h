@@ -65,6 +65,7 @@ using namespace physx;
 #define LIGHT_MOVE_FACTOR   0.05f
 #define PI                  3.1415926535f
 #define PI_2                6.28318530718f
+#define PI_HALF             1.57079632679f
 #define DEGREES_TO_RADIANS  0.01745329251f
 #define SECONDS_PER_MINUTE  60
 

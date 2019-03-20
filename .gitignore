@@ -1,10 +1,12 @@
 # Object files in Debug directory will cause merge conflicts when
 # compiling. No need to store on repo when they are generated on build.
 /Debug
+/Debug Optimized
 
 # Similarly to the Debug directory, building in release mode will cause
-# merge conflicts. 
+# merge conflicts.
 /Release
+/Release Unoptimized
 /Checked
 /UnitTests/Release
 /UnitTests/Debug
