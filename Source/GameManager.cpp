@@ -164,6 +164,7 @@ bool GameManager::renderGraphics()
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
         USER_INTERFACE->update(frameDeltaTime);
+        // call function to draw our scene
     }
 
     // Sound needs to update after the EntityManager to reflect in game changes
@@ -171,7 +172,6 @@ bool GameManager::renderGraphics()
     // is paused.
     SOUND_MANAGER->update();
 
-    // call function to draw our scene
     drawScene();
 
     // check for Window events
@@ -237,7 +237,11 @@ void GameManager::drawScene()
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);
-        m_pEntityManager->renderEnvironment();
+        if (!paused)
+        {
+            m_pEntityManager->renderEnvironment();
+        }
+        USER_INTERFACE->render();
         glDisable(GL_DEPTH_TEST);
 
         // scene is rendered to the back buffer, so swap to front for display
