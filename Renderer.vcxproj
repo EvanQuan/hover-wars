@@ -96,6 +96,8 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
+    <ClInclude Include="Headers\UserInterface\GameUserInterface.h" />
+    <ClInclude Include="Headers\UserInterface\MenuUserInterface.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
   </ItemGroup>
@@ -159,6 +161,8 @@
     <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
+    <ClCompile Include="Source\UserInterface\GameUserInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\MenuUserInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
   </ItemGroup>

@@ -220,6 +220,12 @@
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h">
       <Filter>Headers\ArtificialIntelligence</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\UserInterface\GameUserInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\MenuUserInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
@@ -402,6 +408,12 @@
     </ClCompile>
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp">
       <Filter>Source\ArtificialIntelligence</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\GameUserInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\MenuUserInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
