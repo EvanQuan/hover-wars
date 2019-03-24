@@ -93,6 +93,13 @@ private:
     Unit: seconds
     */
     float m_fGameTime;
+    /*
+    After the game has been signaled to end, there is some delay before the
+    game actually ends. In other words, the game remains in the GameMenu for
+    this duration before moving onto the PostgameMenu.
+
+    Unit: seconds
+    */
     float m_fGameOverTime;
     // Signifies of the game has ended
     bool startedGameOver;

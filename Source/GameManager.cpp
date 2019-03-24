@@ -207,8 +207,6 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pUserInterface->reinitialize(gameTime);
-    m_pGameStats->reinitialize();
-    m_pAIManager->reinitialize();
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -218,6 +216,11 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // Spawn Bots
     for (unsigned int i = 0; i < botCount; i++)
         SCENE_LOADER->createBot();
+
+    // AFTER the players and bots have been made, the GameStats and AI
+    // need to reinitialize to track the players and bots
+    m_pGameStats->reinitialize();
+    m_pAIManager->reinitialize();
 }
 
 /*
@@ -231,6 +234,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 void GameManager::endGame()
 {
     // postgame menu
+    cout << "GameManger::endGame()" << endl;
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
 }
