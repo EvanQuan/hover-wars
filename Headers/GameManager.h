@@ -43,7 +43,6 @@ public:
     // which might be shared with a joystick
     eHovercraft m_eKeyboardHovercraft;
 
-    UserInterface* m_pUserInterface;
 
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
@@ -55,6 +54,7 @@ public:
     GLFWwindow* m_pWindow;
 
     void addInterface(UserInterface* ui);
+    void setCurrentInterface(UserInterface* ui);
 
 private:
     // For Singleton Implementation
@@ -112,6 +112,7 @@ private:
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
     PhysicsManager*     m_pPhysicsManager;
+    UserInterface*      m_pCurrentInterface;
     vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update

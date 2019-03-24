@@ -87,9 +87,10 @@ GameManager::~GameManager()
     }
     m_vInterfaceInstances.clear();
 
-    // Note: This throws an exception in release
-    if (nullptr != m_pUserInterface)
-        delete m_pUserInterface;
+    // Note: This throws an exception since all the UI's are already deleted in
+    // the for loop above
+    if (nullptr != m_pCurrentInterface)
+        delete m_pCurrentInterface;
 
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
@@ -115,6 +116,10 @@ GameManager::~GameManager()
 void GameManager::addInterface(UserInterface* ui)
 {
     m_vInterfaceInstances.push_back(ui);
+}
+void GameManager::setCurrentInterface(UserInterface* ui)
+{
+    m_pCurrentInterface = ui;
 }
 /*
     Start rendering game to screen. This call with block until the game loop
@@ -185,7 +190,7 @@ bool GameManager::renderGraphics()
         // CommandHandler has changed in order to reflect their changes.
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
-        m_pUserInterface->update(frameDeltaTime);
+        m_pCurrentInterface->update(frameDeltaTime);
         // call function to draw our scene
     }
 
@@ -223,7 +228,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    m_pUserInterface->reinitialize(gameTime);
+    m_pCurrentInterface->reinitialize(gameTime);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -277,7 +282,7 @@ void GameManager::drawScene()
         {
             m_pEntityManager->renderEnvironment();
         }
-        m_pUserInterface->render();
+        m_pCurrentInterface->render();
         glDisable(GL_DEPTH_TEST);
 
         // scene is rendered to the back buffer, so swap to front for display
@@ -323,12 +328,12 @@ bool GameManager::initialize()
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
-    m_pUserInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
+    m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
     // initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     // m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
-    // m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+    // m_pCurrentInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
-    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+    m_pCurrentInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
@@ -363,7 +368,7 @@ functionality for menus, etc.
 void GameManager::resizeWindow( int iWidth, int iHeight )
 {
     m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
-    m_pUserInterface->updateWidthAndHeight(iWidth, iHeight);
+    m_pCurrentInterface->updateWidthAndHeight(iWidth, iHeight);
 }
 
 /*

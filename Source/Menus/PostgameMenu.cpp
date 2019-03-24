@@ -1,5 +1,6 @@
 #include "Menus/PostgameMenu.h"
 #include "Menus/MainMenu.h"
+#include "UserInterface/MainInterface.h"
 #include "GameStats.h"
 
 // Singleton instance
@@ -37,6 +38,7 @@ void PostgameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PostgameMenu::back()
 {
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
     nextMenu(MainMenu::getInstance());
 }
 
