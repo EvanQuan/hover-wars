@@ -329,14 +329,11 @@ bool GameManager::initialize()
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
-    // initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
-    // m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
-    // m_pCurrentInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
-    m_pCurrentInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
+    m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
 #endif
 
     // Return error results
