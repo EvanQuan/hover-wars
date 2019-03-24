@@ -50,7 +50,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 // Written by: James Cote
 // Description: Default functionality for Interactable Entities.
 //      Default: tells the other entity that they've been hit.
-void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
+void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, eAbility ability)
 {
     // NOTE: Before  it used to look like this:
     //  static_cast<HovercraftEntity*>(pOther)->getHitBy(static_cast<eHovercraft>(m_iOwnerID));
@@ -70,7 +70,7 @@ void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderM
         // cout << owner << "[ID: " << m_iOwnerID << "] hit " << GAME_STATS->getEHovercraft(hit->getID()) << "[ID: "<< hit->getID() << "]"<< endl;
         // cout << owner << " hit " << GAME_STATS->getEHovercraft(hit->getID()) << endl;
 
-        hit->getHitBy(owner);
+        hit->getHitBy(owner, ability);
     }
 }
 

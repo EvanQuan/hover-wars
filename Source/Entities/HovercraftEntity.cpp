@@ -281,14 +281,14 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     @param  attacker        to award points to
 */
-void HovercraftEntity::getHitBy(eHovercraft attacker)
+void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
     if (isInvincible()) {
         return;
     }
     setInvincible();
     m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)));
+                         static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
 }
 
 /*
@@ -464,11 +464,11 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID));
+           pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()));
+            this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()), ABILITY_SPIKES);
         }
 
         // Momentarily lose control of vehicle to prevent air moving
