@@ -11,6 +11,7 @@ class EntityManager;
 class CommandHandler;
 class ShaderManager;
 class UserInterface;
+class GameStats;
 
 // Class: Game Manager
 // Purpose: Manages Game States and handles initialization of a level and handling of
@@ -24,9 +25,9 @@ public:
     ~GameManager();
     
     // Graphics Application
-    bool initializeGraphics( string sFileName );
+    bool initialize();
     void startRendering();
-    void initializeNewGame(int playerCount, int botCount, float gameTime);
+    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, string sFileName);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height  Settings
@@ -41,15 +42,19 @@ public:
     // The keyboard corresponds to its own hovercraft
     // which might be shared with a joystick
     eHovercraft m_eKeyboardHovercraft;
-#ifndef NDEBUG
-    // User interface is public for debug puprposes
-    // so that debug commands can change the UI directly.
-    // TODO: Fix this design so that it doesn't change depending on Debug or Not
-    UserInterface* m_pUserInterface;
-#endif
+
 
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
+
+    int m_iWidth;
+    int m_iHeight;
+
+    // Window Reference
+    GLFWwindow* m_pWindow;
+
+    void addInterface(UserInterface* ui);
+    void setCurrentInterface(UserInterface* ui);
 
 private:
     // For Singleton Implementation
@@ -62,8 +67,6 @@ private:
 
     void endGame();
 
-    // Window Reference
-    GLFWwindow* m_pWindow;
 
     // Update Variables
     /*
@@ -90,6 +93,13 @@ private:
     Unit: seconds
     */
     float m_fGameTime;
+    /*
+    After the game has been signaled to end, there is some delay before the
+    game actually ends. In other words, the game remains in the GameMenu for
+    this duration before moving onto the PostgameMenu.
+
+    Unit: seconds
+    */
     float m_fGameOverTime;
     // Signifies of the game has ended
     bool startedGameOver;
@@ -100,14 +110,11 @@ private:
     CommandHandler*     m_pCommandHandler;
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
+    GameStats*          m_pGameStats;
+    PhysicsManager*     m_pPhysicsManager;
+    UserInterface*      m_pCurrentInterface;
+    vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update
     bool paused;
-
-#ifdef NDEBUG
-    // User interface is normally private.
-    // There is no reason for it to be public.
-    UserInterface* m_pUserInterface;
-#endif
 };
-

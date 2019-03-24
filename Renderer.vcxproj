@@ -96,6 +96,13 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
+    <ClInclude Include="Headers\UserInterface\GameInterface.h" />
+    <ClInclude Include="Headers\UserInterface\MainInterface.h" />
+    <ClInclude Include="Headers\UserInterface\MenuInterface.h" />
+    <ClInclude Include="Headers\UserInterface\PauseInterface.h" />
+    <ClInclude Include="Headers\UserInterface\PostgameInterface.h" />
+    <ClInclude Include="Headers\UserInterface\PregameInterface.h" />
+    <ClInclude Include="Headers\UserInterface\StartInterface.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
   </ItemGroup>
@@ -159,6 +166,13 @@
     <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
+    <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\MainInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\MenuInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\PauseInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\PostgameInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\PregameInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\StartInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
   </ItemGroup>
@@ -280,12 +294,6 @@
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <PreprocessorDefinitions>_DEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_PHYSX_FOUNDATION_EXPORTS;PX_PHYSX_CORE_EXPORTS;PX_PHYSX_GPU_SHARED_LIB_NAME=PhysXGpu_32.dll;PX_DEBUG=1;PX_CHECKED=1;PX_NVTX=0;PX_SUPPORT_PVD=1;PhysX_EXPORTS;%(PreprocessorDefinitions);FTGL_LIBRARY_STATIC;_LIB</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <OmitFramePointers>true</OmitFramePointers>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -327,17 +335,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>Dependencies\PhysX\includes;Dependencies\FreeType\include;Dependencies\glfw\includes;Dependencies\FMod\inc;Dependencies\glew\includes;glm;Headers;Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_ITERATOR_DEBUG_LEVEL=0;NDEBUG;WIN32;_WINDOWS;_GLFW_USE_CONFIG_H;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_WINSOCK_DEPRECATED_NO_WARNINGS;PX_BUILD_NUMBER=0;PX_SUPPORT_PVD=0;%(PreprocessorDefinitions);FTGL_LIBRARY_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <OmitFramePointers>true</OmitFramePointers>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

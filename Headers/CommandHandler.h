@@ -24,7 +24,6 @@ may come from other means for test purposes.
 class CommandHandler final
 {
 public:
-    static CommandHandler* getInstance(GLFWwindow *rWindow);
     static CommandHandler* getInstance();
     ~CommandHandler();
 
@@ -37,7 +36,7 @@ public:
     GLFWwindow* m_pWindow;
 private:
     // Singleton Variables
-    CommandHandler(GLFWwindow *rWindow);
+    CommandHandler();
     static CommandHandler* m_pInstance;
 
     Menu* m_pCurrentMenu;

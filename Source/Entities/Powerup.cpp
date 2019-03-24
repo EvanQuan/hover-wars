@@ -1,6 +1,7 @@
 #include "EntityHeaders/Powerup.h"
 #include "DataStructures/SpriteSheetDatabase.h"
 #include "EntityManager.h"
+#include "SoundManager.h"
 
 using namespace SpriteSheetDatabase;
 
@@ -37,5 +38,14 @@ void Powerup::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner)
 // void Powerup::handleCollision(const Entity* pOther) const
 void Powerup::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
-    /* Not Implemented */
+        /* Not Implemented */
+        // SOUND_MANAGER->play(SoundManager::eSoundEvent::);
+        // Tell the Other Entity that they've been hit via the Inherited Collision Handler
+        // InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
+
+        // clear Rocket Rendering; Remove Instance from Mesh
+        // string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
+        // m_pMesh->removeInstance(sHashKey);
+        // m_pPhysicsComponent->flagForRemoval(sHashKey);
+        // m_pReferenceList.erase(remove(m_pReferenceList.begin(), m_pReferenceList.end(), sHashKey), m_pReferenceList.end());
 }

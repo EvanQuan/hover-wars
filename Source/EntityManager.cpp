@@ -206,7 +206,7 @@ void EntityManager::doRender()
            m_pEmtrEngn->renderEmitters();
         } 
 
-        USER_INTERFACE->render();
+        // USER_INTERFACE->render();
 
 #ifdef _DEBUG
         // Draw the Spatial Map for debuggin
@@ -390,6 +390,7 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
 
     // Store Player Entity In Player Entity List as well as Master Entity List.
     m_pPlayerEntityList.push_back(pNewPlayer.get());
+    m_pSpatialMap->addDynamicEntity(pNewPlayer.get());
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewPlayer)));
 }
 
@@ -407,7 +408,8 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
     pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale);
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List
-    m_pBotEntityList.push_back(pNewBot.get()); 
+    m_pBotEntityList.push_back(pNewBot.get());
+    m_pSpatialMap->addDynamicEntity(pNewBot.get());
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewBot)));
 }
 
@@ -694,6 +696,10 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 /*********************************************************************************\
 * Command Management                                                             *
 \*********************************************************************************/
+int EntityManager::getPlayerSize()
+{
+    return m_pPlayerEntityList.size();
+}
 
 bool EntityManager::playerExists(eHovercraft player)
 {

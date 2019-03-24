@@ -9,6 +9,7 @@
 #define CURRENT_PROPERTIES_DEF     SceneLoader::m_sProperties[SceneLoader::CURRENT_PROPERTIES]
 #define ROCKET_PROPERTIES_DEF      SceneLoader::m_sProperties[SceneLoader::ROCKET_PROPERTIES]
 #define SPIKES_PROPERTIES_DEF      SceneLoader::m_sProperties[SceneLoader::SPIKES_PROPERTIES]
+#define HOVERCRAFT_PROPERTIES_DEF  SceneLoader::m_sProperties[SceneLoader::HC_PROPERTIES]
 
 #define MAX_CHARS_PER_LINE     256
 #define MAX_SPHERE_PARAMS      4
@@ -27,8 +28,7 @@
 #define POINT_LIGHT            "point_light"
 #define DIRECTIONAL_LIGHT      "directional_light"
 #define SPOTLIGHT              "spotlight"
-#define PLAYER                 "player"
-#define BOT                    "bot"
+#define HC                     "hovercraft"
 #define STATIC_MESH            "static_mesh"
 #define SPATIAL_MAP            "spatial_map"
 #define BOIDS                  "boids"
@@ -41,6 +41,7 @@
 #define NAME                   "name"
 #define ROCKET                 "rocket"
 #define SPIKES                 "spikes"
+#define SPAWNS                 "spawn_points"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -207,21 +208,19 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createPlayer(vector< string > sData, int iLength)
+void SceneLoader::createPlayer()
 {
-    CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
-
-    m_pEntityManager->generatePlayerEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
+    getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
+    m_pEntityManager->generatePlayerEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
 }
 
 // Generates a Bot Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createBot(vector< string > sData, int iLength)
+void SceneLoader::createBot()
 {
-    CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);    // Position of Mesh
-
-    m_pEntityManager->generateBotEntity(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
+    getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
+    m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
 }
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
@@ -232,17 +231,6 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
         CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[i])/*X*/, stof(sData[i + 1])/*Y*/, stof(sData[i + 2])/*Z*/);    // Position of Mesh
         m_pEntityManager->generateStaticMesh(&CURRENT_PROPERTIES_DEF.pObjectProperties, CURRENT_PROPERTIES_DEF.sMeshLocation, CURRENT_PROPERTIES_DEF.fScaleProperty, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
-}
-
-// Saves the Information for a Rocket Mesh from the Scene Loader
-void SceneLoader::saveRocketInfo()
-{
-    ROCKET_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
-}
-
-void SceneLoader::saveSpikesInfo()
-{
-    SPIKES_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
 }
 
 // Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
@@ -397,10 +385,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createDirectionalLight(sData, sData.size());
     else if (SPOTLIGHT == sIndicator)                   // Parse Spotlight
         createSpotLight(sData, sData.size());
-    else if (PLAYER == sIndicator)                      // Parse Player
-        createPlayer(sData, sData.size());
-    else if (BOT == sIndicator)                         // Parse Bot
-        createBot(sData, sData.size());
+    else if (HC == sIndicator)                          // Save Hovercraft Information
+        HOVERCRAFT_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information
@@ -408,9 +394,11 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
     else if (CUBE == sIndicator)                        // Parse Cube
         createCube(sData, sData.size());
     else if (ROCKET == sIndicator)                      // Parse Rocket information
-        saveRocketInfo();
+        ROCKET_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
     else if (SPIKES == sIndicator)                      // Parse Spikes information
-        saveSpikesInfo();
+        SPIKES_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
+    else if (SPAWNS == sIndicator)                      // Parse Spawn Point Information
+        saveSpawnPoint(sData, sData.size());
 
     clearProperties();
 }
@@ -542,4 +530,23 @@ void SceneLoader::resetAllProperties()
 {
     for( unsigned int eIndex = 0; eIndex < MAX_PROPERTIES; ++eIndex )
         m_sProperties[eIndex].resetProperties();
+
+    m_vSpawnPoints.clear();
+
+    spawnIndex = 0;
+}
+
+/************************************************************************\
+ * Spawn Points Functionality                                           *
+\************************************************************************/
+void SceneLoader::saveSpawnPoint(vector< string > sData, int iLength)
+{
+    for (int i = 0; i < iLength - 3; i += 3)
+        m_vSpawnPoints.push_back(vec3(stoi(sData[i]), stoi(sData[i + 1]), stoi(sData[i + 2])));
+}
+
+void SceneLoader::getNextSpawnPoint(vec3* vPosition)
+{
+    spawnIndex = FuncUtils::addModulo(spawnIndex, 1, 0, m_vSpawnPoints.size() - 1);
+    *vPosition = m_vSpawnPoints[spawnIndex];
 }

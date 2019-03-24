@@ -6,20 +6,31 @@
 /***********\
  * DEFINES *
 \***********/
-#define NUM_SPIKES      1
-#define FRONT_SPIKES    0
+#define RIGHT_SPIKES    0
+#define LEFT_SPIKES     1
+#define BACK_SPIKES    2
+#define FRONT_SPIKES     3
 #define RADIANS_90      1.5708f
-#define POSITION_OFFSET 1.0f
-#define ANIMATION_TIME  1.0f
+#define RADIANS_180     3.14159f
+#define X_OFFSET        0.65f
+#define Z_ORIGIN        -0.5f
+#define Z_OFFSET        2.0f
+#define ANIMATION_TIME  0.1f
 
 /*************\
  * CONSTANTS *
 \*************/
 const vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
-const vec3 ORIGIN(0.0f, 0.0f, 0.0f);
-const quat ROTATIONS[NUM_SPIKES] = { angleAxis(RADIANS_90, UP_VECTOR) };
-const vec3 POSITIONS[NUM_SPIKES] = { vec3(0.0f, 0.0f, POSITION_OFFSET) };
-const float SCALES[NUM_SPIKES]   = { 1.0f };
+const vec3 ORIGIN(0.0f, 0.0f, Z_ORIGIN);
+const quat ROTATIONS[NUM_SPIKES] = { angleAxis(RADIANS_90, UP_VECTOR),   /*RIGHT*/
+                                     angleAxis(-RADIANS_90, UP_VECTOR),  /*LEFT*/
+                                     angleAxis(0.0f, UP_VECTOR),         /*BACK*/
+                                     angleAxis(RADIANS_180, UP_VECTOR)}; /*FRONT*/
+const vec3 POSITIONS[NUM_SPIKES] = { vec3(-X_OFFSET, 0.0f, Z_ORIGIN),    /*RIGHT*/
+                                     vec3(X_OFFSET, 0.0f, Z_ORIGIN),     /*LEFT*/
+                                     vec3(0.0f, 0.1f, Z_ORIGIN - Z_OFFSET),    /*BACK*/
+                                     vec3(0.0f, -0.25f, Z_ORIGIN + Z_OFFSET) };  /*FRONT*/
+const float SCALES[NUM_SPIKES]   = { 0.5f, 0.5f, 0.4f, 0.25f };
 
 // Default Constructor
 Spikes::Spikes(int iID, int iOwnerID)
@@ -47,11 +58,15 @@ void Spikes::initialize(const string& sFileName,
     InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);
 
     // Initialize Animation Component
-    m_pAnimationComponent = ENTITY_MANAGER->generateAnimationComponent(m_iID);
-    m_pAnimationComponent->initializeComponent(m_pMesh);
-    m_pAnimationComponent->addKeyFrame(&ORIGIN, &ROTATIONS[FRONT_SPIKES], SCALES[FRONT_SPIKES], ANIMATION_TIME);
-    m_pAnimationComponent->addKeyFrame(&POSITIONS[FRONT_SPIKES], &ROTATIONS[FRONT_SPIKES],
-                                       SCALES[FRONT_SPIKES], ANIMATION_TIME);
+    for(unsigned int i = 0; i < NUM_SPIKES; ++i)
+    {
+        m_pSpikeAnimations[i] = ENTITY_MANAGER->generateAnimationComponent(m_iID);
+        m_pSpikeAnimations[i]->initializeComponent(m_pMesh);
+        m_pSpikeAnimations[i]->addKeyFrame(&ORIGIN, &ROTATIONS[i], 0.0f, ANIMATION_TIME);
+        m_pSpikeAnimations[i]->addKeyFrame(&POSITIONS[i], &ROTATIONS[i],
+                                           SCALES[i], ANIMATION_TIME);
+    }
+    
 }
 
 /****************************************************************\
@@ -60,7 +75,8 @@ void Spikes::initialize(const string& sFileName,
 
 void Spikes::update(float fTimeInSeconds)
 {
-    /* Not Implemented */
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+        m_pSpikeAnimations[i]->setWorldTransform(&m_m4WorldTransform);
 }
 
 // This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
@@ -84,6 +100,7 @@ void Spikes::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 // Activates Spikes
 void Spikes::animateSpikes()
 {
-    m_pAnimationComponent->animateToNextFrame();
+    for( unsigned int i = 0; i < NUM_SPIKES; ++i)
+        m_pSpikeAnimations[i]->animateToNextFrame();
     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_ACTIVATE);
 }

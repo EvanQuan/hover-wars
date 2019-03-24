@@ -94,6 +94,7 @@ public:
     bool playerExists(eHovercraft player);
     HovercraftEntity* getBot(eHovercraft bot);
     bool botExists(eHovercraft bot);
+    int getPlayerSize();
 
     // GameStats needs to iterate over all players and bots to correspond
     // EntityIDs with eHovercraft enum values

@@ -2,8 +2,9 @@
 #include <time.h>       /* time */
 #include "Physics/PhysicsManager.h"
 #include "SpatialDataMap.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
-
+#define ACCURACY_THRESHOLD 0.01
 AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
 {
     for (int j = 0; j < MUTATION_SET; j++) {
@@ -13,7 +14,7 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
     }
 
     /* initialize random seed: */
-    srand(static_cast<unsigned int>(time(NULL)));
+    // srand(static_cast<unsigned int>(time(NULL)));
 
 }
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
@@ -25,15 +26,21 @@ AIComponent::~AIComponent() {
 
 }
 void AIComponent::genRandomAction(Action *action) {
-    action->actionsToTake[0] = (float) (rand() % 2);
-    action->actionsToTake[1] = (float) (rand() % 3 - 1);
-    action->actionsToTake[2] = (float) (rand() % 3 - 1);
-    action->actionsToTake[3] = (float) (rand() % 3 - 1);
-    action->actionsToTake[4] = (float) (rand() % 2);
+    //action->actionsToTake[ACTION_FIRE_ROCKET] = (float) (rand() % 2);
+    //action->actionsToTake[ACTION_TURN] = (float) (rand() % 3 - 1);
+    //action->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = (float) (rand() % 3 - 1);
+    //action->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = (float) (rand() % 3 - 1);
+    //action->actionsToTake[ACTION_SIZE] = (float) (rand() % 2);
+    action->actionsToTake[ACTION_FIRE_ROCKET] = static_cast<float>(FuncUtils::random(0, 1));
+    action->actionsToTake[ACTION_TURN] = static_cast<float>(FuncUtils::random(-1, 1));
+    action->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = static_cast<float>(FuncUtils::random(-1, 1));
+    action->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = static_cast<float>(FuncUtils::random(-1, 1));
+    action->actionsToTake[ACTION_SIZE] = static_cast<float>(FuncUtils::random(0, 1));
 }
 void AIComponent::mutateSet(int setIndex,int mutations) {
     for (int i = 0; i < mutations; i++) {
-        int randomIndex = rand() % LOOK_AHEAD_FRAMES;
+        // int randomIndex = rand() % LOOK_AHEAD_FRAMES;
+        int randomIndex = FuncUtils::random(0, LOOK_AHEAD_FRAMES - 1);
         genRandomAction(&frames[setIndex][randomIndex]);
     }
 
@@ -45,7 +52,7 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
        // botPos.x += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[2] * 10;
        // botPos.y += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[3] * 10;
         float rot = frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[1] * 0.01f;
-        rot = rot - (float)(floor(rot * (2 * 3.14159))/ (2 * 3.14159));
+        rot = rot - (float)(floor(rot * (PI_2))/ (PI_2));
         botRotation += rot;
         //if (frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[0] == 1) {
             glm::vec3 rocketDir = glm::vec3(cos(botRotation),sin(botRotation),0);
@@ -79,66 +86,91 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     //evaluation += (playerPos - botPos).length() * DISTANCE_REDUCTION_EVAL;
     return evaluation;
 }
-#define DISTANCE_BOX 4
+#define DISTANCE_BOX 5
 glm::vec3 seekPoint = vec3(200,0,30);
-void AIComponent::popCurrentAction(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown, Action *a) {
-    memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
+void AIComponent::popCurrentAction(HovercraftEntity *mPlayer,HovercraftEntity *bot, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, Action *a) {
+
+    //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
 
     //for (int i = 0; i < MUTATION_SET; i++)
     //    genRandomAction(&frames[i][currentPlace]);//adds a random action to the end
     //for (int i = 0; i < GA_ITERATIONS_PER_FRAME; i++) {
     //    performMutation(playerPos, playerVel, botPos, botVel, botRotation, CurrcoolDown);
     //}
-    vec3 difference = botPos - playerPos;
-    vec3 botToPlayer = playerPos - botPos;
-    botToPlayer /= botToPlayer.length();
-    difference /= difference.length();
-    float angle = atan2(difference.x,difference.z);
-    double angleBetween = angle - botRotation < angle - botRotation + (3.1415926535 * 2) ? angle - botRotation : angle - botRotation + (3.1415926535 * 2);
-    double botAmount = botRotation + (3.1415926535 / 2);//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
-    double modAmount = (botRotation / (3.1415926535 * 2) - floor(botRotation / (3.1415926535 * 2))) * (3.1415926535 * 2) - 3.1415926535;
-
-    if (isChasing) {
-        seekPoint = playerPos;
-        if (timeChased > 10) {
-            isChasing = false;
-            seekPoint.x = (float)(rand() % 200 - 100);
-            seekPoint.z = (float)(rand() % 200 - 200);
-            timeChased = 0;
+    unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
+    SPATIAL_DATA_MAP->getMapIndices(mPlayer, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
+    unsigned int minXBot, minYBot, maxXBot, maxYBot;
+    SPATIAL_DATA_MAP->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);
+    //if (timeSinceLastUpdate > 1) {
+    a->actionsToTake[ACTION_FIRE_ROCKET] = 0;
+    path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(minXBot, minYBot));
+    timeSinceLastUpdate = 0;
+    vec2 offset = SPATIAL_DATA_MAP->getWorldOffset();
+    //std::cout << "popCurrentAction: " << seekPoint.x << "," << seekPoint.z << std::endl;
+    //}
+    glm::vec3 nextPos = vec3(0, 0, 0);//mPlayer->getPosition();
+            
+    if (path.size() >= 2) {
+        for (int i = 0; i < (int)path.size(); i++) {
+            nextPos = vec3(path.at(1).x * SPATIAL_DATA_MAP->getTileSize() + offset.x, 0, path.at(1).y * SPATIAL_DATA_MAP->getTileSize() + offset.y);
+            vec3 difference = botPos - nextPos;
+            if (difference.length() > DISTANCE_BOX) {
+                break;
+            }
         }
     }
-    if (!isChasing && (timeChased > 3)) {
-        isChasing = true;
-        timeChased = 0;
+
+    vec3 difference = mPlayer->getPosition() - botPos;
+    vec3 botToPlayer = nextPos - botPos;
+    vec3 dirVector;
+    bot->m_pPhysicsComponent->getDirectionVector(&dirVector);
+    dirVector /= dirVector.length();
+    botToPlayer /= botToPlayer.length();
+    difference /= difference.length();
+
+    float mSlope = difference.z / difference.x;
+    float yVal = mSlope * dirVector.x;
+
+
+    float angle = atan(difference.x,difference.z);
+    double angleBetween = angle - botRotation < angle - botRotation + (PI_2) ? angle - botRotation : angle - botRotation + (3.1415926535 * 2);
+    double botAmount = botRotation + PI_HALF;//(((botRotation + (3.1415926535 / 2)) / (3.1415926535 * 2)) - (floor((botRotation + (3.1415926535 / 2))/(3.1415926535 * 2)))* (3.1415926535 * 2));
+    double modAmount = (botRotation / (PI_2) - floor(botRotation / (PI_2))) * (PI_2) - PI;
+
+    seekPoint = nextPos;
+
+    glm::vec3 playerPos = mPlayer->getPosition();
+    int XvalMul = (int)(difference.x / abs(difference.x));
+
+    if (yVal > dirVector.z) {
+        a->actionsToTake[ACTION_TURN] = (float) (1 * XvalMul);
     }
-    
-    if (angleBetween > 0.1) {
-        a->actionsToTake[1] = -1;
-    }
-    else if (angleBetween < -0.1) {
-        a->actionsToTake[1] = 1;
+    else if(abs(yVal - dirVector.z) < ACCURACY_THRESHOLD){
+        a->actionsToTake[ACTION_TURN] = 0;
+        a->actionsToTake[ACTION_FIRE_ROCKET] = 1;
     }
     else {
-        a->actionsToTake[1] = 0;
+        a->actionsToTake[ACTION_TURN] = (float)(-1 * XvalMul);
     }
+    
     bool isXdistance = false;
-    if ((botPos.x - seekPoint.x) > DISTANCE_BOX) {
-        a->actionsToTake[2] = -1;
+    if ((botPos.x - nextPos.x) > DISTANCE_BOX) {
+        a->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = -1;
     }
-    else if ((botPos.x - seekPoint.x) < -DISTANCE_BOX) {
-        a->actionsToTake[2] = 1;
+    else if ((botPos.x - nextPos.x) < -DISTANCE_BOX) {
+        a->actionsToTake[ACTION_MOVE_FORWARDS_BACKWARDS] = 1;
     }
     else {
         isXdistance = true;
     }
-    if ((botPos.z - seekPoint.z) > DISTANCE_BOX) {
-        a->actionsToTake[3] = -1;
+    if ((botPos.z - nextPos.z) > DISTANCE_BOX) {
+        a->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = -1;
     }
-    else if ((botPos.z - seekPoint.z) < -DISTANCE_BOX) {
-        a->actionsToTake[3] = 1;
+    else if ((botPos.z - nextPos.z) < -DISTANCE_BOX) {
+        a->actionsToTake[ACTION_MOVE_RIGHT_LEFT] = 1;
     }
     else if(isXdistance){
-        a->actionsToTake[4] = 1;
+        a->actionsToTake[ACTION_SIZE] = 1;
     }
     //a->actionsToTake[2] = difference.x/100.0f;
     //a->actionsToTake[3] = difference.z/100.0f;

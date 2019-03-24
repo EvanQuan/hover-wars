@@ -23,11 +23,99 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 #define FLAME_SPACING           0.25f
 
 
-#define LOSE_CONTROL_COLLISION_TIME 0.8f
+#define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
 #define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
+
+/*
+Cooldowns
+
+The time the hovercraft must wait until they can use the ability again.
+
+Units: seconds
+*/
+#define ROCKET_COOLDOWN         2.0f
+#define SPIKES_COOLDOWN         2.0f
+#define TRAIL_COOLDOWN          0.0f
+#define DASH_COOLDOWN           2.0f
+
+#define ROCKET_POWERUP_COOLDOWN ROCKET_COOLDOWN * 0.5f
+#define SPIKES_POWERUP_COOLDOWN SPIKES_COOLDOWN * 0.5f
+#define DASH_POWERUP_COOLDOWN   DASH_COOLDOWN * 0.5f
+
+/*
+Once spikes are activated, they are enabled for a duration before deactivating.
+*/
+#define SPIKES_DURATION         SPIKES_COOLDOWN * 0.5f // 1.0f
+/*
+Total time the trail can be activated from full to empty.
+
+Unit: seconds
+*/
+#define TRAIL_GAUGE_FULL        3.0f
+/*
+Represents the trail gauge is empty.
+*/
+#define TRAIL_GAUGE_EMPTY       0.0f
+
 // Fire Defines
 #define FIRE_HEIGHT             2.0
 #define FIRE_WIDTH              2.0
+
+#define POWERUP_DURATION        15.0f
+
+/*
+The maximum speed the player can normally travel. This ensures the player
+does not infinitely accelerate as they move.
+
+Speed : meters/second
+*/
+#define MAX_NORMAL_SPEED 30
+#define MAX_POWERUP_SPEED 60
+
+/*
+The duration a powerup lasts for.
+@TODO maybe move this to the powerup entity?
+
+Unit : seconds
+*/
+#define POWERUP_TIME 20.0f
+
+/*
+Time multiplier for the trail to recharge from empty to full.
+
+= 1: recharge rate is the same as drain rate.
+> 1: recharge rate is faster than drain rate
+< 1: recharge rate is slower than drain rate
+
+*/
+#define TRAIL_RECHARGE_MULTIPLIER 0.5f
+
+/*
+The interval of time between each created flame while the trail trail is
+activated.
+
+@TODO Flame interval should be based on distance, not time. In some sense, a
+line is simply being laid out, of which flame billboards are uniformly
+distributed across, meanining that the spacing is time invariant.
+
+Unit: seconds
+*/
+#define FLAME_INTERVAL          0.10f
+
+/*
+Delay time when the trail is deactivate and when the gauge begins to recharge.
+This makes spam toggling less effective.
+
+Unit: seconds
+*/
+#define TRAIL_RECHARGE_COOLDOWN 0.5f
+
+/*
+After getting hit, the hovercraft is invulnerable for a duration of time
+
+Unit : seconds
+*/
+#define INVINCIBLE_TIME 2.0f
 
 /*
 Determines from what horizontal angle the camera is tracking the hovercraft.
@@ -126,7 +214,6 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
 
     // Unused?
     // m_fMinimumDistanceBetweenFlames = 5.0f;
-    reinitialize();
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -148,7 +235,6 @@ void HovercraftEntity::reinitialize()
 
     initializeCooldowns();
     initializePowerups();
-
 }
 
 /****************************************************************\
@@ -167,6 +253,7 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Get the Transformation from the Physics component
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
+    m_pSpikes->updateWorldTransform(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
     m_pMesh->updateInstance(&m4NewTransform, m_sName);
@@ -227,8 +314,8 @@ void HovercraftEntity::updatePowerups(float fTimeInSeconds)
 {
     for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
     {
-        m_vPowerupsEnabled[powerup] -= fTimeInSeconds;
-        if (m_vPowerupsEnabled[powerup] <= 0)
+        m_vPowerupsTime[powerup] -= fTimeInSeconds;
+        if (m_vPowerupsEnabled[powerup] && (m_vPowerupsTime[powerup] <= 0))
         {
             disablePowerup(static_cast<ePowerup>(powerup));
         }
@@ -246,8 +333,26 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
+        m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
         break;
+    case POWERUP_ROCKET_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_POWERUP_COOLDOWN;
+        break;
+    case POWERUP_SPIKES_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_POWERUP_COOLDOWN;
+        break;
+    case POWERUP_DASH_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_POWERUP_COOLDOWN;
+        break;
+    default:
+        return;
     }
+    m_vPowerupsEnabled[powerup] = true;
+    m_vPowerupsTime[powerup] = POWERUP_DURATION;
+    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
+    GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
+    cout << powerup << " enabled" << endl;
+
 }
 
 /*
@@ -260,8 +365,22 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
+        m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
         break;
+    case POWERUP_ROCKET_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
+        break;
+    case POWERUP_SPIKES_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+        break;
+    case POWERUP_DASH_COOLDOWN:
+        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_COOLDOWN;
+        break;
+    default:
+        return;
     }
+    m_vPowerupsEnabled[powerup] = false;
+    cout << powerup << " disabled" << endl;
 }
 
 // Fetches the Spatial Dimensions of the Mesh/Bounding Box if applicable.
@@ -288,7 +407,12 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
     m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
-    m_pPhysicsComponent->initializeVehicle(getName(), true, m_pMesh, &sBounding, pObjectProperties->vPosition);
+    m_pPhysicsComponent->initializeVehicle(getName(),
+                                           true,
+                                           m_pMesh,
+                                           &sBounding,
+                                           pObjectProperties->vPosition,
+                                           MAX_NORMAL_SPEED);
 
     // Set up Mesh for Initial Transformation drawing.
     mat4 m4InitialTransform;
@@ -314,6 +438,8 @@ void HovercraftEntity::initialize(const string& sFileName,
 
     m_pCmrComponents[FRONT_CAMERA]->setSphericalPos(FRONT_CAMERA_START_VIEW);
     m_pCmrComponents[BACK_CAMERA]->setSphericalPos(BACK_CAMERA_START_VIEW);
+
+    reinitialize();
 }
 
 /*
@@ -329,7 +455,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
     // Get the Type of the Other Entity
     eEntityType eOtherType = pOther->getType();
     HovercraftEntity* pOtherHovercraft;
-    InteractableEntity* pOtherIE;
+    // InteractableEntity* pOtherIE;
     switch (eOtherType)
     {
     case ENTITY_HOVERCRAFT:
@@ -349,23 +475,24 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
-    case ENTITY_INTERACTABLE:
-        // Static Cast to an Interactable Entity
-        pOtherIE = static_cast<InteractableEntity*>(pOther);
-
-        // Switch between different Interactable Entity Types
-        switch (pOtherIE->getInteractableType())
-        {
-        case INTER_POWERUP:
-            // Random for now
-            setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
-            break;
-        case INTER_FLAME_TRAIL:
-        case INTER_ROCKET:
-        case INTER_SPIKES:
-            this->getHitBy(GAME_STATS->getEHovercraft(pOtherIE->getOwnerID()));
-        }
-        break;
+//    case ENTITY_INTERACTABLE:
+//        // this never gets called
+//        // Static Cast to an Interactable Entity
+//        pOtherIE = static_cast<InteractableEntity*>(pOther);
+//
+//        // Switch between different Interactable Entity Types
+//        switch (pOtherIE->getInteractableType())
+//        {
+//        case INTER_POWERUP:
+//            // Random for now
+//            setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
+//            break;
+//        case INTER_FLAME_TRAIL:
+//        case INTER_ROCKET:
+//        case INTER_SPIKES:
+//            this->getHitBy(GAME_STATS->getEHovercraft(pOtherIE->getOwnerID()));
+//        }
+//        break;
     case ENTITY_PLANE:
         // TODO still not sure if we're doing the gain control or the elevation check
         // to make collisions less wonky
@@ -379,6 +506,14 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         */
     }
 }
+
+void HovercraftEntity::setLoseControl(float seconds)
+{
+    outOfControlTime = seconds;
+    inControl = false;
+    cout << m_iID << " Lost control" << endl;
+}
+
 
 /********************************************************************************************************\
  * Private Functions                                                                                    *
@@ -394,6 +529,12 @@ void HovercraftEntity::initializeCooldowns()
         m_fCooldowns[ability] = 0.0f;
     }
 
+    m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_DURATION;
+    m_fMaxCooldowns[COOLDOWN_TRAIL_ACTIVATE] = TRAIL_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_TRAIL_DEACTIVATE] = TRAIL_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_COOLDOWN;
+
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
 }
@@ -405,8 +546,8 @@ void HovercraftEntity::initializePowerups()
 {
     for (int powerup = 0; powerup < POWERUP_COUNT; powerup++)
     {
-        m_vPowerupsEnabled[powerup] = 0;
-        disablePowerup(static_cast<ePowerup>(powerup));
+        m_vPowerupsTime[powerup] = 0;
+        m_vPowerupsEnabled[powerup] = false;
     }
 }
 
@@ -462,12 +603,13 @@ void HovercraftEntity::updateCameraPosition(float fTimeInSeconds)
 */
 void HovercraftEntity::updateInControl(float fTimeInSeconds)
 {
-    if (!isInControl)
+    if (!inControl)
     {
         outOfControlTime -= fTimeInSeconds;
         if (outOfControlTime <= 0)
         {
-            isInControl = true;
+            inControl = true;
+            cout << m_iID << " gained control" << endl;
         }
     }
 }
@@ -500,6 +642,8 @@ void HovercraftEntity::updateSpikes(float fTimeInSeconds)
     if (m_fSecondsSinceSpikesActivated > SPIKES_DURATION)
     {
         m_bSpikesActivated = false;
+        m_fSecondsSinceSpikesActivated = 0.0f;
+        m_pSpikes->animateSpikes();
     }
 }
 
@@ -650,7 +794,7 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
 */
 void HovercraftEntity::move(float x, float y)
 {
-    if (lowEnoughToMove && isInControl)
+    if (lowEnoughToMove && inControl)
     {
         m_pPhysicsComponent->move(x, y);
     }
@@ -670,22 +814,10 @@ void HovercraftEntity::move(float x, float y)
 */
 void HovercraftEntity::turn(float x)
 {
-    if (lowEnoughToMove && isInControl)
+    if (lowEnoughToMove && inControl)
     {
         m_pPhysicsComponent->rotatePlayer(x);
     }
-}
-
-/*
-    Set a powerup to enable. Once enabled, it provides the powerup benefits for
-    a set duration before being disabled and the benefits are lost.
-
-    @param powerup  to enable
-*/
-void HovercraftEntity::setPowerup(ePowerup powerup)
-{
-    m_vPowerupsEnabled[powerup] = POWERUP_TIME;
-    enablePowerup(powerup);
 }
 
 /*
@@ -699,7 +831,7 @@ void HovercraftEntity::shootRocket()
     m_pPhysicsComponent->getDirectionVector(&vVelocity);
     vVelocity *= ROCKET_SPEED;
     m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, 0.5f);
-    m_fCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
+    m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
 
 /*
@@ -709,11 +841,11 @@ void HovercraftEntity::activateSpikes()
 {
     SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
-    m_fCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+    m_fCooldowns[COOLDOWN_SPIKES] = m_fMaxCooldowns[COOLDOWN_SPIKES];
 
     m_bSpikesActivated = true;
     m_fSecondsSinceSpikesActivated = 0.0f;
-
+    m_pSpikes->animateSpikes();
 }
 
 /*
@@ -762,5 +894,15 @@ void HovercraftEntity::dash(eAbility direction)
         break;
     }
 
-    m_fCooldowns[COOLDOWN_DASH] = DASH_COOLDOWN;
+    m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
+}
+
+float HovercraftEntity::getTrailGaugePercent() const
+{
+    return m_fTrailGauge / TRAIL_GAUGE_FULL;
+}
+
+void HovercraftEntity::setInvincible()
+{
+    m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
 }

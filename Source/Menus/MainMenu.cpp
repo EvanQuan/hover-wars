@@ -1,6 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/StartMenu.h"
 #include "Menus/PregameMenu.h"
+#include "UserInterface/PregameInterface.h"
 
 // Singleton instance
 MainMenu* MainMenu::m_pInstance = nullptr;
@@ -33,9 +34,8 @@ void MainMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
+        m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
         nextMenu(PregameMenu::getInstance());
-        // Should go to PregameMenu, but for now goes straight to ingame
-        // nextMenu(PregameMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:
         PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);

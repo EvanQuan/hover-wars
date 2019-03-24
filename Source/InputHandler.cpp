@@ -125,26 +125,25 @@ void InputHandler::debugKeyCommands(int key, int action)
         {
             // Testing sound
         case GLFW_KEY_5:
-            SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPEED_BOOST);
             break;
         case GLFW_KEY_6:
-            SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_EXPLOSION);
+            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_ROCKET_COOLDOWN);
             break;
         case GLFW_KEY_7:
-            SOUND_MANAGER->play(SoundManager::SOUND_TRAIL);
+            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPIKES_COOLDOWN);
             break;
         case GLFW_KEY_8:
-            // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_LOOP);
-            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_COOLDOWN);
             break;
         case GLFW_KEY_9:
-            SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_HOVERCAR);
+            SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPAWN);
             break;
         case GLFW_KEY_0:
-            SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
+            SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
             break;
         case GLFW_KEY_MINUS:
-            SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
+            // SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
             break;
         case GLFW_KEY_DOWN:
             // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);

@@ -2,6 +2,7 @@
 #include "Menus/PauseMenu.h"
 #include "CommandHandler.h"
 #include "EntityHeaders/HovercraftEntity.h"
+#include "UserInterface/PauseInterface.h"
 
 // Singleton instance
 GameMenu* GameMenu::m_pInstance = nullptr;
@@ -10,7 +11,7 @@ Constructor
 */
 void GameMenu::enter()
 {
-    GAME_MANAGER->setPaused(false);
+    m_pGameManager->setPaused(false);
 }
 GameMenu::GameMenu() : Menu(
     // m_pressedKeyToFixedCommand
@@ -174,6 +175,7 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_MENU_BACK:
        break;
     case COMMAND_MENU_PAUSE_TOGGLE:
+        m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
         nextMenu(PauseMenu::getInstance());
        break;
     case COMMAND_MENU_START:
@@ -196,24 +198,24 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         break;
 #ifndef NDEBUG
     // Can only close the game directly in game in debug mode, for convenience
-    case COMMAND_CLOSE_WINDOW:
-        glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
-        break;
+    //case COMMAND_CLOSE_WINDOW:
+        //glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+        //break;
 
     case COMMAND_DEBUG_TOGGLE_WIREFRAME:
         debugToggleWireframe();
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
-        GAME_MANAGER->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
-        GAME_MANAGER->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_2;
+        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_2;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
-        GAME_MANAGER->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_3;
+        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_3;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
-        GAME_MANAGER->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_4;
+        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         ENTITY_MANAGER->toggleDebugCamera();
@@ -224,21 +226,21 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
         ENTITY_MANAGER->toggleSpatialMapDrawing();
         break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
-        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
+//        m_pGameManager->m_pCurrentInterface->setDisplayCount(0);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
+//        m_pGameManager->m_pCurrentInterface->setDisplayCount(1);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
+//        m_pGameManager->m_pCurrentInterface->setDisplayCount(2);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
+//        m_pGameManager->m_pCurrentInterface->setDisplayCount(3);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
+//        m_pGameManager->m_pCurrentInterface->setDisplayCount(4);
+//        break;
 #endif
     }
 }

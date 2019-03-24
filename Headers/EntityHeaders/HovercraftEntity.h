@@ -23,78 +23,7 @@ class Spikes;
 #define FRONT_CAMERA            0
 #define BACK_CAMERA             1
 
-// TODO move macros only used in .cpp
-/*
-Cooldowns
 
-The time the hovercraft must wait until they can use the ability again.
-
-Units: seconds
-*/
-#define ROCKET_COOLDOWN         0.0f // 2.0f
-#define SPIKES_COOLDOWN         2.0f
-#define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           2.0f
-
-/*
-Once spikes are activated, they are enabled for a duration before deactivating.
-*/
-#define SPIKES_DURATION         0.5f // 1.0f
-/*
-Total time the trail can be activated from full to empty.
-
-Unit: seconds
-*/
-#define TRAIL_GAUGE_FULL        3.0f
-/*
-Represents the trail gauge is empty.
-*/
-#define TRAIL_GAUGE_EMPTY       0.0f
-
-/*
-Time multiplier for the trail to recharge from empty to full.
-
-= 1: recharge rate is the same as drain rate.
-> 1: recharge rate is faster than drain rate
-< 1: recharge rate is slower than drain rate
-
-*/
-#define TRAIL_RECHARGE_MULTIPLIER 0.5f
-
-/*
-The interval of time between each created flame while the trail trail is
-activated.
-
-@TODO Flame interval should be based on distance, not time. In some sense, a
-line is simply being laid out, of which flame billboards are uniformly
-distributed across, meanining that the spacing is time invariant.
-
-Unit: seconds
-*/
-#define FLAME_INTERVAL          0.10f
-
-/*
-Delay time when the trail is deactivate and when the gauge begins to recharge.
-This makes spam toggling less effective.
-
-Unit: seconds
-*/
-#define TRAIL_RECHARGE_COOLDOWN 0.5f
-
-/*
-After getting hit, the hovercraft is invulnerable for a duration of time
-
-Unit : seconds
-*/
-#define INVINCIBLE_TIME 2.0f
-
-/*
-The duration a powerup lasts for.
-@TODO maybe move this to the powerup entity?
-
-Unit : seconds
-*/
-#define POWERUP_TIME 20.0f
 
 class HovercraftEntity :
     public Entity
@@ -139,7 +68,7 @@ public:
     // Get ability statuses for UI
     // Get the status of the flame in percent.
     // @return 1.0f if full, 0.0f if empty, or intermediate value if in between
-    float getTrailGaugePercent() const { return m_fTrailGauge / TRAIL_GAUGE_FULL; };
+    float getTrailGaugePercent() const;
 
     // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
@@ -148,9 +77,11 @@ public:
 
     // Set lose control until seconds runs out or manually reactivated with
     // setGainControl(), whichever happens first
-    void setLoseControl(float seconds) { outOfControlTime = seconds; isInControl = false; };
+    void setLoseControl(float seconds);
     // Gain control of hovercraft
-    void setGainControl() { isInControl = true; };
+    void setGainControl() { inControl = true; };
+
+    bool isInControl() const { return inControl; }
 
     bool hasSpikesActivated() const { return m_bSpikesActivated; };
 
@@ -159,11 +90,11 @@ public:
     // Otherwise, ignore ability collisions.
     bool isInvincible() const { return m_bInvincible; };
 
-    void setInvincible() { m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME; };
+    void setInvincible();
     PhysicsComponent* m_pPhysicsComponent;
 
-    void setPowerup(ePowerup powerup);
-    bool hasPowerup(ePowerup powerup) const { return m_vPowerupsEnabled[powerup] > 0; }
+    void enablePowerup(ePowerup powerup);
+    bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
     float getSpeed() { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
@@ -214,6 +145,7 @@ private:
 
     */
     float m_fCooldowns[COOLDOWN_COUNT];
+    float m_fMaxCooldowns[COOLDOWN_COUNT];
 
     /*
     Tracks the state of the flame trail
@@ -254,7 +186,7 @@ private:
     Else, not movement input is processed.
     */
     void updateInControl(float fTimeInSeconds);
-    bool isInControl;
+    bool inControl;
     float outOfControlTime;
     bool lowEnoughToMove;
 
@@ -262,9 +194,6 @@ private:
     bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
-// Protected Functions and variables for Child Classes
-// NOTE: Ideally there are no child classes
-protected:
     GameStats* m_pGmStats;
 
     // Bool Spikes Information
@@ -274,8 +203,8 @@ protected:
     // Tracks enabled powerups for this hovercraft
     void initializePowerups();
     void updatePowerups(float fTimeInSeconds);
-    void enablePowerup(ePowerup powerup);
     void disablePowerup(ePowerup powerup);
-    float m_vPowerupsEnabled[POWERUP_COUNT];
+    float m_vPowerupsTime[POWERUP_COUNT];
+    bool m_vPowerupsEnabled[POWERUP_COUNT];
 };
 

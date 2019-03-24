@@ -22,16 +22,14 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
 // Organizational function prototypes
 void initializeWindow();
 void initializeGLEW();
-void initializeManagers();
+bool initializeManagers();
 void cleanup();
 
 // These are not local variables to main so that other functions can better
 // access them in main.cpp
 GLFWwindow* m_window = 0;
 GameManager* m_gameManager = 0;
-ShaderManager* m_shaderManager = 0;
 InputHandler* m_inputHandler = 0;
-PhysicsManager* m_pPhysicsManager = 0;
 SoundManager* m_soundManager = 0;
 int iRunning;
 int iWindowHeight, iWindowWidth;
@@ -52,8 +50,10 @@ int main()
         initializeGLEW();
         if (iRunning) // only succeeds if both glfw and glew are successful
         {
-            initializeManagers();
-            m_gameManager->startRendering();
+            if (initializeManagers())
+            {
+                m_gameManager->startRendering();
+            }
         }
         cleanup();
     }
@@ -85,32 +85,19 @@ void initializeGLEW()
     Initialize all core values at startup.
     This should only be called once at the beginning of the program.
 */
-void initializeManagers()
+bool initializeManagers()
 {
-    // Initialize Physics
-    m_pPhysicsManager = PHYSICS_MANAGER;
-    m_pPhysicsManager->initPhysics(true);
-
     // Bind window to Game Manager
     m_gameManager = GameManager::getInstance(m_window);
 
     // Initialize the InputHandler for mouse, keyboard, controllers
     m_inputHandler = InputHandler::getInstance(m_window);
 
-    m_shaderManager = SHADER_MANAGER;
-
     // Initialize Sound
     m_soundManager = SOUND_MANAGER;
     m_soundManager->loadFiles();
 
-    // Initialize graphics from scene file
-#ifdef NDEBUG
-    iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
-    // iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
-#else
-    iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
-    // iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
-#endif
+    return m_gameManager->initialize();
 }
 
 /*
@@ -125,9 +112,6 @@ void cleanup()
 
     if (nullptr != m_inputHandler)      // Input Handler
         delete m_inputHandler;
-
-    if (nullptr != m_pPhysicsManager)   // Physics Manager
-        delete m_pPhysicsManager;
 
     if (nullptr != m_soundManager)
         delete m_soundManager;

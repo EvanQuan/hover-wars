@@ -123,4 +123,6 @@ protected:
 
     // Toggles Wireframe drawing
     void Menu::debugToggleWireframe();
+
+    GameManager* m_pGameManager;
 };

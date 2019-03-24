@@ -150,6 +150,18 @@ void SpatialDataMap::populateStaticMap(const unordered_map<int, unique_ptr<Entit
 #endif
 }
 
+void SpatialDataMap::addDynamicEntity(const Entity* pNewDynamicEntity)
+{
+    // Local Variables
+    unsigned int iXMin, iXMax, iYMin, iYMax; // Indices for determining Entity Position.
+
+    // Add Entity to Spatial Map
+    if (getMapIndices(pNewDynamicEntity, &iXMin, &iXMax, &iYMin, &iYMax)) // Verify the Indices received are valid.
+    {
+        addEntity(pNewDynamicEntity, iXMin, iXMax, iYMin, iYMax);
+    }
+}
+
 // Add The Entity to the Spatial Map as well as the EntityMap.
 void SpatialDataMap::addEntity(const Entity* vEntity, unsigned int iXMin, unsigned int iXMax, unsigned int iYMin, unsigned int iYMax)
 {
@@ -256,6 +268,7 @@ void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pN
     getVectToPos(&vNewPosPos, &vToNewPosPos);
 
     // Determine if a movement happened.
+    // clever -Austin
     bChange |= iOldXMin != static_cast<unsigned int>(floor(vNewNegPos.x / m_fTileSize));
     bChange |= iOldYMin != static_cast<unsigned int>(floor(vNewNegPos.y / m_fTileSize));
     bChange |= iOldXMax != static_cast<unsigned int>(floor(vNewPosPos.x / m_fTileSize));
@@ -268,20 +281,114 @@ float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2) {
     return abs(pos1->x - pos2->x) + abs(pos1->y - pos2->y);
 }
 bool SpatialDataMap::isValid(int x,int y) {
-    return /*m_pSpatialMap.size() < x && x >= 0 && m_pSpatialMap[x].size() < y && y >= 0 &&*/m_pSpatialMap[x][y].pLocalEntities.size() == 0;
-}
-bool SpatialDataMap::isDestination(int x, int y,vec2 dest) {
-    return x == dest.x && y == dest.y;
+    return x < (int)m_pSpatialMap.size()  && x >= 0 && y < (int)m_pSpatialMap[x].size() && y >= 0 && (int)m_pSpatialMap[x][y].pLocalEntities.size() == 0;
 }
 double SpatialDataMap::calculateH(int x, int y, sSpatialCell dest) {
     double H = (sqrt((x - dest.x)*(x - dest.x)
         + (y - dest.y)*(y - dest.y)));
     return H;
 }
+
+vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 player, vec2 dest) {
+    if (!isValid((int)dest.x, (int)dest.y)) {
+        bool breakLoop = false;
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                if (isValid((int)dest.x + x, (int)dest.y + y)) {
+                    dest.x += x;
+                    dest.y += y;
+                    breakLoop = true;
+                    break;
+                }
+                if (breakLoop) break;
+            }
+        }
+    }
+    if (!isValid((int)player.x, (int)player.y)) {
+        bool breakLoop = false;
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                if (isValid((int)player.x + x, (int)player.y + y)) {
+                    player.x += x;
+                    player.y += y;
+                    breakLoop = true;
+                    break;
+                }
+                if (breakLoop) break;
+            }
+        }
+    }
+    for (unsigned int i = 0; i < m_pSpatialMap.size(); i++) {
+        for (unsigned int j = 0; j < m_pSpatialMap[0].size(); j++) {
+            m_pSpatialMap[i][j].visited = false;
+            m_pSpatialMap[i][j].parentX = -1;
+            m_pSpatialMap[i][j].parentY = -1;
+        }
+    }
+    queue<vec2> valuesToTry;
+    valuesToTry.push(player);
+    vec2 currPos;
+    bool exitLoop = false;
+    while (valuesToTry.size() > 0) {
+        currPos = valuesToTry.front();
+        valuesToTry.pop();
+        for (int x = -1; x < 2; x++) {
+            if (x==0) {
+                for (int y = -1; y < 2; y++) {
+                    if ((int)currPos.x + x == dest.x && (int)currPos.y + y == dest.y) {
+                        m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].visited = true;
+                        m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].parentX = (int)currPos.x;
+                        m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].parentY = (int)currPos.y;
+                        currPos.x += x;
+                        currPos.y += y;
+                        exitLoop = true;
+                        break;
+                    }
+                    if (isValid((int)currPos.x + x, (int)currPos.y + y) && !m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].visited) {
+                        m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].visited = true;
+                        m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].parentX = (int)currPos.x;
+                        m_pSpatialMap[(int)currPos.x + x][(int)currPos.y + y].parentY = (int)currPos.y;
+                        valuesToTry.push(vec2((int)currPos.x + x, (int)currPos.y + y));
+                    }
+                }
+            }
+            else {
+                if ((int)currPos.x + x == dest.x && (int)currPos.y == dest.y) {
+                    m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].visited = true;
+                    m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].parentX = (int)currPos.x;
+                    m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].parentY = (int)currPos.y;
+                    currPos.x += x;
+                    exitLoop = true;
+                    break;
+                }
+                if (isValid((int)currPos.x + x, (int)currPos.y) && !m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].visited) {
+                    m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].visited = true;
+                    m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].parentX = (int)currPos.x;
+                    m_pSpatialMap[(int)currPos.x + x][(int)currPos.y].parentY = (int)currPos.y;
+                    valuesToTry.push(vec2((int)currPos.x + x, (int)currPos.y));
+                }
+            }
+            if (exitLoop) break;
+        }
+        if (exitLoop) break;
+    }
+    vector<vec2> returnPath;
+    while (exitLoop && !(currPos.x == player.x && currPos.y == player.y)) {
+        returnPath.push_back(vec2(m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentX,
+            m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentY));
+        int temp = (int)currPos.x;
+        if (m_pSpatialMap[temp][(int)currPos.y].parentX == -1 ||
+            -1== m_pSpatialMap[temp][(int)currPos.y].parentY) {
+            break;
+        }
+        currPos.x = (float)m_pSpatialMap[temp][(int)currPos.y].parentX;
+        currPos.y = (float)m_pSpatialMap[temp][(int)currPos.y].parentY;
+    }
+    return returnPath;
+}
 vector<vec2> emptyVectorArray; // bad practice but saves us having to reinstacate every frame
 vector<vec2> SpatialDataMap::makePath(sSpatialCell dest) {
     try {
-        cout << "Found a path" << endl;
         int x = dest.x;
         int y = dest.y;
         stack<vec2> path;
@@ -313,15 +420,38 @@ vector<vec2> SpatialDataMap::makePath(sSpatialCell dest) {
 }
 // A Function to find the shortest path between 
 // a given source cell to a destination cell according 
-// to A* Search Algorithm 
+// to A* Search Algorithm
+
 vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
-    if (isValid((int) dest.x, (int)dest.y) == false) {
-        std::cout << "Destination is an obstacle" << std::endl;
-        return emptyVectorArray;
-        //Destination is invalid
+    if (!isValid((int) dest.x, (int)dest.y)) {
+        bool breakLoop = false;
+        for (int x = -1; x < 2;x++) {
+            for (int y = -1; y < 2; y++) {
+                if (isValid((int)dest.x + x, (int)dest.y + y)) {
+                    dest.x += x;
+                    dest.y += y;
+                    breakLoop = true;
+                    break;
+                }
+                if (breakLoop) break;
+            }
+        }
     }
-    if (isDestination((int) player.x, (int) player.y, dest)) {
-        std::cout << "You are the destination" << std::endl;
+    if (!isValid((int)player.x, (int)player.y)) {
+        bool breakLoop = false;
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                if (isValid((int)player.x + x, (int)player.y + y)) {
+                    player.x += x;
+                    player.y += y;
+                    breakLoop = true;
+                    break;
+                }
+                if (breakLoop) break;
+            }
+        }
+    }
+    if (player.x == dest.x && player.y == dest.y) {
         return emptyVectorArray;
         //You clicked on yourself
     }
@@ -365,26 +495,31 @@ vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
     bool destinationFound = false;
     while (!openList.empty()) {
         sSpatialCell node;
-        do {
-            //This do-while loop could be replaced with extracting the first
-            //element from a set, but you'd have to make the openList a set.
-            //To be completely honest, I don't remember the reason why I do
-            //it with a vector, but for now it's still an option, although
-            //not as good as a set performance wise.
-            double temp = FLT_MAX;
-            vector<sSpatialCell>::iterator itNode;
-            for (vector<sSpatialCell>::iterator it = openList.begin();
-                it != openList.end(); it = next(it)) { 
-                sSpatialCell n = *it;
-                if (n.fCost < temp) {
-                    temp = n.fCost;
-                    itNode = it;
+            do {
+                //This do-while loop could be replaced with extracting the first
+                //element from a set, but you'd have to make the openList a set.
+                //To be completely honest, I don't remember the reason why I do
+                //it with a vector, but for now it's still an option, although
+                //not as good as a set performance wise.
+                double temp = FLT_MAX;
+                bool hasBeenSet = false;
+                vector<sSpatialCell>::iterator itNode;
+                for (vector<sSpatialCell>::iterator it = openList.begin();
+                    it != openList.end(); it = next(it)) {
+                    sSpatialCell n = *it;
+                    if (n.fCost < temp) {
+                        temp = n.fCost;
+                        hasBeenSet = true;
+                        itNode = it;
+                    }
                 }
-            }
-            node = *itNode;
-            openList.erase(itNode);
-        } while (isValid(node.x, node.y) == false);
-
+                if (!hasBeenSet) {
+                    return emptyVectorArray;
+                }
+                node = *itNode;
+                openList.erase(itNode);
+            } while (isValid(node.x, node.y) == false);
+        
         x = node.x;
         y = node.y;
         closedList[x][y] = true;
@@ -394,7 +529,7 @@ vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
             for (int newY = -1; newY <= 1; newY++) {
                 double gNew, hNew, fNew;
                 if (isValid(x + newX, y + newY)) {
-                    if (isDestination(x + newX, y + newY, dest))
+                    if (player.x + newX == dest.x && player.y + newY == dest.y)
                     {
                         //Destination found - make path
                         m_pSpatialMap[x + newX][y + newY].parentX = x;
@@ -424,7 +559,6 @@ vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
             }
         }
     }
-    std::cout << "Destination not found" << std::endl;
     return emptyVectorArray;
 }
 bool SpatialDataMap::getNearestCar(int currID,vector<int> IDs, vec2 &minPos) {
