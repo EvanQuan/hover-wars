@@ -60,7 +60,6 @@ GameStats* GameStats::m_pInstance = nullptr;
 GameStats::GameStats(int iWidth, int iHeight)
 {
     m_pGameInterface = GameInterface::getInstance(iWidth, iHeight);
-    reinitialize();
 }
 
 GameStats* GameStats::getInstance(int iWidth, int iHeight)
@@ -111,8 +110,11 @@ Initialize all stats and cooldowns to 0.
 This should be called at the start of every game, or if the game resets.
 It should also be called AFTER players and bots have been initialized.
 */
-void GameStats::reinitialize()
+void GameStats::reinitialize(int playerCount, int botCount)
 {
+    m_iPlayerCount = playerCount;
+    m_iBotCount = botCount;
+
     initializeStats();
     initializeCooldowns();
     correspondEntitiesToHovercrafts();
@@ -223,6 +225,15 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
     }
 }
 
+void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability)
+{
+    addScore(hovercraft, reason);
+    if (ability <= ABILITY_TRAIL_ACTIVATE)
+    {
+        stats[hovercraft][KILLS_WITH_ROCKET + ability]++;
+    }
+}
+
 /*
 Track that the hovecraft used an ability.
 This is used to track all the past abilities the hovercraft has used for that
@@ -272,9 +283,9 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     m_pGameInterface->displayMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
-    cout << "Player " << attacker << " hit Player " << attacker << endl;
-    debug(attacker);
-    debug(hit);
+    // cout << "Player " << attacker << " hit Player " << attacker << endl;
+    // debug(attacker);
+    // debug(hit);
 #endif
 }
 
@@ -588,7 +599,7 @@ struct predicateSortByHighestScore
 {
     inline bool operator() (const EndGameStat& left, const EndGameStat& right)
     {
-        return (left.afterAwardsScore < right.afterAwardsScore);
+        return (left.afterAwardsScore > right.afterAwardsScore);
     }
 };
 
@@ -602,6 +613,7 @@ void GameStats::sortByHighestScoreFirst()
 
 /*
     @return all the hovercrafts that have the highest value of the specified stat
+            Ignores when the stat is 0.
 */
 vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
 {
@@ -617,7 +629,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
             highest = value;
             hovercrafts.clear();
         }
-        if (value >= highest)
+        if ((value >= highest) && (highest > 0))
         {
             hovercrafts.push_back(hovercraft);
         }
@@ -637,12 +649,14 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
 void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
 {
     vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
-    for (EndGameStat endStat : endGameStats)
+    // for (EndGameStat endStat : endGameStats)
+    for (int i = 0, size = endGameStats.size(); i < size; i++)
     {
-        if (FuncUtils::contains(winners, endStat.hovercraft))
+        if (FuncUtils::contains(winners, endGameStats.at(i).hovercraft))
         {
-            endStat.afterAwardsScore += points;
-            endStat.awards.push_back(make_tuple(name, description, points));
+            endGameStats.at(i).afterAwardsScore += points;
+            endGameStats.at(i).awards.push_back(make_tuple(name, description, points));
+            cout << "Award " << endGameStats.at(i).hovercraft << " with " << name << ": \"" << description << "\" +" << points << endl;
         }
     }
 
@@ -650,8 +664,15 @@ void GameStats::awardHighestStat(eStat stat, string name, string description, in
 
 void GameStats::awardAwards()
 {
-    awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
-    awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+    // Multiplayer only awards
+    if (m_iPlayerCount > 1)
+    {
+        awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
+        awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+    }
     awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Hungry for Power", "Most powerups",    200);
     awardHighestStat(KILLSTREAK_LARGEST,            "Tactical", "Largest killstreak",       100);
+    awardHighestStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
+    awardHighestStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
+    awardHighestStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        300);
 }

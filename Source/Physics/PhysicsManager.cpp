@@ -298,7 +298,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
     PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics);
     gGroundPlane->setName(NAME_GROUND);
-    cout << "\"" << gGroundPlane->getName() << "\"" << endl;
+    // cout << "\"" << gGroundPlane->getName() << "\"" << endl;
     gScene->addActor(*gGroundPlane);
     staticObjects.push_back(gGroundPlane);
     
@@ -374,7 +374,7 @@ PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, 
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     body->setName(sEntityID);
-    cout << "\"" << body->getName() << "\"" << endl;
+    // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
     return body;
@@ -396,7 +396,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
             ss >> vertex.y;
             ss >> vertex.z;
             vertex *= m_scale;
-            cout << vertex.x << "," << vertex.y << "," << vertex.z << "\n";
+            // cout << vertex.x << "," << vertex.y << "," << vertex.z << "\n";
             vertices.push_back(vertex);
         }
         else if (currLine[0] == 'f' && currLine[1] == ' ') {
@@ -408,7 +408,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
                 ss << currLine[i];
             }
             ss >> indice;
-            std::cout << indice << ",";
+            // std::cout << indice << ",";
             stringstream ss2;
             while (currLine[i] != ' ')
                 i++;
@@ -418,7 +418,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
             }
             PxU32 indice2;
             ss2 >> indice2;
-            std::cout << indice2 << ",";
+            // std::cout << indice2 << ",";
             stringstream ss3;
             while (currLine[i] != ' ')
                 i++;
@@ -429,7 +429,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
             PxU32 indice3;
 
             ss3 >> indice3;
-            std::cout << indice3 << "\n";
+            // std::cout << indice3 << "\n";
             verticesFinal.push_back(indice3);
             verticesFinal.push_back(indice2);
             verticesFinal.push_back(indice);
@@ -469,7 +469,7 @@ PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x,f
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     body->setName(sEntityID);
-    cout << "\"" << body->getName() << "\"" << endl;
+    // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
     return body;
@@ -480,7 +480,7 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     body->setName(sEntityID);
-    cout << "\"" << body->getName() << "\"" << endl;
+    // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
     return body;
@@ -512,7 +512,7 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     (*pReturnBody)->setName(cName);
 
     // Add To Scene
-    cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
+    // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
 }
 
@@ -539,7 +539,7 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
     (*pReturnBody)->setName(cName);
 
     // Add to Scene
-    cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
+    // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
 }
 
@@ -560,7 +560,7 @@ PxVehicleNoDrive *PhysicsManager::createHovercraftEntity(const char* sEntityID, 
     PxRigidDynamic* actor = gVehicleNoDrive->getRigidDynamicActor();
     actor->setGlobalPose(startTransform);
     actor->setName(sEntityID); // TODO this was just added?, doesn't seem to be the source of the problem
-    cout << "Player: \"" << actor->getName() << "\"" << endl;
+    // cout << "Player: \"" << actor->getName() << "\"" << endl;
     gScene->addActor(*actor);
     //Set the vehicle to rest in first gear.
     gVehicleNoDrive->setToRestState();

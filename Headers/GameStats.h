@@ -108,6 +108,9 @@ public:
         ABILITY_SPIKES_USED,
         ABILITY_TRAIL_USED,
         ABILITY_DASH_USED,
+        KILLS_WITH_ROCKET,
+        KILLS_WITH_SPIKES,
+        KILLS_WITH_TRAIL,
         STAT_COUNT,
     };
 
@@ -164,13 +167,14 @@ public:
     // Stats
     int get(eHovercraft hovercraft, eStat stat) const;
     void addScore(eHovercraft hovercraft, eAddScoreReason reason);
+    void addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability);
 
     // Cooldowns
     float get(eHovercraft hovercraft, eCooldown cooldown) const;
     void useAbility(eHovercraft hovercraft, eAbility ability);
     bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const;
 
-    void reinitialize();
+    void reinitialize(int playerCount, int botCount);
 
     eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
 
@@ -273,6 +277,9 @@ private:
     unordered_map<int, eHovercraft> entityIDToHovercraft;
 
     GameInterface* m_pGameInterface;
+
+    int m_iPlayerCount;
+    int m_iBotCount;
 };
 
 
