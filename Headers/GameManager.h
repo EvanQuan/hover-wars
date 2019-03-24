@@ -44,8 +44,6 @@ public:
     eHovercraft m_eKeyboardHovercraft;
 
     UserInterface* m_pUserInterface;
-    // TODO clean
-    vector<UserInterface*> m_vInterfaceInstances;
 
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
@@ -55,6 +53,8 @@ public:
 
     // Window Reference
     GLFWwindow* m_pWindow;
+
+    void addInterface(UserInterface* ui);
 
 private:
     // For Singleton Implementation
@@ -111,6 +111,8 @@ private:
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
+
+    vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update
     bool paused;

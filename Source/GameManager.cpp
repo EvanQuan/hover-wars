@@ -23,6 +23,11 @@
 // Singleton Variable initialization
 GameManager* GameManager::m_pInstance = nullptr;
 
+void GameManager::addInterface(UserInterface * ui)
+{
+    m_vInterfaceInstances.push_back(ui);
+}
+
 // Constructor - Private, only accessable within the Graphics Manager
 GameManager::GameManager(GLFWwindow* rWindow)
 {
@@ -45,7 +50,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
-    m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
+    m_pCommandHandler = COMMAND_HANDLER;
 }
 
 /*
@@ -83,8 +88,11 @@ GameManager::~GameManager()
     if (nullptr != m_pShaderManager)    // Shader Manager
         delete m_pShaderManager;
 
-    // TODO clean all instances
-    if (nullptr != m_pUserInterface)    // User Interface
+    // User Interface
+    for (UserInterface* ui : m_vInterfaceInstances) {
+        delete ui;
+    }
+    if (nullptr != m_pUserInterface)
         delete m_pUserInterface;
 
     if (nullptr != m_pCommandHandler)   // Command Handler
