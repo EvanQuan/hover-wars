@@ -4,7 +4,7 @@
 #include "ArtificialIntelligence/AIManager.h"
 #include "SceneLoader.h"
 #include "ShaderManager.h"
-#include "UserInterface/UserInterface.h"
+#include "UserInterface/StartInterface.h"
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 
@@ -26,7 +26,6 @@ GameManager::GameManager(GLFWwindow* rWindow)
     // Initialize and Get Shader and Environment Managers
     m_pShaderManager    = SHADER_MANAGER;
     m_pEntityManager    = ENTITY_MANAGER;
-    m_pGameStats        = GAME_STATS;
 
     m_pAIManager = AIManager::getInstance();
 
@@ -41,6 +40,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+
+    m_pGameStats     = GameStats::getInstance(iWidth, iHeight);
+    m_pUserInterface = StartInterface::getInstance(iWidth, iHeight);
 
     // Game starts paused as the player starts in the main menu
     paused = true;
@@ -81,6 +83,7 @@ GameManager::~GameManager()
     if (nullptr != m_pShaderManager)    // Shader Manager
         delete m_pShaderManager;
 
+    // TODO clean all instances
     if (nullptr != m_pUserInterface)    // User Interface
         delete m_pUserInterface;
 
@@ -163,7 +166,7 @@ bool GameManager::renderGraphics()
         // CommandHandler has changed in order to reflect their changes.
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
-        USER_INTERFACE->update(frameDeltaTime);
+        m_pUserInterface->update(frameDeltaTime);
         // call function to draw our scene
     }
 
@@ -241,7 +244,7 @@ void GameManager::drawScene()
         {
             m_pEntityManager->renderEnvironment();
         }
-        USER_INTERFACE->render();
+        m_pUserInterface->render();
         glDisable(GL_DEPTH_TEST);
 
         // scene is rendered to the back buffer, so swap to front for display
@@ -256,33 +259,25 @@ contains any initializion requirements in order to start drawing.
 @param sFileName    filepath to a proper .scene file that contains the
                     necessary information about shaders,  and geometry
                     in the scene.
-@return true if the shaders failed to initialize.
+@return true if the shaders initialized successfully
 */
 bool GameManager::initializeGraphics( string sFileName )
 {
     // Locals
-    bool bError = false;
-    int iWidth, iHeight;
+    // int iWidth, iHeight;
 
     // Shaders
     if (!m_pShaderManager->initializeShaders())
     {
         cout << "Couldn't initialize shaders." << endl;
-        bError = true;
+        return false;
     }
-    else
-    {
-        // TODO: This will be done once a level is chosen to load.
-        // Initialize User Interface
-        glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-        m_pUserInterface = UserInterface::getInstance(iWidth, iHeight);
 
-        // Initialize Environment with a new scene      
-        m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
-    }
+    // Initialize Environment with a new scene      
+    m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
 
     // Return error results
-    return bError; 
+    return true; 
 }
 
 /*******************************************************************************\

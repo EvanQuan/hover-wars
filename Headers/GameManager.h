@@ -42,12 +42,10 @@ public:
     // The keyboard corresponds to its own hovercraft
     // which might be shared with a joystick
     eHovercraft m_eKeyboardHovercraft;
-#ifndef NDEBUG
-    // User interface is public for debug puprposes
-    // so that debug commands can change the UI directly.
-    // TODO: Fix this design so that it doesn't change depending on Debug or Not
+
     UserInterface* m_pUserInterface;
-#endif
+    // TODO clean
+    vector<UserInterface*> m_vInterfaceInstances;
 
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
@@ -105,10 +103,4 @@ private:
 
     // If the game is paused, the environment will not update
     bool paused;
-
-#ifdef NDEBUG
-    // User interface is normally private.
-    // There is no reason for it to be public.
-    UserInterface* m_pUserInterface;
-#endif
 };

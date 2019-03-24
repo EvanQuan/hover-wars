@@ -220,10 +220,25 @@
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h">
       <Filter>Headers\ArtificialIntelligence</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\UserInterface\GameUserInterface.h">
+    <ClInclude Include="Headers\UserInterface\GameInterface.h">
       <Filter>Headers\UserInterface</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\UserInterface\MenuUserInterface.h">
+    <ClInclude Include="Headers\UserInterface\MenuInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\MainInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\PauseInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\PostgameInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\PregameInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\UserInterface\StartInterface.h">
       <Filter>Headers\UserInterface</Filter>
     </ClInclude>
   </ItemGroup>
@@ -409,10 +424,25 @@
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp">
       <Filter>Source\ArtificialIntelligence</Filter>
     </ClCompile>
-    <ClCompile Include="Source\UserInterface\GameUserInterface.cpp">
+    <ClCompile Include="Source\UserInterface\GameInterface.cpp">
       <Filter>Source\UserInterface</Filter>
     </ClCompile>
-    <ClCompile Include="Source\UserInterface\MenuUserInterface.cpp">
+    <ClCompile Include="Source\UserInterface\MenuInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\MainInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\PauseInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\PostgameInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\PregameInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\StartInterface.cpp">
       <Filter>Source\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>

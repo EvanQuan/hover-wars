@@ -1,5 +1,5 @@
 #include "GameStats.h"
-#include "UserInterface/UserInterface.h"
+#include "UserInterface/GameInterface.h"
 #include "EntityManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 
@@ -57,17 +57,24 @@ Notifies a killstreak message once player hits a milestone.
 // Singleton instance
 GameStats* GameStats::m_pInstance = nullptr;
 
-GameStats::GameStats()
+GameStats::GameStats(int iWidth, int iHeight)
 {
+    m_pGameInterface = GameInterface::getInstance(iWidth, iHeight);
     reinitialize();
 }
 
-GameStats* GameStats::getInstance()
+GameStats* GameStats::getInstance(int iWidth, int iHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new GameStats();
+        m_pInstance = new GameStats(iWidth, iHeight);
     }
+    return m_pInstance;
+}
+
+GameStats * GameStats::getInstance()
+{
+    assert(nullptr != m_pInstance);
     return m_pInstance;
 }
 
@@ -261,7 +268,7 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
 
-    USER_INTERFACE->displayMessage(attacker, hit, UserInterface::KILL_MESSAGE_KILL);
+    m_pGameInterface->displayMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
     cout << "Player " << attacker << " hit Player " << attacker << endl;
@@ -324,7 +331,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
         firstBloodHappened = true;
-        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
+        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     return basePoints + killstreakBonus + revengeBonus + firstBloodBonus;
 }
@@ -413,7 +420,7 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
+        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
     }
 
     // Update attacker's current total killstreak against hit
@@ -509,8 +516,8 @@ Enable attacker's domaination status against hit
 void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
 {
     // Ad hoc for single player
-    USER_INTERFACE->displayMessage(attacker, hit,
-                                   UserInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
+    m_pGameInterface->displayMessage(attacker, hit,
+                                   GameInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
     stats[attacker][IS_DOMINATING_PLAYER_1 + hit] = true;
 }
 /*
@@ -521,8 +528,8 @@ Disable hit's domination status against attacker.
 */
 void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
-    USER_INTERFACE->displayMessage(attacker, hit,
-                                   UserInterface::eKillMessage::KILL_MESSAGE_REVENGE);
+    m_pGameInterface->displayMessage(attacker, hit,
+                                   GameInterface::eKillMessage::KILL_MESSAGE_REVENGE);
     stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;
 }
 

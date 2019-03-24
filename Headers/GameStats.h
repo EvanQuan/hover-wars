@@ -17,6 +17,8 @@ struct EndGameStat
     // award the points it awards.
     vector<tuple<string, string, int>> awards;
 };
+
+class GameInterface;
 /*
 Stores and calculates all in-game stats.
 
@@ -56,6 +58,7 @@ Gives information to UserInterface to display the correct values.
 class GameStats
 {
 public:
+    static GameStats* getInstance(int iWidth, int iHeight);
     static GameStats* getInstance();
 
     /*
@@ -174,7 +177,7 @@ public:
     vector<EndGameStat> getEndGameStats();
 
 private:
-    GameStats();
+    GameStats(int iWidth, int iHeight);
     static GameStats* m_pInstance;
 
     void initializeStats();
@@ -268,6 +271,8 @@ private:
         game.
     */
     unordered_map<int, eHovercraft> entityIDToHovercraft;
+
+    GameInterface* m_pGameInterface;
 };
 
 
