@@ -1,4 +1,5 @@
 #include "UserInterface/StartInterface.h"
+#include "GameManager.h"
 
 // Singleton instance
 StartInterface* StartInterface::m_pInstance = nullptr;
@@ -32,7 +33,7 @@ StartInterface::StartInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
     }
 )
 {
-
+    GAME_MANAGER->addInterface(this);
 }
 
 StartInterface* StartInterface::getInstance(int iWidth, int iHeight)

@@ -23,11 +23,6 @@
 // Singleton Variable initialization
 GameManager* GameManager::m_pInstance = nullptr;
 
-void GameManager::addInterface(UserInterface * ui)
-{
-    m_vInterfaceInstances.push_back(ui);
-}
-
 // Constructor - Private, only accessable within the Graphics Manager
 GameManager::GameManager(GLFWwindow* rWindow)
 {
@@ -47,8 +42,6 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
-
-    m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
     m_pCommandHandler = COMMAND_HANDLER;
 }
@@ -92,8 +85,11 @@ GameManager::~GameManager()
     for (UserInterface* ui : m_vInterfaceInstances) {
         delete ui;
     }
-    if (nullptr != m_pUserInterface)
-        delete m_pUserInterface;
+    m_vInterfaceInstances.clear();
+
+    // Note: This throws an exception in release
+    // if (nullptr != m_pUserInterface)
+        // delete m_pUserInterface;
 
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
@@ -107,6 +103,16 @@ GameManager::~GameManager()
         // delete m_pGameStats;
 }
 
+
+/*
+    As UserInterface instances are generated, they are each added to
+    the m_vInterfaceInstances list.
+    At the end of the program, all interfaces are deleted.
+*/
+void GameManager::addInterface(UserInterface* ui)
+{
+    m_vInterfaceInstances.push_back(ui);
+}
 /*
     Start rendering game to screen. This call with block until the game loop
     ends (it will hang the thread). When this function returns, the program
@@ -295,6 +301,7 @@ bool GameManager::initialize()
     // Locals
     // int iWidth, iHeight;
 
+
     // Shaders
     if (!m_pShaderManager->initializeShaders())
     {
@@ -305,6 +312,9 @@ bool GameManager::initialize()
     }
 
     // Initialize Environment with a new scene      
+    // For now we will initialize this here instead of the constructor as GameStats
+    // uses GameInterface, which requires GameManager to already be instantiated.
+    m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
 #ifdef NDEBUG
     // Game starts paused as the player starts in the start menu

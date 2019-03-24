@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
+#include "GameManager.h"
 
 
 /***********\
@@ -103,8 +104,8 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
     }
 )
 {
+    GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
-
     debugMessage = "";
 }
 

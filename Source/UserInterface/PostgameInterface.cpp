@@ -1,4 +1,5 @@
 #include "UserInterface/PostgameInterface.h"
+#include "GameManager.h"
 
 // Singleton instance
 PostgameInterface* PostgameInterface::m_pInstance = nullptr;
@@ -32,7 +33,7 @@ PostgameInterface::PostgameInterface(int iWidth, int iHeight) : MenuInterface(iW
     }
 )
 {
-
+    GAME_MANAGER->addInterface(this);
 }
 
 PostgameInterface* PostgameInterface::getInstance(int iWidth, int iHeight)
