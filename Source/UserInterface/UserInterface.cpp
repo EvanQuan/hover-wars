@@ -68,6 +68,30 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     initializeVBOs();
 
     debugMessage = "";
+    m_Textures["textures/menu/1.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/1.png");
+    m_Textures["textures/menu/1_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/1_2.png");
+    m_Textures["textures/menu/2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/2.png");
+    m_Textures["textures/menu/2_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/2_2.png");
+    m_Textures["textures/menu/3.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/3.png");
+    m_Textures["textures/menu/3_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/3_2.png");
+    m_Textures["textures/menu/4.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/4.png");
+    m_Textures["textures/menu/4_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/4_2.png");
+    m_Textures["textures/menu/exit.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/exit.png");
+    m_Textures["textures/menu/exit2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/exit2.png");
+    m_Textures["textures/menu/main_menu.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu.png");
+    m_Textures["textures/menu/main_menu_buttoin.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_buttoin.png");
+    m_Textures["textures/menu/new_game.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/new_game.png");
+    m_Textures["textures/menu/new_game2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/new_game2.png");
+    m_Textures["textures/menu/pause_menu.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/pause_menu.jpg");
+    m_Textures["textures/menu/post_menu.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/post_menu.jpg");
+    m_Textures["textures/menu/restart.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/restart.png");
+    m_Textures["textures/menu/restart2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/restart2.png");
+    m_Textures["textures/menu/resume.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/resume.png");
+    m_Textures["textures/menu/resume2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/resume2.png");
+    m_Textures["textures/menu/start.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/start.png");
+    m_Textures["textures/menu/start2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/start2.png");
+    m_Textures["textures/menu/Title.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/Title.jpg");
+    //m_Textures["textures/menu/background.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/background.jpg");
 }
 
 UserInterface::~UserInterface()
@@ -367,43 +391,35 @@ Window coordinates in pixels
 */
 void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
-    // Texture* image = TEXTURE_MANAGER->loadTexture(filepath);
-    // image->bindTexture(ShaderManager::eShaderType::UI_SHDR, );
-    // Change the texture class to store height and width, loaded dynamically
-    // Create a quad similar to text
-
-    // This implementation is close to renderText.
-
-    // Vector for storing VBO data.
-    vector<vec4> vTextOutput;
+    // Get texture height and width
+    auto tFoundIt = m_Textures.find(filepath);
+    Texture* image = tFoundIt->second;
+    int iImage_x, iImage_y;
+    image->getTextureDimensions(&iImage_y, &iImage_x);
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
-    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
-    // TODO check if this needs to be set at all?
-    // COLOR_WHITE is an arbitrary filler color
-    m_pShdrMngr->setUniformVec3(ShaderManager::eShaderType::UI_SHDR, "textColor", &COLOR_WHITE);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));;
     // Is an image, not text. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
 
-    // ??? TODO
-    // Texture loading stuff goes here?
+    vec4 vCorners[4] = {
+    vec4(x           ,            y, 0.0f, 1.0f),
+    vec4(x + iImage_x,            y, 1.0f, 1.0f),
+    vec4(x           , y + iImage_y, 0.0f, 0.0f),
+    vec4(x + iImage_x, y + iImage_y, 1.0f, 0.0f)
+    };
 
-    // Bind Texture.
-    glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
-    glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
-    SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
+    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, vTextOutput.size() * sizeof(vec4), vTextOutput.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(vec4) << 2), vCorners, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Render Quad
-    glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    // Clean up OpenGL
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    image->unbindTexture();
 }
