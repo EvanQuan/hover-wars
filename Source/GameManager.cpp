@@ -44,10 +44,6 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
     m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
-    m_pUserInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
-
-    // Game starts paused as the player starts in the main menu
-    paused = true;
 }
 
 /*
@@ -200,8 +196,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     float gameTime,
                                     string sFileName)
 {
-    // for now, this simply unpauses the game
-    // TODO implement this - scene loading here
+    // We intialize all values for the game to immediately start
     paused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
@@ -298,10 +293,15 @@ bool GameManager::initialize()
     m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
 
 #ifdef NDEBUG
-    // m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
-    initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
-    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
-    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+    // Game starts paused as the player starts in the start menu
+    paused = true;
+    startedGameOver = false;
+    m_fGameOverTime = GAME_OVER_TIME;
+    m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
+    m_pUserInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
+    // initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    // m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+    // m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
