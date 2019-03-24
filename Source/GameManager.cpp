@@ -31,9 +31,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     // Fetch and update Window HxW
     m_pWindow = rWindow;
-    int iWidth, iHeight;
-    glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-    m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
+    glfwGetWindowSize(m_pWindow, &m_iWidth, &m_iHeight);
+    m_pEntityManager->updateWidthAndHeight(m_iWidth, m_iHeight);
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
@@ -41,8 +40,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
-    m_pGameStats     = GameStats::getInstance(iWidth, iHeight);
-    m_pUserInterface = StartInterface::getInstance(iWidth, iHeight);
+    m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
+    m_pUserInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 
     // Game starts paused as the player starts in the main menu
     paused = true;
@@ -189,8 +188,12 @@ bool GameManager::renderGraphics()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
+    @param sFileName    of .scene environment to load
 */
-void GameManager::initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, string sFileName)
+void GameManager::initializeNewGame(unsigned int playerCount,
+                                    unsigned int botCount,
+                                    float gameTime,
+                                    string sFileName)
 {
     // for now, this simply unpauses the game
     // TODO implement this - scene loading here
@@ -270,7 +273,7 @@ bool GameManager::initializeGraphics( string sFileName )
     if (!m_pShaderManager->initializeShaders())
     {
         cout << "Couldn't initialize shaders." << endl;
-        return false;
+        // return false;
     }
 
     // Initialize Environment with a new scene      

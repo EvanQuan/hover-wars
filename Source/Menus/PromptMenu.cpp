@@ -126,6 +126,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         back();
         break;
     case COMMAND_CLOSE_WINDOW:
+        cout << "PromptMenu CLOSE WINDOW" << endl;
         glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
         break;
     }

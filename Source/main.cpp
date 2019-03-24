@@ -107,11 +107,12 @@ bool initializeManagers()
 
     // Initialize graphics from scene file
 #ifdef NDEBUG
-    // return !m_gameManager->initializeGraphics( DEBUG_ENV );
-    return m_gameManager->initializeGraphics( RELEASE_ENV );
+    return !m_gameManager->initializeGraphics( DEBUG_ENV );
+    // return m_gameManager->initializeGraphics( RELEASE_ENV );
 #else
-    return m_gameManager->initializeGraphics( DEBUG_ENV );
+    // return m_gameManager->initializeGraphics( DEBUG_ENV );
     // return !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
+    return m_gameManager->initializeGraphics( RELEASE_ENV );
 #endif
 }
 

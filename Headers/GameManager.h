@@ -50,6 +50,9 @@ public:
     bool isPaused() const { return paused; }
     void setPaused(bool paused) { this->paused = paused; }
 
+    int m_iWidth;
+    int m_iHeight;
+
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 

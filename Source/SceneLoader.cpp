@@ -210,7 +210,7 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 //        object from a scene file.
 void SceneLoader::createPlayer()
 {
-    getRandomSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
+    getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
     m_pEntityManager->generatePlayerEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
 }
 
@@ -219,7 +219,7 @@ void SceneLoader::createPlayer()
 //        object from a scene file.
 void SceneLoader::createBot()
 {
-    getRandomSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
+    getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
     m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
 }
 // Generates a Static Mesh Object at a specified location.
@@ -532,6 +532,8 @@ void SceneLoader::resetAllProperties()
         m_sProperties[eIndex].resetProperties();
 
     m_vSpawnPoints.clear();
+
+    spawnIndex = 0;
 }
 
 /************************************************************************\
@@ -543,7 +545,8 @@ void SceneLoader::saveSpawnPoint(vector< string > sData, int iLength)
         m_vSpawnPoints.push_back(vec3(stoi(sData[i]), stoi(sData[i + 1]), stoi(sData[i + 2])));
 }
 
-void SceneLoader::getRandomSpawnPoint(vec3* vPosition)
+void SceneLoader::getNextSpawnPoint(vec3* vPosition)
 {
-    *vPosition = m_vSpawnPoints[rand() % (m_vSpawnPoints.size() - 1)];
+    spawnIndex = FuncUtils::addModulo(spawnIndex, 1, 0, m_vSpawnPoints.size() - 1);
+    *vPosition = m_vSpawnPoints[spawnIndex];
 }

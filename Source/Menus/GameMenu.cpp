@@ -196,9 +196,9 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         break;
 #ifndef NDEBUG
     // Can only close the game directly in game in debug mode, for convenience
-    case COMMAND_CLOSE_WINDOW:
-        glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
-        break;
+    //case COMMAND_CLOSE_WINDOW:
+        //glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+        //break;
 
     case COMMAND_DEBUG_TOGGLE_WIREFRAME:
         debugToggleWireframe();
@@ -224,21 +224,21 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
         ENTITY_MANAGER->toggleSpatialMapDrawing();
         break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
-        break;
-    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
-        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
-        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
+//        GAME_MANAGER->m_pUserInterface->setDisplayCount(0);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_1:
+//        GAME_MANAGER->m_pUserInterface->setDisplayCount(1);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_2:
+//        GAME_MANAGER->m_pUserInterface->setDisplayCount(2);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_3:
+//        GAME_MANAGER->m_pUserInterface->setDisplayCount(3);
+//        break;
+//    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_4:
+//        GAME_MANAGER->m_pUserInterface->setDisplayCount(4);
+//        break;
 #endif
     }
 }

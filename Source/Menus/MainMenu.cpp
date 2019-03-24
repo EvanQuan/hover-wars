@@ -34,8 +34,6 @@ void MainMenu::select(eFixedCommand command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
         nextMenu(PregameMenu::getInstance());
-        // Should go to PregameMenu, but for now goes straight to ingame
-        // nextMenu(PregameMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:
         PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);
