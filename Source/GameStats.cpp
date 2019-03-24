@@ -587,7 +587,7 @@ struct predicateSortByHighestScore
 {
     inline bool operator() (const EndGameStat& left, const EndGameStat& right)
     {
-        return (left.afterAwardsScore < right.afterAwardsScore);
+        return (left.afterAwardsScore > right.afterAwardsScore);
     }
 };
 
@@ -601,6 +601,7 @@ void GameStats::sortByHighestScoreFirst()
 
 /*
     @return all the hovercrafts that have the highest value of the specified stat
+            Ignores when the stat is 0.
 */
 vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
 {
@@ -616,7 +617,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
             highest = value;
             hovercrafts.clear();
         }
-        if (value >= highest)
+        if ((value >= highest) && (highest > 0))
         {
             hovercrafts.push_back(hovercraft);
         }
@@ -636,12 +637,14 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
 void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
 {
     vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
-    for (EndGameStat endStat : endGameStats)
+    // for (EndGameStat endStat : endGameStats)
+    for (int i = 0, size = endGameStats.size(); i < size; i++)
     {
-        if (FuncUtils::contains(winners, endStat.hovercraft))
+        if (FuncUtils::contains(winners, endGameStats.at(i).hovercraft))
         {
-            endStat.afterAwardsScore += points;
-            endStat.awards.push_back(make_tuple(name, description, points));
+            endGameStats.at(i).afterAwardsScore += points;
+            endGameStats.at(i).awards.push_back(make_tuple(name, description, points));
+            cout << "Award " << endGameStats.at(i).hovercraft << " with " << name << ": \"" << description << "\" +" << points << endl;
         }
     }
 

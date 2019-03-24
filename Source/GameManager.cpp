@@ -75,6 +75,7 @@ GameManager::~GameManager()
     m_pWindow = nullptr;
 
     // Clean up Allocated Memory
+    // NOTE: crash at glDeleteBuffers in destructor
     if (nullptr != m_pEntityManager)    // Entity Manager
         delete m_pEntityManager;
 
