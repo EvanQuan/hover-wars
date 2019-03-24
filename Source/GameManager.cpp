@@ -7,6 +7,9 @@
 #include "UserInterface/StartInterface.h"
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
+#include "UserInterface/GameInterface.h"
+#include "Menus/GameMenu.h"
+#include "Menus/StartMenu.h"
 
 // Unit: seconds
 #define GAME_TIME   10
@@ -259,12 +262,9 @@ void GameManager::drawScene()
 Function initializes shaders and geometry.
 contains any initializion requirements in order to start drawing.
 
-@param sFileName    filepath to a proper .scene file that contains the
-                    necessary information about shaders,  and geometry
-                    in the scene.
 @return true if the shaders initialized successfully
 */
-bool GameManager::initializeGraphics( string sFileName )
+bool GameManager::initializeGraphics()
 {
     // Locals
     // int iWidth, iHeight;
@@ -278,6 +278,16 @@ bool GameManager::initializeGraphics( string sFileName )
 
     // Initialize Environment with a new scene      
     m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
+
+#ifdef NDEBUG
+
+#else
+    initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+
+#endif
+
 
     // Return error results
     return true; 
