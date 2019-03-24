@@ -230,7 +230,7 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbilit
     addScore(hovercraft, reason);
     if (ability <= ABILITY_TRAIL_ACTIVATE)
     {
-        stats[hovercraft][KILLS_WITH_ROCKET + ability];
+        stats[hovercraft][KILLS_WITH_ROCKET + ability]++;
     }
 }
 
@@ -673,6 +673,6 @@ void GameStats::awardAwards()
     awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Hungry for Power", "Most powerups",    200);
     awardHighestStat(KILLSTREAK_LARGEST,            "Tactical", "Largest killstreak",       100);
     awardHighestStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
-    awardHighestStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 100);
-    awardHighestStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        100);
+    awardHighestStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
+    awardHighestStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        300);
 }
