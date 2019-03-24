@@ -138,9 +138,9 @@ execute that command.
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
                                          eFixedCommand command)
 {
-    if (ENTITY_MANAGER->playerExists(hovercraft))
+    if (m_pEntityMngr->playerExists(hovercraft))
     {
-        HovercraftEntity* playerEntity = ENTITY_MANAGER->getPlayer(hovercraft);
+        HovercraftEntity* playerEntity = m_pEntityMngr->getPlayer(hovercraft);
         executeValidHovercraft(playerEntity, command);
     }
 }
@@ -218,13 +218,13 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
-        ENTITY_MANAGER->toggleDebugCamera();
+        m_pEntityMngr->toggleDebugCamera();
         break;
     case COMMAND_DEBUG_TOGGLE_DRAW_BOUNDING_BOXES:
-        ENTITY_MANAGER->toggleBBDrawing();
+        m_pEntityMngr->toggleBBDrawing();
         break;
     case COMMAND_DEBUG_TOGGLE_DRAW_SPATIAL_MAP:
-        ENTITY_MANAGER->toggleSpatialMapDrawing();
+        m_pEntityMngr->toggleSpatialMapDrawing();
         break;
 //    case COMMAND_DEBUG_SET_UI_DISPLAY_COUNT_0:
 //        m_pGameManager->m_pCurrentInterface->setDisplayCount(0);
@@ -273,11 +273,11 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
                                          float x, float y)
 {
     if ((command == COMMAND_INVALID_VARIABLE)
-        || (!ENTITY_MANAGER->playerExists(hovercraft)))
+        || (!m_pEntityMngr->playerExists(hovercraft)))
     {
         return;
     }
-    HovercraftEntity* playerEntity = ENTITY_MANAGER->getPlayer(hovercraft);
+    HovercraftEntity* playerEntity = m_pEntityMngr->getPlayer(hovercraft);
     executeValidHovercraft(playerEntity, command, x, y);
 }
 

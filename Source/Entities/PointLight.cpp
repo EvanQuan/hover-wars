@@ -55,9 +55,10 @@ void PointLight::initialize(float fPower, const vec3* vColor, bool bStatic, cons
     }
 
     // Create a Render Component
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);
+    EntityManager* pEntityMngr = ENTITY_MANAGER;
+    m_pRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLES);
 
     // Create and Initialize the Lighting Component.
-    m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
+    m_pLightingComponent = pEntityMngr->generateLightingComponent(m_iID);
     m_pLightingComponent->initializeAsPointLight(&m_vPosition, &m_pColor, fPower);
 }

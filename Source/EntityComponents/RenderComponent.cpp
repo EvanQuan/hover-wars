@@ -19,6 +19,7 @@ RenderComponent::RenderComponent(int iEntityID, int iComponentID, bool bRenderSh
     m_eShaderType = eType;
     m_eMode = eMode;
     m_pShdrMngr = SHADER_MANAGER;
+    m_pEntityManager = ENTITY_MANAGER;
 }
 
 // Destructor
@@ -35,7 +36,7 @@ void RenderComponent::render()
         // Set up OpenGL state
         glBindVertexArray(m_pMesh->getVertexArray());
 
-        if (ENTITY_MANAGER->doShadowDraw()) // Process Shadow Drawing if Specified.
+        if (m_pEntityManager->doShadowDraw()) // Process Shadow Drawing if Specified.
             glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::SHADOW_SHDR));
         else                                // Otherwise, perform regular Render
             glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
@@ -56,10 +57,10 @@ void RenderComponent::render()
         // Unbind Texture(s) HERE
         m_pMesh->unbindTextures();
 
-        if (!ENTITY_MANAGER->doShadowDraw())
+        if (!m_pEntityManager->doShadowDraw())
         {
             // Render The Bounding Box for the mesh.
-            if (ENTITY_MANAGER->doBoundingBoxDrawing() && m_pMesh->usingBoundingBox())
+            if (m_pEntityManager->doBoundingBoxDrawing() && m_pMesh->usingBoundingBox())
             {
                 // Bind the Bounding Box Vertex Array and use the Bounding Box Shader
                 glBindVertexArray(m_pMesh->getBBVertexArray());

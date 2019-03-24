@@ -150,8 +150,9 @@ void GameStats::initializeCooldowns()
 void GameStats::correspondEntitiesToHovercrafts()
 {
     entityIDToHovercraft.clear();
-    const vector<HovercraftEntity*>* players = ENTITY_MANAGER->getPlayerList();
-    const vector<HovercraftEntity*>* bots = ENTITY_MANAGER->getBotList();
+    EntityManager* pEntityManager = ENTITY_MANAGER;
+    const vector<HovercraftEntity*>* players = pEntityManager->getPlayerList();
+    const vector<HovercraftEntity*>* bots = pEntityManager->getBotList();
     cout << "Players:" << endl;
     int id;
     eHovercraft hovercraft;

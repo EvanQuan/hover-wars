@@ -125,4 +125,5 @@ protected:
     void Menu::debugToggleWireframe();
 
     GameManager* m_pGameManager;
+    EntityManager* m_pEntityMngr;
 };

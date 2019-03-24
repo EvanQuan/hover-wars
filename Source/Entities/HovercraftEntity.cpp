@@ -396,8 +396,9 @@ void HovercraftEntity::initialize(const string& sFileName,
                                   float fScale)
 {
     // Load Mesh and Rendering Component
+    EntityManager* pEntityMngr = ENTITY_MANAGER;
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, m_sName, fScale);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    m_pRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
     m_vPosition = pObjectProperties->vPosition;
 
     vec3 vNegCorner, vPosCorner;
@@ -406,7 +407,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     sBounding.vDimensions = vPosCorner - vNegCorner;
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
-    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pPhysicsComponent = pEntityMngr->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeVehicle(getName(),
                                            true,
                                            m_pMesh,
@@ -420,7 +421,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
@@ -432,7 +433,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
-        m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+        m_pCmrComponents[i] = pEntityMngr->generateCameraComponent(m_iID);
         m_pCmrComponents[i]->setLookAt(m_vPosition);
     }
 

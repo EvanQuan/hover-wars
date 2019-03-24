@@ -7,7 +7,7 @@ AIManager* AIManager::m_pInstance = nullptr;
 
 AIManager::AIManager()
 {
-
+    m_pEntityMngr = ENTITY_MANAGER;
 }
 
 AIManager::~AIManager()
@@ -30,11 +30,11 @@ AIManager* AIManager::getInstance()
 void AIManager::reinitialize()
 {
     m_vAIComponents.clear();
-    const vector<HovercraftEntity*>* bots = ENTITY_MANAGER->getBotList();
+    const vector<HovercraftEntity*>* bots = m_pEntityMngr->getBotList();
     for (size_t i = 0, size = bots->size(); i < size; i++)
     {
         HovercraftEntity* bot = bots->at(i);
-        AIComponent* ai = ENTITY_MANAGER->generateAIComponent(bot->getID());
+        AIComponent* ai = m_pEntityMngr->generateAIComponent(bot->getID());
         initializeAIComponent(bot, ai);
         m_vAIComponents.push_back(ai);
     }
@@ -49,8 +49,8 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
     glm::vec3 botPos = bot->m_pPhysicsComponent->getPosition();
     PxTransform globalTransform = bot->m_pPhysicsComponent->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
-    glm::vec3 playerPos = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
-    glm::vec3 playerVel = ENTITY_MANAGER->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
+    glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
+    glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
     ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 
@@ -61,7 +61,7 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 */
 void AIManager::update(float fTimeInSeconds)
 {
-    const vector<HovercraftEntity*>* bots = ENTITY_MANAGER->getBotList();
+    const vector<HovercraftEntity*>* bots = m_pEntityMngr->getBotList();
     for (size_t i = 0, size = m_vAIComponents.size(); i < size; ++i)
     {
         AIComponent* ai = m_vAIComponents.at(i);
@@ -87,15 +87,15 @@ void AIManager::update(float fTimeInSeconds)
         int playerNum = eHovercraft::HOVERCRAFT_PLAYER_1;
         float distanceToNearestPlayer = 1000000;
         // @TODO add ability to change targets when we do multiplayer
-        /*for (int i = 0; i < ENTITY_MANAGER->getPlayerSize(); i++) {
-            HovercraftEntity *mPlayer = ENTITY_MANAGER->getPlayer((eHovercraft)i);
+        /*for (int i = 0; i < m_pEntityMngr->getPlayerSize(); i++) {
+            HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)i);
             float dis = (mPlayer->getPosition() - botPos).length();
             if ((mPlayer->getPosition() - botPos).length() < distanceToNearestPlayer) {
                 distanceToNearestPlayer = dis;
                 playerNum = i;
             }
         }*/
-        HovercraftEntity *mPlayer = ENTITY_MANAGER->getPlayer((eHovercraft)playerNum);
+        HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)playerNum);
         //glm::vec3 targetPosition = mPlayer->getPosition();
 
 
