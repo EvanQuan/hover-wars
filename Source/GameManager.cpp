@@ -87,11 +87,6 @@ GameManager::~GameManager()
     }
     m_vInterfaceInstances.clear();
 
-    // Note: This throws an exception since all the UI's are already deleted in
-    // the for loop above
-    if (nullptr != m_pCurrentInterface)
-        delete m_pCurrentInterface;
-
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
 
@@ -101,8 +96,6 @@ GameManager::~GameManager()
     if (nullptr != m_pPhysicsManager)
         delete m_pPhysicsManager;
 
-    // Note: This throws an exception in release
-    // Why?
     if (nullptr != m_pGameStats)        // Game Stats
         delete m_pGameStats;
 }
@@ -329,14 +322,11 @@ bool GameManager::initialize()
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
-    // initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
-    // m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
-    // m_pCurrentInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
-    m_pCurrentInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
+    m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
 #endif
 
     // Return error results
