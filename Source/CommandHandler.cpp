@@ -26,7 +26,7 @@ CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
         m_pInstance->setCurrentMenu(StartMenu::getInstance());
 #else
         // Release
-        GAME_MANAGER->initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
+        GAME_MANAGER->initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
         m_pInstance->setCurrentMenu(GameMenu::getInstance());
         // DEBUG
 #endif // !NDEBUG
