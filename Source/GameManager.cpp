@@ -261,12 +261,22 @@ void GameManager::drawScene()
 }
 
 /*
-Function initializes shaders and geometry.
-contains any initializion requirements in order to start drawing.
+    Initialize all start-of-program state.
+    This should only be called once at the start of the game.
 
-@return true if the shaders initialized successfully
+    Shaders:
+        Initialize shaders and geometry.
+        Contains any initializion requirements in order to start drawing.
+
+    Debug:
+        Initialize a new game and immediately enter thee game menu and interface
+
+    Release:
+        Set the game to use the start menu and and start interface
+
+    @return true if initialzation successful
 */
-bool GameManager::initializeGraphics()
+bool GameManager::initialize()
 {
     // Locals
     // int iWidth, iHeight;
@@ -275,6 +285,8 @@ bool GameManager::initializeGraphics()
     if (!m_pShaderManager->initializeShaders())
     {
         cout << "Couldn't initialize shaders." << endl;
+        // Note: in release mode, there is some error in initializing the shaders.
+        // For now, we will continue loading the rest of the game as normal.
         // return false;
     }
 

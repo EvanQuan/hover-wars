@@ -25,7 +25,7 @@ public:
     ~GameManager();
     
     // Graphics Application
-    bool initializeGraphics();
+    bool initialize();
     void startRendering();
     void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, string sFileName);
     void resetTime() { m_pTimer.resetTimer(); }

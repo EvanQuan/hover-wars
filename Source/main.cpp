@@ -105,8 +105,7 @@ bool initializeManagers()
     m_soundManager = SOUND_MANAGER;
     m_soundManager->loadFiles();
 
-    // return !m_gameManager->initializeGraphics( DEBUG_ENV );
-    return m_gameManager->initializeGraphics();
+    return m_gameManager->initialize();
 }
 
 /*
