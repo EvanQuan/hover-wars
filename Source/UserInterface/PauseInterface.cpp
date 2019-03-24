@@ -1,4 +1,5 @@
 #include "UserInterface/PauseInterface.h"
+#include "GameManager.h"
 
 // Singleton instance
 PauseInterface* PauseInterface::m_pInstance = nullptr;
@@ -32,7 +33,7 @@ PauseInterface::PauseInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
     }
 )
 {
-
+    GAME_MANAGER->addInterface(this);
 }
 
 PauseInterface* PauseInterface::getInstance(int iWidth, int iHeight)

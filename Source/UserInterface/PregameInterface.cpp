@@ -1,4 +1,5 @@
 #include "UserInterface/PregameInterface.h"
+#include "GameManager.h"
 
 // Singleton instance
 PregameInterface* PregameInterface::m_pInstance = nullptr;
@@ -32,7 +33,7 @@ PregameInterface::PregameInterface(int iWidth, int iHeight) : MenuInterface(iWid
     }
 )
 {
-
+    GAME_MANAGER->addInterface(this);
 }
 
 PregameInterface* PregameInterface::getInstance(int iWidth, int iHeight)

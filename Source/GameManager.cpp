@@ -43,7 +43,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
-    m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
+    m_pCommandHandler = COMMAND_HANDLER;
 }
 
 /*
@@ -81,9 +81,15 @@ GameManager::~GameManager()
     if (nullptr != m_pShaderManager)    // Shader Manager
         delete m_pShaderManager;
 
-    // TODO clean all instances
-    if (nullptr != m_pUserInterface)    // User Interface
-        delete m_pUserInterface;
+    // User Interface
+    for (UserInterface* ui : m_vInterfaceInstances) {
+        delete ui;
+    }
+    m_vInterfaceInstances.clear();
+
+    // Note: This throws an exception in release
+    // if (nullptr != m_pUserInterface)
+        // delete m_pUserInterface;
 
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
@@ -97,6 +103,16 @@ GameManager::~GameManager()
         // delete m_pGameStats;
 }
 
+
+/*
+    As UserInterface instances are generated, they are each added to
+    the m_vInterfaceInstances list.
+    At the end of the program, all interfaces are deleted.
+*/
+void GameManager::addInterface(UserInterface* ui)
+{
+    m_vInterfaceInstances.push_back(ui);
+}
 /*
     Start rendering game to screen. This call with block until the game loop
     ends (it will hang the thread). When this function returns, the program
@@ -205,17 +221,22 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
-    for (unsigned int i = 0; i < playerCount; i++)
+    for (unsigned int i = 0; i < playerCount; i++) {
         SCENE_LOADER->createPlayer();
+    }
 
     // Spawn Bots
-    for (unsigned int i = 0; i < botCount; i++)
+    for (unsigned int i = 0; i < botCount; i++) {
         SCENE_LOADER->createBot();
+    }
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize();
     m_pAIManager->reinitialize();
+
+    // TODO reinitialize Physics @Austin
+    // without it, the program crashes when starting a 2nd new game
 }
 
 /*
@@ -268,7 +289,7 @@ void GameManager::drawScene()
         Contains any initializion requirements in order to start drawing.
 
     Debug:
-        Initialize a new game and immediately enter thee game menu and interface
+        Initialize a new game and immediately enter the game menu and interface
 
     Release:
         Set the game to use the start menu and and start interface
@@ -280,6 +301,7 @@ bool GameManager::initialize()
     // Locals
     // int iWidth, iHeight;
 
+
     // Shaders
     if (!m_pShaderManager->initializeShaders())
     {
@@ -290,7 +312,9 @@ bool GameManager::initialize()
     }
 
     // Initialize Environment with a new scene      
-    m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
+    // For now we will initialize this here instead of the constructor as GameStats
+    // uses GameInterface, which requires GameManager to already be instantiated.
+    m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
 #ifdef NDEBUG
     // Game starts paused as the player starts in the start menu
@@ -304,6 +328,7 @@ bool GameManager::initialize()
     // m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
     m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #endif
