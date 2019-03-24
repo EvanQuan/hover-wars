@@ -53,6 +53,9 @@ public:
     int m_iWidth;
     int m_iHeight;
 
+    // Window Reference
+    GLFWwindow* m_pWindow;
+
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 
@@ -64,8 +67,6 @@ private:
 
     void endGame();
 
-    // Window Reference
-    GLFWwindow* m_pWindow;
 
     // Update Variables
     /*

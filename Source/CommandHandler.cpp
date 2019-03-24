@@ -22,18 +22,6 @@ CommandHandler* CommandHandler::getInstance()
         m_pInstance = new CommandHandler();
         // Set current menu is done after after the constructor to prevent
         // mutual recursion
-#ifdef NDEBUG
-        // m_pInstance->setCurrentMenu(StartMenu::getInstance());
-#else
-        // Release
-        // GAME_MANAGER->initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
-        // m_pInstance->setCurrentMenu(GameMenu::getInstance());
-        // GAME_MANAGER->m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
-        // DEBUG
-#endif // !NDEBUG
-
-
-
     }
 
     return m_pInstance;

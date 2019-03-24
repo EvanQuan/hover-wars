@@ -95,8 +95,10 @@ GameManager::~GameManager()
     if (nullptr != m_pAIManager)        // AI Manager
         delete m_pAIManager;
 
-    if (nullptr != m_pGameStats)        // Game Stats
-        delete m_pGameStats;
+    // Note: This throws an exception in release
+    // Why?
+    // if (nullptr != m_pGameStats)        // Game Stats
+        // delete m_pGameStats;
 }
 
 /*
@@ -280,12 +282,14 @@ bool GameManager::initializeGraphics()
     m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
 
 #ifdef NDEBUG
-
+    // m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
+    initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
     m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
-
 #endif
 
 

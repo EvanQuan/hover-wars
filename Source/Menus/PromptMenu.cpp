@@ -1,5 +1,4 @@
 #include "Menus/PromptMenu.h"
-#include "CommandHandler.h"
 
 /*
     If the user holds down a certain movement direction, there is a buffer time
@@ -127,7 +126,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         break;
     case COMMAND_CLOSE_WINDOW:
         cout << "PromptMenu CLOSE WINDOW" << endl;
-        glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+        glfwSetWindowShouldClose(GAME_MANAGER->m_pWindow, GL_TRUE);
         break;
     }
 }
