@@ -240,9 +240,6 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize();
     m_pAIManager->reinitialize();
-
-    // TODO reinitialize Physics @Austin
-    // without it, the program crashes when starting a 2nd new game
 }
 
 /*
