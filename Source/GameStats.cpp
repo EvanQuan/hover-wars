@@ -60,7 +60,6 @@ GameStats* GameStats::m_pInstance = nullptr;
 GameStats::GameStats(int iWidth, int iHeight)
 {
     m_pGameInterface = GameInterface::getInstance(iWidth, iHeight);
-    reinitialize();
 }
 
 GameStats* GameStats::getInstance(int iWidth, int iHeight)
@@ -111,8 +110,11 @@ Initialize all stats and cooldowns to 0.
 This should be called at the start of every game, or if the game resets.
 It should also be called AFTER players and bots have been initialized.
 */
-void GameStats::reinitialize()
+void GameStats::reinitialize(int playerCount, int botCount)
 {
+    m_iPlayerCount = playerCount;
+    m_iBotCount = botCount;
+
     initializeStats();
     initializeCooldowns();
     correspondEntitiesToHovercrafts();
@@ -652,8 +654,12 @@ void GameStats::awardHighestStat(eStat stat, string name, string description, in
 
 void GameStats::awardAwards()
 {
-    awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
-    awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+    // Multiplayer only awards
+    if (m_iPlayerCount > 1)
+    {
+        awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
+        awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+    }
     awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Hungry for Power", "Most powerups",    200);
     awardHighestStat(KILLSTREAK_LARGEST,            "Tactical", "Largest killstreak",       100);
 }

@@ -170,7 +170,7 @@ public:
     void useAbility(eHovercraft hovercraft, eAbility ability);
     bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const;
 
-    void reinitialize();
+    void reinitialize(int playerCount, int botCount);
 
     eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
 
@@ -273,6 +273,9 @@ private:
     unordered_map<int, eHovercraft> entityIDToHovercraft;
 
     GameInterface* m_pGameInterface;
+
+    int m_iPlayerCount;
+    int m_iBotCount;
 };
 
 
