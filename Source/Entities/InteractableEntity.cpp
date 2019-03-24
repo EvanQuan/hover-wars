@@ -29,9 +29,10 @@ void InteractableEntity::initialize(const string& sFileName,
                                     float fScale)
 {
     // Load Mesh and Rendering Component
+    EntityManager* pEntityMngr = ENTITY_MANAGER;
     m_pMesh             = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, m_sName, fScale);
-    m_pRenderComponent  = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
-    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pRenderComponent  = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    m_pPhysicsComponent = pEntityMngr->generatePhysicsComponent(m_iID);
 }
 
 void InteractableEntity::update(float fTimeInSeconds)

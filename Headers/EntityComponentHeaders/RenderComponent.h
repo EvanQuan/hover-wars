@@ -2,8 +2,6 @@
 #include "stdafx.h"
 #include "EntityComponent.h"
 #include "ShaderManager.h"
-#include "MeshManager.h"
-#include "TextureManager.h"
 
 /************************************************************
 * Name: RenderComponent
@@ -11,6 +9,10 @@
 * Description: Component used for storing vertex information and handles
 *    for the GPU to render to the screen.
 ***************************************************************/
+
+// Forward Declarations
+class EntityManager;
+class Mesh;
 
 class RenderComponent
     : public EntityComponent
@@ -47,5 +49,6 @@ private:
     Mesh const * m_pMesh;
     bool m_bUsingIndices, m_bUsingInstanced, m_bRenderShadows;
     ShaderManager* m_pShdrMngr;
+    EntityManager* m_pEntityManager;
     ShaderManager::eShaderType m_eShaderType;
 };

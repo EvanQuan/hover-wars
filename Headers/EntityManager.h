@@ -96,18 +96,11 @@ public:
     bool botExists(eHovercraft bot);
     int getPlayerSize();
 
-    // GameStats needs to iterate over all players and bots to correspond
-    // EntityIDs with eHovercraft enum values
-    /*
-        The CommandHandler uses this to determine which hovercrafts are
-        registered to receive input from
-    */
-    vector<HovercraftEntity*>                       m_pPlayerEntityList;    
-    /*
-        The AI uses this to determine which hovercrafts are registered to
-        receive input from
-    */
-    vector<HovercraftEntity*>                       m_pBotEntityList;    
+    // Returns constant pointers to the Player and Bot lists.
+    const vector<HovercraftEntity*>* getPlayerList() const
+        { return &m_pPlayerEntityList; }
+    const vector<HovercraftEntity*>* getBotList() const
+        { return &m_pBotEntityList; }
 
 private:
     EntityManager();
@@ -139,6 +132,18 @@ private:
     DirectionalLight*                               m_pDirectionalLight;
     // Interactable
     InteractableEntity*                             m_pBillboardTesting;
+    // GameStats needs to iterate over all players and bots to correspond
+    // EntityIDs with eHovercraft enum values
+    /*
+        The CommandHandler uses this to determine which hovercrafts are
+        registered to receive input from
+    */
+    vector<HovercraftEntity*>                       m_pPlayerEntityList;
+    /*
+        The AI uses this to determine which hovercrafts are registered to
+        receive input from
+    */
+    vector<HovercraftEntity*>                       m_pBotEntityList;
 
     // Manage Pointers for Deletion.
     MeshManager*                m_pMshMngr;

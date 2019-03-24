@@ -2,6 +2,9 @@
 #include "EntityComponentHeaders/AIComponent.h"
 #include "EntityHeaders/HovercraftEntity.h"
 
+// Forward Declarations
+class EntityManager;
+
 class AIManager final
 {
 public:
@@ -15,6 +18,7 @@ public:
 private:
     AIManager();
     static AIManager* m_pInstance;
+    EntityManager* m_pEntityMngr;
 
     vector<AIComponent*> m_vAIComponents;
 
