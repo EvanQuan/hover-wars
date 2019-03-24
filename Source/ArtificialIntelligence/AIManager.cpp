@@ -30,10 +30,10 @@ AIManager* AIManager::getInstance()
 void AIManager::reinitialize()
 {
     m_vAIComponents.clear();
-    vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
-    for (size_t i = 0, size = bots.size(); i < size; i++)
+    const vector<HovercraftEntity*>* bots = ENTITY_MANAGER->getBotList();
+    for (size_t i = 0, size = bots->size(); i < size; i++)
     {
-        HovercraftEntity* bot = bots.at(i);
+        HovercraftEntity* bot = bots->at(i);
         AIComponent* ai = ENTITY_MANAGER->generateAIComponent(bot->getID());
         initializeAIComponent(bot, ai);
         m_vAIComponents.push_back(ai);
@@ -61,11 +61,11 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 */
 void AIManager::update(float fTimeInSeconds)
 {
-    vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
+    const vector<HovercraftEntity*>* bots = ENTITY_MANAGER->getBotList();
     for (size_t i = 0, size = m_vAIComponents.size(); i < size; ++i)
     {
         AIComponent* ai = m_vAIComponents.at(i);
-        HovercraftEntity* bot = bots.at(i);
+        HovercraftEntity* bot = bots->at(i);
         PhysicsComponent* physics = bot->m_pPhysicsComponent;
 
         //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(18,21),vec2(18,19));

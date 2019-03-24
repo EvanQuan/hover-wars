@@ -150,22 +150,22 @@ void GameStats::initializeCooldowns()
 void GameStats::correspondEntitiesToHovercrafts()
 {
     entityIDToHovercraft.clear();
-    vector<HovercraftEntity*> players = ENTITY_MANAGER->m_pPlayerEntityList;
-    vector<HovercraftEntity*> bots = ENTITY_MANAGER->m_pBotEntityList;
+    const vector<HovercraftEntity*>* players = ENTITY_MANAGER->getPlayerList();
+    const vector<HovercraftEntity*>* bots = ENTITY_MANAGER->getBotList();
     cout << "Players:" << endl;
     int id;
     eHovercraft hovercraft;
-    for (size_t i = 0, size = players.size(); i < size; ++i)
+    for (size_t i = 0, size = players->size(); i < size; ++i)
     {
-        id = players.at(i)->getID();
+        id = players->at(i)->getID();
         hovercraft = static_cast<eHovercraft>(i);
         entityIDToHovercraft.insert({id, hovercraft});
         cout << "ID: " << id << " | Hovercraft: " << hovercraft << endl;
     }
     cout << "Bots:" << endl;
-    for (size_t i = 0, size = bots.size(); i < size; ++i)
+    for (size_t i = 0, size = bots->size(); i < size; ++i)
     {
-        id = bots.at(i)->getID();
+        id = bots->at(i)->getID();
         hovercraft = static_cast<eHovercraft>(i + HOVERCRAFT_BOT_1);
         entityIDToHovercraft.insert({id, hovercraft});
         cout << "ID: " << id << " | Hovercraft: " << hovercraft << endl;
