@@ -2,6 +2,24 @@
 #include "stdafx.h"
 
 /*
+    Represents the end game stats for a given hovercraft. This is necessary for
+    determining the winner at the end of the game.
+*/
+struct EndGameStat
+{
+    // The hovercraft this state corresponds to.
+    eHovercraft hovercraft;
+    // The score at the end of the game before awards are awarded.
+    int beforeAwardsScore;
+    // The score after awards are awarded. This is the final score.
+    int afterAwardsScore;
+    // List of awards gained. Composed of the name of the award, description of
+    // award the points it awards.
+    vector<tuple<string, string, int>> awards;
+};
+
+class GameInterface;
+/*
 Stores and calculates all in-game stats.
 
 Player:
@@ -40,6 +58,7 @@ Gives information to UserInterface to display the correct values.
 class GameStats
 {
 public:
+    static GameStats* getInstance(int iWidth, int iHeight);
     static GameStats* getInstance();
 
     /*
@@ -59,6 +78,7 @@ public:
         KILLS_TOTAL_AGAINST_BOT_2,
         KILLS_TOTAL_AGAINST_BOT_3,
         KILLS_TOTAL_AGAINST_BOT_4,
+        KILLS_TOTAL_AGAINST_PLAYERS,
         KILLS_TOTAL_AGAINST_BOTS,
         IS_DOMINATING_PLAYER_1,
         IS_DOMINATING_PLAYER_2,
@@ -104,12 +124,6 @@ public:
         PICKUP_POWERUP,
     };
 
-
-    enum eRemoveScoreReason
-    {
-        HIT = 0,
-    };
-
     enum eCooldown
     {
         COOLDOWN_ROCKET = 0,
@@ -117,6 +131,30 @@ public:
         COOLDOWN_TRAIL_ACTIVATE,
         COOLDOWN_DASH,
         COOLDOWN_COUNT,
+    };
+
+    /*
+        End game stats have different index values than normal stats since they
+        are variable in size.
+
+        Every vector 
+        Row major order
+            0           1               2 
+        0   Hovercraft  End game score  Final score
+        1               Award #1        Award #1 bonus
+        2               Award #2        Award #2 bonus
+                        ...
+        N               Award #N        Award #N bonus
+    */
+    enum eEndGameStatRow
+    {
+        ENDGAME_ROW_HOVERCRAFT = 0,
+    };
+    enum eEndGameStatColumn
+    {
+        ENDGAME_COLUMN_HOVERCRAFT_ID = 0,
+        ENDGAME_COLUMN_AWARD_NAME    = 0,
+        ENDGAME_COLUMN_SCORE         = 1,
     };
 
     ~GameStats();
@@ -136,13 +174,30 @@ public:
 
     eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
 
+    vector<EndGameStat> getEndGameStats();
+
 private:
-    GameStats();
+    GameStats(int iWidth, int iHeight);
     static GameStats* m_pInstance;
 
     void initializeStats();
     void initializeCooldowns();
     void correspondEntitiesToHovercrafts();
+
+    /*
+    End game stats and awards
+
+    Sorted and variable in size, depending on in-game results.
+    */
+    vector<EndGameStat> endGameStats;
+    void initializeEndGameStats();
+    void sortByHighestScoreFirst();
+    bool winnerSortFunction(EndGameStat left, EndGameStat right);
+    vector<eHovercraft> getHovercraftsThatHaveHighest(eStat stat);
+
+    // Award name : function that determines who won the award
+    void awardAwards();
+    void awardHighestStat(eStat stat, string name, string description, int points);
 
 
     /*
@@ -194,6 +249,9 @@ private:
 
     void debug(eHovercraft hovercraft);
 
+    bool isBot(eHovercraft hovercraft) const;
+    bool isPlayer(eHovercraft hovercraft) const;
+
     // @Deprecated, unused, due to perfect correspondance
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 
     {
@@ -207,7 +265,14 @@ private:
         {HIT_BOT_4,     HOVERCRAFT_BOT_4},
     };
 
+    /*
+        This corresponds the entityIDs to eHovercrafts.
+        This will only be filled with values for hovercrafts that exist in the
+        game.
+    */
     unordered_map<int, eHovercraft> entityIDToHovercraft;
+
+    GameInterface* m_pGameInterface;
 };
 
 

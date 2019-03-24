@@ -37,6 +37,18 @@ namespace FuncUtils
     {
         return m.find(key) != m.end();
     }
+
+    /*
+        Check if a vector contains a specified key in O(n) time.
+        @param vector<K>    v to check if the key exists
+        @param K            key to check in vector
+        @return true if the specified vector contains the specified key.
+    */
+    template <class K>
+    bool contains(vector<K> v, K key)
+    {
+        return std::find(v.begin(), v.end(), key) != v.end();
+    }
     /*
         Swaps two variables of the same type.
     */

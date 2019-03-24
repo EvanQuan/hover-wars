@@ -206,7 +206,7 @@ void EntityManager::doRender()
            m_pEmtrEngn->renderEmitters();
         } 
 
-        USER_INTERFACE->render();
+        // USER_INTERFACE->render();
 
 #ifdef _DEBUG
         // Draw the Spatial Map for debuggin

@@ -1,47 +1,29 @@
 #include "CommandHandler.h"
 #include "Menus/StartMenu.h"
 #include "Menus/GameMenu.h"
+#include "UserInterface/GameInterface.h"
 
 // Singleton instance
 CommandHandler* CommandHandler::m_pInstance = nullptr;
 /*
 Constructor
 */
-CommandHandler::CommandHandler(GLFWwindow *rWindow)
+CommandHandler::CommandHandler()
 {
-    m_pWindow = rWindow;
 }
 
 /*
 Get Singleton instance
 */
-CommandHandler* CommandHandler::getInstance(GLFWwindow *rWindow)
+CommandHandler* CommandHandler::getInstance()
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new CommandHandler(rWindow);
+        m_pInstance = new CommandHandler();
         // Set current menu is done after after the constructor to prevent
         // mutual recursion
-#ifdef NDEBUG
-        m_pInstance->setCurrentMenu(StartMenu::getInstance());
-#else
-        // Release
-        GAME_MANAGER->initializeNewGame(1, 4, 9999999.0f, "Scenes/debug.scene");
-        m_pInstance->setCurrentMenu(GameMenu::getInstance());
-        // DEBUG
-#endif // !NDEBUG
-
-
-
     }
 
-    return m_pInstance;
-}
-
-// Assumes instances has already been instantiated beforehand
-CommandHandler* CommandHandler::getInstance()
-{
-    assert(nullptr != m_pInstance);
     return m_pInstance;
 }
 

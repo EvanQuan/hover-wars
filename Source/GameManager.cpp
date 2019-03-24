@@ -4,9 +4,12 @@
 #include "ArtificialIntelligence/AIManager.h"
 #include "SceneLoader.h"
 #include "ShaderManager.h"
-#include "UserInterface/UserInterface.h"
+#include "UserInterface/StartInterface.h"
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
+#include "UserInterface/GameInterface.h"
+#include "Menus/GameMenu.h"
+#include "Menus/StartMenu.h"
 
 // Unit: seconds
 #define GAME_TIME   10
@@ -31,9 +34,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     // Fetch and update Window HxW
     m_pWindow = rWindow;
-    int iWidth, iHeight;
-    glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-    m_pEntityManager->updateWidthAndHeight(iWidth, iHeight);
+    glfwGetWindowSize(m_pWindow, &m_iWidth, &m_iHeight);
+    m_pEntityManager->updateWidthAndHeight(m_iWidth, m_iHeight);
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
@@ -41,8 +43,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
-    // Game starts paused as the player starts in the main menu
-    paused = true;
+    m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 }
 
 /*
@@ -80,6 +81,7 @@ GameManager::~GameManager()
     if (nullptr != m_pShaderManager)    // Shader Manager
         delete m_pShaderManager;
 
+    // TODO clean all instances
     if (nullptr != m_pUserInterface)    // User Interface
         delete m_pUserInterface;
 
@@ -88,6 +90,11 @@ GameManager::~GameManager()
 
     if (nullptr != m_pAIManager)        // AI Manager
         delete m_pAIManager;
+
+    // Note: This throws an exception in release
+    // Why?
+    // if (nullptr != m_pGameStats)        // Game Stats
+        // delete m_pGameStats;
 }
 
 /*
@@ -128,7 +135,6 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
-    m_pAIManager->update(frameDeltaTime);
     m_fGameTime -= frameDeltaTime;
     if (!startedGameOver && (m_fGameTime < 0))
     {
@@ -153,13 +159,15 @@ bool GameManager::renderGraphics()
                 // Music change/fade?
             }
         }
+        m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
 
         // The user interface should update after the EntityManager and
         // CommandHandler has changed in order to reflect their changes.
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
-        USER_INTERFACE->update(frameDeltaTime);
+        m_pUserInterface->update(frameDeltaTime);
+        // call function to draw our scene
     }
 
     // Sound needs to update after the EntityManager to reflect in game changes
@@ -167,7 +175,6 @@ bool GameManager::renderGraphics()
     // is paused.
     SOUND_MANAGER->update();
 
-    // call function to draw our scene
     drawScene();
 
     // check for Window events
@@ -182,18 +189,19 @@ bool GameManager::renderGraphics()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
+    @param sFileName    of .scene environment to load
 */
-void GameManager::initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, string sFileName)
+void GameManager::initializeNewGame(unsigned int playerCount,
+                                    unsigned int botCount,
+                                    float gameTime,
+                                    string sFileName)
 {
-    // for now, this simply unpauses the game
-    // TODO implement this
+    // We intialize all values for the game to immediately start
     paused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pUserInterface->reinitialize(gameTime);
-    GAME_STATS->reinitialize();
-    m_pAIManager->reinitialize();
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -203,14 +211,25 @@ void GameManager::initializeNewGame(unsigned int playerCount, unsigned int botCo
     // Spawn Bots
     for (unsigned int i = 0; i < botCount; i++)
         SCENE_LOADER->createBot();
+
+    // AFTER the players and bots have been made, the GameStats and AI
+    // need to reinitialize to track the players and bots
+    m_pGameStats->reinitialize();
+    m_pAIManager->reinitialize();
 }
 
 /*
     End the current game.
+
+    - Stop the AI
+    - Stop Physics
+    - Determine the winner
+    - Move to the PostGameMenu
 */
 void GameManager::endGame()
 {
     // postgame menu
+    cout << "GameManger::endGame()" << endl;
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
 }
@@ -228,7 +247,11 @@ void GameManager::drawScene()
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);
-        m_pEntityManager->renderEnvironment();
+        if (!paused)
+        {
+            m_pEntityManager->renderEnvironment();
+        }
+        m_pUserInterface->render();
         glDisable(GL_DEPTH_TEST);
 
         // scene is rendered to the back buffer, so swap to front for display
@@ -237,39 +260,57 @@ void GameManager::drawScene()
 }
 
 /*
-Function initializes shaders and geometry.
-contains any initializion requirements in order to start drawing.
+    Initialize all start-of-program state.
+    This should only be called once at the start of the game.
 
-@param sFileName    filepath to a proper .scene file that contains the
-                    necessary information about shaders,  and geometry
-                    in the scene.
-@return true if the shaders failed to initialize.
+    Shaders:
+        Initialize shaders and geometry.
+        Contains any initializion requirements in order to start drawing.
+
+    Debug:
+        Initialize a new game and immediately enter thee game menu and interface
+
+    Release:
+        Set the game to use the start menu and and start interface
+
+    @return true if initialzation successful
 */
-bool GameManager::initializeGraphics( string sFileName )
+bool GameManager::initialize()
 {
     // Locals
-    bool bError = false;
-    int iWidth, iHeight;
+    // int iWidth, iHeight;
 
     // Shaders
     if (!m_pShaderManager->initializeShaders())
     {
         cout << "Couldn't initialize shaders." << endl;
-        bError = true;
+        // Note: in release mode, there is some error in initializing the shaders.
+        // For now, we will continue loading the rest of the game as normal.
+        // return false;
     }
-    else
-    {
-        // TODO: This will be done once a level is chosen to load.
-        // Initialize User Interface
-        glfwGetWindowSize(m_pWindow, &iWidth, &iHeight);
-        m_pUserInterface = UserInterface::getInstance(iWidth, iHeight);
 
-        // Initialize Environment with a new scene      
-        m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
-    }
+    // Initialize Environment with a new scene      
+    m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
+
+#ifdef NDEBUG
+    // Game starts paused as the player starts in the start menu
+    paused = true;
+    startedGameOver = false;
+    m_fGameOverTime = GAME_OVER_TIME;
+    m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
+    m_pUserInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
+    // initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    // m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+    // m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+#else
+    initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+#endif
+
 
     // Return error results
-    return bError; 
+    return true; 
 }
 
 /*******************************************************************************\

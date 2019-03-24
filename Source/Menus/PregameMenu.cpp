@@ -1,12 +1,12 @@
 #include "Menus/PregameMenu.h"
 #include "Menus/MainMenu.h"
 #include "Menus/GameMenu.h"
-#include "InputHandler.h"
+#include "UserInterface/GameInterface.h"
 
 // Default game time as pregame menu is first entered
 #define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE
 #define MAX_GAME_TIME 10 * SECONDS_PER_MINUTE
-#define MIN_GAME_TIME 1 * SECONDS_PER_MINUTE
+#define MIN_GAME_TIME 10
 
 // Interval of time to change game time
 #define GAME_TIME_INTERVAL 30
@@ -18,6 +18,14 @@ PregameMenu::PregameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         {
+            // Even though start is visually on the bottom, we put it on top
+            // so its defaulted to when we enter the menu
+            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
+            // Even though back is visually on the left, we put start on the
+            // left so its defaulted to when we move down
+            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
+        },
+        {
             { "Player count", eFixedCommand::COMMAND_PROMPT_SELECT },
         },
         {
@@ -25,12 +33,6 @@ PregameMenu::PregameMenu() : PromptMenu(
         },
         {
             { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
-        },
-        {
-            // Even though back is visually on the left, we put start on the
-            // left so its defaulted to when we move down
-            { "Start Game", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
-            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
         },
     }
 )
@@ -62,7 +64,9 @@ void PregameMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_NEXT_MENU:
         // Let GameManager initialize a new game before switching to game menu
         // controls
-        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime), "Scenes/debug.scene");
+        // TODO Rework this
+        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime), RELEASE_ENV);
+        GAME_MANAGER->m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
         nextMenu(GameMenu::getInstance());
         break;
     }

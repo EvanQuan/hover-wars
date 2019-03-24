@@ -67,7 +67,7 @@ void Menu::updateKeyboardCommands()
     */
     map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
     eFixedCommand fixedCommand;
-    for (auto it : keys)
+   for (auto it : keys)
     {
         // Divide the key states into the 3 types of fixed commands
         switch (it.second) // value - input state

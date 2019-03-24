@@ -30,7 +30,7 @@ public:
     Spikes* createSpikesMesh(int iOwnerID);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
-    void getRandomSpawnPoint(vec3* vPosition);
+    void getNextSpawnPoint(vec3* vPosition);
 
 private:
     // Singleton Implementation
@@ -40,6 +40,8 @@ private:
     EntityManager* m_pEntityManager;
 
     vector<vec3> m_vSpawnPoints;
+
+    int spawnIndex;
 
     enum ePropertyTypes
     {

@@ -212,6 +212,7 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
 #define TEXTURE_MANAGER     TextureManager::getInstance()
 #define USER_INTERFACE      UserInterface::getInstance()
+#define GAME_INTERFACE      GameInterface::getInstance()
 
 // From Boilerplate code,
 // Shouldn't need to modify this.

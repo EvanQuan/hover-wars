@@ -1,5 +1,5 @@
 #include "GameStats.h"
-#include "UserInterface/UserInterface.h"
+#include "UserInterface/GameInterface.h"
 #include "EntityManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 
@@ -57,17 +57,24 @@ Notifies a killstreak message once player hits a milestone.
 // Singleton instance
 GameStats* GameStats::m_pInstance = nullptr;
 
-GameStats::GameStats()
+GameStats::GameStats(int iWidth, int iHeight)
 {
+    m_pGameInterface = GameInterface::getInstance(iWidth, iHeight);
     reinitialize();
 }
 
-GameStats* GameStats::getInstance()
+GameStats* GameStats::getInstance(int iWidth, int iHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new GameStats();
+        m_pInstance = new GameStats(iWidth, iHeight);
     }
+    return m_pInstance;
+}
+
+GameStats * GameStats::getInstance()
+{
+    assert(nullptr != m_pInstance);
     return m_pInstance;
 }
 
@@ -261,7 +268,7 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
 
-    USER_INTERFACE->displayMessage(attacker, hit, UserInterface::KILL_MESSAGE_KILL);
+    m_pGameInterface->displayMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
     cout << "Player " << attacker << " hit Player " << attacker << endl;
@@ -324,7 +331,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
         firstBloodHappened = true;
-        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
+        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     return basePoints + killstreakBonus + revengeBonus + firstBloodBonus;
 }
@@ -368,6 +375,25 @@ void GameStats::updateAttackerAndHitKills(eHovercraft attacker, eHovercraft hit)
 {
     stats[attacker][KILLS_TOTAL]++;
     stats[attacker][KILLS_TOTAL_AGAINST_PLAYER_1 + hit]++;
+
+    if (isBot(hit))
+    {
+        stats[attacker][KILLS_TOTAL_AGAINST_BOTS]++;
+    }
+    else if (isPlayer(hit))
+    {
+        stats[attacker][KILLS_TOTAL_AGAINST_PLAYERS]++;
+    }
+}
+
+bool GameStats::isBot(eHovercraft hovercraft) const
+{
+    return HOVERCRAFT_BOT_1 <= hovercraft && hovercraft <= HOVERCRAFT_BOT_4;
+}
+
+bool GameStats::isPlayer(eHovercraft hovercraft) const
+{
+    return HOVERCRAFT_PLAYER_1 <= hovercraft && hovercraft <= HOVERCRAFT_PLAYER_4;
 }
 
 /*
@@ -394,7 +420,7 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        USER_INTERFACE->displayMessage(attacker, hit, UserInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
+        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
     }
 
     // Update attacker's current total killstreak against hit
@@ -490,8 +516,8 @@ Enable attacker's domaination status against hit
 void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
 {
     // Ad hoc for single player
-    USER_INTERFACE->displayMessage(attacker, hit,
-                                   UserInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
+    m_pGameInterface->displayMessage(attacker, hit,
+                                   GameInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
     stats[attacker][IS_DOMINATING_PLAYER_1 + hit] = true;
 }
 /*
@@ -502,8 +528,8 @@ Disable hit's domination status against attacker.
 */
 void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
-    USER_INTERFACE->displayMessage(attacker, hit,
-                                   UserInterface::eKillMessage::KILL_MESSAGE_REVENGE);
+    m_pGameInterface->displayMessage(attacker, hit,
+                                   GameInterface::eKillMessage::KILL_MESSAGE_REVENGE);
     stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;
 }
 
@@ -528,4 +554,103 @@ Add to the player's total power up count
 void GameStats::addPowerupCount(eHovercraft hovercraft)
 {
     stats[hovercraft][POWERUPS_TOTAL_PICKED_UP]++;
+}
+
+/*
+    Fill the vector of endGameStats with EndGameStat values for every
+    hovercraft in the game. We can get the hovercraft and beforeAwardsScore now
+    but will have to initialize afterAwardsScore and awards later.
+*/
+void GameStats::initializeEndGameStats()
+{
+    endGameStats.clear();
+    for (pair<int, eHovercraft> kvpair : entityIDToHovercraft)
+    {
+        EndGameStat stat;
+        stat.hovercraft = kvpair.second;
+        stat.beforeAwardsScore = get(stat.hovercraft, SCORE_CURRENT);
+        stat.afterAwardsScore = stat.beforeAwardsScore;
+        stat.awards.clear();
+        endGameStats.push_back(stat);
+    }
+}
+
+vector<EndGameStat> GameStats::getEndGameStats()
+{
+    initializeEndGameStats();
+    awardAwards();
+    sortByHighestScoreFirst();
+    return endGameStats;
+}
+
+struct predicateSortByHighestScore
+{
+    inline bool operator() (const EndGameStat& left, const EndGameStat& right)
+    {
+        return (left.afterAwardsScore < right.afterAwardsScore);
+    }
+};
+
+/*
+    Sort winners by the highest score after awards, in decreasing order.
+*/
+void GameStats::sortByHighestScoreFirst()
+{
+    std::sort(endGameStats.begin(), endGameStats.end(), predicateSortByHighestScore());
+}
+
+/*
+    @return all the hovercrafts that have the highest value of the specified stat
+*/
+vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
+{
+    int highest = 0;
+    vector<eHovercraft> hovercrafts;
+
+    for (int h = HOVERCRAFT_PLAYER_1; h < MAX_HOVERCRAFT_INDEX; h++)
+    {
+        eHovercraft hovercraft = static_cast<eHovercraft>(h);
+        int value = get(hovercraft, stat);
+        if (value > highest)
+        {
+            highest = value;
+            hovercrafts.clear();
+        }
+        if (value >= highest)
+        {
+            hovercrafts.push_back(hovercraft);
+        }
+    }
+    return hovercrafts;
+}
+
+/*
+    Award all hovercrafts with the award of having the highest specified stat.
+    Increases afterAwardsStat by point value.
+
+    @param stat         to have the highest value of
+    @param name         of the award
+    @param description  of the award
+    @param points       the award gives
+*/
+void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
+{
+    vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
+    for (EndGameStat endStat : endGameStats)
+    {
+        if (FuncUtils::contains(winners, endStat.hovercraft))
+        {
+            endStat.afterAwardsScore += points;
+            endStat.awards.push_back(make_tuple(name, description, points));
+        }
+    }
+
+}
+
+void GameStats::awardAwards()
+{
+    awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
+    awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+    awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Hungry for Power", "Most powerups",    200);
+    awardHighestStat(KILLSTREAK_LARGEST,            "Tactical", "Largest killstreak",       100);
 }

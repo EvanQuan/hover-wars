@@ -1,6 +1,6 @@
 #include "Menus/PostgameMenu.h"
 #include "Menus/MainMenu.h"
-#include "InputHandler.h"
+#include "GameStats.h"
 
 // Singleton instance
 PostgameMenu* PostgameMenu::m_pInstance = nullptr;
@@ -38,4 +38,16 @@ void PostgameMenu::select(eFixedCommand command)
 void PostgameMenu::back()
 {
     nextMenu(MainMenu::getInstance());
+}
+
+void PostgameMenu::enter()
+{
+    cout << "Calculating end game stats...";
+    endGameStats = GAME_STATS->getEndGameStats();
+    cout << "DONE" << endl;
+    for (EndGameStat s : endGameStats)
+    {
+        // debug
+        cout << "Hovercraft: " << s.hovercraft << " Points: " << s.afterAwardsScore << endl;
+    }
 }

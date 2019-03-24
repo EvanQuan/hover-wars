@@ -22,7 +22,7 @@ bool initializeWindow(GLFWwindow** rWindow, int* iHeight, int* iWidth, const cha
 // Organizational function prototypes
 void initializeWindow();
 void initializeGLEW();
-void initializeManagers();
+bool initializeManagers();
 void cleanup();
 
 // These are not local variables to main so that other functions can better
@@ -52,8 +52,10 @@ int main()
         initializeGLEW();
         if (iRunning) // only succeeds if both glfw and glew are successful
         {
-            initializeManagers();
-            m_gameManager->startRendering();
+            if (initializeManagers())
+            {
+                m_gameManager->startRendering();
+            }
         }
         cleanup();
     }
@@ -85,7 +87,7 @@ void initializeGLEW()
     Initialize all core values at startup.
     This should only be called once at the beginning of the program.
 */
-void initializeManagers()
+bool initializeManagers()
 {
     // Initialize Physics
     m_pPhysicsManager = PHYSICS_MANAGER;
@@ -103,14 +105,7 @@ void initializeManagers()
     m_soundManager = SOUND_MANAGER;
     m_soundManager->loadFiles();
 
-    // Initialize graphics from scene file
-#ifdef NDEBUG
-    // iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
-    iRunning = !m_gameManager->initializeGraphics( RELEASE_ENV );
-#else
-    iRunning = !m_gameManager->initializeGraphics( DEBUG_ENV );
-    // iRunning = !m_gameManager->initializeGraphics( DEBUG_NO_AI_ENV );
-#endif
+    return m_gameManager->initialize();
 }
 
 /*

@@ -85,8 +85,8 @@ rocket {
         1.0
     }
     +material {
-        textures/defaultTexture.png
-        0.0
+         textures/missile/missile_diffuse.jpg
+         1.0
     }
     +shader {
         blinn_phong_shdr
@@ -106,6 +106,15 @@ spikes {
     +shader {
         blinn_phong_shdr
     }
+}
+
+spawn_points {
+    0 5 0
+    15 5 0
+    10 5 10
+    20 5 20
+    0 5 30
+    50 5 0.1
 }
 
 directional_light {
@@ -221,39 +230,16 @@ plane {
     }
 }
 
-# Mesh
-# Having the player start off the ground sort of fixes the initial
-# is in air bug
-# player {
-#     0 5 0
-#     +mesh {
-#         models/big_dodge.obj
-#         0.25
-#     }
-#     +material {
-#         textures/tronBase.png
-#         0.1 0.1 0.1
-#         20.0
-#     }
-#     +shader {
-#         blinn_phong_shdr
-#     }
-#     +bounding {
-#         box
-#         2.0 5.0 2.5
-#     }
-# }
-# models/hovercraft/RetroRacer_obj/RetroRacerRed.obj
-player {
-    0 0 0
+
+hovercraft {
     +mesh {
         models/hovercraft/HoverCar.obj
         0.012
     }
     +material {
-        textures/tronBase.png
-        0.1 0.1 0.1
-        20.0
+        textures/HoverCar/UV_map.bmp
+        0.3500 0.3500 0.3500
+        32.0
     }
     +shader {
         blinn_phong_shdr
@@ -262,74 +248,6 @@ player {
         spatial
     }
 }
-
-
-#bot {
-#     50 5 0.1
-#    +mesh {
-#         models/big_dodge.obj
-#         0.25
-#     }
-#     +material {
-#         textures/tronBase.png
-#         0.1 0.1 0.1
-#         20.0
-#     }
-#     +shader {
-#         blinn_phong_shdr
-#     }
-#     +bounding {
-#         box
-#         2.0 2.5 5.0
-#     }
-#}
-
-# models/hovercraft/RetroRacer_obj/RetroRacerRed.obj
-bot {
-    0 0 50
-    +mesh {
-        models/hovercraft/HoverCar.obj
-         0.012
-     }
-     +material {
-         textures/tronBase.png
-         0.1 0.1 0.1
-         20.0
-     }
-     +shader {
-         blinn_phong_shdr
-     }
-     +bounding {
-         spatial
-     }
-}
-
-#player {
-#    0 0 0
-#    +mesh {
-#        models/missile.obj
-#        0.01
-#    }
-#    +material {
-#        textures/tronBase.png
-#        0.1 0.1 0.1
-#        20.0
-#    }
-#    +shader {
-#        blinn_phong_shdr
-#    }
-#    +bounding {
-#        box
-#        2.0 5.0 2.5 
-#    }
-#}
-
-# These player bounding box values are more accurate, but result in wacky physics
-# 1.2 3.8 1.8
-
-#       cube    { x y z  height  width  depth }
-#           - "x y z"               = the position of the cube
-#           - "height width depth"  = Specifies the dimensions of the cube
 
 cube {
     65 5 65
@@ -584,32 +502,6 @@ cube {
         10 110 2
     }
 }
-# bump
-# Player should be able to move over this?
-# cube {
-#     20 0 20
-#     0.25 2 2
-#     +bounding {
-#         box
-#         0.25 2.0 2.0
-#     }
-# }
-
-# Other ships
-#static_mesh {
-#    -20 2 10
-#    +mesh {
-#        models/hovercraft/HoverCar.obj
-#        0.012
-#    }
-#    +material {
-#        textures/defaultTexture.png
-#        0.0
-#    }
-#    +shader {
-#        blinn_phong_shdr
-#    }
-#}
 
 # Set Spatial Map information for the Scene
 # values are: length, width and tile size in that order.
