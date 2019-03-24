@@ -44,6 +44,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
     m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
+
+    m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
 }
 
 /*
@@ -205,17 +207,22 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
-    for (unsigned int i = 0; i < playerCount; i++)
+    for (unsigned int i = 0; i < playerCount; i++) {
         SCENE_LOADER->createPlayer();
+    }
 
     // Spawn Bots
-    for (unsigned int i = 0; i < botCount; i++)
+    for (unsigned int i = 0; i < botCount; i++) {
         SCENE_LOADER->createBot();
+    }
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize();
     m_pAIManager->reinitialize();
+
+    // TODO reinitialize Physics @Austin
+    // without it, the program crashes when starting a 2nd new game
 }
 
 /*
@@ -268,7 +275,7 @@ void GameManager::drawScene()
         Contains any initializion requirements in order to start drawing.
 
     Debug:
-        Initialize a new game and immediately enter thee game menu and interface
+        Initialize a new game and immediately enter the game menu and interface
 
     Release:
         Set the game to use the start menu and and start interface
@@ -290,7 +297,6 @@ bool GameManager::initialize()
     }
 
     // Initialize Environment with a new scene      
-    m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
 
 #ifdef NDEBUG
     // Game starts paused as the player starts in the start menu
@@ -304,6 +310,7 @@ bool GameManager::initialize()
     // m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
     m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #endif
