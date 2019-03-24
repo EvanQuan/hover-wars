@@ -2,6 +2,12 @@
 #include "UserInterface/MenuInterface.h"
 
 
+#define BACKGROUND "textures/menu/main_menu.png"
+#define NEW_GAME_1 "textures/menu/new_game.png"
+#define NEW_GAME_2 "textures/menu/new_game2.png"
+#define EXIT_1 "textures/menu/exit.png"
+#define EXIT_2 "textures/menu/exit2.png"
+
 class MainInterface final : public MenuInterface
 {
 public:
@@ -21,4 +27,6 @@ public:
 
 private:
     static MainInterface* m_pInstance;
+
+    void renderOption(int choice);
 };

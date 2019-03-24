@@ -56,4 +56,18 @@ void MainInterface::reinitialize(float gameTime)
 
 void MainInterface::render()
 {
+    renderImage(BACKGROUND, 0.0f, 0.0f, 1.0f);
+}
+
+void MainInterface::renderOption(int choice) {
+    if (choice == 1)
+    {   // cursor in 'new game'
+        //renderImage(NEW_GAME_2, , );
+        //renderImage(EXIT_1)
+    }
+    else if (choice == 2) {
+        //renderImage(NEW_GAME_1);
+        //renderImage(EXIT_2)
+    }
+    
 }

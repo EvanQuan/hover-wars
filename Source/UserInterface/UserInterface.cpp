@@ -1,6 +1,6 @@
 #include "UserInterface/UserInterface.h"
 #include "ShaderManager.h"
-
+#include "TextureManager.h"
 
 /***********\
  * Defines *
@@ -91,7 +91,6 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     m_Textures["textures/menu/start.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/start.png");
     m_Textures["textures/menu/start2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/start2.png");
     m_Textures["textures/menu/Title.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/Title.jpg");
-    //m_Textures["textures/menu/background.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/background.jpg");
 }
 
 UserInterface::~UserInterface()
@@ -423,3 +422,5 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
 
     image->unbindTexture();
 }
+
+
