@@ -2,6 +2,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/GameMenu.h"
 #include "UserInterface/GameInterface.h"
+#include "UserInterface/MainInterface.h"
 
 // Default game time as pregame menu is first entered
 #define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE
@@ -64,9 +65,8 @@ void PregameMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_NEXT_MENU:
         // Let GameManager initialize a new game before switching to game menu
         // controls
-        // TODO Rework this
-        GAME_MANAGER->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime), RELEASE_ENV);
-        GAME_MANAGER->m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+        m_pGameManager->initializeNewGame(m_iPlayerCount, m_iBotCount, static_cast<float>(m_fGameTime), RELEASE_ENV);
+        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
         nextMenu(GameMenu::getInstance());
         break;
     }
@@ -75,6 +75,7 @@ void PregameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PregameMenu::back()
 {
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
     nextMenu(MainMenu::getInstance());
 }
 

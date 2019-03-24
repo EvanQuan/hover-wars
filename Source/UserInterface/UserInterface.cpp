@@ -1,5 +1,4 @@
 #include "UserInterface/UserInterface.h"
-#include "GameManager.h"
 #include "ShaderManager.h"
 
 
@@ -257,11 +256,6 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
 void UserInterface::displayDebug(const char* message)
 {
     debugMessage = message;
-}
-
-void UserInterface::nextInterface(UserInterface* next)
-{
-    GAME_MANAGER->m_pUserInterface = next;
 }
 
 void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)

@@ -67,7 +67,6 @@ protected:
     UserInterface(const UserInterface* pCopy);                              // Default Copy Constructor
     UserInterface& operator=(const UserInterface* pCopy) {return (*this); } // Assignment Operator.
 
-    virtual void nextInterface(UserInterface* next) final;
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);

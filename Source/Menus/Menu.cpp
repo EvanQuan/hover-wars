@@ -19,6 +19,8 @@ Menu::Menu(
 
     m_pInputHandler = InputHandler::getInstance();
     bWireFrameEnabled = false;
+
+    m_pGameManager = GameManager::getInstance();
 }
 
 Menu::~Menu()
