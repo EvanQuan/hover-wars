@@ -87,11 +87,6 @@ GameManager::~GameManager()
     }
     m_vInterfaceInstances.clear();
 
-    // Note: This throws an exception since all the UI's are already deleted in
-    // the for loop above
-    if (nullptr != m_pCurrentInterface)
-        delete m_pCurrentInterface;
-
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
 
@@ -101,8 +96,6 @@ GameManager::~GameManager()
     if (nullptr != m_pPhysicsManager)
         delete m_pPhysicsManager;
 
-    // Note: This throws an exception in release
-    // Why?
     if (nullptr != m_pGameStats)        // Game Stats
         delete m_pGameStats;
 }
