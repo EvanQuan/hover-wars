@@ -277,7 +277,7 @@ bool GameManager::initializeGraphics( string sFileName )
     }
 
     // Initialize Environment with a new scene      
-    m_pCommandHandler = CommandHandler::getInstance(m_pWindow); // Initialize Command Handler; Game Manager will manage and clean up this memory
+    m_pCommandHandler = COMMAND_HANDLER; // Initialize Command Handler; Game Manager will manage and clean up this memory
 
     // Return error results
     return true; 
