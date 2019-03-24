@@ -88,8 +88,8 @@ GameManager::~GameManager()
     m_vInterfaceInstances.clear();
 
     // Note: This throws an exception in release
-    // if (nullptr != m_pUserInterface)
-        // delete m_pUserInterface;
+    if (nullptr != m_pUserInterface)
+        delete m_pUserInterface;
 
     if (nullptr != m_pCommandHandler)   // Command Handler
         delete m_pCommandHandler;
@@ -97,10 +97,13 @@ GameManager::~GameManager()
     if (nullptr != m_pAIManager)        // AI Manager
         delete m_pAIManager;
 
+    if (nullptr != m_pPhysicsManager)
+        delete m_pPhysicsManager;
+
     // Note: This throws an exception in release
     // Why?
-    // if (nullptr != m_pGameStats)        // Game Stats
-        // delete m_pGameStats;
+    if (nullptr != m_pGameStats)        // Game Stats
+        delete m_pGameStats;
 }
 
 
@@ -213,6 +216,9 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     string sFileName)
 {
     // We intialize all values for the game to immediately start
+    // Initialize Physics
+    m_pPhysicsManager = PHYSICS_MANAGER;
+    m_pPhysicsManager->initPhysics(true);
     paused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
@@ -253,6 +259,8 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
+    if (nullptr != m_pPhysicsManager)
+        delete m_pPhysicsManager;
 }
 
 /*
@@ -298,17 +306,13 @@ void GameManager::drawScene()
 */
 bool GameManager::initialize()
 {
-    // Locals
-    // int iWidth, iHeight;
-
-
     // Shaders
     if (!m_pShaderManager->initializeShaders())
     {
         cout << "Couldn't initialize shaders." << endl;
         // Note: in release mode, there is some error in initializing the shaders.
         // For now, we will continue loading the rest of the game as normal.
-        // return false;
+        return false;
     }
 
     // Initialize Environment with a new scene      
@@ -327,12 +331,11 @@ bool GameManager::initialize()
     // m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
     // m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
 #else
+    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
     initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
-    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
-    m_pUserInterface = GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight);
+    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
 #endif
-
 
     // Return error results
     return true; 

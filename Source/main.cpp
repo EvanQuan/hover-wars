@@ -29,9 +29,7 @@ void cleanup();
 // access them in main.cpp
 GLFWwindow* m_window = 0;
 GameManager* m_gameManager = 0;
-ShaderManager* m_shaderManager = 0;
 InputHandler* m_inputHandler = 0;
-PhysicsManager* m_pPhysicsManager = 0;
 SoundManager* m_soundManager = 0;
 int iRunning;
 int iWindowHeight, iWindowWidth;
@@ -89,17 +87,11 @@ void initializeGLEW()
 */
 bool initializeManagers()
 {
-    // Initialize Physics
-    m_pPhysicsManager = PHYSICS_MANAGER;
-    m_pPhysicsManager->initPhysics(true);
-
     // Bind window to Game Manager
     m_gameManager = GameManager::getInstance(m_window);
 
     // Initialize the InputHandler for mouse, keyboard, controllers
     m_inputHandler = InputHandler::getInstance(m_window);
-
-    m_shaderManager = SHADER_MANAGER;
 
     // Initialize Sound
     m_soundManager = SOUND_MANAGER;
@@ -120,9 +112,6 @@ void cleanup()
 
     if (nullptr != m_inputHandler)      // Input Handler
         delete m_inputHandler;
-
-    if (nullptr != m_pPhysicsManager)   // Physics Manager
-        delete m_pPhysicsManager;
 
     if (nullptr != m_soundManager)
         delete m_soundManager;

@@ -111,7 +111,7 @@ private:
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
-
+    PhysicsManager*     m_pPhysicsManager;
     vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update
