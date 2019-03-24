@@ -511,7 +511,7 @@ void HovercraftEntity::setLoseControl(float seconds)
 {
     outOfControlTime = seconds;
     inControl = false;
-    cout << m_iID << " Lost control" << endl;
+    // cout << m_iID << " Lost control" << endl;
 }
 
 
@@ -609,7 +609,7 @@ void HovercraftEntity::updateInControl(float fTimeInSeconds)
         if (outOfControlTime <= 0)
         {
             inControl = true;
-            cout << m_iID << " gained control" << endl;
+            // cout << m_iID << " gained control" << endl;
         }
     }
 }

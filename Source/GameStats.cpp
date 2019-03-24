@@ -271,9 +271,9 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     m_pGameInterface->displayMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
-    cout << "Player " << attacker << " hit Player " << attacker << endl;
-    debug(attacker);
-    debug(hit);
+    // cout << "Player " << attacker << " hit Player " << attacker << endl;
+    // debug(attacker);
+    // debug(hit);
 #endif
 }
 
