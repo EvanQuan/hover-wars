@@ -161,6 +161,8 @@ bool GameManager::renderGraphics()
     // Update Environment if the game is not paused
     if (!paused)
     {
+        m_pAIManager->update(frameDeltaTime);
+        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
         if (startedGameOver)
         {
             // Decrease real time
@@ -176,8 +178,6 @@ bool GameManager::renderGraphics()
                 // Music change/fade?
             }
         }
-        m_pAIManager->update(frameDeltaTime);
-        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
 
         // The user interface should update after the EntityManager and
         // CommandHandler has changed in order to reflect their changes.
@@ -221,7 +221,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    m_pCurrentInterface->reinitialize(gameTime);
+    GameInterface::getInstance(m_iWidth, m_iHeight)->reinitialize(gameTime);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
