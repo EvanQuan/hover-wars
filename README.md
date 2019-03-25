@@ -1,4 +1,4 @@
-# CPSC 585 - Games Programming - Winter 2019
+﻿# CPSC 585 - Games Programming - Winter 2019
 
 ## Compilation
 
@@ -228,8 +228,8 @@ press Start to go to the Pause Menu.
 game, which goes to the post-game menu.
 
 **Postgame Menu** - After the game, all the end game awards are assigned, and
-all the points are tallied up to determine the round winner. The user can go
-back to the Main Menu.
+all the points are tallied up to determine the round winner. This then leads
+to quitting the program.
 
 ### User Interface
 

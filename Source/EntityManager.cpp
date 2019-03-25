@@ -140,6 +140,11 @@ void EntityManager::purgeEnvironment()
     m_pPhysicsComponents.clear();
     m_pAIComponents.clear();
 
+    m_pActiveCameraComponent = nullptr;
+    m_pDirectionalLight = nullptr;
+    m_pBillboardTesting = nullptr;
+    m_pCamera = nullptr;
+
     m_pCameraComponents.clear();
     m_pLights.clear();
     m_pAnimationComponents.clear();
