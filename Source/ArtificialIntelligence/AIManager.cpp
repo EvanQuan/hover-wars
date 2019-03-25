@@ -133,7 +133,9 @@ void AIManager::update(float fTimeInSeconds)
             bot->useAbility(eAbility::ABILITY_ROCKET);
         }
         if (a.actionsToTake[AIComponent::eAction::ACTION_FLAMETRAIL]) {
-            bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
+            if (bot->getTrailGaugePercent() > 0.5f) {
+                bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
+            }
         }
         else {
             bot->useAbility(eAbility::ABILITY_TRAIL_DEACTIVATE);
