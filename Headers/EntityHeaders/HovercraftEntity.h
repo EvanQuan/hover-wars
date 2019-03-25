@@ -103,7 +103,6 @@ public:
     quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
     void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
-
 private:
     // Private Variables
     int activeCameraIndex;

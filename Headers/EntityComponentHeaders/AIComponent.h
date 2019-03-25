@@ -34,7 +34,7 @@ public:
         ACTION_TURN,
         ACTION_MOVE_FORWARDS_BACKWARDS,
         ACTION_MOVE_RIGHT_LEFT,
-        ACTION_SIZE,
+        ACTION_FLAMETRAIL,
     };
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
     AIComponent(int iEntityID, int iComponentID);
@@ -59,10 +59,16 @@ private:
     float currentBestEval = 0;
     int currentPlace = 0;
     int iEntityID;
+    glm::vec3 seekPoint = vec3(200, 0, 30);
     int iComponentID;
     float timeChased;
     vector<vec2> path;
     float timeSinceLastUpdate = 10000;
-    bool isChasing = true;
+    int currentState = 0;
+    vec2 seekLocation;
+    int LastIndex = -1;
+    bool nextPosMove = false;
+    vec3 get2ndNearestSeekPoint(vec2 currentPos);
+    vec3 getNearestSeekPoint(vec2 currentPos);
 };
 
