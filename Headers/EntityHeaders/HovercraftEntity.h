@@ -113,6 +113,20 @@ public:
     void resetMaxCooldowns();
 
 private:
+    /*
+        Queued actions are actions that cannot be applied immediately due to
+        multithreading issues. Instead, they are queued and are acted upon
+        during the next update() call.
+    */
+    enum eQueuedActions
+    {
+        QUEUED_SPEED_BOOST = 0,
+        QUEUED_PUSH,
+        QUEUED_COUNT
+    };
+
+    bool queuedActions[QUEUED_COUNT];
+
     // Private Variables
     int activeCameraIndex;
     Mesh* m_pMesh;
