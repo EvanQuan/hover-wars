@@ -249,13 +249,14 @@ void PhysicsManager::initPhysics(bool interactive)
     gErrorCallback = new PxDefaultErrorCallback();
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
-    gPvd = PxCreatePvd(*gFoundation);
+    // gPvd = PxCreatePvd(*gFoundation);
 // #ifdef _DEBUG
-    transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-    gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+    // transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+    // gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 // #endif
 
-    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true);
+    // gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, pvd);
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
@@ -266,13 +267,13 @@ void PhysicsManager::initPhysics(bool interactive)
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_PAIRS;
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
     gScene = gPhysics->createScene(sceneDesc);
-    PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-    if (pvdClient)
-    {
-        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-    }
+    // PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+    // if (pvdClient)
+    // {
+        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+    // }
     gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
     gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
@@ -379,11 +380,11 @@ void PhysicsManager::cleanupPhysics()
         gScene->release();
         gDispatcher->release();
         gPhysics->release();
-        PxPvdTransport* transport = gPvd->getTransport();
-        gPvd->disconnect();
-        gPvd->release();
+        // PxPvdTransport* transport = gPvd->getTransport();
+        // gPvd->disconnect();
+        // gPvd->release();
 // #ifdef _DEBUG
-        transport->release();
+        // transport->release();
 // #endif
         // manager->release();
         gFoundation->release();
@@ -394,6 +395,17 @@ void PhysicsManager::cleanupPhysics()
 
         hasStarted = false;
         gScene = NULL; // change value back to null in case cleanup is called twice
+
+        // basic variable init
+        gFoundation = NULL;
+        gPhysics = NULL;
+        gDispatcher = NULL;
+        gScene = NULL;
+        // manager = NULL;
+        gCarMaterial = NULL;
+        gWorldMaterial = NULL;
+        
+        gPvd = NULL;
     }
 }
 

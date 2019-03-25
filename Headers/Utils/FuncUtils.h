@@ -228,9 +228,4 @@ namespace FuncUtils
     std::string timeToString(int seconds);
 
     double log(int value, int base);
-
-    eHovercraft playerToHovercraft(ePlayer player);
-    eHovercraft botToHovercraft(eBot bot);
-    ePlayer hovercraftToPlayer(eHovercraft hovercraft);
-    eBot hovercraftToBot(eHovercraft hovercraft);
 }

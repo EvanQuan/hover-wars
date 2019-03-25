@@ -94,7 +94,7 @@ Time multiplier for the trail to recharge from empty to full.
 < 1: recharge rate is slower than drain rate
 
 */
-#define TRAIL_RECHARGE_MULTIPLIER 0.5f
+#define TRAIL_RECHARGE_MULTIPLIER 0.3f
 
 /*
 The interval of time between each created flame while the trail trail is

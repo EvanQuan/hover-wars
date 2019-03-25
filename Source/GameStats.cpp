@@ -95,7 +95,7 @@ This may change later in the future.
 */
 void GameStats::update(float fSecondsSinceLastUpdate)
 {
-    for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
     {
         for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
         {
@@ -126,7 +126,7 @@ Set all stats to 0
 */
 void GameStats::initializeStats()
 {
-    for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
     {
         for (int stat = 0; stat < HOVERCRAFTSTAT_COUNT; stat++)
         {
@@ -145,7 +145,7 @@ Set all cooldown timings to 0
 */
 void GameStats::initializeCooldowns()
 {
-    for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
+    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
     {
         for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
         {
@@ -338,7 +338,7 @@ Checks for first blood.
 */
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
-    int basePoints = FuncUtils::hovercraftToPlayer(attacker) != PLAYER_INVALID ?
+    int basePoints = GAME_STATS->isPlayer(attacker) ?
         POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
     int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
