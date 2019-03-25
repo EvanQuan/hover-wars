@@ -131,7 +131,8 @@ private:
     };
 
     bool queuedActions[QUEUED_COUNT];
-    vec3 queuedVelocity;
+    float queuedX;
+    float queuedY;
 
     void updateQueuedActions();
 
@@ -177,6 +178,7 @@ private:
 
     // Like dashing, but weaker, no sound, and doese not count as an ability
     void push(float x, float y);
+    void queuePush(float x, float y);
 
     // Cooldowns
     void initializeCooldowns();

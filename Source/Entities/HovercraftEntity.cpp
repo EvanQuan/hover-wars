@@ -310,6 +310,11 @@ void HovercraftEntity::updateQueuedActions()
         enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
         queuedActions[QUEUED_SPEED_BOOST] = false;
     }
+    if (queuedActions[QUEUED_PUSH])
+    {
+        push(queuedX, queuedY);
+        queuedActions[QUEUED_PUSH] = false;
+    }
 }
 
 /*
@@ -420,6 +425,13 @@ void HovercraftEntity::queuePowerup(ePowerup powerup)
 {
     // For now, coded to speed boost only
     queuedActions[QUEUED_SPEED_BOOST] = true;
+}
+
+void HovercraftEntity::queuePush(float x, float y)
+{
+    queuedX = x;
+    queuedY = y;
+    queuedActions[QUEUED_PUSH] = true;
 }
 
 /*
@@ -553,11 +565,11 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
 
         // Multithread issues, can't do push
         if (mySpeed > otherSpeed) {
-            pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-            // pOtherHovercraft->push(myVelocity.x, myVelocity.y);
+            // pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+            pOtherHovercraft->queuePush(myVelocity.x, myVelocity.y);
         } else {
-            setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-            // push(otherVelocity.x, otherVelocity.y);
+            // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+            queuePush(otherVelocity.x, otherVelocity.y);
         }
 
         break;
