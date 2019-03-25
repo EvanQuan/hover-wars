@@ -12,9 +12,7 @@
 #include "Menus/StartMenu.h"
 
 // Unit: seconds
-#define GAME_TIME   10
-// Multiplier of regular time for slow motion
-#define GAME_OVER_TIME 3.0
+#define GAME_OVER_TIME 0.0
 
 /*************\
  * Constants *
@@ -255,8 +253,11 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
-    if (nullptr != m_pPhysicsManager)
+    if (nullptr != m_pPhysicsManager) {
         delete m_pPhysicsManager;
+    }
+    m_pPhysicsManager = nullptr;
+
 }
 
 /*
