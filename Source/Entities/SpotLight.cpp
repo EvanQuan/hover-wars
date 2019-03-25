@@ -50,9 +50,10 @@ void SpotLight::initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3*
         m_pMesh = MESH_MANAGER->loadMeshFromFile(sMeshLocation, pObjectProperties, m_sName, m_fMeshScale, bStatic);
 
     // Create a Render Component
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLE_STRIP);
+    EntityManager* pEntityMngr = ENTITY_MANAGER;
+    m_pRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::LIGHT_SHDR, GL_TRIANGLE_STRIP);
 
     // Create and Initialize the Lighting Component.
-    m_pLightingComponent = ENTITY_MANAGER->generateLightingComponent(m_iID);
+    m_pLightingComponent = pEntityMngr->generateLightingComponent(m_iID);
     m_pLightingComponent->initializeAsSpotLight(&m_vPosition, &m_pColor, vDirection, fPhi, fSoftPhi);
 }

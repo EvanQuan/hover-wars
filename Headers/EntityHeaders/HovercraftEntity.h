@@ -37,7 +37,7 @@ public:
     void update(float fTimeInSeconds);
 
     // Signifies to this HoverCraft that they were hit by a damaging attack.
-    void getHitBy(eHovercraft attacker);
+    void getHitBy(eHovercraft attacker, eAbility ability);
     void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
 
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;

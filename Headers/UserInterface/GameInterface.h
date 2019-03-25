@@ -7,6 +7,9 @@
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
 
+// Forward Declaration
+class EntityManager;
+
 
 /*
 An interface to all user interface features.
@@ -77,6 +80,7 @@ private:
     GameInterface(const GameInterface* pCopy);                              // Default Copy Constructor
     GameInterface& operator=(const GameInterface* pCopy) {return (*this); } // Assignment Operator.
     static GameInterface* m_pInstance;
+    EntityManager* m_pEntityMngr;
 
     // Initializes FreeType and the Font Library
     void setScore(int joystickID, int score);

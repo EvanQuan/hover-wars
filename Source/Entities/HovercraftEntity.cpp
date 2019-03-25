@@ -281,14 +281,14 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     @param  attacker        to award points to
 */
-void HovercraftEntity::getHitBy(eHovercraft attacker)
+void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
     if (isInvincible()) {
         return;
     }
     setInvincible();
     m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)));
+                         static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
 }
 
 /*
@@ -396,8 +396,9 @@ void HovercraftEntity::initialize(const string& sFileName,
                                   float fScale)
 {
     // Load Mesh and Rendering Component
+    EntityManager* pEntityMngr = ENTITY_MANAGER;
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, m_sName, fScale);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    m_pRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
     m_vPosition = pObjectProperties->vPosition;
 
     vec3 vNegCorner, vPosCorner;
@@ -406,7 +407,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     sBounding.vDimensions = vPosCorner - vNegCorner;
 
     // PHYSICSTODO: Set up Physics Component as a Dynamic Physics Object for a player
-    m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID);
+    m_pPhysicsComponent = pEntityMngr->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeVehicle(getName(),
                                            true,
                                            m_pMesh,
@@ -420,7 +421,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = ENTITY_MANAGER->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
@@ -432,7 +433,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
-        m_pCmrComponents[i] = ENTITY_MANAGER->generateCameraComponent(m_iID);
+        m_pCmrComponents[i] = pEntityMngr->generateCameraComponent(m_iID);
         m_pCmrComponents[i]->setLookAt(m_vPosition);
     }
 
@@ -464,11 +465,11 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
-           pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID));
+           pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
-            this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()));
+            this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()), ABILITY_SPIKES);
         }
 
         // Momentarily lose control of vehicle to prevent air moving
@@ -511,7 +512,7 @@ void HovercraftEntity::setLoseControl(float seconds)
 {
     outOfControlTime = seconds;
     inControl = false;
-    cout << m_iID << " Lost control" << endl;
+    // cout << m_iID << " Lost control" << endl;
 }
 
 
@@ -609,7 +610,7 @@ void HovercraftEntity::updateInControl(float fTimeInSeconds)
         if (outOfControlTime <= 0)
         {
             inControl = true;
-            cout << m_iID << " gained control" << endl;
+            // cout << m_iID << " gained control" << endl;
         }
     }
 }

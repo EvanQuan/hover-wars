@@ -297,10 +297,10 @@ void SceneLoader::loadFromFile( string sFileName )
 
                 // Debugging
             #ifdef _DEBUG
-                cout << sIndicator << endl;
-                for ( unsigned int d = 0; d < sData.size(); ++d )
-                    cout << sData[ d ] << endl;
-                cout << "\t\t END LINE" << endl;
+                // cout << sIndicator << endl;
+                //  for ( unsigned int d = 0; d < sData.size(); ++d )
+                    // cout << sData[ d ] << endl;
+                // cout << "\t\t END LINE" << endl;
             #endif
 
             }

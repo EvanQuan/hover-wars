@@ -167,14 +167,6 @@ PhysicsComponent::~PhysicsComponent()
 //    information that will be gathered by the Entity when they need it?
 void PhysicsComponent::update(float fTimeInSeconds)
 {
-    //PxVec3 vel = body->getLinearVelocity();
-    //std::cout << vel.magnitude() << std::endl;
-    /*if (vel.magnitude() > MAX_SPEED) {
-        //vel.normalize();
-        //body->setLinearVelocity(vel * MAX_SPEED);
-    }*/
-    // gVehicleNoDrive->
-
     if (m_bVehicle)
     {
         m_fSecondsSinceLastDash += fTimeInSeconds;

@@ -21,6 +21,7 @@ Menu::Menu(
     bWireFrameEnabled = false;
 
     m_pGameManager = GameManager::getInstance();
+    m_pEntityMngr = ENTITY_MANAGER;
 }
 
 Menu::~Menu()

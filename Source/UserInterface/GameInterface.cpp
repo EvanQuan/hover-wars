@@ -107,6 +107,7 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
     GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
     debugMessage = "";
+    m_pEntityMngr = ENTITY_MANAGER;
 }
 
 GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
@@ -330,7 +331,7 @@ void GameInterface::renderCooldowns()
     // This formatting is all temporary
     // 0 - 100
     // Ad hoc for single player
-    HovercraftEntity* player = ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1);
+    HovercraftEntity* player = m_pEntityMngr->getPlayer(HOVERCRAFT_PLAYER_1);
     float* cooldowns = player->getCooldowns();
     float trailPercent = player->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));

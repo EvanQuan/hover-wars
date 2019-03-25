@@ -18,6 +18,7 @@ InputHandler* InputHandler::m_pInstance = nullptr;
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
     m_gameManager = GAME_MANAGER;
+    m_pEntityManager = ENTITY_MANAGER;
     // Keyboard
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
     // Mouse
@@ -125,16 +126,16 @@ void InputHandler::debugKeyCommands(int key, int action)
         {
             // Testing sound
         case GLFW_KEY_5:
-            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPEED_BOOST);
+            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPEED_BOOST);
             break;
         case GLFW_KEY_6:
-            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_ROCKET_COOLDOWN);
+            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_ROCKET_COOLDOWN);
             break;
         case GLFW_KEY_7:
-            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPIKES_COOLDOWN);
+            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPIKES_COOLDOWN);
             break;
         case GLFW_KEY_8:
-            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_COOLDOWN);
+            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_COOLDOWN);
             break;
         case GLFW_KEY_9:
             SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPAWN);
@@ -167,7 +168,7 @@ void InputHandler::debugKeyCommands(int key, int action)
             break;
         case GLFW_KEY_Y:
             cout << "Disable player 1 for 1 seconds" << endl;
-            ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->setLoseControl(1.0f);
+            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->setLoseControl(1.0f);
             break;
         }
     }

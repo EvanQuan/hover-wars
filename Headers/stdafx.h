@@ -212,7 +212,6 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 #define SPATIAL_DATA_MAP    SpatialDataMap::getInstance()
 #define TEXTURE_MANAGER     TextureManager::getInstance()
 
-
 // From Boilerplate code,
 // Shouldn't need to modify this.
 // Accessible anywhere stdafx.h is included and GL Error Checking is required.

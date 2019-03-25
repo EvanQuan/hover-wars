@@ -75,6 +75,7 @@ GameManager::~GameManager()
     m_pWindow = nullptr;
 
     // Clean up Allocated Memory
+    // NOTE: crash at glDeleteBuffers in destructor
     if (nullptr != m_pEntityManager)    // Entity Manager
         delete m_pEntityManager;
 
@@ -161,6 +162,8 @@ bool GameManager::renderGraphics()
     // Update Environment if the game is not paused
     if (!paused)
     {
+        m_pAIManager->update(frameDeltaTime);
+        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
         if (startedGameOver)
         {
             // Decrease real time
@@ -176,8 +179,6 @@ bool GameManager::renderGraphics()
                 // Music change/fade?
             }
         }
-        m_pAIManager->update(frameDeltaTime);
-        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
 
         // The user interface should update after the EntityManager and
         // CommandHandler has changed in order to reflect their changes.
@@ -221,7 +222,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    m_pCurrentInterface->reinitialize(gameTime);
+    GameInterface::getInstance(m_iWidth, m_iHeight)->reinitialize(gameTime);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -236,7 +237,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
-    m_pGameStats->reinitialize();
+    m_pGameStats->reinitialize(playerCount, botCount);
     m_pAIManager->reinitialize();
 }
 
