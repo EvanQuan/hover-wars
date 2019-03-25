@@ -56,4 +56,5 @@ void PauseInterface::reinitialize(float gameTime)
 
 void PauseInterface::render()
 {
+    MenuInterface::render();
 }

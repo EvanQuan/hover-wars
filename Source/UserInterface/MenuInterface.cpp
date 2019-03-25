@@ -8,3 +8,8 @@ MenuInterface::MenuInterface(int iWidth, int iHeight,
 {
     /* TODO */
 }
+
+void MenuInterface::render()
+{
+    renderImage("textures/menu/main_menu.png", 500, 500, 1.0f);
+}

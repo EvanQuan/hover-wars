@@ -638,19 +638,16 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
     return hovercrafts;
 }
 
-/*
-    Award all hovercrafts with the award of having the highest specified stat.
-    Increases afterAwardsStat by point value.
-
-    @param stat         to have the highest value of
-    @param name         of the award
-    @param description  of the award
-    @param points       the award gives
-*/
-void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
+vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eStat stat)
 {
-    vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
-    // for (EndGameStat endStat : endGameStats)
+    /* TODO*/
+    vector<eHovercraft> hovercrafts;
+    return hovercrafts;
+}
+
+
+void GameStats::awardToHovercrafts(eStat stat, string name, string description, int points, vector<eHovercraft> winners)
+{
     for (int i = 0, size = endGameStats.size(); i < size; i++)
     {
         eHovercraft hovercraft = endGameStats.at(i).hovercraft;
@@ -670,7 +667,28 @@ void GameStats::awardHighestStat(eStat stat, string name, string description, in
                 << "\" +" << points << endl;
         }
     }
+}
+/*
+    Award all hovercrafts with the award of having the highest specified stat.
+    Increases afterAwardsStat by point value.
 
+    @param stat         to have the highest value of
+    @param name         of the award
+    @param description  of the award
+    @param points       the award gives
+*/
+void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
+{
+    vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
+    // for (EndGameStat endStat : endGameStats)
+    awardToHovercrafts(stat, name, description, points, winners);
+
+}
+
+void GameStats::awardZeroStat(eStat stat, string name, string description, int points)
+{
+    vector<eHovercraft> winners = getHovercraftsThatHaveZero(stat);
+    awardToHovercrafts(stat, name, description, points, winners);
 }
 
 void GameStats::awardAwards()

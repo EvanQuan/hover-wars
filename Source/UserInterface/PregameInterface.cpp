@@ -56,4 +56,5 @@ void PregameInterface::reinitialize(float gameTime)
 
 void PregameInterface::render()
 {
+    MenuInterface::render();
 }

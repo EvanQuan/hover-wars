@@ -131,5 +131,6 @@ private:
     */
     int m_iComponentCount;
 
-   
+    map<string, Texture*>m_Textures;
+
 };
