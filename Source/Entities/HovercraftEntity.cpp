@@ -939,9 +939,12 @@ void HovercraftEntity::activateTrail()
 */
 void HovercraftEntity::deactivateTrail()
 {
-    SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
-    m_bTrailActivated = false;
-    m_vPositionOfLastFlame = vec3(numeric_limits<float>::max());    // Set Last Position so next spawn will always spawn
+    if (m_bTrailActivated)
+    {
+        SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_bTrailActivated = false;
+        m_vPositionOfLastFlame = vec3(numeric_limits<float>::max());    // Set Last Position so next spawn will always spawn
+    }
 }
 
 void HovercraftEntity::dash(eAbility direction)
