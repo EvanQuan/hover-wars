@@ -37,7 +37,7 @@ public:
     bool getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax); // Returns the Map Indices from a given Entity.
     float getTileSize() {return m_fTileSize;}
     glm::vec2 getWorldOffset() { return m_vOriginPos; }
-    vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 player, vec2 dest);
+    vector<vec2> modifiedDikjistras(vec2 playerMin, vec2 playerMax, vec2 destMin, vec2 destMax);
 private:
     float evaluateDistance(const vec2* pos1, const vec2* pos2);
     static SpatialDataMap* m_pInstance;

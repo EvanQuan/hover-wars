@@ -123,6 +123,12 @@ void AIManager::update(float fTimeInSeconds)
         if (a.actionsToTake[AIComponent::eAction::ACTION_FIRE_ROCKET] == 1) {
             bot->useAbility(eAbility::ABILITY_ROCKET);
         }
+        if (a.actionsToTake[AIComponent::eAction::ACTION_FLAMETRAIL]) {
+            bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
+        }
+        else {
+            bot->useAbility(eAbility::ABILITY_TRAIL_DEACTIVATE);
+        }
         bot->update(fTimeInSeconds);
     }
   
