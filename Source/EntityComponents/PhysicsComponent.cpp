@@ -36,6 +36,7 @@ The greater the force, the faster it will accelerate.
 20000.0f @ 2000kg, 50 grav
 Force : Newtons
 */
+
 #define MOVEMENT_FORCE 10000.0f // 100000 // 1000
 
 /*
@@ -118,7 +119,9 @@ void PhysicsComponent::move(float x, float y) {
 PxTransform PhysicsComponent::getGlobalPose() {
     return body->getGlobalPose();
 }
-
+void PhysicsComponent::setGlobalPos(PxTransform trans) {
+    body->setGlobalPose(trans);
+}
 void PhysicsComponent::moveGlobal(float x, float y) {
     PxVec3 vForce = PxVec3(y, 0, x);
     body->addForce(vForce * MOVEMENT_FORCE/7); // NOTE: Why are we dividing by 7?

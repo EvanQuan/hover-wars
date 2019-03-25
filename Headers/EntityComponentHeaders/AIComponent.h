@@ -61,9 +61,8 @@ private:
     int iEntityID;
     glm::vec3 seekPoint = vec3(200, 0, 30);
     int iComponentID;
-    float timeChased;
+    float timeChased = 0;
     vector<vec2> path;
-    float timeSinceLastUpdate = 10000;
     int currentState = 0;
     vec2 seekLocation;
     int LastIndex = -1;
