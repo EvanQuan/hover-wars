@@ -31,22 +31,6 @@ private:
     PxRigidDynamic *body1 = NULL;
     PxRigidDynamic *body2 = NULL;
 
-    std::unordered_map<char, ePlayer> ownerToPlayer =
-    {
-        {C_OWNER_PLAYER_1,  PLAYER_1},
-        {C_OWNER_PLAYER_2,  PLAYER_2},
-        {C_OWNER_PLAYER_3,  PLAYER_3},
-        {C_OWNER_PLAYER_4,  PLAYER_4},
-    };
-
-    std::unordered_map<char, eBot> ownerToBot =
-    {
-        {C_OWNER_BOT_1,     BOT_1},
-        {C_OWNER_BOT_2,     BOT_2},
-        {C_OWNER_BOT_3,     BOT_3},
-        {C_OWNER_BOT_4,     BOT_4},
-    };
-
     std::unordered_map<char, eHovercraft> ownerToHovercraft =
     {
         {C_OWNER_PLAYER_1,  HOVERCRAFT_PLAYER_1},

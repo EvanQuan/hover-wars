@@ -364,9 +364,9 @@ void GameInterface::renderCooldowns()
     // This formatting is all temporary
     // 0 - 100
     // Ad hoc for single player
-    HovercraftEntity* player = m_pEntityMngr->getPlayer(HOVERCRAFT_PLAYER_1);
-    float* cooldowns = player->getCooldowns();
-    float trailPercent = player->getTrailGaugePercent();
+    HovercraftEntity* hovercraft = m_pEntityMngr->getHovercraft(HOVERCRAFT_PLAYER_1);
+    float* cooldowns = hovercraft->getCooldowns();
+    float trailPercent = hovercraft->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));
     vec3 trailColor = trailPercent == 1.0 ?
         COLOR_READY : trailPercent == 0.0 ?
@@ -382,7 +382,7 @@ void GameInterface::renderCooldowns()
                    m_vComponentCoordinates[COMPONENT_ROCKET].first,
                    m_vComponentCoordinates[COMPONENT_ROCKET].second,
                    ROCKET_SCALE);
-    renderCooldown("Spikes" + std::string(player->hasSpikesActivated() ? " enabled" : ""),
+    renderCooldown("Spikes" + std::string(hovercraft->hasSpikesActivated() ? " enabled" : ""),
                    eCooldown::COOLDOWN_SPIKES,
                    cooldowns,
                    m_vComponentCoordinates[COMPONENT_SPIKES].first,
