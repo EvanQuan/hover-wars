@@ -733,7 +733,7 @@ void GameStats::awardAwards()
         awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
         awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
     }
-    awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Hungry for Power", "Most powerups",    200);
+    awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Gotta Go Fast!", "Most speed boosts",  200);
     awardHighestStat(KILLSTREAK_LARGEST,            "Tactical", "Largest killstreak",       100);
     awardHighestStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
     awardHighestStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
