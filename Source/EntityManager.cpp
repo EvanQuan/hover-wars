@@ -708,7 +708,7 @@ bool EntityManager::playerExists(eHovercraft player)
 
 HovercraftEntity* EntityManager::getHovercraft(eHovercraft hovercraft)
 {
-    return hovercraft >= HOVERCRAFT_PLAYER_4 ? getPlayer(hovercraft) : getBot(hovercraft);
+    return hovercraft <= HOVERCRAFT_PLAYER_4 ? getPlayer(hovercraft) : getBot(hovercraft);
 }
 HovercraftEntity* EntityManager::getPlayer(eHovercraft player)
 {
@@ -722,7 +722,7 @@ bool EntityManager::botExists(eHovercraft bot)
 
 HovercraftEntity* EntityManager::getBot(eHovercraft bot)
 {
-    return m_pBotEntityList.at(bot);
+    return m_pBotEntityList.at(bot - HOVERCRAFT_BOT_1);
 }
 
 /*********************************************************************************\
