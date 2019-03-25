@@ -313,7 +313,7 @@ void HovercraftEntity::updateQueuedActions()
     if (queuedActions[QUEUED_PUSH])
     {
         push(queuedVelocity.x, queuedVelocity.y);
-        queuedActions[QUEUED_PUSH] = false
+        queuedActions[QUEUED_PUSH] = false;
     }
 }
 
