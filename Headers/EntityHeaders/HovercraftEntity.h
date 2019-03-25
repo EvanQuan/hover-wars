@@ -94,6 +94,7 @@ public:
     void setInvincible();
 
     void enablePowerup(ePowerup powerup);
+    void queuePowerup(ePowerup powerup);
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
@@ -104,7 +105,8 @@ public:
     void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
     /*
-        Reduces all cooldowns by a fixed factor, never dropping below the minimum cooldown values.
+        Reduces all cooldowns by a fixed factor, never dropping below the
+        minimum cooldown values.
     */
     void reduceMaxCooldowns();
     /*
@@ -126,6 +128,9 @@ private:
     };
 
     bool queuedActions[QUEUED_COUNT];
+    vec3 queuedVelocity;
+
+    void updateQueuedActions();
 
     // Private Variables
     int activeCameraIndex;

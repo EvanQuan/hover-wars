@@ -299,6 +299,17 @@ void HovercraftEntity::update(float fTimeInSeconds)
     updateCooldowns(fTimeInSeconds);
     updateVulnerability(fTimeInSeconds);
     updatePowerups(fTimeInSeconds);
+    updateQueuedActions();
+}
+
+void HovercraftEntity::updateQueuedActions()
+{
+    /* Currently coded for only speed power up */
+    if (queuedActions[QUEUED_SPEED_BOOST])
+    {
+        enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        queuedActions[QUEUED_SPEED_BOOST] = false;
+    }
 }
 
 /*
@@ -317,7 +328,8 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     eHovercraft hit = GAME_STATS->getEHovercraft(m_iID);
     if (m_pGmStats->hasLargestScore(hit))
     {
-        attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        // attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        attackerHovercraft->queuePowerup(ePowerup::POWERUP_SPEED_BOOST);
     }
     setInvincible();
     m_pGmStats->addScore(attacker,
@@ -402,6 +414,12 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
     cout << powerup << " enabled" << endl;
 
+}
+
+void HovercraftEntity::queuePowerup(ePowerup powerup)
+{
+    // For now, coded to speed boost only
+    queuedActions[QUEUED_SPEED_BOOST] = true;
 }
 
 /*
