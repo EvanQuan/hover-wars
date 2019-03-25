@@ -93,7 +93,7 @@ private:
     be updated during its update() call.
     */
     void renderComponent(eUIComponent component, GLfloat scale, vec3 color);
-    void initializeGameUserInterface();
+    void initializeGameInterface();
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);

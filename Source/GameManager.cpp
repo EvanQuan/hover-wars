@@ -43,6 +43,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
     m_pCommandHandler = COMMAND_HANDLER;
+
+    m_pPhysicsManager = PHYSICS_MANAGER;
 }
 
 /*
@@ -217,6 +219,11 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // Initialize Physics
     m_pPhysicsManager = PHYSICS_MANAGER;
     m_pPhysicsManager->initPhysics(true);
+    // m_pPhysicsManager->cleanupPhysics();
+    // delete m_pPhysicsManager;
+    // m_pPhysicsManager = PHYSICS_MANAGER;
+    // m_pPhysicsManager->initPhysics(false);
+
     paused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
@@ -255,6 +262,8 @@ void GameManager::endGame()
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     m_pEntityManager->purgeEnvironment();
+
+    // m_pPhysicsManager->cleanupPhysics();
     if (nullptr != m_pPhysicsManager)
     {
         delete m_pPhysicsManager;
