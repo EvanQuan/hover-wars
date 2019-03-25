@@ -70,12 +70,12 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     debugMessage = "";
     m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
     m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
-    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
-    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
-    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
-    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
-    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
-    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
+    m_Textures[IMAGE_2_1] = TEXTURE_MANAGER->loadTexture(IMAGE_2_1);
+    m_Textures[IMAGE_2_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2_2);
+    m_Textures[IMAGE_3_1] = TEXTURE_MANAGER->loadTexture(IMAGE_3_1);
+    m_Textures[IMAGE_3_2] = TEXTURE_MANAGER->loadTexture(IMAGE_3_2);
+    m_Textures[IMAGE_4_1] = TEXTURE_MANAGER->loadTexture(IMAGE_4_1);
+    m_Textures[IMAGE_4_2] = TEXTURE_MANAGER->loadTexture(IMAGE_4_2);
     m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
     m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
     m_Textures[IMAGE_BACKGROUND] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND);
@@ -94,8 +94,18 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     m_Textures[IMAGE_TITLE] = TEXTURE_MANAGER->loadTexture(IMAGE_TITLE);
     m_Textures[IMAGE_INSERT_COIN_1] = TEXTURE_MANAGER->loadTexture(IMAGE_INSERT_COIN_1);
     m_Textures[IMAGE_INSERT_COIN_2] = TEXTURE_MANAGER->loadTexture(IMAGE_INSERT_COIN_2);
-    m_Textures[IMAGE_NUMBER_OF_PLAYER] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_PLAYER);
-    m_Textures[IMAGE_NUMBER_OF_BOT] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_BOT);
+    m_Textures[IMAGE_NUMBER_OF_PLAYER_1] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_PLAYER_1);
+    m_Textures[IMAGE_NUMBER_OF_PLAYER_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_PLAYER_2);
+    m_Textures[IMAGE_NUMBER_OF_BOT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_BOT_1);
+    m_Textures[IMAGE_NUMBER_OF_BOT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_BOT_2);
+    m_Textures[IMAGE_END_GAME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_END_GAME_1);
+    m_Textures[IMAGE_END_GAME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_END_GAME_2);
+    m_Textures[IMAGE_GAME_TIME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_TIME_1);
+    m_Textures[IMAGE_GAME_TIME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_TIME_2);
+    m_Textures[IMAGE_1_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_1_MIN);
+    m_Textures[IMAGE_2_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_2_MIN);
+    m_Textures[IMAGE_3_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_3_MIN);
+    m_Textures[IMAGE_4_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_4_MIN);
 
 }
 

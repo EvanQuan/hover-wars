@@ -2,13 +2,16 @@
 
 #include "Menus/PromptMenu.h"
 
-class PregameMenu final : PromptMenu
+class PregameMenu final : public PromptMenu
 {
 public:
     // TODO nothing to destruct?
     ~PregameMenu() {}
 
     static Menu* getInstance();
+    int getPlayerCount() { return m_iPlayerCount; };
+    int getBotCount() { return m_iBotCount; };
+    int getGameTime() { return m_fGameTime; };
 
 private:
     PregameMenu();

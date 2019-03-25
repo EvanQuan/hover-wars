@@ -1,6 +1,7 @@
 #pragma once
 #include "UserInterface/MenuInterface.h"
 
+#define INSERT_COIN_OPTION "Insert Coin"
 
 class StartInterface final : public MenuInterface
 {
@@ -29,5 +30,5 @@ private:
 
     static StartInterface* m_pInstance;
 
-    void renderOption(int choose);
+    void renderOption();
 };

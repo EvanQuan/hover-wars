@@ -1,6 +1,12 @@
 #pragma once
 #include "UserInterface/MenuInterface.h"
 
+#define START_GAME_OPTION "Start Game"
+#define BACK_OPTION "Back"
+#define PLAY_COUNT_OPTION "Player count"
+#define BOT_COUNT_OPTION "Bot count"
+#define GAME_TIME_OPTION "Game time"
+
 
 class PregameInterface final : public MenuInterface
 {
@@ -26,11 +32,16 @@ private:
         PLAYER_COUNT,
         BOT_COUNT,
         MAIN_MENU,
-        START_GAME
+        START_GAME,
+        PLAYER_COUNT_NUMBER,
+        BOT_COUNT_NUMBER,
+        GAME_TIME,
+        GAME_TIME_NUMBER,
     };
     static PregameInterface* m_pInstance;
 
-    void renderNumberOfPlayer();
-    void renderNumberOfBot();
+    void renderNumberOfPlayer(int i_NumOfPlayer);
+    void renderNumberOfBot(int i_NumOfBot);
+    void renderGameTime(int i_GameTime);
     void renderOption();
 };

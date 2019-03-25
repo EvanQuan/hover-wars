@@ -44,8 +44,18 @@
 #define IMAGE_TITLE "textures/menu/Title.png"
 #define IMAGE_INSERT_COIN_1 "textures/menu/insert_coin.png"
 #define IMAGE_INSERT_COIN_2 "textures/menu/insert_coin2.png"
-#define IMAGE_NUMBER_OF_PLAYER "textures/menu/number_of_player.png"
-#define IMAGE_NUMBER_OF_BOT "textures/menu/number_of_bot.png"
+#define IMAGE_NUMBER_OF_PLAYER_1 "textures/menu/number_of_player.png"
+#define IMAGE_NUMBER_OF_PLAYER_2 "textures/menu/number_of_player2.png"
+#define IMAGE_NUMBER_OF_BOT_1 "textures/menu/number_of_bot.png"
+#define IMAGE_NUMBER_OF_BOT_2 "textures/menu/number_of_bot2.png"
+#define IMAGE_END_GAME_1 "textures/menu/end_game.png"
+#define IMAGE_END_GAME_2 "textures/menu/end_game2.png"
+#define IMAGE_GAME_TIME_1 "textures/menu/game_time.png"
+#define IMAGE_GAME_TIME_2 "textures/menu/game_time2.png"
+#define IMAGE_1_MIN "textures/menu/1_min.png"
+#define IMAGE_2_MIN "textures/menu/2_min.png"
+#define IMAGE_3_MIN "textures/menu/3_min.png"
+#define IMAGE_4_MIN "textures/menu/4_min.png"
 
 // Forward Declaration
 class ShaderManager;
