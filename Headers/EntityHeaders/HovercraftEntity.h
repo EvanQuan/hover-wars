@@ -94,6 +94,7 @@ public:
     void setInvincible();
 
     void enablePowerup(ePowerup powerup);
+    void queuePowerup(ePowerup powerup);
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
@@ -104,7 +105,8 @@ public:
     void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
     /*
-        Reduces all cooldowns by a fixed factor, never dropping below the minimum cooldown values.
+        Reduces all cooldowns by a fixed factor, never dropping below the
+        minimum cooldown values.
     */
     void reduceMaxCooldowns();
     /*
@@ -113,6 +115,26 @@ public:
     void resetMaxCooldowns();
 
 private:
+    /*
+        Queued actions are actions that cannot be applied immediately due to
+        multithreading issues. Instead, they are queued and are acted upon
+        during the next update() call. This is relevant for getHit, as that
+        runs on a separate PhysX thread than the force applying thread that
+        PhysX uses. So any movement changing effects that are in response to
+        collisions needs to be queued.
+    */
+    enum eQueuedActions
+    {
+        QUEUED_SPEED_BOOST = 0,
+        QUEUED_PUSH,
+        QUEUED_COUNT
+    };
+
+    bool queuedActions[QUEUED_COUNT];
+    vec3 queuedVelocity;
+
+    void updateQueuedActions();
+
     // Private Variables
     int activeCameraIndex;
     Mesh* m_pMesh;

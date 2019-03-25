@@ -128,10 +128,15 @@ void GameStats::initializeStats()
 {
     for (int player = PLAYER_1; player < MAX_PLAYER_COUNT; player++)
     {
-        for (int stat = 0; stat < STAT_COUNT; stat++)
+        for (int stat = 0; stat < HOVERCRAFTSTAT_COUNT; stat++)
         {
             stats[player][stat] = 0;
         }
+    }
+
+    for (int i = 0; i < GLOBALSTAT_COUNT; i++)
+    {
+        globalStats[i] = 0;
     }
 }
 
@@ -181,7 +186,7 @@ Get a stat about a specified hovercraft.
 @param hovercraft   to get stat about
 @param stat         to retrieve
 */
-int GameStats::get(eHovercraft hovercraft, eStat stat) const
+int GameStats::get(eHovercraft hovercraft, eHovercraftStat stat) const
 {
     return stats[hovercraft][stat];
 }
@@ -223,6 +228,7 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         pickupPowerup(hovercraft);
         break;
     }
+    globalStats[eGlobalStat::SCORE_LARGEST] = getLargestScore();
 }
 
 void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability)
@@ -377,8 +383,23 @@ void GameStats::removeScore(eHovercraft hit, int points)
 {
     stats[hit][SCORE_CHANGE] = -points;
     stats[hit][SCORE_CURRENT] -= points;
+
 }
 
+bool GameStats::hasLargestScore(eHovercraft hovercraft)
+{
+    return get(eGlobalStat::SCORE_LARGEST) == get(hovercraft, SCORE_CURRENT);
+}
+
+int GameStats::getLargestScore()
+{
+    int largestScore = 0;
+    for (int hovercraft = 0; hovercraft < MAX_HOVERCRAFT_COUNT; hovercraft++)
+    {
+        largestScore = FuncUtils::max(stats[hovercraft][SCORE_CURRENT], largestScore);
+    }
+    return largestScore;
+}
 
 /*
 Update the attacker's total kills, and total kills against hit player
@@ -627,7 +648,7 @@ void GameStats::sortByHighestScoreFirst()
     @return all the hovercrafts that have the highest value of the specified stat
             Ignores when the stat is 0.
 */
-vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
+vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eHovercraftStat stat)
 {
     int highest = 0;
     vector<eHovercraft> hovercrafts;
@@ -649,7 +670,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eStat stat)
     return hovercrafts;
 }
 
-vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eStat stat)
+vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eHovercraftStat stat)
 {
     /* TODO*/
     vector<eHovercraft> hovercrafts;
@@ -657,7 +678,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eStat stat)
 }
 
 
-void GameStats::awardToHovercrafts(eStat stat, string name, string description, int points, vector<eHovercraft> winners)
+void GameStats::awardToHovercrafts(eHovercraftStat stat, string name, string description, int points, vector<eHovercraft> winners)
 {
     for (int i = 0, size = endGameStats.size(); i < size; i++)
     {
@@ -688,7 +709,7 @@ void GameStats::awardToHovercrafts(eStat stat, string name, string description, 
     @param description  of the award
     @param points       the award gives
 */
-void GameStats::awardHighestStat(eStat stat, string name, string description, int points)
+void GameStats::awardHighestStat(eHovercraftStat stat, string name, string description, int points)
 {
     vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
     // for (EndGameStat endStat : endGameStats)
@@ -696,7 +717,7 @@ void GameStats::awardHighestStat(eStat stat, string name, string description, in
 
 }
 
-void GameStats::awardZeroStat(eStat stat, string name, string description, int points)
+void GameStats::awardZeroStat(eHovercraftStat stat, string name, string description, int points)
 {
     vector<eHovercraft> winners = getHovercraftsThatHaveZero(stat);
     awardToHovercrafts(stat, name, description, points, winners);

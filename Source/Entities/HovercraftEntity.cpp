@@ -299,6 +299,17 @@ void HovercraftEntity::update(float fTimeInSeconds)
     updateCooldowns(fTimeInSeconds);
     updateVulnerability(fTimeInSeconds);
     updatePowerups(fTimeInSeconds);
+    updateQueuedActions();
+}
+
+void HovercraftEntity::updateQueuedActions()
+{
+    /* Currently coded for only speed power up */
+    if (queuedActions[QUEUED_SPEED_BOOST])
+    {
+        enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        queuedActions[QUEUED_SPEED_BOOST] = false;
+    }
 }
 
 /*
@@ -313,11 +324,18 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     if (isInvincible()) {
         return;
     }
+    HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
+    eHovercraft hit = GAME_STATS->getEHovercraft(m_iID);
+    if (m_pGmStats->hasLargestScore(hit))
+    {
+        // attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        attackerHovercraft->queuePowerup(ePowerup::POWERUP_SPEED_BOOST);
+    }
     setInvincible();
     m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
+                         static_cast<GameStats::eAddScoreReason>(hit), ability);
     resetMaxCooldowns();
-    ENTITY_MANAGER->getHovercraft(attacker)->reduceMaxCooldowns();
+    attackerHovercraft->reduceMaxCooldowns();
 }
 
 void HovercraftEntity::reduceMaxCooldowns()
@@ -392,10 +410,16 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     }
     m_vPowerupsEnabled[powerup] = true;
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
-    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
+    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED);
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
     cout << powerup << " enabled" << endl;
 
+}
+
+void HovercraftEntity::queuePowerup(ePowerup powerup)
+{
+    // For now, coded to speed boost only
+    queuedActions[QUEUED_SPEED_BOOST] = true;
 }
 
 /*

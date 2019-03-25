@@ -71,9 +71,9 @@ public:
     static GameStats* getInstance();
 
     /*
-    NOTE: Do not use STAT_COUNT as a Stat value. It denotes the number of stats.
+    NOTE: Do not use HOVERCRAFTSTAT_COUNT as a Stat value. It denotes the number of stats.
     */
-    enum eStat
+    enum eHovercraftStat
     {
         SCORE_CURRENT = 0,
         SCORE_CHANGE,
@@ -121,7 +121,14 @@ public:
         KILLS_WITH_ROCKET,
         KILLS_WITH_SPIKES,
         KILLS_WITH_TRAIL,
-        STAT_COUNT,
+        HOVERCRAFTSTAT_COUNT,
+    };
+
+    /* TODO unused */
+    enum eGlobalStat
+    {
+       SCORE_LARGEST,
+       GLOBALSTAT_COUNT
     };
 
     enum eAddScoreReason
@@ -175,7 +182,7 @@ public:
     void update(float fSecondsSinceLastUpdate);
 
     // Stats
-    int get(eHovercraft hovercraft, eStat stat) const;
+    int get(eHovercraft hovercraft, eHovercraftStat stat) const;
     void addScore(eHovercraft hovercraft, eAddScoreReason reason);
     void addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability);
 
@@ -198,6 +205,9 @@ public:
 
     vector<EndGameStat> getEndGameStats();
 
+    int get(eGlobalStat stat) const { return globalStats[stat]; };
+    bool hasLargestScore(eHovercraft hovercraft);
+
 private:
     GameStats(int iWidth, int iHeight);
     static GameStats* m_pInstance;
@@ -206,6 +216,7 @@ private:
     void initializeCooldowns();
     void correspondEntitiesToHovercrafts();
 
+    int getLargestScore();
     /*
     End game stats and awards
 
@@ -215,15 +226,15 @@ private:
     void initializeEndGameStats();
     void sortByHighestScoreFirst();
     bool winnerSortFunction(EndGameStat left, EndGameStat right);
-    vector<eHovercraft> getHovercraftsThatHaveHighest(eStat stat);
-    vector<eHovercraft> getHovercraftsThatHaveZero(eStat stat);
+    vector<eHovercraft> getHovercraftsThatHaveHighest(eHovercraftStat stat);
+    vector<eHovercraft> getHovercraftsThatHaveZero(eHovercraftStat stat);
 
     // Award name : function that determines who won the award
     void awardAwards();
-    void awardHighestStat(eStat stat, string name, string description, int points);
-    void awardZeroStat(eStat stat, string name, string description, int points);
+    void awardHighestStat(eHovercraftStat stat, string name, string description, int points);
+    void awardZeroStat(eHovercraftStat stat, string name, string description, int points);
 
-    void awardToHovercrafts(eStat stat, string name, string description, int points, vector<eHovercraft> winners);
+    void awardToHovercrafts(eHovercraftStat stat, string name, string description, int points, vector<eHovercraft> winners);
 
 
     /*
@@ -232,7 +243,9 @@ private:
     Everything is stored in a singular 2D int array for setting and querying
     efficiency.
     */
-    int stats[MAX_HOVERCRAFT_COUNT][STAT_COUNT];
+    int stats[MAX_HOVERCRAFT_COUNT][HOVERCRAFTSTAT_COUNT];
+
+    int globalStats[GLOBALSTAT_COUNT];
 
     float cooldowns[MAX_HOVERCRAFT_COUNT][COOLDOWN_COUNT];
 
