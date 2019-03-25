@@ -347,6 +347,7 @@ void PhysicsManager::cleanupPhysics()
         }
         staticObjects.clear();
 
+        // Crashes, which means these are probably deleted in vehile loop
         // for (PxRigidDynamic *object : dynamicObjects) {
             // if (object != nullptr) {
                 // object->release();

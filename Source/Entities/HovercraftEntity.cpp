@@ -33,10 +33,10 @@ The time the hovercraft must wait until they can use the ability again.
 
 Units: seconds
 */
-#define ROCKET_COOLDOWN         2.0f
-#define SPIKES_COOLDOWN         2.0f
+#define ROCKET_COOLDOWN         2.0f // 2
+#define SPIKES_COOLDOWN         2.0f // 2
 #define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           2.0f
+#define DASH_COOLDOWN           2.0f // 2
 
 #define ROCKET_POWERUP_COOLDOWN ROCKET_COOLDOWN * 0.5f
 #define SPIKES_POWERUP_COOLDOWN SPIKES_COOLDOWN * 0.5f
