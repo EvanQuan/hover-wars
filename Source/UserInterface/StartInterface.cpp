@@ -56,7 +56,7 @@ void StartInterface::render()
 }
 
 void StartInterface::renderOption(int choice) {
-    StartMenu::getNewInstance();
+    // StartMenu::getNewInstance();
     if (choice == 1) {
         renderImage(IMAGE_INSERT_COIN_1, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
     }

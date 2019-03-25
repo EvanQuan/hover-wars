@@ -245,8 +245,10 @@ void PhysicsManager::initPhysics(bool interactive)
     
     m_bInteractive = interactive;
 
+    gAllocator = new PxDefaultAllocator();
+    gErrorCallback = new PxDefaultErrorCallback();
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
-    gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+    gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
     gPvd = PxCreatePvd(*gFoundation);
 // #ifdef _DEBUG
     transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
@@ -293,7 +295,11 @@ void PhysicsManager::initPhysics(bool interactive)
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
     //Create the batched scene queries for the suspension raycasts.
-    gVehicleSceneQueryData = snippetvehicle::VehicleSceneQueryData::allocate(1, PX_MAX_NB_WHEELS, 1, 1, snippetvehicle::WheelSceneQueryPreFilterBlocking, NULL, gAllocator);
+    gVehicleSceneQueryData = snippetvehicle
+                             ::VehicleSceneQueryData
+                             ::allocate(1, PX_MAX_NB_WHEELS, 1, 1,
+                                        snippetvehicle::WheelSceneQueryPreFilterBlocking,
+                                        NULL, *gAllocator);
     gBatchQuery = snippetvehicle::VehicleSceneQueryData::setUpBatchedSceneQuery(0, *gVehicleSceneQueryData, gScene);
 
     //Create the friction table for each combination of tire and surface type.
@@ -361,7 +367,7 @@ void PhysicsManager::cleanupPhysics()
         triangleMeshes.clear();
 
         gBatchQuery->release();
-        gVehicleSceneQueryData->free(gAllocator);
+        gVehicleSceneQueryData->free(*gAllocator);
         gFrictionPairs->release();
         PxCloseVehicleSDK();
         delete cb;
@@ -383,7 +389,8 @@ void PhysicsManager::cleanupPhysics()
         gFoundation->release();
 
 
-
+        delete gAllocator;
+        delete gErrorCallback;
 
         hasStarted = false;
         gScene = NULL; // change value back to null in case cleanup is called twice
