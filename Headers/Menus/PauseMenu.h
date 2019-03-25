@@ -2,7 +2,7 @@
 
 #include "Menus/PromptMenu.h"
 
-class PauseMenu final : PromptMenu
+class PauseMenu final : public PromptMenu
 {
 public:
     // TODO nothing to destruct?
