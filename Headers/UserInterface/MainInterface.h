@@ -26,6 +26,14 @@ public:
     void render();
 
 private:
+
+    enum eUIComponent
+    {
+        COMPONENT_BACKGROUND = 0,
+        COMPONENT_NEW_GAME,
+        COMPONENT_EXIT
+    };
+
     static MainInterface* m_pInstance;
 
     void renderOption(int choice);
