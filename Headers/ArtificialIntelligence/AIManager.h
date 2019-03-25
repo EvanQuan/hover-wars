@@ -23,10 +23,12 @@ public:
 private:
     AIManager();
 
-    void clearAIComponents();
     static AIManager* m_pInstance;
     EntityManager* m_pEntityMngr;
 
+    /*
+    The unique pointers to these are deleted in EntityManager
+    */
     vector<AIComponent*> m_vAIComponents;
 
     void initializeAIComponent(HovercraftEntity* bot, AIComponent* ai);
