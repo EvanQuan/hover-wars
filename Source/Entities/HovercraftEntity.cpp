@@ -316,6 +316,8 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     setInvincible();
     m_pGmStats->addScore(attacker,
                          static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
+    resetMaxCooldowns();
+    ENTITY_MANAGER->getPlayer(attacker)->reduceMaxCooldowns();
 }
 
 void HovercraftEntity::reduceMaxCooldowns()
@@ -508,6 +510,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
+           reduceMaxCooldowns();
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {

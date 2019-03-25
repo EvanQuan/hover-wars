@@ -706,8 +706,10 @@ bool EntityManager::playerExists(eHovercraft player)
     return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
-/*
-*/
+HovercraftEntity* EntityManager::getHovercraft(eHovercraft hovercraft)
+{
+    return hovercraft >= HOVERCRAFT_PLAYER_4 ? getPlayer(hovercraft) : getBot(hovercraft);
+}
 HovercraftEntity* EntityManager::getPlayer(eHovercraft player)
 {
     return m_pPlayerEntityList.at(player);
