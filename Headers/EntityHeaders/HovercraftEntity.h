@@ -144,6 +144,9 @@ private:
 
     void dash(eAbility direction);
 
+    // Like dashing, but weaker, no sound, and doese not count as an ability
+    void push(float x, float y);
+
     // Cooldowns
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);

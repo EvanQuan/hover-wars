@@ -44,6 +44,7 @@ Force : Newtons
 3000000.0f @ 2000 kg 50 g
 */
 #define DASH_FORCE 6000000.0f
+#define PUSH_FORCE 6000000.0f
 /*
 This determines the rate of decceleration when the car input movement is in neutral.
 A braking force is applied when this is the case to help combat drifting.
@@ -136,9 +137,19 @@ void PhysicsComponent::dash(float x, float y) {
     m_fSecondsSinceLastDash = 0.0f;
     isDashing = true;
 
+    push(x, y, DASH_FORCE);
+}
+
+void PhysicsComponent::push(float x, float y)
+{
+    push(x, y, PUSH_FORCE);
+}
+
+void PhysicsComponent::push(float x, float y, float force)
+{
     PxTransform globalTransform = body->getGlobalPose();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
-    body->addForce(vForce * DASH_FORCE);
+    body->addForce(vForce * force);
 
     float angle = y == 0 ? 0 : -1 * atan(x / y);
     setSteerAngle(angle);

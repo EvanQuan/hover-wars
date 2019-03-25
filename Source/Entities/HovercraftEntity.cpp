@@ -487,8 +487,15 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
             SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
         // Momentarily lose control of vehicle to prevent air moving
-        setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-        pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+        // pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+
+        // TODO check if need to determine which velocity to do
+        vec3 myVelocity = getLinearVelocity();
+        push(-myVelocity.x, -myVelocity.y);
+
+        // vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
+        pOtherHovercraft->push(myVelocity.x, myVelocity.y);
         break;
     }
 }
@@ -881,6 +888,10 @@ void HovercraftEntity::dash(eAbility direction)
     }
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
+}
+
+void HovercraftEntity::push(float x, float y) {
+        m_pPhysicsComponent->push(x, y);
 }
 
 float HovercraftEntity::getTrailGaugePercent() const
