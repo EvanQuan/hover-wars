@@ -26,8 +26,8 @@ layout (std140, binding = 2) uniform Lights
 	int numSpotLights;
 	bool usingDirectionalLight;
 	DirLight pDirectionalLight;
-	PointLight pPointLights[4];
-	SpotLight pSpotLights[4];
+	PointLight pPointLights[12];
+	SpotLight pSpotLights[12];
 };
 
 // Shadow Map Uniforms
