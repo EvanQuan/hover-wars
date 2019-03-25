@@ -84,10 +84,14 @@ void SoundManager::play(eSoundEvent sound)
 
     @param eColliderType    The Entity Type of the Collider
     @param eCollidedType    The Entity Type of the Collided
-    @param ignoreWorld      if world collisions are to be ignored
+    @param colliderIsBot    if the collider is a bot
+    @param collidedIsBot    if the collided is a bot
     @return true if both collider and collided are hovercrafts
 */
-bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType, bool ignoreWorld)
+bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType,
+                                            eEntityType eCollidedType,
+                                            bool colliderIsBot,
+                                            bool collidedIsBot)
 {
     // Context-specific sounds require specific information about the entities, specifically
     // if they are players
@@ -97,22 +101,21 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityTy
         switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
         {
         case eEntityType::ENTITY_HOVERCRAFT:
-            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
+            if (!(colliderIsBot && collidedIsBot))
+            {
+                play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
+            }
             return true;
             break;
         case eEntityType::ENTITY_STATIC:
         case eEntityType::ENTITY_PLANE:
-            if (!ignoreWorld)
+            if (!colliderIsBot)
             {
                 play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
             }
             break;
         }
         break;
-//    case eEntityType::ENTITY_STATIC:                   // Waterfall if the collider is Static or a plane, this should probably never happen, but they would only collide with a Hovercar so just default to it.
-//    case eEntityType::ENTITY_PLANE:
-//        play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);
-//        break;
     }
     return false;
 }
@@ -135,8 +138,9 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     // Base collision sounds only require type
     // To make the sound less busy, we will ignore bot base collisions, which
     // can be annoying if they get stuck on a wall
-    bool ignoreWorld = GAME_STATS->isBot(colliderHovercraft);
-    if (handleBaseCollisionSound(colliderType, collidedType, ignoreWorld))
+    bool colliderIsBot = GAME_STATS->isBot(colliderHovercraft);
+    bool collidedIsBot = GAME_STATS->isBot(collidedHovercraft);
+    if (handleBaseCollisionSound(colliderType, collidedType, colliderIsBot, collidedIsBot))
     {
         // For some reason this check is not enough?
         if (((colliderType == eEntityType::ENTITY_HOVERCRAFT))

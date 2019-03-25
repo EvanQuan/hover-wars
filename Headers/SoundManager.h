@@ -126,7 +126,7 @@ private:
     SoundManager();
     void updateChannels();
 
-    bool handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType, bool ignoreWorld);
+    bool handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType, bool colliderIsBot, bool collidedIsBot);
     void handleContextCollisionSound(HovercraftEntity* collider, HovercraftEntity* collided);
 
     int errorCheck(FMOD_RESULT result);

@@ -460,7 +460,6 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
     switch (eOtherType)
     {
     case ENTITY_HOVERCRAFT:
-        bool spikes = false;
         // Cast the other Entity to a Hovercraft Entity (We know this is
         // possible because of the two cases)
         pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
@@ -468,17 +467,11 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
-           spikes = true;
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
             this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()), ABILITY_SPIKES);
             SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
-            spikes = true;
-        }
-        if (!spikes)
-        {
-            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);
         }
         // Momentarily lose control of vehicle to prevent air moving
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
