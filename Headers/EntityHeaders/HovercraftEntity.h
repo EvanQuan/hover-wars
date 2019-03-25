@@ -24,6 +24,14 @@ class Spikes;
 #define BACK_CAMERA             1
 
 
+/*
+The duration a powerup lasts for.
+@TODO maybe move this to the powerup entity?
+
+Unit : seconds
+*/
+#define POWERUP_TIME 20.0f
+
 
 class HovercraftEntity :
     public Entity

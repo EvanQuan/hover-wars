@@ -79,7 +79,9 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
         // 6 Score Change
         {0.47f, 0.58f},
         // 7 Message
-        {0.36f, 0.65f}
+        {0.36f, 0.65f},
+        // 8 Powerup
+        {0.45f, 0.33f}
     },
     // Translating
     vector<pair<float, float>>
@@ -99,7 +101,9 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
         // 6 Score Change
         {0.00f, 0.00f},
         // 7 Message
-        {0.36f, 0.65f}
+        {0.00f, 0.0f},
+        // 8 Powerup
+        {0.0f, 0.0f}
 
     }
 )
@@ -164,6 +168,19 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
     }
 }
 
+void GameInterface::displayPowerup(eHovercraft hovercraft, ePowerup powerup)
+{
+    string message = "";
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        message = "Speed Boost";
+        break;
+    }
+    m_sPowerupMessages[hovercraft] = message;
+    m_fPowerupMessageTimes[hovercraft] = POWERUP_TIME;
+}
+
 /*
 Display a message for a given hovercraft's UI for a short duration.
 
@@ -176,6 +193,8 @@ void GameInterface::displayMessage(eHovercraft hovercraft, std::string text)
     m_sMessages[hovercraft] = text;
     m_fMessageTimes[hovercraft] = MESSAGE_DURATION;
 }
+
+
 /*
 This visually updates the GameInterface to all value changes since last update.
 
@@ -234,6 +253,7 @@ void GameInterface::updateGameTime(float fSecondsSinceLastUpdate)
     {
         m_fMessageTimes[player] -= fSecondsSinceLastUpdate;
         m_fScoreChangeTimes[player] -= fSecondsSinceLastUpdate;
+        m_fPowerupMessageTimes[player] -= fSecondsSinceLastUpdate;
     }
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round. Not sure if its worth the cost to check.
@@ -255,6 +275,9 @@ void GameInterface::renderGameTime()
 
 }
 
+/*
+    Includes powerup messages
+*/
 void GameInterface::renderMessages()
 {
     for (int player = 0; player < m_iDisplayCount; player++)
@@ -271,11 +294,21 @@ void GameInterface::renderMessages()
             int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
                                               GameStats::eHovercraftStat::SCORE_CHANGE);
             bool scoreIncreased = scoreChange >= 0;
-            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
-                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
-                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
-                        SCORE_CHANGE_SCALE,
-                        scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+            if (scoreChange != 0)
+            {
+                renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
+                            m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
+                            m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
+                            SCORE_CHANGE_SCALE,
+                            scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+            }
+        }
+        if (m_fPowerupMessageTimes[player] > 0)
+        {
+            renderText(m_sPowerupMessages[player],
+                m_vComponentCoordinates[COMPONENT_POWERUP].first,
+                m_vComponentCoordinates[COMPONENT_POWERUP].second,
+                MESSAGE_SCALE, MESSAGE_COLOR);
         }
     }
 
