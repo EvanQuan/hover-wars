@@ -271,11 +271,14 @@ void GameInterface::renderMessages()
             int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
                                               GameStats::eHovercraftStat::SCORE_CHANGE);
             bool scoreIncreased = scoreChange >= 0;
-            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
-                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
-                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
-                        SCORE_CHANGE_SCALE,
-                        scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+            if (scoreChange != 0)
+            {
+                renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
+                            m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
+                            m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
+                            SCORE_CHANGE_SCALE,
+                            scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+            }
         }
     }
 
