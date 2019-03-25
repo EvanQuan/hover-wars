@@ -44,12 +44,12 @@ void PostgameMenu::back()
 
 void PostgameMenu::enter()
 {
-    cout << "Calculating end game stats...";
     endGameStats = GAME_STATS->getEndGameStats();
-    cout << "DONE" << endl;
     for (EndGameStat s : endGameStats)
     {
         // debug
         cout << "Hovercraft: " << s.hovercraft << " Points: " << s.afterAwardsScore << endl;
     }
+
+    cout << "> " << getCurrentPrompt() << endl;
 }
