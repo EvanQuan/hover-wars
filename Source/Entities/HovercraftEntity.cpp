@@ -51,9 +51,14 @@ Power up cooldowns
 These are the minimum cooldowns for these abilities.
 
 */
-#define ROCKET_POWERUP_COOLDOWN 1.0f
-#define SPIKES_POWERUP_COOLDOWN SPIKES_DURATION
-#define DASH_POWERUP_COOLDOWN   0.5f
+#define ROCKET_MIN_COOLDOWN 1.0f
+#define SPIKES_MIN_COOLDOWN SPIKES_DURATION
+#define DASH_MIN_COOLDOWN   0.5f
+
+/*
+    Multiplies all cool down values to decrease them. Should be below 1.0
+*/
+#define COOLDOWN_REDUCTION 0.9f
 
 /*
 Total time the trail can be activated from full to empty.
@@ -313,6 +318,20 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
                          static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
 }
 
+void HovercraftEntity::reduceMaxCooldowns()
+{
+    m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
+    m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+}
+
+void HovercraftEntity::resetMaxCooldowns()
+{
+    m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
+}
+
 /*
     Update the vulnerability status.
     The hovercraft is only invulnerable for a duration until they are
@@ -358,13 +377,13 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
         break;
     case POWERUP_ROCKET_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_POWERUP_COOLDOWN;
+        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_MIN_COOLDOWN;
         break;
     case POWERUP_SPIKES_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_POWERUP_COOLDOWN;
+        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_MIN_COOLDOWN;
         break;
     case POWERUP_DASH_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_POWERUP_COOLDOWN;
+        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_MIN_COOLDOWN;
         break;
     default:
         return;

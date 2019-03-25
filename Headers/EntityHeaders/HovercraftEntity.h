@@ -103,6 +103,15 @@ public:
     quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
     void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
+    /*
+        Reduces all cooldowns by a fixed factor, never dropping below the minimum cooldown values.
+    */
+    void reduceMaxCooldowns();
+    /*
+        Reset the maximum cooldowns to the base cooldowns.
+    */
+    void resetMaxCooldowns();
+
 private:
     // Private Variables
     int activeCameraIndex;
