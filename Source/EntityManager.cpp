@@ -82,7 +82,7 @@ EntityManager* EntityManager::getInstance()
 // Destructor.
 EntityManager::~EntityManager()
 {
-    purgeEnvironment();
+    //purgeEnvironment();
 
     // Delete World Axis Buffers
     glDeleteBuffers(1, &m_pVertexBuffer);

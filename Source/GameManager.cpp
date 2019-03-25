@@ -34,6 +34,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pWindow = rWindow;
     glfwGetWindowSize(m_pWindow, &m_iWidth, &m_iHeight);
     m_pEntityManager->updateWidthAndHeight(m_iWidth, m_iHeight);
+    m_pGameStats = nullptr;
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
@@ -253,11 +254,12 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
-    if (nullptr != m_pPhysicsManager) {
+    m_pEntityManager->purgeEnvironment();
+    if (nullptr != m_pPhysicsManager)
+    {
         delete m_pPhysicsManager;
+        m_pPhysicsManager = nullptr;
     }
-    m_pPhysicsManager = nullptr;
-
 }
 
 /*
@@ -325,7 +327,7 @@ bool GameManager::initialize()
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 #else
-    initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    initializeNewGame(1, 0, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
     m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);

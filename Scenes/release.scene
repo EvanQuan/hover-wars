@@ -117,46 +117,54 @@ spawn_points {
     50 5 0.1
 }
 
+#       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
+#           - "dX dY dZ"    = the direction of the light source
+#           - "aR aG aB"    = the ambient color of the light source
+#           - "dR dG dB"    = the diffuse color of the light source
+#           - "sR sG sB"    = the specular color of the light source
+#           - "P nP fP"     = The Position Offset (P) for the source of the Shadow Map
+#                           = As well as the Near Plane (nP) and the Far Plane (fP)
+#           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 directional_light {
     -1 -1 -1
     0 0 0
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     1000.0 1.0 1200.0
-    8192 8192 100.0
+    16384 16384 1000.0
 }
 
 point_light {
     65 5 -24.5
     0.0 0.0 1.0
-    20.0
+    5.0
 }
 point_light {
     65 5 24.5
     0.0 0.0 1.0
-    20.0
+    5.0
 }
 point_light {
     140 5 0
     0.0 0.0 1.0
-    20.0
+    5.0
 }
 
 
 point_light {
     -65 5 -24.5
     1.0 0.0 0.0
-    20.0
+    5.0
 }
 point_light {
     -65 5 24.5
     1.0 0.0 0.0
-    20.0
+    5.0
 }
 point_light {
     -140 5 0
     1.0 0.0 0.0
-    20.0
+    5.0
 }
 
 
@@ -164,34 +172,34 @@ point_light {
 point_light {
     -24.5 5 65
     0.0 1.0 0.0
-    20.0
+    5.0
 }
 point_light {
     24.5 5 65
     0.0 1.0 0.0
-    20.0
+    5.0
 }
 point_light {
     0 5 140
     0.0 1.0 0.0
-    20.0
+    5.0
 }
 
 point_light {
     -24.5 5 -65
     0.6 0.2 0.8
-    20.0
+    5.0
 }
 point_light {
     24.5 5 -65
     0.6 0.2 0.8
-    20.0
+    5.0
 }
 
 point_light {
     0 5 -140
     0.6 0.2 0.8
-    20.0
+    5.0
 }
 spawn_points {
 	0 5 0
