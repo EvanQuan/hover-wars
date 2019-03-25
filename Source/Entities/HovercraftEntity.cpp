@@ -313,11 +313,17 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     if (isInvincible()) {
         return;
     }
+    HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
+    eHovercraft hit = GAME_STATS->getEHovercraft(m_iID);
+    if (m_pGmStats->hasMostPoints(hit))
+    {
+        attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+    }
     setInvincible();
     m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
+                         static_cast<GameStats::eAddScoreReason>(hit), ability);
     resetMaxCooldowns();
-    ENTITY_MANAGER->getHovercraft(attacker)->reduceMaxCooldowns();
+    attackerHovercraft->reduceMaxCooldowns();
 }
 
 void HovercraftEntity::reduceMaxCooldowns()
