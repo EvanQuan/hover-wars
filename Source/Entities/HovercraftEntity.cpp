@@ -310,6 +310,11 @@ void HovercraftEntity::updateQueuedActions()
         enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
         queuedActions[QUEUED_SPEED_BOOST] = false;
     }
+    if (queuedActions[QUEUED_PUSH])
+    {
+        push(queuedVelocity.x, queuedVelocity.y);
+        queuedActions[QUEUED_PUSH] = false
+    }
 }
 
 /*
