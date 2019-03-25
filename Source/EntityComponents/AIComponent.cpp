@@ -8,9 +8,10 @@
 const vec2 seekPointsAI[] = { vec2(18,7),vec2(31,18),vec2(7,18),vec2(18,31),
 vec2(31,31),vec2(7,7),vec2(31,7),vec2(7,31) };
 #define ACCURACY_THRESHOLD 0.01
-#define DISTANCE_BOX 15
-#define PROC_DISTANCE 75
+#define DISTANCE_BOX 5
 #define CYCLE_TIME 7
+#define MAX_TIME_TARGET CYCLE_TIME*4
+#define PROC_DISTANCE 125
 AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
 {
 
@@ -22,7 +23,7 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
 
     /* initialize random seed: */
     srand(static_cast<unsigned int>(time(NULL)));
-    timeChased = rand() % (2 * CYCLE_TIME);
+    timeChased = rand() % (MAX_TIME_TARGET);
 }
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
     //for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {
@@ -170,7 +171,7 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     vec3 difference = mPlayer->getPosition() - botPos;
     float distanceToTarget = getDistance(mPlayer->getPosition(), botPos);
     //std::cout << "Distance to Target: " << distanceToTarget << std::endl;
-    if (distanceToTarget > PROC_DISTANCE /*|| timeChased < CYCLE_TIME*/) {
+    if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
         if (currentState != 1) {
             vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
@@ -183,7 +184,7 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
         currentState = 0;
         nextPosMove = false;
     }
-    if (timeChased > CYCLE_TIME * 2) {
+    if (timeChased > MAX_TIME_TARGET) {
         timeChased = 0;
     }
     vec3 dirVector;
