@@ -30,22 +30,31 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 Cooldowns
 
 The time the hovercraft must wait until they can use the ability again.
+These are the base cooldowns that all hovercrafts start with, and so
+should be a bit on the long end.
 
 Units: seconds
 */
-#define ROCKET_COOLDOWN         2.0f // 2
-#define SPIKES_COOLDOWN         2.0f // 2
-#define TRAIL_COOLDOWN          0.0f
-#define DASH_COOLDOWN           2.0f // 2
-
-#define ROCKET_POWERUP_COOLDOWN ROCKET_COOLDOWN * 0.5f
-#define SPIKES_POWERUP_COOLDOWN SPIKES_COOLDOWN * 0.5f
-#define DASH_POWERUP_COOLDOWN   DASH_COOLDOWN * 0.5f
+#define ROCKET_BASE_COOLDOWN        3.0f // 2
+#define SPIKES_BASE_COOLDOWN        3.0f // 2
+#define TRAIL_COOLDOWN              0.0f
+#define DASH_BASE_COOLDOWN          3.0f // 2
 
 /*
 Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         SPIKES_COOLDOWN * 0.5f // 1.0f
+#define SPIKES_DURATION         1.0f
+
+/*
+Power up cooldowns
+
+These are the minimum cooldowns for these abilities.
+
+*/
+#define ROCKET_POWERUP_COOLDOWN 1.0f
+#define SPIKES_POWERUP_COOLDOWN SPIKES_DURATION
+#define DASH_POWERUP_COOLDOWN   0.5f
+
 /*
 Total time the trail can be activated from full to empty.
 
@@ -69,8 +78,8 @@ does not infinitely accelerate as they move.
 
 Speed : meters/second
 */
-#define MAX_NORMAL_SPEED 30
-#define MAX_POWERUP_SPEED 60
+#define MAX_NORMAL_SPEED    30
+#define MAX_POWERUP_SPEED   60
 
 /*
 The duration a powerup lasts for.
@@ -381,13 +390,13 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
         m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
         break;
     case POWERUP_ROCKET_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
+        m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
         break;
     case POWERUP_SPIKES_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_COOLDOWN;
+        m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
         break;
     case POWERUP_DASH_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_COOLDOWN;
+        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_BASE_COOLDOWN;
         break;
     default:
         return;
@@ -505,7 +514,6 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
             // push(otherVelocity.x, otherVelocity.y);
         }
 
-
         break;
     }
 }
@@ -532,11 +540,11 @@ void HovercraftEntity::initializeCooldowns()
         m_fCooldowns[ability] = 0.0f;
     }
 
-    m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_DURATION;
     m_fMaxCooldowns[COOLDOWN_TRAIL_ACTIVATE] = TRAIL_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_TRAIL_DEACTIVATE] = TRAIL_COOLDOWN;
-    m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_COOLDOWN;
+    m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
