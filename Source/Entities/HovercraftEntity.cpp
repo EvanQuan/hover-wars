@@ -35,7 +35,7 @@ should be a bit on the long end.
 
 Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        3.0f // 2
+#define ROCKET_BASE_COOLDOWN        5.0f // 2
 #define SPIKES_BASE_COOLDOWN        3.0f // 2
 #define TRAIL_COOLDOWN              0.0f
 #define DASH_BASE_COOLDOWN          3.0f // 2
