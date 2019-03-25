@@ -114,6 +114,23 @@ Since Milestone 3:
 First blood - the first hit of the game grants extra points. This incentivizes
 more aggressive play at the start.
 
+A clarification from Milestone 3: there are no deaths and respawns. Our system
+focuses on gathering points by hitting other players with abilities like
+Mario Kart's battle system.
+To punish getting hit, we tried:
+- **respawn on hit** - we found it very disorienting having to constantly
+  respawn to a random respawn point every time you got hit and having to
+  regain your bearings. We suspect it would also be disorienting to see
+  hovercrafts spawn near you without warning.
+- **losing control for a short duration** - this caused a problem with spikes,
+  as you could stun-lock another player by constantly ramming into them and
+  spamming spikes. This was partially alleviated by applying a force to
+  hovercrafts as they collide with one another, but it's still bad when
+  multiple bots are teaming up against a single player.
+
+We settled for resetting ability cooldowns, and losing more points based on
+killstreak (explanation next).
+
 ### Powerups
 
 #### Timed
@@ -121,12 +138,29 @@ more aggressive play at the start.
 Whenever a player hits the player with the most points, they are given a speed
 most powerup, which lasts for 20 seconds.
 
+A speed boost is also given to first blood.
+
 #### Stacking
 
 Ability cool downs have been rebalanced to have a much longer time than
-before. Whenever players increase their killstreak, their cool downs shorten
-by 10% up to a minimum cool down value. If their killstreak is lost, their
-cool downs reset to their base values.
+before.
+
+Rocket - 5s
+
+Spikes - 3s
+
+Dash - 3s
+
+Whenever players increase their killstreak, their cool downs shorten
+by 10% up to a minimum cool down value:
+
+Rocket - 1s
+
+Spikes - 1s
+
+Dash - 0.5s
+
+If their killstreak is lost, their cool downs reset to their base values.
 
 This awards more defensive play and incentives players to put more effort into
 dodging enemy attacks. Getting hit now gives a much stronger "feels bad"
@@ -197,6 +231,40 @@ game, which goes to the post-game menu.
 **Postgame Menu** - After the game, all the end game awards are assigned, and
 all the points are tallied up to determine the round winner. The user can go
 back to the Main Menu.
+
+### User Interface
+
+Speed boost prompt displays for the duration of the player's speed boost.
+
+### Sound
+
+Entering the pause menu pauses all in-game sounds, and plays a pause music
+loop. Returning to the Game Menu resumes playing in-game sounds as it left
+off.
+
+Moving the cursor, or selecting options in the menus plays a random cursor
+sound.
+
+Spikes make a sound when deactivating.
+
+Rockets make a sound when firing and when impacting a surface.
+
+
+### Abilities
+
+Spikes
+- Now render and are animated when they are activated and deactivated.
+
+Rockets
+- Physics and rendering are now complete
+
+### Driving model
+
+- When hovercrafts collide, a force pushes them away. This makes it more
+  difficult to constantly ram into another vehicle non-stop.
+
+- Hovercraft centre of gravity has been lowered to make flipping more
+  difficult and recovering from flipping easier.
 
 
 Since Milestone 2:
@@ -424,7 +492,7 @@ Collision sounds
 
 - Killstreaks
     - Killstreak sound plays when players reaches a high killstreak
-    
+
 - Domination/Revenge
     - Domination and revenge sounds play when players dominate another player
       or get revenge
