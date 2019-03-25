@@ -22,9 +22,10 @@ private:
 
     enum eUIComponent
     {
-        COMPONENT_BACKGROUND = 0,
-        COMPONENT_NEW_GAME,
-        COMPONENT_EXIT
+        BACKGROUND = 0,
+        TITLE,
+        NEW_GAME,
+        EXIT
     };
 
     static MainInterface* m_pInstance;

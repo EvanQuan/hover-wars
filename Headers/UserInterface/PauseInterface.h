@@ -20,5 +20,13 @@ public:
     void render();
 
 private:
+    enum eUIComponent
+    {
+        BACKGROUND = 0,
+        CONTINUE,
+        MAIN_MENU
+    };
+
     static PauseInterface* m_pInstance;
+    void renderOption(int choice);
 };

@@ -20,5 +20,17 @@ public:
     void render();
 
 private:
+    enum eUIComponent
+    {
+        BACKGROUND = 0,
+        PLAYER_COUNT,
+        BOT_COUNT,
+        MAIN_MENU,
+        START_GAME
+    };
     static PregameInterface* m_pInstance;
+
+    void renderNumberOfPlayer();
+    void renderNumberOfBot();
+    void renderOption();
 };

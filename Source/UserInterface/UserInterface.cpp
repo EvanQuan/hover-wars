@@ -79,19 +79,24 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
     m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
     m_Textures[IMAGE_BACKGROUND] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND);
-    m_Textures[IMAGE_MAIN_MENU_BUTTON] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON);
+    m_Textures[IMAGE_MAIN_MENU_BUTTON_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON_1);
     m_Textures[IMAGE_MAIN_MENU_BUTTON_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON_2);
     m_Textures[IMAGE_NEW_GAME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_1);
     m_Textures[IMAGE_NEW_GAME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_2);
     m_Textures[IMAGE_PAUSE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_PAUSE_MENU);
     m_Textures[IMAGE_POST_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_POST_MENU);
-    m_Textures[IMAGE_RESTART] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART);
+    m_Textures[IMAGE_RESTART_1] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART_1);
     m_Textures[IMAGE_RESTART_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART_2);
-    m_Textures[IMAGE_RESUME] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME);
+    m_Textures[IMAGE_RESUME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_1);
     m_Textures[IMAGE_RESUME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_2);
-    m_Textures[IMAGE_START] = TEXTURE_MANAGER->loadTexture(IMAGE_START);
+    m_Textures[IMAGE_START_1] = TEXTURE_MANAGER->loadTexture(IMAGE_START_1);
     m_Textures[IMAGE_START_2] = TEXTURE_MANAGER->loadTexture(IMAGE_START_2);
     m_Textures[IMAGE_TITLE] = TEXTURE_MANAGER->loadTexture(IMAGE_TITLE);
+    m_Textures[IMAGE_INSERT_COIN_1] = TEXTURE_MANAGER->loadTexture(IMAGE_INSERT_COIN_1);
+    m_Textures[IMAGE_INSERT_COIN_2] = TEXTURE_MANAGER->loadTexture(IMAGE_INSERT_COIN_2);
+    m_Textures[IMAGE_NUMBER_OF_PLAYER] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_PLAYER);
+    m_Textures[IMAGE_NUMBER_OF_BOT] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_OF_BOT);
+
 }
 
 UserInterface::~UserInterface()
