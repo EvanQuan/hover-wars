@@ -10,9 +10,18 @@ AIManager::AIManager()
     m_pEntityMngr = ENTITY_MANAGER;
 }
 
+void AIManager::clearAIComponents()
+{
+    for (AIComponent* ai : m_vAIComponents)
+    {
+        delete ai;
+    }
+    m_vAIComponents.clear();
+}
+
 AIManager::~AIManager()
 {
-    m_vAIComponents.clear();
+    clearAIComponents();
 }
 
 AIManager* AIManager::getInstance()
@@ -24,12 +33,9 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-/*
-    Initialize everything that's needed for the start of a new game
-*/
 void AIManager::reinitialize()
 {
-    m_vAIComponents.clear();
+    clearAIComponents();
     const vector<HovercraftEntity*>* bots = m_pEntityMngr->getBotList();
     for (size_t i = 0, size = bots->size(); i < size; i++)
     {
