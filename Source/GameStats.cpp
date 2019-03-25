@@ -676,7 +676,7 @@ void GameStats::awardHighestStat(eStat stat, string name, string description, in
 void GameStats::awardAwards()
 {
     // Multiplayer only awards
-    if (m_iPlayerCount > 1)
+    if ((m_iPlayerCount > 1) && (m_iBotCount > 1))
     {
         awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
         awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
