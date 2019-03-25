@@ -208,10 +208,14 @@ private:
     void sortByHighestScoreFirst();
     bool winnerSortFunction(EndGameStat left, EndGameStat right);
     vector<eHovercraft> getHovercraftsThatHaveHighest(eStat stat);
+    vector<eHovercraft> getHovercraftsThatHaveZero(eStat stat);
 
     // Award name : function that determines who won the award
     void awardAwards();
     void awardHighestStat(eStat stat, string name, string description, int points);
+    void awardZeroStat(eStat stat, string name, string description, int points);
+
+    void awardToHovercrafts(eStat stat, string name, string description, int points, vector<eHovercraft> winners);
 
 
     /*
