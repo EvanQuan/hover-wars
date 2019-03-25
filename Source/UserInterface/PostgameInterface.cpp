@@ -56,4 +56,5 @@ void PostgameInterface::reinitialize(float gameTime)
 
 void PostgameInterface::render()
 {
+    MenuInterface::render();
 }

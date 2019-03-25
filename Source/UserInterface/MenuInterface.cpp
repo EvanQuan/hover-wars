@@ -11,5 +11,5 @@ MenuInterface::MenuInterface(int iWidth, int iHeight,
 
 void MenuInterface::render()
 {
-    renderImage("textures/menu/main_menu.png", 0, 0, 1.0f);
+    renderImage("textures/menu/main_menu.png", 500, 500, 1.0f);
 }

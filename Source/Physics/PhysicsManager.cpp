@@ -346,6 +346,7 @@ void PhysicsManager::cleanupPhysics()
         gDispatcher->release();
         gPhysics->release();
         PxPvdTransport* transport = gPvd->getTransport();
+        gPvd->disconnect();
         gPvd->release();
 // #ifdef _DEBUG
         transport->release();

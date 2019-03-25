@@ -6,7 +6,7 @@
 
 // Default game time as pregame menu is first entered
 // #define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE
-#define DEFAULT_GAME_TIME 10 // debug
+#define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE // debug
 #define MAX_GAME_TIME 10 * SECONDS_PER_MINUTE
 #define MIN_GAME_TIME 10
 
@@ -44,7 +44,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
     m_iBotCount = MAX_BOT_COUNT;
-    m_iPlayerCount = INPUT_HANDLER->getJoystickCount();
+    m_iPlayerCount = FuncUtils::max(1, INPUT_HANDLER->getJoystickCount());
     m_fGameTime = DEFAULT_GAME_TIME;
 }
 
