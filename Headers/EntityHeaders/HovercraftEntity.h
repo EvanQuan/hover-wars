@@ -51,6 +51,7 @@ public:
 
     bool useAbility(eAbility ability);
     void move(float x, float y);
+    void moveGlobal(float x, float y) { m_pPhysicsComponent->moveGlobal(x, y); }
     void turn(float x);
 
     // TEMPORARY: Returns the directional Angle for cobbled camera controls
@@ -91,13 +92,18 @@ public:
     bool isInvincible() const { return m_bInvincible; };
 
     void setInvincible();
-    PhysicsComponent* m_pPhysicsComponent;
 
     void enablePowerup(ePowerup powerup);
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
-    float getSpeed() { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
+    float getSpeed()                            { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
+    vec3 getLinearVelocity()                    { return m_pPhysicsComponent->getLinearVelocity(); }
+    PxTransform getGlobalTransform()            { return m_pPhysicsComponent->getGlobalPose(); }
+    quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
+    void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
+
+
 private:
     // Private Variables
     int activeCameraIndex;
@@ -109,6 +115,7 @@ private:
     FlameTrail* m_pFireTrail;
     Rocket* m_pRocket;
     Spikes* m_pSpikes;
+    PhysicsComponent* m_pPhysicsComponent;
 
     /*
     These should lag behind

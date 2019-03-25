@@ -123,7 +123,7 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer,HovercraftEntity *b
     vec3 difference = mPlayer->getPosition() - botPos;
     vec3 botToPlayer = nextPos - botPos;
     vec3 dirVector;
-    bot->m_pPhysicsComponent->getDirectionVector(&dirVector);
+    bot->getDirectionVector(&dirVector);
     dirVector /= dirVector.length();
     botToPlayer /= botToPlayer.length();
     difference /= difference.length();

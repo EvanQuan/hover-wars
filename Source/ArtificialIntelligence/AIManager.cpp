@@ -45,12 +45,12 @@ void AIManager::reinitialize()
 */
 void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 {
-    glm::vec3 botVel = bot->m_pPhysicsComponent->getLinearVelocity();
-    glm::vec3 botPos = bot->m_pPhysicsComponent->getPosition();
-    PxTransform globalTransform = bot->m_pPhysicsComponent->getGlobalPose();
+    glm::vec3 botVel = bot->getLinearVelocity();
+    glm::vec3 botPos = bot->getPosition();
+    PxTransform globalTransform = bot->getGlobalTransform();
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
     glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
-    glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->m_pPhysicsComponent->getLinearVelocity();
+    glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getLinearVelocity();
     ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 
@@ -66,7 +66,6 @@ void AIManager::update(float fTimeInSeconds)
     {
         AIComponent* ai = m_vAIComponents.at(i);
         HovercraftEntity* bot = bots->at(i);
-        PhysicsComponent* physics = bot->m_pPhysicsComponent;
 
         //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(18,21),vec2(18,19));
         //std::cout << "path size: " << path.size() << std::endl;
@@ -74,14 +73,14 @@ void AIManager::update(float fTimeInSeconds)
         //SPATIAL_DATA_MAP->getMapIndices(this,&minX,&minY,&maxX,&maxY);
         //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
         ai->update(fTimeInSeconds);
-        glm::vec3 botVel = physics->getLinearVelocity();
-        glm::vec3 botPos = physics->getPosition();
-        glm::quat rotation = physics->getRotation();
+        glm::vec3 botVel = bot->getLinearVelocity();
+        glm::vec3 botPos = bot->getPosition();
+        glm::quat rotation = bot->getRotation();
         // double x = FuncUtils::getRoll(rotation);
         // double y = FuncUtils::getPitch(rotation);
         // double z = FuncUtils::getYaw(rotation);
 
-        PxTransform globalTransform = physics->getGlobalPose();
+        PxTransform globalTransform = bot->getGlobalTransform();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
 
         int playerNum = eHovercraft::HOVERCRAFT_PLAYER_1;
@@ -99,7 +98,7 @@ void AIManager::update(float fTimeInSeconds)
         //glm::vec3 targetPosition = mPlayer->getPosition();
 
 
-        glm::vec3 targetVelocity = mPlayer->m_pPhysicsComponent->getLinearVelocity();
+        glm::vec3 targetVelocity = mPlayer->getLinearVelocity();
 
 
         //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(minXPlayer, minYPlayer),vec2(minXBot, minYBot));
@@ -118,7 +117,7 @@ void AIManager::update(float fTimeInSeconds)
         float moveY = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_FORWARDS_BACKWARDS];
         if (((int)moveX != 0) || ((int)moveY != 0)) {
             if (bot->isInControl()) {
-                physics->moveGlobal(moveX, moveY);
+                bot->move(moveX, moveY);
             }
         }
         if (a.actionsToTake[AIComponent::eAction::ACTION_FIRE_ROCKET] == 1) {
