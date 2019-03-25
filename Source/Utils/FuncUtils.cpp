@@ -150,6 +150,10 @@ std::string FuncUtils::timeToString(int timeInSeconds)
     return std::to_string(minutes) + ":" + (seconds < 10 ? "0" : "") + std::to_string(seconds);
 }
 
+double FuncUtils::log(int value, int base)
+{
+    return std::log(value) / std::log(base);
+}
 
 eHovercraft FuncUtils::playerToHovercraft(ePlayer player)
 {

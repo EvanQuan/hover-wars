@@ -129,7 +129,7 @@ PhysicsManager::PhysicsManager()
     gPhysics = NULL;
     gDispatcher = NULL;
     gScene = NULL;
-    manager = NULL;
+    // manager = NULL;
     gCarMaterial = NULL;
     gWorldMaterial = NULL;
     
@@ -245,11 +245,13 @@ void PhysicsManager::initPhysics(bool interactive)
     
     m_bInteractive = interactive;
 
+    gAllocator = new PxDefaultAllocator();
+    gErrorCallback = new PxDefaultErrorCallback();
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
-    gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+    gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
     gPvd = PxCreatePvd(*gFoundation);
 // #ifdef _DEBUG
-    PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+    transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
     gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 // #endif
 
@@ -274,9 +276,15 @@ void PhysicsManager::initPhysics(bool interactive)
     gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
     gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
+    // bool extensionsInitialized = PxInitExtensions(*gPhysics, gPvd);
+    // if (!extensionsInitialized) {
+        // std::cout << ("PxInitExtensions failed!") << std::endl;
+    // }
+
     gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
-    if (!gCook)
+    if (!gCook) {
         std::cout << ("PxCreateCooking failed!") << std::endl;
+    }
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,7 +295,11 @@ void PhysicsManager::initPhysics(bool interactive)
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
     //Create the batched scene queries for the suspension raycasts.
-    gVehicleSceneQueryData = snippetvehicle::VehicleSceneQueryData::allocate(1, PX_MAX_NB_WHEELS, 1, 1, snippetvehicle::WheelSceneQueryPreFilterBlocking, NULL, gAllocator);
+    gVehicleSceneQueryData = snippetvehicle
+                             ::VehicleSceneQueryData
+                             ::allocate(1, PX_MAX_NB_WHEELS, 1, 1,
+                                        snippetvehicle::WheelSceneQueryPreFilterBlocking,
+                                        NULL, *gAllocator);
     gBatchQuery = snippetvehicle::VehicleSceneQueryData::setUpBatchedSceneQuery(0, *gVehicleSceneQueryData, gScene);
 
     //Create the friction table for each combination of tire and surface type.
@@ -302,8 +314,6 @@ void PhysicsManager::initPhysics(bool interactive)
     gScene->addActor(*gGroundPlane);
     staticObjects.push_back(gGroundPlane);
     
-
-
 
 
 
@@ -323,24 +333,48 @@ void PhysicsManager::cleanupPhysics()
     if (hasStarted) { // basically this is just so that we don't try and destroy
         // the physics before it's been initalized
         PX_UNUSED(m_bInteractive);
+
+        for (PxTriangleMesh *mesh : triangleMeshes) {
+            mesh->release();
+        }
+        triangleMeshes.clear();
+        for (PxShape *shape : shapes) {
+            shape->release();
+        }
+        shapes.clear();
         for (PxVehicleNoDrive *vehicle : vehicles) {
             vehicle->getRigidDynamicActor()->release();
             vehicle->free();
         }
+        vehicles.clear();
+
         for (PxRigidStatic *object : staticObjects) {
             object->release();
         }
-        for (PxRigidDynamic *object : rockets) {
+        staticObjects.clear();
+
+        // Crashes, which means these are probably deleted in vehile loop
+        // for (PxRigidDynamic *object : dynamicObjects) {
+            // if (object != nullptr) {
+                // object->release();
+            // }
+        // }
+        dynamicObjects.clear();
+
+        for (PxTriangleMesh *object : triangleMeshes) {
             object->release();
         }
+        triangleMeshes.clear();
+
         gBatchQuery->release();
-        gVehicleSceneQueryData->free(gAllocator);
+        gVehicleSceneQueryData->free(*gAllocator);
         gFrictionPairs->release();
         PxCloseVehicleSDK();
         delete cb;
 
         gCarMaterial->release();
         gWorldMaterial->release();
+
         gCook->release();
         gScene->release();
         gDispatcher->release();
@@ -351,11 +385,12 @@ void PhysicsManager::cleanupPhysics()
 // #ifdef _DEBUG
         transport->release();
 // #endif
-        //manager->release();
+        // manager->release();
         gFoundation->release();
 
 
-
+        delete gAllocator;
+        delete gErrorCallback;
 
         hasStarted = false;
         gScene = NULL; // change value back to null in case cleanup is called twice
@@ -370,14 +405,19 @@ void PhysicsManager::cleanupPhysics()
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
 PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, float y, float z,float scale,string filename) {
-    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(generateMesh(filename,scale)), *gCarMaterial);
+    PxTriangleMesh* triangleMesh = generateMesh(filename, scale);
+    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(triangleMesh), *gCarMaterial);
     PxTransform localTm(PxVec3(x, y, z));
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     body->setName(sEntityID);
     // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
+
     staticObjects.push_back(body);
+
+    triangleMeshes.push_back(triangleMesh);
+
     return body;
 }
 const int MAXLINE = 256;
@@ -464,6 +504,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
     return gPhysics->createTriangleMesh(readBuffer);
 }
+
 PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
     PxShape* shape = gPhysics->createShape(PxBoxGeometry(sizeY, sizeX, sizeZ), *gWorldMaterial);
     PxTransform localTm(PxVec3(x, y, z));
@@ -473,6 +514,8 @@ PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x,f
     // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
+
+    shapes.push_back(shape);
     return body;
 }
 PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x, float y, float z, float radius) {
@@ -484,6 +527,7 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
     // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
     staticObjects.push_back(body);
+    shapes.push_back(shape);
     return body;
 }
 
@@ -512,6 +556,7 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     (*pReturnBody)->attachShape(*shape);
     (*pReturnBody)->setName(cName);
 
+    shapes.push_back(shape);
     // Add To Scene
     // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
@@ -539,6 +584,7 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
     (*pReturnBody)->attachShape(*pShape);
     (*pReturnBody)->setName(cName);
 
+    shapes.push_back(pShape);
     // Add to Scene
     // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
@@ -569,6 +615,9 @@ PxVehicleNoDrive *PhysicsManager::createHovercraftEntity(const char* sEntityID, 
     gVehicleOrderProgress = 0;
     vehicles.push_back(gVehicleNoDrive);
     // gVehicleNoDrive->getRigidDynamicActor()->setName(sEntityID);
+
+    dynamicObjects.push_back(actor);
+
 
     return gVehicleNoDrive;
 }

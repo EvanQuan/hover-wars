@@ -8,22 +8,28 @@
 const vec2 seekPointsAI[] = { vec2(18,7),vec2(31,18),vec2(7,18),vec2(18,31),
 vec2(31,31),vec2(7,7),vec2(31,7),vec2(7,31) };
 #define ACCURACY_THRESHOLD 0.01
+#define DISTANCE_BOX 5
+#define CYCLE_TIME 7
+#define MAX_TIME_TARGET CYCLE_TIME*4
+#define PROC_DISTANCE 125
 AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
 {
-    for (int j = 0; j < MUTATION_SET; j++) {
-        for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
-            genRandomAction(&frames[j][i]);
-        }
-    }
+
+    ////for (int j = 0; j < MUTATION_SET; j++) {
+    //    for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
+    //        genRandomAction(&frames[j][i]);
+    //    }
+    //}
 
     /* initialize random seed: */
-    srand(static_cast<unsigned int>(time(NULL)));
-
+     srand(static_cast<unsigned int>(time(NULL)));
+    // timeChased = rand() % (MAX_TIME_TARGET);
+    timeChased = static_cast<float>(FuncUtils::random(0, MAX_TIME_TARGET - 1));
 }
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
-    for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {
-        performMutation(playerPos, playerVel, botPos, botVel, botRotation, 0);
-    }
+    //for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {
+   //     performMutation(playerPos, playerVel, botPos, botVel, botRotation, 0);
+   // }
 }
 AIComponent::~AIComponent() {
 
@@ -129,8 +135,7 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     //evaluation += (playerPos - botPos).length() * DISTANCE_REDUCTION_EVAL;
     return evaluation;
 }
-#define DISTANCE_BOX 15
-#define PROC_DISTANCE 150
+
 void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, Action *a) {
 
     //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
@@ -142,17 +147,16 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     if (currentState == 0) {
         unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
         SPATIAL_DATA_MAP->getMapIndices(mPlayer, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
-        path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer + 1, minYPlayer + 1), vec2(maxXPlayer + 1, maxYPlayer + 1), vec2(minXBot + 1, minYBot + 1), vec2(maxXBot + 1, maxYBot + 1));
+        path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(maxXPlayer, maxYPlayer), vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
     }
     else if (currentState == 1) {
         if (getDistance(vec2(minXBot, minYBot), seekLocation) < 2) {
             vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
             LastIndex = (int)currSeekLock.z;
-            nextPosMove = true;
         }
 
-        path = SPATIAL_DATA_MAP->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot + 1, minYBot + 1), vec2(maxXBot + 1, maxYBot + 1));
+        path = SPATIAL_DATA_MAP->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
     }
     vec2 offset = SPATIAL_DATA_MAP->getWorldOffset();
     glm::vec3 nextPos = vec3(0, 0, 0);//mPlayer->getPosition();
@@ -168,17 +172,21 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     vec3 difference = mPlayer->getPosition() - botPos;
     float distanceToTarget = getDistance(mPlayer->getPosition(), botPos);
     //std::cout << "Distance to Target: " << distanceToTarget << std::endl;
-    if (distanceToTarget > PROC_DISTANCE) {
+    if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
         if (currentState != 1) {
             vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
             LastIndex = (int)currSeekLock.z;
         }
         currentState = 1;
+        nextPosMove = true;
     }
     else {
         currentState = 0;
         nextPosMove = false;
+    }
+    if (timeChased > MAX_TIME_TARGET) {
+        timeChased = 0;
     }
     vec3 dirVector;
     bot->getDirectionVector(&dirVector);

@@ -68,14 +68,16 @@ public:
     int timesStepped = 0;
 
 private:
+
+    // extra stuff to delete
+    std::vector<physx::PxTriangleMesh*> triangleMeshes;
+    std::vector<physx::PxShape*> shapes;
+    PxPvdTransport* transport;
+
     PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
     std::vector<physx::PxRigidStatic *> staticObjects;
-    std::vector<physx::PxRigidDynamic *> rockets;
-    /*
-
-    */
-    std::vector<physx::PxRigidDynamic *> dynamicActors;
+    std::vector<physx::PxRigidDynamic *> dynamicObjects;
 
     physx::PxTriangleMesh *generateMesh(string filename,float scale);
     int currentState = 0;
@@ -106,14 +108,14 @@ private:
     float m_fTimeSinceLastUpdate;   // Increments every update to track how long since last Physics Update.
     // Moving these from Constructor to Here to privatize these variables used by the Physics
     //    manager
-    physx::PxDefaultAllocator       gAllocator;
-    physx::PxDefaultErrorCallback   gErrorCallback;
+    physx::PxDefaultAllocator*      gAllocator;
+    physx::PxDefaultErrorCallback*  gErrorCallback;
     physx::PxFoundation*            gFoundation     = NULL;
     physx::PxPhysics*               gPhysics        = NULL;
 
     physx::PxDefaultCpuDispatcher*  gDispatcher     = NULL;
     physx::PxScene*                 gScene          = NULL;
-    physx::PxControllerManager*     manager         = NULL;
+    // physx::PxControllerManager*     manager         = NULL;
 
     physx::PxMaterial*              gCarMaterial    = NULL;
     physx::PxMaterial*              gWorldMaterial  = NULL;

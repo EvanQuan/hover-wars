@@ -86,15 +86,27 @@ void AIManager::update(float fTimeInSeconds)
         int playerNum = eHovercraft::HOVERCRAFT_PLAYER_1;
         float distanceToNearestPlayer = 1000000;
         // @TODO add ability to change targets when we do multiplayer
-        /*for (int i = 0; i < m_pEntityMngr->getPlayerSize(); i++) {
-            HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)i);
-            float dis = (mPlayer->getPosition() - botPos).length();
-            if ((mPlayer->getPosition() - botPos).length() < distanceToNearestPlayer) {
+        for (int j = 0; j < m_pEntityMngr->getPlayerSize(); j++) {
+            HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)j);
+            float dis = sqrt(pow((mPlayer->getPosition() - botPos).x,2) + pow((mPlayer->getPosition() - botPos).y, 2) + pow((mPlayer->getPosition() - botPos).z, 2));
+            if (dis < distanceToNearestPlayer) {
                 distanceToNearestPlayer = dis;
-                playerNum = i;
+                playerNum = j;
             }
-        }*/
+        }
         HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)playerNum);
+        float distanceToNearestBot = 1000000;
+        for (size_t j = 0; j < size; j++) {
+            HovercraftEntity *mPlayer = bots->at(j);
+            float dis = sqrt(pow((mPlayer->getPosition() - botPos).x, 2) + pow((mPlayer->getPosition() - botPos).y, 2) + pow((mPlayer->getPosition() - botPos).z, 2));
+            if (dis < distanceToNearestBot && i !=j) {
+                distanceToNearestBot = dis;
+                playerNum = j;
+            }
+        }
+        if (distanceToNearestBot < distanceToNearestPlayer) {
+            mPlayer = bots->at(playerNum);
+        }
         //glm::vec3 targetPosition = mPlayer->getPosition();
 
 

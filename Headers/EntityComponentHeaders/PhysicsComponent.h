@@ -45,6 +45,8 @@ public:
     quat getRotation();
     void flipVehicle();
     void dash(float x, float y);
+    void push(float x, float y);
+    void push(float x, float y, float force);
     void jumpVehicle();
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
     void getTransformMatrix(mat4* pReturnTransformMatrix);
@@ -57,6 +59,7 @@ public:
 
     void setMaxSpeed(float maxSpeed);
 
+    void setGlobalPos(PxTransform trans);
 private:
     bool isInAir;
 
