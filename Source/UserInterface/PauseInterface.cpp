@@ -4,6 +4,12 @@
 // Singleton instance
 PauseInterface* PauseInterface::m_pInstance = nullptr;
 
+
+/*
+        Continue
+
+        Main Menu
+*/
 PauseInterface::PauseInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>
@@ -56,5 +62,4 @@ void PauseInterface::reinitialize(float gameTime)
 
 void PauseInterface::render()
 {
-    MenuInterface::render();
 }
