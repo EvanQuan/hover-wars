@@ -216,7 +216,7 @@ private:
     void initializeCooldowns();
     void correspondEntitiesToHovercrafts();
 
-    int getMostPoints();
+    int getLargestScore();
     /*
     End game stats and awards
 

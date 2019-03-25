@@ -223,6 +223,7 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         pickupPowerup(hovercraft);
         break;
     }
+    globalStats[eGlobalStat::SCORE_LARGEST] = getLargestScore();
 }
 
 void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability)
@@ -382,10 +383,10 @@ void GameStats::removeScore(eHovercraft hit, int points)
 
 bool GameStats::hasMostPoints(eHovercraft hovercraft)
 {
-    return getMostPoints() == get(hovercraft, SCORE_CURRENT);
+    return get(eGlobalStat::SCORE_LARGEST) == get(hovercraft, SCORE_CURRENT);
 }
 
-int GameStats::getMostPoints()
+int GameStats::getLargestScore()
 {
     int largestScore = 0;
     for (int hovercraft = 0; hovercraft < MAX_HOVERCRAFT_COUNT; hovercraft++)
