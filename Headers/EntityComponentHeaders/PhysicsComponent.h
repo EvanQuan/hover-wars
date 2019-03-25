@@ -33,6 +33,7 @@ public:
 
     void move(float x, float y);
     void moveGlobal(float x, float y);
+    void setPosition(vec2 pos);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
     void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position, float maxNormalSpeed);
@@ -62,7 +63,7 @@ public:
     void setGlobalPos(PxTransform trans);
 private:
     bool isInAir;
-
+    float lastDeltaTime = 0;
     float m_fMaxSpeed;
     float m_fMaxDashSpeed;
 

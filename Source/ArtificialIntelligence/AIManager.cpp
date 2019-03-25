@@ -112,7 +112,7 @@ void AIManager::update(float fTimeInSeconds)
 
         //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(minXPlayer, minYPlayer),vec2(minXBot, minYBot));
         Action a;
-        ai->popCurrentAction(mPlayer, bot,targetVelocity, botPos, botVel, atan2(vForce.x, vForce.z),&a);
+        ai->popCurrentAction(mPlayer, bot,targetVelocity, botPos, botVel, fTimeInSeconds,atan2(vForce.x, vForce.z),&a);
 
         //std::cout << "BotEntity update: " << a.actionsToTake[0] << ", " << a.actionsToTake[1] << ", " << a.actionsToTake[2] << ", "<< a.actionsToTake[3] << std::endl;
         // fire Rocket, right-left turn, forward-back move,right-left move

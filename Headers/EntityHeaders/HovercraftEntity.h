@@ -56,7 +56,7 @@ public:
         float fScale);
 
     void reinitialize();
-
+    void setPosition(vec2 pos);
     bool useAbility(eAbility ability);
     void move(float x, float y);
     void moveGlobal(float x, float y) { m_pPhysicsComponent->moveGlobal(x, y); }

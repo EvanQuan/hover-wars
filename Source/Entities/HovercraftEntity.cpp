@@ -293,7 +293,9 @@ void HovercraftEntity::update(float fTimeInSeconds)
     updatePowerups(fTimeInSeconds);
     updateQueuedActions();
 }
-
+void HovercraftEntity::setPosition(vec2 pos) {
+    m_pPhysicsComponent->setPosition(pos);
+}
 void HovercraftEntity::updateQueuedActions()
 {
     /* Currently coded for only speed power up */

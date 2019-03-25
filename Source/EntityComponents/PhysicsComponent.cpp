@@ -37,7 +37,7 @@ The greater the force, the faster it will accelerate.
 Force : Newtons
 */
 
-#define MOVEMENT_FORCE 10000.0f // 100000 // 1000
+#define MOVEMENT_FORCE 30000000.0f // 100000 // 1000
 
 /*
 1000000.0f @ 300 kg
@@ -110,7 +110,7 @@ void PhysicsComponent::move(float x, float y) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
-        body->addForce(vForce * MOVEMENT_FORCE);
+        body->addForce(vForce * MOVEMENT_FORCE * lastDeltaTime);
         
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
@@ -125,11 +125,17 @@ void PhysicsComponent::setGlobalPos(PxTransform trans) {
 }
 void PhysicsComponent::moveGlobal(float x, float y) {
     PxVec3 vForce = PxVec3(y, 0, x);
-    body->addForce(vForce * MOVEMENT_FORCE/7); // NOTE: Why are we dividing by 7?
+    body->clearForce();
+    body->addForce(vForce * MOVEMENT_FORCE); // NOTE: Why are we dividing by 7?
 
     // TODO find out the angle in a better way
     float angle = y == 0 ? 0 : -1 * atan(x / y);
     setSteerAngle(angle);
+}
+void PhysicsComponent::setPosition(vec2 pos) {
+    PxTransform trans = body->getGlobalPose();
+    trans.p = PxVec3(pos.x, trans.p.y, pos.y);
+    setGlobalPos(trans);
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
@@ -181,6 +187,7 @@ PhysicsComponent::~PhysicsComponent()
 //    information that will be gathered by the Entity when they need it?
 void PhysicsComponent::update(float fTimeInSeconds)
 {
+    lastDeltaTime = fTimeInSeconds;
     if (m_bVehicle)
     {
         m_fSecondsSinceLastDash += fTimeInSeconds;
