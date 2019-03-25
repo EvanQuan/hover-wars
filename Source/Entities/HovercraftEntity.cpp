@@ -312,7 +312,7 @@ void HovercraftEntity::updateQueuedActions()
     }
     if (queuedActions[QUEUED_PUSH])
     {
-        push(queuedVelocity.x, queuedVelocity.y);
+        push(queuedX, queuedY);
         queuedActions[QUEUED_PUSH] = false;
     }
 }
@@ -425,6 +425,13 @@ void HovercraftEntity::queuePowerup(ePowerup powerup)
 {
     // For now, coded to speed boost only
     queuedActions[QUEUED_SPEED_BOOST] = true;
+}
+
+void HovercraftEntity::queuePush(float x, float y)
+{
+    queuedX = x;
+    queuedY = y;
+    queuedActions[QUEUED_PUSH] = true;
 }
 
 /*
