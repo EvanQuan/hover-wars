@@ -479,45 +479,17 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
+           SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
             this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()), ABILITY_SPIKES);
+            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
-
         // Momentarily lose control of vehicle to prevent air moving
         setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
         break;
-//    case ENTITY_INTERACTABLE:
-//        // this never gets called
-//        // Static Cast to an Interactable Entity
-//        pOtherIE = static_cast<InteractableEntity*>(pOther);
-//
-//        // Switch between different Interactable Entity Types
-//        switch (pOtherIE->getInteractableType())
-//        {
-//        case INTER_POWERUP:
-//            // Random for now
-//            setPowerup(static_cast<ePowerup>(FuncUtils::random(0, POWERUP_COUNT - 1)));
-//            break;
-//        case INTER_FLAME_TRAIL:
-//        case INTER_ROCKET:
-//        case INTER_SPIKES:
-//            this->getHitBy(GAME_STATS->getEHovercraft(pOtherIE->getOwnerID()));
-//        }
-//        break;
-    case ENTITY_PLANE:
-        // TODO still not sure if we're doing the gain control or the elevation check
-        // to make collisions less wonky
-        // setGainControl();
-        break;
-        /*Further Cases:
-        case ENTITY_ROCKET:
-            Get Owner Entity for Rocket (Player or Bot) and call Hit on this Entity to be hit by that player.
-        case EXPLOSION:
-            Get Owner Entity for Explosion (player or Bot) and call Hit on thie Entity to be hit by that player.
-        */
     }
 }
 

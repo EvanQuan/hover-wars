@@ -4,6 +4,11 @@
 // Singleton instance
 StartInterface* StartInterface::m_pInstance = nullptr;
 
+/*
+
+    Insert Coin
+
+*/
 StartInterface::StartInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>
@@ -56,7 +61,6 @@ void StartInterface::reinitialize(float gameTime)
 
 void StartInterface::render()
 {
-    MenuInterface::render();
     // renderImage("textures/menu/main_menu.png", 500, 500, 1.0f);
     //renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
 }

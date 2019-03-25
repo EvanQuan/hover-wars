@@ -12,9 +12,7 @@
 #include "Menus/StartMenu.h"
 
 // Unit: seconds
-#define GAME_TIME   10
-// Multiplier of regular time for slow motion
-#define GAME_OVER_TIME 3.0
+#define GAME_OVER_TIME 0.0
 
 /*************\
  * Constants *
@@ -36,6 +34,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_pWindow = rWindow;
     glfwGetWindowSize(m_pWindow, &m_iWidth, &m_iHeight);
     m_pEntityManager->updateWidthAndHeight(m_iWidth, m_iHeight);
+    m_pGameStats = nullptr;
 
     // Initialize Timer Variables
     m_fFrameTime = duration<float>(0.0f);
@@ -44,6 +43,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
     m_pCommandHandler = COMMAND_HANDLER;
+
+    m_pPhysicsManager = PHYSICS_MANAGER;
 }
 
 /*
@@ -218,6 +219,11 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // Initialize Physics
     m_pPhysicsManager = PHYSICS_MANAGER;
     m_pPhysicsManager->initPhysics(true);
+    // m_pPhysicsManager->cleanupPhysics();
+    // delete m_pPhysicsManager;
+    // m_pPhysicsManager = PHYSICS_MANAGER;
+    // m_pPhysicsManager->initPhysics(false);
+
     paused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
@@ -255,8 +261,14 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     paused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
+    m_pEntityManager->purgeEnvironment();
+
+    // m_pPhysicsManager->cleanupPhysics();
     if (nullptr != m_pPhysicsManager)
+    {
         delete m_pPhysicsManager;
+        m_pPhysicsManager = nullptr;
+    }
 }
 
 /*
@@ -324,7 +336,7 @@ bool GameManager::initialize()
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 #else
-    initializeNewGame(1, 4, 9999999.0f, RELEASE_ENV);
+    initializeNewGame(1, 0, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
     m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);

@@ -19,12 +19,13 @@
 // POINT_LIGHT_SIZE: float bytesize of 4 -> 16 bytes due to spacing requirements of uniform buffers
 #define NUM_POINT_LIGHT_PARAMS          3
 #define POINT_LIGHT_SIZE                (sizeof(vec4) * NUM_POINT_LIGHT_PARAMS)
-#define MAX_NUM_POINT_LIGHTS            4
+#define MAX_NUM_POINT_LIGHTS            12
+#define MAX_NUM_SPOT_LIGHTS             12
 #define NUM_SPOT_LIGHT_PARAMS           4
 #define SPOT_LIGHT_SIZE                 (sizeof(vec4) * NUM_SPOT_LIGHT_PARAMS)
 #define SPOT_LIGHT_OFFSET               (POINT_LIGHT_OFFSET + (POINT_LIGHT_SIZE * MAX_NUM_POINT_LIGHTS))
-#define LIGHT_BUFFER_SIZE               (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE << 2) + (SPOT_LIGHT_SIZE << 2))
-#define MAX_NUM_SPOT_LIGHTS             4
+#define LIGHT_BUFFER_SIZE               (DIRECTIONAL_LIGHT_OFFSET + DIRECTIONAL_LIGHT_SIZE + (POINT_LIGHT_SIZE * MAX_NUM_POINT_LIGHTS) + (SPOT_LIGHT_SIZE * MAX_NUM_SPOT_LIGHTS))
+
 
 ///////////////
 // Constants //

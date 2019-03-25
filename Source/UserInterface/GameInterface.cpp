@@ -408,14 +408,14 @@ void GameInterface::setDisplayCount(int count)
     }
     m_iDisplayCount = count;
 
-    initializeGameUserInterface();
+    initializeGameInterface();
 }
 
 /*
 Initialize all aspects of the UI according to the current display count. This
 should be done at the start of every game, or if the game resets.
 */
-void GameInterface::initializeGameUserInterface()
+void GameInterface::initializeGameInterface()
 {
     initializeScores();
     initializeCooldowns();

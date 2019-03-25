@@ -1,9 +1,17 @@
 #include "UserInterface/MainInterface.h"
 #include "GameManager.h"
+#include "Menus/MainMenu.h"
 
 // Singleton instance
 MainInterface* MainInterface::m_pInstance = nullptr;
 
+/*
+
+    New Game
+
+      Quit
+
+*/
 MainInterface::MainInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>
@@ -27,7 +35,6 @@ MainInterface::MainInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iH
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
 MainInterface* MainInterface::getInstance(int iWidth, int iHeight)
@@ -50,18 +57,18 @@ void MainInterface::reinitialize(float gameTime)
 
 void MainInterface::render()
 {
-    renderImage(BACKGROUND, m_vComponentCoordinates[COMPONENT_BACKGROUND].first, m_vComponentCoordinates[COMPONENT_BACKGROUND].first, 1.0f);
+    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[COMPONENT_BACKGROUND].first, m_vComponentCoordinates[COMPONENT_BACKGROUND].first, 1.0f);
 }
 
 void MainInterface::renderOption(int choice) {
     if (choice == 1)
     {   // cursor in 'new game'
-        //renderImage(NEW_GAME_2, , );
-        //renderImage(EXIT_1)
+        //renderImage(IMAGE_NEW_GAME_2, , );
+        //renderImage(IMAGE_EXIT_1)
     }
     else if (choice == 2) {
-        //renderImage(NEW_GAME_1);
-        //renderImage(EXIT_2)
+        //renderImage(IMAGE_NEW_GAME_1);
+        //renderImage(IMAGE_EXIT_2)
     }
     
 }

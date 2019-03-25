@@ -4,6 +4,13 @@
 // Singleton instance
 PregameInterface* PregameInterface::m_pInstance = nullptr;
 
+/*
+    Player count: <player count>
+
+       Bot count: <bot count>
+
+    Main Menu         Start Game
+*/
 PregameInterface::PregameInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>
@@ -56,5 +63,4 @@ void PregameInterface::reinitialize(float gameTime)
 
 void PregameInterface::render()
 {
-    MenuInterface::render();
 }

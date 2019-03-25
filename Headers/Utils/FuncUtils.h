@@ -87,7 +87,7 @@ namespace FuncUtils
         @return value to key if present, or default if not present
     */
     template <class K, class V>
-    V getValueIfNotDefault(map<K, V> m, K key, V defaultValue)
+    V getOrDefault(map<K, V> m, K key, V defaultValue)
     {
         return contains(m, key) ? m[key] : defaultValue;
     }
@@ -103,7 +103,7 @@ namespace FuncUtils
         @return value to key if present, or default if not present
     */
     template <class K, class V>
-    V getValueIfNotDefault(unordered_map<K, V> m, K key, V defaultValue)
+    V getOrDefault(unordered_map<K, V> m, K key, V defaultValue)
     {
         return contains(m, key) ? m[key] : defaultValue;
     }

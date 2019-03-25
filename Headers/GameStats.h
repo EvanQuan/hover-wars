@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-
 struct Award
 {
     string name;
@@ -27,6 +26,7 @@ struct EndGameStat
 };
 
 class GameInterface;
+class HovercraftEntity;
 /*
 Stores and calculates all in-game stats.
 
@@ -186,7 +186,15 @@ public:
 
     void reinitialize(int playerCount, int botCount);
 
-    eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getValueIfNotDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
+    eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getOrDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
+    bool isBot(int entityID) const { return isBot(getEHovercraft(entityID)); };
+    bool isPlayer(int entityID) const { return isPlayer(getEHovercraft(entityID)); };
+
+    bool isBot(HovercraftEntity* hovercraft) const;
+    bool isPlayer(HovercraftEntity* hovercraft) const;
+
+    bool isBot(eHovercraft hovercraft) const;
+    bool isPlayer(eHovercraft hovercraft) const;
 
     vector<EndGameStat> getEndGameStats();
 
@@ -266,9 +274,6 @@ private:
     void addPowerupCount(eHovercraft hovercraft);
 
     void debug(eHovercraft hovercraft);
-
-    bool isBot(eHovercraft hovercraft) const;
-    bool isPlayer(eHovercraft hovercraft) const;
 
     // @Deprecated, unused, due to perfect correspondance
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 
