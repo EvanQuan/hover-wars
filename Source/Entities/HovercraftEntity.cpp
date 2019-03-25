@@ -398,7 +398,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     }
     m_vPowerupsEnabled[powerup] = true;
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
-    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
+    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED);
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
     cout << powerup << " enabled" << endl;
 
