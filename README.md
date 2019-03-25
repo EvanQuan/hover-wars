@@ -107,6 +107,166 @@
 
 ## Write-Up:
 
+Since Milestone 3:
+
+### Game Rules
+
+First blood - the first hit of the game grants extra points. This incentivizes
+more aggressive play at the start.
+
+A clarification from Milestone 3: there are no deaths and respawns. Our system
+focuses on gathering points by hitting other players with abilities like
+Mario Kart's battle system.
+To punish getting hit, we tried:
+- **respawn on hit** - we found it very disorienting having to constantly
+  respawn to a random respawn point every time you got hit and having to
+  regain your bearings. We suspect it would also be disorienting to see
+  hovercrafts spawn near you without warning.
+- **losing control for a short duration** - this caused a problem with spikes,
+  as you could stun-lock another player by constantly ramming into them and
+  spamming spikes. This was partially alleviated by applying a force to
+  hovercrafts as they collide with one another, but it's still bad when
+  multiple bots are teaming up against a single player.
+
+We settled for resetting ability cooldowns, and losing more points based on
+killstreak (explanation next).
+
+### Powerups
+
+#### Timed
+
+Whenever a player hits the player with the most points, they are given a speed
+most powerup, which lasts for 20 seconds.
+
+A speed boost is also given to first blood.
+
+#### Stacking
+
+Ability cool downs have been rebalanced to have a much longer time than
+before.
+
+Rocket - 5s
+
+Spikes - 3s
+
+Dash - 3s
+
+Whenever players increase their killstreak, their cool downs shorten
+by 10% up to a minimum cool down value:
+
+Rocket - 1s
+
+Spikes - 1s
+
+Dash - 0.5s
+
+If their killstreak is lost, their cool downs reset to their base values.
+
+This awards more defensive play and incentives players to put more effort into
+dodging enemy attacks. Getting hit now gives a much stronger "feels bad"
+response, especially after a long killstreak.
+
+### Ending the Game
+
+The game ends when the game timer hits 0. The player with the most points
+wins.
+
+#### End Game Awards
+
+At the end of the game, players are given certain awards for accomplishing
+certain tasks, gaining extra bonus points. The currently implemented awards
+are:
+
+**Gotta Go Fast!** - Most speed boosts +200
+
+**Tactical** - Largest killstreak +200
+
+**Rocket Man** - Most rocket kills +100
+
+**Pyromaniac** - Most flame trail kills +100
+
+**Porcupine** - Most spike trail kills +100
+
+**Consolation** - Most deaths +100
+
+If there are is more than 1 human player and more than 1 bot in the game,
+these awards are available:
+
+**Ludite** - Most bot kills +200
+
+**Misanthropist** - Most player kills +200
+
+#### Points
+
+While still weaker than a player, bots are much challenging than initially
+planned, and so now award the same number of points as hitting other human
+players.
+
+Points awarded to the attacker now increases with the killstreak of the player
+they hit. This should make high killstreak players a larger priority to
+target.
+
+
+### Menus
+
+The game now has a menu system instead of starting directly in-game.
+
+**Start Menu** - the initial splash screen when starting the program, akin to
+many old arcade games. Pressing accept will move to the Main Menu.
+
+**Main Menu** - allows the player to start a new game or quit the program.
+They can go back to the Start Menu.
+
+**Pregame Menu** - Lets the user choose the game parameters before starting
+the game. The user can choose the number of players, number of bots, and game
+round time before choosing to start the game, which goes to the Game Menu.
+They can also go back to the Main Menu.
+
+**Game Menu** - This is the in-game behaviour as seen before. The player can
+press Start to go to the Pause Menu.
+
+**Pause Menu** - The game pauses. The user can continue the game, or end the
+game, which goes to the post-game menu.
+
+**Postgame Menu** - After the game, all the end game awards are assigned, and
+all the points are tallied up to determine the round winner. The user can go
+back to the Main Menu.
+
+### User Interface
+
+Speed boost prompt displays for the duration of the player's speed boost.
+
+### Sound
+
+Entering the pause menu pauses all in-game sounds, and plays a pause music
+loop. Returning to the Game Menu resumes playing in-game sounds as it left
+off.
+
+Moving the cursor, or selecting options in the menus plays a random cursor
+sound.
+
+Spikes make a sound when deactivating.
+
+Rockets make a sound when firing and when impacting a surface.
+
+
+### Abilities
+
+Spikes
+- Now render and are animated when they are activated and deactivated.
+
+Rockets
+- Physics and rendering are now complete
+
+### Driving model
+
+- When hovercrafts collide, a force pushes them away. This makes it more
+  difficult to constantly ram into another vehicle non-stop.
+
+- Hovercraft centre of gravity has been lowered to make flipping more
+  difficult and recovering from flipping easier.
+
+
 Since Milestone 2:
 
 ### Font Rendering
@@ -332,7 +492,7 @@ Collision sounds
 
 - Killstreaks
     - Killstreak sound plays when players reaches a high killstreak
-    
+
 - Domination/Revenge
     - Domination and revenge sounds play when players dominate another player
       or get revenge
