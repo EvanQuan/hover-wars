@@ -487,15 +487,25 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
             SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
         // Momentarily lose control of vehicle to prevent air moving
-        // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-        // pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
 
         // TODO check if need to determine which velocity to do
-        vec3 myVelocity = getLinearVelocity();
-        push(-myVelocity.x, -myVelocity.y);
 
-        // vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
-        pOtherHovercraft->push(myVelocity.x, myVelocity.y);
+        
+        vec3 myVelocity = getLinearVelocity();
+        vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
+        float mySpeed = glm::length(myVelocity);
+        float otherSpeed = glm::length(otherVelocity);
+
+        // Multithread issues, can't do push
+        if (mySpeed > otherSpeed) {
+            pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+            // pOtherHovercraft->push(myVelocity.x, myVelocity.y);
+        } else {
+            setLoseControl(LOSE_CONTROL_COLLISION_TIME);
+            // push(otherVelocity.x, otherVelocity.y);
+        }
+
+
         break;
     }
 }
