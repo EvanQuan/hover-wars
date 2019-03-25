@@ -215,6 +215,10 @@ void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Me
     gVehicleNoDrive = m_pPhysicsManager->createHovercraftEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
 
+    if (nullptr == body) {
+        cout << "PhysicsComponent::initializeVehicle() failed to initialize" << endl;
+    }
+
     setMaxSpeed(maxNormalSpeed);
 }
 
@@ -268,10 +272,10 @@ quat PhysicsComponent::getRotation()
 {
     PxQuat pCurrRotation;
 
-    if (nullptr != body)
-    {
+    // if (nullptr != body)
+    // {
         pCurrRotation = body->getGlobalPose().q;
-    }
+    // }
     return quat(pCurrRotation.w, pCurrRotation.x, pCurrRotation.y, pCurrRotation.z);
 }
 
@@ -282,13 +286,13 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
     // Return the Transformation Matrix to the caller, most likely will be the Entity to
     //    update their mesh.
     // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
-    if (body != NULL) {
+    // if (nullptr != body) {
         m_pTransformationMatrix = m_pPhysicsManager->getMat4(body->getGlobalPose());
         // std::cout << "here: " << m_pTransformationMatrix.length() << std::endl;
         //TODO maybe move getMat4 to physicsComponent?
 
         *pReturnTransformMatrix = m_pTransformationMatrix;
-    }
+    // }
 }
 
 // Get the Transformation Matrix for a specified Dynamic Object at a given hash key
