@@ -1,5 +1,6 @@
 #include "UserInterface/MainInterface.h"
 #include "GameManager.h"
+#include "Menus/MainMenu.h"
 
 // Singleton instance
 MainInterface* MainInterface::m_pInstance = nullptr;
@@ -34,7 +35,6 @@ MainInterface::MainInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iH
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
 MainInterface* MainInterface::getInstance(int iWidth, int iHeight)

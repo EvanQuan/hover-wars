@@ -2,6 +2,8 @@
 #include "SoundManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityManager.h"
+#include "EntityHeaders/Entity.h"
+
 
 // Bank paths
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
@@ -78,11 +80,14 @@ void SoundManager::play(eSoundEvent sound)
     Determine Entity Types resulting in Collision and play a resulting sound for the collision.
     Handle any logic between collisions to determine sound here.
 
+    We want to ignore bot world collision sounds since world collision sounds are global.
+
     @param eColliderType    The Entity Type of the Collider
     @param eCollidedType    The Entity Type of the Collided
+    @param ignoreWorld      if world collisions are to be ignored
     @return true if both collider and collided are hovercrafts
 */
-bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType)
+bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType, bool ignoreWorld)
 {
     // Context-specific sounds require specific information about the entities, specifically
     // if they are players
@@ -97,7 +102,10 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType, eEntityTy
             break;
         case eEntityType::ENTITY_STATIC:
         case eEntityType::ENTITY_PLANE:
-            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
+            if (!ignoreWorld)
+            {
+                play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
+            }
             break;
         }
         break;
@@ -113,19 +121,30 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 {
     eEntityType colliderType = collider->getType();
     eEntityType collidedType = collided->getType();
-    // TODO this will be reorganized
+
+    HovercraftEntity* colliderHovercraft = nullptr;
+    HovercraftEntity* collidedHovercraft = nullptr;
+    if (colliderType == eEntityType::ENTITY_HOVERCRAFT)
+    {
+        colliderHovercraft = static_cast<HovercraftEntity*>(collider);
+    }
+    if (collidedType == eEntityType::ENTITY_HOVERCRAFT)
+    {
+        collidedHovercraft = static_cast<HovercraftEntity*>(collided);
+    }
     // Base collision sounds only require type
-    if (handleBaseCollisionSound(colliderType, collidedType))
+    // To make the sound less busy, we will ignore bot base collisions, which
+    // can be annoying if they get stuck on a wall
+    bool ignoreWorld = GAME_STATS->isBot(colliderHovercraft);
+    if (handleBaseCollisionSound(colliderType, collidedType, ignoreWorld))
     {
         // For some reason this check is not enough?
         if (((colliderType == eEntityType::ENTITY_HOVERCRAFT))
             && (collidedType == eEntityType::ENTITY_HOVERCRAFT))
         {
-            handleContextCollisionSound(collider, collided);
+            handleContextCollisionSound(colliderHovercraft, collidedHovercraft);
         }
     }
-
-
 }
 
 /*
@@ -135,19 +154,10 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
            developed. As all abilities will be interactable entitise, context
            collisions will be determined in handleBaseCollisionSound.
 */
-void SoundManager::handleContextCollisionSound(Entity* collider, Entity* collided)
+void SoundManager::handleContextCollisionSound(HovercraftEntity* collider, HovercraftEntity* collided)
 {
-    if ((collider->getType() != eEntityType::ENTITY_HOVERCRAFT)
-        || collider->getType() != eEntityType::ENTITY_HOVERCRAFT)
-    {
-        return;
-    }
-
-    HovercraftEntity* colliderHovercraft = static_cast<HovercraftEntity*>(collider);
-    HovercraftEntity* collidedHovercraft = static_cast<HovercraftEntity*>(collided);
-
-    if (colliderHovercraft->hasSpikesActivated()
-        || collidedHovercraft->hasSpikesActivated())
+    if (collider->hasSpikesActivated()
+        || collided->hasSpikesActivated())
     {
         play(eSoundEvent::SOUND_SPIKES_IMPACT);
     }

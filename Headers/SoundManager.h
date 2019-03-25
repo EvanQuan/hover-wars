@@ -6,7 +6,8 @@
 #include "fmod.hpp"
 #include "fmod_errors.h"
 
-#include "EntityHeaders/Entity.h"
+class Entity;
+class HovercraftEntity;
 
 /*
 Manages all sounds. Provides an interfaces for other classes to play sound
@@ -125,8 +126,8 @@ private:
     SoundManager();
     void updateChannels();
 
-    bool handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType);
-    void handleContextCollisionSound(Entity* collider, Entity* collided);
+    bool handleBaseCollisionSound(eEntityType eColliderType, eEntityType eCollidedType, bool ignoreWorld);
+    void handleContextCollisionSound(HovercraftEntity* collider, HovercraftEntity* collided);
 
     int errorCheck(FMOD_RESULT result);
 
