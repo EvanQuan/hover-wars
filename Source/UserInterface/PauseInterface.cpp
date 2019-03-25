@@ -1,5 +1,6 @@
 #include "UserInterface/PauseInterface.h"
 #include "GameManager.h"
+#include "Menus/PauseMenu.h"
 
 // Singleton instance
 PauseInterface* PauseInterface::m_pInstance = nullptr;
@@ -51,22 +52,26 @@ void PauseInterface::reinitialize(float gameTime)
 void PauseInterface::render()
 {
     renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].first, 1.0f);
-    renderOption(0);
+    renderOption();
 }
 
-void PauseInterface::renderOption(int choice) {
-    if (choice == 1)
-    {   // cursor in 'new game'
-        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
-    }
-    else if (choice == 2) {
+void PauseInterface::renderOption() {
+    PauseMenu* m = (PauseMenu*)PauseMenu::getInstance();
+    string option = m->getCurrentPrompt();
+
+    if (option == CONTINUE_OPTION)
+    {   
         renderImage(IMAGE_RESUME_2, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
     }
+    else if (option == END_GAME_OPTION)
+    {
+        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
+        renderImage(IMAGE_END_GAME_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+    }
     else {
         renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+        renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
     }
 
 }

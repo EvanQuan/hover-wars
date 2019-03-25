@@ -24,9 +24,6 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-/*
-    Initialize everything that's needed for the start of a new game
-*/
 void AIManager::reinitialize()
 {
     m_vAIComponents.clear();

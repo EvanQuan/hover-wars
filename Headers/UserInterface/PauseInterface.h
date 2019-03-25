@@ -1,6 +1,8 @@
 #pragma once
 #include "UserInterface/MenuInterface.h"
 
+#define CONTINUE_OPTION "Continue"
+#define END_GAME_OPTION "End Game"
 
 class PauseInterface final : public MenuInterface
 {
@@ -28,5 +30,5 @@ private:
     };
 
     static PauseInterface* m_pInstance;
-    void renderOption(int choice);
+    void renderOption();
 };

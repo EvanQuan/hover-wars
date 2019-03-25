@@ -320,6 +320,7 @@ glm::vec3 PhysicsComponent::getPosition() {
 }
 
 glm::vec3 PhysicsComponent::getLinearVelocity() {
+    // NOTE: crashes here at game restart. Body is nullptr?
     physx::PxVec3 velocity = body->getLinearVelocity();
     return glm::vec3(velocity.x, velocity.y, velocity.z);
 }

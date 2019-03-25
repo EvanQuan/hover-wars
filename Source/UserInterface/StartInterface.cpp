@@ -1,5 +1,6 @@
 #include "UserInterface/StartInterface.h"
 #include "GameManager.h"
+#include "Menus/StartMenu.h"
 
 // Singleton instance
 StartInterface* StartInterface::m_pInstance = nullptr;
@@ -52,15 +53,16 @@ void StartInterface::render()
 {
     renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
-    renderOption(0);    // need change 
+    renderOption(); 
 }
 
-void StartInterface::renderOption(int choice) {
-    // StartMenu::getNewInstance();
-    if (choice == 1) {
-        renderImage(IMAGE_INSERT_COIN_1, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
+void StartInterface::renderOption() {
+    StartMenu* m = (StartMenu* )StartMenu::getInstance();
+    string option = m->getCurrentPrompt();
+    if (option == INSERT_COIN_OPTION) {
+        renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
     }
     else {
-        renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
+        renderImage(IMAGE_INSERT_COIN_1, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
     }
 }

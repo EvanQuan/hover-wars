@@ -24,7 +24,7 @@ struct Action {
     float actionsToTake[5] = { 0,0,0,0,0 };
     // float actionsToTake[4] = { 0,0,0,0 };
 };
-class AIComponent :
+class AIComponent final :
     public EntityComponent
 {
 public:
@@ -38,7 +38,7 @@ public:
     };
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
     AIComponent(int iEntityID, int iComponentID);
-    virtual ~AIComponent();
+    ~AIComponent();
     void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation);
     // After Initialization, the update function should handle things for the Physics of this Entity.
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 

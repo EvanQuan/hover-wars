@@ -1,6 +1,9 @@
 #pragma once
 #include "UserInterface/MenuInterface.h"
 
+#define NEW_GAME_OPTION "New Game"
+#define QUIT_OPTION "Quit"
+
 class MainInterface final : public MenuInterface
 {
 public:
@@ -30,5 +33,5 @@ private:
 
     static MainInterface* m_pInstance;
 
-    void renderOption(int choice);
+    void renderOption();
 };

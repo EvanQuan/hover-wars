@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Menus/PromptMenu.h"
+#include "GameStats.h"
 
-struct EndGameStat;
-
-class PostgameMenu final : PromptMenu
+class PostgameMenu final : public PromptMenu
 {
 public:
     // TODO nothing to destruct?
