@@ -399,6 +399,17 @@ void GameStats::updateAttackerAndHitKills(eHovercraft attacker, eHovercraft hit)
     }
 }
 
+bool GameStats::isBot(HovercraftEntity* hovercraft) const
+{
+    return (hovercraft != nullptr) && isBot(hovercraft->getID());
+}
+
+bool GameStats::isPlayer(HovercraftEntity* hovercraft) const
+{
+    return (hovercraft != nullptr) && isPlayer(hovercraft->getID());
+}
+
+
 bool GameStats::isBot(eHovercraft hovercraft) const
 {
     return HOVERCRAFT_BOT_1 <= hovercraft && hovercraft <= HOVERCRAFT_BOT_4;

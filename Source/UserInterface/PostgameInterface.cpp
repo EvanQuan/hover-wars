@@ -4,6 +4,17 @@
 // Singleton instance
 PostgameInterface* PostgameInterface::m_pInstance = nullptr;
 
+/*
+    Placements                  Awards
+    Player #    <score>         Award1 name <award1 points>
+    Player #    <score>         Award1 description
+    Bot    #    <score>         
+    Player #    <score>         Award2 name <points>
+    Bot    #    <score>         Award2 descrption
+
+
+                        Main Menu
+*/
 PostgameInterface::PostgameInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>

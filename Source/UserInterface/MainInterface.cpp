@@ -5,6 +5,13 @@
 // Singleton instance
 MainInterface* MainInterface::m_pInstance = nullptr;
 
+/*
+
+    New Game
+
+      Quit
+
+*/
 MainInterface::MainInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>
@@ -32,7 +39,6 @@ MainInterface::MainInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iH
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
 MainInterface* MainInterface::getInstance(int iWidth, int iHeight)
