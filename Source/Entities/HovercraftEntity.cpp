@@ -317,7 +317,7 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     m_pGmStats->addScore(attacker,
                          static_cast<GameStats::eAddScoreReason>(GAME_STATS->getEHovercraft(m_iID)), ability);
     resetMaxCooldowns();
-    ENTITY_MANAGER->getPlayer(attacker)->reduceMaxCooldowns();
+    ENTITY_MANAGER->getHovercraft(attacker)->reduceMaxCooldowns();
 }
 
 void HovercraftEntity::reduceMaxCooldowns()
