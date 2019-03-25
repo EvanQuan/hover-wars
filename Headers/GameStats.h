@@ -1,6 +1,14 @@
 #pragma once
 #include "stdafx.h"
 
+
+struct Award
+{
+    string name;
+    string description;
+    int points;
+    int statValue;
+};
 /*
     Represents the end game stats for a given hovercraft. This is necessary for
     determining the winner at the end of the game.
@@ -15,7 +23,7 @@ struct EndGameStat
     int afterAwardsScore;
     // List of awards gained. Composed of the name of the award, description of
     // award the points it awards.
-    vector<tuple<string, string, int>> awards;
+    vector<Award> awards;
 };
 
 class GameInterface;
@@ -29,6 +37,7 @@ Player:
         Total score
     Kills:
         Total kills
+        Total deaths
         Total kills against players
         Total kills against each player
         Total kills against bots
@@ -69,6 +78,7 @@ public:
         SCORE_CURRENT = 0,
         SCORE_CHANGE,
         SCORE_TOTAL,
+        DEATHS_TOTAL,
         KILLS_TOTAL,
         KILLS_TOTAL_AGAINST_PLAYER_1,
         KILLS_TOTAL_AGAINST_PLAYER_2,

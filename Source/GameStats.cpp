@@ -386,6 +386,7 @@ Update the attacker's total kills, and total kills against hit player
 void GameStats::updateAttackerAndHitKills(eHovercraft attacker, eHovercraft hit)
 {
     stats[attacker][KILLS_TOTAL]++;
+    stats[hit][DEATHS_TOTAL]++;
     stats[attacker][KILLS_TOTAL_AGAINST_PLAYER_1 + hit]++;
 
     if (isBot(hit))
@@ -652,11 +653,21 @@ void GameStats::awardHighestStat(eStat stat, string name, string description, in
     // for (EndGameStat endStat : endGameStats)
     for (int i = 0, size = endGameStats.size(); i < size; i++)
     {
-        if (FuncUtils::contains(winners, endGameStats.at(i).hovercraft))
+        eHovercraft hovercraft = endGameStats.at(i).hovercraft;
+        if (FuncUtils::contains(winners, hovercraft))
         {
             endGameStats.at(i).afterAwardsScore += points;
-            endGameStats.at(i).awards.push_back(make_tuple(name, description, points));
-            cout << "Award " << endGameStats.at(i).hovercraft << " with " << name << ": \"" << description << "\" +" << points << endl;
+            Award award;
+            award.name = name;
+            award.description = description;
+            award.points = points;
+            award.statValue = stats[hovercraft][stat];
+            endGameStats.at(i).awards.push_back(award);
+            cout << "Award "
+                << hovercraft
+                << " with " << name << ": \"" <<
+                description << " of " << award.statValue
+                << "\" +" << points << endl;
         }
     }
 
@@ -675,4 +686,5 @@ void GameStats::awardAwards()
     awardHighestStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
     awardHighestStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
     awardHighestStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        300);
+    awardHighestStat(DEATHS_TOTAL,                  "Consolation", "Most deaths",           100);
 }
