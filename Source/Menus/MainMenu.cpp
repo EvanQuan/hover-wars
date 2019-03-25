@@ -18,7 +18,6 @@ MainMenu::MainMenu() : PromptMenu(
     }
 )
 {
-
 }
 
 Menu* MainMenu::getInstance()

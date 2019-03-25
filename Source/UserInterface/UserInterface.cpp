@@ -68,30 +68,30 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     initializeVBOs();
 
     debugMessage = "";
-    m_Textures["textures/menu/1.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/1.png");
-    m_Textures["textures/menu/1_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/1_2.png");
-    m_Textures["textures/menu/2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/2.png");
-    m_Textures["textures/menu/2_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/2_2.png");
-    m_Textures["textures/menu/3.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/3.png");
-    m_Textures["textures/menu/3_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/3_2.png");
-    m_Textures["textures/menu/4.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/4.png");
-    m_Textures["textures/menu/4_2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/4_2.png");
-    m_Textures["textures/menu/exit.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/exit.png");
-    m_Textures["textures/menu/exit2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/exit2.png");
-    m_Textures["textures/menu/main_menu.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu.png");
-    m_Textures["textures/menu/main_menu_button.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_button.png");
-    m_Textures["textures/menu/main_menu_button2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_button2.png");
-    m_Textures["textures/menu/new_game.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/new_game.png");
-    m_Textures["textures/menu/new_game2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/new_game2.png");
-    m_Textures["textures/menu/pause_menu.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/pause_menu.jpg");
-    m_Textures["textures/menu/post_menu.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/post_menu.jpg");
-    m_Textures["textures/menu/restart.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/restart.png");
-    m_Textures["textures/menu/restart2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/restart2.png");
-    m_Textures["textures/menu/resume.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/resume.png");
-    m_Textures["textures/menu/resume2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/resume2.png");
-    m_Textures["textures/menu/start.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/start.png");
-    m_Textures["textures/menu/start2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/start2.png");
-    m_Textures["textures/menu/Title.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/Title.png");
+    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
+    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
+    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
+    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
+    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
+    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
+    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
+    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
+    m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
+    m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
+    m_Textures[IMAGE_BACKGROUND] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND);
+    m_Textures[IMAGE_MAIN_MENU_BUTTON] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON);
+    m_Textures[IMAGE_MAIN_MENU_BUTTON_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON_2);
+    m_Textures[IMAGE_NEW_GAME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_1);
+    m_Textures[IMAGE_NEW_GAME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_2);
+    m_Textures[IMAGE_PAUSE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_PAUSE_MENU);
+    m_Textures[IMAGE_POST_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_POST_MENU);
+    m_Textures[IMAGE_RESTART] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART);
+    m_Textures[IMAGE_RESTART_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART_2);
+    m_Textures[IMAGE_RESUME] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME);
+    m_Textures[IMAGE_RESUME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_2);
+    m_Textures[IMAGE_START] = TEXTURE_MANAGER->loadTexture(IMAGE_START);
+    m_Textures[IMAGE_START_2] = TEXTURE_MANAGER->loadTexture(IMAGE_START_2);
+    m_Textures[IMAGE_TITLE] = TEXTURE_MANAGER->loadTexture(IMAGE_TITLE);
 }
 
 UserInterface::~UserInterface()

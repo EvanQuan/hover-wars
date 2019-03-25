@@ -35,7 +35,7 @@ public:
     // y-coordinate of current prompt in m_vPrompts
     int m_iCursorColumn;
 
-    const char* getCurrentPrompt() const { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).first; }
+    virtual const char* getCurrentPrompt() const final { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).first; };
 
 private:
     float m_fSecondsToStartRepeat;
