@@ -133,6 +133,11 @@ void GameStats::initializeStats()
             stats[player][stat] = 0;
         }
     }
+
+    for (int i = 0; i < GLOBALSTAT_COUNT; i++)
+    {
+        globalStats[i] = 0;
+    }
 }
 
 /*
