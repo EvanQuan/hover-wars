@@ -162,6 +162,42 @@ these awards are available:
 
 **Misanthropist** - Most player kills +200
 
+#### Points
+
+While still weaker than a player, bots are much challenging than initially
+planned, and so now award the same number of points as hitting other human
+players.
+
+Points awarded to the attacker now increases with the killstreak of the player
+they hit. This should make high killstreak players a larger priority to
+target.
+
+
+### Menus
+
+The game now has a menu system instead of starting directly in-game.
+
+**Start Menu** - the initial splash screen when starting the program, akin to
+many old arcade games. Pressing accept will move to the Main Menu.
+
+**Main Menu** - allows the player to start a new game or quit the program.
+They can go back to the Start Menu.
+
+**Pregame Menu** - Lets the user choose the game parameters before starting
+the game. The user can choose the number of players, number of bots, and game
+round time before choosing to start the game, which goes to the Game Menu.
+They can also go back to the Main Menu.
+
+**Game Menu** - This is the in-game behaviour as seen before. The player can
+press Start to go to the Pause Menu.
+
+**Pause Menu** - The game pauses. The user can continue the game, or end the
+game, which goes to the post-game menu.
+
+**Postgame Menu** - After the game, all the end game awards are assigned, and
+all the points are tallied up to determine the round winner. The user can go
+back to the Main Menu.
+
 
 Since Milestone 2:
 
