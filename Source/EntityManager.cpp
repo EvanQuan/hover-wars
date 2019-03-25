@@ -140,6 +140,11 @@ void EntityManager::purgeEnvironment()
     m_pPhysicsComponents.clear();
     m_pAIComponents.clear();
 
+    m_pActiveCameraComponent = nullptr;
+    m_pDirectionalLight = nullptr;
+    m_pBillboardTesting = nullptr;
+    m_pCamera = nullptr;
+
     m_pCameraComponents.clear();
     m_pLights.clear();
     m_pAnimationComponents.clear();
@@ -196,6 +201,7 @@ void EntityManager::renderEnvironment( )
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
     m_pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
+    CheckGLErrors();
 
     // Perform Final Render
     setCameraPMVMatrices();
