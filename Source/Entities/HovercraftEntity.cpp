@@ -87,14 +87,6 @@ Speed : meters/second
 #define MAX_POWERUP_SPEED   60
 
 /*
-The duration a powerup lasts for.
-@TODO maybe move this to the powerup entity?
-
-Unit : seconds
-*/
-#define POWERUP_TIME 20.0f
-
-/*
 Time multiplier for the trail to recharge from empty to full.
 
 = 1: recharge rate is the same as drain rate.
@@ -418,7 +410,6 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
     SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED);
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
-
 }
 
 void HovercraftEntity::queuePowerup(ePowerup powerup)

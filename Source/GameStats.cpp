@@ -589,6 +589,8 @@ void GameStats::pickupPowerup(eHovercraft hovercraft)
 {
     addScore(hovercraft, POINTS_GAINED_PICKUP_POWERUP);
     addPowerupCount(hovercraft);
+    // hard coded for now
+    m_pGameInterface->displayPowerup(hovercraft, POWERUP_SPEED_BOOST);
 }
 
 /*

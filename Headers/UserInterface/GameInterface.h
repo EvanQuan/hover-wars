@@ -55,6 +55,7 @@ public:
     void setDisplayCount(int count);
 
     void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
+    void displayPowerup(eHovercraft hovercraft, ePowerup powerup);
 
     // Display debug message
     // Set message to "" to disable debug message
@@ -73,6 +74,7 @@ private:
         COMPONENT_SCORE,
         COMPONENT_SCORE_CHANGE,
         COMPONENT_MESSAGE,
+        COMPONENT_POWERUP,
         COMPONENT_COUNT
     };
 
@@ -126,7 +128,9 @@ private:
 
     Unit : seconds
     */
+    std::string m_sPowerupMessages[MAX_HOVERCRAFT_COUNT];
     std::string m_sMessages[MAX_HOVERCRAFT_COUNT];
+    float m_fPowerupMessageTimes[MAX_HOVERCRAFT_COUNT];
     float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
 
     /*
