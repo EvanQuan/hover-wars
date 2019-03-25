@@ -108,8 +108,8 @@ private:
     float m_fTimeSinceLastUpdate;   // Increments every update to track how long since last Physics Update.
     // Moving these from Constructor to Here to privatize these variables used by the Physics
     //    manager
-    physx::PxDefaultAllocator       gAllocator;
-    physx::PxDefaultErrorCallback   gErrorCallback;
+    physx::PxDefaultAllocator*      gAllocator;
+    physx::PxDefaultErrorCallback*  gErrorCallback;
     physx::PxFoundation*            gFoundation     = NULL;
     physx::PxPhysics*               gPhysics        = NULL;
 

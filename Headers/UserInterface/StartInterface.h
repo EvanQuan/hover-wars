@@ -20,5 +20,14 @@ public:
     void render();
 
 private:
+    enum eUIComponent
+    {
+        BACKGROUND = 0,
+        TITLE,
+        INSERT_COIN
+    };
+
     static StartInterface* m_pInstance;
+
+    void renderOption(int choose);
 };

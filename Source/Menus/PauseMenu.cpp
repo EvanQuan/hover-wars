@@ -40,8 +40,9 @@ void PauseMenu::select(eFixedCommand command)
         SOUND_MANAGER->togglePaused();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
-        nextMenu(MainMenu::getInstance());
+        m_pGameManager->endGame();
+        // m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        // nextMenu(MainMenu::getInstance());
         SOUND_MANAGER->togglePaused();
         break;
     }

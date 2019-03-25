@@ -103,6 +103,15 @@ public:
     quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
     void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
+    /*
+        Reduces all cooldowns by a fixed factor, never dropping below the minimum cooldown values.
+    */
+    void reduceMaxCooldowns();
+    /*
+        Reset the maximum cooldowns to the base cooldowns.
+    */
+    void resetMaxCooldowns();
+
 private:
     // Private Variables
     int activeCameraIndex;
@@ -143,6 +152,9 @@ private:
     void createTrailInstance();
 
     void dash(eAbility direction);
+
+    // Like dashing, but weaker, no sound, and doese not count as an ability
+    void push(float x, float y);
 
     // Cooldowns
     void initializeCooldowns();

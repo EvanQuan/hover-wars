@@ -187,6 +187,7 @@ bool GameManager::renderGraphics()
         // to be updated while the EntityManager is paused.
         m_pCurrentInterface->update(frameDeltaTime);
         // call function to draw our scene
+        drawScene();
     }
 
     // Sound needs to update after the EntityManager to reflect in game changes
@@ -194,7 +195,6 @@ bool GameManager::renderGraphics()
     // is paused.
     SOUND_MANAGER->update();
 
-    drawScene();
 
     // check for Window events
     glfwPollEvents();

@@ -90,6 +90,7 @@ public:
     void updateEnvironment(std::chrono::duration<double> fSecondsSinceLastFrame);
     
     // The command handler can get all the players to directly communicate to.
+    HovercraftEntity* getHovercraft(eHovercraft hovercraft);
     HovercraftEntity* getPlayer(eHovercraft player);
     bool playerExists(eHovercraft player);
     HovercraftEntity* getBot(eHovercraft bot);

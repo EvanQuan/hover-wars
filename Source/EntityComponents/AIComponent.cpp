@@ -22,8 +22,9 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
     //}
 
     /* initialize random seed: */
-    srand(static_cast<unsigned int>(time(NULL)));
-    timeChased = rand() % (MAX_TIME_TARGET);
+     srand(static_cast<unsigned int>(time(NULL)));
+    // timeChased = rand() % (MAX_TIME_TARGET);
+    timeChased = static_cast<float>(FuncUtils::random(0, MAX_TIME_TARGET - 1));
 }
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
     //for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {

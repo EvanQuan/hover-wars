@@ -56,6 +56,10 @@ public:
     void addInterface(UserInterface* ui);
     void setCurrentInterface(UserInterface* ui);
 
+    // Automatically called at end of game if time runs out, or if ended thrugh
+    // pause menu
+    void endGame();
+
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 
@@ -65,7 +69,6 @@ private:
     bool renderGraphics();
     void drawScene();
 
-    void endGame();
 
 
     // Update Variables

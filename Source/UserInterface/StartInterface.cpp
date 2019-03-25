@@ -4,37 +4,26 @@
 // Singleton instance
 StartInterface* StartInterface::m_pInstance = nullptr;
 
-/*
-
-    Insert Coin
-
-*/
 StartInterface::StartInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
     // Scaling
     vector<pair<float, float>>
     {
         // 0 Background
-        {0.00f, 0.0f},
-        // 1 Prompt 1
         {0.0f, 0.0f},
-        // 2 Cursor 1
+        // 1 Title
         {0.0f, 0.0f},
-        // 3 Prompt 2
+        // 2 Prompt 1
         {0.0f, 0.0f},
-        // 4 Cursor 2
     },
     // Translating
     vector<pair<float, float>>
     {
         // 0 Background
-        {0.00f, 0.0f},
-        // 1 Prompt 1
         {0.0f, 0.0f},
-        // 2 Cursor 1
-        {0.0f, 0.0f},
-        // 3 Prompt 2
-        {0.0f, 0.0f},
-        // 4 Cursor 2
+        // 1 Title
+        {0.47f, 0.9f},
+        // 2 Prompt 1
+        {0.47f, 0.2f},
     }
 )
 {
@@ -61,6 +50,17 @@ void StartInterface::reinitialize(float gameTime)
 
 void StartInterface::render()
 {
-    // renderImage("textures/menu/main_menu.png", 500, 500, 1.0f);
-    //renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
+    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
+    renderOption(0);    // need change 
+}
+
+void StartInterface::renderOption(int choice) {
+    // StartMenu::getNewInstance();
+    if (choice == 1) {
+        renderImage(IMAGE_INSERT_COIN_1, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
+    }
+    else {
+        renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
+    }
 }
