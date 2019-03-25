@@ -135,6 +135,23 @@ void EntityManager::purgeEnvironment()
     m_pEmtrEngn->clearAllEmitters();
     m_pSpatialMap->clearMap();           // Unload the Spatial Data Map
 
+    // Even though these unique pointers are deleted int the MasterComponentList
+    // we clear them here so the vector sizes are reinitialized to 0
+    m_pPhysicsComponents.clear();
+    m_pAIComponents.clear();
+
+    m_pCameraComponents.clear();
+    m_pLights.clear();
+    m_pAnimationComponents.clear();
+    m_pPlayerEntityList.clear();
+    m_pBotEntityList.clear();
+
+    // NOTE: should this be cleared here for soft purging, or for
+    // Are the Mesh const* pointers deleted in the MeshManager
+    m_pRenderingComponents.clear();
+
+    
+
     // Reset ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
@@ -251,8 +268,8 @@ void EntityManager::setCameraPMVMatrices()
 {
     // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
     //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
-    m_pCamera->setLookAt(m_pPlayerEntityList[PLAYER_1]->getCameraPosition());
-    quat pQuat = m_pPlayerEntityList[PLAYER_1]->getCameraRotation();
+    m_pCamera->setLookAt(m_pPlayerEntityList[HOVERCRAFT_PLAYER_1]->getCameraPosition());
+    quat pQuat = m_pPlayerEntityList[HOVERCRAFT_PLAYER_1]->getCameraRotation();
     m_pCamera->setRotationQuat(pQuat);
 
     // Get player 1's active camera to show
@@ -260,7 +277,7 @@ void EntityManager::setCameraPMVMatrices()
     // each with their own camera components. The game will render 4 times, each switching
     // the player to retrieve the active camera.
     const CameraComponent* pCamera = m_bUseDebugCamera ?
-        m_pCamera->getCameraComponent() : m_pPlayerEntityList[PLAYER_1]->getActiveCameraComponent();
+        m_pCamera->getCameraComponent() : m_pPlayerEntityList[HOVERCRAFT_PLAYER_1]->getActiveCameraComponent();
 
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
