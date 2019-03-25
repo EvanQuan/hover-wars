@@ -206,7 +206,6 @@ Points awarded to the attacker now increases with the killstreak of the player
 they hit. This should make high killstreak players a larger priority to
 target.
 
-
 ### Menus
 
 The game now has a menu system instead of starting directly in-game.
@@ -258,6 +257,9 @@ Spikes
 Rockets
 - Physics and rendering are now complete
 
+Flame Trail
+- Now work with physics
+
 ### Driving model
 
 - When hovercrafts collide, a force pushes them away. This makes it more
@@ -308,7 +310,7 @@ as follows:
 
 The directional light in the scene casts shadows. The shadow map is specified
 in the scene that loaded in under the directional light entity entry. The
-texture size for the shadow is rather large to avoid overly pixillated
+texture size for the shadow is rather large to avoid overly pixellated
 shadows. Also, a smoothing kernel is applied to the shadows to soften their
 edges and blend with the fragment colors in a nicer way.
 
@@ -324,7 +326,6 @@ Rocket
     - Sound
     - Internal collision detection
     - Collision processing
-- Not implemented
     - Physics
     - Rendering
 
@@ -337,7 +338,6 @@ Flame Trail
     - Sound
     - Internal collision detection
     - Collision processing
-- Not implemented
     - Physics collision detection
 
 Spikes
@@ -349,7 +349,6 @@ Spikes
     - Internal collision detection
     - Collision processing
     - Physics collision detection
-- Not implemented
     - Graphics
 
 Directional dash
