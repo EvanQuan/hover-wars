@@ -315,7 +315,7 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
     eHovercraft hit = GAME_STATS->getEHovercraft(m_iID);
-    if (m_pGmStats->hasMostPoints(hit))
+    if (m_pGmStats->hasLargestScore(hit))
     {
         attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
     }

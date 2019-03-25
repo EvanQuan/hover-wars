@@ -206,7 +206,7 @@ public:
     vector<EndGameStat> getEndGameStats();
 
     int get(eGlobalStat stat) const { return globalStats[stat]; };
-    bool hasMostPoints(eHovercraft hovercraft);
+    bool hasLargestScore(eHovercraft hovercraft);
 
 private:
     GameStats(int iWidth, int iHeight);

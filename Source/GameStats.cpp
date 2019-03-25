@@ -381,7 +381,7 @@ void GameStats::removeScore(eHovercraft hit, int points)
 
 }
 
-bool GameStats::hasMostPoints(eHovercraft hovercraft)
+bool GameStats::hasLargestScore(eHovercraft hovercraft)
 {
     return get(eGlobalStat::SCORE_LARGEST) == get(hovercraft, SCORE_CURRENT);
 }
