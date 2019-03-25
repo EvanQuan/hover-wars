@@ -118,7 +118,10 @@ private:
     /*
         Queued actions are actions that cannot be applied immediately due to
         multithreading issues. Instead, they are queued and are acted upon
-        during the next update() call.
+        during the next update() call. This is relevant for getHit, as that
+        runs on a separate PhysX thread than the force applying thread that
+        PhysX uses. So any movement changing effects that are in response to
+        collisions needs to be queued.
     */
     enum eQueuedActions
     {
