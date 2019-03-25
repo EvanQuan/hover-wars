@@ -125,15 +125,15 @@ bool hasStarted = false;
 PhysicsManager::PhysicsManager()
 {
     // basic variable init
-    gFoundation = NULL;
-    gPhysics = NULL;
-    gDispatcher = NULL;
-    gScene = NULL;
-    manager = NULL;
-    gCarMaterial = NULL;
-    gWorldMaterial = NULL;
+    gFoundation = nullptr;
+    gPhysics = nullptr;
+    gDispatcher = nullptr;
+    gScene = nullptr;
+    manager = nullptr;
+    gCarMaterial = nullptr;
+    gWorldMaterial = nullptr;
     
-    gPvd = NULL;
+    gPvd = nullptr;
 }
 
 // PhysicsManager Destructor -
@@ -239,7 +239,7 @@ static PxFilterFlags filterShader(
 //    after constructing the PhysicsManager Instance.
 void PhysicsManager::initPhysics(bool interactive)
 {
-    if (gScene != NULL) {
+    if (gScene != nullptr) {
         return;
     }
     
@@ -305,8 +305,6 @@ void PhysicsManager::initPhysics(bool interactive)
 
 
 
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     //TEST CODE
     //createSphereObject(0,0,0,3);
@@ -358,7 +356,7 @@ void PhysicsManager::cleanupPhysics()
 
 
         hasStarted = false;
-        gScene = NULL; // change value back to null in case cleanup is called twice
+        gScene = nullptr; // change value back to null in case cleanup is called twice
     }
 }
 
@@ -459,7 +457,7 @@ PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
     bool status = gCook->cookTriangleMesh(meshDesc, writeBuffer);
     if (!status){
         std::cout << "cooking failed" << std::endl;
-        return NULL;
+        return nullptr;
     }
     PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
     return gPhysics->createTriangleMesh(readBuffer);
