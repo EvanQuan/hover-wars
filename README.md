@@ -107,6 +107,62 @@
 
 ## Write-Up:
 
+Since Milestone 3:
+
+### Game Rules
+
+First blood - the first hit of the game grants extra points. This incentivizes
+more aggressive play at the start.
+
+### Powerups
+
+#### Timed
+
+Whenever a player hits the player with the most points, they are given a speed
+most powerup, which lasts for 20 seconds.
+
+#### Stacking
+
+Ability cool downs have been rebalanced to have a much longer time than
+before. Whenever players increase their killstreak, their cool downs shorten
+by 10% up to a minimum cool down value. If their killstreak is lost, their
+cool downs reset to their base values.
+
+This awards more defensive play and incentives players to put more effort into
+dodging enemy attacks. Getting hit now gives a much stronger "feels bad"
+response, especially after a long killstreak.
+
+### Ending the Game
+
+The game ends when the game timer hits 0. The player with the most points
+wins.
+
+#### End Game Awards
+
+At the end of the game, players are given certain awards for accomplishing
+certain tasks, gaining extra bonus points. The currently implemented awards
+are:
+
+**Gotta Go Fast!** - Most speed boosts +200
+
+**Tactical** - Largest killstreak +200
+
+**Rocket Man** - Most rocket kills +100
+
+**Pyromaniac** - Most flame trail kills +100
+
+**Porcupine** - Most spike trail kills +100
+
+**Consolation** - Most deaths +100
+
+If there are is more than 1 human player and more than 1 bot in the game,
+these awards are available:
+
+**Ludite** - Most bot kills +200
+
+**Misanthropist** - Most player kills +200
+
+
 Since Milestone 2:
 
 ### Font Rendering
