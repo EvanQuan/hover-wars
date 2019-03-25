@@ -6,7 +6,7 @@
 
 // Default game time as pregame menu is first entered
 // #define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE
-#define DEFAULT_GAME_TIME 10 // debug
+#define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE // debug
 #define MAX_GAME_TIME 10 * SECONDS_PER_MINUTE
 #define MIN_GAME_TIME 10
 

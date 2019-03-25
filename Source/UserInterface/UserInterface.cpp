@@ -79,8 +79,8 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     m_Textures["textures/menu/exit.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/exit.png");
     m_Textures["textures/menu/exit2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/exit2.png");
     m_Textures["textures/menu/main_menu.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu.png");
-    m_Textures["textures/menu/main_menu_buttoin.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_button.png");
-    m_Textures["textures/menu/main_menu_buttoin2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_button2.png");
+    m_Textures["textures/menu/main_menu_button.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_button.png");
+    m_Textures["textures/menu/main_menu_button2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/main_menu_button2.png");
     m_Textures["textures/menu/new_game.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/new_game.png");
     m_Textures["textures/menu/new_game2.png"] = TEXTURE_MANAGER->loadTexture("textures/menu/new_game2.png");
     m_Textures["textures/menu/pause_menu.jpg"] = TEXTURE_MANAGER->loadTexture("textures/menu/pause_menu.jpg");
