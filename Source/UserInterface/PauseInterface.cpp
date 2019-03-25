@@ -12,24 +12,18 @@ PauseInterface::PauseInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
         {0.00f, 0.0f},
         // 1 Prompt 1
         {0.0f, 0.0f},
-        // 2 Cursor 1
+        // 2 Prompt 2
         {0.0f, 0.0f},
-        // 3 Prompt 2
-        {0.0f, 0.0f},
-        // 4 Cursor 2
     },
     // Translating
     vector<pair<float, float>>
     {
         // 0 Background
-        {0.00f, 0.0f},
+        {0.0f, 0.0f},
         // 1 Prompt 1
-        {0.0f, 0.0f},
-        // 2 Cursor 1
-        {0.0f, 0.0f},
-        // 3 Prompt 2
-        {0.0f, 0.0f},
-        // 4 Cursor 2
+        {0.47f, 0.5f},
+        // 2 Prompt 2
+        {0.47f, 0.6f},
     }
 )
 {
@@ -56,5 +50,23 @@ void PauseInterface::reinitialize(float gameTime)
 
 void PauseInterface::render()
 {
-    MenuInterface::render();
+    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].first, 1.0f);
+    renderOption(0);
+}
+
+void PauseInterface::renderOption(int choice) {
+    if (choice == 1)
+    {   // cursor in 'new game'
+        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+    }
+    else if (choice == 2) {
+        renderImage(IMAGE_RESUME_2, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+    }
+    else {
+        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+    }
+
 }
