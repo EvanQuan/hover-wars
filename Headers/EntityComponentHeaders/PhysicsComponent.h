@@ -57,6 +57,7 @@ public:
 
     void setMaxSpeed(float maxSpeed);
 
+    void setGlobalPos(PxTransform trans);
 private:
     bool isInAir;
 

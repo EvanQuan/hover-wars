@@ -257,7 +257,6 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // If there's a new Transformation, apply it to the Mesh.
     m_pMesh->updateInstance(&m4NewTransform, m_sName);
-
     // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
     if (m_vPosition != vNewPosition)
@@ -265,6 +264,20 @@ void HovercraftEntity::update(float fTimeInSeconds)
         m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
     }
 
+
+    vec3 dirVector;
+    getDirectionVector(&dirVector);
+    if (abs(dirVector.y) > 0.1f) {
+        //TODO set quat for rotation
+        vec3 newQuatAxis = vec3(dirVector.x,0.1f * (dirVector.y/abs(dirVector.y)), dirVector.z);
+
+        PxPlane plane = PxPlane(PxVec3(0,0,0), PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z), PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
+        PxTransform newTrans = getGlobalTransform();
+
+        newTrans.q = PxQuat(0, plane.n);
+
+        m_pPhysicsComponent->setGlobalPos(newTrans);
+    }
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
     updateInControl(fTimeInSeconds);
