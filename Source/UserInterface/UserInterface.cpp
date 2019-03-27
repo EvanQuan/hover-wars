@@ -48,6 +48,7 @@ const string  DEFAULT_FONT = ASTRON_BOY_REGULAR_FONT;
 const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
 const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 
+// @EvanQuan : iWidth, iHeight not referenced
 UserInterface::UserInterface(int iWidth, int iHeight,
                               vector<pair<float, float>> componentScaling,
                               vector<pair<float, float>> componentTranslating)

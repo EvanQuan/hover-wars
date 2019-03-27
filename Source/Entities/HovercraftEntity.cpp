@@ -412,6 +412,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
 }
 
+// @EvanQuan: ePowerup powerup is not referenced
 void HovercraftEntity::queuePowerup(ePowerup powerup)
 {
     // For now, coded to speed boost only
@@ -480,7 +481,6 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pPhysicsComponent = pEntityMngr->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeVehicle(getName(),
                                            true,
-                                           m_pMesh,
                                            &sBounding,
                                            pObjectProperties->vPosition,
                                            MAX_NORMAL_SPEED);

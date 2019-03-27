@@ -341,7 +341,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int basePoints = GAME_STATS->isPlayer(attacker) ?
         POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
-    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
+    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT]; // @EvanQuan : Initialized but not referenced
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
     int firstBloodBonus;
     if (firstBloodHappened) {
@@ -358,7 +358,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 Get the score for hit to lose if hit by attacker
 hit cannot lose more points than they have.
 
-@param attacker     that caused hit to lose score
+@param attacker     that caused hit to lose score  @EvanQuan: Not Referenced Parameter
 @param hit          to lose score
 */
 int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const
@@ -672,6 +672,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eHovercraftStat sta
     return hovercrafts;
 }
 
+// @EvanQuan : Nothing Implemented
 vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eHovercraftStat stat)
 {
     /* TODO*/

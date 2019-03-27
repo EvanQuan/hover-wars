@@ -73,6 +73,7 @@ void Spikes::initialize(const string& sFileName,
  * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
+// Give the Animation tree the world transformation of the Entity for world translation of the spikes.
 void Spikes::update(float fTimeInSeconds)
 {
     for (unsigned int i = 0; i < NUM_SPIKES; ++i)

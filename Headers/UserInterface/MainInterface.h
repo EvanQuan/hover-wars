@@ -13,7 +13,7 @@ public:
     // Default Constructor
     MainInterface(int iWidth, int iHeight);
     MainInterface(const MainInterface* pCopy);                              // Default Copy Constructor
-    MainInterface& operator=(const MainInterface* pCopy) {return (*this); } // Assignment Operator.
+    MainInterface& operator=(const MainInterface* pCopy);                   // Assignment Operator.
 
     void update(float fSecondsSinceLastUpdate);
 

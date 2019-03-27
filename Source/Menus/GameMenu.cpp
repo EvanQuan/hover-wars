@@ -319,6 +319,7 @@ void GameMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command
     executeIfHovercraftExists(hovercraft, command);
 }
 
+// @EvanQuan : Unreferenced Formal Parameters: hovercraft
 void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
 {
     // Check for cummulative movement commands, which are only executed once
@@ -352,6 +353,7 @@ void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComman
     }
 }
 
+// @EvanQuan : 'command': unreferenced formal parameter
 void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
 {
     // This is where keys are handled, it's assumed that xMove and yMove will

@@ -17,7 +17,7 @@ public:
     // Default Constructor
     PregameInterface(int iWidth, int iHeight);
     PregameInterface(const PregameInterface* pCopy);                              // Default Copy Constructor
-    PregameInterface& operator=(const PregameInterface* pCopy) {return (*this); } // Assignment Operator.
+    PregameInterface& operator=(const PregameInterface* pCopy);                   // Assignment Operator.
 
     void update(float fSecondsSinceLastUpdate);
 

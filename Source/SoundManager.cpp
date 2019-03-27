@@ -67,7 +67,7 @@ SoundManager* SoundManager::getInstance() {
 void SoundManager::play(eSoundEvent sound)
 {
     const char* eventPath = getPath(sound);
-    if (eventPath == "")
+    if (eventPath == "") 
     {
         return;
     }

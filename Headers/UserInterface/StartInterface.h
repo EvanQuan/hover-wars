@@ -12,7 +12,7 @@ public:
     // Default Constructor
     StartInterface(int iWidth, int iHeight);
     StartInterface(const StartInterface* pCopy);                              // Default Copy Constructor
-    StartInterface& operator=(const StartInterface* pCopy) {return (*this); } // Assignment Operator.
+    StartInterface& operator=(const StartInterface* pCopy);                   // Assignment Operator.
 
     void update(float fSecondsSinceLastUpdate);
 

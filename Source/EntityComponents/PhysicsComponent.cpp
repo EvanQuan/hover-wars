@@ -222,7 +222,7 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position, float maxNormalSpeed)
+void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, const ObjectInfo::BoundingBox *bb,glm::vec3 position, float maxNormalSpeed)
 {
     // Set up Internal Static qualifier.
     m_bVehicle = bStatic;

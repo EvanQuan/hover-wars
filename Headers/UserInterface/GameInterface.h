@@ -80,7 +80,7 @@ private:
 
     GameInterface(int iWidth, int iHeight);                                 // Default Constructor
     GameInterface(const GameInterface* pCopy);                              // Default Copy Constructor
-    GameInterface& operator=(const GameInterface* pCopy) {return (*this); } // Assignment Operator.
+    GameInterface& operator=(const GameInterface* pCopy);                   // Assignment Operator.
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
 

@@ -50,7 +50,7 @@ void Emitter::initializeEmitter(unsigned int iMaxParticles,
     m_fDefaultDuration = fDefaultDuration;
     m_fRadius = fRadius;
     unsigned int m = 0, n = 0;
-    vec3 m_vOrthogonalVec = vec3(0.0);
+    m_vOrthogonalVec = vec3(0.0);
 
     // Find some orthogonal coordinates for Emitter
     // Find index m s.t. Xm != 0

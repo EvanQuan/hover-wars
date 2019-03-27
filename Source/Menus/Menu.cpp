@@ -95,7 +95,7 @@ void Menu::updateKeyboardCommands()
             fixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        executeFixedCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
+        executeFixedCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);         // @EvanQuan : 'fixedCommand' potentially not initialized
         handleAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
     }
     executeAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);

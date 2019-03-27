@@ -22,8 +22,8 @@ public:
 
 protected: // Generally, Constructors only accessible by children constructors
     EntityComponent(int iEntityID, int iComponentID);
-    EntityComponent(const EntityComponent* pCopy) {}
-    EntityComponent& operator=(const EntityComponent& pRHS) {}
+    EntityComponent(const EntityComponent* pCopy);
+    EntityComponent& operator=(const EntityComponent& pRHS);
 
     // ID of the Entity that it's a component of
     //    and ID of this component assigned by the Entity Manager.

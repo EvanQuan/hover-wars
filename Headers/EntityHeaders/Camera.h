@@ -13,12 +13,11 @@ class Camera :
 {
 public:
     Camera( int iID );              // Default Constructor
-    Camera(const Camera& pCopy);    // Copy Constructor
     virtual ~Camera();
 
     // Implementation of inherited functionality
-    void update(float fTimeInSeconds);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
+    void update(float fTimeInSeconds) {};                                               // Not Implemented
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const {};   // Not Implemented
 
     // Camera Manipulation Functions
     void orbit(vec2 pDelta);

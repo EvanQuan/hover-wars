@@ -13,7 +13,7 @@ public:
     // Default Constructor
     PauseInterface(int iWidth, int iHeight);
     PauseInterface(const PauseInterface* pCopy);                              // Default Copy Constructor
-    PauseInterface& operator=(const PauseInterface* pCopy) {return (*this); } // Assignment Operator.
+    PauseInterface& operator=(const PauseInterface* pCopy);                   // Assignment Operator.
 
     void update(float fSecondsSinceLastUpdate);
 

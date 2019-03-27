@@ -29,10 +29,14 @@ void Rocket::initialize(const string& sFileName,
     InteractableEntity::initialize(sFileName, pObjectProperties, sShaderType, fScale);  
 }
 
+// Updates the Rocket Transformation from the Physics Component
+// parameter: fTimeInSeconds - Time in seconds since last update. Not Used.
 void Rocket::update(float fTimeInSeconds)
 {
+    // Local Variables
     mat4 m4TransformationMatrix = mat4(1.0f);
 
+    // Go through each Rocket Reference, grab the Physics Transformation and update the Mesh.
     for (vector<string>::const_iterator pIter = m_pReferenceList.begin();
         pIter != m_pReferenceList.end();
         ++pIter)
@@ -40,7 +44,6 @@ void Rocket::update(float fTimeInSeconds)
         m_pPhysicsComponent->getTransformMatrix(*pIter, &m4TransformationMatrix);
         m_pMesh->updateInstance(&m4TransformationMatrix, *pIter);
     }
-    
 }
 
 // This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
