@@ -35,11 +35,18 @@ public:
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Rocket Functionality
+    // Spawns a rocket of the specified parameters
     void launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength);
+
+    // Reflect a rocket. In practice this deletes the rockets, spawns a rocket
+    // facing the opposite direction and of the specified reflected owner.
+    void reflect(unsigned int iVictimMsg);
 
 private:
     EmitterEngine*                          m_pEmitterEngine;
     vector<string>                          m_pReferenceList;
     unsigned int                            m_iRocketID;
     unsigned int getNewRocketID()           { return ++m_iRocketID; }
+
+    void removeFromScene(unsigned int iVictimMsg);
 };

@@ -62,12 +62,17 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg, ABILITY_ROCKET);
 
-        // clear Rocket Rendering; Remove Instance from Mesh
-        string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
-        m_pMesh->removeInstance(sHashKey);
-        m_pPhysicsComponent->flagForRemoval(sHashKey);
-        m_pReferenceList.erase(remove(m_pReferenceList.begin(), m_pReferenceList.end(), sHashKey), m_pReferenceList.end());
+        removeFromScene(iVictimMsg);
     }
+}
+
+// clear Rocket Rendering; Remove Instance from Mesh, remove from Physics
+void Rocket::removeFromScene(unsigned int iVictimMsg)
+{
+    string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
+    m_pMesh->removeInstance(sHashKey);
+    m_pPhysicsComponent->flagForRemoval(sHashKey);
+    m_pReferenceList.erase(remove(m_pReferenceList.begin(), m_pReferenceList.end(), sHashKey), m_pReferenceList.end());
 }
 
 /*************************************************************************************************\
@@ -92,3 +97,12 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     m_pPhysicsComponent->initializeRocket(m_pReferenceList.back().c_str(), m4InitialTransform, vVelocity, fBBLength);
 }
 
+void Rocket::reflect(unsigned int iVictimMsg)
+{
+    // SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+    // mat4* m4CurrentTransform;
+    // m_pPhysicsComponent->getTransformMatrix(m4CurrentTransform);
+    // mat4* m4ReflectedTransform = // reverse
+    // const vec3 reflectedVelocity = -m_pPhysicsComponent->getLinearVelocity();
+    
+}

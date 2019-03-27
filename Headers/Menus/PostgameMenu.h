@@ -11,6 +11,9 @@ public:
 
     static Menu* getInstance();
 
+    int getBotCount() const { return m_iBotCount; }
+    int getPlayerCount() const { return m_iPlayerCount; }
+    vector<EndGameStat> getEndGameStats() const { return endGameStats; }
 private:
     PostgameMenu();
 
