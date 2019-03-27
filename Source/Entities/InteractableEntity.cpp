@@ -40,8 +40,7 @@ void InteractableEntity::update(float fTimeInSeconds)
     /* Not Implemented */
 }
 
-// This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
-//  Static position.
+// This will need to be adjusted as needs arise. 
 void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
 {
     /* Not Implemented */

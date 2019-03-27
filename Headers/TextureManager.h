@@ -35,8 +35,8 @@ private:
     // Singleton Implementation
     static TextureManager* pInstance;
     TextureManager();
-    TextureManager( const TextureManager& pCopy ) {}
-    TextureManager& operator=( const TextureManager& pRHS ) {}
+    TextureManager(const TextureManager& pCopy);
+    TextureManager& operator=(const TextureManager& pRHS);
 
     // Hash Map
     unordered_map<string, unique_ptr<Texture>> m_pTextureCache;

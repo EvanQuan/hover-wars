@@ -22,10 +22,13 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
     //}
 
     /* initialize random seed: */
+    // @AustinEaton @EvanQuan : srand re-seeded for every AIComponent?
      srand(static_cast<unsigned int>(time(NULL)));
     // timeChased = rand() % (MAX_TIME_TARGET);
     timeChased = static_cast<float>(FuncUtils::random(0, MAX_TIME_TARGET - 1));
 }
+
+// @AustinEaton : Function not Implemented
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
     //for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {
    //     performMutation(playerPos, playerVel, botPos, botVel, botRotation, 0);
@@ -95,6 +98,9 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) {
     }
     return vec3(nearest, lastLoc);
 }
+
+// @AustinEaton : CurrcoolDown not referenced.
+// @AustinEaton : botVel not referenced.
 float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown) {
     float evaluation = 0;
     float framesTaken = 1;
@@ -137,6 +143,9 @@ float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 play
     return evaluation;
 }
 
+// @AustinEaton : botRotation not referenced.
+// @AustinEaton : botVel not referenced.
+// @AustinEaton : playerVel not referenced.
 void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, Action *a) {
 
     //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
@@ -212,7 +221,7 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
         a->actionsToTake[1] = (float)(-1 * XvalMul);
     }
 
-    bool isXdistance = false;
+    bool isXdistance = false;   // @AustinEaton : Initialized but not referenced.
     if ((botPos.x - seekPoint.x) > 0) {
         a->actionsToTake[2] = -1;
     }

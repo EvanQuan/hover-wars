@@ -22,7 +22,7 @@ protected:
     GameMenu();
 
     // Not time values
-    void updateTimeValues(float fTimeInSeconds) {}
+    void updateTimeValues(float fTimeInSeconds) {}  // Not Implemented
 
     static GameMenu* m_pInstance;
 

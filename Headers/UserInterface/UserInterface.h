@@ -101,10 +101,10 @@ protected:
 
     // Default Constructor
     UserInterface(int iWidth, int iHeight,
-        vector<pair<float, float>> componentScaling,
-        vector<pair<float, float>> componentTranslating);
-    UserInterface(const UserInterface* pCopy);                              // Default Copy Constructor
-    UserInterface& operator=(const UserInterface* pCopy) {return (*this); } // Assignment Operator.
+                  vector<pair<float, float>> componentScaling,
+                  vector<pair<float, float>> componentTranslating);
+    UserInterface(const UserInterface* pCopy);            // Default Copy Constructor
+    UserInterface& operator=(const UserInterface* pCopy); // Assignment Operator.
 
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);

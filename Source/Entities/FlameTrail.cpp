@@ -23,7 +23,7 @@ FlameTrail::~FlameTrail()
 }
 
 /****************************************************************\
- * Inherited Virtual Functions                             *
+ * Inherited Virtual Functions                                  *
 \****************************************************************/
 
 void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
@@ -69,9 +69,6 @@ void FlameTrail::initialize()
 
 void FlameTrail::update(float fTimeInSeconds)
 {
-    // Local Variables
-    bool bFlagForDeletion = false;
-
     // Update the Physics for the flame trail based on current Flame Trail
     for (unordered_map<string, float>::iterator pIter = m_pReferenceMap.begin();
         pIter != m_pReferenceMap.end();)

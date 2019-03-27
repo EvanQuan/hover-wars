@@ -106,9 +106,6 @@
     <ClInclude Include="Headers\EntityHeaders\Entity.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Explosion.h">
-      <Filter>Headers\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\FlameTrail.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
@@ -119,9 +116,6 @@
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\PointLight.h">
-      <Filter>Headers\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Powerup.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\Rocket.h">
@@ -331,9 +325,6 @@
     <ClCompile Include="Source\Entities\Entity.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Explosion.cpp">
-      <Filter>Source\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Entities\FlameTrail.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
@@ -344,9 +335,6 @@
       <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\PointLight.cpp">
-      <Filter>Source\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Powerup.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Rocket.cpp">

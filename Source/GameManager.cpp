@@ -161,7 +161,7 @@ bool GameManager::renderGraphics()
     }
 
     // Update Environment if the game is not paused
-    if (!paused)
+    if (!m_bPaused)
     {
         m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
@@ -224,7 +224,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // m_pPhysicsManager = PHYSICS_MANAGER;
     // m_pPhysicsManager->initPhysics(false);
 
-    paused = false;
+    m_bPaused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
@@ -259,7 +259,7 @@ void GameManager::endGame()
 {
     // postgame menu
     cout << "GameManger::endGame()" << endl;
-    paused = true;
+    m_bPaused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     m_pEntityManager->purgeEnvironment();
 
@@ -284,7 +284,7 @@ void GameManager::drawScene()
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);
-        if (!paused)
+        if (!m_bPaused)
         {
             m_pEntityManager->renderEnvironment();
         }
@@ -330,7 +330,7 @@ bool GameManager::initialize()
 
 #ifdef NDEBUG
     // Game starts paused as the player starts in the start menu
-    paused = true;
+    m_bPaused = true;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());

@@ -291,7 +291,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    bool resultVehicle = PxInitVehicleSDK(*gPhysics);
+    bool resultVehicle = PxInitVehicleSDK(*gPhysics); // @AustinEaton : boolean initialized but not referenced
     PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
@@ -677,16 +677,16 @@ Update the car over a period of time.
 bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     const PxF32 timestep = fTimeDelta;
     //Raycasts.
-    PxVehicleWheels* vehicles[1] = { vehicle };
+    PxVehicleWheels* vehicleWheels[1] = { vehicle };
     PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
     const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
-    PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
+    PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicleWheels, raycastResultsSize, raycastResults);
 
     //Vehicle update.
     const PxVec3 grav = gScene->getGravity();
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
-    PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
+    PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicleWheels, vehicleQueryResults);
 //    cout << "1: " << wheelQueryResults[0].isInAir
 //        << " 2: " << wheelQueryResults[1].isInAir
 //        << " 3: " << wheelQueryResults[2].isInAir

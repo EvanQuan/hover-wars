@@ -890,8 +890,8 @@ void Mesh::getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset)
 
     if (m_sBoundingBox.isLoaded())  // Default to the Bounding Box Dimensions if available
     {
-        *pNegativeOffset = m_sBoundingBox.vNegativeOffset;
-        *pPositiveOffset = m_sBoundingBox.vPositiveOffset;
+        *pNegativeOffset = m_sBoundingBox.m_vNegativeOffset;
+        *pPositiveOffset = m_sBoundingBox.m_vPositiveOffset;
     }
     else    // Otherwise return the Mesh computed Offsets.
     {
@@ -1024,8 +1024,8 @@ void Mesh::sBoundingBox::generateCubicBox(float fHeight, float fWidth, float fDe
     };
 
     // Store the Spatial information
-    vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
-    vPositiveOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
+    m_vNegativeOffset = vec3(-iHalfWidth, -iHalfHeight, -iHalfDepth);
+    m_vPositiveOffset = vec3(iHalfWidth, iHalfHeight, iHalfDepth);
 
     // Initialize Bounding Box VBOs
     initVBOs();
@@ -1054,8 +1054,8 @@ void Mesh::sBoundingBox::generateCubicBox(const vec3* vNegativeOffset, const vec
     };
 
     // Store the Spatial information
-    this->vNegativeOffset = *vNegativeOffset;
-    this->vPositiveOffset = *vPositiveOffset;
+    this->m_vNegativeOffset = *vNegativeOffset;
+    this->m_vPositiveOffset = *vPositiveOffset;
 
     // Initialize Bounding Box VBOs
     initVBOs();

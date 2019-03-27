@@ -409,7 +409,7 @@ vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 playerMin, vec2 playerMax, 
         if (exitLoop) break;
     }
     vector<vec2> returnPath;
-    while (exitLoop && !(currPos.x == player.x && currPos.y == player.y)) {
+    while (exitLoop && !(currPos.x == player.x && currPos.y == player.y)) {     // @AustinEaton : currPos potentially not initialized
         returnPath.push_back(vec2(m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentX,
             m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentY));
         int temp = (int)currPos.x;
@@ -700,17 +700,17 @@ void SpatialDataMap::drawMap()
         // Draw the Populated Squares
         vColor = vec4(1.0f);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iPopulatedIndicesBuffer);
-        for (unsigned int i = 0; i < m_pPopulatedSquareReference.size(); ++i)
+        for (unsigned int j = 0; j < m_pPopulatedSquareReference.size(); ++j)
         {
-            if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalEntities.empty())
+            if (!m_pSpatialMap[m_pPopulatedSquareReference[j].first][m_pPopulatedSquareReference[j].second].pLocalEntities.empty())
                 vColor = (vColor * 0.5f) + (GRID_COLOR * 0.5f);
-            else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalPointLights.empty())
+            else if (!m_pSpatialMap[m_pPopulatedSquareReference[j].first][m_pPopulatedSquareReference[j].second].pLocalPointLights.empty())
                 vColor = (vColor * 0.5f) + (POINT_COLOR * 0.5f);
-            else if (!m_pSpatialMap[m_pPopulatedSquareReference[i].first][m_pPopulatedSquareReference[i].second].pLocalSpotLights.empty())
+            else if (!m_pSpatialMap[m_pPopulatedSquareReference[j].first][m_pPopulatedSquareReference[j].second].pLocalSpotLights.empty())
                 vColor = (vColor * 0.5f) + (SPOT_COLOR * 0.5f);
 
             SHADER_MANAGER->setUniformVec4(ShaderManager::eShaderType::DEBUG_SHDR, "vColor", &vColor);
-            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((i << 2) * sizeof(unsigned int)), 1);
+            glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void*)((j << 2) * sizeof(unsigned int)), 1);
             vColor = vec4(1.0f);
         }
     }

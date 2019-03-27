@@ -336,6 +336,7 @@ void GameInterface::updateScores()
     }
 }
 
+// @EvanQuan : Not Implemented, "hovecraft?" misspelled?
 void GameInterface::updateScore(eHovercraft hovecraft, int score)
 {
     
@@ -411,7 +412,7 @@ void GameInterface::renderCooldown(std::string label,
 
 
 /*
-
+    @EvanQuan : Not Implemented
 */
 void GameInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 color)
 {

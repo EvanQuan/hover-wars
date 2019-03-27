@@ -16,8 +16,8 @@
 #define GROUND_ID   -1
 
 void PhysicsCallBack::initObjects(physx::PxRigidDynamic *body1, physx::PxRigidDynamic *body2) {
-    this->body1 = body1;
-    this->body2 = body2;
+    this->m_pBody1 = body1;
+    this->m_pBody2 = body2;
 }
 
 /*

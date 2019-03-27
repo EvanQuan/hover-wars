@@ -44,8 +44,8 @@ public:
     eHovercraft m_eKeyboardHovercraft;
 
 
-    bool isPaused() const { return paused; }
-    void setPaused(bool paused) { this->paused = paused; }
+    bool isPaused() const { return m_bPaused; }
+    void setPaused(bool paused) { m_bPaused = paused; }
 
     int m_iWidth;
     int m_iHeight;
@@ -119,5 +119,5 @@ private:
     vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update
-    bool paused;
+    bool m_bPaused;
 };

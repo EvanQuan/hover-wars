@@ -84,17 +84,18 @@ void AIManager::update(float fTimeInSeconds)
         float distanceToNearestPlayer = 1000000;
         // @TODO add ability to change targets when we do multiplayer
         for (int j = 0; j < m_pEntityMngr->getPlayerSize(); j++) {
-            HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)j);
+            HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)j);       // @AustinEaton : mPlayer keeps getting reinitialized
             float dis = sqrt(pow((mPlayer->getPosition() - botPos).x,2) + pow((mPlayer->getPosition() - botPos).y, 2) + pow((mPlayer->getPosition() - botPos).z, 2));
             if (dis < distanceToNearestPlayer) {
                 distanceToNearestPlayer = dis;
                 playerNum = j;
             }
         }
-        HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)playerNum);
-        float distanceToNearestBot = 1000000;
+        HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)playerNum);   // @AustinEaton : mPlayer keeps getting reinitialized
+        float distanceToNearestBot = 1000000;                                           // @AustinEaton : I understand you're setting this to a default to find a closer distance, but use numeric_limits<float>::max() or min() for
+                                                                                        //                  these types of initializations
         for (size_t j = 0; j < size; j++) {
-            HovercraftEntity *mPlayer = bots->at(j);
+            HovercraftEntity *mPlayer = bots->at(j);                                    // @AustinEaton : mPlayer keeps getting reinitialized
             float dis = sqrt(pow((mPlayer->getPosition() - botPos).x, 2) + pow((mPlayer->getPosition() - botPos).y, 2) + pow((mPlayer->getPosition() - botPos).z, 2));
             if (dis < distanceToNearestBot && i !=j) {
                 distanceToNearestBot = dis;

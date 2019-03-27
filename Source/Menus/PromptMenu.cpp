@@ -100,6 +100,7 @@ void PromptMenu::setupKeyCommands()
 {
 }
 
+// @EvanQuan : hovercraft not referenced
 void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
     switch (command)
@@ -291,6 +292,7 @@ void PromptMenu::updateTimeValues(float fTimeInSeconds)
     }
 }
 
+//@EvanQuan : Functions not implemented
 void PromptMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
 {
 }

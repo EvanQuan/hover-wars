@@ -33,7 +33,7 @@ bool InitializeTexture(Texture *mytex, const string &imageFileName)
     if (nullptr != data)
     {
         // Get the format of the Texture
-        GLenum eFormat;
+        GLenum eFormat = GL_RED;
         switch (nrComponents)
         {
         case 1:
