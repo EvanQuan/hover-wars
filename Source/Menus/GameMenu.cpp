@@ -106,7 +106,7 @@ GameMenu::GameMenu() : Menu(
 }
 
 /*
-Get Singleton instance
+    Get Singleton instance
 */
 Menu* GameMenu::getInstance()
 {
@@ -117,23 +117,23 @@ Menu* GameMenu::getInstance()
 }
 
 /*
-Destructor
+    Destructor
 */
 GameMenu::~GameMenu()
 {
 }
 
 /*
-Make a player execute a eFixedCommand.
-FixedCommands are binary in that either they are executed or they are not, with
-no extra parameters.
+    Make a player execute a eFixedCommand.
+    FixedCommands are binary in that either they are executed or they are not,
+    with no extra parameters.
 
-For example: if a player PLAYER_2 executes the ABILITY_ROCKET command,
-that is all the information the program needs to know for that hovercraft to
-execute that command.
+    For example: if a player PLAYER_2 executes the ABILITY_ROCKET command, that
+    is all the information the program needs to know for that hovercraft to
+    execute that command.
 
-@param player   to execute command on
-@param command  to execute
+    @param player   to execute command on
+    @param command  to execute
 */
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
                                          eFixedCommand command)
@@ -146,10 +146,10 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 }
 
 /*
-Make a player execute a fixed command.
+    Make a player execute a fixed command.
 
-@param player       to execute command on
-@param command      to execute
+    @param player       to execute command on
+    @param command      to execute
 */
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                       eFixedCommand command)
@@ -246,27 +246,27 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
 }
 
 /*
-Make a given player execute a eVariableCommand.
-VariableCommands require extra parameters to complete the command.
-Specifically, they require an axis or axes to make sense of the command.
+    Make a given player execute a eVariableCommand.
+    VariableCommands require extra parameters to complete the command.
+    Specifically, they require an axis or axes to make sense of the command.
 
-For example: if player PLAYER_1 executes the MOVE command, they also need to
-specify the x and y axis values to determine what direction and at what
-intensity to go at.
+    For example: if player PLAYER_1 executes the MOVE command, they also need
+    to specify the x and y axis values to determine what direction and at what
+    intensity to go at.
 
-Axes values are normalized and follow Cartesian coordinates:
-                        y = 1
-                          ^
-                          |
-            x = -1 <-- x, y = 0 --> x = 1
-                          |
-                          v
-                        y = -1
+    Axes values are normalized and follow Cartesian coordinates:
+                            y = 1
+                              ^
+                              |
+                x = -1 <-- x, y = 0 --> x = 1
+                              |
+                              v
+                            y = -1
 
-@param player   to execute command on
-@param command  to execute
-@param x        x-coordinate
-@param y        y-coordinate
+    @param player   to execute command on
+    @param command  to execute
+    @param x        x-coordinate
+    @param y        y-coordinate
 */
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
                                          eVariableCommand command,
@@ -282,12 +282,12 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 }
 
 /*
-Make a player execute a variable command.
+    Make a player execute a variable command.
 
-@param player       to execute command on
-@param command      to execute
-@param x            x-coordinate
-@param y            y-coordinate
+    @param player       to execute command on
+    @param command      to execute
+    @param x            x-coordinate
+    @param y            y-coordinate
 */
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                             eVariableCommand command,
@@ -373,16 +373,4 @@ void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComma
     {
         executeIfHovercraftExists(hovercraft, COMMAND_TURN, xTurn, yTurn);
     }
-}
-
-// TODO remove wrapper, not needed
-void GameMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
-{
-    executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
-}
-
-// TODO remove wrapper, not needed
-void GameMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
-{
-    executeIfHovercraftExists(hovercraft, COMMAND_TURN, x, y);
 }

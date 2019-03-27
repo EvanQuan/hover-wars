@@ -33,11 +33,6 @@ protected:
     void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
     void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
 
-    // Joystick commands
-    void updateLeftStick(eHovercraft hovercraft, float x, float y);
-    void updateRightStick(eHovercraft hovercraft, float x, float y);
-
-
     void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
     void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command,
                                    float x, float y);
