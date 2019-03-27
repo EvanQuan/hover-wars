@@ -116,7 +116,7 @@ protected:
     int m_iHeight;
 
 
-    const char* debugMessage;
+    std::string debugMessage;
     float debugWidth;
     float debugHeight;
 

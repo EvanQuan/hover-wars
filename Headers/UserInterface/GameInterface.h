@@ -59,7 +59,7 @@ public:
 
     // Display debug message
     // Set message to "" to disable debug message
-    void displayDebug(const char* message);
+    void displayDebug(std::string message);
 
 private:
 

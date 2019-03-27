@@ -312,13 +312,13 @@ void GameInterface::renderMessages()
         }
     }
 
-    if ("" != debugMessage)
+    if (!debugMessage.empty())
     {
         renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
     }
 }
 
-void GameInterface::displayDebug(const char* message)
+void GameInterface::displayDebug(std::string message)
 {
     debugMessage = message;
 }
