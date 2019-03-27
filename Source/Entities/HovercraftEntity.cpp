@@ -412,13 +412,28 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
 }
 
-// @EvanQuan: ePowerup powerup is not referenced
+/*
+    Queues up a powerup to activate for the next frame update.
+    For now, coded to speed boost only
+
+    @param powerup  to queue
+*/
 void HovercraftEntity::queuePowerup(ePowerup powerup)
 {
-    // For now, coded to speed boost only
-    queuedActions[QUEUED_SPEED_BOOST] = true;
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        queuedActions[QUEUED_SPEED_BOOST] = true;
+        break;
+    }
 }
 
+/*
+    Queues up a push for the next frame update
+
+    @param x    x-coordinate of push in world-space
+    @param y    y-coordinate of push in world-space
+*/
 void HovercraftEntity::queuePush(float x, float y)
 {
     queuedX = x;
@@ -567,6 +582,11 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
     }
 }
 
+/*
+    Set the duration for the hovercraft to ignore input.
+
+    @param seconds  until control is regained
+*/
 void HovercraftEntity::setLoseControl(float seconds)
 {
     outOfControlTime = seconds;
