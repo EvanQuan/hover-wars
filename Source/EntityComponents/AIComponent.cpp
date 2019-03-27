@@ -82,21 +82,37 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) {
     }
     return vec3(nearest, lastLoc);
 }
+/*
+Function: getCurrentAction
+returns: an Action a, this action represents all the actions that should be preformed by the bot in question
 
-void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel,float delta_time, float botRotation, Action *a) {
+parameters:
+mPlayer: this is a generic hovercraft entity, it is not nessicarally a player, it could be a bot. however
+it is the hovercraft entity we are currently targeting. It should be the hovercraft to the bot entity.
+bot: bot entity that relates to AI component class
+delta_time: time difference since last update.
+
+Explaination:
+this function handles the movement of the bot entity so that part of the action should be dissregarded.
+however it does not handle the lanuching of rockets and abilities, that should be handled by the caller.
+*/
+void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot,float delta_time, Action *a) {
 
     //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
     a->actionsToTake[ACTION_FIRE_ROCKET] = 0;
-    a->actionsToTake[ACTION_FLAMETRAIL] = 0;
+    a->actionsToTake[ACTION_FLAMETRAIL] = 0;//zero abilities so they aren't used
+    glm::vec3 botPos = bot->getPosition();
+    glm::vec3 botVel = bot->getLinearVelocity();
 
     unsigned int minXBot, minYBot, maxXBot, maxYBot;
-    SPATIAL_DATA_MAP->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);
-    if (currentState == 0) {
+    SPATIAL_DATA_MAP->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);// get bot loc on grid
+
+    if (currentState == 0) { // if current state is chase, then get our path based on the player
         unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
         SPATIAL_DATA_MAP->getMapIndices(mPlayer, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
         path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(maxXPlayer, maxYPlayer), vec2(minXBot+1, minYBot+1), vec2(maxXBot+1, maxYBot+1));
     }
-    else if (currentState == 1) {
+    else if (currentState == 1) {// if current state is seek the look for a nearest point.
         if (getDistance(vec2(minXBot, minYBot), seekLocation) < 2) {
             vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
@@ -106,9 +122,10 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
         path = SPATIAL_DATA_MAP->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
     }
     vec2 offset = SPATIAL_DATA_MAP->getWorldOffset();
-    glm::vec3 nextPos = vec3(0, 0, 0);//mPlayer->getPosition();
+
+    glm::vec3 nextPos = vec3(0, 0, 0);
     if (path.size() >= 2) {
-        for (int i = 0; i < (int)path.size(); i++) {
+        for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
             nextPos = vec3(path.at(i).x * SPATIAL_DATA_MAP->getTileSize() + offset.x, 0, path.at(i).y * SPATIAL_DATA_MAP->getTileSize() + offset.y);
             if (abs((botPos - nextPos).x) + abs((botPos - nextPos).z) > DISTANCE_BOX) {
                 break;
@@ -118,7 +135,7 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     }
     vec3 difference = mPlayer->getPosition() - botPos;
     float distanceToTarget = getDistance(mPlayer->getPosition(), botPos);
-    //std::cout << "Distance to Target: " << distanceToTarget << std::endl;
+
     if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
         if (currentState != 1) {
             vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
@@ -174,15 +191,8 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     if (nextPosMove) {
         a->actionsToTake[eAction::ACTION_FLAMETRAIL] = 1;
     }
-    bot->setPosition(vec2(botPos.x + differenceSum.x * delta_time, botPos.z + differenceSum.y * delta_time));
+    bot->setPosition(vec2(botPos.x + differenceSum.x * delta_time, botPos.z + differenceSum.y * delta_time)); // move player based off distance sum
     botPos = bot->getPosition();
-    //a->actionsToTake[2] = difference.x/100.0f;
-    //a->actionsToTake[3] = difference.z/100.0f;
-    // std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
-#ifndef NDEBUG
-    //std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
-    //currentPlace = (1 + currentPlace) % LOOK_AHEAD_FRAMES;
-#endif
 }
 void AIComponent::update(float fTimeInSeconds)
 {

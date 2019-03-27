@@ -70,9 +70,8 @@ void AIManager::update(float fTimeInSeconds)
         //SPATIAL_DATA_MAP->getMapIndices(this,&minX,&minY,&maxX,&maxY);
         //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
         ai->update(fTimeInSeconds);
-        glm::vec3 botVel = bot->getLinearVelocity();
         glm::vec3 botPos = bot->getPosition();
-        glm::quat rotation = bot->getRotation();
+        glm::vec3 botPos = bot->getPosition();
         // double x = FuncUtils::getRoll(rotation);
         // double y = FuncUtils::getPitch(rotation);
         // double z = FuncUtils::getYaw(rotation);
@@ -104,15 +103,9 @@ void AIManager::update(float fTimeInSeconds)
         if (distanceToNearestBot < distanceToNearestPlayer) {
             mPlayer = bots->at(playerNum);
         }
-        //glm::vec3 targetPosition = mPlayer->getPosition();
 
-
-        glm::vec3 targetVelocity = mPlayer->getLinearVelocity();
-
-
-        //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(minXPlayer, minYPlayer),vec2(minXBot, minYBot));
         Action a;
-        ai->popCurrentAction(mPlayer, bot,targetVelocity, botPos, botVel, fTimeInSeconds,atan2(vForce.x, vForce.z),&a);
+        ai->getCurrentAction(mPlayer, bot, fTimeInSeconds,&a);
 
         //std::cout << "BotEntity update: " << a.actionsToTake[0] << ", " << a.actionsToTake[1] << ", " << a.actionsToTake[2] << ", "<< a.actionsToTake[3] << std::endl;
         // fire Rocket, right-left turn, forward-back move,right-left move
