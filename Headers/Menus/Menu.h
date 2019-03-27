@@ -107,9 +107,11 @@ protected:
     virtual void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command) = 0;
 
     // For keyboard command handling
+
+    // Called before all keyboard keys are handled
     virtual void setupKeyCommands() = 0;
-    virtual void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) = 0;
-    virtual void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command) = 0;
+    virtual void handleAccumulatedKeyCommands(eFixedCommand command) = 0;
+    virtual void executeAccumulatedKeyCommands(eHovercraft hovercraft) = 0;
 
     // Joystick commands
     virtual void updateLeftStick(eHovercraft hovercraft, float x, float y) = 0;

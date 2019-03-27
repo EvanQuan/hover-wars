@@ -319,8 +319,15 @@ void GameMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command
     executeIfHovercraftExists(hovercraft, command);
 }
 
-// @EvanQuan : Unreferenced Formal Parameters: hovercraft
-void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+/*
+    A specified movement eFixedCommand may be called multiple times per frame.
+    Since some of these movements commands are contradictory, we must
+    accumulate them all to form a single movement command similar to that of
+    joystick movement.
+
+    @param command  for movement from keyboard
+*/
+void GameMenu::handleAccumulatedKeyCommands(eFixedCommand command)
 {
     // Check for cummulative movement commands, which are only executed once
     // all movement keys are checked.
@@ -353,8 +360,13 @@ void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComman
     }
 }
 
-// @EvanQuan : 'command': unreferenced formal parameter
-void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+/*
+    Make a specified hovercraft execute accumulated key commands. This should
+    be the keyboard player's hovercraft.
+
+    @param hovercraft   to execute accumulated key commands
+*/
+void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft)
 {
     // This is where keys are handled, it's assumed that xMove and yMove will
     // be binary on/off. Let's use this assumption to our advantage and we can
@@ -367,10 +379,20 @@ void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComma
 
     if (!bMovementNeutral)
     {
-        executeIfHovercraftExists(hovercraft, COMMAND_MOVE, xMove, yMove);
+        updateLeftStick(hovercraft, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        executeIfHovercraftExists(hovercraft, COMMAND_TURN, xTurn, yTurn);
+        updateRightStick(hovercraft, xTurn, yTurn);
     }
+}
+
+void GameMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
+{
+    return executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
+}
+
+void GameMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
+{
+    executeIfHovercraftExists(hovercraft, COMMAND_TURN, x, y);
 }
