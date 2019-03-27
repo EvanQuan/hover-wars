@@ -90,7 +90,7 @@ void Spikes::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
 // Overloaded Handle Collision for Spikes
 void Spikes::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
-    InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg, ABILITY_SPIKES);
+    InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
 }
 

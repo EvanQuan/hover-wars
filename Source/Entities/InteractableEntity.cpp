@@ -50,7 +50,7 @@ void InteractableEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPosi
 // Written by: James Cote
 // Description: Default functionality for Interactable Entities.
 //      Default: tells the other entity that they've been hit.
-void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, eAbility ability)
+void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     // NOTE: Before  it used to look like this:
     //  static_cast<HovercraftEntity*>(pOther)->getHitBy(static_cast<eHovercraft>(m_iOwnerID));
@@ -62,6 +62,7 @@ void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderM
 
     // As a result, there is no relation between m_iOwnerID and the owner's
     // eHovercraft value, meaning we cannot just directly cast the m_iOwnerID to an eHovercraft
+    // TODO deal with Rocket vs Rocket collisions
     if (ENTITY_HOVERCRAFT == pOther->getType() && m_iOwnerID != pOther->getID())
     {
         eHovercraft owner = GAME_STATS->getEHovercraft(m_iOwnerID);
@@ -70,7 +71,8 @@ void InteractableEntity::handleCollision(Entity* pOther, unsigned int iColliderM
         // cout << owner << "[ID: " << m_iOwnerID << "] hit " << GAME_STATS->getEHovercraft(hit->getID()) << "[ID: "<< hit->getID() << "]"<< endl;
         // cout << owner << " hit " << GAME_STATS->getEHovercraft(hit->getID()) << endl;
 
-        hit->getHitBy(owner, ability);
+        hit->getHitBy(owner, getAbility());
+        handleHovercraftCollision(hit);
     }
 }
 

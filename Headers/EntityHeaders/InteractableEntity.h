@@ -5,6 +5,8 @@
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/PhysicsComponent.h"
 
+class HovercraftEntity;
+
 // Name: InteractableEntity
 // Written by: James Cote
 // Description: General Entity for objects that players can interact with.
@@ -26,7 +28,8 @@ public:
                             const string& sShaderType,
                             float fScale);
     virtual void update(float fTimeInSeconds);
-    virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg, eAbility ability);
+    // @Override
+    virtual void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
     virtual void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
     eInteractType getInteractableType() const { return m_eInteractableType; }
 
@@ -34,6 +37,11 @@ public:
     int getOwnerID() const { return m_iOwnerID; }
 
 protected:
+
+    // The ability of the interactable entity when pOther is hit
+    // By default, the ability is invalid, which will not process a hit
+    virtual eAbility getAbility() const { return eAbility::ABILITY_INVALID; }
+    virtual void handleHovercraftCollision(HovercraftEntity* hit) {};
     // Protected Variables
     int m_iOwnerID;
 

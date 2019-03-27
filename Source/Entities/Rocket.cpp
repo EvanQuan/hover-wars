@@ -53,14 +53,14 @@ void Rocket::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
     /* Not Implemented */
 }
 
-// void Rocket::handleCollision(const Entity* pOther) const
+// @Override
 void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     if (m_iOwnerID != pOther->getID())
     {
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
-        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg, ABILITY_ROCKET);
+        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
         removeFromScene(iVictimMsg);
     }
@@ -72,7 +72,10 @@ void Rocket::removeFromScene(unsigned int iVictimMsg)
     string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
     m_pMesh->removeInstance(sHashKey);
     m_pPhysicsComponent->flagForRemoval(sHashKey);
-    m_pReferenceList.erase(remove(m_pReferenceList.begin(), m_pReferenceList.end(), sHashKey), m_pReferenceList.end());
+    m_pReferenceList.erase(remove(m_pReferenceList.begin(),
+                                  m_pReferenceList.end(),
+                                  sHashKey),
+                           m_pReferenceList.end());
 }
 
 /*************************************************************************************************\

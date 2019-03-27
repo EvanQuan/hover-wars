@@ -49,4 +49,7 @@ private:
     unsigned int getNewRocketID()           { return ++m_iRocketID; }
 
     void removeFromScene(unsigned int iVictimMsg);
+
+    // @Override
+    eAbility getAbility() const { return eAbility::ABILITY_ROCKET; }
 };
