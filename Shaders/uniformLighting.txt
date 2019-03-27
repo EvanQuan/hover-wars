@@ -32,4 +32,3 @@ layout (std140, binding = 2) uniform Lights
 
 // Shadow Map Uniforms
 uniform sampler2D DirectionalLightShadow;
-uniform sampler2D SpotLightShadows[4];
