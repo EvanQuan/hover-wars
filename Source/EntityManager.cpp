@@ -192,27 +192,19 @@ void EntityManager::renderEnvironment( )
     {
         pDirectionalLightComponent = m_pDirectionalLight->getLightingComponent();
         pDirectionalLightComponent->setupShadowFBO();       // Set up Frame Buffer for Shadow
-        CheckGLErrors();
         pDirectionalLightComponent->setupPMVMatrices();     // Set the Lighting ModelView and Projection Matrices for generating a Depth Buffer from Light Position
-        CheckGLErrors();
         m_bShadowDraw = true;                               // Render For Shadow Map
         doRender();                                         // Do the Render
-        CheckGLErrors();
         pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
-        CheckGLErrors();
         resetFBO();                                         // Reset the Frame Buffer for typical rendering.
-        CheckGLErrors();
     }
     
     // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
     m_pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
-    CheckGLErrors();
 
     // Perform Final Render
     setCameraPMVMatrices();
-    CheckGLErrors();
     doRender();
-    CheckGLErrors();
 }
 
 // Performs Rendering of scene

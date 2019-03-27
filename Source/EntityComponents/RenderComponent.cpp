@@ -94,5 +94,4 @@ void RenderComponent::initializeComponent(const Mesh* pMesh)
 
     // Store Mesh for Reference.
     m_pMesh = pMesh;
-    m_iVertexArray = pMesh->getVertexArray();    // Store Vertex Array Locally.
 }
