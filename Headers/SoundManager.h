@@ -164,16 +164,18 @@ private:
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
     /*
-    Get the event path of the event. If there are multiple event paths for the
-    specified event, pick a random one from the list of valid ones.
+        Get the event path of the event. If there are multiple event paths for
+        the specified event, pick a random one from the list of valid ones.
 
-    @param event    to get event path from
+        @param event    to get event path from
+        @return path of event in the Master Bank file if the event exists
+        @return "" if the event does not exist
     */
-    const char* getPath(eSoundEvent event) {
+    string getPath(eSoundEvent event) {
         if (!FuncUtils::contains(eventToSound, event)) {
             return "";
         }
-        vector<const char*> soundList = eventToSound.at(event);
+        vector<string> soundList = eventToSound.at(event);
         if (soundList.size() > 1)
         {
             return soundList[FuncUtils::random(0, soundList.size() - 1)];
@@ -181,7 +183,7 @@ private:
         return soundList[0]; // there is only 1 
     }
 
-    const unordered_map<eSoundEvent, vector<const char*>> eventToSound =
+    const unordered_map<eSoundEvent, vector<string>> eventToSound =
     {
         {SOUND_ROCKET_ACTIVATE,          { "event:/rocket/rocket_activate",
                                          }},
