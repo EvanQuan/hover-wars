@@ -56,7 +56,7 @@ This should be relatively high to make car collisions satisfying.
 #define CAR_RESTITUTION 1.0f // 0.2f
 
 // Definition for for Cap Radius of Rockets
-#define CAP_RADIUS 0.1f
+#define CAP_RADIUS 0.2f // 0.2f is safe, 0.5 is large
 
 /*
 World Restitution
@@ -549,7 +549,7 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
 void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody)
 {
     // Generate Shape for the Rocket.
-    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength - CAP_RADIUS), *gWorldMaterial);
+    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength), *gWorldMaterial);
 
     // Generate Transform to given position.
     PxMat44 pxTransform;

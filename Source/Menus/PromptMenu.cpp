@@ -96,6 +96,10 @@ PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts
 }
 
 
+/*
+    Before we check for keyboard input, set cursor direction to invalid
+    (neutral).
+*/
 void PromptMenu::setupKeyCommands()
 {
     m_eCursorDirectionKeyboard = COMMAND_INVALID_FIXED;
@@ -171,6 +175,7 @@ void PromptMenu::moveCursorKeyboard(eFixedCommand direction)
 }
 
 // @EvanQuan : hovercraft not referenced
+// Not referenced due to inherited virtual function
 void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
     switch (command)
@@ -296,6 +301,11 @@ bool PromptMenu::moveLeftColumn()
     return oldCursorColumn != m_iCursorColumn;
 }
 
+/*
+    Move the cursor in the menu in the menu prompt map, based on the direction.
+    If the cursor goes beyond the bounds of the prompt map, it will re-enter on
+    the other side (modulo) so that the cursor cycles its movement.
+*/
 void PromptMenu::moveCursor(eFixedCommand direction)
 {
     //if (m_fSecondsToNextRepeat > 0.0f) {
@@ -365,18 +375,12 @@ void PromptMenu::updateTimeValues(float fTimeInSeconds)
 //@EvanQuan : Functions not implemented
 void PromptMenu::handleAccumulatedKeyCommands(eFixedCommand command)
 {
-    /* TODO */
-    switch (command)
-    {
-    case COMMAND_PROMPT_UP:
-        break;
-    }
-
+    moveCursorKeyboard(command);
 }
 
 void PromptMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft)
 {
-    /* TODO */
+    executeFixedCommand(hovercraft, m_eCursorDirectionKeyboard);
 }
 
 void PromptMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
