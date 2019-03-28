@@ -580,7 +580,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         float mySpeed = glm::length(myVelocity);
         float otherSpeed = glm::length(otherVelocity);
 
-        // Multithread issues, can't do push
+        // Multithread issues, can't do push directly
         if (mySpeed > otherSpeed) {
             // pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
             pOtherHovercraft->queuePush(myVelocity.x, myVelocity.y);

@@ -472,7 +472,11 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
+        if (!(isBot(attacker) && isBot(hit)))
+        {
+            m_pGameInterface->displayMessage(attacker, hit,
+                GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
+        }
     }
 
     // Update attacker's current total killstreak against hit
@@ -568,8 +572,12 @@ bool GameStats::canStartDomination(eHovercraft attacker, eHovercraft hit) const
 void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
 {
     // Ad hoc for single player
-    m_pGameInterface->displayMessage(attacker, hit,
-                                   GameInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
+    if (!(isBot(attacker) && isBot(hit)))
+    {
+        m_pGameInterface->displayMessage(attacker, hit,
+            GameInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
+
+    }
     stats[attacker][IS_DOMINATING_PLAYER_1 + hit] = true;
 }
 /*
@@ -580,8 +588,11 @@ void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
 */
 void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
-    m_pGameInterface->displayMessage(attacker, hit,
-                                   GameInterface::eKillMessage::KILL_MESSAGE_REVENGE);
+    if (!(isBot(attacker) && isBot(hit)))
+    {
+        m_pGameInterface->displayMessage(attacker, hit,
+            GameInterface::eKillMessage::KILL_MESSAGE_REVENGE);
+    }
     stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;
 }
 

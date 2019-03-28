@@ -208,6 +208,9 @@ public:
     int get(eGlobalStat stat) const { return globalStats[stat]; };
     bool hasLargestScore(eHovercraft hovercraft);
 
+    int getPlayerCount() const { return m_iPlayerCount; }
+    int getBotCount() const { return m_iBotCount; }
+
 private:
     GameStats(int iWidth, int iHeight);
     static GameStats* m_pInstance;

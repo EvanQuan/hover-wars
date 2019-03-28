@@ -150,7 +150,18 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         break;
     case KILL_MESSAGE_FIRST_BLOOD:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
-        displayMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
+        // Announce first blood to everyone
+        for (int player = 0, playerCount = GAME_STATS->getPlayerCount();
+             player < playerCount;
+             player++)
+        {
+            string attackerName = attacker == player ? "You" : m_eHovercraftToString.at(attacker);
+            string hitName = hit == player ? "you" : m_eHovercraftToString.at(hit);
+            displayMessage(static_cast<eHovercraft>(player),
+                attackerName + " got first blood against " + hitName);
+        }
+        // displayMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
+        // displayMessage(hit, m_eHovercraftToString.at(attacker) + " got first blood against you");
         break;
     case KILL_MESSAGE_REVENGE:
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
