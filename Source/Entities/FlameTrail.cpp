@@ -28,10 +28,10 @@ FlameTrail::~FlameTrail()
 
 void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
+    cout << "FLAME COLLISION DETECTED" << endl;
     // copy and pasted from rocket, may be differenet
     if (m_iOwnerID != pOther->getID())
     {
-        cout << "flame collision" << endl;
         // SOUND_MANAGER->play(SoundManager::eSoundEvent::);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         // InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);

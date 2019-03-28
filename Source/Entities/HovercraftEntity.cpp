@@ -321,7 +321,10 @@ void HovercraftEntity::updateQueuedActions()
     Hovercraft Entity will handle its "death" logic and award points to the
     attacker.
 
-    @param  attacker        to award points to
+    @param attacker         to award points to
+    @param ability          that hit this. An invalid ability will still
+                            register a hit, but not increment any ability
+                            kill stats.
 */
 void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
@@ -337,7 +340,8 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     }
     setInvincible();
     m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(hit), ability);
+                         static_cast<GameStats::eAddScoreReason>(hit),
+                         ability);
     resetMaxCooldowns();
     attackerHovercraft->reduceMaxCooldowns();
 }
