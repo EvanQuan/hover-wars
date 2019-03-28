@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "EmitterEngine.h"
 #include "SoundManager.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 // Default Constructor
 Rocket::Rocket(int iID, int iOwnerID)
@@ -64,6 +65,12 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 
         removeFromScene(iVictimMsg);
     }
+}
+
+void Rocket::handleHovercraftCollision(HovercraftEntity* hit)
+{
+
+    cout << "ROCKET HIT PLAYER " << hit->getID() << endl;
 }
 
 // clear Rocket Rendering; Remove Instance from Mesh, remove from Physics
