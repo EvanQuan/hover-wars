@@ -40,7 +40,8 @@ void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsi
 
 void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
 {
-
+    // TODO add flame hit sound here, as at will only occur if a hovercraft
+    // collides with this
     cout << "FLAME HIT PLAYER " << hit->getID() << endl;
 }
 
