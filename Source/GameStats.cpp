@@ -658,7 +658,7 @@ void GameStats::sortByHighestScoreFirst()
     @return all the hovercrafts that have the highest value of the specified stat
             Ignores when the stat is 0.
 */
-vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eHovercraftStat stat)
+vector<eHovercraft> GameStats::getHovercraftsThatHaveHighestNonZero(eHovercraftStat stat)
 {
     int highest = 0;
     vector<eHovercraft> hovercrafts;
@@ -675,6 +675,42 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighest(eHovercraftStat sta
         if ((value >= highest) && (highest > 0))
         {
             hovercrafts.push_back(hovercraft);
+        }
+    }
+    return hovercrafts;
+}
+
+vector<eHovercraft> GameStats::getHovercraftsThatHaveLowest(eHovercraftStat stat)
+{
+    int lowest = numeric_limits<int>::max();
+    vector<eHovercraft> hovercrafts;
+
+    for (int p = HOVERCRAFT_PLAYER_1; p < m_iPlayerCount; p++)
+    {
+        eHovercraft player = static_cast<eHovercraft>(p);
+        int value = get(player, stat);
+        if (value < lowest)
+        {
+            lowest = value;
+            hovercrafts.clear();
+        }
+        if (value <= lowest)
+        {
+            hovercrafts.push_back(player);
+        }
+    }
+    for (int b = HOVERCRAFT_BOT_1; b < m_iBotCount; b++)
+    {
+        eHovercraft bot = static_cast<eHovercraft>(b);
+        int value = get(bot, stat);
+        if (value < lowest)
+        {
+            lowest = value;
+            hovercrafts.clear();
+        }
+        if (value <= lowest)
+        {
+            hovercrafts.push_back(bot);
         }
     }
     return hovercrafts;
@@ -752,12 +788,22 @@ void GameStats::awardToHovercrafts(eHovercraftStat stat,
     @param description  of the award
     @param points       the award gives
 */
-void GameStats::awardHighestStat(eHovercraftStat stat,
-                                 string name,
-                                 string description,
-                                 int points)
+void GameStats::awardHighestNonZeroStat(eHovercraftStat stat,
+                                        string name,
+                                        string description,
+                                        int points)
 {
-    vector<eHovercraft> winners = getHovercraftsThatHaveHighest(stat);
+    vector<eHovercraft> winners = getHovercraftsThatHaveHighestNonZero(stat);
+    awardToHovercrafts(stat, name, description, points, winners);
+
+}
+
+void GameStats::awardLowestStat(eHovercraftStat stat,
+                                       string name,
+                                       string description,
+                                       int points)
+{
+    vector<eHovercraft> winners = getHovercraftsThatHaveLowest(stat);
     awardToHovercrafts(stat, name, description, points, winners);
 
 }
@@ -789,13 +835,16 @@ void GameStats::awardAwards()
     // Multiplayer only awards
     if ((m_iPlayerCount > 1) && (m_iBotCount > 1))
     {
-        awardHighestStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
-        awardHighestStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+        awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
+        awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
     }
-    awardHighestStat(POWERUPS_TOTAL_PICKED_UP,      "Gotta Go Fast!", "Most speed boosts",  200);
-    awardHighestStat(KILLSTREAK_LARGEST,            "Serial Killer", "Largest killstreak",  100);
-    awardHighestStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
-    awardHighestStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
-    awardHighestStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        300);
-    awardHighestStat(DEATHS_TOTAL,                  "Consolation", "Most deaths",           100);
+    awardHighestNonZeroStat(POWERUPS_TOTAL_PICKED_UP,      "Gotta Go Fast!", "Most speed boosts",  200);
+    awardHighestNonZeroStat(KILLSTREAK_LARGEST,            "Serial Killer", "Largest killstreak",  100);
+    awardHighestNonZeroStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
+    awardHighestNonZeroStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
+    awardHighestNonZeroStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        300);
+    awardHighestNonZeroStat(DEATHS_TOTAL,                  "Consolation", "Most deaths",           100);
+    awardLowestStat(DEATHS_TOTAL,                          "Survivor", "Least deaths",             500);
+    // Special awards
+    awardZeroStat(DEATHS_TOTAL,                            "Untouchable", "Zero deaths", 500);
 }
