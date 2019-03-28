@@ -690,12 +690,22 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eHovercraftStat stat)
 {
     vector<eHovercraft> hovercrafts;
 
+    // Players
     for (int h = HOVERCRAFT_PLAYER_1; h < m_iPlayerCount; h++)
     {
-        eHovercraft hovercraft = static_cast<eHovercraft>(h);
-        if (get(hovercraft, stat) == 0)
+        eHovercraft player = static_cast<eHovercraft>(h);
+        if (get(player, stat) == 0)
         {
-            hovercrafts.push_back(hovercraft);
+            hovercrafts.push_back(player);
+        }
+    }
+    // Bots
+    for (int b = HOVERCRAFT_BOT_1; b < m_iBotCount; b++)
+    {
+        eHovercraft bot = static_cast<eHovercraft>(b);
+        if (get(bot, stat) == 0)
+        {
+            hovercrafts.push_back(bot);
         }
     }
     return hovercrafts;
