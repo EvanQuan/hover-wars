@@ -30,6 +30,7 @@ public:
 
     void handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg);
 
+
 private:
     float                                               m_fHeight,
                                                         m_fWidth;
@@ -38,4 +39,6 @@ private:
 
     // @Override
     eAbility getAbility() const { return eAbility::ABILITY_TRAIL_ACTIVATE; }
+    // @Override
+    void handleHovercraftCollision(HovercraftEntity* hit);
 };

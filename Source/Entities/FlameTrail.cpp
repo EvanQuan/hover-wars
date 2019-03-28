@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 #include "EntityComponentHeaders/AnimationComponent.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 using namespace SpriteSheetDatabase;
 
@@ -32,16 +33,15 @@ void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsi
     // copy and pasted from rocket, may be differenet
     if (m_iOwnerID != pOther->getID())
     {
-        // SOUND_MANAGER->play(SoundManager::eSoundEvent::);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
-        // InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
-
-        // clear Rocket Rendering; Remove Instance from Mesh
-        // string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
-        // m_pMesh->removeInstance(m_pReferenceMap[sHashKey]);
-        // m_pPhysicsComponent->flagForRemoval(sHashKey);
-        // m_pReferenceMap.erase(sHashKey);        
+        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
     }
+}
+
+void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
+{
+
+    cout << "FLAME HIT PLAYER " << hit->getID() << endl;
 }
 
 /****************************************************************\
