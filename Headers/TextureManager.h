@@ -27,8 +27,10 @@ public:
 
     // Methods:
     Texture* loadTexture(const string &sFileName);
+    Texture* loadCubeMap(const vector<string>* sFileNames);
     Texture* genTexture(const vec4* vColor);
     Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);
+    void unloadTexture(Texture** pTexture);
     void unloadAllTextures();
 
 private:

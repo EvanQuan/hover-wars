@@ -26,6 +26,7 @@ public:
     void createCube(vector< string > sData, int iLength);
     void createBot();
     void createStaticMesh(vector< string > sData, unsigned int iLength);
+    void createSkybox(vector< string > sData);
     Rocket* createRocketMesh(int iOwnerID);
     Spikes* createSpikesMesh(int iOwnerID);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
