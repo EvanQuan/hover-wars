@@ -97,6 +97,9 @@ public:
     // Set message to "" to disable debug message
     void displayDebug(const char* message);
 
+    // Shows the Sprite Map for the text map for debugging.
+    void debugFont();
+
 protected:
 
     // Default Constructor

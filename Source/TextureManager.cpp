@@ -31,6 +31,20 @@ void TextureManager::unloadAllTextures( )
     m_pTextureCache.clear();
 }
 
+// unloadTexture: This will unload a specified texture and set the texture pointer to null.
+void TextureManager::unloadTexture(Texture** pTexture)
+{
+    // Ensure the Texture Pointer isn't null
+    assert(nullptr != *pTexture);
+
+    // Make sure the Texture is found.
+    if (m_pTextureCache.end() != m_pTextureCache.find((*pTexture)->m_sManagerKey))
+    {
+        m_pTextureCache.erase((*pTexture)->m_sManagerKey);  // Erase the Texture
+        *pTexture = nullptr;                                // Set the Texture to Null
+    }
+}
+
 // loadTexture: Takes in a FileName that is uses for a hashmap used to store the textures.
 //              If the texture has already been loaded, return a pointer to that loaded texture.
 //              Otherwise, load the texture and return the pointer to the newly created texture.
@@ -62,6 +76,41 @@ Texture* TextureManager::loadTexture(const string& sFileName )
         }
     }
 
+    return pReturnTexture;
+}
+
+// Loads a Cube Map Texture; Returns Null if it failed to load for some reason.
+Texture* TextureManager::loadCubeMap(const vector<string>* sFileNames)
+{
+    // Return Variables
+    Texture* pReturnTexture = nullptr;
+    string sHashKey;
+
+    // Only proceed if there's at least 6 image files to load for the cubemap.
+    if (6 == sFileNames->size())
+    {
+        // Generate HashKey via concatonation of all file names
+        for each (string sFileName in *sFileNames)
+            sHashKey += sFileName;
+
+        // If HashKey already exists, return the found texture.
+        if (m_pTextureCache.end() != m_pTextureCache.find(sHashKey))
+            pReturnTexture = m_pTextureCache[sHashKey].get();
+        else    // Otherwise, generate new Cubemap Texture
+        {
+            // Generate Texture Smart Pointer
+            unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashKey, Texture::manager_cookie());
+            pNewTexture->genCubeMap(sFileNames);
+
+            // Set Return Variables
+            pReturnTexture = pNewTexture.get();
+
+            // Store New Texture in the Texture Cache
+            m_pTextureCache.insert(make_pair(sHashKey, move(pNewTexture)));
+        }
+    }
+
+    // Return Texture
     return pReturnTexture;
 }
 

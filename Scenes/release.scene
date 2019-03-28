@@ -50,6 +50,8 @@
 #       static_mesh { x y z... }
 #           - "x y z..."            = the position of the mesh
 #                                   = multiple positions can be specified for instanced rendering
+#		skybox { <right> <left> <up> <down> <back> <front> }
+#			- <...>					= the texture location for the specified section of the skybox
 #
 # ============================================================
 # Attributes
@@ -111,6 +113,36 @@ spikes {
 spawn_points {
     0 5 0
 }
+
+# MoonDust Setup
+#skybox {
+#	textures/skybox/mp_moondust/moondust_ft.tga
+#	textures/skybox/mp_moondust/moondust_bk.tga
+#	textures/skybox/mp_moondust/moondust_up.tga
+#	textures/skybox/mp_moondust/moondust_dn.tga
+#	textures/skybox/mp_moondust/moondust_rt.tga
+#	textures/skybox/mp_moondust/moondust_lf.tga
+#}
+
+# MainFrame Setup
+#skybox {
+#	textures/skybox/mp_mainframe/mainframe_ft.tga
+#	textures/skybox/mp_mainframe/mainframe_bk.tga
+#	textures/skybox/mp_mainframe/mainframe_up.tga
+#	textures/skybox/mp_mainframe/mainframe_dn.tga
+#	textures/skybox/mp_mainframe/mainframe_rt.tga
+#	textures/skybox/mp_mainframe/mainframe_lf.tga
+#}
+
+# Midnight Setup
+#skybox {
+#	textures/skybox/mnight/mnight_ft.tga
+#	textures/skybox/mnight/mnight_bk.tga
+#	textures/skybox/mnight/mnight_up.tga
+#	textures/skybox/mnight/mnight_dn.tga
+#	textures/skybox/mnight/mnight_rt.tga
+#	textures/skybox/mnight/mnight_lf.tga
+#}
 
 #       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
 #           - "dX dY dZ"    = the direction of the light source

@@ -25,6 +25,7 @@ class InteractableEntity;
 class PointLight;
 class DirectionalLight;
 class SpotLight;
+class Texture;
 
 // Environment Manager
 // Manages all objects in an environment
@@ -50,6 +51,7 @@ public:
 
     // Entity Functions
     Camera* generateCameraEntity();
+    void loadSkyBox(const vector<string>* sData);
     void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
     void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
     void generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
@@ -159,6 +161,7 @@ private:
     void doRender();
     void resetFBO();
     void renderAxis();
+    void renderSkyBox();
     void setCameraPMVMatrices();
 
     // Camera
@@ -172,5 +175,9 @@ private:
 
     // Scene Management toggling
     bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap, m_bShadowDraw;
+
+    // Skybox information
+    Texture* m_pCubeMapTexture;
+    GLuint m_iSkyBoxVertArray, m_iSkyBoxVertBuffer;
 };
 
