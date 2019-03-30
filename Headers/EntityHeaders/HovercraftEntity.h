@@ -122,6 +122,18 @@ public:
     */
     void resetMaxCooldowns();
 
+    bool canDash() const { return m_iDashCharges > 0; }
+
+    int getDashCharges() const { return m_iDashCharges; }
+
+    int getDashMaxCharges() const { return m_iDashMaxCharges; }
+
+    float getDashMaxRecharge() const { return m_fDashMaxRecharge; }
+
+    float getDashRecharge() const { return m_fDashRecharge; }
+
+    bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
+
 private:
     /*
         Queued actions are actions that cannot be applied immediately due to
@@ -199,9 +211,10 @@ private:
     // Maximum cooldown value
     float m_fMaxCooldowns[COOLDOWN_COUNT];
 
-    bool canDash();
     // Current dash charges
     int m_iDashCharges;
+    // Max dash charges
+    int m_iDashMaxCharges;
     // Maximum time it takes to gain a dash charge
     float m_fDashMaxRecharge;
     // Current dash recharge time

@@ -68,7 +68,6 @@ These are the minimum cooldowns for these abilities.
 */
 #define ROCKET_MIN_COOLDOWN 1.0f
 #define SPIKES_MIN_COOLDOWN SPIKES_DURATION
-#define DASH_MIN_COOLDOWN   0.5f
 #define DASH_MIN_RECHARGE   2.0f
 
 /*
@@ -441,7 +440,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
         m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_MIN_COOLDOWN;
         break;
     case POWERUP_DASH_RECHARGE:
-        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_MIN_COOLDOWN;
+        // m_fMaxCooldowns[COOLDOWN_DASH] = DASH_MIN_COOLDOWN;
         break;
     default:
         return;
@@ -501,7 +500,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
         m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
         break;
     case POWERUP_DASH_RECHARGE:
-        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_BASE_COOLDOWN;
+        // m_fMaxCooldowns[COOLDOWN_DASH] = DASH_BASE_COOLDOWN;
         break;
     default:
         return;
@@ -1046,15 +1045,8 @@ void HovercraftEntity::dash(eAbility direction)
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
     m_iDashCharges--;
+    m_iDashMaxCharges = DASH_MAX_CHARGE_COUNT;
     m_fDashRecharge = m_fDashMaxRecharge;
-}
-
-/*
-    Check if this hovercraft can dash
-*/
-bool HovercraftEntity::canDash()
-{
-    return m_iDashCharges > 0;
 }
 
 void HovercraftEntity::push(float x, float y) {

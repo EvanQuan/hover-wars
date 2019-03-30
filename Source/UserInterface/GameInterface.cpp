@@ -400,25 +400,55 @@ void GameInterface::renderCooldowns()
                    m_vComponentCoordinates[COMPONENT_SPIKES].first,
                    m_vComponentCoordinates[COMPONENT_SPIKES].second,
                    SPIKES_SCALE);
-    renderCooldown("Dash",
-                   eCooldown::COOLDOWN_DASH,
-                   cooldowns,
-                   m_vComponentCoordinates[COMPONENT_DASH].first,
-                   m_vComponentCoordinates[COMPONENT_DASH].second,
-                   DASH_SCALE);
+    renderCharges(cooldowns, hovercraft);
 
     //  renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
+/*
+    Render an ability cooldown label.
+
+    @param label        name of the cooldown
+    @param cooldown     of ability, to determine the cooldown value to retrieve from cooldowns
+    @param cooldowns    of all ability cooldowns
+    @param x            x-coordinate to place cooldown label
+    @param y            y-coordinate to place cooldown label
+    @param scale        of the label
+*/
 void GameInterface::renderCooldown(std::string label,
                                    eCooldown cooldown,
                                    float* cooldowns,
                                    GLfloat x, GLfloat y, GLfloat scale)
 {
     bool isReady = cooldowns[cooldown] == 0;
-    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
+    std::string cooldownString = isReady ?
+        COOLDOWN_READY :
+        FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
     renderText(label + ": " + cooldownString, x, y, scale, color);
+}
+
+// Right now only dones for dashes
+void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft)
+{
+    //renderCooldown("Dash",
+                   //eCooldown::COOLDOWN_DASH,
+                   //cooldowns,
+                   //m_vComponentCoordinates[COMPONENT_DASH].first,
+                   //m_vComponentCoordinates[COMPONENT_DASH].second,
+                   //DASH_SCALE);
+    bool canDash = hovercraft->canDash();
+    bool isFull = hovercraft->hasMaxDashCharges();
+    std::string cooldownString = isFull ?
+        COOLDOWN_READY :
+        FuncUtils::toString(hovercraft->getDashRecharge(), COOLDOWN_DECIMAL_PLACES) + "s";
+    vec3 color = isFull ? COLOR_READY : canDash ? COLOR_MID_READY : COLOR_NOT_READY;
+    renderText("Dash (" + std::to_string(hovercraft->getDashCharges()) + "): " + cooldownString,
+               m_vComponentCoordinates[COMPONENT_DASH].first,
+               m_vComponentCoordinates[COMPONENT_DASH].second,
+               DASH_SCALE,
+               color);
+
 }
 
 

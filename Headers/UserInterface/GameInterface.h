@@ -9,6 +9,7 @@
 
 // Forward Declaration
 class EntityManager;
+class HovercraftEntity;
 
 
 /*
@@ -115,6 +116,7 @@ private:
     void updateCooldowns();
     void renderCooldowns();
     void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
+    void renderCharges(float* cooldowns, HovercraftEntity* hovercraft);
 
     /*
     NOTE: this may need to change in the future.
