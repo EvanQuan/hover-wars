@@ -53,6 +53,8 @@
 #define DASH_BASE_COOLDOWN          0.5f
 #define DASH_BASE_RECHARGE          6.0f
 
+#define DASH_BASE_CHARGE_COUNT      3
+
 /*
     Once spikes are activated, they are enabled for a duration before deactivating.
 */
@@ -635,6 +637,11 @@ void HovercraftEntity::initializeCooldowns()
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
+
+    m_iDashCharges = DASH_BASE_CHARGE_COUNT;
+    m_fDashMaxRecharge = DASH_BASE_RECHARGE;
+    m_fDashRecharge = 0.0f;
+
 }
 
 /*

@@ -198,8 +198,6 @@ private:
 
     // Current dash charges
     int m_iDashCharges;
-    // Maximum dash charges that can be stored
-    int m_iDashMaxCharges;
     // Maximum time it takes to gain a dash charge
     float m_fDashMaxRecharge;
     // Current dash recharge time
