@@ -150,7 +150,18 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         break;
     case KILL_MESSAGE_FIRST_BLOOD:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
-        displayMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
+        // Announce first blood to everyone
+        for (int player = 0, playerCount = GAME_STATS->getPlayerCount();
+             player < playerCount;
+             player++)
+        {
+            string attackerName = attacker == player ? "You" : m_eHovercraftToString.at(attacker);
+            string hitName = hit == player ? "you" : m_eHovercraftToString.at(hit);
+            displayMessage(static_cast<eHovercraft>(player),
+                attackerName + " got first blood against " + hitName);
+        }
+        // displayMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
+        // displayMessage(hit, m_eHovercraftToString.at(attacker) + " got first blood against you");
         break;
     case KILL_MESSAGE_REVENGE:
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE);
@@ -312,13 +323,13 @@ void GameInterface::renderMessages()
         }
     }
 
-    if ("" != debugMessage)
+    if (!debugMessage.empty())
     {
         renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
     }
 }
 
-void GameInterface::displayDebug(const char* message)
+void GameInterface::displayDebug(std::string message)
 {
     debugMessage = message;
 }
@@ -389,25 +400,51 @@ void GameInterface::renderCooldowns()
                    m_vComponentCoordinates[COMPONENT_SPIKES].first,
                    m_vComponentCoordinates[COMPONENT_SPIKES].second,
                    SPIKES_SCALE);
-    renderCooldown("Dash",
-                   eCooldown::COOLDOWN_DASH,
-                   cooldowns,
-                   m_vComponentCoordinates[COMPONENT_DASH].first,
-                   m_vComponentCoordinates[COMPONENT_DASH].second,
-                   DASH_SCALE);
+    renderCharges(cooldowns, hovercraft);
 
     //  renderImage(IMAGE_TRAIL, 0, 0, 10);
 }
 
+/*
+    Render an ability cooldown label.
+
+    @param label        name of the cooldown
+    @param cooldown     of ability, to determine the cooldown value to retrieve from cooldowns
+    @param cooldowns    of all ability cooldowns
+    @param x            x-coordinate to place cooldown label
+    @param y            y-coordinate to place cooldown label
+    @param scale        of the label
+*/
 void GameInterface::renderCooldown(std::string label,
                                    eCooldown cooldown,
                                    float* cooldowns,
                                    GLfloat x, GLfloat y, GLfloat scale)
 {
     bool isReady = cooldowns[cooldown] == 0;
-    std::string cooldownString = isReady ? COOLDOWN_READY : FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
+    std::string cooldownString = isReady ?
+        COOLDOWN_READY :
+        FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
     renderText(label + ": " + cooldownString, x, y, scale, color);
+}
+
+// Right now only dones for dashes
+// Renders dash with it's charges and recharge cooldowns
+void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft)
+{
+    bool canDash = hovercraft->canDash();
+    bool isFull = hovercraft->hasMaxDashCharges();
+    std::string cooldownString = isFull ?
+        COOLDOWN_READY :
+        FuncUtils::toString(hovercraft->getDashRecharge(), COOLDOWN_DECIMAL_PLACES) + "s";
+    vec3 color = isFull ? COLOR_READY : canDash ? COLOR_MID_READY : COLOR_NOT_READY;
+    std::string labelWithCharges = "Dash (" + std::to_string(hovercraft->getDashCharges()) + "): ";
+    renderText(labelWithCharges + cooldownString,
+               m_vComponentCoordinates[COMPONENT_DASH].first,
+               m_vComponentCoordinates[COMPONENT_DASH].second,
+               DASH_SCALE,
+               color);
+
 }
 
 

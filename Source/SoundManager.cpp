@@ -61,13 +61,14 @@ SoundManager* SoundManager::getInstance() {
 /*
     Play a sound in the world. That sound can have any number of
     instances played simultaneously.
+    If the event does not have a valid path, no sound is played.
 
     @param sound    to play
 */
 void SoundManager::play(eSoundEvent sound)
 {
-    const char* eventPath = getPath(sound);
-    if (eventPath == "") 
+    string eventPath = getPath(sound);
+    if (eventPath.empty())
     {
         return;
     }
@@ -77,10 +78,12 @@ void SoundManager::play(eSoundEvent sound)
 }
 
 /*
-    Determine Entity Types resulting in Collision and play a resulting sound for the collision.
-    Handle any logic between collisions to determine sound here.
+    Determine Entity Types resulting in Collision and play a resulting sound
+    for the collision. Handle any logic between collisions to determine sound
+    here.
 
-    We want to ignore bot world collision sounds since world collision sounds are global.
+    We want to ignore bot world collision sounds since world collision sounds
+    are global.
 
     @param eColliderType    The Entity Type of the Collider
     @param eCollidedType    The Entity Type of the Collided

@@ -135,7 +135,7 @@ void InputHandler::debugKeyCommands(int key, int action)
             m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_SPIKES_COOLDOWN);
             break;
         case GLFW_KEY_8:
-            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_COOLDOWN);
+            m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_RECHARGE);
             break;
         case GLFW_KEY_9:
             SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPAWN);

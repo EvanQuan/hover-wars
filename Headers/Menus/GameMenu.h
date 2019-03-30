@@ -2,7 +2,7 @@
 
 #include "Menus/Menu.h"
 
-class GameMenu final : Menu
+class GameMenu final : public Menu
 {
 public:
     ~GameMenu();
@@ -26,17 +26,16 @@ protected:
 
     static GameMenu* m_pInstance;
 
-    void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
-
-    // For keyboard command handling
-    void setupKeyCommands();
-    void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
-    void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
-
     // Joystick commands
     void updateLeftStick(eHovercraft hovercraft, float x, float y);
     void updateRightStick(eHovercraft hovercraft, float x, float y);
 
+    void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
+
+    // For keyboard command handling
+    void setupKeyCommands();
+    void handleAccumulatedKeyCommands(eFixedCommand command);
+    void executeAccumulatedKeyCommands(eHovercraft hovercraft);
 
     void executeIfHovercraftExists(eHovercraft hovercraft, eFixedCommand command);
     void executeIfHovercraftExists(eHovercraft hovercraft, eVariableCommand command,

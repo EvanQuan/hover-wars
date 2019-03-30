@@ -122,6 +122,18 @@ public:
     */
     void resetMaxCooldowns();
 
+    bool canDash() const { return m_iDashCharges > 0; }
+
+    int getDashCharges() const { return m_iDashCharges; }
+
+    int getDashMaxCharges() const { return m_iDashMaxCharges; }
+
+    float getDashMaxRecharge() const { return m_fDashMaxRecharge; }
+
+    float getDashRecharge() const { return m_fDashRecharge; }
+
+    bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
+
 private:
     /*
         Queued actions are actions that cannot be applied immediately due to
@@ -171,6 +183,8 @@ private:
     void updateCameraPosition(float fTimeInSeconds);
     void updateCameraRotation(float fTimeInSeconds);
     void updateCooldowns(float fTimeInSeconds);
+    void updateSpatialMap(vec3 &vNewPosition);
+    void updatePhysicsComponent();
 
     // Abilities
     void shootRocket();
@@ -183,6 +197,7 @@ private:
     void createTrailInstance();
 
     void dash(eAbility direction);
+    void updateDash(float fTimeInSeconds);
 
     // Like dashing, but weaker, no sound, and doese not count as an ability
     void push(float x, float y);
@@ -191,11 +206,19 @@ private:
     // Cooldowns
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
-    /*
-
-    */
+    // Current cooldown value
     float m_fCooldowns[COOLDOWN_COUNT];
+    // Maximum cooldown value
     float m_fMaxCooldowns[COOLDOWN_COUNT];
+
+    // Current dash charges
+    int m_iDashCharges;
+    // Max dash charges
+    int m_iDashMaxCharges;
+    // Maximum time it takes to gain a dash charge
+    float m_fDashMaxRecharge;
+    // Current dash recharge time
+    float m_fDashRecharge;
 
     /*
     Tracks the state of the flame trail

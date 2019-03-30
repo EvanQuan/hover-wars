@@ -42,4 +42,7 @@ private:
     SoundManager* m_pSoundMngr;
     mat4 m_m4WorldTransform;
     AnimationComponent* m_pSpikeAnimations[NUM_SPIKES];
+
+    // @Override
+    eAbility getAbility() const { return eAbility::ABILITY_ROCKET; }
 };

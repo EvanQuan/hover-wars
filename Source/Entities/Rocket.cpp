@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "EmitterEngine.h"
 #include "SoundManager.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 // Default Constructor
 Rocket::Rocket(int iID, int iOwnerID)
@@ -53,21 +54,35 @@ void Rocket::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
     /* Not Implemented */
 }
 
-// void Rocket::handleCollision(const Entity* pOther) const
+// @Override
 void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
     if (m_iOwnerID != pOther->getID())
     {
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
-        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg, ABILITY_ROCKET);
+        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
-        // clear Rocket Rendering; Remove Instance from Mesh
-        string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
-        m_pMesh->removeInstance(sHashKey);
-        m_pPhysicsComponent->flagForRemoval(sHashKey);
-        m_pReferenceList.erase(remove(m_pReferenceList.begin(), m_pReferenceList.end(), sHashKey), m_pReferenceList.end());
+        removeFromScene(iVictimMsg);
     }
+}
+
+void Rocket::handleHovercraftCollision(HovercraftEntity* hit)
+{
+
+    cout << "ROCKET HIT PLAYER " << hit->getID() << endl;
+}
+
+// clear Rocket Rendering; Remove Instance from Mesh, remove from Physics
+void Rocket::removeFromScene(unsigned int iVictimMsg)
+{
+    string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
+    m_pMesh->removeInstance(sHashKey);
+    m_pPhysicsComponent->flagForRemoval(sHashKey);
+    m_pReferenceList.erase(remove(m_pReferenceList.begin(),
+                                  m_pReferenceList.end(),
+                                  sHashKey),
+                           m_pReferenceList.end());
 }
 
 /*************************************************************************************************\
@@ -92,3 +107,12 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     m_pPhysicsComponent->initializeRocket(m_pReferenceList.back().c_str(), m4InitialTransform, vVelocity, fBBLength);
 }
 
+void Rocket::reflect(unsigned int iVictimMsg)
+{
+    // SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+    // mat4* m4CurrentTransform;
+    // m_pPhysicsComponent->getTransformMatrix(m4CurrentTransform);
+    // mat4* m4ReflectedTransform = // reverse
+    // const vec3 reflectedVelocity = -m_pPhysicsComponent->getLinearVelocity();
+    
+}

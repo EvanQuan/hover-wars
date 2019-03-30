@@ -208,6 +208,9 @@ public:
     int get(eGlobalStat stat) const { return globalStats[stat]; };
     bool hasLargestScore(eHovercraft hovercraft);
 
+    int getPlayerCount() const { return m_iPlayerCount; }
+    int getBotCount() const { return m_iBotCount; }
+
 private:
     GameStats(int iWidth, int iHeight);
     static GameStats* m_pInstance;
@@ -226,12 +229,14 @@ private:
     void initializeEndGameStats();
     void sortByHighestScoreFirst();
     bool winnerSortFunction(EndGameStat left, EndGameStat right);
-    vector<eHovercraft> getHovercraftsThatHaveHighest(eHovercraftStat stat);
+    vector<eHovercraft> getHovercraftsThatHaveHighestNonZero(eHovercraftStat stat);
+    vector<eHovercraft> getHovercraftsThatHaveLowest(eHovercraftStat stat);
     vector<eHovercraft> getHovercraftsThatHaveZero(eHovercraftStat stat);
 
     // Award name : function that determines who won the award
     void awardAwards();
-    void awardHighestStat(eHovercraftStat stat, string name, string description, int points);
+    void awardHighestNonZeroStat(eHovercraftStat stat, string name, string description, int points);
+    void awardLowestStat(eHovercraftStat stat, string name, string description, int points);
     void awardZeroStat(eHovercraftStat stat, string name, string description, int points);
 
     void awardToHovercrafts(eHovercraftStat stat, string name, string description, int points, vector<eHovercraft> winners);

@@ -58,8 +58,14 @@ private:
     bool moveLeftColumn();
 
     void releaseCursor();
+
+    // Direction determined by joysticks
     eFixedCommand m_eCursorDirection;
 
+    // Direction determined by keyboard
+    eFixedCommand m_eCursorDirectionKeyboard;
+
+    void moveCursorKeyboard(eFixedCommand direction);
 
 protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
@@ -84,8 +90,8 @@ protected:
 
     // For keyboard command handling
     void setupKeyCommands();
-    void handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
-    void executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command);
+    void handleAccumulatedKeyCommands(eFixedCommand command);
+    void executeAccumulatedKeyCommands(eHovercraft hovercraft);
 
     // Joystick commands
     void updateLeftStick(eHovercraft hovercraft, float x, float y);
