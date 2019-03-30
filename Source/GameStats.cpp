@@ -640,6 +640,10 @@ void GameStats::initializeEndGameStats()
     }
 }
 
+/*
+    Get a vector of EndGameStats for all participating hovercrafts
+    of the most recent game round.
+*/
 vector<EndGameStat> GameStats::getEndGameStats()
 {
     initializeEndGameStats();
@@ -790,8 +794,8 @@ void GameStats::awardToHovercrafts(eHovercraftStat stat,
 }
 /*
     Award all hovercrafts with the award of having the highest specified stat.
-    That specified stat must have a value strictly greater than 0 to count, otherwise
-    it it not awarded.
+    That specified stat must have a value strictly greater than 0 to count,
+    otherwise it it not awarded.
     Increases afterAwardsStat by point value.
 
     @param stat         to have the highest value of

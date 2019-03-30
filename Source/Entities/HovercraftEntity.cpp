@@ -13,13 +13,13 @@
 
 // Ability Defines
 /*
-Rocket
-Spikes
-Trail
-Dash - (all 4 directions count as 1 ability for cool down purposes)
+    Rocket
+    Spikes
+    Trail
+    Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
-#define ROCKET_SPEED            50.0f
+#define ROCKET_SPEED            100.0f
 #define FLAME_SPACING           0.25f
 
 /*
@@ -34,18 +34,19 @@ Dash - (all 4 directions count as 1 ability for cool down purposes)
 #define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
 
 /*
-Cooldowns
+    Cooldowns
 
-The time the hovercraft must wait until they can use the ability again.
-These are the base cooldowns that all hovercrafts start with, and so
-should be a bit on the long end.
+    The time the hovercraft must wait until they can use the ability again.
+    These are the base cooldowns that all hovercrafts start with, and so
+    should be a bit on the long end.
 
-Units: seconds
+    Units: seconds
 */
 #define ROCKET_BASE_COOLDOWN        5.0f // 2
 #define SPIKES_BASE_COOLDOWN        3.0f // 2
 #define TRAIL_COOLDOWN              0.0f
-#define DASH_BASE_COOLDOWN          3.0f // 2
+#define DASH_BASE_COOLDOWN          1.0f // 2
+#define DASH_BASE_RECHARGE          6.0f
 
 /*
 Once spikes are activated, they are enabled for a duration before deactivating.
@@ -61,6 +62,7 @@ These are the minimum cooldowns for these abilities.
 #define ROCKET_MIN_COOLDOWN 1.0f
 #define SPIKES_MIN_COOLDOWN SPIKES_DURATION
 #define DASH_MIN_COOLDOWN   0.5f
+#define DASH_MIN_RECHARGE   2.0f
 
 /*
     Multiplies all cool down values to decrease them. Should be below 1.0
