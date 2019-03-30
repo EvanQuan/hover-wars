@@ -2,6 +2,7 @@
 #include "Menus/MainMenu.h"
 #include "UserInterface/MainInterface.h"
 #include "GameStats.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 PostgameMenu* PostgameMenu::m_pInstance = nullptr;
@@ -15,6 +16,7 @@ PostgameMenu::PostgameMenu() : PromptMenu(
     }
 )
 {
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* PostgameMenu::getInstance()

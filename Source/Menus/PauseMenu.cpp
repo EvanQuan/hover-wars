@@ -3,6 +3,7 @@
 #include "Menus/MainMenu.h"
 #include "UserInterface/GameInterface.h"
 #include "UserInterface/MainInterface.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 PauseMenu* PauseMenu::m_pInstance = nullptr;
@@ -19,7 +20,7 @@ PauseMenu::PauseMenu() : PromptMenu(
     }
 )
 {
-
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* PauseMenu::getInstance()

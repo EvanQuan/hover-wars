@@ -1,6 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/StartMenu.h"
 #include "UserInterface/MainInterface.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 StartMenu* StartMenu::m_pInstance = nullptr;
@@ -12,7 +13,7 @@ StartMenu::StartMenu() : PromptMenu(
     }
 )
 {
-
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* StartMenu::getInstance()

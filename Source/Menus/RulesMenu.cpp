@@ -1,6 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/RulesMenu.h"
 #include "UserInterface/MainInterface.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 RulesMenu* RulesMenu::m_pInstance = nullptr;
@@ -12,7 +13,7 @@ RulesMenu::RulesMenu() : PromptMenu(
     }
 )
 {
-
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* RulesMenu::getInstance()

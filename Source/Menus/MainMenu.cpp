@@ -4,6 +4,7 @@
 #include "Menus/ControlsMenu.h"
 #include "Menus/RulesMenu.h"
 #include "UserInterface/PregameInterface.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 MainMenu* MainMenu::m_pInstance = nullptr;
@@ -26,6 +27,7 @@ MainMenu::MainMenu() : PromptMenu(
     }
 )
 {
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* MainMenu::getInstance()
