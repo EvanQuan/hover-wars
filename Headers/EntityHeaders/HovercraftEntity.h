@@ -171,6 +171,8 @@ private:
     void updateCameraPosition(float fTimeInSeconds);
     void updateCameraRotation(float fTimeInSeconds);
     void updateCooldowns(float fTimeInSeconds);
+    void updateSpatialMap(vec3 &vNewPosition);
+    void updatePhysicsComponent();
 
     // Abilities
     void shootRocket();
@@ -183,6 +185,7 @@ private:
     void createTrailInstance();
 
     void dash(eAbility direction);
+    void updateDash(float fTimeInSeconds);
 
     // Like dashing, but weaker, no sound, and doese not count as an ability
     void push(float x, float y);

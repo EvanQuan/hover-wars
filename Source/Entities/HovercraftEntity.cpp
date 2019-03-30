@@ -53,7 +53,7 @@
 #define DASH_BASE_COOLDOWN          0.5f
 #define DASH_BASE_RECHARGE          6.0f
 
-#define DASH_BASE_CHARGE_COUNT      3
+#define DASH_MAX_CHARGE_COUNT      3
 
 /*
     Once spikes are activated, they are enabled for a duration before deactivating.
@@ -279,27 +279,14 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // If there's a new Transformation, apply it to the Mesh.
     m_pMesh->updateInstance(&m4NewTransform, m_sName);
+
     // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
-    if (m_vPosition != vNewPosition)
-    {
-        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
-    }
 
+    updateSpatialMap(vNewPosition);
 
-    vec3 dirVector;
-    getDirectionVector(&dirVector);
-    if (abs(dirVector.y) > 0.1f) {
-        //TODO set quat for rotation
-        vec3 newQuatAxis = vec3(dirVector.x,0.1f * (dirVector.y/abs(dirVector.y)), dirVector.z);
+    updatePhysicsComponent();
 
-        PxPlane plane = PxPlane(PxVec3(0,0,0), PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z), PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
-        PxTransform newTrans = getGlobalTransform();
-
-        newTrans.q = PxQuat(0, plane.n);
-
-        m_pPhysicsComponent->setGlobalPos(newTrans);
-    }
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
     updateInControl(fTimeInSeconds);
@@ -308,6 +295,39 @@ void HovercraftEntity::update(float fTimeInSeconds)
     updateVulnerability(fTimeInSeconds);
     updatePowerups(fTimeInSeconds);
     updateQueuedActions();
+}
+
+void HovercraftEntity::updateSpatialMap(vec3 &vNewPosition)
+{
+    if (m_vPosition != vNewPosition)
+    {
+        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
+    }
+}
+
+/*
+    Update the location of the physics component.
+*/
+void HovercraftEntity::updatePhysicsComponent()
+{
+    vec3 dirVector;
+    getDirectionVector(&dirVector);
+    if (abs(dirVector.y) > 0.1f) {
+        //TODO set quat for rotation
+        vec3 newQuatAxis = vec3(dirVector.x,
+                                0.1f * (dirVector.y/abs(dirVector.y)),
+                                dirVector.z);
+
+        PxPlane plane = PxPlane(PxVec3(0,0,0),
+                                PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z),
+                                PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
+        PxTransform newTrans = getGlobalTransform();
+
+        newTrans.q = PxQuat(0, plane.n);
+
+        m_pPhysicsComponent->setGlobalPos(newTrans);
+    }
+
 }
 
 void HovercraftEntity::updateQueuedActions()
@@ -638,7 +658,7 @@ void HovercraftEntity::initializeCooldowns()
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
 
-    m_iDashCharges = DASH_BASE_CHARGE_COUNT;
+    m_iDashCharges = DASH_MAX_CHARGE_COUNT;
     m_fDashMaxRecharge = DASH_BASE_RECHARGE;
     m_fDashRecharge = 0.0f;
 
@@ -732,6 +752,7 @@ void HovercraftEntity::updateCooldowns(float fTimeInSeconds)
     }
     updateTrail(fTimeInSeconds);
     updateSpikes(fTimeInSeconds);
+    updateDash(fTimeInSeconds);
 }
 
 /*
@@ -822,6 +843,20 @@ void HovercraftEntity::createTrailInstance()
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
     vNormal = m4TransformMat[1];
     m_pFireTrail->spawnFlame(&vNormal, &vAdjustedPosition);
+}
+
+void HovercraftEntity::updateDash(float fTimeInSeconds)
+{
+    if (m_iDashCharges < DASH_MAX_CHARGE_COUNT)
+    {
+        m_fDashRecharge -= fTimeInSeconds;
+        if (m_fDashRecharge <= 0)
+        {
+            m_iDashCharges++;
+            /* TODO play charge sound effect */
+            m_fDashRecharge = m_fDashMaxRecharge;
+        }
+    }
 }
 
 /*
@@ -1011,6 +1046,7 @@ void HovercraftEntity::dash(eAbility direction)
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
     m_iDashCharges--;
+    m_fDashRecharge = m_fDashMaxRecharge;
 }
 
 /*
