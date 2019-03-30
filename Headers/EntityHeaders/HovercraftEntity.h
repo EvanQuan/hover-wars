@@ -191,11 +191,19 @@ private:
     // Cooldowns
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
-    /*
-
-    */
+    // Current cooldown value
     float m_fCooldowns[COOLDOWN_COUNT];
+    // Maximum cooldown value
     float m_fMaxCooldowns[COOLDOWN_COUNT];
+
+    // Current dash charges
+    int m_iDashCharges;
+    // Maximum dash charges that can be stored
+    int m_iDashMaxCharges;
+    // Maximum time it takes to gain a dash charge
+    float m_fDashMaxRecharge;
+    // Current dash recharge time
+    float m_fDashRecharge;
 
     /*
     Tracks the state of the flame trail
