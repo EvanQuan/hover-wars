@@ -409,7 +409,7 @@ int GameStats::getLargestScore()
 }
 
 /*
-Update the attacker's total kills, and total kills against hit player
+    Update the attacker's total kills, and total kills against hit player
 */
 void GameStats::updateAttackerAndHitKills(eHovercraft attacker, eHovercraft hit)
 {
@@ -449,7 +449,7 @@ bool GameStats::isPlayer(eHovercraft hovercraft) const
 }
 
 /*
-Update the killstreaks from the results of attacker hitting hit
+    Update the killstreaks from the results of attacker hitting hit
 */
 void GameStats::updateAttackerAndHitKillstreak(eHovercraft attacker, eHovercraft hit)
 {
@@ -501,7 +501,8 @@ void GameStats::increaseCurrentTotalKillstreak(eHovercraft hovercraft)
 }
 
 /*
-
+    If the specified hovercraft's current killstreak is largre than their
+    largest killstreak, then update their largest killstreak to match it.
 */
 void GameStats::updateLargestTotalKillstreak(eHovercraft hovercraft)
 {
@@ -695,15 +696,21 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveHighestNonZero(eHovercraftS
     return hovercrafts;
 }
 
+/*
+    Get all the hovercrafts that have the lowest specified stat, including if
+    the stat value is zero.
+    @param stat     to have the lowest value of.
+*/
 vector<eHovercraft> GameStats::getHovercraftsThatHaveLowest(eHovercraftStat stat)
 {
     int lowest = numeric_limits<int>::max();
+    int value;
     vector<eHovercraft> hovercrafts;
 
     for (int p = HOVERCRAFT_PLAYER_1; p < m_iPlayerCount; p++)
     {
         eHovercraft player = static_cast<eHovercraft>(p);
-        int value = get(player, stat);
+        value = get(player, stat);
         if (value < lowest)
         {
             lowest = value;
@@ -717,7 +724,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveLowest(eHovercraftStat stat
     for (int b = HOVERCRAFT_BOT_1; b < m_iBotCount; b++)
     {
         eHovercraft bot = static_cast<eHovercraft>(b);
-        int value = get(bot, stat);
+        value = get(bot, stat);
         if (value < lowest)
         {
             lowest = value;
