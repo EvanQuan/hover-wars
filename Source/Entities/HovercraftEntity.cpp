@@ -31,6 +31,11 @@
 #define ROCKET_BOUNDING_BOX     0.5f
 
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
+/*
+    If the hovercraft exceeds a certain elevant, they lose control until they
+    return below it. This prevents hovercrafts from continuing to apply a
+    driving force when they are in the air.
+*/
 #define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
 
 /*
@@ -45,11 +50,11 @@
 #define ROCKET_BASE_COOLDOWN        5.0f // 2
 #define SPIKES_BASE_COOLDOWN        3.0f // 2
 #define TRAIL_COOLDOWN              0.0f
-#define DASH_BASE_COOLDOWN          1.0f // 2
+#define DASH_BASE_COOLDOWN          0.5f
 #define DASH_BASE_RECHARGE          6.0f
 
 /*
-Once spikes are activated, they are enabled for a duration before deactivating.
+    Once spikes are activated, they are enabled for a duration before deactivating.
 */
 #define SPIKES_DURATION         1.0f
 
@@ -352,14 +357,14 @@ void HovercraftEntity::reduceMaxCooldowns()
 {
     m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
     m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
-    m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+    // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
 }
 
 void HovercraftEntity::resetMaxCooldowns()
 {
     m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
-    m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
+    // m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
 }
 
 /*
@@ -413,7 +418,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     case POWERUP_SPIKES_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_MIN_COOLDOWN;
         break;
-    case POWERUP_DASH_COOLDOWN:
+    case POWERUP_DASH_RECHARGE:
         m_fMaxCooldowns[COOLDOWN_DASH] = DASH_MIN_COOLDOWN;
         break;
     default:
@@ -473,7 +478,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     case POWERUP_SPIKES_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
         break;
-    case POWERUP_DASH_COOLDOWN:
+    case POWERUP_DASH_RECHARGE:
         m_fMaxCooldowns[COOLDOWN_DASH] = DASH_BASE_COOLDOWN;
         break;
     default:
