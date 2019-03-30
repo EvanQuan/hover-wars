@@ -988,6 +988,10 @@ void HovercraftEntity::deactivateTrail()
 
 void HovercraftEntity::dash(eAbility direction)
 {
+    if (!canDash()) {
+        return;
+    }
+
     SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
     switch (direction)
     {
@@ -1006,6 +1010,15 @@ void HovercraftEntity::dash(eAbility direction)
     }
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
+    m_iDashCharges--;
+}
+
+/*
+    Check if this hovercraft can dash
+*/
+bool HovercraftEntity::canDash()
+{
+    return m_iDashCharges > 0;
 }
 
 void HovercraftEntity::push(float x, float y) {

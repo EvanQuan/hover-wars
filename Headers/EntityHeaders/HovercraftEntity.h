@@ -196,6 +196,7 @@ private:
     // Maximum cooldown value
     float m_fMaxCooldowns[COOLDOWN_COUNT];
 
+    bool canDash();
     // Current dash charges
     int m_iDashCharges;
     // Maximum time it takes to gain a dash charge
