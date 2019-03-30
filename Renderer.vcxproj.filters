@@ -235,6 +235,8 @@
     <ClInclude Include="Headers\UserInterface\StartInterface.h">
       <Filter>Headers\UserInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menus\ControlsMenu.h" />
+    <ClInclude Include="Headers\Menus\RulesMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
@@ -433,6 +435,8 @@
     <ClCompile Include="Source\UserInterface\StartInterface.cpp">
       <Filter>Source\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Menus\ControlsMenu.cpp" />
+    <ClCompile Include="Source\Menus\RulesMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">
