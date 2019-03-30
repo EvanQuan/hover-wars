@@ -58,7 +58,7 @@
 /*
     Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         1.0f
+#define SPIKES_DURATION         1.5f
 
 /*
 Power up cooldowns
@@ -68,7 +68,7 @@ These are the minimum cooldowns for these abilities.
 */
 #define ROCKET_MIN_COOLDOWN 1.0f
 #define SPIKES_MIN_COOLDOWN SPIKES_DURATION
-#define DASH_MIN_RECHARGE   2.0f
+#define DASH_MIN_RECHARGE   1.0f
 
 /*
     Multiplies all cool down values to decrease them. Should be below 1.0
@@ -379,6 +379,7 @@ void HovercraftEntity::reduceMaxCooldowns()
     m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
     m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
     // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+    m_fDashMaxRecharge = FuncUtils::max(DASH_MIN_RECHARGE, m_fDashMaxRecharge * COOLDOWN_REDUCTION);
 }
 
 void HovercraftEntity::resetMaxCooldowns()
@@ -386,6 +387,7 @@ void HovercraftEntity::resetMaxCooldowns()
     m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
     // m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
+    m_fDashMaxRecharge = DASH_BASE_RECHARGE;
 }
 
 /*

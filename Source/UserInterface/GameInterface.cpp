@@ -429,21 +429,17 @@ void GameInterface::renderCooldown(std::string label,
 }
 
 // Right now only dones for dashes
+// Renders dash with it's charges and recharge cooldowns
 void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft)
 {
-    //renderCooldown("Dash",
-                   //eCooldown::COOLDOWN_DASH,
-                   //cooldowns,
-                   //m_vComponentCoordinates[COMPONENT_DASH].first,
-                   //m_vComponentCoordinates[COMPONENT_DASH].second,
-                   //DASH_SCALE);
     bool canDash = hovercraft->canDash();
     bool isFull = hovercraft->hasMaxDashCharges();
     std::string cooldownString = isFull ?
         COOLDOWN_READY :
         FuncUtils::toString(hovercraft->getDashRecharge(), COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isFull ? COLOR_READY : canDash ? COLOR_MID_READY : COLOR_NOT_READY;
-    renderText("Dash (" + std::to_string(hovercraft->getDashCharges()) + "): " + cooldownString,
+    std::string labelWithCharges = "Dash (" + std::to_string(hovercraft->getDashCharges()) + "): ";
+    renderText(labelWithCharges + cooldownString,
                m_vComponentCoordinates[COMPONENT_DASH].first,
                m_vComponentCoordinates[COMPONENT_DASH].second,
                DASH_SCALE,
