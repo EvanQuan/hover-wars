@@ -10,6 +10,7 @@
 // Forward Declaration
 class EntityManager;
 class HovercraftEntity;
+class SoundManager;
 
 
 /*
@@ -85,6 +86,7 @@ private:
     GameInterface& operator=(const GameInterface* pCopy);                   // Assignment Operator.
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
+    SoundManager* m_pSoundManager;
 
     // Initializes FreeType and the Font Library
     void setScore(int joystickID, int score);

@@ -112,6 +112,7 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
     setDisplayCount(1);
     debugMessage = "";
     m_pEntityMngr = ENTITY_MANAGER;
+    m_pSoundManager = SOUND_MANAGER;
 }
 
 GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
@@ -147,12 +148,12 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
     switch (message)
     {
     case KILL_MESSAGE_DOMINATION:
-        SOUND_MANAGER->play(SoundManager::SOUND_KILL_DOMINATION, playerInvolved);
+        m_pSoundManager->play(SoundManager::SOUND_KILL_DOMINATION, playerInvolved);
         displayMessage(attacker, "You are now dominating " + m_eHovercraftToString.at(hit));
         displayMessage(hit, m_eHovercraftToString.at(attacker) + " is now dominating you");
         break;
     case KILL_MESSAGE_FIRST_BLOOD:
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
+        m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
         // Announce first blood to everyone
         for (int player = 0, playerCount = GAME_STATS->getPlayerCount();
              player < playerCount;
@@ -167,12 +168,12 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         // displayMessage(hit, m_eHovercraftToString.at(attacker) + " got first blood against you");
         break;
     case KILL_MESSAGE_REVENGE:
-        SOUND_MANAGER->play(SoundManager::SOUND_KILL_REVENGE, playerInvolved);
+        m_pSoundManager->play(SoundManager::SOUND_KILL_REVENGE, playerInvolved);
         displayMessage(attacker, "You got revenge from " + m_eHovercraftToString.at(hit));
         displayMessage(hit, m_eHovercraftToString.at(attacker) + " got revenge from you");
         break;
     case KILL_MESSAGE_KILLSTREAK:
-        SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK, playerInvolved);
+        m_pSoundManager->play(SoundManager::SOUND_KILL_STREAK, playerInvolved);
         displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
         break;
     case KILL_MESSAGE_KILL:
