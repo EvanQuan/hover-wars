@@ -124,7 +124,6 @@ public:
         HOVERCRAFTSTAT_COUNT,
     };
 
-    /* TODO unused */
     enum eGlobalStat
     {
        SCORE_LARGEST,
@@ -287,11 +286,17 @@ private:
     // Revenge
     void revenge(eHovercraft hovercraftToGetRevenge, eHovercraft hovercraftWasDominating);
 
+    // Score leader
+    void checkForNewScoreLeader(eHovercraft candidate);
+    void updateScoreLeaders(eHovercraft newLeader);
+    vector<eHovercraft> m_eScoreLeaders;
+
     // Powerups
     void pickupPowerup(eHovercraft hovercraft);
     void addPowerupCount(eHovercraft hovercraft);
 
     void debug(eHovercraft hovercraft);
+    void debugPrintAllScores();
 
     // @Deprecated, unused, due to perfect correspondance
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 

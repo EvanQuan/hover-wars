@@ -115,21 +115,18 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType,
     switch (eColliderType)
     {
     case eEntityType::ENTITY_HOVERCRAFT:               
-        switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
+      // See what they collided with. Further collisions might be with pick ups or other entities.
+        switch (eCollidedType)
         {
         case eEntityType::ENTITY_HOVERCRAFT:
-            if (!(colliderIsBot && collidedIsBot))
-            {
-                play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
-            }
+            // Collided with another Hovercar, play hovercar collision sound.
+            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR, !(colliderIsBot && collidedIsBot));
             return true;
             break;
         case eEntityType::ENTITY_STATIC:
         case eEntityType::ENTITY_PLANE:
-            if (!colliderIsBot)
-            {
-                play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
-            }
+            // Collided with Static Entity or Plane, impacted world
+            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD, !colliderIsBot);         
             break;
         }
         break;

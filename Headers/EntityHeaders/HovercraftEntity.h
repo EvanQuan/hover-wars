@@ -6,7 +6,6 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "SpatialDataMap.h"
 #include "GameStats.h"
-#include <queue>
 
 /************************\
  * Forward Declarations *
@@ -26,11 +25,12 @@ class Spikes;
 
 /*
 The duration a powerup lasts for.
+Used by GameInterface.
 @TODO maybe move this to the powerup entity?
 
 Unit : seconds
 */
-#define POWERUP_TIME 20.0f
+#define POWERUP_TIME 15.0f
 
 
 class HovercraftEntity :
@@ -133,6 +133,16 @@ public:
     float getDashRecharge() const { return m_fDashRecharge; }
 
     bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
+
+    // Should be initialized AFTER the hovercraft has been created when
+    // GameStats corresponds entities to hovercrafts.
+    // This prevents other classes from constantly needing to ask GameStats
+    // for hovercraft information if the HovercraftEntity is given.
+    void correspondToEHovercraft(eHovercraft hovercraft);
+
+    bool isPlayer() const { return m_bIsPlayer; }
+    bool isBot() const { return !m_bIsPlayer; }
+    eHovercraft getEHovercraft() const { return m_eHovercraft; }
 
 private:
     /*
@@ -267,7 +277,7 @@ private:
     bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
-    GameStats* m_pGmStats;
+    GameStats* m_pGameStats;
 
     // Bool Spikes Information
     bool m_bSpikesActivated;
@@ -279,5 +289,9 @@ private:
     void disablePowerup(ePowerup powerup);
     float m_vPowerupsTime[POWERUP_COUNT];
     bool m_vPowerupsEnabled[POWERUP_COUNT];
+
+    // Used to determine if the hovercraft is a bot or player
+    eHovercraft m_eHovercraft;
+    bool m_bIsPlayer;
 };
 
