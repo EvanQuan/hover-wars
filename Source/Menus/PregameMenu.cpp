@@ -3,15 +3,17 @@
 #include "Menus/GameMenu.h"
 #include "UserInterface/GameInterface.h"
 #include "UserInterface/MainInterface.h"
+#include "CommandHandler.h"
+
+
+// Interval of time to change game time
+#define GAME_TIME_INTERVAL SECONDS_PER_MINUTE
 
 // Default game time as pregame menu is first entered
 // #define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE
-#define DEFAULT_GAME_TIME 3 * SECONDS_PER_MINUTE // debug
-#define MAX_GAME_TIME 4 * SECONDS_PER_MINUTE
-#define MIN_GAME_TIME 1 * SECONDS_PER_MINUTE
-
-// Interval of time to change game time
-#define GAME_TIME_INTERVAL 30
+#define DEFAULT_GAME_TIME 3 * GAME_TIME_INTERVAL
+#define MAX_GAME_TIME 10 * GAME_TIME_INTERVAL
+#define MIN_GAME_TIME 1 * GAME_TIME_INTERVAL
 
 // Singleton instance
 PregameMenu* PregameMenu::m_pInstance = nullptr;
@@ -39,6 +41,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     }
 )
 {
+    COMMAND_HANDLER->addMenu(this);
     // Note that this is in the constructor, not enter(). While there are
     // initial bot and player values, these SHOULD persist between menu changes
     // during runtime because it's annoying to have the values changed away

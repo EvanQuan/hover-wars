@@ -1,30 +1,30 @@
 #include "Menus/MainMenu.h"
-#include "Menus/StartMenu.h"
+#include "Menus/RulesMenu.h"
 #include "UserInterface/MainInterface.h"
 #include "CommandHandler.h"
 
 // Singleton instance
-StartMenu* StartMenu::m_pInstance = nullptr;
+RulesMenu* RulesMenu::m_pInstance = nullptr;
 
-StartMenu::StartMenu() : PromptMenu(
+RulesMenu::RulesMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        { {"Insert Coin", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
+        { {"Return to Main Menu", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},  },
     }
 )
 {
     COMMAND_HANDLER->addMenu(this);
 }
 
-Menu* StartMenu::getInstance()
+Menu* RulesMenu::getInstance()
 {
     if (nullptr == m_pInstance) {
-        m_pInstance = new StartMenu();
+        m_pInstance = new RulesMenu();
     }
     return m_pInstance;
 }
 
-void StartMenu::select(eFixedCommand command)
+void RulesMenu::select(eFixedCommand command)
 {
     switch (command)
     {
