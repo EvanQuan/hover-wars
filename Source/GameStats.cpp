@@ -249,7 +249,7 @@ void GameStats::checkForNewScoreLeader(eHovercraft candidate)
     int newLargestScore = getLargestScore();
     int oldLargestScore = globalStats[eGlobalStat::SCORE_LARGEST];
 
-    if (newLargestScore > oldLargestScore)
+    if (newLargestScore != oldLargestScore)
     {
         globalStats[eGlobalStat::SCORE_LARGEST] = newLargestScore;
         updateScoreLeaders(candidate);
@@ -266,25 +266,25 @@ bool notScoreLeader(eHovercraft hovercraft)
 /*
     Update the list of score leaders with th addition of the new score leader
 
-    @param newLeader    new score leader to add
+    @param candidate    to add to new leaders
 */
-void GameStats::updateScoreLeaders(eHovercraft newLeader)
+void GameStats::updateScoreLeaders(eHovercraft candidate)
 {
     // Remove old leaders
     m_eScoreLeaders.erase(std::remove_if(m_eScoreLeaders.begin(),
                                          m_eScoreLeaders.end(),
                                          notScoreLeader),
                           m_eScoreLeaders.end());
-    if (!FuncUtils::contains(m_eScoreLeaders, newLeader))
+    if (!FuncUtils::contains(m_eScoreLeaders, candidate) && hasLargestScore(candidate))
     {
         // Add new leader
-        m_eScoreLeaders.push_back(newLeader);
+        m_eScoreLeaders.push_back(candidate);
+        // Display new score leader
+        m_pGameInterface->displayMessage(candidate,
+                                         HOVERCRAFT_INVALID, /* Hit doesn't matter */
+                                         GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
     }
 
-    // Display new score leader
-    m_pGameInterface->displayMessage(newLeader,
-                                     HOVERCRAFT_INVALID, /* Hit doesn't matter */
-                                     GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
 }
 
 void GameStats::debugPrintAllScores()
