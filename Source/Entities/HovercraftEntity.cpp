@@ -431,11 +431,13 @@ void HovercraftEntity::updatePowerups(float fTimeInSeconds)
 */
 void HovercraftEntity::enablePowerup(ePowerup powerup)
 {
+    bool shouldPlay = GAME_STATS->isPlayer(m_iID);
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
         cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost enabled" << endl;
+        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED, shouldPlay);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_MIN_COOLDOWN;
@@ -451,7 +453,6 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     }
     m_vPowerupsEnabled[powerup] = true;
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
-    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED);
     GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
 }
 

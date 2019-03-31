@@ -72,6 +72,7 @@ public:
     };
 
     void play(eSoundEvent sound);
+    void play(eSoundEvent sound, bool shouldPlay);
     void handleCollisionSound(Entity* collider, Entity* collided);
 
     // TODO figure out sound at locations

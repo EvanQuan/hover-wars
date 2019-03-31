@@ -78,6 +78,20 @@ void SoundManager::play(eSoundEvent sound)
 }
 
 /*
+    Play a sound in the world, only if the specified boolean is true.
+
+    @param sound        to play
+    @param shouldPlay   to determin if the event should be played
+*/
+void SoundManager::play(eSoundEvent sound, bool shouldPlay)
+{
+    if (shouldPlay)
+    {
+        play(sound);
+    }
+}
+
+/*
     Determine Entity Types resulting in Collision and play a resulting sound
     for the collision. Handle any logic between collisions to determine sound
     here.
