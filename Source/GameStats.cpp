@@ -331,7 +331,7 @@ void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 }
 
 /*
-    Get the score for playerAtacker to gain if they hit hit
+    Get the score for attacker to gain if they hit hit
     Checks for first blood.
 
     @param attacker     to gain score
