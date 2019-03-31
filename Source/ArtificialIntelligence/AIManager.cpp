@@ -71,7 +71,6 @@ void AIManager::update(float fTimeInSeconds)
         //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
         ai->update(fTimeInSeconds);
         glm::vec3 botPos = bot->getPosition();
-        glm::vec3 botPos = bot->getPosition();
         // double x = FuncUtils::getRoll(rotation);
         // double y = FuncUtils::getPitch(rotation);
         // double z = FuncUtils::getYaw(rotation);
