@@ -155,8 +155,8 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     // Base collision sounds only require type
     // To make the sound less busy, we will ignore bot base collisions, which
     // can be annoying if they get stuck on a wall
-    bool colliderIsBot = GAME_STATS->isBot(colliderHovercraft);
-    bool collidedIsBot = GAME_STATS->isBot(collidedHovercraft);
+    bool colliderIsBot = colliderHovercraft->isBot();
+    bool collidedIsBot = collidedHovercraft->isBot();
     if (handleBaseCollisionSound(colliderType, collidedType, colliderIsBot, collidedIsBot))
     {
         // For some reason this check is not enough?
