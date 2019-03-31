@@ -437,7 +437,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
         cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost enabled" << endl;
-        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED, shouldPlay);
+        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, shouldPlay);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_MIN_COOLDOWN;
@@ -1031,7 +1031,7 @@ void HovercraftEntity::dash(eAbility direction)
         return;
     }
 
-    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
+    SOUND_MANAGER->play(SoundManager::SOUND_DASH_ACTIVATE);
     switch (direction)
     {
     case ABILITY_DASH_BACK:
