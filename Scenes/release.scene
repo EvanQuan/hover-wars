@@ -114,6 +114,26 @@ spawn_points {
     0 5 0
 }
 
+# Starfield Setup
+#skybox {
+#	textures/skybox/ame_starfield/starfield_ft.tga
+#	textures/skybox/ame_starfield/starfield_bk.tga
+#	textures/skybox/ame_starfield/starfield_up.tga
+#	textures/skybox/ame_starfield/starfield_dn.tga
+#	textures/skybox/ame_starfield/starfield_rt.tga
+#	textures/skybox/ame_starfield/starfield_lf.tga
+#}
+
+# Nebula Setup
+#skybox {
+#	textures/skybox/ame_nebula/purplenebula_ft.tga
+#	textures/skybox/ame_nebula/purplenebula_bk.tga
+#	textures/skybox/ame_nebula/purplenebula_up.tga
+#	textures/skybox/ame_nebula/purplenebula_dn.tga
+#	textures/skybox/ame_nebula/purplenebula_rt.tga
+#	textures/skybox/ame_nebula/purplenebula_lf.tga
+#}
+
 # MoonDust Setup
 skybox {
 	textures/skybox/mp_moondust/moondust_ft.tga
