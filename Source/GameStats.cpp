@@ -160,22 +160,29 @@ void GameStats::correspondEntitiesToHovercrafts()
     EntityManager* pEntityManager = ENTITY_MANAGER;
     const vector<HovercraftEntity*>* players = pEntityManager->getPlayerList();
     const vector<HovercraftEntity*>* bots = pEntityManager->getBotList();
+    HovercraftEntity* player;
+    HovercraftEntity* bot;
     cout << "Players:" << endl;
     int id;
     eHovercraft hovercraft;
     for (size_t i = 0, size = players->size(); i < size; ++i)
     {
-        id = players->at(i)->getID();
+        player = players->at(i);
+        id = player->getID();
         hovercraft = static_cast<eHovercraft>(i);
         entityIDToHovercraft.insert({id, hovercraft});
+        player->correspondToEHovercraft(hovercraft);
+
         cout << "ID: " << id << " | Hovercraft: " << hovercraft << endl;
     }
     cout << "Bots:" << endl;
     for (size_t i = 0, size = bots->size(); i < size; ++i)
     {
-        id = bots->at(i)->getID();
+        bot = bots->at(i);
+        id = bot->getID();
         hovercraft = static_cast<eHovercraft>(i + HOVERCRAFT_BOT_1);
         entityIDToHovercraft.insert({id, hovercraft});
+        bot->correspondToEHovercraft(hovercraft);
         cout << "ID: " << id << " | Hovercraft: " << hovercraft << endl;
     }
 }

@@ -134,6 +134,16 @@ public:
 
     bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
 
+    // Should be initialized AFTER the hovercraft has been created when
+    // GameStats corresponds entities to hovercrafts.
+    // This prevents other classes from constantly needing to ask GameStats
+    // for hovercraft information if the HovercraftEntity is given.
+    void correspondToEHovercraft(eHovercraft hovercraft);
+
+    bool isPlayer() const { return m_bIsPlayer; }
+    bool isBot() const { return !m_bIsPlayer; }
+    eHovercraft getEHovercraft() const { m_eHovercraft; }
+
 private:
     /*
         Queued actions are actions that cannot be applied immediately due to
@@ -267,7 +277,7 @@ private:
     bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
-    GameStats* m_pGmStats;
+    GameStats* m_pGameStats;
 
     // Bool Spikes Information
     bool m_bSpikesActivated;
@@ -279,5 +289,9 @@ private:
     void disablePowerup(ePowerup powerup);
     float m_vPowerupsTime[POWERUP_COUNT];
     bool m_vPowerupsEnabled[POWERUP_COUNT];
+
+    // Used to determine if the hovercraft is a bot or player
+    eHovercraft m_eHovercraft;
+    bool m_bIsPlayer;
 };
 

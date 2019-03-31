@@ -231,7 +231,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
-    m_pGmStats                  = GAME_STATS;
+    m_pGameStats                  = GAME_STATS;
 
     // Unused?
     // m_fMinimumDistanceBetweenFlames = 5.0f;
@@ -362,15 +362,15 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
         return;
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
-    eHovercraft hit = GAME_STATS->getEHovercraft(m_iID);
-    if (m_pGmStats->hasLargestScore(hit))
+    if (m_pGameStats->hasLargestScore(m_eHovercraft))
     {
-        // attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        // If the attacker hit the hovercraft with the largest score, give them
+        // a speed boost
         attackerHovercraft->queuePowerup(ePowerup::POWERUP_SPEED_BOOST);
     }
     setInvincible();
-    m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(hit),
+    m_pGameStats->addScore(attacker,
+                         static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
                          ability);
     resetMaxCooldowns();
     attackerHovercraft->reduceMaxCooldowns();
@@ -431,13 +431,12 @@ void HovercraftEntity::updatePowerups(float fTimeInSeconds)
 */
 void HovercraftEntity::enablePowerup(ePowerup powerup)
 {
-    bool shouldPlay = GAME_STATS->isPlayer(m_iID);
     switch (powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
-        cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost enabled" << endl;
-        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, shouldPlay);
+        cout << m_eHovercraft << " speed boost enabled" << endl;
+        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_MIN_COOLDOWN;
@@ -453,7 +452,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     }
     m_vPowerupsEnabled[powerup] = true;
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
-    GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
+    GAME_STATS->addScore(m_eHovercraft, GameStats::PICKUP_POWERUP);
 }
 
 /*
@@ -497,6 +496,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
         cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost disabled" << endl;
+        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_DEACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
@@ -1065,5 +1065,12 @@ float HovercraftEntity::getTrailGaugePercent() const
 
 void HovercraftEntity::setInvincible()
 {
-    m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
+    m_bInvincible = true;
+    m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
+}
+
+void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
+{
+    m_eHovercraft = hovercraft;
+    m_bIsPlayer = m_pGameStats->isPlayer(hovercraft);
 }
