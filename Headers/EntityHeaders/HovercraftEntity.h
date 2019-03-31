@@ -142,7 +142,7 @@ public:
 
     bool isPlayer() const { return m_bIsPlayer; }
     bool isBot() const { return !m_bIsPlayer; }
-    eHovercraft getEHovercraft() const { m_eHovercraft; }
+    eHovercraft getEHovercraft() const { return m_eHovercraft; }
 
 private:
     /*

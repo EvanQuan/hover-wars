@@ -119,6 +119,7 @@ void GameStats::reinitialize(int playerCount, int botCount)
     initializeCooldowns();
     correspondEntitiesToHovercrafts();
     firstBloodHappened = false;
+    m_eScoreLeaders.clear();
 }
 
 /*
@@ -235,7 +236,54 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         pickupPowerup(hovercraft);
         break;
     }
-    globalStats[eGlobalStat::SCORE_LARGEST] = getLargestScore();
+    checkForNewScoreLeader(hovercraft);
+}
+
+/*
+    Check if the candidate hovercraft is a candidate to be the new score
+    leader. If so, update with a new leader notification.
+*/
+void GameStats::checkForNewScoreLeader(eHovercraft candidate)
+{
+    int newLargestScore = getLargestScore();
+    int oldLargestScore = globalStats[eGlobalStat::SCORE_LARGEST];
+
+    if (newLargestScore >= oldLargestScore)
+    {
+        globalStats[eGlobalStat::SCORE_LARGEST] = newLargestScore;
+
+        if (!FuncUtils::contains(m_eScoreLeaders, candidate))
+        {
+            updateScoreLeaders(candidate);
+        }
+    }
+
+}
+
+// Predicate for filtering old leaders
+bool notScoreLeader(eHovercraft hovercraft)
+{
+    return !GAME_STATS->hasLargestScore(hovercraft);
+}
+
+/*
+    Update the list of score leaders with th addition of the new score leader
+
+    @param newLeader    new score leader to add
+*/
+void GameStats::updateScoreLeaders(eHovercraft newLeader)
+{
+    // Display new score leader
+    m_pGameInterface->displayMessage(newLeader,
+                                     HOVERCRAFT_INVALID, /* Hit doesn't matter */
+                                     GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
+    // Remove old leaders
+    m_eScoreLeaders.erase(std::remove_if(m_eScoreLeaders.begin(),
+                                         m_eScoreLeaders.end(),
+                                         notScoreLeader),
+                          m_eScoreLeaders.end());
+    // Add new leader
+    m_eScoreLeaders.push_back(newLeader);
 }
 
 void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability)
@@ -864,16 +912,16 @@ void GameStats::awardAwards()
     // Multiplayer only awards
     if ((m_iPlayerCount > 1) && (m_iBotCount > 1))
     {
-        awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite", "Most bot kills",             200);
-        awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",   200);
+        awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite",        "Most bot kills",           200);
+        awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",        200);
     }
-    awardHighestNonZeroStat(POWERUPS_TOTAL_PICKED_UP,      "Gotta Go Fast!", "Most speed boosts",  200);
-    awardHighestNonZeroStat(KILLSTREAK_LARGEST,            "Serial Killer", "Largest killstreak",  100);
-    awardHighestNonZeroStat(KILLS_WITH_ROCKET,             "Rocket Man", "Most rocket kills",      100);
-    awardHighestNonZeroStat(KILLS_WITH_TRAIL,              "Pyromaniac", "Most flame trail kills", 200);
-    awardHighestNonZeroStat(KILLS_WITH_SPIKES,             "Porcupine", "Most spike kills",        300);
-    awardHighestNonZeroStat(DEATHS_TOTAL,                  "Consolation", "Most deaths",           100);
-    awardLowestStat(DEATHS_TOTAL,                          "Survivor", "Least deaths",             500);
+    awardHighestNonZeroStat(POWERUPS_TOTAL_PICKED_UP,      "Gotta Go Fast!",    "Most speed boosts",        200);
+    awardHighestNonZeroStat(KILLSTREAK_LARGEST,            "Serial Killer",     "Largest killstreak",       100);
+    awardHighestNonZeroStat(KILLS_WITH_ROCKET,             "Rocket Man",        "Most rocket kills",        100);
+    awardHighestNonZeroStat(KILLS_WITH_TRAIL,              "Pyromaniac",        "Most flame trail kills",   200);
+    awardHighestNonZeroStat(KILLS_WITH_SPIKES,             "Porcupine",         "Most spike kills",         300);
+    awardHighestNonZeroStat(DEATHS_TOTAL,                  "Consolation",       "Most deaths",              100);
+    awardLowestStat(DEATHS_TOTAL,                          "Survivor",          "Least deaths",             500);
     // Special awards
-    awardZeroStat(DEATHS_TOTAL,                            "Untouchable", "Zero deaths", 500);
+    awardZeroStat(DEATHS_TOTAL,                            "Untouchable",       "Zero deaths",              500);
 }

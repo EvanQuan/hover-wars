@@ -179,6 +179,8 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
         m_fScoreChangeTimes[hit] = SCORE_CHANGE_DURATION;
         break;
+    case KILL_MESSAGE_NEW_LEADER:
+        break;
     }
 }
 

@@ -359,6 +359,7 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
         return;
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
+    bool attackerHadLargestScore = m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
     if (m_pGameStats->hasLargestScore(m_eHovercraft))
     {
         // If the attacker hit the hovercraft with the largest score, give them
@@ -369,6 +370,12 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     m_pGameStats->addScore(attacker,
                          static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
                          ability);
+    bool leaderChanged = !attackerHadLargestScore
+                          && m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
+    if (leaderChanged)
+    {
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_NEW_LEADER);
+    }
     resetMaxCooldowns();
     attackerHovercraft->reduceMaxCooldowns();
 }
@@ -609,20 +616,20 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         // TODO check if need to determine which velocity to do
 
         
-        vec3 myVelocity = getLinearVelocity();
-        vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
-        float mySpeed = glm::length(myVelocity);
-        float otherSpeed = glm::length(otherVelocity);
+        // vec3 myVelocity = getLinearVelocity();
+        // vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
+        // float mySpeed = glm::length(myVelocity);
+        // float otherSpeed = glm::length(otherVelocity);
 
         // Multithread issues, can't do push directly
         // Disabled for now until rotation collision bug is fixed
-        if (mySpeed > otherSpeed) {
+        // if (mySpeed > otherSpeed) {
             // pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
             // pOtherHovercraft->queuePush(myVelocity.x, myVelocity.y);
-        } else {
+        // } else {
             // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
             // queuePush(otherVelocity.x, otherVelocity.y);
-        }
+        // }
 
         break;
     }

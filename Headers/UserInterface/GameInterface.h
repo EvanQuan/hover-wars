@@ -30,6 +30,7 @@ public:
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
+        KILL_MESSAGE_NEW_LEADER,
     };
 
     static GameInterface* getInstance(int iWidth, int iHeight);
