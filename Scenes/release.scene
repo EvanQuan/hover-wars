@@ -115,14 +115,14 @@ spawn_points {
 }
 
 # MoonDust Setup
-#skybox {
-#	textures/skybox/mp_moondust/moondust_ft.tga
-#	textures/skybox/mp_moondust/moondust_bk.tga
-#	textures/skybox/mp_moondust/moondust_up.tga
-#	textures/skybox/mp_moondust/moondust_dn.tga
-#	textures/skybox/mp_moondust/moondust_rt.tga
-#	textures/skybox/mp_moondust/moondust_lf.tga
-#}
+skybox {
+	textures/skybox/mp_moondust/moondust_ft.tga
+	textures/skybox/mp_moondust/moondust_bk.tga
+	textures/skybox/mp_moondust/moondust_up.tga
+	textures/skybox/mp_moondust/moondust_dn.tga
+	textures/skybox/mp_moondust/moondust_rt.tga
+	textures/skybox/mp_moondust/moondust_lf.tga
+}
 
 # MainFrame Setup
 #skybox {
