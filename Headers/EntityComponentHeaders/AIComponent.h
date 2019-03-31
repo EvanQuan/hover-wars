@@ -45,15 +45,10 @@ public:
     //    moreso for it to hold and manage the physics information for the entity while providing functions that allow
     //    the entity to query their physics component for desired information.
     void update(float fTimeInSeconds); // Overloading Parent's virtual update function
-    void popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, Action *a);
-
+    void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, float delta_time, Action *a);
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
 private:
-    void genRandomAction(Action *action);
-    void performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown);
-    void mutateSet(int setIndex, int mutations);
-    float evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown);
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
@@ -62,7 +57,7 @@ private:
     glm::vec3 seekPoint = vec3(200, 0, 30);
     int iComponentID;
     float timeChased = 0;
-    vector<vec2> path;
+    vector<uvec2> path;
     int currentState = 0;
     vec2 seekLocation;
     int LastIndex = -1;

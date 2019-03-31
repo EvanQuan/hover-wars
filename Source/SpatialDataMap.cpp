@@ -289,8 +289,21 @@ double SpatialDataMap::calculateH(int x, int y, sSpatialCell dest) {
     return H;
 }
 
-vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 playerMin, vec2 playerMax, vec2 destMin, vec2 destMax) {
-    vec2 dest = destMin;
+/*
+modifiedDikjistras
+returns: the shortest path of locations on the spatial map form (x,y)
+
+parameters:
+playerMin: minmum grid location of start
+playerMax: maxiumum grid location of start
+destMin: minmum grid location of target
+destMax: maxiumum grid location of target
+
+Explination:
+uses dikjistras to avoid any entities
+*/
+vector<uvec2> SpatialDataMap::modifiedDikjistras(uvec2 playerMin, uvec2 playerMax, uvec2 destMin, uvec2 destMax) {
+    uvec2 dest = destMin;
     if (!isValid((int)dest.x, (int)dest.y)) {
         int yMul = (destMax.y - destMin.y) == 0 ? 0 : (destMax.y - destMin.y) / abs(destMax.y - destMin.y);
         int xMul = (destMax.x - destMin.x) == 0 ? 0 : (destMax.x - destMin.x) / abs(destMax.x - destMin.x);
@@ -303,7 +316,7 @@ vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 playerMin, vec2 playerMax, 
                 yLoop += yMul;
                 if (isValid(xLoop, yLoop))
                 {
-                    dest = vec2(xLoop, yLoop);
+                    dest = uvec2(xLoop, yLoop);
                     breakLoop = true;
                     break;
                 }
@@ -322,7 +335,7 @@ vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 playerMin, vec2 playerMax, 
             }
         }
     }
-    vec2 player = playerMin;
+    uvec2 player = playerMin;
     if (!isValid((int)player.x, (int)player.y)) {
         int yMul = (playerMax.y - playerMin.y) == 0 ? 0 : (playerMax.y - playerMin.y) / abs(playerMax.y - playerMin.y);
         int xMul = (playerMax.x - playerMin.x) == 0 ? 0 : (playerMax.x - playerMin.x) / abs(playerMax.x - playerMin.x);
@@ -335,7 +348,7 @@ vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 playerMin, vec2 playerMax, 
                 yLoop += yMul;
                 if (isValid(xLoop, yLoop))
                 {
-                    player = vec2(xLoop, yLoop);
+                    player = uvec2(xLoop, yLoop);
                     breakLoop = true;
                     break;
                 }
@@ -408,9 +421,9 @@ vector<vec2> SpatialDataMap::modifiedDikjistras(vec2 playerMin, vec2 playerMax, 
         }
         if (exitLoop) break;
     }
-    vector<vec2> returnPath;
-    while (exitLoop && !(currPos.x == player.x && currPos.y == player.y)) {     // @AustinEaton : currPos potentially not initialized
-        returnPath.push_back(vec2(m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentX,
+    vector<uvec2> returnPath;
+    while (exitLoop && !(currPos.x == player.x && currPos.y == player.y)) {
+        returnPath.push_back(uvec2(m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentX,
             m_pSpatialMap[(int)currPos.x][(int)currPos.y].parentY));
         int temp = (int)currPos.x;
         if (m_pSpatialMap[temp][(int)currPos.y].parentX == -1 ||
