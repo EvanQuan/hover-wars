@@ -51,7 +51,7 @@
 #define SPIKES_BASE_COOLDOWN        3.0f // 2
 #define TRAIL_COOLDOWN              0.0f
 #define DASH_BASE_COOLDOWN          0.5f
-#define DASH_BASE_RECHARGE          5.0f
+#define DASH_BASE_RECHARGE          4.0f
 
 #define DASH_MAX_CHARGE_COUNT      3
 

@@ -30,7 +30,7 @@ The duration a powerup lasts for.
 
 Unit : seconds
 */
-#define POWERUP_TIME 20.0f
+#define POWERUP_TIME 15.0f
 
 
 class HovercraftEntity :
