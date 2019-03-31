@@ -181,6 +181,15 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         m_fScoreChangeTimes[hit] = SCORE_CHANGE_DURATION;
         break;
     case KILL_MESSAGE_NEW_LEADER:
+        m_pSoundManager->play(SoundManager::SOUND_UI_NEW_LEADER);
+        for (int player = 0, playerCount = GAME_STATS->getPlayerCount();
+            player < playerCount;
+            player++)
+        {
+            string newLeaderName = attacker == player ? "You are" : m_eHovercraftToString.at(attacker) + " is";
+            displayMessage(static_cast<eHovercraft>(player),
+                newLeaderName + " now in the lead");
+        }
         break;
     }
 }

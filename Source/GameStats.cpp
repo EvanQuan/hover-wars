@@ -237,6 +237,7 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         break;
     }
     checkForNewScoreLeader(hovercraft);
+    debugPrintAllScores();
 }
 
 /*
@@ -248,14 +249,10 @@ void GameStats::checkForNewScoreLeader(eHovercraft candidate)
     int newLargestScore = getLargestScore();
     int oldLargestScore = globalStats[eGlobalStat::SCORE_LARGEST];
 
-    if (newLargestScore >= oldLargestScore)
+    if (newLargestScore > oldLargestScore)
     {
         globalStats[eGlobalStat::SCORE_LARGEST] = newLargestScore;
-
-        if (!FuncUtils::contains(m_eScoreLeaders, candidate))
-        {
-            updateScoreLeaders(candidate);
-        }
+        updateScoreLeaders(candidate);
     }
 
 }
@@ -273,17 +270,43 @@ bool notScoreLeader(eHovercraft hovercraft)
 */
 void GameStats::updateScoreLeaders(eHovercraft newLeader)
 {
-    // Display new score leader
-    m_pGameInterface->displayMessage(newLeader,
-                                     HOVERCRAFT_INVALID, /* Hit doesn't matter */
-                                     GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
     // Remove old leaders
     m_eScoreLeaders.erase(std::remove_if(m_eScoreLeaders.begin(),
                                          m_eScoreLeaders.end(),
                                          notScoreLeader),
                           m_eScoreLeaders.end());
-    // Add new leader
-    m_eScoreLeaders.push_back(newLeader);
+    if (!FuncUtils::contains(m_eScoreLeaders, newLeader))
+    {
+        // Add new leader
+        m_eScoreLeaders.push_back(newLeader);
+    }
+
+    // Display new score leader
+    m_pGameInterface->displayMessage(newLeader,
+                                     HOVERCRAFT_INVALID, /* Hit doesn't matter */
+                                     GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
+}
+
+void GameStats::debugPrintAllScores()
+{
+    for (int p = 0; p < m_iPlayerCount; p++)
+    {
+        eHovercraft player = static_cast<eHovercraft>(p);
+        cout << "Player " << player << ": " << get(player, SCORE_CURRENT) << endl;
+    }
+    for (int b = 0; b < m_iBotCount; b++)
+    {
+        eHovercraft bot = static_cast<eHovercraft>(b + HOVERCRAFT_BOT_1);
+        cout << "Bot " << bot <<  ": " << get(bot, SCORE_CURRENT) << endl;
+    }
+
+    for (eHovercraft leader : m_eScoreLeaders)
+    {
+        cout << "Score leader: " << leader  << ": " << get(leader, SCORE_CURRENT) << endl;
+    }
+
+    cout << "Highest score: " << get(eGlobalStat::SCORE_LARGEST) << endl;
+
 }
 
 void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability)

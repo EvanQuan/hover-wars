@@ -370,12 +370,6 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     m_pGameStats->addScore(attacker,
                          static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
                          ability);
-    bool leaderChanged = !attackerHadLargestScore
-                          && m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
-    if (leaderChanged)
-    {
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_NEW_LEADER);
-    }
     resetMaxCooldowns();
     attackerHovercraft->reduceMaxCooldowns();
 }

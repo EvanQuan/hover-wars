@@ -296,6 +296,7 @@ private:
     void addPowerupCount(eHovercraft hovercraft);
 
     void debug(eHovercraft hovercraft);
+    void debugPrintAllScores();
 
     // @Deprecated, unused, due to perfect correspondance
     unordered_map<eAddScoreReason, eHovercraft> scoreReasonToHovercraft = 
