@@ -231,10 +231,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
-    m_pGameStats                  = GAME_STATS;
-
-    // Unused?
-    // m_fMinimumDistanceBetweenFlames = 5.0f;
+    m_pGameStats                = GAME_STATS;
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -378,10 +375,14 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 
 void HovercraftEntity::reduceMaxCooldowns()
 {
-    m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
-    m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
-    // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
-    m_fDashMaxRecharge = FuncUtils::max(DASH_MIN_RECHARGE, m_fDashMaxRecharge * COOLDOWN_REDUCTION);
+    m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN,
+                                                      m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN,
+                                                      m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
+    // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN,
+    //                                                   m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+    m_fDashMaxRecharge = FuncUtils::max(DASH_MIN_RECHARGE,
+                                        m_fDashMaxRecharge * COOLDOWN_REDUCTION);
 }
 
 void HovercraftEntity::resetMaxCooldowns()

@@ -6,7 +6,6 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "SpatialDataMap.h"
 #include "GameStats.h"
-#include <queue>
 
 /************************\
  * Forward Declarations *
@@ -26,6 +25,7 @@ class Spikes;
 
 /*
 The duration a powerup lasts for.
+Used by GameInterface.
 @TODO maybe move this to the powerup entity?
 
 Unit : seconds
