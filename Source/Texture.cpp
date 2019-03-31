@@ -34,8 +34,6 @@ void Texture::genCubeMap(const vector<string>* sFileNames)
     unsigned char* data = nullptr;
     int iWidth, iHeight, nrChannels;
 
-    stbi_set_flip_vertically_on_load(false);
-
     // Generate Texture
     glGenTextures(1, &m_TextureName);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureName);
@@ -71,9 +69,6 @@ void Texture::genCubeMap(const vector<string>* sFileNames)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    stbi_set_flip_vertically_on_load(true);
-
 }
 
 // Set Texture Parameters for more Generic Texture control.
