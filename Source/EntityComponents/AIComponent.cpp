@@ -140,11 +140,11 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     unsigned int minXBot, minYBot, maxXBot, maxYBot;
     SPATIAL_DATA_MAP->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);// get bot loc on grid
 
-    if (currentState == 0) { // if current state is chase, then get our path based on the player
+    if (currentState == STATE_CHASE) { // if current state is chase, then get our path based on the player
         unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
         SPATIAL_DATA_MAP->getMapIndices(target, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
         path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(maxXPlayer, maxYPlayer), vec2(minXBot+1, minYBot+1), vec2(maxXBot+1, maxYBot+1));
-    } else if (currentState == 1) {// if current state is seek the look for a nearest point.
+    } else if (currentState == STATE_SEEK) { // if current state is seek the look for a nearest point.
         if (glm::distance(vec2(minXBot, minYBot), seekLocation) < 2) {
             vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
@@ -169,16 +169,15 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     float distanceToTarget = glm::distance(target->getPosition(), botPos);
 
     if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
-        if (currentState != 1) {
+        if (currentState  == STATE_CHASE) {
             vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
             LastIndex = (int)currSeekLock.z;
         }
-        currentState = 1;
+        currentState = STATE_SEEK;
         nextPosMove = true;
-    }
-    else {
-        currentState = 0;
+    } else {
+        currentState = STATE_CHASE;
         nextPosMove = false;
     }
     if (timeChased > MAX_TIME_TARGET) {

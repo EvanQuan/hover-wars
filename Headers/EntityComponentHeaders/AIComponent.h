@@ -56,6 +56,12 @@ public:
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
 private:
+    /*
+    */
+    enum eState {
+        STATE_CHASE,
+        STATE_SEEK
+    };
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
@@ -65,7 +71,12 @@ private:
     int iComponentID;
     float timeChased = 0;
     vector<uvec2> path;
-    int currentState = 0;
+    /*
+        Represents the current state of the AI. The state determines the mode
+        of decision-making behaviour.
+    */
+    eState currentState = STATE_CHASE;
+
     vec2 seekLocation;
     int LastIndex = -1;
     bool nextPosMove = false;
