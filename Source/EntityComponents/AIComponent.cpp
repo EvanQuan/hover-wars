@@ -91,7 +91,7 @@ Function: getCurrentAction
 returns: an Action a, this action represents all the actions that should be preformed by the bot in question
 
 parameters:
-mPlayer: this is a generic hovercraft entity, it is not nessicarally a player, it could be a bot. however
+target: this is a generic hovercraft entity, it is not nessicarally a player, it could be a bot. however
 it is the hovercraft entity we are currently targeting. It should be the hovercraft to the bot entity.
 bot: bot entity that relates to AI component class
 delta_time: time difference since last update.
@@ -100,7 +100,7 @@ Explaination:
 this function handles the movement of the bot entity so that part of the action should be dissregarded.
 however it does not handle the lanuching of rockets and abilities, that should be handled by the caller.
 */
-void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot,float delta_time, Action *a) {
+void AIComponent::getCurrentAction(HovercraftEntity *target, HovercraftEntity *bot,float delta_time, Action *a) {
 
     //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
 
@@ -115,7 +115,7 @@ void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
 
     if (currentState == 0) { // if current state is chase, then get our path based on the player
         unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
-        SPATIAL_DATA_MAP->getMapIndices(mPlayer, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
+        SPATIAL_DATA_MAP->getMapIndices(target, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
         path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(maxXPlayer, maxYPlayer), vec2(minXBot+1, minYBot+1), vec2(maxXBot+1, maxYBot+1));
     }
     else if (currentState == 1) {// if current state is seek the look for a nearest point.
@@ -139,8 +139,8 @@ void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
         }
         seekPoint = nextPos;
     }
-    vec3 difference = mPlayer->getPosition() - botPos;
-    float distanceToTarget = glm::distance(mPlayer->getPosition(), botPos);
+    vec3 difference = target->getPosition() - botPos;
+    float distanceToTarget = glm::distance(target->getPosition(), botPos);
 
     if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
         if (currentState != 1) {
@@ -167,7 +167,7 @@ void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     float yVal = mSlope * dirVector.x;
 
 
-    glm::vec3 playerPos = mPlayer->getPosition();
+    glm::vec3 playerPos = target->getPosition();
     int XvalMul = (int)(difference.x / abs(difference.x));
 
     if (yVal > dirVector.z) {

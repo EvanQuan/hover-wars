@@ -52,6 +52,111 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 }
 
 /*
+    Given the bot position, get the nearest player and the distance between the
+    player and the bot.
+
+    @param bot                  to check for the nearest player
+    @param botPosition          of bot
+    @return nearestPlayer       from the specified botPosition
+    @return distanceToPlayer    between botPosition and the nearestPlayer position
+*/
+void AIManager::getNearestPlayer(const eHovercraft &bot,
+                                 const vec3 &botPosition,
+                                 eHovercraft &nearestPlayer,
+                                 float &distanceToPlayer)
+{
+    getNearestHovercraft(m_pEntityMngr->getPlayerList(), bot, botPosition, nearestPlayer, distanceToPlayer);
+}
+
+/*
+    Given the bot position, get the nearest bot and the distance between the
+    two bots
+
+    @param bot                  to check for the nearest bot
+    @param botPosition          of bot
+    @return nearestBot          from the specified botPosition
+    @return distanceToBot       between botPosition and the nearestBot position
+*/
+void AIManager::getNearestBot(const eHovercraft &bot,
+                              const vec3 &botPosition,
+                              eHovercraft &nearestBot,
+                              float &distanceToBot)
+{
+    getNearestHovercraft(m_pEntityMngr->getBotList(), bot, botPosition, nearestBot, distanceToBot);
+}
+
+/*
+    Given the bot position, get the nearest hovercraft and the distance between the
+    two hovercrafts, choosing from the specified 
+
+    @param hovercraftList           of hovercrafts to check
+    @param bot                      to check for the nearest hovercraft
+    @param botPosition              of bot
+    @return nearestHovercraft       from the specified botPosition
+    @return distanceToHovercraft    between botPosition and the nearestHovercraft position
+*/
+void AIManager::getNearestHovercraft(const vector<HovercraftEntity*>* hovercraftList,
+                                     const eHovercraft &bot,
+                                     const vec3 &botPosition,
+                                     eHovercraft & nearestHovercraft,
+                                     float & distanceToHovercraft)
+{
+    distanceToHovercraft = numeric_limits<float>::max();
+    for (int h = 0, size = hovercraftList->size(); h < size; h++) {
+        HovercraftEntity *hovercraftEntity = hovercraftList->at(h);
+
+        // Make sure that the bot does not check the distance between itself
+        if (bot != hovercraftEntity->getEHovercraft())
+        {
+            float distance = glm::distance(botPosition, hovercraftEntity->getPosition());
+            if (distance < distanceToHovercraft) {
+                distanceToHovercraft = distance;
+                nearestHovercraft = hovercraftEntity->getEHovercraft();
+            }
+        }
+    }
+}
+
+eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPlayer,
+                                   eHovercraft nearestBot, float distanceToBot)
+{
+    if (nearestBot == HOVERCRAFT_INVALID) {
+        // If there are no other bots, then the only choice is the player
+        return nearestPlayer;
+    }
+    // Otherwise, choose the closer one
+    return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
+}
+
+/*
+    Get the hovercraft that this bot should target.
+
+    @param bot                  to find the target
+    @param botPosition          of the bot to find the target
+    @return target              that the bot should target
+*/
+HovercraftEntity* AIManager::getTarget(const eHovercraft &bot,
+                          const vec3 &botPostion)
+{
+    eHovercraft nearestPlayer = HOVERCRAFT_PLAYER_1;
+    float distanceToPlayer = numeric_limits<float>::max();
+    getNearestPlayer(bot, botPostion, nearestPlayer, distanceToPlayer);
+
+    eHovercraft nearestBot = HOVERCRAFT_INVALID;
+    float distanceToBot = numeric_limits<float>::max();
+    getNearestBot(bot, botPostion, nearestBot, distanceToBot);
+
+    eHovercraft target = getTargetID(nearestPlayer, distanceToPlayer, nearestBot, distanceToBot);
+
+    //cout << "Bot " << bot << " target:" << endl
+        //<< "\tnearest player: " << nearestPlayer << " @ " << distanceToPlayer << endl
+        //<< "\tnearest bot: " << nearestBot << " @ " << distanceToBot << endl
+        //<< "\ttarget: " << target << endl;
+
+    return m_pEntityMngr->getHovercraft(target);
+}
+
+/*
     Update all the AI for a given time frame.
     This should be called every frame in game, but should not be updated out of
     game (such as when the game is paused, or the players are in other menus).
@@ -63,6 +168,7 @@ void AIManager::update(float fTimeInSeconds)
     {
         AIComponent* ai = m_vAIComponents.at(i);
         HovercraftEntity* bot = bots->at(i);
+        eHovercraft botHovercraft = bot->getEHovercraft();
 
         //vector<vec2> path = SPATIAL_DATA_MAP->aStarSearch(vec2(18,21),vec2(18,19));
         //std::cout << "path size: " << path.size() << std::endl;
@@ -75,38 +181,10 @@ void AIManager::update(float fTimeInSeconds)
         PxTransform globalTransform = bot->getGlobalTransform();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
 
-        int playerNum = eHovercraft::HOVERCRAFT_PLAYER_1;
-        float distanceToNearestPlayer = 1000000;
-        // @TODO add ability to change targets when we do multiplayer
-        for (int j = 0; j < m_pEntityMngr->getPlayerSize(); j++) {
-            HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)j);       // @AustinEaton : mPlayer keeps getting reinitialized
-            float dis = sqrt(pow((mPlayer->getPosition() - botPos).x,2) + pow((mPlayer->getPosition() - botPos).y, 2) + pow((mPlayer->getPosition() - botPos).z, 2));
-            if (dis < distanceToNearestPlayer) {
-                distanceToNearestPlayer = dis;
-                playerNum = j;
-            }
-        }
-        HovercraftEntity *mPlayer = m_pEntityMngr->getPlayer((eHovercraft)playerNum);   // @AustinEaton : mPlayer keeps getting reinitialized
-        float distanceToNearestBot = 1000000;                                           // @AustinEaton : I understand you're setting this to a default to find a closer distance, but use numeric_limits<float>::max() or min() for
-                                                                                        //                  these types of initializations
-        for (size_t j = 0; j < size; j++) {
-            HovercraftEntity *mPlayer = bots->at(j);                                    // @AustinEaton : mPlayer keeps getting reinitialized
-            float distanceBetweenPlayerAndBot = glm::distance(mPlayer->getPosition(), botPos);
-            if (distanceBetweenPlayerAndBot < distanceToNearestBot && i !=j) {
-                distanceToNearestBot = distanceBetweenPlayerAndBot;
-                playerNum = j;
-            }
-        }
-        if (distanceToNearestBot < distanceToNearestPlayer) {
-            mPlayer = bots->at(playerNum);
-        }
+        HovercraftEntity *target = getTarget(botHovercraft, botPos);
 
         Action a;
-        ai->getCurrentAction(mPlayer, bot, fTimeInSeconds,&a);
-
-        //std::cout << "BotEntity update: " << a.actionsToTake[0] << ", " << a.actionsToTake[1] << ", " << a.actionsToTake[2] << ", "<< a.actionsToTake[3] << std::endl;
-        // fire Rocket, right-left turn, forward-back move,right-left move
-        //std::cout << vForce.x <<  "x: " << vForce.y << " y: " << sin(vForce.z) << std::endl;
+        ai->getCurrentAction(target, bot, fTimeInSeconds, &a);
 
         float turnValue = a.turn;
         if (turnValue != 0) {
