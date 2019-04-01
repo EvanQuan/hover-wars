@@ -110,6 +110,7 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
 {
     GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
+    m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     debugMessage = "";
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;

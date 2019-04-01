@@ -228,7 +228,9 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    GameInterface::getInstance(m_iWidth, m_iHeight)->reinitialize(gameTime);
+    GameInterface *gameUI = GameInterface::getInstance(m_iWidth, m_iHeight);
+    gameUI->reinitialize(gameTime);
+    gameUI->setDisplayCount(playerCount);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
