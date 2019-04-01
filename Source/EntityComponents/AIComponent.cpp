@@ -150,6 +150,33 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
     }
     return vec3(nearest, lastLoc);
 }
+
+/*
+    @NOTE
+    I have no idea what's going on here. The seek point is being updated, but
+    according to what? Nearest? What makes this different than getNearestSeekPoint
+
+    @param botPos           of bot to determine seek point
+
+    @modifies seekPoint     based on what?
+*/
+void AIComponent::updateSeekPoint(const vec3 &botPos)
+{
+    vec2 offset = m_pSpatialDataMap->getWorldOffset();
+    float tileSize = m_pSpatialDataMap->getTileSize();
+    glm::vec3 nextPos = vec3(0, 0, 0);
+    if (path.size() >= 2) {
+        for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
+            nextPos = vec3(path.at(i).x * tileSize + offset.x,
+                           0,
+                           path.at(i).y * tileSize + offset.y);
+            if (abs((botPos - nextPos).x) + abs((botPos - nextPos).z) > DISTANCE_BOX) {
+                break;
+            }
+        }
+        seekPoint = nextPos;
+    }
+}
 /*
     @param target           hovercraft the AI is to target. Could be a player or bot.
     @param bot              corresponding to this AIComponent
@@ -196,18 +223,9 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
         break;
     }
 
-    vec2 offset = m_pSpatialDataMap->getWorldOffset();
 
-    glm::vec3 nextPos = vec3(0, 0, 0);
-    if (path.size() >= 2) {
-        for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
-            nextPos = vec3(path.at(i).x * m_pSpatialDataMap->getTileSize() + offset.x, 0, path.at(i).y * m_pSpatialDataMap->getTileSize() + offset.y);
-            if (abs((botPos - nextPos).x) + abs((botPos - nextPos).z) > DISTANCE_BOX) {
-                break;
-            }
-        }
-        seekPoint = nextPos;
-    }
+    updateSeekPoint(botPos);
+
     vec3 difference = target->getPosition() - botPos;
     float distanceToTarget = glm::distance(target->getPosition(), botPos);
 
@@ -240,28 +258,28 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
 
     if (yVal > dirVector.z) {
         a->turn = static_cast<float>(1 * XvalMul);
-    }
-    else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && m_eCurrentMode == 0) {
+    } else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && m_eCurrentMode == 0) {
         a->turn = 0.0f;
         a->shouldFireRocket = true;
-    }
-    else {
+    } else {
         a->turn = static_cast<float>(-1 * XvalMul);
     }
+
     bool isXdistance = false;
     vec2 differenceSum = vec2(0,0);
+
     if ((botPos.x - seekPoint.x) > 0) {
         differenceSum.x += MOVEMENT_RATE * -1;
-    }
-    else {
+    } else {
         differenceSum.x += MOVEMENT_RATE;
     }
+
     if ((botPos.z - seekPoint.z) > 0) {
         differenceSum.y += MOVEMENT_RATE * -1;
-    }
-    else {
+    } else {
         differenceSum.y += MOVEMENT_RATE;
     }
+
     if (nextPosMove) {
         a->shouldActivateTrail = true;
     }

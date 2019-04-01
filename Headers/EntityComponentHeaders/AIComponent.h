@@ -103,6 +103,7 @@ private:
     vec3 get2ndNearestSeekPoint(vec2 currentPos) const;
     vec3 getNearestSeekPoint(vec2 currentPos) const;
 
+    void updateSeekPoint(const vec3 &botPos);
     SpatialDataMap *m_pSpatialDataMap;
 
 };
