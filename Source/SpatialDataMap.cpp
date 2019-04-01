@@ -274,35 +274,84 @@ void SpatialDataMap::updateDynamicPosition(const Entity* pEntity, const vec3* pN
     bChange |= iOldXMax != static_cast<unsigned int>(floor(vNewPosPos.x / m_fTileSize));
     bChange |= iOldYMax != static_cast<unsigned int>(floor(vNewPosPos.y / m_fTileSize));
 
-    if (bChange)
+    if (bChange) {
         computeNewDynamicPosition(pEntity, pNewPos);
+    }
 }
-float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2) {
+float SpatialDataMap::evaluateDistance(const vec2* pos1, const vec2* pos2) const {
     return abs(pos1->x - pos2->x) + abs(pos1->y - pos2->y);
 }
-bool SpatialDataMap::isValid(int x,int y) {
-    return x < (int)m_pSpatialMap.size()  && x >= 0 && y < (int)m_pSpatialMap[x].size() && y >= 0 && (int)m_pSpatialMap[x][y].pLocalEntities.size() == 0;
+
+/*
+    @return true if x and y are contained in the spatial data map
+*/
+bool SpatialDataMap::isValid(int x,int y) const {
+    return 0 <= x
+        && x < static_cast<int>(m_pSpatialMap.size())
+        && 0 <= y
+        && y < (int)m_pSpatialMap[x].size()
+        && static_cast<int>(m_pSpatialMap[x][y].pLocalEntities.size()) == 0;
 }
-double SpatialDataMap::calculateH(int x, int y, sSpatialCell dest) {
+
+double SpatialDataMap::calculateH(int x, int y, sSpatialCell dest) const {
     double H = (sqrt((x - dest.x)*(x - dest.x)
         + (y - dest.y)*(y - dest.y)));
     return H;
 }
 
+
 /*
-modifiedDikjistras
-returns: the shortest path of locations on the spatial map form (x,y)
-
-parameters:
-playerMin: minmum grid location of start
-playerMax: maxiumum grid location of start
-destMin: minmum grid location of target
-destMax: maxiumum grid location of target
-
-Explination:
-uses dikjistras to avoid any entities
+    Initialize all the cell values to begin Dijkstra's algorithm.
 */
-vector<uvec2> SpatialDataMap::modifiedDikjistras(uvec2 playerMin, uvec2 playerMax, uvec2 destMin, uvec2 destMax) {
+void SpatialDataMap::initializeForDijkstras()
+{
+    for (unsigned int i = 0; i < m_pSpatialMap.size(); i++) {
+        for (unsigned int j = 0; j < m_pSpatialMap[0].size(); j++) {
+            m_pSpatialMap[i][j].visited = false;
+            m_pSpatialMap[i][j].parentX = -1;
+            m_pSpatialMap[i][j].parentY = -1;
+        }
+    }
+}
+void SpatialDataMap::initializeForAStar(vector<vector<bool>> &closedList)
+{
+    for (unsigned int i = 0; i < m_pSpatialMap.size(); i++) {
+        vector<bool> type;
+        for (unsigned int j = 0; j < m_pSpatialMap[0].size(); j++) {
+            type.push_back(false);
+        }
+        closedList.push_back(type);
+    }
+    for (unsigned int x = 0; x < m_pSpatialMap.size(); x++) {
+        vector<bool> type;
+        for (unsigned int y = 0; y < m_pSpatialMap[0].size(); y++) {
+            m_pSpatialMap[x][y].fCost = FLT_MAX;
+            m_pSpatialMap[x][y].gCost = FLT_MAX;
+            m_pSpatialMap[x][y].hCost = FLT_MAX;
+            m_pSpatialMap[x][y].parentX = -1;
+            m_pSpatialMap[x][y].parentY = -1;
+            m_pSpatialMap[x][y].x = x;
+            m_pSpatialMap[x][y].y = y;
+            type.push_back(false);
+
+        }
+        closedList.push_back(type);
+    }
+}
+/*
+    Get the shortest path between the two specified points on the spatial map
+    form (x,y). Use modified Dijkstra's algorithm in order to avoid any
+    entities in the way.
+
+    @param playerMin    minmum grid location of start
+    @param playerMax    maxiumum grid location of start
+    @param destMin      minmum grid location of target
+    @param destMax      maxiumum grid location of target
+
+    @return the shortest path
+*/
+vector<uvec2> SpatialDataMap::getShortestPath(uvec2 playerMin, uvec2 playerMax,
+                                              uvec2 destMin, uvec2 destMax) {
     uvec2 dest = destMin;
     if (!isValid((int)dest.x, (int)dest.y)) {
         int yMul = (destMax.y - destMin.y) == 0 ? 0 : (destMax.y - destMin.y) / abs(destMax.y - destMin.y);
@@ -367,13 +416,8 @@ vector<uvec2> SpatialDataMap::modifiedDikjistras(uvec2 playerMin, uvec2 playerMa
             }
         }
     }
-    for (unsigned int i = 0; i < m_pSpatialMap.size(); i++) {
-        for (unsigned int j = 0; j < m_pSpatialMap[0].size(); j++) {
-            m_pSpatialMap[i][j].visited = false;
-            m_pSpatialMap[i][j].parentX = -1;
-            m_pSpatialMap[i][j].parentY = -1;
-        }
-    }
+
+    initializeForDijkstras();
     queue<vec2> valuesToTry;
     valuesToTry.push(player);
     vec2 currPos;
@@ -505,30 +549,11 @@ vector<vec2> SpatialDataMap::aStarSearch(vec2 player, vec2 dest) {
         //You clicked on yourself
     }
     vector<vector<bool>> closedList;
-    for (unsigned int i = 0; i < m_pSpatialMap.size(); i++) {
-        vector<bool> type;
-        for (unsigned int j = 0; j < m_pSpatialMap[0].size(); j++) {
-            type.push_back(false);
-        }
-        closedList.push_back(type);
-    }
-    //Initialize whole map
-    //Node allMap[50][25];
-    for (unsigned int x = 0; x < m_pSpatialMap.size(); x++) {
-        vector<bool> type;
-        for (unsigned int y = 0; y < m_pSpatialMap[0].size(); y++) {
-            m_pSpatialMap[x][y].fCost = FLT_MAX;
-            m_pSpatialMap[x][y].gCost = FLT_MAX;
-            m_pSpatialMap[x][y].hCost = FLT_MAX;
-            m_pSpatialMap[x][y].parentX = -1;
-            m_pSpatialMap[x][y].parentY = -1;
-            m_pSpatialMap[x][y].x = x;
-            m_pSpatialMap[x][y].y = y;
-            type.push_back(false);
 
-        }
-        closedList.push_back(type);
-    }
+    //Initialize whole map
+    initializeForAStar(closedList);
+
+    //Node allMap[50][25];
 
     //Initialize our starting list
     int x = (int)player.x;
@@ -619,7 +644,7 @@ bool SpatialDataMap::getNearestCar(int currID,vector<int> IDs, vec2 &minPos) {
             mPos.y = (float)loc.second;
         }
     }
-    float minValue = 100000;
+    float minValue = numeric_limits<float>::max();
     for (int id : IDs) {
         if (currID != id) {
             pair<unsigned int, unsigned int> loc = m_pEntityMap[currID][0];
@@ -632,7 +657,7 @@ bool SpatialDataMap::getNearestCar(int currID,vector<int> IDs, vec2 &minPos) {
             }
         }
     }
-    return minValue == 100000;
+    return minValue == numeric_limits<float>::max();
 }
 void SpatialDataMap::computeNewDynamicPosition(const Entity* pEntity, const vec3* pNewPos)
 {

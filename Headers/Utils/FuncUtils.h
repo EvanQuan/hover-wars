@@ -165,6 +165,12 @@ namespace FuncUtils
     int random(int start, int end);
 
     /*
+        Get a uniformly distributed int from 0 to range, exclusively
+        @param range    of ints to choose from
+    */
+    int random(int range);
+
+    /*
         Convert a float to string, given a specified number of decimal places.
 
         @param value of float to convert
