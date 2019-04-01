@@ -160,6 +160,7 @@ bool GameManager::renderGraphics()
         startedGameOver = true;
     }
 
+
     // Update Environment if the game is not paused
     if (!paused)
     {
@@ -186,15 +187,14 @@ bool GameManager::renderGraphics()
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
         m_pCurrentInterface->update(frameDeltaTime);
-        // call function to draw our scene
         drawScene();
+        // call function to draw our scene
+        // Sound needs to update after the EntityManager to reflect in game changes
+        // Cannot be updated inside the EntityManager as sounds can play while game
+        // is paused.
+        SOUND_MANAGER->update();
     }
-
-    // Sound needs to update after the EntityManager to reflect in game changes
-    // Cannot be updated inside the EntityManager as sounds can play while game
-    // is paused.
-    SOUND_MANAGER->update();
-
+    drawScene();
 
     // check for Window events
     glfwPollEvents();
@@ -288,8 +288,8 @@ void GameManager::drawScene()
         {
             m_pEntityManager->renderEnvironment();
         }
-        m_pCurrentInterface->render();
         glDisable(GL_DEPTH_TEST);
+        m_pCurrentInterface->render();
 
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);

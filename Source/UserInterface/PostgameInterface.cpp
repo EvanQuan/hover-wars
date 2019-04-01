@@ -45,6 +45,7 @@ PostgameInterface* PostgameInterface::getInstance(int iWidth, int iHeight)
     {
         m_pInstance = new PostgameInterface(iWidth, iHeight);
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 

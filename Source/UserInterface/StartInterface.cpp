@@ -12,9 +12,9 @@ StartInterface::StartInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
         // 0 Background
         {0.0f, 0.0f},
         // 1 Title
-        {0.0f, 0.0f},
+        {0.25f, 0.7f},
         // 2 Prompt 1
-        {0.0f, 0.0f},
+        {0.38f, 0.2f},
     },
     // Translating
     vector<pair<float, float>>
@@ -22,9 +22,9 @@ StartInterface::StartInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
         // 0 Background
         {0.0f, 0.0f},
         // 1 Title
-        {0.47f, 0.9f},
+        {0.0f, 0.0f},
         // 2 Prompt 1
-        {0.47f, 0.2f},
+        {0.0f, 0.0f},
     }
 )
 {
@@ -37,6 +37,7 @@ StartInterface* StartInterface::getInstance(int iWidth, int iHeight)
     {
         m_pInstance = new StartInterface(iWidth, iHeight);
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 

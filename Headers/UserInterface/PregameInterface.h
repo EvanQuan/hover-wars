@@ -30,13 +30,13 @@ private:
     {
         BACKGROUND = 0,
         PLAYER_COUNT,
-        BOT_COUNT,
-        MAIN_MENU,
-        START_GAME,
         PLAYER_COUNT_NUMBER,
+        BOT_COUNT,
         BOT_COUNT_NUMBER,
         GAME_TIME,
         GAME_TIME_NUMBER,
+        MAIN_MENU,
+        START_GAME,
     };
     static PregameInterface* m_pInstance;
 
