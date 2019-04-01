@@ -11,7 +11,7 @@ PostgameMenu::PostgameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         {
-            { "Quit Game", eFixedCommand::COMMAND_PROMPT_BACK },
+            { "Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
     }
 )
@@ -40,8 +40,6 @@ void PostgameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PostgameMenu::back()
 {
-    // For debug purposes, this quits the game instead of going back to the main menu
-    // PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);
     m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
     nextMenu(MainMenu::getInstance());
 }
