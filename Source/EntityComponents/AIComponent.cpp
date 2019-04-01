@@ -79,7 +79,7 @@ vector<uvec2> AIComponent::getSeekPath(const HovercraftEntity *bot,
         seekLocation = vec2(currSeekLock.x, currSeekLock.y);
         LastIndex = (int)currSeekLock.z;
     }
-    return m_pSpatialDataMap->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
+    return m_pSpatialDataMap->getShortestPath(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
 }
 
 /*
@@ -93,7 +93,7 @@ vector<uvec2> AIComponent::getChasePath(const HovercraftEntity *target,
                                         unsigned int minXPlayer, unsigned int minYPlayer,
                                         unsigned int maxXPlayer, unsigned int maxYPlayer) const
 {
-    return m_pSpatialDataMap->modifiedDikjistras(vec2(minXPlayer, minYPlayer),
+    return m_pSpatialDataMap->getShortestPath(vec2(minXPlayer, minYPlayer),
                                                 vec2(maxXPlayer, maxYPlayer),
                                                 vec2(minXBot + 1, minYBot + 1),
                                                 vec2(maxXBot + 1, maxYBot + 1));
