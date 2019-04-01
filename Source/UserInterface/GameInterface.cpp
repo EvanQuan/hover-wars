@@ -349,26 +349,6 @@ void GameInterface::displayDebug(std::string message)
     debugMessage = message;
 }
 
-/*
-Update the scores for all display count players
-*/
-void GameInterface::updateScores()
-{
-    for (int player = 0; player < m_iDisplayCount; player++)
-    {
-        updateScore(static_cast<eHovercraft>(player),
-                    GAME_STATS->get(static_cast<eHovercraft>(player),
-                    GameStats::SCORE_CURRENT));
-    }
-}
-
-// @EvanQuan : Not Implemented, "hovecraft?" misspelled?
-void GameInterface::updateScore(eHovercraft hovecraft, int score)
-{
-    
-    // cout << "Player " << (player + 1) << " score: " << score << endl;
-}
-
 void GameInterface::renderScores()
 {
     // TODO put this in the proper place, font, scale etc.
@@ -472,15 +452,15 @@ void GameInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 
 }
 
 /*
-Set the number of UIs to display.
+Set the number of UIs to display. This determines how many hovercrafts the
+interface should update for.
+
 Values:
     0 - No UIs are displayed. This should be done in the main menu (not in game).
     1 - 1 player. This will display across the whole window.
     2 - 2 player. Each UI will display across 1/4 of the window.
     3 - 3 player. Each UI will display across 1/4 of the window.
     4 - 4 player. Each UI will display across 1/4 of the window.
-
-@TODO set count for main menu or pause menu
 */
 void GameInterface::setDisplayCount(int count)
 {
@@ -493,52 +473,15 @@ void GameInterface::setDisplayCount(int count)
         count = DISPLAY_COUNT_MAX;
     }
     m_iDisplayCount = count;
-
-    initializeGameInterface();
 }
 
 /*
-Initialize all aspects of the UI according to the current display count. This
-should be done at the start of every game, or if the game resets.
+    Display the specified hovercraft's UI information.
+
+    @param hovercraft   to display
 */
-void GameInterface::initializeGameInterface()
+void GameInterface::setFocus(eHovercraft hovercraft)
 {
-    initializeScores();
-    initializeCooldowns();
+    m_eHovercraftFocus = hovercraft;
 }
 
-/*
-Initialize the scores of all players to 0
-*/
-void GameInterface::initializeScores()
-{
-    for (int i = DISPLAY_COUNT_MIN; i < DISPLAY_COUNT_MAX; i++)
-    {
-    }
-}
-
-/*
-Initialize the cool down counts for all abilities
-*/
-void GameInterface::initializeCooldowns()
-{
-    for (int i = DISPLAY_COUNT_MIN; i < DISPLAY_COUNT_MAX; i++)
-    {
-        // TODO
-    }
-}
-
-/*
-Set a specified player's score to the specified value.
-*/
-void GameInterface::setScore(int joystickID, int score)
-{
-}
-
-/*
-Initialize all UI components according to the current value of m_iDisplayCount
-*/
-void initializeDisplayCount()
-{
-    // TODO
-}
