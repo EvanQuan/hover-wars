@@ -8,6 +8,7 @@
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/GameInterface.h"
+#include "UserInterface/PostgameInterface.h"
 #include "Menus/GameMenu.h"
 #include "Menus/StartMenu.h"
 
@@ -187,7 +188,7 @@ bool GameManager::renderGraphics()
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
         m_pCurrentInterface->update(frameDeltaTime);
-        drawScene();
+        // drawScene();
         // call function to draw our scene
         // Sound needs to update after the EntityManager to reflect in game changes
         // Cannot be updated inside the EntityManager as sounds can play while game
@@ -267,6 +268,7 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     m_bPaused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
+    setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
 
     // m_pPhysicsManager->cleanupPhysics();
