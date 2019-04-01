@@ -7,6 +7,7 @@
 
 /*
     Locations on the map that the AI can seek for.
+    If the AI is in 
     @TODO describe what these are for/what they mean
 
     // Original order, if it matters?
@@ -37,6 +38,8 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
     //}
 
     timeChased = static_cast<float>(FuncUtils::random(MAX_TIME_TARGET));
+
+    m_pSpatialDataMap = SPATIAL_DATA_MAP;
 }
 
 // @AustinEaton : Function not Implemented
@@ -59,13 +62,50 @@ float getDistance(vec2 a, vec2 b) {
     return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
 }
 /*
+    Get the path for seek mode.
+
+    @return the seek path
+
+    @modifies seekLocation
+    @modifies LastIndex
+
+*/
+vector<uvec2> AIComponent::getSeekPath(const HovercraftEntity *bot,
+                                       unsigned int minXBot, unsigned int minYBot,
+                                       unsigned int maxXBot, unsigned int maxYBot)
+{
+    if (glm::distance(vec2(minXBot, minYBot), seekLocation) < 2) {
+        vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
+        seekLocation = vec2(currSeekLock.x, currSeekLock.y);
+        LastIndex = (int)currSeekLock.z;
+    }
+    return m_pSpatialDataMap->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
+}
+
+/*
+    Get the path for chase mode
+
+    @param target   to chase
+*/
+vector<uvec2> AIComponent::getChasePath(const HovercraftEntity *target,
+                                        unsigned int minXBot, unsigned int minYBot,
+                                        unsigned int maxXBot, unsigned int maxYBot,
+                                        unsigned int minXPlayer, unsigned int minYPlayer,
+                                        unsigned int maxXPlayer, unsigned int maxYPlayer) const
+{
+    return m_pSpatialDataMap->modifiedDikjistras(vec2(minXPlayer, minYPlayer),
+                                                vec2(maxXPlayer, maxYPlayer),
+                                                vec2(minXBot + 1, minYBot + 1),
+                                                vec2(maxXBot + 1, maxYBot + 1));
+}
+/*
     TODO maybe make it go to center?
     Given the current position, get the 2nd closest seek point
 
     @param currentPos   of the AI
     @return the seek position that is closest to the currentPos
 */
-vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) {
+vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) const {
     vec2 nearest = currentPos;
     vec2 nearest2nd = currentPos;
     float distance = numeric_limits<float>::max();
@@ -96,7 +136,7 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) {
     @param currentPos   of the AI
     @return the seek position that is closest to the currentPos
 */
-vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) {
+vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
     vec2 nearest = currentPos;
     float distance = numeric_limits<float>::max();
     int lastLoc = -1;
@@ -137,28 +177,31 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     glm::vec3 botPos = bot->getPosition();
     glm::vec3 botVel = bot->getLinearVelocity();
 
+    unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
+    m_pSpatialDataMap->getMapIndices(target, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
+
     unsigned int minXBot, minYBot, maxXBot, maxYBot;
-    SPATIAL_DATA_MAP->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);// get bot loc on grid
+    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);// get bot loc on grid
 
-    if (currentState == STATE_CHASE) { // if current state is chase, then get our path based on the player
-        unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
-        SPATIAL_DATA_MAP->getMapIndices(target, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
-        path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(maxXPlayer, maxYPlayer), vec2(minXBot+1, minYBot+1), vec2(maxXBot+1, maxYBot+1));
-    } else if (currentState == STATE_SEEK) { // if current state is seek the look for a nearest point.
-        if (glm::distance(vec2(minXBot, minYBot), seekLocation) < 2) {
-            vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
-            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
-            LastIndex = (int)currSeekLock.z;
-        }
-
-        path = SPATIAL_DATA_MAP->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
+    switch (m_eCurrentMode) {
+    case MODE_CHASE:
+        path = getChasePath(target, minXBot, minYBot,
+                                    maxXBot, maxYBot,
+                                    minXPlayer, minYPlayer,
+                                    maxXPlayer, maxYPlayer);
+        break;
+    case MODE_SEEK:
+        path = getSeekPath(bot, minXBot, minYBot,
+                                maxXBot, maxYBot);
+        break;
     }
-    vec2 offset = SPATIAL_DATA_MAP->getWorldOffset();
+
+    vec2 offset = m_pSpatialDataMap->getWorldOffset();
 
     glm::vec3 nextPos = vec3(0, 0, 0);
     if (path.size() >= 2) {
         for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
-            nextPos = vec3(path.at(i).x * SPATIAL_DATA_MAP->getTileSize() + offset.x, 0, path.at(i).y * SPATIAL_DATA_MAP->getTileSize() + offset.y);
+            nextPos = vec3(path.at(i).x * m_pSpatialDataMap->getTileSize() + offset.x, 0, path.at(i).y * m_pSpatialDataMap->getTileSize() + offset.y);
             if (abs((botPos - nextPos).x) + abs((botPos - nextPos).z) > DISTANCE_BOX) {
                 break;
             }
@@ -169,15 +212,15 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     float distanceToTarget = glm::distance(target->getPosition(), botPos);
 
     if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
-        if (currentState  == STATE_CHASE) {
+        if (m_eCurrentMode  == MODE_CHASE) {
             vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
             LastIndex = (int)currSeekLock.z;
         }
-        currentState = STATE_SEEK;
+        m_eCurrentMode = MODE_SEEK;
         nextPosMove = true;
     } else {
-        currentState = STATE_CHASE;
+        m_eCurrentMode = MODE_CHASE;
         nextPosMove = false;
     }
     if (timeChased > MAX_TIME_TARGET) {
@@ -198,7 +241,7 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     if (yVal > dirVector.z) {
         a->turn = static_cast<float>(1 * XvalMul);
     }
-    else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && currentState == 0) {
+    else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && m_eCurrentMode == 0) {
         a->turn = 0.0f;
         a->shouldFireRocket = true;
     }

@@ -57,11 +57,31 @@ public:
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
 private:
     /*
+        Possible modes the AIComponent can be in.
     */
-    enum eState {
-        STATE_CHASE,
-        STATE_SEEK
+    enum eMode {
+        // Wants to move towards the target hovercraft.
+        // Path calculation is based on the target hovercraft.
+        MODE_CHASE,
+        // Wants to move towards the nearest seek point on the map
+        // Path calculation is based on location of nearest seek points.
+        MODE_SEEK
     };
+
+    vector<uvec2> getSeekPath(const HovercraftEntity* bot,
+                              unsigned int minXBot,
+                              unsigned int minYBot,
+                              unsigned int maxXBot,
+                              unsigned int maxYBot);
+    vector<uvec2> getChasePath(const HovercraftEntity *target,
+                              unsigned int minXBot,
+                              unsigned int minYBot,
+                              unsigned int maxXBot,
+                              unsigned int maxYBot,
+                              unsigned int minXPlayer,
+                              unsigned int minYPlayer,
+                              unsigned int maxXPlayer,
+                              unsigned int maxYPlayer) const;
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
@@ -72,15 +92,18 @@ private:
     float timeChased = 0;
     vector<uvec2> path;
     /*
-        Represents the current state of the AI. The state determines the mode
-        of decision-making behaviour.
+        Represents the current mode of the AI. The mode determines which
+        decision-making behaviour to act upon.
     */
-    eState currentState = STATE_CHASE;
+    eMode m_eCurrentMode = MODE_CHASE;
 
     vec2 seekLocation;
     int LastIndex = -1;
     bool nextPosMove = false;
-    vec3 get2ndNearestSeekPoint(vec2 currentPos);
-    vec3 getNearestSeekPoint(vec2 currentPos);
+    vec3 get2ndNearestSeekPoint(vec2 currentPos) const;
+    vec3 getNearestSeekPoint(vec2 currentPos) const;
+
+    SpatialDataMap *m_pSpatialDataMap;
+
 };
 
