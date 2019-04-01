@@ -37,7 +37,8 @@ void Rocket::update(float fTimeInSeconds)
     // Local Variables
     mat4 m4TransformationMatrix = mat4(1.0f);
 
-    // Go through each Rocket Reference, grab the Physics Transformation and update the Mesh.
+    // Go through each Rocket Reference, grab the Physics Transformation and
+    // update the Mesh.
     for (vector<string>::const_iterator pIter = m_pReferenceList.begin();
         pIter != m_pReferenceList.end();
         ++pIter)
@@ -47,8 +48,8 @@ void Rocket::update(float fTimeInSeconds)
     }
 }
 
-// This will need to be adjusted as needs arise. Particularly for Pick up zones that may have a base mesh or
-//  Static position.
+// This will need to be adjusted as needs arise. Particularly for Pick up zones
+// that may have a base mesh or Static position.
 void Rocket::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const
 {
     /* Not Implemented */
@@ -69,7 +70,6 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 
 void Rocket::handleHovercraftCollision(HovercraftEntity* hit)
 {
-
     cout << "ROCKET HIT PLAYER " << hit->getID() << endl;
 }
 
@@ -94,7 +94,9 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     // Play sound for Rocket activation
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
 
-    // Generate Hash Key (<Rocket Entity ID> <Transformation Index>) Transformation index used to differentiate rocket A from rocket B for rendering and physics.
+    // Generate Hash Key (<Rocket Entity ID> <Transformation Index>)
+    // Transformation index used to differentiate rocket A from rocket B for
+    // rendering and physics.
     string sHashKey = to_string(m_iID) + " " + to_string(getNewRocketID());
 
     // Add Instance to the Mesh for rendering new Rocket
@@ -104,15 +106,13 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
     m_pReferenceList.push_back(sHashKey);
 
     // Generate Rocket in Physics Scene
-    m_pPhysicsComponent->initializeRocket(m_pReferenceList.back().c_str(), m4InitialTransform, vVelocity, fBBLength);
+    m_pPhysicsComponent->initializeRocket(m_pReferenceList.back().c_str(),
+                                          m4InitialTransform, vVelocity, fBBLength);
 }
 
 void Rocket::reflect(unsigned int iVictimMsg)
 {
-    // SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
-    // mat4* m4CurrentTransform;
-    // m_pPhysicsComponent->getTransformMatrix(m4CurrentTransform);
-    // mat4* m4ReflectedTransform = // reverse
-    // const vec3 reflectedVelocity = -m_pPhysicsComponent->getLinearVelocity();
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+
     
 }

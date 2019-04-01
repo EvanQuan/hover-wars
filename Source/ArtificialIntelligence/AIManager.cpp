@@ -71,9 +71,6 @@ void AIManager::update(float fTimeInSeconds)
         //std::cout << "mapIndices: " << minX << "," << minY << std::endl;
         ai->update(fTimeInSeconds);
         glm::vec3 botPos = bot->getPosition();
-        // double x = FuncUtils::getRoll(rotation);
-        // double y = FuncUtils::getPitch(rotation);
-        // double z = FuncUtils::getYaw(rotation);
 
         PxTransform globalTransform = bot->getGlobalTransform();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
@@ -94,9 +91,9 @@ void AIManager::update(float fTimeInSeconds)
                                                                                         //                  these types of initializations
         for (size_t j = 0; j < size; j++) {
             HovercraftEntity *mPlayer = bots->at(j);                                    // @AustinEaton : mPlayer keeps getting reinitialized
-            float dis = sqrt(pow((mPlayer->getPosition() - botPos).x, 2) + pow((mPlayer->getPosition() - botPos).y, 2) + pow((mPlayer->getPosition() - botPos).z, 2));
-            if (dis < distanceToNearestBot && i !=j) {
-                distanceToNearestBot = dis;
+            float distanceBetweenPlayerAndBot = glm::distance(mPlayer->getPosition(), botPos);
+            if (distanceBetweenPlayerAndBot < distanceToNearestBot && i !=j) {
+                distanceToNearestBot = distanceBetweenPlayerAndBot;
                 playerNum = j;
             }
         }
@@ -111,21 +108,21 @@ void AIManager::update(float fTimeInSeconds)
         // fire Rocket, right-left turn, forward-back move,right-left move
         //std::cout << vForce.x <<  "x: " << vForce.y << " y: " << sin(vForce.z) << std::endl;
 
-        float turnValue = a.actionsToTake[AIComponent::eAction::ACTION_TURN];
+        float turnValue = a.turn;
         if (turnValue != 0) {
             bot->turn(turnValue);
         }
-        float moveX = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_RIGHT_LEFT];
-        float moveY = a.actionsToTake[AIComponent::eAction::ACTION_MOVE_FORWARDS_BACKWARDS];
+        float moveX = a.moveX;
+        float moveY = a.moveY;
         if (((int)moveX != 0) || ((int)moveY != 0)) {
             if (bot->isInControl()) {
                 bot->move(moveX, moveY);
             }
         }
-        if (a.actionsToTake[AIComponent::eAction::ACTION_FIRE_ROCKET] == 1) {
+        if (a.shouldFireRocket) {
             bot->useAbility(eAbility::ABILITY_ROCKET);
         }
-        if (a.actionsToTake[AIComponent::eAction::ACTION_FLAMETRAIL]) {
+        if (a.shouldActivateTrail) {
             if (bot->getTrailGaugePercent() > 0.5f) {
                 bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
             }

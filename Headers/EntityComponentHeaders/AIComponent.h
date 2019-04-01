@@ -17,25 +17,32 @@ For collisions
  * Written by: Austin Eaton
 \***************************************************************************************/
 
-// the below are the values for the 4 values
-// fire Rocket, right-left turn, forward-back move, right-left move
+/*
+    Represents an accumulation of all actions a given AI should perform for a
+    given frame. Involves both movement and ability usage.
+*/
 struct Action {
-    // @NOTE Why size of 5 instead of 4?
-    float actionsToTake[5] = { 0,0,0,0,0 };
-    // float actionsToTake[4] = { 0,0,0,0 };
+    // Signifies AI should fire a rocket for the next update
+    bool shouldFireRocket = false;
+    // Determines the extend and angle at which the hovercraft is to turn
+    // -1: turn left, 0: neutral, 1: turn right
+    float turn = 0.0f;
+    // Fowards and backwards movement
+    // -1: backwards, 0: neutral, 1: forwards
+    float moveY = 0.0f;
+    // Sideways movement
+    // -1: left, 0: neutral, 1: right
+    float moveX = 0.0f;
+    // Signifies the AI should activate the flame trail for the next update
+    bool shouldActivateTrail = false;
+    // Signifies the AI should activate spikes for the next update
+    // @TODO implement
+    bool shouldActivateSpikes = false;
 };
 class AIComponent final :
     public EntityComponent
 {
 public:
-    // For Action indexing
-    enum eAction {
-        ACTION_FIRE_ROCKET = 0,
-        ACTION_TURN,
-        ACTION_MOVE_FORWARDS_BACKWARDS,
-        ACTION_MOVE_RIGHT_LEFT,
-        ACTION_FLAMETRAIL,
-    };
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
     AIComponent(int iEntityID, int iComponentID);
     ~AIComponent();
