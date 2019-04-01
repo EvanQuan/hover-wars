@@ -39,5 +39,9 @@ private:
 
     eHovercraft getTargetID(eHovercraft nearestPlayer, float distanceToPlayer, eHovercraft nearestBot, float distanceToBot);
     HovercraftEntity* getTarget(const eHovercraft &bot, const vec3 &botPosition);
+
+    void executeAction(HovercraftEntity* bot, Action &a);
+    bool shouldMove(HovercraftEntity* bot, Action &a);
 };
+
 

@@ -157,6 +157,50 @@ HovercraftEntity* AIManager::getTarget(const eHovercraft &bot,
 }
 
 /*
+    Make a specified bot execute a specified action
+
+    @param bot      to execute action
+    @param action   to execute
+*/
+void AIManager::executeAction(HovercraftEntity *bot, Action &a)
+{
+    float turnValue = a.turn;
+    if (turnValue != 0) {
+        bot->turn(turnValue);
+    }
+    float moveX = a.moveX;
+    float moveY = a.moveY;
+    if (shouldMove(bot, a)) {
+        bot->move(moveX, moveY);
+    }
+    if (a.shouldFireRocket) {
+        bot->useAbility(eAbility::ABILITY_ROCKET);
+    }
+    if (a.shouldActivateTrail) {
+        if (bot->getTrailGaugePercent() > 0.5f) {
+            // Nested, so that the bot neither activates or deactivates
+            // with a low fuel gauge to prevent audio spam
+            bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
+        }
+    } else {
+        bot->useAbility(eAbility::ABILITY_TRAIL_DEACTIVATE);
+    }
+}
+
+/*
+    Determine whether a bot should move. This prevents sending unecessary
+    move commands every update.
+
+    @parm bot   to check if it should move
+    @param a    to determine whether the bot should move
+*/
+bool AIManager::shouldMove(HovercraftEntity *bot, Action &a)
+{
+    return bot->isInControl()
+        && !(static_cast<int>(a.moveX) == 0 && static_cast<int>(a.moveY) == 0);
+}
+
+/*
     Update all the AI for a given time frame.
     This should be called every frame in game, but should not be updated out of
     game (such as when the game is paused, or the players are in other menus).
@@ -178,36 +222,28 @@ void AIManager::update(float fTimeInSeconds)
         ai->update(fTimeInSeconds);
         glm::vec3 botPos = bot->getPosition();
 
-        PxTransform globalTransform = bot->getGlobalTransform();
-        PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
+        // @Austin what is going on here? Why are we rotating?
+        // PxTransform globalTransform = bot->getGlobalTransform();
+        // PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
 
+        // @TODO Maybe we can the bot not choose a new target every frame, but
+        // at a larger interval.
+        // The reason for this would be that if a bot is chasing down the player,
+        // and some other bot momentarily runs by, then the two bots will
+        // instantly lock onto each other until another hovercraft comes closer
+        // between them.
+        // This results in bots "sticking together" like magnets, which results
+        // in some weird behaviour.
+        // In addition to this, maybe there should be a chance to pick a random
+        // target as well to combat this "magnetic" targeting behaiour, so that
+        // bots can potentially move away from other closer bots?
         HovercraftEntity *target = getTarget(botHovercraft, botPos);
 
         Action a;
         ai->getCurrentAction(target, bot, fTimeInSeconds, &a);
 
-        float turnValue = a.turn;
-        if (turnValue != 0) {
-            bot->turn(turnValue);
-        }
-        float moveX = a.moveX;
-        float moveY = a.moveY;
-        if (((int)moveX != 0) || ((int)moveY != 0)) {
-            if (bot->isInControl()) {
-                bot->move(moveX, moveY);
-            }
-        }
-        if (a.shouldFireRocket) {
-            bot->useAbility(eAbility::ABILITY_ROCKET);
-        }
-        if (a.shouldActivateTrail) {
-            if (bot->getTrailGaugePercent() > 0.5f) {
-                bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
-            }
-        }
-        else {
-            bot->useAbility(eAbility::ABILITY_TRAIL_DEACTIVATE);
-        }
+        executeAction(bot, a);
+
         bot->update(fTimeInSeconds);
     }
   
