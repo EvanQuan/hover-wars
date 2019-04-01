@@ -69,7 +69,7 @@ void Menu::updateKeyboardCommands()
     fairly cheap.
     */
     map<int, InputHandler::eInputState> keys = m_pInputHandler->m_keys;
-    eFixedCommand fixedCommand;
+    eFixedCommand fixedCommand = COMMAND_INVALID_FIXED;
    for (auto it : keys)
     {
         // Divide the key states into the 3 types of fixed commands
@@ -95,7 +95,7 @@ void Menu::updateKeyboardCommands()
             fixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        executeFixedCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);         // @EvanQuan : 'fixedCommand' potentially not initialized
+        executeFixedCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
         handleAccumulatedKeyCommands(fixedCommand);
     }
     executeAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft);
