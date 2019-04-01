@@ -41,9 +41,9 @@ void PostgameMenu::select(eFixedCommand command)
 void PostgameMenu::back()
 {
     // For debug purposes, this quits the game instead of going back to the main menu
-    PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);
-    // m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
-    // nextMenu(MainMenu::getInstance());
+    // PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+    nextMenu(MainMenu::getInstance());
 }
 
 void PostgameMenu::enter()
