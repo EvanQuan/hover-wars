@@ -38,6 +38,11 @@ Coordinate system:
 */
 #define TIME_SCALE              1.0f
 #define TIME_COLOR              COLOR_WHITE
+#define TIME_WARNING1_COLOR     COLOR_YELLOW
+#define TIME_WARNING2_COLOR     COLOR_RED
+// Seconds until game time changes color
+#define TIME_WARNING1_START      30
+#define TIME_WARNING2_START      10
 
 #define TRAIL_SCALE             1.0f
 
@@ -290,15 +295,16 @@ void GameInterface::updateGameTime(float fSecondsSinceLastUpdate)
 The time is formatted as
 
         minutes:seconds
-
-For now, the game time is going up from 0. Later this should count down.
 */
 void GameInterface::renderGameTime()
 {
-    renderText(FuncUtils::timeToString(static_cast<int>(m_fGameTime)),
+    int secondsRemaining = static_cast<int>(m_fGameTime);
+    vec3 color = secondsRemaining <= TIME_WARNING2_START ?TIME_WARNING2_COLOR
+        : secondsRemaining <= TIME_WARNING1_START ? TIME_WARNING1_COLOR : TIME_COLOR;
+    renderText(FuncUtils::timeToString(secondsRemaining),
                m_vComponentCoordinates[COMPONENT_TIME].first,
                m_vComponentCoordinates[COMPONENT_TIME].second,
-               TIME_SCALE, TIME_COLOR);
+               TIME_SCALE, color);
 
 }
 
