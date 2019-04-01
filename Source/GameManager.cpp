@@ -300,17 +300,12 @@ void GameManager::drawScene()
 
 /*
     Initialize all start-of-program state.
-    This should only be called once at the start of the game.
+    This should only be called once at the start of the program.
 
-    Shaders:
-        Initialize shaders and geometry.
-        Contains any initializion requirements in order to start drawing.
+    Initialize shaders and geometry.
+    Contains any initializion requirements in order to start drawing.
 
-    Debug:
-        Initialize a new game and immediately enter the game menu and interface
-
-    Release:
-        Set the game to use the start menu and and start interface
+    Set the game to use the start menu and and start interface
 
     @return true if initialzation successful
 */
@@ -330,19 +325,13 @@ bool GameManager::initialize()
     // uses GameInterface, which requires GameManager to already be instantiated.
     m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
-#ifdef NDEBUG
+
     // Game starts paused as the player starts in the start menu
     m_bPaused = true;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
-#else
-    initializeNewGame(1, 0, 9999999.0f, RELEASE_ENV);
-    // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
-    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
-    m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
-#endif
 
     // Return error results
     return true; 
