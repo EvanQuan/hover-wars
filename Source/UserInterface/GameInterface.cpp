@@ -369,8 +369,7 @@ void GameInterface::renderCooldowns()
     // TODO put this in the proper place, font, scale etc.
     // This formatting is all temporary
     // 0 - 100
-    // Ad hoc for single player
-    HovercraftEntity* hovercraft = m_pEntityMngr->getHovercraft(HOVERCRAFT_PLAYER_1);
+    HovercraftEntity* hovercraft = m_pEntityMngr->getHovercraft(m_eHovercraftFocus);
     float* cooldowns = hovercraft->getCooldowns();
     float trailPercent = hovercraft->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));
