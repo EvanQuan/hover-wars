@@ -82,7 +82,7 @@ public:
     // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
     // @return an array of all ability cooldowns.
-    float* getCooldowns() { return m_fCooldowns; };
+    float* getCooldowns() { return m_fCooldowns; }
 
     // Set lose control until seconds runs out or manually reactivated with
     // setGainControl(), whichever happens first
@@ -106,11 +106,11 @@ public:
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
-    float getSpeed()                            { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
-    vec3 getLinearVelocity()                    { return m_pPhysicsComponent->getLinearVelocity(); }
-    PxTransform getGlobalTransform()            { return m_pPhysicsComponent->getGlobalPose(); }
-    quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
-    void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
+    float getSpeed() const                      { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
+    vec3 getLinearVelocity() const              { return m_pPhysicsComponent->getLinearVelocity(); }
+    PxTransform getGlobalTransform() const      { return m_pPhysicsComponent->getGlobalPose(); }
+    quat getRotation() const                    { return m_pPhysicsComponent->getRotation(); }
+    void getDirectionVector(vec3* vDirVector) const { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
     /*
         Reduces all cooldowns by a fixed factor, never dropping below the
