@@ -255,6 +255,8 @@ void HovercraftEntity::reinitialize()
 
     outOfControlTime = 0.0f;
 
+    m_iDashMaxCharges = DASH_MAX_CHARGE_COUNT;
+
     initializeCooldowns();
     initializePowerups();
 }
@@ -1063,7 +1065,6 @@ void HovercraftEntity::dash(eAbility direction)
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
     m_iDashCharges--;
-    m_iDashMaxCharges = DASH_MAX_CHARGE_COUNT;
     m_fDashRecharge = m_fDashMaxRecharge;
 }
 

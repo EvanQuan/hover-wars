@@ -424,6 +424,7 @@ void GameInterface::renderCooldown(std::string label,
 
 // Right now only dones for dashes
 // Renders dash with it's charges and recharge cooldowns
+// @TODO cooldowns unused
 void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft)
 {
     bool canDash = hovercraft->canDash();

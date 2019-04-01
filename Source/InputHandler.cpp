@@ -1,4 +1,3 @@
-#include <iostream> // debug
 #include "stdafx.h"
 #include "InputHandler.h"
 #include "GameManager.h"
@@ -6,6 +5,8 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 #include "GameStats.h"
+// debug
+#include "UserInterface/GameInterface.h"
 
 /***********\
  * Defines *
@@ -138,9 +139,10 @@ void InputHandler::debugKeyCommands(int key, int action)
             m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_RECHARGE);
             break;
         case GLFW_KEY_9:
+            GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight)->setFocus(HOVERCRAFT_BOT_1);
             break;
         case GLFW_KEY_0:
-            SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_PICKUP);
+            GameInterface::getInstance(GAME_MANAGER->m_iWidth, GAME_MANAGER->m_iHeight)->setFocus(HOVERCRAFT_PLAYER_1);
             break;
         case GLFW_KEY_MINUS:
             // SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
@@ -166,7 +168,6 @@ void InputHandler::debugKeyCommands(int key, int action)
             GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
             break;
         case GLFW_KEY_Y:
-            cout << "Disable player 1 for 1 seconds" << endl;
             m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->setLoseControl(1.0f);
             break;
         }
