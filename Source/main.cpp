@@ -9,8 +9,6 @@
 #include "Physics/PhysicsManager.h"
 #include "SoundManager.h"
 
-#include "..\TestClass.h"
-
 // This sets the window title
 #define PROGRAM_NAME "Hover Wars"
 

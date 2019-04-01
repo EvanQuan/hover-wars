@@ -255,6 +255,7 @@ private:
 
     // Tracks first blood
     bool firstBloodHappened;
+    bool queueFirstBlood;
 
     // Actions
     // void hitBot(eHovercraft attacker, eBot hit);

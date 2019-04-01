@@ -646,12 +646,16 @@ void SoundManager::downPosition() {
 
 void SoundManager::start() {
     play(MUSIC_INGAME);
-    play(SOUND_HOVERCAR_ENGINE);
+    // play(SOUND_HOVERCAR_ENGINE);
 }
 
 // Call every frame (or more often)
 void SoundManager::update() {
     // make speed go from 0 to 1
     // Balance volume of engine sound with music
-    setSpeedParameter(ENTITY_MANAGER->getHovercraft(HOVERCRAFT_PLAYER_1)->getSpeed() / 30.0f);
+    // This seems to cause an out of range vector issue, even though tracking through
+    // the code, it doesn't make sense. Perhaps it has to do with how the sound is threaded
+    // and that this action is not thread-safe. I don't know.
+    // For now, we will disable this.
+    // setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30.0f);
 }
