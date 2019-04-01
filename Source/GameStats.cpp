@@ -119,6 +119,7 @@ void GameStats::reinitialize(int playerCount, int botCount)
     initializeCooldowns();
     correspondEntitiesToHovercrafts();
     firstBloodHappened = false;
+    queueFirstBlood = false;
     m_eScoreLeaders.clear();
 }
 
@@ -280,9 +281,21 @@ void GameStats::updateScoreLeaders(eHovercraft candidate)
         // Add new leader
         m_eScoreLeaders.push_back(candidate);
         // Display new score leader
-        m_pGameInterface->displayMessage(candidate,
-                                         HOVERCRAFT_INVALID, /* Hit doesn't matter */
-                                         GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
+        // In order for the first blood notification to have precidence both
+        // visually and with audio, we will ignore the leader notifcation until
+        // after first blood happened.
+        if (firstBloodHappened)
+        {
+            m_pGameInterface->displayMessage(candidate,
+                                             HOVERCRAFT_INVALID, /* Hit doesn't matter */
+                                             GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
+        } else if (queueFirstBlood) {
+            // First blood is queued, so now we can set firstBloodHappened at
+            // the end.
+            firstBloodHappened = true;
+            // To prevent unnecessary future assignments
+            queueFirstBlood = false;
+        }
     }
 
 }
@@ -427,7 +440,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
         firstBloodBonus = 0;
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
-        firstBloodHappened = true;
+        queueFirstBlood = true;
         m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     return basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
