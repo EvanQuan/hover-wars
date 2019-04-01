@@ -10,11 +10,11 @@ PauseInterface::PauseInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
     vector<pair<float, float>>
     {
         // 0 Background
-        {0.00f, 0.0f},
+        {0.0f, 0.0f},
         // 1 Prompt 1
-        {0.0f, 0.0f},
+        {0.4f, 0.6f},
         // 2 Prompt 2
-        {0.0f, 0.0f},
+        {0.4f, 0.5f},
     },
     // Translating
     vector<pair<float, float>>
@@ -22,9 +22,9 @@ PauseInterface::PauseInterface(int iWidth, int iHeight) : MenuInterface(iWidth, 
         // 0 Background
         {0.0f, 0.0f},
         // 1 Prompt 1
-        {0.47f, 0.5f},
+        {0.0f, 0.0f},
         // 2 Prompt 2
-        {0.47f, 0.6f},
+        {0.0f, 0.0f},
     }
 )
 {
@@ -37,6 +37,7 @@ PauseInterface* PauseInterface::getInstance(int iWidth, int iHeight)
     {
         m_pInstance = new PauseInterface(iWidth, iHeight);
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 
@@ -51,7 +52,7 @@ void PauseInterface::reinitialize(float gameTime)
 
 void PauseInterface::render()
 {
-    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].first, 1.0f);
+    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderOption();
 }
 
@@ -61,17 +62,17 @@ void PauseInterface::renderOption() {
 
     if (option == CONTINUE_OPTION)
     {   
-        renderImage(IMAGE_RESUME_2, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+        renderImage(IMAGE_RESUME_2, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].second, 1.0f);
+        renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
     else if (option == END_GAME_OPTION)
     {
-        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
-        renderImage(IMAGE_END_GAME_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].second, 1.0f);
+        renderImage(IMAGE_END_GAME_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
     else {
-        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].first, 1.0f);
-        renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].first, 1.0f);
+        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].second, 1.0f);
+        renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
 
 }
