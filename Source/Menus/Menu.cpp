@@ -95,10 +95,10 @@ void Menu::updateKeyboardCommands()
             fixedCommand = justReleasedKeyToFixedCommand(it.first);
             break;
         }
-        executeFixedCommand(GAME_MANAGER->m_eKeyboardHovercraft, fixedCommand);
+        executeFixedCommand(GAME_MANAGER->getKeyboardHovercraft(), fixedCommand);
         handleAccumulatedKeyCommands(fixedCommand);
     }
-    executeAccumulatedKeyCommands(GAME_MANAGER->m_eKeyboardHovercraft);
+    executeAccumulatedKeyCommands(GAME_MANAGER->getKeyboardHovercraft());
 }
 
 void Menu::updateJoystickCommands()

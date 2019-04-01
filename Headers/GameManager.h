@@ -39,10 +39,7 @@ public:
     void zoomCamera(float fDelta);
     void intersectPlane(float fX, float fY);
 
-    // The keyboard corresponds to its own hovercraft
-    // which might be shared with a joystick
-    eHovercraft m_eKeyboardHovercraft;
-
+    eHovercraft getKeyboardHovercraft() const { return m_eKeyboardHovercraft; }
 
     bool isPaused() const { return m_bPaused; }
     void setPaused(bool paused) { m_bPaused = paused; }
@@ -120,4 +117,9 @@ private:
 
     // If the game is paused, the environment will not update
     bool m_bPaused;
+
+    void setKeyboardHovercraft(int playerCount);
+    // The keyboard corresponds to its own hovercraft
+    // which might be shared with a joystick
+    eHovercraft m_eKeyboardHovercraft;
 };

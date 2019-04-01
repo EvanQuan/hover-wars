@@ -247,6 +247,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize(playerCount, botCount);
     m_pAIManager->reinitialize();
+
+    setKeyboardHovercraft(playerCount);
 }
 
 /*
@@ -298,6 +300,37 @@ void GameManager::drawScene()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
+}
+
+/*
+    Set the keyboard hovercraft according to the number of connected joysticks
+    and players in the game.
+    This should be set at the initialization of a new game as the pregame menu
+    determines how many players there will be in a given game.
+
+    @param playerCount  for the given game
+*/
+void GameManager::setKeyboardHovercraft(int playerCount)
+{
+    int joystickCount = INPUT_HANDLER->getJoystickCount();
+
+    if (playerCount == joystickCount)
+    {
+        // If all the players have joysticks, then the keyboard is not necessary.
+        // Set it to control player 1 by default.
+        m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+    }
+    else
+    {
+        // Due to how the pregame menu is set up, the user can choose to have
+        // one extra player more than there are connected joysticks, but less
+        // than the max player count.
+        // Under this assumption, the keyboard will control the last player,
+        // which does not have a joystick.
+        m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
+    }
+
+
 }
 
 /*
