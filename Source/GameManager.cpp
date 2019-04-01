@@ -217,13 +217,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     string sFileName)
 {
     // We intialize all values for the game to immediately start
-    // Initialize Physics
-    m_pPhysicsManager = PHYSICS_MANAGER;
+
     m_pPhysicsManager->initPhysics(true);
-    // m_pPhysicsManager->cleanupPhysics();
-    // delete m_pPhysicsManager;
-    // m_pPhysicsManager = PHYSICS_MANAGER;
-    // m_pPhysicsManager->initPhysics(false);
 
     m_bPaused = false;
     startedGameOver = false;
@@ -270,13 +265,7 @@ void GameManager::endGame()
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
-
-    // m_pPhysicsManager->cleanupPhysics();
-    if (nullptr != m_pPhysicsManager)
-    {
-        delete m_pPhysicsManager;
-        m_pPhysicsManager = nullptr;
-    }
+    m_pPhysicsManager->cleanupPhysics();
 }
 
 /*
