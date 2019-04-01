@@ -47,13 +47,15 @@
 
     Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        5.0f // 2
-#define SPIKES_BASE_COOLDOWN        3.0f // 2
+#define ROCKET_BASE_COOLDOWN        5.0f
+#define SPIKES_BASE_COOLDOWN        4.0f
 #define TRAIL_COOLDOWN              0.0f
+// Cooldown between dash usages
 #define DASH_BASE_COOLDOWN          0.5f
+// Time to gain a dash charge
 #define DASH_BASE_RECHARGE          4.0f
 
-#define DASH_MAX_CHARGE_COUNT      3
+#define DASH_MAX_CHARGE_COUNT       3
 
 /*
     Once spikes are activated, they are enabled for a duration before deactivating.
@@ -67,7 +69,7 @@ These are the minimum cooldowns for these abilities.
 
 */
 #define ROCKET_MIN_COOLDOWN 1.0f
-#define SPIKES_MIN_COOLDOWN SPIKES_DURATION
+#define SPIKES_MIN_COOLDOWN SPIKES_DURATION + 0.5f
 #define DASH_MIN_RECHARGE   1.0f
 
 /*
@@ -75,6 +77,7 @@ These are the minimum cooldowns for these abilities.
 */
 #define COOLDOWN_REDUCTION 0.9f
 
+#define TRAIL_RECHARGE_INCREASE 1.1f
 /*
 Total time the trail can be activated from full to empty.
 
@@ -109,7 +112,8 @@ Time multiplier for the trail to recharge from empty to full.
 < 1: recharge rate is slower than drain rate
 
 */
-#define TRAIL_RECHARGE_MULTIPLIER 0.3f
+#define TRAIL_BASE_RECHARGE_MULTIPLIER 0.3f // 9 sec
+#define TRAIL_MAX_RECHARGE_MULTIPLIER 1.0f  // 3 sec
 
 /*
 The interval of time between each created flame while the trail trail is
@@ -374,12 +378,17 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     attackerHovercraft->reduceMaxCooldowns();
 }
 
+/*
+    Permanently reduce the max cooldowns of all abilities.
+*/
 void HovercraftEntity::reduceMaxCooldowns()
 {
     m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN,
                                                       m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
     m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN,
                                                       m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
+    m_fTrailRechargeMultipler = FuncUtils::min(TRAIL_MAX_RECHARGE_MULTIPLIER,
+                                               m_fTrailRechargeMultipler * TRAIL_RECHARGE_INCREASE);
     // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN,
     //                                                   m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
     m_fDashMaxRecharge = FuncUtils::max(DASH_MIN_RECHARGE,
@@ -664,6 +673,7 @@ void HovercraftEntity::initializeCooldowns()
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
+    m_fTrailRechargeMultipler = TRAIL_BASE_RECHARGE_MULTIPLIER;
 
     m_iDashCharges = DASH_MAX_CHARGE_COUNT;
     m_fDashMaxRecharge = DASH_BASE_RECHARGE;
@@ -819,7 +829,7 @@ void HovercraftEntity::updateTrail(float fTimeInSeconds)
         if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN
             && m_fTrailGauge < TRAIL_GAUGE_FULL)
         {
-            float newGaugeValue = m_fTrailGauge + (fTimeInSeconds * TRAIL_RECHARGE_MULTIPLIER);
+            float newGaugeValue = m_fTrailGauge + (fTimeInSeconds * m_fTrailRechargeMultipler);
             if (newGaugeValue < TRAIL_GAUGE_FULL)
             {
                 m_fTrailGauge = newGaugeValue;

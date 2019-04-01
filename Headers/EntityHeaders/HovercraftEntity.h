@@ -177,6 +177,7 @@ private:
     Rocket* m_pRocket;
     Spikes* m_pSpikes;
     PhysicsComponent* m_pPhysicsComponent;
+    GameStats* m_pGameStats;
 
     /*
     These should lag behind
@@ -205,6 +206,7 @@ private:
     void deactivateTrail();
     void updateTrail(float fTimeInSeconds);
     void createTrailInstance();
+    float m_fTrailRechargeMultipler;
 
     void dash(eAbility direction);
     void updateDash(float fTimeInSeconds);
@@ -277,7 +279,6 @@ private:
     bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
-    GameStats* m_pGameStats;
 
     // Bool Spikes Information
     bool m_bSpikesActivated;
