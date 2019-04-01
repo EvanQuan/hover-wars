@@ -223,7 +223,6 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
         break;
     }
 
-
     updateSeekPoint(botPos);
 
     vec3 difference = target->getPosition() - botPos;
@@ -283,7 +282,10 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     if (nextPosMove) {
         a->shouldActivateTrail = true;
     }
-    bot->setPosition(vec2(botPos.x + differenceSum.x * fTimeInSeconds, botPos.z + differenceSum.y * fTimeInSeconds)); // move player based off distance sum
+
+    // move bot based off distance sum
+    bot->setPosition(vec2(botPos.x + differenceSum.x * fTimeInSeconds,
+                          botPos.z + differenceSum.y * fTimeInSeconds));
     botPos = bot->getPosition();
 }
 void AIComponent::update(float fTimeInSeconds)
