@@ -155,7 +155,7 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         break;
     case KILL_MESSAGE_KILLSTREAK:
         SOUND_MANAGER->play(SoundManager::SOUND_KILL_STREAK);
-        displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eStat::KILLSTREAK_CURRENT)));
+        displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
         break;
     case KILL_MESSAGE_KILL:
         m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
@@ -269,7 +269,7 @@ void GameInterface::renderMessages()
         if (m_fScoreChangeTimes[player] > 0)
         {
             int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
-                                              GameStats::eStat::SCORE_CHANGE);
+                                              GameStats::eHovercraftStat::SCORE_CHANGE);
             bool scoreIncreased = scoreChange >= 0;
             renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
                         m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
@@ -314,7 +314,7 @@ void GameInterface::renderScores()
     // TODO put this in the proper place, font, scale etc.
     // Ad hoc for single player
     std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1,
-                        GameStats::eStat::SCORE_CURRENT));
+                        GameStats::eHovercraftStat::SCORE_CURRENT));
     renderText("Score: " + score,
                m_vComponentCoordinates[COMPONENT_SCORE].first,
                m_vComponentCoordinates[COMPONENT_SCORE].second,

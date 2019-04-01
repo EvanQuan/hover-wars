@@ -62,6 +62,7 @@ public:
 
         SOUND_POWERUP_SPAWN,
         SOUND_POWERUP_PICKUP,
+        SOUND_POWERUP_SPEED,
 
         MUSIC_INGAME,
         MUSIC_PAUSE,
@@ -247,6 +248,8 @@ private:
         {SOUND_POWERUP_SPAWN,            { "event:/powerup/powerup_spawn",
                                          }},
         {SOUND_POWERUP_PICKUP,           { "event:/powerup/powerup_pickup",
+                                         }},
+        {SOUND_POWERUP_SPEED,           { "event:/powerup/powerup_speed",
                                          }},
         {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
                                          }},

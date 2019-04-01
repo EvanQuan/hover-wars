@@ -32,8 +32,9 @@ void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 
    // }
 }
 AIComponent::~AIComponent() {
-
+    // Nothing to destruct
 }
+
 void AIComponent::genRandomAction(Action *action) {
     action->actionsToTake[0] = (float)(rand() % 2);
     action->actionsToTake[1] = (float)(rand() % 3 - 1);
