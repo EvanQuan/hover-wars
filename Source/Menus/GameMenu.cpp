@@ -206,16 +206,12 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         debugToggleWireframe();
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_2;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_3;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         m_pEntityMngr->toggleDebugCamera();

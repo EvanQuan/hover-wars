@@ -228,7 +228,9 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    GameInterface::getInstance(m_iWidth, m_iHeight)->reinitialize(gameTime);
+    GameInterface *gameUI = GameInterface::getInstance(m_iWidth, m_iHeight);
+    gameUI->reinitialize(gameTime);
+    gameUI->setDisplayCount(playerCount);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -245,6 +247,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize(playerCount, botCount);
     m_pAIManager->reinitialize();
+
+    setKeyboardHovercraft(playerCount);
 }
 
 /*
@@ -299,18 +303,44 @@ void GameManager::drawScene()
 }
 
 /*
+    Set the keyboard hovercraft according to the number of connected joysticks
+    and players in the game.
+    This should be set at the initialization of a new game as the pregame menu
+    determines how many players there will be in a given game.
+
+    @param playerCount  for the given game
+*/
+void GameManager::setKeyboardHovercraft(int playerCount)
+{
+    int joystickCount = INPUT_HANDLER->getJoystickCount();
+
+    if (playerCount == joystickCount)
+    {
+        // If all the players have joysticks, then the keyboard is not necessary.
+        // Set it to control player 1 by default.
+        m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+    }
+    else
+    {
+        // Due to how the pregame menu is set up, the user can choose to have
+        // one extra player more than there are connected joysticks, but less
+        // than the max player count.
+        // Under this assumption, the keyboard will control the last player,
+        // which does not have a joystick.
+        m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
+    }
+
+
+}
+
+/*
     Initialize all start-of-program state.
-    This should only be called once at the start of the game.
+    This should only be called once at the start of the program.
 
-    Shaders:
-        Initialize shaders and geometry.
-        Contains any initializion requirements in order to start drawing.
+    Initialize shaders and geometry.
+    Contains any initializion requirements in order to start drawing.
 
-    Debug:
-        Initialize a new game and immediately enter the game menu and interface
-
-    Release:
-        Set the game to use the start menu and and start interface
+    Set the game to use the start menu and and start interface
 
     @return true if initialzation successful
 */
@@ -330,19 +360,13 @@ bool GameManager::initialize()
     // uses GameInterface, which requires GameManager to already be instantiated.
     m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
-#ifdef NDEBUG
+
     // Game starts paused as the player starts in the start menu
     m_bPaused = true;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
-#else
-    initializeNewGame(1, 0, 9999999.0f, RELEASE_ENV);
-    // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
-    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
-    m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
-#endif
 
     // Return error results
     return true; 
