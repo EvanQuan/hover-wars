@@ -222,18 +222,14 @@ void EntityManager::resetFBO()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, m_iWidth, m_iHeight);
-    glClearBufferfv(GL_COLOR, 0, color);
-    glClearBufferfv(GL_DEPTH, 0, &DEPTH_ZERO);
     m_bShadowDraw = false;
 }
 
-// Name: renderEnvironment
+// Name: setupRender
 // Written by: James Coté
-// Description: Sets necessary lights into Shader Uniform Buffers and Renders
-//      all active Render Components.
-// TODO: Have Lighting load based on Spatial Data Structure
-void EntityManager::renderEnvironment( )
-{    
+// Description: Renders the shadow buffer and sets up the lighting.
+void EntityManager::setupRender()
+{
     // Local Variables
     LightingComponent* pDirectionalLightComponent = nullptr;
 
@@ -248,12 +244,22 @@ void EntityManager::renderEnvironment( )
         pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
         resetFBO();                                         // Reset the Frame Buffer for typical rendering.
     }
-    
-    // Calculate information for each Light in the scene (Current max = 4 + 1 Directional Light)
-    m_pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
 
+    // Calculate information for each Light in the scene
+    m_pShdrMngr->setLightsInUniformBuffer(pDirectionalLightComponent, &m_pLights);
+}
+
+// Name: renderEnvironment
+// Written by: James Coté
+// Description: Sets necessary lights into Shader Uniform Buffers and Renders
+//      all active Render Components.
+// TODO: Have Lighting load based on Spatial Data Structure
+void EntityManager::renderEnvironment(unsigned int iPlayer)
+{    
     // Perform Final Render
-    setCameraPMVMatrices();
+    glClearBufferfv(GL_COLOR, 0, color);
+    glClearBufferfv(GL_DEPTH, 0, &DEPTH_ZERO);
+    setCameraPMVMatrices(iPlayer);
     doRender();
     renderSkyBox();
 }
@@ -336,21 +342,28 @@ void EntityManager::renderAxis()
 }
 
 // Sets the Camera Projection, Model and View Matrices from the active camera.
-void EntityManager::setCameraPMVMatrices()
+void EntityManager::setCameraPMVMatrices(unsigned int iPlayer)
 {
+    // Ensure a valid player has been specified.
+    assert(iPlayer < m_pPlayerEntityList.size());
+
+    // Get proper camera to show
+#ifdef _DEBUG
     // Set Debug Camera to follow player. Copy the Rotation Quaternion to the Camera which will rotate the camera using the same quaternion before
     //  translating the camera to world coordinates. TODO: Re-evaluate this methodology.
-    m_pCamera->setLookAt(m_pPlayerEntityList[HOVERCRAFT_PLAYER_1]->getCameraPosition());
-    quat pQuat = m_pPlayerEntityList[HOVERCRAFT_PLAYER_1]->getCameraRotation();
+    m_pCamera->setLookAt(m_pPlayerEntityList[iPlayer]->getCameraPosition());
+    quat pQuat = m_pPlayerEntityList[iPlayer]->getCameraRotation();
     m_pCamera->setRotationQuat(pQuat);
 
-    // Get player 1's active camera to show
-    // TODO for multiplayer or spectator mode, GameManager needs multiple active camera's
-    // each with their own camera components. The game will render 4 times, each switching
-    // the player to retrieve the active camera.
+    // Determine if using Debug Camera or Player Camera
     const CameraComponent* pCamera = m_bUseDebugCamera ?
-        m_pCamera->getCameraComponent() : m_pPlayerEntityList[HOVERCRAFT_PLAYER_1]->getActiveCameraComponent();
+        m_pCamera->getCameraComponent() : m_pPlayerEntityList[iPlayer]->getActiveCameraComponent();
+#else
+    // Get Player Camera Component
+    const CameraComponent* pCamera = m_pPlayerEntityList[iPlayer]->getActiveCameraComponent();
+#endif
 
+    // Get Model View and Projection Matrices
     mat4 pModelViewMatrix = pCamera->getToCameraMat();
     mat4 pProjectionMatrix = pCamera->getPerspectiveMat();
 
@@ -630,9 +643,7 @@ void EntityManager::updateWidthAndHeight(int iWidth, int iHeight)
     for (vector<CameraComponent*>::iterator iter = m_pCameraComponents.begin();
         iter != m_pCameraComponents.end();
         ++iter)
-    {
         (*iter)->updateWidthAndHeight(iWidth, iHeight);
-    }
 
     // Store new Width and Height in case another Camera Component is created.
     m_iWidth = iWidth;

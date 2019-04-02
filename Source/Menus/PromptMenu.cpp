@@ -202,7 +202,7 @@ void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand comma
         break;
     case COMMAND_CLOSE_WINDOW:
         cout << "PromptMenu CLOSE WINDOW" << endl;
-        glfwSetWindowShouldClose(GAME_MANAGER->m_pWindow, GL_TRUE);
+        GAME_MANAGER->flagWindowToClose();
         break;
     }
 }

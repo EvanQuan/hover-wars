@@ -45,15 +45,15 @@ void MainMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
         nextMenu(PregameMenu::getInstance());
         break;
     case COMMAND_PROMPT_SELECT:
-        m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
         nextMenu(RulesMenu::getInstance());
         break;
     case COMMAND_PROMPT_SELECT_2:
-        m_pGameManager->setCurrentInterface(ControlsInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        m_pGameManager->setCurrentInterface(ControlsInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
         nextMenu(ControlsMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:

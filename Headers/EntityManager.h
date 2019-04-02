@@ -88,7 +88,8 @@ public:
 
     // Clears the Environment so a new one can be loaded.
     void purgeEnvironment();
-    void renderEnvironment( );
+    void setupRender();
+    void renderEnvironment(unsigned int iPlayer);
     void updateEnvironment(std::chrono::duration<double> fSecondsSinceLastFrame);
     
     // The command handler can get all the players to directly communicate to.
@@ -162,7 +163,7 @@ private:
     void resetFBO();
     void renderAxis();
     void renderSkyBox();
-    void setCameraPMVMatrices();
+    void setCameraPMVMatrices(unsigned int iPlayer);
 
     // Camera
     bool m_bUseDebugCamera;
