@@ -8,6 +8,7 @@
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/GameInterface.h"
+#include "UserInterface/PostgameInterface.h"
 #include "Menus/GameMenu.h"
 #include "Menus/StartMenu.h"
 
@@ -187,7 +188,7 @@ bool GameManager::renderGraphics()
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
         m_pCurrentInterface->update(frameDeltaTime);
-        drawScene();
+        // drawScene();
         // call function to draw our scene
         // Sound needs to update after the EntityManager to reflect in game changes
         // Cannot be updated inside the EntityManager as sounds can play while game
@@ -216,19 +217,16 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     string sFileName)
 {
     // We intialize all values for the game to immediately start
-    // Initialize Physics
-    m_pPhysicsManager = PHYSICS_MANAGER;
+
     m_pPhysicsManager->initPhysics(true);
-    // m_pPhysicsManager->cleanupPhysics();
-    // delete m_pPhysicsManager;
-    // m_pPhysicsManager = PHYSICS_MANAGER;
-    // m_pPhysicsManager->initPhysics(false);
 
     m_bPaused = false;
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    GameInterface::getInstance(m_iWidth, m_iHeight)->reinitialize(gameTime);
+    GameInterface *gameUI = GameInterface::getInstance(m_iWidth, m_iHeight);
+    gameUI->reinitialize(gameTime);
+    gameUI->setDisplayCount(playerCount);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -245,6 +243,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize(playerCount, botCount);
     m_pAIManager->reinitialize();
+
+    setKeyboardHovercraft(playerCount);
 }
 
 /*
@@ -263,14 +263,9 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     m_bPaused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
+    setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
-
-    // m_pPhysicsManager->cleanupPhysics();
-    if (nullptr != m_pPhysicsManager)
-    {
-        delete m_pPhysicsManager;
-        m_pPhysicsManager = nullptr;
-    }
+    m_pPhysicsManager->cleanupPhysics();
 }
 
 /*
@@ -296,6 +291,37 @@ void GameManager::drawScene()
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
     }
+}
+
+/*
+    Set the keyboard hovercraft according to the number of connected joysticks
+    and players in the game.
+    This should be set at the initialization of a new game as the pregame menu
+    determines how many players there will be in a given game.
+
+    @param playerCount  for the given game
+*/
+void GameManager::setKeyboardHovercraft(int playerCount)
+{
+    int joystickCount = INPUT_HANDLER->getJoystickCount();
+
+    if (playerCount == joystickCount)
+    {
+        // If all the players have joysticks, then the keyboard is not necessary.
+        // Set it to control player 1 by default.
+        m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+    }
+    else
+    {
+        // Due to how the pregame menu is set up, the user can choose to have
+        // one extra player more than there are connected joysticks, but less
+        // than the max player count.
+        // Under this assumption, the keyboard will control the last player,
+        // which does not have a joystick.
+        m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
+    }
+
+
 }
 
 /*
