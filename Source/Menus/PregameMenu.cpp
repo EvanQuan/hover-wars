@@ -71,8 +71,8 @@ void PregameMenu::select(eFixedCommand command)
         // controls
         m_pGameManager->initializeNewGame(m_iPlayerCount, m_iBotCount,
                                           static_cast<float>(m_fGameTime), RELEASE_ENV);
-        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->m_iWidth,
-                                                                       m_pGameManager->m_iHeight));
+        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->getWidth(),
+                                                                       m_pGameManager->getHeight()));
         nextMenu(GameMenu::getInstance());
         break;
     }
@@ -81,8 +81,8 @@ void PregameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PregameMenu::back()
 {
-    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth,
-                                                                   m_pGameManager->m_iHeight));
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
+                                                                   m_pGameManager->getHeight()));
     nextMenu(MainMenu::getInstance());
 }
 

@@ -15,7 +15,7 @@ public:
     static PregameInterface* getInstance(int iWidth, int iHeight);
 
     // Default Constructor
-    PregameInterface(int iWidth, int iHeight);
+    PregameInterface();
     PregameInterface(const PregameInterface* pCopy);                              // Default Copy Constructor
     PregameInterface& operator=(const PregameInterface* pCopy);                   // Assignment Operator.
 
