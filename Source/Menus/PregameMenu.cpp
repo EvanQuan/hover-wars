@@ -47,7 +47,8 @@ PregameMenu::PregameMenu() : PromptMenu(
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
     m_iBotCount = MAX_BOT_COUNT;
-    m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1, MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
+    m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
+                                      MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
     m_fGameTime = DEFAULT_GAME_TIME;
 }
 
