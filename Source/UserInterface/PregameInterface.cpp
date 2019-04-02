@@ -5,7 +5,7 @@
 // Singleton instance
 PregameInterface* PregameInterface::m_pInstance = nullptr;
 
-PregameInterface::PregameInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
+PregameInterface::PregameInterface() : MenuInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -59,7 +59,7 @@ PregameInterface* PregameInterface::getInstance(int iWidth, int iHeight)
 {
     if (m_pInstance == nullptr)
     {
-        m_pInstance = new PregameInterface(iWidth, iHeight);
+        m_pInstance = new PregameInterface();
     }
     m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;

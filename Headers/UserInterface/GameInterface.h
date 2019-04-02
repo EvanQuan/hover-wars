@@ -81,9 +81,9 @@ private:
         COMPONENT_COUNT
     };
 
-    GameInterface(int iWidth, int iHeight);                                 // Default Constructor
-    GameInterface(const GameInterface* pCopy);                              // Default Copy Constructor
-    GameInterface& operator=(const GameInterface* pCopy);                   // Assignment Operator.
+    GameInterface();                                        // Default Constructor
+    GameInterface(const GameInterface* pCopy);              // Default Copy Constructor
+    GameInterface& operator=(const GameInterface* pCopy);   // Assignment Operator.
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
     SoundManager* m_pSoundManager;

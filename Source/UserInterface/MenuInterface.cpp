@@ -1,9 +1,9 @@
 #include "UserInterface/MenuInterface.h"
 
-MenuInterface::MenuInterface(int iWidth, int iHeight,
+MenuInterface::MenuInterface(
     vector<pair<float, float>> componentScaling,
     vector<pair<float, float>> componentTranslating)
-    : UserInterface(iWidth, iHeight,
+    : UserInterface(
         componentScaling, componentTranslating)
 {
     /* TODO */

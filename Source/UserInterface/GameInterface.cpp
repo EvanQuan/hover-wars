@@ -60,7 +60,7 @@ Coordinate system:
 // Singleton instance
 GameInterface* GameInterface::m_pInstance = nullptr;
 
-GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iHeight,
+GameInterface::GameInterface() : UserInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -119,7 +119,7 @@ GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new GameInterface(iWidth, iHeight);
+        m_pInstance = new GameInterface();
     }
     m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;

@@ -10,7 +10,7 @@ public:
     static RulesInterface* getInstance(int iWidth, int iHeight);
 
     // Default Constructor
-    RulesInterface(int iWidth, int iHeight);
+    RulesInterface();
     RulesInterface(const RulesInterface* pCopy);                              // Default Copy Constructor
     RulesInterface& operator=(const RulesInterface* pCopy);                   // Assignment Operator.
 

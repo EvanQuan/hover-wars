@@ -5,7 +5,7 @@
 // Singleton instance
 ControlsInterface* ControlsInterface::m_pInstance = nullptr;
 
-ControlsInterface::ControlsInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
+ControlsInterface::ControlsInterface() : MenuInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -35,8 +35,9 @@ ControlsInterface* ControlsInterface::getInstance(int iWidth, int iHeight)
 {
     if (m_pInstance == nullptr)
     {
-        m_pInstance = new ControlsInterface(iWidth, iHeight);
+        m_pInstance = new ControlsInterface();
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 

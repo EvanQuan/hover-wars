@@ -12,7 +12,7 @@ MainInterface* MainInterface::m_pInstance = nullptr;
       Quit
 
 */
-MainInterface::MainInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
+MainInterface::MainInterface() : MenuInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -45,7 +45,7 @@ MainInterface* MainInterface::getInstance(int iWidth, int iHeight)
 {
     if (m_pInstance == nullptr)
     {
-        m_pInstance = new MainInterface(iWidth, iHeight);
+        m_pInstance = new MainInterface();
     }
     m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
