@@ -157,6 +157,9 @@ private:
     // void stopChannel(int iChannelId);
     void stopEvent(const string& sEventName, bool bImmediate = false);
 
+    void setPaused();
+    void setUnpaused();
+
     void getEventParameter(const string& sEventName, const string& sEventParameter, float* parameter);
     void setEventParameter(const string& sEventName, const string& sParamerterName, float fValue);
 

@@ -600,27 +600,36 @@ void SoundManager::togglePaused() {
     isPaused = !isPaused;
 
     if (isPaused) {
-        // Pause all the playing event, and play pause music
-        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
-        {
-            it->second->setPaused(true);
-        }
-        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
-        tFoundIt->second->setPaused(false);
-        playEvent(getPath(MUSIC_PAUSE));
+        setPaused();
+    } else {
+        setUnpaused();
     }
-    else {
-        // Unpause event and end pause music
-        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
-        {
-            bool eventPaused;
-            it->second->getPaused(&eventPaused);
-            it->second->setPaused(!eventPaused);
-        }
-        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
-        tFoundIt->second->setPaused(true);
-        tFoundIt->second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+}
+
+void SoundManager::setPaused() {
+    // Pause all the playing events
+    for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+    {
+        it->second->setPaused(true);
     }
+    // play pause music
+    auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+    tFoundIt->second->setPaused(false);
+    playEvent(getPath(MUSIC_PAUSE));
+    updateChannels();
+}
+
+void SoundManager::setUnpaused() {
+    // Unpause event and end pause music
+    for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
+    {
+        bool eventPaused;
+        it->second->getPaused(&eventPaused);
+        it->second->setPaused(!eventPaused);
+    }
+    auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+    tFoundIt->second->setPaused(true);
+    tFoundIt->second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
     updateChannels();
 }
 
