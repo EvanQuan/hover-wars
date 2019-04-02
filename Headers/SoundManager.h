@@ -155,10 +155,12 @@ private:
     void playEventDirect(const string& sEventName);
 
     // void stopChannel(int iChannelId);
-    void stopEvent(const string& sEventName, bool bImmediate = false);
+    void stopEvent(eSoundEvent soundEvent, bool bImmediate = true);
+    void pauseEvent(const string& sEventName);
+    void resumeEvent(const string& sEventName);
 
-    void setPaused();
-    void setUnpaused();
+    void setPauseMenu();
+    void setResumeGame();
 
     void getEventParameter(const string& sEventName, const string& sEventParameter, float* parameter);
     void setEventParameter(const string& sEventName, const string& sParamerterName, float fValue);
@@ -167,7 +169,7 @@ private:
     void setChannel3dPosition(int iChannelId, const vec3& vPosition);
     void setChannelVolume(int iChannelId, float fVolumedB);
     //bool isPlaying(int iChannelId) const;
-    bool isEventPlaying(const string& sEventName) const;
+    bool isEventPlaying(eSoundEvent soundEvent) const;
     float dbToVolume(float db);
     float volumeTodB(float volume);
     bool isPaused = false;
@@ -182,7 +184,7 @@ private:
         @return path of event in the Master Bank file if the event exists
         @return "" if the event does not exist
     */
-    string getPath(eSoundEvent event) {
+    string getPath(eSoundEvent event) const {
         if (!FuncUtils::contains(eventToSound, event)) {
             return "";
         }
