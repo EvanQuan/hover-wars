@@ -47,8 +47,8 @@ public:
     bool isPaused() const { return m_bPaused; }
     void setPaused(bool paused) { m_bPaused = paused; }
 
-    int m_iWidth;
-    int m_iHeight;
+    int getWidth() const { return m_iWidth; }
+    int getHeight() const { return m_iHeight; }
 
     // Window Reference
     GLFWwindow* m_pWindow;
@@ -69,6 +69,11 @@ private:
     bool renderGraphics();
     void drawScene();
 
+
+    // Window width
+    int m_iWidth;
+    // Window height
+    int m_iHeight;
 
 
     // Update Variables
