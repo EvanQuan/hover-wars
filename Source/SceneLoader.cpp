@@ -29,6 +29,10 @@
 #define DIRECTIONAL_LIGHT      "directional_light"
 #define SPOTLIGHT              "spotlight"
 #define HC                     "hovercraft"
+#define PLAYER_1               "player_1"
+#define PLAYER_2               "player_2"
+#define PLAYER_3               "player_3"
+#define PLAYER_4               "player_4"
 #define STATIC_MESH            "static_mesh"
 #define SPATIAL_MAP            "spatial_map"
 #define BOIDS                  "boids"
@@ -209,10 +213,10 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createPlayer()
+void SceneLoader::createPlayer(unsigned int iPlayerNumber)
 {
-    getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
-    m_pEntityManager->generatePlayerEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
+    getNextSpawnPoint(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition);
+    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
 }
 
 // Generates a Bot Object at a given position
@@ -393,6 +397,14 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createSpotLight(sData, sData.size());
     else if (HC == sIndicator)                          // Save Hovercraft Information
         HOVERCRAFT_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_1 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_1_PROPERTIES] = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_2 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_2_PROPERTIES] = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_3 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_3_PROPERTIES] = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_4 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_4_PROPERTIES] = CURRENT_PROPERTIES_DEF;
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information

@@ -279,7 +279,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     // Spawn Players
     for (unsigned int i = 0; i < playerCount; i++) {
-        SCENE_LOADER->createPlayer();
+        SCENE_LOADER->createPlayer(i);
         generateFrameBuffer(i);
     }
 

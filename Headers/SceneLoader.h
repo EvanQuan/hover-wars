@@ -22,7 +22,7 @@ public:
     void createPointLight( vector< string > sData, int iLength );
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
-    void createPlayer();
+    void createPlayer(unsigned int iPlayerNumber);
     void createCube(vector< string > sData, int iLength);
     void createBot();
     void createStaticMesh(vector< string > sData, unsigned int iLength);
@@ -49,6 +49,10 @@ private:
         CURRENT_PROPERTIES = 0,
         ROCKET_PROPERTIES,
         HC_PROPERTIES,
+        PLAYER_1_PROPERTIES,
+        PLAYER_2_PROPERTIES,
+        PLAYER_3_PROPERTIES,
+        PLAYER_4_PROPERTIES,
         SPIKES_PROPERTIES,
         MAX_PROPERTIES
     };
