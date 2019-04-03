@@ -450,6 +450,8 @@ void GameManager::drawScene()
                 // Render Frame
                 m_pEntityManager->renderEnvironment(screen);
                 // Render the UI
+                // Since the GameInterface is rendering directly, we do not need to
+                // switch to the GameInterface
                 m_pGameInterface->setFocus(static_cast<eHovercraft>(screen));
                 m_pGameInterface->render();
 
