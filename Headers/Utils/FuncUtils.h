@@ -234,4 +234,11 @@ namespace FuncUtils
     std::string timeToString(int seconds);
 
     double log(int value, int base);
+
+    /*
+        Sleep this thread for the specified amount of time, in seconds
+
+        @param timeInSeconds    to sleep
+    */
+    void sleep(float timeInSeconds);
 }

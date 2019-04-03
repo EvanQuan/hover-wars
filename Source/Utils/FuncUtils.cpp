@@ -1,6 +1,8 @@
 #include "Utils/FuncUtils.h"
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
+#include <chrono>
+#include <thread>
 
 using namespace FuncUtils;
 
@@ -167,3 +169,12 @@ double FuncUtils::log(int value, int base)
     return std::log(value) / std::log(base);
 }
 
+/*
+    Sleep this thread for the specified amount of time, in seconds
+
+    @param timeInSeconds    to sleep
+*/
+void FuncUtils::sleep(float timeInSeconds)
+{
+    std::this_thread::sleep_for(std::chrono::seconds(static_cast<long>(timeInSeconds)));
+}

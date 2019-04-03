@@ -637,8 +637,12 @@ void SoundManager::setResumeGame() {
     stopEvent(MUSIC_PAUSE);
     play(SOUND_UI_COUNTDOWN_TICK);
 
+    cout << "start of countdown" << endl;
     // Wait until tick is over
-    while (isEventPlaying(SOUND_UI_COUNTDOWN_TICK));
+    // while (isEventPlaying(SOUND_UI_COUNTDOWN_TICK));
+    FuncUtils::sleep(3);
+
+    cout << "end of countdown" << endl;
 
     // Unpause event and end pause music
     for (auto it : mEvents)
