@@ -311,6 +311,75 @@ hovercraft {
     }
 }
 
+player_1 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map1.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+player_2 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map2.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+player_3 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map3.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+player_4 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map4.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        blinn_phong_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+
 cube {
     65 5 65
     10 80 80
