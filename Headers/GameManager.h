@@ -12,6 +12,7 @@ class CommandHandler;
 class ShaderManager;
 class UserInterface;
 class GameStats;
+class Texture;
 
 // Class: Game Manager
 // Purpose: Manages Game States and handles initialization of a level and handling of
@@ -30,7 +31,9 @@ public:
     void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, string sFileName);
     void resetTime() { m_pTimer.resetTimer(); }
 
-    // Window Width and Height  Settings
+    // Window Width and Height Getters and Setters
+    int getWidth() { return m_iWidth; }
+    int getHeight() { return m_iHeight; }
     void resizeWindow(int iWidth, int iHeight);
 
     // Camera Functions 
@@ -44,18 +47,14 @@ public:
     bool isPaused() const { return m_bPaused; }
     void setPaused(bool paused);
 
-    int getWidth() const { return m_iWidth; }
-    int getHeight() const { return m_iHeight; }
-
-    // Window Reference
-    GLFWwindow* m_pWindow;
-
     void addInterface(UserInterface* ui);
     void setCurrentInterface(UserInterface* ui);
 
     // Automatically called at end of game if time runs out, or if ended thrugh
     // pause menu
     void endGame();
+
+    void flagWindowToClose() { glfwSetWindowShouldClose(m_pWindow, GL_TRUE); }
 
 private:
     // For Singleton Implementation
@@ -65,12 +64,24 @@ private:
 
     bool renderGraphics();
     void drawScene();
+    void renderSplitScreen();
 
+    // Split Screen Rendering variables
+    GLuint m_iVertexArray, m_iVertexBuffer;
+    struct sRenderBlock
+    {
+        GLuint iRenderBuffer, iFrameBuffer;
+        Texture* pColorBuffer;
+    };
+    vector< sRenderBlock > m_pFrameBufferTextures;
+    void generateFrameBuffer(unsigned int iPlayer);
 
-    // Window width
-    int m_iWidth;
-    // Window height
-    int m_iHeight;
+    // Screen Height and Width
+    int m_iWidth, m_iSplitWidth;
+    int m_iHeight, m_iSplitHeight;
+
+    // Window Reference
+    GLFWwindow* m_pWindow;
 
 
     // Update Variables
