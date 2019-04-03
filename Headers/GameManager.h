@@ -70,9 +70,13 @@ private:
     void renderSplitScreen();
 
     // Split Screen Rendering variables
-    GLuint m_iRenderBuffer;
     GLuint m_iVertexArray, m_iVertexBuffer;
-    vector< Texture* > m_pFrameBuffers;
+    struct sRenderBlock
+    {
+        GLuint iRenderBuffer, iFrameBuffer;
+        Texture* pColorBuffer;
+    };
+    vector< sRenderBlock > m_pFrameBufferTextures;
     void generateFrameBuffer(unsigned int iPlayer);
 
     // Screen Height and Width

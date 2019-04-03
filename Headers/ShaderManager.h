@@ -27,6 +27,7 @@ public:
         SHADOW_SHDR,
         UI_SHDR,
         SKYBOX_SHDR,
+        SPLIT_SCREEN_SHDR,
         MAX_SHDRS
     };
     const static unordered_map<string, eShaderType> pShaderTypeMap;

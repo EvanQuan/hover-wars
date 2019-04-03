@@ -178,7 +178,7 @@ Texture* TextureManager::genDepthBuffer(unsigned int iWidth, unsigned int iHeigh
 }
 
 // Generates a Frame Buffer Object as a Texture
-Texture* TextureManager::genFrameBuffer(unsigned int iWidth, unsigned int iHeight)
+Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight)
 {
     // Attempt to grab it from the texture cache if it already exists
     Texture* pReturnTexture = nullptr;

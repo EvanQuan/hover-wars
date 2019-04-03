@@ -307,9 +307,7 @@ void EntityManager::doRender()
         if (nullptr != m_pEmtrEngn)
         {
            m_pEmtrEngn->renderEmitters();
-        } 
-
-        // USER_INTERFACE->render();
+        }
 
 #ifdef _DEBUG
         // Draw the Spatial Map for debuggin

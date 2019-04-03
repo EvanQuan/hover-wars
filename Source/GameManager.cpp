@@ -54,9 +54,6 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_pPhysicsManager = PHYSICS_MANAGER;
 
-    // Initialize Render Buffer
-    glGenRenderbuffers(1, &m_iRenderBuffer);
-
     // Generate VAO and VBO for rendering SplitScreen Quads
     glGenVertexArrays(1, &m_iVertexArray);
     m_iVertexBuffer = m_pShaderManager->genVertexBuffer(m_iVertexArray, nullptr, (sizeof(vec4) << 4), GL_STATIC_DRAW);
@@ -91,8 +88,14 @@ GameManager::~GameManager()
     // Let go of Window Handle
     m_pWindow = nullptr;
 
-    // Delete Render Buffer
-    glDeleteRenderbuffers(1, &m_iRenderBuffer);
+    // Clean up Frame Buffers
+    for each (sRenderBlock pRenderBlock in m_pFrameBufferTextures)
+    {
+        // Delete Render and Frame Buffers
+        glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
+        glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
+    }
+    m_pFrameBufferTextures.clear();
 
     // Split Screen Clean Up
     glDeleteBuffers(1, &m_iVertexBuffer);
@@ -263,10 +266,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     if (playerCount > 2)
         m_iSplitWidth <<= 1;
 
-    // Set up Render Buffer for all the Frames
-    glBindRenderbuffer(GL_RENDERBUFFER, m_iRenderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_iSplitWidth, m_iSplitHeight);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
 
     // Spawn Players
     for (unsigned int i = 0; i < playerCount; i++) {
@@ -290,19 +290,11 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 void GameManager::generateFrameBuffer(unsigned int iPlayer)
 {
     // Local Variables
-    float fHeight, fWidth, fSplitHeight, fSplitWidth;
-
-    // Get Dimensions in Floating point values
-    fHeight = static_cast<float>(m_iHeight);
-    fWidth = static_cast<float>(m_iWidth);
-    fSplitHeight = fHeight * 0.5f;
-    fSplitWidth = fWidth * 0.5f;
-
     vec4 vCorners[4] = {
-        vec4(0.0f,    0.0f,     0.0f, 1.0f), /*Bottom Left*/
-        vec4(fWidth,  0.0f,     1.0f, 1.0f), /*Bottom Right*/
-        vec4(0.0f,    fHeight,  0.0f, 0.0f), /*Top Left*/
-        vec4(fWidth,  fHeight,  1.0f, 0.0f), /*Top Right*/
+        vec4(-1.0f, -1.0f, 0.0f, 0.0f), /*Bottom Left*/
+        vec4(1.0f,  -1.0f, 1.0f, 0.0f), /*Bottom Right*/
+        vec4(-1.0f, 1.0f,  0.0f, 1.0f), /*Top Left*/
+        vec4(1.0f,  1.0f,  1.0f, 1.0f), /*Top Right*/
     };
 
     /*
@@ -317,26 +309,26 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     {
     case 0:
         if (m_iSplitHeight != m_iHeight)    // > 1 Player? -> compact the frame to half height
-            vCorners[BOTTOM_LEFT].y = vCorners[BOTTOM_RIGHT].y = fSplitHeight;
+            vCorners[BOTTOM_LEFT].y = vCorners[BOTTOM_RIGHT].y = 0.0f;
         if (m_iSplitWidth != m_iWidth)      // > 2 Players? -> compact the frame to half width
-            vCorners[BOTTOM_RIGHT].x = vCorners[TOP_RIGHT].x = fSplitWidth;
+            vCorners[BOTTOM_RIGHT].x = vCorners[TOP_RIGHT].x = 0.0f;
         break;
     case 1:
         if (m_iSplitWidth != m_iWidth)      // > 2 Players? compact frame to top right quadrant
         {
-            vCorners[BOTTOM_LEFT].y = vCorners[BOTTOM_RIGHT].y = fSplitHeight;
-            vCorners[BOTTOM_LEFT].x = vCorners[TOP_LEFT].x = fSplitWidth;
+            vCorners[BOTTOM_LEFT].y = vCorners[BOTTOM_RIGHT].y = 0.0f;
+            vCorners[BOTTOM_LEFT].x = vCorners[TOP_LEFT].x = 0.0f;
         }
         else                                // exactly 2 players? compact frame to bottom half
-            vCorners[TOP_LEFT].y = vCorners[TOP_RIGHT].y = fSplitHeight;
+            vCorners[TOP_LEFT].y = vCorners[TOP_RIGHT].y = 0.0f;
         break;
     case 2:                                 // Compact to bottom left quadrant
-        vCorners[TOP_LEFT].y = vCorners[TOP_RIGHT].y = fSplitHeight;
-        vCorners[TOP_RIGHT].x = vCorners[BOTTOM_RIGHT].x = fSplitWidth;
+        vCorners[TOP_LEFT].y = vCorners[TOP_RIGHT].y = 0.0f;
+        vCorners[TOP_RIGHT].x = vCorners[BOTTOM_RIGHT].x = 0.0f;
         break;
     case 3:                                 // Compact to bottom right quadrant
-        vCorners[TOP_LEFT].y = vCorners[TOP_RIGHT].y = fSplitHeight;
-        vCorners[TOP_LEFT].x = vCorners[BOTTOM_LEFT].x = fSplitWidth;
+        vCorners[TOP_LEFT].y = vCorners[TOP_RIGHT].y = 0.0f;
+        vCorners[TOP_LEFT].x = vCorners[BOTTOM_LEFT].x = 0.0f;
         break;
     }
 
@@ -345,7 +337,28 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     glBufferSubData(GL_ARRAY_BUFFER, iPlayer * FOUR_VEC4, FOUR_VEC4, vCorners);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    m_pFrameBuffers.push_back(TEXTURE_MANAGER->genFrameBuffer(m_iSplitWidth, m_iSplitHeight));
+    // Set up Frame Buffer
+    sRenderBlock sNewBlock;
+    glGenFramebuffers(1, &sNewBlock.iFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, sNewBlock.iFrameBuffer);
+
+    // Create color attachment texture
+    sNewBlock.pColorBuffer = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sNewBlock.pColorBuffer->getTextureID(), 0);
+
+    //create renderbuffer object for depth and stencil attachment
+    glGenRenderbuffers(1, &sNewBlock.iRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, sNewBlock.iRenderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_iSplitWidth, m_iSplitHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, sNewBlock.iRenderBuffer);
+
+    // Verify that Framebuffer is set up correctly
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        cout << "ERROR: Framebuffer is not complete.\n";
+
+    // Save Render Block and unbind frame buffer.
+    m_pFrameBufferTextures.push_back(sNewBlock);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 /*
@@ -368,9 +381,14 @@ void GameManager::endGame()
     TextureManager* pTxtMngr = TEXTURE_MANAGER;
 
     // Clean up Frame Buffers
-    for each (Texture* tFrameBuffer in m_pFrameBuffers)
-        pTxtMngr->unloadTexture(&tFrameBuffer);
-    m_pFrameBuffers.clear();
+    for each (sRenderBlock pRenderBlock in m_pFrameBufferTextures)
+    {
+        // Delete Render and Frame Buffers
+        glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
+        glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
+        pTxtMngr->unloadTexture(&pRenderBlock.pColorBuffer);
+    }
+    m_pFrameBufferTextures.clear();
 
     resizeWindow(m_iWidth, m_iHeight);
 
@@ -401,22 +419,25 @@ void GameManager::drawScene()
             m_pEntityManager->setupRender();
 
             // Render each screen
-            for( unsigned int i = 0; i < m_pFrameBuffers.size(); ++i)
+            for( unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
             {
                 // Bind Frame Buffer
-                glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBuffers[i]->getTextureID());
-                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_iRenderBuffer);
+                glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[i].iFrameBuffer);
                 assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+                glViewport(0, 0, m_iSplitWidth, m_iSplitHeight);
 
                 // Render Frame
                 m_pEntityManager->renderEnvironment(i);
             }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glDisable(GL_DEPTH_TEST);
 
             // Render the Split Screen Quads
             renderSplitScreen();
         }
         m_pCurrentInterface->render();
-        glDisable(GL_DEPTH_TEST);
+        
 
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
@@ -436,14 +457,14 @@ void GameManager::renderSplitScreen()
 {
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
-    glUseProgram(m_pShaderManager->getProgram(ShaderManager::eShaderType::UI_SHDR));
-    m_pShaderManager->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
+    glUseProgram(m_pShaderManager->getProgram(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR));
+    glViewport(0, 0, m_iWidth, m_iHeight);
 
     // Bind each Frame Buffer and Render image
-    for (unsigned int i = 0; i < m_pFrameBuffers.size(); ++i)
+    for (unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
     {
-        m_pFrameBuffers[i]->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
-        glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
+        m_pFrameBufferTextures[i].pColorBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "text");
+        glDrawArrays(GL_TRIANGLE_STRIP, (i << 2), 4);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -490,7 +511,7 @@ bool GameManager::initialize()
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 #else
-    initializeNewGame(1, 0, 9999999.0f, RELEASE_ENV);
+    initializeNewGame(4, 0, 9999999.0f, RELEASE_ENV);
     // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
     m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
@@ -527,7 +548,7 @@ void GameManager::resizeWindow( int iWidth, int iHeight )
     // Store Screen Size
     m_iHeight = m_iSplitHeight = iHeight;
     m_iWidth = m_iSplitWidth = iWidth;
-    unsigned int iSize = m_pFrameBuffers.size();
+    unsigned int iSize = m_pFrameBufferTextures.size();
 
     // Calculate SplitScreen Size
     if (iSize > 1)

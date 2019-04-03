@@ -462,7 +462,7 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
-    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));;
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     // Is an image, not text. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
