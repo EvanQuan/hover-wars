@@ -550,16 +550,16 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
 // Name: createRocketObjects
 // Written by: James Coté & Austin Eaton
 // Description: Generates a rocket object and launches it in the scene.
-void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody)
+void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody, PxShape** pReturnShape)
 {
     // Generate Shape for the Rocket.
-    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength), *gWorldMaterial);
+    (*pReturnShape) = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength), *gWorldMaterial);
 
     // Generate Transform to given position.
     PxMat44 pxTransform;
     memcpy(&pxTransform, m4Transform, sizeof(mat4));
     PxTransform pxLocalTransform(pxTransform);
-    shape->setLocalPose(PxTransform(PxQuat(RADIANS_90, PxVec3(0.0f, 1.0f, 0.0f))));
+    (*pReturnShape)->setLocalPose(PxTransform(PxQuat(RADIANS_90, PxVec3(0.0f, 1.0f, 0.0f))));
 
     // Set Velocity
     PxVec3 pxRocketVel;
@@ -569,10 +569,9 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
     (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
     (*pReturnBody)->setLinearVelocity(pxRocketVel);
-    (*pReturnBody)->attachShape(*shape);
+    (*pReturnBody)->attachShape(*(*pReturnShape));
     (*pReturnBody)->setName(cName);
 
-    shapes.push_back(shape);
     // Add To Scene
     // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
@@ -581,35 +580,34 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
 // Name: createFlameObject
 // Written By: James Coté
 // Description: Generates a Cylindrical bounding box at a given position with a specified Height and Radius 
-void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody)
+void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody, PxShape** pReturnShape)
 {
     // Generate Cylindrical Shape
-    PxShape* pShape = gPhysics->createShape(PxCapsuleGeometry(fRadius, fHeight), *gWorldMaterial);
+    (*pReturnShape) = gPhysics->createShape(PxCapsuleGeometry(fRadius, fHeight), *gWorldMaterial);
 
     // Generate Transform to given position.
     PxVec3 pxFlamePos;
     PxQuat pShapeRotation = PxQuat(RADIANS_90, PxVec3(0.0f, 0.0f, 1.0f));
     memcpy(&pxFlamePos, vPosition, sizeof(vec3));
-    pShape->setLocalPose(PxTransform(pShapeRotation));
+    (*pReturnShape)->setLocalPose(PxTransform(pShapeRotation));
     PxTransform pxLocalTransform(pxFlamePos);
 
     // Set up Physics Body
     *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
-    (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
     (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-    (*pReturnBody)->attachShape(*pShape);
+    (*pReturnBody)->attachShape(*(*pReturnShape));
     (*pReturnBody)->setName(cName);
 
-    shapes.push_back(pShape);
     // Add to Scene
     // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
 }
 
 // Removes a Rigid Dynamic Object from the scene and releases the actor
-void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor)
+void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor, PxShape* pShape)
 {
     gScene->removeActor(*pActor, false);
+    pShape->release();
     pActor->release();
 }
 
