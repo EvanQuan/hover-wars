@@ -176,3 +176,37 @@ Texture* TextureManager::genDepthBuffer(unsigned int iWidth, unsigned int iHeigh
 
     return pReturnTexture;
 }
+
+// Generates a Frame Buffer Object as a Texture
+Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight)
+{
+    // Attempt to grab it from the texture cache if it already exists
+    Texture* pReturnTexture = nullptr;
+    string sHashValue = "FrameBuffer" + to_string(iWidth) + to_string(iHeight);
+
+    if (m_pTextureCache.end() != m_pTextureCache.find(sHashValue))
+    {
+        // Grab the Texture Container from the Cache
+        pReturnTexture = m_pTextureCache[sHashValue].get();
+    }
+    else // Create the New Texture in the Texture Cache
+    {
+        // Generate Texture Smart Pointer
+        unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashValue, Texture::manager_cookie());
+
+        // Generate Texture information in GPU
+        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGB, GL_UNSIGNED_BYTE);
+
+        // Set Texture Parameters
+        pNewTexture->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        pNewTexture->setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        // Return the raw pointer to the caller
+        pReturnTexture = pNewTexture.get();
+
+        // Attach Texture to the Cache
+        m_pTextureCache.insert(make_pair(sHashValue, move(pNewTexture)));
+    }
+
+    return pReturnTexture;
+}

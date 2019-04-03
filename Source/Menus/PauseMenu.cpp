@@ -43,7 +43,7 @@ void PauseMenu::select(eFixedCommand command)
         break;
     case COMMAND_PROMPT_NEXT_MENU:
         m_pGameManager->endGame();
-        // m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        // m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->m_iHeight));
         // nextMenu(MainMenu::getInstance());
         break;
     }
