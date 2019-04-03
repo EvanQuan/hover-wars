@@ -84,12 +84,7 @@ private:
     bool m_bVehicle;
     PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.
     mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
-    struct sBody
-    {
-        PxRigidDynamic* pActor;
-        PxShape*        pShape;
-    };
-    unordered_map<string, sBody>  m_pDynamicObjects;
+    unordered_map<string, PxRigidDynamic*>  m_pDynamicObjects;
     vector<string>                m_pObjectsFlaggedForRemoval;
 
     void setDriveTorque(float torque)

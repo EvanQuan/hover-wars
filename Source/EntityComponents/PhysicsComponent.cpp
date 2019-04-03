@@ -169,10 +169,10 @@ void PhysicsComponent::rotatePlayer(float x) {
 PhysicsComponent::~PhysicsComponent()
 {
     // Clean up any Rigid Dynamic Objects that were created
-    for (unordered_map<string, sBody>::iterator pIter = m_pDynamicObjects.begin();
+    for (unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.begin();
         pIter != m_pDynamicObjects.end();
         ++pIter)
-        m_pPhysicsManager->removeRigidDynamicObj(pIter->second.pActor, pIter->second.pShape);
+        m_pPhysicsManager->removeRigidDynamicObj(pIter->second);
     m_pDynamicObjects.clear();
 }
 
@@ -255,32 +255,29 @@ void PhysicsComponent::initializeRocket(const char* sName,
                                         float fBBLength)
 {
     // Generate the Rocket in the Physics Manager
-    sBody pNewBody;
-    pNewBody.pActor = nullptr;
-    // Store Rocket internally for management.
+    PxRigidDynamic* pNewBody = nullptr;
     m_pDynamicObjects.insert(make_pair((sName), pNewBody));
-    unordered_map<string, sBody>::iterator pIter = m_pDynamicObjects.find(sName);
+    unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
     m_pPhysicsManager->createRocketObjects(pIter->first.c_str(),
                                            m4Transform, vVelocity,
                                            fBBLength,
-                                           &(pIter->second.pActor), &(pIter->second.pShape));
+                                           &(pIter->second));
 
     // Ensure the rocket was created properly.
-    assert(nullptr != pIter->second.pActor);
+    assert(nullptr != pIter->second);
 }
 
 // Initializes a new Flame Object in the Physics Manager and stores it in the component to manage locally.
 void PhysicsComponent::initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius)
 {
     // Generate the Flame in the Physics Manager
-    sBody pNewBody;
-    pNewBody.pActor = nullptr;
+    PxRigidDynamic* pNewBody = nullptr;
     m_pDynamicObjects.insert(make_pair((sName), pNewBody));
-    unordered_map<string, sBody>::iterator pIter = m_pDynamicObjects.find(sName);
-    m_pPhysicsManager->createFlameObject(pIter->first.c_str(), vPosition, fHeight, fRadius, &(pIter->second.pActor), &(pIter->second.pShape));
+    unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
+    m_pPhysicsManager->createFlameObject(pIter->first.c_str(), vPosition, fHeight, fRadius, &(pIter->second));
 
     // Store Flame internally for management.
-    assert(nullptr != pIter->second.pActor);
+    assert(nullptr != pIter->second);
 }
 
 // Remove and unload a DynamicBody from the Physics scene with the given Hashkey.
@@ -290,7 +287,7 @@ void PhysicsComponent::removeInstance(string sHashKey)
     if (!m_bVehicle && (m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end()))
     {
         // Release the Instance from the Physics Scene and erase it from the Object List.
-        m_pPhysicsManager->removeRigidDynamicObj(m_pDynamicObjects[sHashKey].pActor, m_pDynamicObjects[sHashKey].pShape);
+        m_pPhysicsManager->removeRigidDynamicObj(m_pDynamicObjects[sHashKey]);
         m_pDynamicObjects.erase(sHashKey);
     }
 }
@@ -309,7 +306,7 @@ void PhysicsComponent::scaleInstance(string sHashKey, float fScale)
     if (!m_bVehicle && (m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end()))
     {
         // Scale the Body of the specified Object
-        PxScaleRigidActor(*m_pDynamicObjects[sHashKey].pActor, fScale);
+        PxScaleRigidActor(*m_pDynamicObjects[sHashKey], fScale);
     }
 }
 
@@ -345,7 +342,7 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 void PhysicsComponent::getTransformMatrix(string sHashKey, mat4* pReturnTransformMatrix)
 {
     if (!m_bVehicle && m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end())
-        *pReturnTransformMatrix = m_pPhysicsManager->getMat4(m_pDynamicObjects[sHashKey].pActor->getGlobalPose());
+        *pReturnTransformMatrix = m_pPhysicsManager->getMat4(m_pDynamicObjects[sHashKey]->getGlobalPose());
 }
 glm::vec3 PhysicsComponent::getPosition() {
     physx::PxVec3 position = body->getGlobalPose().p;
