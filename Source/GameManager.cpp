@@ -271,7 +271,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_iSplitHeight = m_iHeight;
     m_iSplitWidth = m_iWidth;
     if (playerCount > 1)
-        m_iSplitHeight <<= 1;
+        m_iSplitHeight /=2.0;
     if (playerCount > 2)
         m_iSplitWidth <<= 1;
 
