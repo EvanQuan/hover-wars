@@ -51,9 +51,8 @@ void SoundManager::stopAllEvents()
 {
     for (auto it : mEvents)
     {
-        it.second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+        errorCheck(it.second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
     }
-    updateChannels();
 }
 
 SoundManager* SoundManager::getInstance() {
@@ -473,7 +472,9 @@ void SoundManager::playEvent(const string& sEventName) {
     else {      // Event is in mEvents
         FMOD_STUDIO_PLAYBACK_STATE state;
         tFoundIt->second->getPlaybackState(&state);
-        if (state == FMOD_STUDIO_PLAYBACK_PLAYING) {        // Event currently playing
+        switch (state)
+        {
+        case FMOD_STUDIO_PLAYBACK_PLAYING: // Event currently playing
             // Copy from load event
             // Create new event instance with same event in bank file
             bool playable = false;
@@ -505,6 +506,7 @@ void SoundManager::playEvent(const string& sEventName) {
                 }
             }
             tFoundIt = mEvents.find(sNewEventName);
+            break;
         }
         // Event not playing, going play tFoundIt
 
@@ -637,7 +639,7 @@ void SoundManager::setPauseMenu() {
     // play pause music
     auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
     tFoundIt->second->setPaused(false);
-    playEvent(getPath(MUSIC_PAUSE));
+    play(MUSIC_PAUSE);
     updateChannels();
 }
 
@@ -649,7 +651,7 @@ void SoundManager::setResumeGame() {
     cout << "start of countdown" << endl;
     // Wait until tick is over
     // while (isEventPlaying(SOUND_UI_COUNTDOWN_TICK));
-    FuncUtils::sleep(3);
+    // FuncUtils::sleep(3);
 
     cout << "end of countdown" << endl;
 
@@ -660,6 +662,14 @@ void SoundManager::setResumeGame() {
         it.second->getPaused(&eventPaused);
         it.second->setPaused(!eventPaused);
     }
+    updateChannels();
+}
+
+void SoundManager::setEndGame()
+{
+    stopAllEvents();
+    play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
+    play(MUSIC_INGAME);
     updateChannels();
 }
 

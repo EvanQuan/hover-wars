@@ -268,7 +268,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 */
 void GameManager::endGame()
 {
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
+    SOUND_MANAGER->setEndGame();
 
     // postgame menu
     cout << "GameManger::endGame()" << endl;

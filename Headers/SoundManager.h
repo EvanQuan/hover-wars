@@ -105,7 +105,11 @@ public:
     // Change to private method
     void setSpeedParameter(float speed);
 
+    // @Deprecated
     void togglePaused();
+    void setPauseMenu();
+    void setResumeGame();
+    void setEndGame();
 
     void upPosition();
     void downPosition();
@@ -160,9 +164,6 @@ private:
     void stopEvent(eSoundEvent soundEvent, bool bImmediate = true);
     void pauseEvent(const string& sEventName);
     void resumeEvent(const string& sEventName);
-
-    void setPauseMenu();
-    void setResumeGame();
 
     void getEventParameter(const string& sEventName, const string& sEventParameter, float* parameter);
     void setEventParameter(const string& sEventName, const string& sParamerterName, float fValue);
