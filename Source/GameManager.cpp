@@ -275,6 +275,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     if (playerCount > 2)
         m_iSplitWidth >>= 1;
 
+
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
 
     // Spawn Players
