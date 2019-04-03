@@ -64,14 +64,10 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initializeVBOs();
 
     debugMessage = "";
-    m_Textures[IMAGE_1_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1_1);
-    m_Textures[IMAGE_1_2] = TEXTURE_MANAGER->loadTexture(IMAGE_1_2);
-    m_Textures[IMAGE_2_1] = TEXTURE_MANAGER->loadTexture(IMAGE_2_1);
-    m_Textures[IMAGE_2_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2_2);
-    m_Textures[IMAGE_3_1] = TEXTURE_MANAGER->loadTexture(IMAGE_3_1);
-    m_Textures[IMAGE_3_2] = TEXTURE_MANAGER->loadTexture(IMAGE_3_2);
-    m_Textures[IMAGE_4_1] = TEXTURE_MANAGER->loadTexture(IMAGE_4_1);
-    m_Textures[IMAGE_4_2] = TEXTURE_MANAGER->loadTexture(IMAGE_4_2);
+    m_Textures[IMAGE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1);
+    m_Textures[IMAGE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2);
+    m_Textures[IMAGE_3] = TEXTURE_MANAGER->loadTexture(IMAGE_3);
+    m_Textures[IMAGE_4] = TEXTURE_MANAGER->loadTexture(IMAGE_4);
     m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
     m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
     m_Textures[IMAGE_BACKGROUND] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND);
@@ -81,8 +77,6 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_NEW_GAME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_2);
     m_Textures[IMAGE_PAUSE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_PAUSE_MENU);
     m_Textures[IMAGE_POST_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_POST_MENU);
-    m_Textures[IMAGE_RESTART_1] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART_1);
-    m_Textures[IMAGE_RESTART_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESTART_2);
     m_Textures[IMAGE_RESUME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_1);
     m_Textures[IMAGE_RESUME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_2);
     m_Textures[IMAGE_START_1] = TEXTURE_MANAGER->loadTexture(IMAGE_START_1);
