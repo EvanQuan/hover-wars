@@ -42,10 +42,10 @@ public:
     eHovercraft getKeyboardHovercraft() const { return m_eKeyboardHovercraft; }
 
     bool isPaused() const { return m_bPaused; }
-    void setPaused(bool paused) { m_bPaused = paused; }
+    void setPaused(bool paused);
 
-    int m_iWidth;
-    int m_iHeight;
+    int getWidth() const { return m_iWidth; }
+    int getHeight() const { return m_iHeight; }
 
     // Window Reference
     GLFWwindow* m_pWindow;
@@ -66,6 +66,11 @@ private:
     bool renderGraphics();
     void drawScene();
 
+
+    // Window width
+    int m_iWidth;
+    // Window height
+    int m_iHeight;
 
 
     // Update Variables
@@ -116,6 +121,8 @@ private:
     vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update
+    bool m_bQueueResume;
+    float m_fQueueResumeTime;
     bool m_bPaused;
 
     void setKeyboardHovercraft(int playerCount);

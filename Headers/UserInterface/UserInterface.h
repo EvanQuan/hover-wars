@@ -103,8 +103,7 @@ public:
 protected:
 
     // Default Constructor
-    UserInterface(int iWidth, int iHeight,
-                  vector<pair<float, float>> componentScaling,
+    UserInterface(vector<pair<float, float>> componentScaling,
                   vector<pair<float, float>> componentTranslating);
     UserInterface(const UserInterface* pCopy);            // Default Copy Constructor
     UserInterface& operator=(const UserInterface* pCopy); // Assignment Operator.

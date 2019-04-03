@@ -13,7 +13,10 @@
 #include "Menus/StartMenu.h"
 
 // Unit: seconds
-#define GAME_OVER_TIME 0.0
+#define GAME_OVER_TIME 0.0f
+
+// Time before the game resumes
+#define GAME_RESUME_TIME 3.0f
 
 /*************\
  * Constants *
@@ -161,7 +164,15 @@ bool GameManager::renderGraphics()
         startedGameOver = true;
     }
 
-
+    if (m_bQueueResume)
+    {
+        m_fQueueResumeTime -= frameDeltaTime;
+        if (m_fQueueResumeTime <= 0)
+        {
+            m_bPaused = false;
+            m_bQueueResume = false;
+        }
+    }
     // Update Environment if the game is not paused
     if (!m_bPaused)
     {
@@ -217,15 +228,10 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     string sFileName)
 {
     // We intialize all values for the game to immediately start
-    // Initialize Physics
-    m_pPhysicsManager = PHYSICS_MANAGER;
-    m_pPhysicsManager->initPhysics(true);
-    // m_pPhysicsManager->cleanupPhysics();
-    // delete m_pPhysicsManager;
-    // m_pPhysicsManager = PHYSICS_MANAGER;
-    // m_pPhysicsManager->initPhysics(false);
 
-    m_bPaused = false;
+    m_pPhysicsManager->initPhysics(true);
+
+    setPaused(false);
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
@@ -262,7 +268,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 */
 void GameManager::endGame()
 {
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
+    SOUND_MANAGER->setEndGame();
 
     // postgame menu
     cout << "GameManger::endGame()" << endl;
@@ -270,13 +276,7 @@ void GameManager::endGame()
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
-
-    // m_pPhysicsManager->cleanupPhysics();
-    if (nullptr != m_pPhysicsManager)
-    {
-        delete m_pPhysicsManager;
-        m_pPhysicsManager = nullptr;
-    }
+    m_pPhysicsManager->cleanupPhysics();
 }
 
 /*
@@ -430,5 +430,21 @@ void GameManager::intersectPlane(float fX, float fY)
             vIntersection = vCameraPos + (fT*vRay);
 
         EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 60.f, 5.0f, 100, false, 2.0f);
+    }
+}
+
+void GameManager::setPaused(bool paused)
+{
+    if (paused)
+    {
+        // Pause immediately
+        m_bPaused = true;
+    }
+    else
+    {
+        // Queue up unpause. When the game resumes, there is a buffer time
+        // before the environment begins updating again.
+        m_bQueueResume = true;
+        m_fQueueResumeTime = GAME_RESUME_TIME;
     }
 }

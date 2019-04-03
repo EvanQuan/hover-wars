@@ -11,7 +11,7 @@ public:
     static PauseInterface* getInstance(int iWidth, int iHeight);
 
     // Default Constructor
-    PauseInterface(int iWidth, int iHeight);
+    PauseInterface();
     PauseInterface(const PauseInterface* pCopy);                              // Default Copy Constructor
     PauseInterface& operator=(const PauseInterface* pCopy);                   // Assignment Operator.
 
