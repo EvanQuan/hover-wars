@@ -29,7 +29,8 @@ void StartMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
+        m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
+                                                                       m_pGameManager->getHeight()));
         nextMenu(MainMenu::getInstance());
         break;
     }

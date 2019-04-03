@@ -1,0 +1,3 @@
+[submodule "Sound/hover-wars-fmod"]
+	path = Sound/hover-wars-fmod
+	url = https://github.com/EvanQuan/hover-wars-fmod

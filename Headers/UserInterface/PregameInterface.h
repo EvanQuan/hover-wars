@@ -15,7 +15,7 @@ public:
     static PregameInterface* getInstance(int iWidth, int iHeight);
 
     // Default Constructor
-    PregameInterface(int iWidth, int iHeight);
+    PregameInterface();
     PregameInterface(const PregameInterface* pCopy);                              // Default Copy Constructor
     PregameInterface& operator=(const PregameInterface* pCopy);                   // Assignment Operator.
 
@@ -30,13 +30,13 @@ private:
     {
         BACKGROUND = 0,
         PLAYER_COUNT,
-        BOT_COUNT,
-        MAIN_MENU,
-        START_GAME,
         PLAYER_COUNT_NUMBER,
+        BOT_COUNT,
         BOT_COUNT_NUMBER,
         GAME_TIME,
         GAME_TIME_NUMBER,
+        MAIN_MENU,
+        START_GAME,
     };
     static PregameInterface* m_pInstance;
 

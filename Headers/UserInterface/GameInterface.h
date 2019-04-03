@@ -57,6 +57,8 @@ public:
 
     void setDisplayCount(int count);
 
+    void setFocus(eHovercraft hovercraft);
+
     void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
     void displayPowerup(eHovercraft hovercraft, ePowerup powerup);
 
@@ -81,15 +83,12 @@ private:
         COMPONENT_COUNT
     };
 
-    GameInterface(int iWidth, int iHeight);                                 // Default Constructor
-    GameInterface(const GameInterface* pCopy);                              // Default Copy Constructor
-    GameInterface& operator=(const GameInterface* pCopy);                   // Assignment Operator.
+    GameInterface();                                        // Default Constructor
+    GameInterface(const GameInterface* pCopy);              // Default Copy Constructor
+    GameInterface& operator=(const GameInterface* pCopy);   // Assignment Operator.
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
     SoundManager* m_pSoundManager;
-
-    // Initializes FreeType and the Font Library
-    void setScore(int joystickID, int score);
 
     void displayMessage(eHovercraft hovercraft, std::string text);
     /*
@@ -99,7 +98,6 @@ private:
     be updated during its update() call.
     */
     void renderComponent(eUIComponent component, GLfloat scale, vec3 color);
-    void initializeGameInterface();
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
@@ -109,13 +107,9 @@ private:
     void renderMessages();
 
     // Score
-    void initializeScores();
-    void updateScores();
-    void updateScore(eHovercraft hovercraft, int score);
     void renderScores();
 
     // Cooldowns
-    void initializeCooldowns();
     void updateCooldowns();
     void renderCooldowns();
     void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
@@ -146,6 +140,8 @@ private:
     float m_fScoreChangeTimes[MAX_HOVERCRAFT_COUNT];
 
     int m_iDisplayCount;
+
+    eHovercraft m_eHovercraftFocus;
 
     const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
     {

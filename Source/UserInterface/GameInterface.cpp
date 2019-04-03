@@ -38,6 +38,11 @@ Coordinate system:
 */
 #define TIME_SCALE              1.0f
 #define TIME_COLOR              COLOR_WHITE
+#define TIME_WARNING1_COLOR     COLOR_YELLOW
+#define TIME_WARNING2_COLOR     COLOR_RED
+// Seconds until game time changes color
+#define TIME_WARNING1_START      30
+#define TIME_WARNING2_START      10
 
 #define TRAIL_SCALE             1.0f
 
@@ -60,7 +65,7 @@ Coordinate system:
 // Singleton instance
 GameInterface* GameInterface::m_pInstance = nullptr;
 
-GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iHeight,
+GameInterface::GameInterface() : UserInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -110,6 +115,7 @@ GameInterface::GameInterface(int iWidth, int iHeight) : UserInterface(iWidth, iH
 {
     GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
+    m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     debugMessage = "";
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;
@@ -119,7 +125,7 @@ GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
 {
     if (nullptr == m_pInstance)
     {
-        m_pInstance = new GameInterface(iWidth, iHeight);
+        m_pInstance = new GameInterface();
     }
     m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
@@ -289,55 +295,54 @@ void GameInterface::updateGameTime(float fSecondsSinceLastUpdate)
 The time is formatted as
 
         minutes:seconds
-
-For now, the game time is going up from 0. Later this should count down.
 */
 void GameInterface::renderGameTime()
 {
-    renderText(FuncUtils::timeToString(static_cast<int>(m_fGameTime)),
+    int secondsRemaining = static_cast<int>(m_fGameTime);
+    vec3 color = secondsRemaining <= TIME_WARNING2_START ?TIME_WARNING2_COLOR
+        : secondsRemaining <= TIME_WARNING1_START ? TIME_WARNING1_COLOR : TIME_COLOR;
+    renderText(FuncUtils::timeToString(secondsRemaining),
                m_vComponentCoordinates[COMPONENT_TIME].first,
                m_vComponentCoordinates[COMPONENT_TIME].second,
-               TIME_SCALE, TIME_COLOR);
+               TIME_SCALE, color);
 
 }
 
 /*
-    Includes powerup messages
+    Render messages for the focus hovercraft
 */
 void GameInterface::renderMessages()
 {
-    for (int player = 0; player < m_iDisplayCount; player++)
+    if (m_fMessageTimes[m_eHovercraftFocus] > 0)
     {
-        if (m_fMessageTimes[player] > 0)
+        renderText(m_sMessages[m_eHovercraftFocus],
+            m_vComponentCoordinates[COMPONENT_MESSAGE].first,
+            m_vComponentCoordinates[COMPONENT_MESSAGE].second,
+            MESSAGE_SCALE, MESSAGE_COLOR);
+    }
+    if (m_fScoreChangeTimes[m_eHovercraftFocus] > 0)
+    {
+        int scoreChange = GAME_STATS->get(m_eHovercraftFocus,
+                                          GameStats::eHovercraftStat::SCORE_CHANGE);
+        bool scoreIncreased = scoreChange >= 0;
+        if (scoreChange != 0)
         {
-            renderText(m_sMessages[player],
-                m_vComponentCoordinates[COMPONENT_MESSAGE].first,
-                m_vComponentCoordinates[COMPONENT_MESSAGE].second,
-                MESSAGE_SCALE, MESSAGE_COLOR);
-        }
-        if (m_fScoreChangeTimes[player] > 0)
-        {
-            int scoreChange = GAME_STATS->get(static_cast<eHovercraft>(player),
-                                              GameStats::eHovercraftStat::SCORE_CHANGE);
-            bool scoreIncreased = scoreChange >= 0;
-            if (scoreChange != 0)
-            {
-                renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
-                            m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
-                            m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
-                            SCORE_CHANGE_SCALE,
-                            scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
-            }
-        }
-        if (m_fPowerupMessageTimes[player] > 0)
-        {
-            renderText(m_sPowerupMessages[player],
-                m_vComponentCoordinates[COMPONENT_POWERUP].first,
-                m_vComponentCoordinates[COMPONENT_POWERUP].second,
-                MESSAGE_SCALE, MESSAGE_COLOR);
+            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
+                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
+                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
+                        SCORE_CHANGE_SCALE,
+                        scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
         }
     }
+    if (m_fPowerupMessageTimes[m_eHovercraftFocus] > 0)
+    {
+        renderText(m_sPowerupMessages[m_eHovercraftFocus],
+            m_vComponentCoordinates[COMPONENT_POWERUP].first,
+            m_vComponentCoordinates[COMPONENT_POWERUP].second,
+            MESSAGE_SCALE, MESSAGE_COLOR);
+    }
 
+    // @TODO remove this?
     if (!debugMessage.empty())
     {
         renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
@@ -347,26 +352,6 @@ void GameInterface::renderMessages()
 void GameInterface::displayDebug(std::string message)
 {
     debugMessage = message;
-}
-
-/*
-Update the scores for all display count players
-*/
-void GameInterface::updateScores()
-{
-    for (int player = 0; player < m_iDisplayCount; player++)
-    {
-        updateScore(static_cast<eHovercraft>(player),
-                    GAME_STATS->get(static_cast<eHovercraft>(player),
-                    GameStats::SCORE_CURRENT));
-    }
-}
-
-// @EvanQuan : Not Implemented, "hovecraft?" misspelled?
-void GameInterface::updateScore(eHovercraft hovecraft, int score)
-{
-    
-    // cout << "Player " << (player + 1) << " score: " << score << endl;
 }
 
 void GameInterface::renderScores()
@@ -390,8 +375,7 @@ void GameInterface::renderCooldowns()
     // TODO put this in the proper place, font, scale etc.
     // This formatting is all temporary
     // 0 - 100
-    // Ad hoc for single player
-    HovercraftEntity* hovercraft = m_pEntityMngr->getHovercraft(HOVERCRAFT_PLAYER_1);
+    HovercraftEntity* hovercraft = m_pEntityMngr->getHovercraft(m_eHovercraftFocus);
     float* cooldowns = hovercraft->getCooldowns();
     float trailPercent = hovercraft->getTrailGaugePercent();
     std::string trailPercentString = std::to_string((int) (trailPercent * 100));
@@ -445,6 +429,7 @@ void GameInterface::renderCooldown(std::string label,
 
 // Right now only dones for dashes
 // Renders dash with it's charges and recharge cooldowns
+// @TODO cooldowns unused
 void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft)
 {
     bool canDash = hovercraft->canDash();
@@ -472,15 +457,15 @@ void GameInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 
 }
 
 /*
-Set the number of UIs to display.
+Set the number of UIs to display. This determines how many hovercrafts the
+interface should update for.
+
 Values:
     0 - No UIs are displayed. This should be done in the main menu (not in game).
     1 - 1 player. This will display across the whole window.
     2 - 2 player. Each UI will display across 1/4 of the window.
     3 - 3 player. Each UI will display across 1/4 of the window.
     4 - 4 player. Each UI will display across 1/4 of the window.
-
-@TODO set count for main menu or pause menu
 */
 void GameInterface::setDisplayCount(int count)
 {
@@ -493,52 +478,15 @@ void GameInterface::setDisplayCount(int count)
         count = DISPLAY_COUNT_MAX;
     }
     m_iDisplayCount = count;
-
-    initializeGameInterface();
 }
 
 /*
-Initialize all aspects of the UI according to the current display count. This
-should be done at the start of every game, or if the game resets.
+    Display the specified hovercraft's UI information.
+
+    @param hovercraft   to display
 */
-void GameInterface::initializeGameInterface()
+void GameInterface::setFocus(eHovercraft hovercraft)
 {
-    initializeScores();
-    initializeCooldowns();
+    m_eHovercraftFocus = hovercraft;
 }
 
-/*
-Initialize the scores of all players to 0
-*/
-void GameInterface::initializeScores()
-{
-    for (int i = DISPLAY_COUNT_MIN; i < DISPLAY_COUNT_MAX; i++)
-    {
-    }
-}
-
-/*
-Initialize the cool down counts for all abilities
-*/
-void GameInterface::initializeCooldowns()
-{
-    for (int i = DISPLAY_COUNT_MIN; i < DISPLAY_COUNT_MAX; i++)
-    {
-        // TODO
-    }
-}
-
-/*
-Set a specified player's score to the specified value.
-*/
-void GameInterface::setScore(int joystickID, int score)
-{
-}
-
-/*
-Initialize all UI components according to the current value of m_iDisplayCount
-*/
-void initializeDisplayCount()
-{
-    // TODO
-}

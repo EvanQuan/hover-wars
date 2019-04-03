@@ -32,5 +32,29 @@ private:
     vector<AIComponent*> m_vAIComponents;
 
     void initializeAIComponent(HovercraftEntity* bot, AIComponent* ai);
+
+    void getNearestPlayer(const eHovercraft &bot,
+                          const vec3 &botPosition,
+                          eHovercraft &nearestPlayer,
+                          float &distanceToPlayer);
+    void getNearestBot(const eHovercraft &bot,
+                       const vec3 &botPosition,
+                       eHovercraft &nearestBot,
+                       float &distanceToBot);
+    void getNearestHovercraft(const vector<HovercraftEntity*>* hovercraftList,
+                              const eHovercraft &bot, const vec3 &botPosition,
+                              eHovercraft &nearestHovercraft,
+                              float &distanceToHovercraft);
+
+    eHovercraft getTargetID(eHovercraft nearestPlayer,
+                            float distanceToPlayer,
+                            eHovercraft nearestBot,
+                            float distanceToBot);
+
+    HovercraftEntity* getTarget(const eHovercraft &bot, const vec3 &botPosition);
+
+    void executeAction(HovercraftEntity* bot, Action &a);
+    bool shouldMove(HovercraftEntity* bot, Action &a);
 };
+
 

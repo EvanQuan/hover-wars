@@ -82,7 +82,7 @@ public:
     // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
     // @return an array of all ability cooldowns.
-    float* getCooldowns() { return m_fCooldowns; };
+    float* getCooldowns() { return m_fCooldowns; }
 
     // Set lose control until seconds runs out or manually reactivated with
     // setGainControl(), whichever happens first
@@ -106,11 +106,11 @@ public:
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
-    float getSpeed()                            { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
-    vec3 getLinearVelocity()                    { return m_pPhysicsComponent->getLinearVelocity(); }
-    PxTransform getGlobalTransform()            { return m_pPhysicsComponent->getGlobalPose(); }
-    quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
-    void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
+    float getSpeed() const                      { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
+    vec3 getLinearVelocity() const              { return m_pPhysicsComponent->getLinearVelocity(); }
+    PxTransform getGlobalTransform() const      { return m_pPhysicsComponent->getGlobalPose(); }
+    quat getRotation() const                    { return m_pPhysicsComponent->getRotation(); }
+    void getDirectionVector(vec3* vDirVector) const { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
     /*
         Reduces all cooldowns by a fixed factor, never dropping below the
@@ -177,6 +177,7 @@ private:
     Rocket* m_pRocket;
     Spikes* m_pSpikes;
     PhysicsComponent* m_pPhysicsComponent;
+    GameStats* m_pGameStats;
 
     /*
     These should lag behind
@@ -205,6 +206,7 @@ private:
     void deactivateTrail();
     void updateTrail(float fTimeInSeconds);
     void createTrailInstance();
+    float m_fTrailRechargeMultipler;
 
     void dash(eAbility direction);
     void updateDash(float fTimeInSeconds);
@@ -277,7 +279,6 @@ private:
     bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
-    GameStats* m_pGameStats;
 
     // Bool Spikes Information
     bool m_bSpikesActivated;

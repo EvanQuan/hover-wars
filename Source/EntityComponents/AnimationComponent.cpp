@@ -252,8 +252,8 @@ mat4 AnimationComponent::generateTransformationMatrix(const sKeyFrame* pKeyFrame
 void AnimationComponent::pickRandomSprite(vec2* vReturnUV)
 {
     // Local Variables
-    int iRandX = rand() % m_iNumSpritesX;   // Compute a Random index for the sprite sheet.
-    int iRandY = rand() % m_iNumSpritesY;   // Compute a Random index for the sprite sheet.
+    int iRandX = FuncUtils::random(m_iNumSpritesX);   // Compute a Random index for the sprite sheet.
+    int iRandY = FuncUtils::random(m_iNumSpritesY);   // Compute a Random index for the sprite sheet.
 
     // Convert those indices to their respective uv coordinates within the sprite sheet.
     vReturnUV->x = iRandX * m_vSpriteHxW.x;

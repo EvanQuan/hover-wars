@@ -16,7 +16,7 @@ PostgameInterface* PostgameInterface::m_pInstance = nullptr;
 
                         Main Menu
 */
-PostgameInterface::PostgameInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
+PostgameInterface::PostgameInterface() : MenuInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -43,8 +43,9 @@ PostgameInterface* PostgameInterface::getInstance(int iWidth, int iHeight)
 {
     if (m_pInstance == nullptr)
     {
-        m_pInstance = new PostgameInterface(iWidth, iHeight);
+        m_pInstance = new PostgameInterface();
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 

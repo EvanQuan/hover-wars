@@ -5,7 +5,7 @@
 // Singleton instance
 RulesInterface* RulesInterface::m_pInstance = nullptr;
 
-RulesInterface::RulesInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
+RulesInterface::RulesInterface() : MenuInterface(
     // Scaling
     vector<pair<float, float>>
     {
@@ -35,8 +35,9 @@ RulesInterface* RulesInterface::getInstance(int iWidth, int iHeight)
 {
     if (m_pInstance == nullptr)
     {
-        m_pInstance = new RulesInterface(iWidth, iHeight);
+        m_pInstance = new RulesInterface();
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 

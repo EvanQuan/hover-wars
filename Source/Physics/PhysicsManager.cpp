@@ -239,9 +239,12 @@ static PxFilterFlags filterShader(
 //    after constructing the PhysicsManager Instance.
 void PhysicsManager::initPhysics(bool interactive)
 {
+    cout << "initPhysics" << endl;
     if (gScene != NULL) {
+        cout << "\tgScene !=NULL, not initing..." << endl;
         return;
     }
+    cout << "\tstart..." << endl;
     
     m_bInteractive = interactive;
 
@@ -277,6 +280,7 @@ void PhysicsManager::initPhysics(bool interactive)
     gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
     gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
+    cout << "gWorldmaterial initialized" << endl;
     // bool extensionsInitialized = PxInitExtensions(*gPhysics, gPvd);
     // if (!extensionsInitialized) {
         // std::cout << ("PxInitExtensions failed!") << std::endl;

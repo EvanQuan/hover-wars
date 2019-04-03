@@ -175,7 +175,8 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_MENU_BACK:
        break;
     case COMMAND_MENU_PAUSE_TOGGLE:
-        m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
+        m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
+                                                                        m_pGameManager->getHeight()));
         nextMenu(PauseMenu::getInstance());
        break;
     case COMMAND_MENU_START:
@@ -206,16 +207,12 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         debugToggleWireframe();
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_2;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_3;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         m_pEntityMngr->toggleDebugCamera();

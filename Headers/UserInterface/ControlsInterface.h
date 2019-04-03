@@ -9,10 +9,9 @@ public:
 
     static ControlsInterface* getInstance(int iWidth, int iHeight);
 
-    // Default Constructor
-    ControlsInterface(int iWidth, int iHeight);
-    ControlsInterface(const ControlsInterface* pCopy);                              // Default Copy Constructor
-    ControlsInterface& operator=(const ControlsInterface* pCopy);                   // Assignment Operator.
+    ControlsInterface();                                            // Default Constructor
+    ControlsInterface(const ControlsInterface* pCopy);              // Default Copy Constructor
+    ControlsInterface& operator=(const ControlsInterface* pCopy);   // Assignment Operator.
 
     void update(float fSecondsSinceLastUpdate);
 

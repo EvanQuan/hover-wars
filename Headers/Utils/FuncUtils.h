@@ -165,6 +165,12 @@ namespace FuncUtils
     int random(int start, int end);
 
     /*
+        Get a uniformly distributed int from 0 to range, exclusively
+        @param range    of ints to choose from
+    */
+    int random(int range);
+
+    /*
         Convert a float to string, given a specified number of decimal places.
 
         @param value of float to convert
@@ -228,4 +234,11 @@ namespace FuncUtils
     std::string timeToString(int seconds);
 
     double log(int value, int base);
+
+    /*
+        Sleep this thread for the specified amount of time, in seconds
+
+        @param timeInSeconds    to sleep
+    */
+    void sleep(float timeInSeconds);
 }

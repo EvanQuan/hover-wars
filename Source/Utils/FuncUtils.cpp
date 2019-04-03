@@ -1,15 +1,17 @@
 #include "Utils/FuncUtils.h"
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
+#include <chrono>
+#include <thread>
 
 using namespace FuncUtils;
 
 /*
-Get the magnitude of a vector represented by its x and y coordinates
+    Get the magnitude of a vector represented by its x and y coordinates
 
-@param float    x coordinate
-@param float    y coordinate
-@return the magnitude of the <x, y> vector
+    @param float    x coordinate
+    @param float    y coordinate
+    @return the magnitude of the <x, y> vector
 */
 float FuncUtils::getMagnitude(float x, float y)
 {
@@ -17,16 +19,16 @@ float FuncUtils::getMagnitude(float x, float y)
 }
 
 /*
-Check if two floats are equal. This is more accurate, but slower than using
-the == operator as such:
+    Check if two floats are equal. This is more accurate, but slower than using
+    the == operator as such:
 
-    bool result = x == y;
+        bool result = x == y;
 
-Use where accuracy is more important than speed.
+    Use where accuracy is more important than speed.
 
-@param float    x
-@param float    y
-@return true if x and y are equal
+    @param float    x
+    @param float    y
+    @return true if x and y are equal
 */
 bool FuncUtils::equals(float x, float y)
 {
@@ -35,16 +37,28 @@ bool FuncUtils::equals(float x, float y)
     return (-difference < epsilon) && (epsilon > difference);
 }
 
+// Seed only once
+std::random_device random_seed; // get a random number for the seed
+std::mt19937 random_generator(random_seed()); // seed the generator
+
 /*
-Get a uniformly distributed int from the start to end range, inclusively
-@param start    of range, inclusively
-@param end      of range, inclusively
+    Get a uniformly distributed int from the start to end range, inclusively
+    @param start    of range, inclusively
+    @param end      of range, inclusively
 */
 int FuncUtils::random(int start, int end)
 {
-    std::random_device random_seed; // get a random number for the seed
-    std::mt19937 random_generator(random_seed()); // seed the generator
     std::uniform_int_distribution<> distribution(start, end);
+    return distribution(random_generator);
+}
+
+/*
+    Get a uniformly distributed int from 0 to range, exclusively
+    @param range    of ints to choose from
+*/
+int FuncUtils::random(int range)
+{
+    std::uniform_int_distribution<> distribution(0, range - 1);
     return distribution(random_generator);
 }
 
@@ -153,4 +167,14 @@ std::string FuncUtils::timeToString(int timeInSeconds)
 double FuncUtils::log(int value, int base)
 {
     return std::log(value) / std::log(base);
+}
+
+/*
+    Sleep this thread for the specified amount of time, in seconds
+
+    @param timeInSeconds    to sleep
+*/
+void FuncUtils::sleep(float timeInSeconds)
+{
+    std::this_thread::sleep_for(std::chrono::seconds(static_cast<long>(timeInSeconds)));
 }

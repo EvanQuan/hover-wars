@@ -812,31 +812,31 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 /*********************************************************************************\
 * Command Management                                                             *
 \*********************************************************************************/
-int EntityManager::getPlayerSize()
+int EntityManager::getPlayerSize() const
 {
     return m_pPlayerEntityList.size();
 }
 
-bool EntityManager::playerExists(eHovercraft player)
+bool EntityManager::playerExists(eHovercraft player) const
 {
     return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
-HovercraftEntity* EntityManager::getHovercraft(eHovercraft hovercraft)
+HovercraftEntity* EntityManager::getHovercraft(eHovercraft hovercraft) const
 {
     return hovercraft <= HOVERCRAFT_PLAYER_4 ? getPlayer(hovercraft) : getBot(hovercraft);
 }
-HovercraftEntity* EntityManager::getPlayer(eHovercraft player)
+HovercraftEntity* EntityManager::getPlayer(eHovercraft player) const
 {
     return m_pPlayerEntityList.at(player);
 }
 
-bool EntityManager::botExists(eHovercraft bot)
+bool EntityManager::botExists(eHovercraft bot) const
 {
     return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
 }
 
-HovercraftEntity* EntityManager::getBot(eHovercraft bot)
+HovercraftEntity* EntityManager::getBot(eHovercraft bot) const
 {
     return m_pBotEntityList.at(bot - HOVERCRAFT_BOT_1);
 }

@@ -227,7 +227,6 @@ private:
     vector<EndGameStat> endGameStats;
     void initializeEndGameStats();
     void sortByHighestScoreFirst();
-    bool winnerSortFunction(EndGameStat left, EndGameStat right);
     vector<eHovercraft> getHovercraftsThatHaveHighestNonZero(eHovercraftStat stat);
     vector<eHovercraft> getHovercraftsThatHaveLowest(eHovercraftStat stat);
     vector<eHovercraft> getHovercraftsThatHaveZero(eHovercraftStat stat);
@@ -238,7 +237,8 @@ private:
     void awardLowestStat(eHovercraftStat stat, string name, string description, int points);
     void awardZeroStat(eHovercraftStat stat, string name, string description, int points);
 
-    void awardToHovercrafts(eHovercraftStat stat, string name, string description, int points, vector<eHovercraft> winners);
+    void awardToHovercrafts(eHovercraftStat stat, string name,
+        string description, int points, vector<eHovercraft> winners);
 
 
     /*
@@ -255,6 +255,7 @@ private:
 
     // Tracks first blood
     bool firstBloodHappened;
+    bool queueFirstBlood;
 
     // Actions
     // void hitBot(eHovercraft attacker, eBot hit);

@@ -36,15 +36,15 @@ void PauseMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_MENU_PAUSE_TOGGLE:
-        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
+        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->getWidth(),
+                                                                       m_pGameManager->getHeight()));
         nextMenu(GameMenu::getInstance());
-        SOUND_MANAGER->togglePaused();
+        SOUND_MANAGER->setResumeGame();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
         m_pGameManager->endGame();
         // m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->m_iHeight));
         // nextMenu(MainMenu::getInstance());
-        SOUND_MANAGER->togglePaused();
         break;
     }
 }
@@ -59,5 +59,5 @@ void PauseMenu::enter()
 { 
     PromptMenu::enter();
     GAME_MANAGER->setPaused(true);
-    SOUND_MANAGER->togglePaused();
+    SOUND_MANAGER->setPauseMenu();
 }
