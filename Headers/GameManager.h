@@ -11,6 +11,7 @@ class EntityManager;
 class CommandHandler;
 class ShaderManager;
 class UserInterface;
+class GameInterface;
 class GameStats;
 class Texture;
 
@@ -129,6 +130,7 @@ private:
     GameStats*          m_pGameStats;
     PhysicsManager*     m_pPhysicsManager;
     UserInterface*      m_pCurrentInterface;
+    GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update

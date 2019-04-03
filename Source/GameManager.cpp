@@ -261,9 +261,9 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    GameInterface *gameUI = GameInterface::getInstance(m_iWidth, m_iHeight);
-    gameUI->reinitialize(gameTime);
-    gameUI->setDisplayCount(playerCount);
+    m_pGameInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
+    m_pGameInterface->reinitialize(gameTime);
+    m_pGameInterface->setDisplayCount(playerCount);
     TextureManager* pTxtMngr = TEXTURE_MANAGER;
     m_pEntityManager->initializeEnvironment(sFileName);
 
@@ -427,15 +427,19 @@ void GameManager::drawScene()
             m_pEntityManager->setupRender();
 
             // Render each screen
-            for( unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
+            for( unsigned int screen = 0; screen < m_pFrameBufferTextures.size(); ++screen)
             {
                 // Bind Frame Buffer
-                glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[i].iFrameBuffer);
+                glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[screen].iFrameBuffer);
                 assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
                 glViewport(0, 0, m_iSplitWidth, m_iSplitHeight);
 
                 // Render Frame
-                m_pEntityManager->renderEnvironment(i);
+                m_pEntityManager->renderEnvironment(screen);
+                // Render the UI
+                m_pGameInterface->setFocus(static_cast<eHovercraft>(screen));
+                m_pGameInterface->render();
+
 
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -446,7 +450,11 @@ void GameManager::drawScene()
             renderSplitScreen();
         }
         glDisable(GL_DEPTH_TEST);
-        m_pCurrentInterface->render();
+        if (m_bPaused)
+        {
+            // Pause check is to avoid double rendering the Game interface.
+            m_pCurrentInterface->render();
+        }
         
 
         // scene is rendered to the back buffer, so swap to front for display
