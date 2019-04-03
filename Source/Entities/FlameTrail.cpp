@@ -80,7 +80,7 @@ void FlameTrail::update(float fTimeInSeconds)
         // Handle Certain Thresholds of the Duration
         if (pIter->second <= 0.0f)      // Delete the Physics Actor
         {
-            m_pPhysicsComponent->removeInstance(pIter->first);
+            m_pPhysicsComponent->flagForRemoval(pIter->first);
             pIter = m_pReferenceMap.erase(pIter);
         }
         else
@@ -105,6 +105,5 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
     m_pReferenceMap.insert(make_pair(sHashKey, m_sSpriteSheetInfo.fDuration));
 
     // Grab Pointer to HashKey to give to Physics Component as Name.
-    unordered_map<string, float>::iterator pIter = m_pReferenceMap.find(sHashKey);
-    m_pPhysicsComponent->initializeFlame(pIter->first.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
+    m_pPhysicsComponent->initializeFlame(sHashKey.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
 }
