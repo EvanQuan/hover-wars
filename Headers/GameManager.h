@@ -74,6 +74,8 @@ private:
         Texture* pColorBuffer;
     };
     vector< sRenderBlock > m_pFrameBufferTextures;
+    void generateSplitScreen(unsigned int iPlayer);
+    void cleanupFrameBuffers();
     void generateFrameBuffer(unsigned int iPlayer);
 
     // Screen Height and Width
