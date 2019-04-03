@@ -110,6 +110,10 @@ ShaderManager::ShaderManager()
     // SkyBox Shader
     m_pShader[eShaderType::SKYBOX_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/skybox.vert");
     m_pShader[eShaderType::SKYBOX_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/skybox.frag");
+
+    // Split Screen Shader
+    m_pShader[eShaderType::SPLIT_SCREEN_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/splitScreen.vert");
+    m_pShader[eShaderType::SPLIT_SCREEN_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/splitScreen.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

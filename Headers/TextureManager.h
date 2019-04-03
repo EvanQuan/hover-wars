@@ -30,6 +30,7 @@ public:
     Texture* loadCubeMap(const vector<string>* sFileNames);
     Texture* genTexture(const vec4* vColor);
     Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);
+    Texture* genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight);
     void unloadTexture(Texture** pTexture);
     void unloadAllTextures();
 

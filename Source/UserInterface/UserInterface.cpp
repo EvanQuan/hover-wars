@@ -9,6 +9,7 @@
 #define BITMAP_HEIGHT           512
 #define BITMAP_WIDTH            512
 #define MAX_ASCII_CHARS         255
+#define GLYPH_BUFFER            1
 
 /*
 All user interface components have a location relative to the window dimensions
@@ -155,17 +156,17 @@ void UserInterface::initFreeType()
             else if (ftFace->glyph->bitmap.buffer != nullptr)
             {
                 // Concat the resulting bitmap to a specified width.
-                if (fWidth + ftFace->glyph->bitmap.width > BITMAP_WIDTH)
+                if (fWidth + ftFace->glyph->bitmap.width + GLYPH_BUFFER > BITMAP_WIDTH)
                 {
                     fWidth = 0;             // Overflow? reset Width to 0 for next line
                     vOffsets.x = 0.0f;      // Set Offset x back to 0
-                    vOffsets.y += static_cast<float>(fHeight);  // Set Offset y to next row
+                    vOffsets.y += static_cast<float>(fHeight) + GLYPH_BUFFER;  // Set Offset y to next row
                     cPtr = cData + (BITMAP_WIDTH * static_cast<unsigned int>(vOffsets.y)); // Reset pointer to next line in buffer.
                     fHeight = 0;            // Reset Height for new pass.
                 }
 
                 // Probe to see how far the bitmap will write into the buffer.
-                char* cTest = (cPtr + ftFace->glyph->bitmap.width + (BITMAP_WIDTH * ftFace->glyph->bitmap.rows));
+                char* cTest = (cPtr + ftFace->glyph->bitmap.width + GLYPH_BUFFER + (BITMAP_WIDTH * ftFace->glyph->bitmap.rows));
 
                 // If it won't go out of bounds, save to buffer
                 if (cTest - cData < (BITMAP_HEIGHT * BITMAP_WIDTH))
@@ -177,15 +178,15 @@ void UserInterface::initFreeType()
                 }
 
                 // Fast Forward to next Glyph position in buffer.
-                cPtr += ftFace->glyph->bitmap.width;
+                cPtr += ftFace->glyph->bitmap.width + GLYPH_BUFFER;
             }
 
             // Store Character in CharacterMap
             addNewCharacter(c, ftFace->glyph, &vOffsets);
 
             // Update tracking information for bitmaps.
-            vOffsets.x += ftFace->glyph->bitmap.width;
-            fWidth += ftFace->glyph->bitmap.width;
+            vOffsets.x += ftFace->glyph->bitmap.width + GLYPH_BUFFER;
+            fWidth += ftFace->glyph->bitmap.width + GLYPH_BUFFER;
             fHeight = (ftFace->glyph->bitmap.rows > static_cast<unsigned int>(fHeight) ? ftFace->glyph->bitmap.rows : fHeight);
         }
 
@@ -451,7 +452,7 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
-    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));;
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
     // Is an image, not text. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);

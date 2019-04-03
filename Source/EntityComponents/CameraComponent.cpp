@@ -22,8 +22,8 @@
 
 // Default Camera Values
 #define FOV_Y               60.f        // Degrees
-#define Z_CLOSE             0.01f
-#define Z_FAR               10000.f
+#define Z_CLOSE             1.0f
+#define Z_FAR               1000.f
 
 /*************************************************************************\
  * Constructors                                                             *
