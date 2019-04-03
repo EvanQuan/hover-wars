@@ -281,7 +281,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // Spawn Players
     for (unsigned int i = 0; i < playerCount; i++) {
         SCENE_LOADER->createPlayer(i);
-        generateFrameBuffer(i);
+        generateSplitScreen(i);
     }
 
     // Spawn Bots
@@ -299,7 +299,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
 // Name: generateFrameBuffer
 // 
-void GameManager::generateFrameBuffer(unsigned int iPlayer)
+void GameManager::generateSplitScreen(unsigned int iPlayer)
 {
     // Local Variables
     vec4 vCorners[4] = {
@@ -349,6 +349,28 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     glBufferSubData(GL_ARRAY_BUFFER, iPlayer * FOUR_VEC4, FOUR_VEC4, vCorners);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // Generate New Frame Buffer for Player
+    generateFrameBuffer(iPlayer);
+}
+
+void GameManager::cleanupFrameBuffers()
+{
+    // Local Variables
+    TextureManager* pTxtMngr = TEXTURE_MANAGER;
+
+    // Clean up Frame Buffers
+    for each (sRenderBlock pRenderBlock in m_pFrameBufferTextures)
+    {
+        // Delete Render and Frame Buffers
+        glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
+        glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
+        pTxtMngr->unloadTexture(&pRenderBlock.pColorBuffer);
+    }
+    m_pFrameBufferTextures.clear();
+}
+
+void GameManager::generateFrameBuffer(unsigned int iPlayer)
+{
     // Set up Frame Buffer
     sRenderBlock sNewBlock;
     glGenFramebuffers(1, &sNewBlock.iFrameBuffer);
@@ -391,17 +413,8 @@ void GameManager::endGame()
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
-    TextureManager* pTxtMngr = TEXTURE_MANAGER;
 
-    // Clean up Frame Buffers
-    for each (sRenderBlock pRenderBlock in m_pFrameBufferTextures)
-    {
-        // Delete Render and Frame Buffers
-        glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
-        glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
-        pTxtMngr->unloadTexture(&pRenderBlock.pColorBuffer);
-    }
-    m_pFrameBufferTextures.clear();
+    cleanupFrameBuffers();
 
     resizeWindow(m_iWidth, m_iHeight);
 
@@ -589,6 +602,11 @@ void GameManager::resizeWindow( int iWidth, int iHeight )
         m_iSplitHeight >>= 1;
     if (iSize > 2)
         m_iSplitWidth >>= 1;
+
+    // Resize the Frame Buffers
+    cleanupFrameBuffers();
+    for (unsigned int i = 0; i < iSize; ++i)
+        generateFrameBuffer(i);
 
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
     m_pCurrentInterface->updateWidthAndHeight(iWidth, iHeight);
