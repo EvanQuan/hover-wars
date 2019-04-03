@@ -178,11 +178,11 @@ Texture* TextureManager::genDepthBuffer(unsigned int iWidth, unsigned int iHeigh
 }
 
 // Generates a Frame Buffer Object as a Texture
-Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight)
+Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight, unsigned int iPlayer)
 {
     // Attempt to grab it from the texture cache if it already exists
     Texture* pReturnTexture = nullptr;
-    string sHashValue = "FrameBuffer" + to_string(iWidth) + to_string(iHeight);
+    string sHashValue = "FrameBuffer" + to_string(iWidth) + to_string(iHeight) + to_string(iPlayer);
 
     if (m_pTextureCache.end() != m_pTextureCache.find(sHashValue))
     {
