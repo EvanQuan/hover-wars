@@ -2,6 +2,7 @@
 #include "Menus/MainMenu.h"
 #include "UserInterface/MainInterface.h"
 #include "GameStats.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 PostgameMenu* PostgameMenu::m_pInstance = nullptr;
@@ -10,11 +11,12 @@ PostgameMenu::PostgameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         {
-            { "Return to Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
+            { "Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
     }
 )
 {
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* PostgameMenu::getInstance()
@@ -38,7 +40,8 @@ void PostgameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PostgameMenu::back()
 {
-    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
+                                                                   m_pGameManager->getHeight()));
     nextMenu(MainMenu::getInstance());
 }
 

@@ -7,11 +7,10 @@ class MenuInterface abstract : public UserInterface
 public:
 
     // Default Constructor
-    MenuInterface(int iWidth, int iHeight,
-        vector<pair<float, float>> componentScaling,
-        vector<pair<float, float>> componentTranslating);
+    MenuInterface(vector<pair<float, float>> componentScaling,
+                  vector<pair<float, float>> componentTranslating);
     MenuInterface(const MenuInterface* pCopy);                              // Default Copy Constructor
-    MenuInterface& operator=(const MenuInterface* pCopy) {return (*this); } // Assignment Operator.
+    MenuInterface& operator=(const MenuInterface* pCopy);                   // Assignment Operator.
 
     virtual void update(float fSecondsSinceLastUpdate) = 0;
 

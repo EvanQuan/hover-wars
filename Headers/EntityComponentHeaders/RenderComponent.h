@@ -41,9 +41,6 @@ private:
     RenderComponent& operator=(const RenderComponent& pRHS);
 
     // Private Variables
-    GLuint m_iVertexArray, m_iVertexBuffer, m_iNormalBuffer, m_iTextureBuffer;
-    GLuint m_iInstancedBuffer, m_iIndicesBuffer;
-    GLuint m_iNumInstances;
     GLenum m_eMode;
     GLsizei m_iCount;
     Mesh const * m_pMesh;

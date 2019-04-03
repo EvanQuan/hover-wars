@@ -17,8 +17,8 @@ public:
     virtual ~DirectionalLight();
 
     // Implementation of inherited functionality
-    void update(float fTimeInSeconds);
-    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
+    void update(float fTimeInSeconds) {};                                               // Not Implemented
+    void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const {};   // Not Implemented
 
     // Function to Initialize the Light.
     void initialize( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,

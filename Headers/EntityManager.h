@@ -25,6 +25,7 @@ class InteractableEntity;
 class PointLight;
 class DirectionalLight;
 class SpotLight;
+class Texture;
 
 // Environment Manager
 // Manages all objects in an environment
@@ -50,6 +51,7 @@ public:
 
     // Entity Functions
     Camera* generateCameraEntity();
+    void loadSkyBox(const vector<string>* sData);
     void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
     void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
     void generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
@@ -90,12 +92,12 @@ public:
     void updateEnvironment(std::chrono::duration<double> fSecondsSinceLastFrame);
     
     // The command handler can get all the players to directly communicate to.
-    HovercraftEntity* getHovercraft(eHovercraft hovercraft);
-    HovercraftEntity* getPlayer(eHovercraft player);
-    bool playerExists(eHovercraft player);
-    HovercraftEntity* getBot(eHovercraft bot);
-    bool botExists(eHovercraft bot);
-    int getPlayerSize();
+    HovercraftEntity* getHovercraft(eHovercraft hovercraft) const;
+    HovercraftEntity* getPlayer(eHovercraft player) const;
+    bool playerExists(eHovercraft player) const;
+    HovercraftEntity* getBot(eHovercraft bot) const;
+    bool botExists(eHovercraft bot) const;
+    int getPlayerSize() const;
 
     // Returns constant pointers to the Player and Bot lists.
     const vector<HovercraftEntity*>* getPlayerList() const
@@ -159,6 +161,7 @@ private:
     void doRender();
     void resetFBO();
     void renderAxis();
+    void renderSkyBox();
     void setCameraPMVMatrices();
 
     // Camera
@@ -172,5 +175,9 @@ private:
 
     // Scene Management toggling
     bool m_bPause, m_bDrawBoundingBoxes, m_bDrawSpatialMap, m_bShadowDraw;
+
+    // Skybox information
+    Texture* m_pCubeMapTexture;
+    GLuint m_iSkyBoxVertArray, m_iSkyBoxVertBuffer;
 };
 

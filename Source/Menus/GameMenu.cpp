@@ -106,7 +106,7 @@ GameMenu::GameMenu() : Menu(
 }
 
 /*
-Get Singleton instance
+    Get Singleton instance
 */
 Menu* GameMenu::getInstance()
 {
@@ -117,23 +117,23 @@ Menu* GameMenu::getInstance()
 }
 
 /*
-Destructor
+    Destructor
 */
 GameMenu::~GameMenu()
 {
 }
 
 /*
-Make a player execute a eFixedCommand.
-FixedCommands are binary in that either they are executed or they are not, with
-no extra parameters.
+    Make a player execute a eFixedCommand.
+    FixedCommands are binary in that either they are executed or they are not,
+    with no extra parameters.
 
-For example: if a player PLAYER_2 executes the ABILITY_ROCKET command,
-that is all the information the program needs to know for that hovercraft to
-execute that command.
+    For example: if a player PLAYER_2 executes the ABILITY_ROCKET command, that
+    is all the information the program needs to know for that hovercraft to
+    execute that command.
 
-@param player   to execute command on
-@param command  to execute
+    @param player   to execute command on
+    @param command  to execute
 */
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
                                          eFixedCommand command)
@@ -146,10 +146,10 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 }
 
 /*
-Make a player execute a fixed command.
+    Make a player execute a fixed command.
 
-@param player       to execute command on
-@param command      to execute
+    @param player       to execute command on
+    @param command      to execute
 */
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                       eFixedCommand command)
@@ -175,7 +175,8 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_MENU_BACK:
        break;
     case COMMAND_MENU_PAUSE_TOGGLE:
-        m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
+                                                                        m_pGameManager->getHeight()));
         nextMenu(PauseMenu::getInstance());
        break;
     case COMMAND_MENU_START:
@@ -206,16 +207,12 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
         debugToggleWireframe();
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER1:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER2:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_2;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER3:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_3;
         break;
     case COMMAND_DEBUG_SWITCH_KEYBOARD_TO_PLAYER4:
-        m_pGameManager->m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_4;
         break;
     case COMMAND_DEBUG_TOGGLE_DEBUG_CAMERA:
         m_pEntityMngr->toggleDebugCamera();
@@ -246,27 +243,27 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
 }
 
 /*
-Make a given player execute a eVariableCommand.
-VariableCommands require extra parameters to complete the command.
-Specifically, they require an axis or axes to make sense of the command.
+    Make a given player execute a eVariableCommand.
+    VariableCommands require extra parameters to complete the command.
+    Specifically, they require an axis or axes to make sense of the command.
 
-For example: if player PLAYER_1 executes the MOVE command, they also need to
-specify the x and y axis values to determine what direction and at what
-intensity to go at.
+    For example: if player PLAYER_1 executes the MOVE command, they also need
+    to specify the x and y axis values to determine what direction and at what
+    intensity to go at.
 
-Axes values are normalized and follow Cartesian coordinates:
-                        y = 1
-                          ^
-                          |
-            x = -1 <-- x, y = 0 --> x = 1
-                          |
-                          v
-                        y = -1
+    Axes values are normalized and follow Cartesian coordinates:
+                            y = 1
+                              ^
+                              |
+                x = -1 <-- x, y = 0 --> x = 1
+                              |
+                              v
+                            y = -1
 
-@param player   to execute command on
-@param command  to execute
-@param x        x-coordinate
-@param y        y-coordinate
+    @param player   to execute command on
+    @param command  to execute
+    @param x        x-coordinate
+    @param y        y-coordinate
 */
 void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
                                          eVariableCommand command,
@@ -282,12 +279,12 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 }
 
 /*
-Make a player execute a variable command.
+    Make a player execute a variable command.
 
-@param player       to execute command on
-@param command      to execute
-@param x            x-coordinate
-@param y            y-coordinate
+    @param player       to execute command on
+    @param command      to execute
+    @param x            x-coordinate
+    @param y            y-coordinate
 */
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                             eVariableCommand command,
@@ -319,7 +316,15 @@ void GameMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command
     executeIfHovercraftExists(hovercraft, command);
 }
 
-void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+/*
+    A specified movement eFixedCommand may be called multiple times per frame.
+    Since some of these movements commands are contradictory, we must
+    accumulate them all to form a single movement command similar to that of
+    joystick movement.
+
+    @param command  for movement from keyboard
+*/
+void GameMenu::handleAccumulatedKeyCommands(eFixedCommand command)
 {
     // Check for cummulative movement commands, which are only executed once
     // all movement keys are checked.
@@ -352,7 +357,13 @@ void GameMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComman
     }
 }
 
-void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+/*
+    Make a specified hovercraft execute accumulated key commands. This should
+    be the keyboard player's hovercraft.
+
+    @param hovercraft   to execute accumulated key commands
+*/
+void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft)
 {
     // This is where keys are handled, it's assumed that xMove and yMove will
     // be binary on/off. Let's use this assumption to our advantage and we can
@@ -365,21 +376,19 @@ void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedComma
 
     if (!bMovementNeutral)
     {
-        executeIfHovercraftExists(hovercraft, COMMAND_MOVE, xMove, yMove);
+        updateLeftStick(hovercraft, xMove, yMove);
     }
     if (!bTurnNeutral)
     {
-        executeIfHovercraftExists(hovercraft, COMMAND_TURN, xTurn, yTurn);
+        updateRightStick(hovercraft, xTurn, yTurn);
     }
 }
 
-// TODO remove wrapper, not needed
 void GameMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
 {
-    executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
+    return executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
 }
 
-// TODO remove wrapper, not needed
 void GameMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
 {
     executeIfHovercraftExists(hovercraft, COMMAND_TURN, x, y);

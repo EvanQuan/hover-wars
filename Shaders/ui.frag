@@ -27,5 +27,6 @@ void main()
     {
         // Make all the text color the same as textColor.
         color = vec4(textColor, texture(text, TexCoords).r);
+		//color = texture(text, TexCoords); // For Debugging
     }
 }

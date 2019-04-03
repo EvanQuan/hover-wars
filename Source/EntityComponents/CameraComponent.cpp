@@ -41,19 +41,6 @@ CameraComponent::CameraComponent(int iEntityID, int iComponentID, int iWidth, in
     m_pRotation = quat();
 }
 
-// Default Copy Constructor
-CameraComponent::CameraComponent(const CameraComponent* pCopy)
-    : EntityComponent(pCopy)
-{
-    // m_pRotation = quat();
-}
-
-// Default = operator overload; Private function
-CameraComponent& CameraComponent::operator=(const CameraComponent* pCopy)
-{
-    return *this;
-}
-
 /*************************************************************************\
  * Destructor                                                             *
 \*************************************************************************/

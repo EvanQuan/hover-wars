@@ -47,6 +47,14 @@ SoundManager::~SoundManager() {
     delete advancedSettings;
 }
 
+void SoundManager::stopAllEvents()
+{
+    for (auto it : mEvents)
+    {
+        errorCheck(it.second->stop(FMOD_STUDIO_STOP_IMMEDIATE));
+    }
+}
+
 SoundManager* SoundManager::getInstance() {
     if (nullptr == m_pInstance) {
         m_pInstance = new SoundManager();
@@ -61,13 +69,14 @@ SoundManager* SoundManager::getInstance() {
 /*
     Play a sound in the world. That sound can have any number of
     instances played simultaneously.
+    If the event does not have a valid path, no sound is played.
 
     @param sound    to play
 */
 void SoundManager::play(eSoundEvent sound)
 {
-    const char* eventPath = getPath(sound);
-    if (eventPath == "")
+    string eventPath = getPath(sound);
+    if (eventPath.empty())
     {
         return;
     }
@@ -77,10 +86,26 @@ void SoundManager::play(eSoundEvent sound)
 }
 
 /*
-    Determine Entity Types resulting in Collision and play a resulting sound for the collision.
-    Handle any logic between collisions to determine sound here.
+    Play a sound in the world, only if the specified boolean is true.
 
-    We want to ignore bot world collision sounds since world collision sounds are global.
+    @param sound        to play
+    @param shouldPlay   to determin if the event should be played
+*/
+void SoundManager::play(eSoundEvent sound, bool shouldPlay)
+{
+    if (shouldPlay)
+    {
+        play(sound);
+    }
+}
+
+/*
+    Determine Entity Types resulting in Collision and play a resulting sound
+    for the collision. Handle any logic between collisions to determine sound
+    here.
+
+    We want to ignore bot world collision sounds since world collision sounds
+    are global.
 
     @param eColliderType    The Entity Type of the Collider
     @param eCollidedType    The Entity Type of the Collided
@@ -93,26 +118,26 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType,
                                             bool colliderIsBot,
                                             bool collidedIsBot)
 {
-    // Context-specific sounds require specific information about the entities, specifically
-    // if they are players
+    // Context-specific sounds require specific information about the entities,
+    // specifically if they are players
     switch (eColliderType)
     {
     case eEntityType::ENTITY_HOVERCRAFT:               
-        switch (eCollidedType)                          // See what they collided with. Further collisions might be with pick ups or other entities.
+      // See what they collided with. Further collisions might be with pick ups
+      // or other entities.
+        switch (eCollidedType)
         {
         case eEntityType::ENTITY_HOVERCRAFT:
-            if (!(colliderIsBot && collidedIsBot))
-            {
-                play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR);      // Collided with another Hovercar, play hovercar collision sound.
-            }
+            // Collided with another Hovercar, play hovercar collision sound.
+            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_HOVERCAR,
+                 !(colliderIsBot && collidedIsBot));
             return true;
             break;
         case eEntityType::ENTITY_STATIC:
         case eEntityType::ENTITY_PLANE:
-            if (!colliderIsBot)
-            {
-                play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD);         // Collided with Static Entity or Plane, impacted world
-            }
+            // Collided with Static Entity or Plane, impacted world
+            play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD,
+                 !colliderIsBot);
             break;
         }
         break;
@@ -140,7 +165,8 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     // can be annoying if they get stuck on a wall
     bool colliderIsBot = GAME_STATS->isBot(colliderHovercraft);
     bool collidedIsBot = GAME_STATS->isBot(collidedHovercraft);
-    if (handleBaseCollisionSound(colliderType, collidedType, colliderIsBot, collidedIsBot))
+    if (handleBaseCollisionSound(colliderType, collidedType,
+                                 colliderIsBot, collidedIsBot))
     {
         // For some reason this check is not enough?
         if (((colliderType == eEntityType::ENTITY_HOVERCRAFT))
@@ -152,7 +178,8 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
 }
 
 /*
-    At this point, assumes both collider and collided are hovercrafts of some kind.
+    At this point, assumes both collider and collided are hovercrafts of some
+    kind.
 
     @NOTE: This will be unneeded when interactable entities become further
            developed. As all abilities will be interactable entitise, context
@@ -382,7 +409,7 @@ void SoundManager::loadBank(const string& sBankName, FMOD_STUDIO_LOAD_BANK_FLAGS
 }
 
 /*
-Load all events
+    Load all events
 */
 void SoundManager::loadAllEvents()
 {
@@ -445,7 +472,9 @@ void SoundManager::playEvent(const string& sEventName) {
     else {      // Event is in mEvents
         FMOD_STUDIO_PLAYBACK_STATE state;
         tFoundIt->second->getPlaybackState(&state);
-        if (state == FMOD_STUDIO_PLAYBACK_PLAYING) {        // Event currently playing
+        switch (state)
+        {
+        case FMOD_STUDIO_PLAYBACK_PLAYING: // Event currently playing
             // Copy from load event
             // Create new event instance with same event in bank file
             bool playable = false;
@@ -477,6 +506,7 @@ void SoundManager::playEvent(const string& sEventName) {
                 }
             }
             tFoundIt = mEvents.find(sNewEventName);
+            break;
         }
         // Event not playing, going play tFoundIt
 
@@ -500,8 +530,8 @@ void SoundManager::playEventDirect(const string& sEventName) {
     // cout << "hahaevent: " << sEventName << " played " << mEvents[sEventName] << endl;
 }
 
-void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
-    auto tFoundIt = mEvents.find(sEventName);
+void SoundManager::stopEvent(eSoundEvent soundEvent, bool bImmediate) {
+    auto tFoundIt = mEvents.find(getPath(soundEvent));
     if (tFoundIt == mEvents.end()) {
         return;
     }
@@ -510,8 +540,16 @@ void SoundManager::stopEvent(const string& sEventName, bool bImmediate) {
     errorCheck(tFoundIt->second->stop(mode));
 }
 
-bool SoundManager::isEventPlaying(const string& sEventName) const {
-    auto tFoundIt = mEvents.find(sEventName);
+void SoundManager::pauseEvent(const string & sEventName)
+{
+}
+
+void SoundManager::resumeEvent(const string & sEventName)
+{
+}
+
+bool SoundManager::isEventPlaying(eSoundEvent soundEvent) const {
+    auto tFoundIt = mEvents.find(getPath(soundEvent));
     if (tFoundIt == mEvents.end()) {
         return false;
     }
@@ -586,27 +624,52 @@ void SoundManager::togglePaused() {
     isPaused = !isPaused;
 
     if (isPaused) {
-        // Pause all the playing event, and play pause music
-        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
-        {
-            it->second->setPaused(true);
-        }
-        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
-        tFoundIt->second->setPaused(false);
-        playEvent(getPath(MUSIC_PAUSE));
+        setPauseMenu();
+    } else {
+        setResumeGame();
     }
-    else {
-        // Unpause event and end pause music
-        for (auto it = mEvents.begin(); it != mEvents.end(); ++it)
-        {
-            bool eventPaused;
-            it->second->getPaused(&eventPaused);
-            it->second->setPaused(!eventPaused);
-        }
-        auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
-        tFoundIt->second->setPaused(true);
-        tFoundIt->second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+}
+
+void SoundManager::setPauseMenu() {
+    // Pause all the playing events
+    for (auto it : mEvents)
+    {
+        it.second->setPaused(true);
     }
+    // play pause music
+    auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+    tFoundIt->second->setPaused(false);
+    play(MUSIC_PAUSE);
+    updateChannels();
+}
+
+void SoundManager::setResumeGame() {
+
+    stopEvent(MUSIC_PAUSE);
+    play(SOUND_UI_COUNTDOWN_TICK);
+
+    cout << "start of countdown" << endl;
+    // Wait until tick is over
+    // while (isEventPlaying(SOUND_UI_COUNTDOWN_TICK));
+    // FuncUtils::sleep(3);
+
+    cout << "end of countdown" << endl;
+
+    // Unpause event and end pause music
+    for (auto it : mEvents)
+    {
+        bool eventPaused;
+        it.second->getPaused(&eventPaused);
+        it.second->setPaused(!eventPaused);
+    }
+    updateChannels();
+}
+
+void SoundManager::setEndGame()
+{
+    stopAllEvents();
+    play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
+    play(MUSIC_INGAME);
     updateChannels();
 }
 
@@ -632,12 +695,16 @@ void SoundManager::downPosition() {
 
 void SoundManager::start() {
     play(MUSIC_INGAME);
-    play(SOUND_HOVERCAR_ENGINE);
+    // play(SOUND_HOVERCAR_ENGINE);
 }
 
 // Call every frame (or more often)
 void SoundManager::update() {
     // make speed go from 0 to 1
     // Balance volume of engine sound with music
-    setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30);
+    // This seems to cause an out of range vector issue, even though tracking through
+    // the code, it doesn't make sense. Perhaps it has to do with how the sound is threaded
+    // and that this action is not thread-safe. I don't know.
+    // For now, we will disable this.
+    // setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30.0f);
 }

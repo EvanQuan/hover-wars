@@ -30,7 +30,7 @@ LightingComponent::~LightingComponent()
 // Overloaded Update Function
 void LightingComponent::update(float fTimeInSeconds)
 {
-
+    /* Not Implemented */
 }
 
 // Sets up the GPU for drawing the Shadow Map

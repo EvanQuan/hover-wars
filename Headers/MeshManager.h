@@ -22,8 +22,8 @@ private:
     // Singleton Implementation
     static MeshManager* pInstance;
     MeshManager();
-    MeshManager( const MeshManager& pCopy ) {}
-    MeshManager& operator=( const MeshManager& pRHS ) {}
+    MeshManager(const MeshManager& pCopy);
+    MeshManager& operator=(const MeshManager& pRHS);
 
     // Private Functions
     string materialToString( const ObjectInfo::Material* sMaterial );

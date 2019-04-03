@@ -1,6 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/StartMenu.h"
 #include "UserInterface/MainInterface.h"
+#include "CommandHandler.h"
 
 // Singleton instance
 StartMenu* StartMenu::m_pInstance = nullptr;
@@ -12,7 +13,7 @@ StartMenu::StartMenu() : PromptMenu(
     }
 )
 {
-
+    COMMAND_HANDLER->addMenu(this);
 }
 
 Menu* StartMenu::getInstance()
@@ -28,7 +29,8 @@ void StartMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->m_iWidth, m_pGameManager->m_iHeight));
+        m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
+                                                                       m_pGameManager->getHeight()));
         nextMenu(MainMenu::getInstance());
         break;
     }

@@ -6,7 +6,6 @@
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "SpatialDataMap.h"
 #include "GameStats.h"
-#include <queue>
 
 /************************\
  * Forward Declarations *
@@ -26,11 +25,12 @@ class Spikes;
 
 /*
 The duration a powerup lasts for.
+Used by GameInterface.
 @TODO maybe move this to the powerup entity?
 
 Unit : seconds
 */
-#define POWERUP_TIME 20.0f
+#define POWERUP_TIME 15.0f
 
 
 class HovercraftEntity :
@@ -56,7 +56,7 @@ public:
         float fScale);
 
     void reinitialize();
-
+    void setPosition(vec2 pos);
     bool useAbility(eAbility ability);
     void move(float x, float y);
     void moveGlobal(float x, float y) { m_pPhysicsComponent->moveGlobal(x, y); }
@@ -82,7 +82,7 @@ public:
     // Get all the cooldowns to be used by the UI.
     // NOTE: why not send m_fCooldowns directly (make public)?
     // @return an array of all ability cooldowns.
-    float* getCooldowns() { return m_fCooldowns; };
+    float* getCooldowns() { return m_fCooldowns; }
 
     // Set lose control until seconds runs out or manually reactivated with
     // setGainControl(), whichever happens first
@@ -106,11 +106,11 @@ public:
     bool hasPowerup(ePowerup powerup) const { return m_vPowerupsTime[powerup] > 0; }
 
     // Units: m/s
-    float getSpeed()                            { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
-    vec3 getLinearVelocity()                    { return m_pPhysicsComponent->getLinearVelocity(); }
-    PxTransform getGlobalTransform()            { return m_pPhysicsComponent->getGlobalPose(); }
-    quat getRotation()                          { return m_pPhysicsComponent->getRotation(); }
-    void getDirectionVector(vec3* vDirVector)   { m_pPhysicsComponent->getDirectionVector(vDirVector); }
+    float getSpeed() const                      { return glm::length(m_pPhysicsComponent->getLinearVelocity()); }
+    vec3 getLinearVelocity() const              { return m_pPhysicsComponent->getLinearVelocity(); }
+    PxTransform getGlobalTransform() const      { return m_pPhysicsComponent->getGlobalPose(); }
+    quat getRotation() const                    { return m_pPhysicsComponent->getRotation(); }
+    void getDirectionVector(vec3* vDirVector) const { m_pPhysicsComponent->getDirectionVector(vDirVector); }
 
     /*
         Reduces all cooldowns by a fixed factor, never dropping below the
@@ -121,6 +121,28 @@ public:
         Reset the maximum cooldowns to the base cooldowns.
     */
     void resetMaxCooldowns();
+
+    bool canDash() const { return m_iDashCharges > 0; }
+
+    int getDashCharges() const { return m_iDashCharges; }
+
+    int getDashMaxCharges() const { return m_iDashMaxCharges; }
+
+    float getDashMaxRecharge() const { return m_fDashMaxRecharge; }
+
+    float getDashRecharge() const { return m_fDashRecharge; }
+
+    bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
+
+    // Should be initialized AFTER the hovercraft has been created when
+    // GameStats corresponds entities to hovercrafts.
+    // This prevents other classes from constantly needing to ask GameStats
+    // for hovercraft information if the HovercraftEntity is given.
+    void correspondToEHovercraft(eHovercraft hovercraft);
+
+    bool isPlayer() const { return m_bIsPlayer; }
+    bool isBot() const { return !m_bIsPlayer; }
+    eHovercraft getEHovercraft() const { return m_eHovercraft; }
 
 private:
     /*
@@ -155,6 +177,7 @@ private:
     Rocket* m_pRocket;
     Spikes* m_pSpikes;
     PhysicsComponent* m_pPhysicsComponent;
+    GameStats* m_pGameStats;
 
     /*
     These should lag behind
@@ -171,6 +194,8 @@ private:
     void updateCameraPosition(float fTimeInSeconds);
     void updateCameraRotation(float fTimeInSeconds);
     void updateCooldowns(float fTimeInSeconds);
+    void updateSpatialMap(vec3 &vNewPosition);
+    void updatePhysicsComponent();
 
     // Abilities
     void shootRocket();
@@ -181,8 +206,10 @@ private:
     void deactivateTrail();
     void updateTrail(float fTimeInSeconds);
     void createTrailInstance();
+    float m_fTrailRechargeMultipler;
 
     void dash(eAbility direction);
+    void updateDash(float fTimeInSeconds);
 
     // Like dashing, but weaker, no sound, and doese not count as an ability
     void push(float x, float y);
@@ -191,11 +218,19 @@ private:
     // Cooldowns
     void initializeCooldowns();
     bool isOnCooldown(eAbility ability);
-    /*
-
-    */
+    // Current cooldown value
     float m_fCooldowns[COOLDOWN_COUNT];
+    // Maximum cooldown value
     float m_fMaxCooldowns[COOLDOWN_COUNT];
+
+    // Current dash charges
+    int m_iDashCharges;
+    // Max dash charges
+    int m_iDashMaxCharges;
+    // Maximum time it takes to gain a dash charge
+    float m_fDashMaxRecharge;
+    // Current dash recharge time
+    float m_fDashRecharge;
 
     /*
     Tracks the state of the flame trail
@@ -244,7 +279,6 @@ private:
     bool m_bInvincible;
     float m_fSecondsLeftUntilVulnerable;
 
-    GameStats* m_pGmStats;
 
     // Bool Spikes Information
     bool m_bSpikesActivated;
@@ -256,5 +290,9 @@ private:
     void disablePowerup(ePowerup powerup);
     float m_vPowerupsTime[POWERUP_COUNT];
     bool m_vPowerupsEnabled[POWERUP_COUNT];
+
+    // Used to determine if the hovercraft is a bot or player
+    eHovercraft m_eHovercraft;
+    bool m_bIsPlayer;
 };
 

@@ -1,6 +1,5 @@
 #include "EntityComponentHeaders/PhysicsComponent.h"
 #include "stdafx.h"
-#include <iostream>
 
 #define JUMP_FORCE 200000
 
@@ -37,7 +36,7 @@ The greater the force, the faster it will accelerate.
 Force : Newtons
 */
 
-#define MOVEMENT_FORCE 10000.0f // 100000 // 1000
+#define MOVEMENT_FORCE 30000000.0f // 100000 // 1000
 
 /*
 1000000.0f @ 300 kg
@@ -110,7 +109,7 @@ void PhysicsComponent::move(float x, float y) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
-        body->addForce(vForce * MOVEMENT_FORCE);
+        body->addForce(vForce * MOVEMENT_FORCE * lastDeltaTime);
         
         // TODO find out the angle in a better way
         float angle = y == 0 ? 0 : -1 * atan(x / y);
@@ -125,11 +124,17 @@ void PhysicsComponent::setGlobalPos(PxTransform trans) {
 }
 void PhysicsComponent::moveGlobal(float x, float y) {
     PxVec3 vForce = PxVec3(y, 0, x);
-    body->addForce(vForce * MOVEMENT_FORCE/7); // NOTE: Why are we dividing by 7?
+    body->clearForce();
+    body->addForce(vForce * MOVEMENT_FORCE); // NOTE: Why are we dividing by 7?
 
     // TODO find out the angle in a better way
     float angle = y == 0 ? 0 : -1 * atan(x / y);
     setSteerAngle(angle);
+}
+void PhysicsComponent::setPosition(vec2 pos) {
+    PxTransform trans = body->getGlobalPose();
+    trans.p = PxVec3(pos.x, trans.p.y, pos.y);
+    setGlobalPos(trans);
 }
 void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
@@ -181,6 +186,7 @@ PhysicsComponent::~PhysicsComponent()
 //    information that will be gathered by the Entity when they need it?
 void PhysicsComponent::update(float fTimeInSeconds)
 {
+    lastDeltaTime = fTimeInSeconds;
     if (m_bVehicle)
     {
         m_fSecondsSinceLastDash += fTimeInSeconds;
@@ -222,11 +228,17 @@ void PhysicsComponent::flipVehicle() {
 }
 // Initializes The Physics Component to enable an Entity to have physics for themselves within
 //    the scene.
-void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb,glm::vec3 position, float maxNormalSpeed)
+void PhysicsComponent::initializeVehicle(const char* sEntityID,
+                                         bool bStatic,
+                                         const ObjectInfo::BoundingBox *bb,
+                                         glm::vec3 position,
+                                         float maxNormalSpeed)
 {
     // Set up Internal Static qualifier.
     m_bVehicle = bStatic;
-    gVehicleNoDrive = m_pPhysicsManager->createHovercraftEntity(sEntityID, position.x, position.y, position.z,bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
+    gVehicleNoDrive = m_pPhysicsManager->createHovercraftEntity(sEntityID,
+                                        position.x, position.y, position.z,
+                                        bb->vDimensions.x,bb->vDimensions.y, bb->vDimensions.z);
     body = gVehicleNoDrive->getRigidDynamicActor();
 
     if (nullptr == body) {
@@ -236,13 +248,20 @@ void PhysicsComponent::initializeVehicle(const char* sEntityID, bool bStatic, Me
     setMaxSpeed(maxNormalSpeed);
 }
 
-void PhysicsComponent::initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength)
+void PhysicsComponent::initializeRocket(const char* sName,
+                                        const mat4* m4Transform,
+                                        const vec3* vVelocity,
+                                        float fBBLength)
 {
     // Generate the Rocket in the Physics Manager
     PxRigidDynamic *pNewRocket = nullptr;
-    m_pDynamicObjects.insert(make_pair((sName), pNewRocket)); // Store Rocket internally for management.
+    // Store Rocket internally for management.
+    m_pDynamicObjects.insert(make_pair((sName), pNewRocket)); 
     unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
-    m_pPhysicsManager->createRocketObjects(pIter->first.c_str(), m4Transform, vVelocity, fBBLength, &(pIter->second));
+    m_pPhysicsManager->createRocketObjects(pIter->first.c_str(),
+                                           m4Transform, vVelocity,
+                                           fBBLength,
+                                           &(pIter->second));
 
     // Ensure the rocket was created properly.
     assert(nullptr != pIter->second);
@@ -316,7 +335,8 @@ void PhysicsComponent::getTransformMatrix(string sHashKey, mat4* pReturnTransfor
         *pReturnTransformMatrix = m_pPhysicsManager->getMat4(m_pDynamicObjects[sHashKey]->getGlobalPose());
 }
 glm::vec3 PhysicsComponent::getPosition() {
-    return glm::vec3(body->getGlobalPose().p.x, body->getGlobalPose().p.y, body->getGlobalPose().p.z);
+    physx::PxVec3 position = body->getGlobalPose().p;
+    return glm::vec3(position.x, position.y, position.z);
 }
 
 glm::vec3 PhysicsComponent::getLinearVelocity() {

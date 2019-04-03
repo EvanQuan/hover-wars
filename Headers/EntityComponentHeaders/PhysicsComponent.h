@@ -33,9 +33,10 @@ public:
 
     void move(float x, float y);
     void moveGlobal(float x, float y);
+    void setPosition(vec2 pos);
     void rotatePlayer(float x);
     // Various initialization functions as needed.
-    void initializeVehicle(const char* sEntityID, bool bStatic, Mesh const* pMeshReference, const ObjectInfo::BoundingBox *bb, vec3 position, float maxNormalSpeed);
+    void initializeVehicle(const char* sEntityID, bool bStatic, const ObjectInfo::BoundingBox *bb, vec3 position, float maxNormalSpeed);
     void initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength);
     void initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius);
     void flagForRemoval(string sHashKey) { m_pObjectsFlaggedForRemoval.push_back(sHashKey); }
@@ -62,7 +63,7 @@ public:
     void setGlobalPos(PxTransform trans);
 private:
     bool isInAir;
-
+    float lastDeltaTime = 0;
     float m_fMaxSpeed;
     float m_fMaxDashSpeed;
 

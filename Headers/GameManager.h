@@ -39,16 +39,13 @@ public:
     void zoomCamera(float fDelta);
     void intersectPlane(float fX, float fY);
 
-    // The keyboard corresponds to its own hovercraft
-    // which might be shared with a joystick
-    eHovercraft m_eKeyboardHovercraft;
+    eHovercraft getKeyboardHovercraft() const { return m_eKeyboardHovercraft; }
 
+    bool isPaused() const { return m_bPaused; }
+    void setPaused(bool paused);
 
-    bool isPaused() const { return paused; }
-    void setPaused(bool paused) { this->paused = paused; }
-
-    int m_iWidth;
-    int m_iHeight;
+    int getWidth() const { return m_iWidth; }
+    int getHeight() const { return m_iHeight; }
 
     // Window Reference
     GLFWwindow* m_pWindow;
@@ -69,6 +66,11 @@ private:
     bool renderGraphics();
     void drawScene();
 
+
+    // Window width
+    int m_iWidth;
+    // Window height
+    int m_iHeight;
 
 
     // Update Variables
@@ -119,5 +121,12 @@ private:
     vector<UserInterface*> m_vInterfaceInstances;
 
     // If the game is paused, the environment will not update
-    bool paused;
+    bool m_bQueueResume;
+    float m_fQueueResumeTime;
+    bool m_bPaused;
+
+    void setKeyboardHovercraft(int playerCount);
+    // The keyboard corresponds to its own hovercraft
+    // which might be shared with a joystick
+    eHovercraft m_eKeyboardHovercraft;
 };

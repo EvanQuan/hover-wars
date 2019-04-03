@@ -31,6 +31,49 @@ const mat3 WORLD_COORDS = mat3(1.0);
 const vector<vec3> AXIS_VERTS = { WORLD_CENTER, WORLD_COORDS[0],
                                   WORLD_CENTER, WORLD_COORDS[1],
                                   WORLD_CENTER, WORLD_COORDS[2] };
+const float SKYBOX_VERTS[] = {     
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+    -1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f
+};
 const GLfloat color[] = { 0.3215f, 0.3411f, 0.4352f, 1.0f };
 const GLfloat DEPTH_ZERO = 1.0f;
 
@@ -51,6 +94,7 @@ EntityManager::EntityManager()
     m_bDrawSpatialMap    = false;
     m_bShadowDraw        = false;
     m_bUseDebugCamera    = false;
+    m_pCubeMapTexture    = nullptr;
     m_pMshMngr           = MESH_MANAGER;
     m_pTxtMngr           = TEXTURE_MANAGER;
     m_pScnLdr            = SCENE_LOADER;
@@ -65,6 +109,11 @@ EntityManager::EntityManager()
     // Generate Buffer and Set Attribute
     m_pVertexBuffer = m_pShdrMngr->genVertexBuffer(m_pVertexArray, AXIS_VERTS.data(), AXIS_VERTS.size() * sizeof(vec3), GL_STATIC_DRAW);
     m_pShdrMngr->setAttrib(m_pVertexArray, 0, 3, 0, nullptr);
+
+    // Set up Cube Map Buffers
+    glGenVertexArrays(1, &m_iSkyBoxVertArray);
+    m_iSkyBoxVertBuffer = m_pShdrMngr->genVertexBuffer(m_iSkyBoxVertArray, SKYBOX_VERTS, sizeof(SKYBOX_VERTS), GL_STATIC_DRAW);
+    m_pShdrMngr->setAttrib(m_iSkyBoxVertArray, 0, 3, 0, nullptr);
 }
 
 /*
@@ -87,6 +136,10 @@ EntityManager::~EntityManager()
     // Delete World Axis Buffers
     glDeleteBuffers(1, &m_pVertexBuffer);
     glDeleteVertexArrays(1, &m_pVertexArray);
+
+    // Delete Skybox Buffers
+    glDeleteBuffers(1, &m_iSkyBoxVertBuffer);
+    glDeleteVertexArrays(1, &m_iSkyBoxVertArray);
 
     // Delete Mesh Manager
     if (nullptr != m_pMshMngr) { delete m_pMshMngr; }
@@ -140,6 +193,11 @@ void EntityManager::purgeEnvironment()
     m_pPhysicsComponents.clear();
     m_pAIComponents.clear();
 
+    m_pActiveCameraComponent = nullptr;
+    m_pDirectionalLight = nullptr;
+    m_pBillboardTesting = nullptr;
+    m_pCamera = nullptr;
+
     m_pCameraComponents.clear();
     m_pLights.clear();
     m_pAnimationComponents.clear();
@@ -150,13 +208,10 @@ void EntityManager::purgeEnvironment()
     // Are the Mesh const* pointers deleted in the MeshManager
     m_pRenderingComponents.clear();
 
-    
-
     // Reset ID Pools
     m_iComponentIDPool = m_iEntityIDPool = 0;
 
     m_pMshMngr->unloadAllMeshes();
-    //m_pTxtMngr->unloadAllTextures();
     m_pPhysxMngr->cleanupPhysics(); // Clean up current Physics Scene
     m_pDirectionalLight = nullptr;
     m_pActiveCameraComponent = nullptr;
@@ -200,6 +255,31 @@ void EntityManager::renderEnvironment( )
     // Perform Final Render
     setCameraPMVMatrices();
     doRender();
+    renderSkyBox();
+}
+
+// Renders the Skybox
+void EntityManager::renderSkyBox()
+{
+    // Render Skybox
+    if (nullptr != m_pCubeMapTexture)
+    {
+        glDepthFunc(GL_LEQUAL);                 // Set the Depth Function to <= for rendering at depth 1.0f
+
+        // Set up Render Environments
+        glBindVertexArray(m_iSkyBoxVertArray); 
+        glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::SKYBOX_SHDR));
+        m_pCubeMapTexture->bindTextureAsCubeMap(ShaderManager::eShaderType::SKYBOX_SHDR, "cubemap");
+
+        // Render
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // Clean up
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glUseProgram(0);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS);
+    }
 }
 
 // Performs Rendering of scene
@@ -318,6 +398,16 @@ vec3 EntityManager::getEntityPosition(int iEntityID)
 
     // Return result.
     return vReturn;
+}
+
+void EntityManager::loadSkyBox(const vector<string>* sData)
+{
+    // Load Cube Map Textures
+    if (nullptr != m_pCubeMapTexture)
+        m_pTxtMngr->unloadTexture(&m_pCubeMapTexture);
+
+    // Load new Cube Map
+    m_pCubeMapTexture = m_pTxtMngr->loadCubeMap(sData);
 }
 
 // Generates a Camera Entity and stores it in the Master Entity List.
@@ -713,31 +803,31 @@ AnimationComponent* EntityManager::generateAnimationComponent(int iEntityID)
 /*********************************************************************************\
 * Command Management                                                             *
 \*********************************************************************************/
-int EntityManager::getPlayerSize()
+int EntityManager::getPlayerSize() const
 {
     return m_pPlayerEntityList.size();
 }
 
-bool EntityManager::playerExists(eHovercraft player)
+bool EntityManager::playerExists(eHovercraft player) const
 {
     return m_pPlayerEntityList.size() > static_cast<unsigned int>(player);
 }
 
-HovercraftEntity* EntityManager::getHovercraft(eHovercraft hovercraft)
+HovercraftEntity* EntityManager::getHovercraft(eHovercraft hovercraft) const
 {
     return hovercraft <= HOVERCRAFT_PLAYER_4 ? getPlayer(hovercraft) : getBot(hovercraft);
 }
-HovercraftEntity* EntityManager::getPlayer(eHovercraft player)
+HovercraftEntity* EntityManager::getPlayer(eHovercraft player) const
 {
     return m_pPlayerEntityList.at(player);
 }
 
-bool EntityManager::botExists(eHovercraft bot)
+bool EntityManager::botExists(eHovercraft bot) const
 {
     return m_pBotEntityList.size() > static_cast<unsigned int>(bot);
 }
 
-HovercraftEntity* EntityManager::getBot(eHovercraft bot)
+HovercraftEntity* EntityManager::getBot(eHovercraft bot) const
 {
     return m_pBotEntityList.at(bot - HOVERCRAFT_BOT_1);
 }

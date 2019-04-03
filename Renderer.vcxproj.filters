@@ -106,9 +106,6 @@
     <ClInclude Include="Headers\EntityHeaders\Entity.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Explosion.h">
-      <Filter>Headers\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\FlameTrail.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
@@ -119,9 +116,6 @@
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\PointLight.h">
-      <Filter>Headers\EntityHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Powerup.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\Rocket.h">
@@ -241,6 +235,10 @@
     <ClInclude Include="Headers\UserInterface\StartInterface.h">
       <Filter>Headers\UserInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menus\ControlsMenu.h" />
+    <ClInclude Include="Headers\Menus\RulesMenu.h" />
+    <ClInclude Include="Headers\UserInterface\ControlsInterface.h" />
+    <ClInclude Include="Headers\UserInterface\RulesInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
@@ -331,9 +329,6 @@
     <ClCompile Include="Source\Entities\Entity.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Entities\Explosion.cpp">
-      <Filter>Source\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Entities\FlameTrail.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
@@ -344,9 +339,6 @@
       <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\PointLight.cpp">
-      <Filter>Source\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Powerup.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Rocket.cpp">
@@ -445,6 +437,10 @@
     <ClCompile Include="Source\UserInterface\StartInterface.cpp">
       <Filter>Source\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Menus\ControlsMenu.cpp" />
+    <ClCompile Include="Source\Menus\RulesMenu.cpp" />
+    <ClCompile Include="Source\UserInterface\ControlsInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\RulesInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

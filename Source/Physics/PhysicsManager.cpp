@@ -56,7 +56,7 @@ This should be relatively high to make car collisions satisfying.
 #define CAR_RESTITUTION 1.0f // 0.2f
 
 // Definition for for Cap Radius of Rockets
-#define CAP_RADIUS 0.1f
+#define CAP_RADIUS 0.2f // 0.2f is safe, 0.5 is large
 
 /*
 World Restitution
@@ -239,9 +239,12 @@ static PxFilterFlags filterShader(
 //    after constructing the PhysicsManager Instance.
 void PhysicsManager::initPhysics(bool interactive)
 {
+    cout << "initPhysics" << endl;
     if (gScene != NULL) {
+        cout << "\tgScene !=NULL, not initing..." << endl;
         return;
     }
+    cout << "\tstart..." << endl;
     
     m_bInteractive = interactive;
 
@@ -249,13 +252,14 @@ void PhysicsManager::initPhysics(bool interactive)
     gErrorCallback = new PxDefaultErrorCallback();
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
-    gPvd = PxCreatePvd(*gFoundation);
+    // gPvd = PxCreatePvd(*gFoundation);
 // #ifdef _DEBUG
-    transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-    gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+    // transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+    // gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 // #endif
 
-    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true);
+    // gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, pvd);
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
@@ -266,16 +270,17 @@ void PhysicsManager::initPhysics(bool interactive)
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_PAIRS;
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
     gScene = gPhysics->createScene(sceneDesc);
-    PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-    if (pvdClient)
-    {
-        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-    }
+    // PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+    // if (pvdClient)
+    // {
+        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+    // }
     gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
     gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
+    cout << "gWorldmaterial initialized" << endl;
     // bool extensionsInitialized = PxInitExtensions(*gPhysics, gPvd);
     // if (!extensionsInitialized) {
         // std::cout << ("PxInitExtensions failed!") << std::endl;
@@ -290,7 +295,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    bool resultVehicle = PxInitVehicleSDK(*gPhysics);
+    bool resultVehicle = PxInitVehicleSDK(*gPhysics); // @AustinEaton : boolean initialized but not referenced
     PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
     PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
@@ -379,11 +384,11 @@ void PhysicsManager::cleanupPhysics()
         gScene->release();
         gDispatcher->release();
         gPhysics->release();
-        PxPvdTransport* transport = gPvd->getTransport();
-        gPvd->disconnect();
-        gPvd->release();
+        // PxPvdTransport* transport = gPvd->getTransport();
+        // gPvd->disconnect();
+        // gPvd->release();
 // #ifdef _DEBUG
-        transport->release();
+        // transport->release();
 // #endif
         // manager->release();
         gFoundation->release();
@@ -394,6 +399,17 @@ void PhysicsManager::cleanupPhysics()
 
         hasStarted = false;
         gScene = NULL; // change value back to null in case cleanup is called twice
+
+        // basic variable init
+        gFoundation = NULL;
+        gPhysics = NULL;
+        gDispatcher = NULL;
+        gScene = NULL;
+        // manager = NULL;
+        gCarMaterial = NULL;
+        gWorldMaterial = NULL;
+        
+        gPvd = NULL;
     }
 }
 
@@ -537,7 +553,7 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
 void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody)
 {
     // Generate Shape for the Rocket.
-    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength - CAP_RADIUS), *gWorldMaterial);
+    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength), *gWorldMaterial);
 
     // Generate Transform to given position.
     PxMat44 pxTransform;
@@ -665,16 +681,16 @@ Update the car over a period of time.
 bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     const PxF32 timestep = fTimeDelta;
     //Raycasts.
-    PxVehicleWheels* vehicles[1] = { vehicle };
+    PxVehicleWheels* vehicleWheels[1] = { vehicle };
     PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
     const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
-    PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
+    PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicleWheels, raycastResultsSize, raycastResults);
 
     //Vehicle update.
     const PxVec3 grav = gScene->getGravity();
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
     PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
-    PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
+    PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicleWheels, vehicleQueryResults);
 //    cout << "1: " << wheelQueryResults[0].isInAir
 //        << " 2: " << wheelQueryResults[1].isInAir
 //        << " 3: " << wheelQueryResults[2].isInAir

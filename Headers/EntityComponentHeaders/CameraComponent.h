@@ -42,8 +42,6 @@ public:
     }
 
 private:
-    CameraComponent(const CameraComponent* pCopy);
-    CameraComponent& operator=(const CameraComponent* pCopy);
     vec3 m_vPos, m_vWorldLookAt;
     mat4 m_m4Frame;
     quat m_pRotation;

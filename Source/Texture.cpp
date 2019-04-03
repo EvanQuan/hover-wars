@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "stb_image.h"
 
 // Default Constructor, init everything to 0
 Texture::Texture( const string& sFileName, Texture::manager_cookie )
@@ -24,6 +25,50 @@ void Texture::genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GL
     glBindTexture(GL_TEXTURE_2D, m_TextureName );
     glTexImage2D( GL_TEXTURE_2D, 0, eFormat, m_uiWidth, m_uiHeight, 0, eFormat, eType, pBits );
     glBindTexture( GL_TEXTURE_2D, 0 );
+}
+
+// Generates a CubeMap Texture 
+void Texture::genCubeMap(const vector<string>* sFileNames)
+{
+    // Local Variables
+    unsigned char* data = nullptr;
+    int iWidth, iHeight, nrChannels;
+
+    // Generate Texture
+    glGenTextures(1, &m_TextureName);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureName);
+
+    // Iterate through the FileNames, load the data and set the proper channels of the Cube Map:
+    //      0 - Positive X (Right)
+    //      1 - Negative X (Left)
+    //      2 - Positive Y (Top)
+    //      3 - Negative Y (Bottom)
+    //      4 - Positive Z (Back)
+    //      5 - Negative Z (Front)
+    for (GLuint i = 0; i < sFileNames->size(); ++i)
+    {
+        data = stbi_load((*sFileNames)[i].c_str(), &iWidth, &iHeight, &nrChannels, 0);
+
+        if (nullptr != data)
+        {
+            glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, iWidth, iHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+        }
+        else
+            cout << "ERROR: Cubemap texture failed to load file: \"" << sFileNames->at(i) << "\"\n";
+
+        // Free Data that was loaded.
+        stbi_image_free(data);
+    }
+
+    // Set Texture Parameters
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
 // Set Texture Parameters for more Generic Texture control.
@@ -57,6 +102,13 @@ void Texture::bindTexture( ShaderManager::eShaderType eType, string sVarName, un
     glActiveTexture( GL_TEXTURE0 + m_TextureName );
     glBindTexture( GL_TEXTURE_2D, m_TextureName );
     SHADER_MANAGER->setUniformInt( eType, sVarName, m_TextureName, iIndex );
+}
+
+void Texture::bindTextureAsCubeMap(ShaderManager::eShaderType eType, string sVarName)
+{
+    glActiveTexture(GL_TEXTURE0 + m_TextureName);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureName);
+    SHADER_MANAGER->setUniformInt( eType, sVarName, m_TextureName );
 }
 
 // Binds Texture to all Shaders

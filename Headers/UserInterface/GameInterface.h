@@ -9,6 +9,8 @@
 
 // Forward Declaration
 class EntityManager;
+class HovercraftEntity;
+class SoundManager;
 
 
 /*
@@ -29,6 +31,7 @@ public:
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
+        KILL_MESSAGE_NEW_LEADER,
     };
 
     static GameInterface* getInstance(int iWidth, int iHeight);
@@ -54,12 +57,14 @@ public:
 
     void setDisplayCount(int count);
 
+    void setFocus(eHovercraft hovercraft);
+
     void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
     void displayPowerup(eHovercraft hovercraft, ePowerup powerup);
 
     // Display debug message
     // Set message to "" to disable debug message
-    void displayDebug(const char* message);
+    void displayDebug(std::string message);
 
 private:
 
@@ -78,14 +83,12 @@ private:
         COMPONENT_COUNT
     };
 
-    GameInterface(int iWidth, int iHeight);                                 // Default Constructor
-    GameInterface(const GameInterface* pCopy);                              // Default Copy Constructor
-    GameInterface& operator=(const GameInterface* pCopy) {return (*this); } // Assignment Operator.
+    GameInterface();                                        // Default Constructor
+    GameInterface(const GameInterface* pCopy);              // Default Copy Constructor
+    GameInterface& operator=(const GameInterface* pCopy);   // Assignment Operator.
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
-
-    // Initializes FreeType and the Font Library
-    void setScore(int joystickID, int score);
+    SoundManager* m_pSoundManager;
 
     void displayMessage(eHovercraft hovercraft, std::string text);
     /*
@@ -95,7 +98,6 @@ private:
     be updated during its update() call.
     */
     void renderComponent(eUIComponent component, GLfloat scale, vec3 color);
-    void initializeGameInterface();
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
@@ -105,16 +107,13 @@ private:
     void renderMessages();
 
     // Score
-    void initializeScores();
-    void updateScores();
-    void updateScore(eHovercraft hovercraft, int score);
     void renderScores();
 
     // Cooldowns
-    void initializeCooldowns();
     void updateCooldowns();
     void renderCooldowns();
     void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
+    void renderCharges(float* cooldowns, HovercraftEntity* hovercraft);
 
     /*
     NOTE: this may need to change in the future.
@@ -142,6 +141,8 @@ private:
 
     int m_iDisplayCount;
 
+    eHovercraft m_eHovercraftFocus;
+
     const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
     {
         {HOVERCRAFT_BOT_1, "Alfa Bot"},
@@ -153,4 +154,5 @@ private:
         {HOVERCRAFT_PLAYER_3, "Player 3"},
         {HOVERCRAFT_PLAYER_4, "Player 4"},
     };
+
 };

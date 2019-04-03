@@ -35,17 +35,19 @@ public:
     bool isInitialized() { return m_bIsInitialized; }
     vector<vec2> aStarSearch(vec2 player, vec2 dest);
     bool getMapIndices(const Entity* vEntity, unsigned int* iXMin, unsigned int* iXMax, unsigned int* iYMin, unsigned int* iYMax); // Returns the Map Indices from a given Entity.
-    float getTileSize() {return m_fTileSize;}
+    float getTileSize() const {return m_fTileSize;}
     glm::vec2 getWorldOffset() { return m_vOriginPos; }
-    vector<vec2> modifiedDikjistras(vec2 playerMin, vec2 playerMax, vec2 destMin, vec2 destMax);
+    vector<uvec2> getShortestPath(uvec2 playerMin, uvec2 playerMax, uvec2 destMin, uvec2 destMax);
 private:
-    float evaluateDistance(const vec2* pos1, const vec2* pos2);
+    float evaluateDistance(const vec2* pos1, const vec2* pos2) const;
     static SpatialDataMap* m_pInstance;
-    bool isValid(int x, int y);
+    bool isValid(int x, int y) const;
     SpatialDataMap();                                           // Singleton Implementation
     SpatialDataMap(const SpatialDataMap* pCopy);                // Copy Constructor Overload
     SpatialDataMap& operator=(const SpatialDataMap* pCopy);     // Assignment Operator overload
 
+    void initializeForDijkstras();
+    void initializeForAStar(vector<vector<bool>> &closedList);
     // Static Data for each Cell
     struct sSpatialCell
     {
@@ -61,7 +63,9 @@ private:
         int x, y;
         bool visited = false;
     };
-    double calculateH(int x, int y, sSpatialCell dest);
+
+
+    double calculateH(int x, int y, sSpatialCell dest) const;
     vector<vec2> makePath(sSpatialCell dest);
     // Mapping of Cells in 2D array.
     vector< vector< sSpatialCell > > m_pSpatialMap;

@@ -10,9 +10,9 @@ public:
     static PostgameInterface* getInstance(int iWidth, int iHeight);
 
     // Default Constructor
-    PostgameInterface(int iWidth, int iHeight);
+    PostgameInterface();
     PostgameInterface(const PostgameInterface* pCopy);                              // Default Copy Constructor
-    PostgameInterface& operator=(const PostgameInterface* pCopy) {return (*this); } // Assignment Operator.
+    PostgameInterface& operator=(const PostgameInterface* pCopy);                   // Assignment Operator.
 
     void update(float fSecondsSinceLastUpdate);
 

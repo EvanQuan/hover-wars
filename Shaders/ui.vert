@@ -1,3 +1,13 @@
+
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+	mat4 modelviewInv;
+	mat4 dirLightSpaceMat;
+	mat4 spotLightSpaceMat[4];
+};
+
 // Layouts:
 //	vertex - local coordinate of vertex
 //	translate - instance vbo, translation matrix.
@@ -18,5 +28,6 @@ void main(void)
 {
     // Just to ensure that the z value is 0 in all cases.
     gl_Position = UIProjection * vec4(vertex.xy, 0.0, 1.0);
+	//gl_Position = projection * modelview * vec4(vertex.xy, 0.0, 1.0); // For Debugging
     TexCoords = vertex.zw;
 }

@@ -28,13 +28,13 @@
 #define IMAGE_4_2 "textures/menu/4_2.png"
 #define IMAGE_MAIN_MENU_BUTTON_1 "textures/menu/main_menu_button.png"
 #define IMAGE_MAIN_MENU_BUTTON_2 "textures/menu/main_menu_button2.png"
-#define IMAGE_BACKGROUND "textures/menu/main_menu.png"
+#define IMAGE_BACKGROUND "textures/menu/post_menu.jpg"
 #define IMAGE_NEW_GAME_1 "textures/menu/new_game.png"
 #define IMAGE_NEW_GAME_2 "textures/menu/new_game2.png"
 #define IMAGE_EXIT_1 "textures/menu/exit.png"
 #define IMAGE_EXIT_2 "textures/menu/exit2.png"
 #define IMAGE_PAUSE_MENU "textures/menu/pause_menu.jpg"
-#define IMAGE_POST_MENU "textures/menu/post_menu.jpg"
+#define IMAGE_POST_MENU "textures/menu/main_menu.png" 
 #define IMAGE_RESTART_1 "textures/menu/restart.png"
 #define IMAGE_RESTART_2 "textures/menu/restart2.png"
 #define IMAGE_RESUME_1 "textures/menu/resume.png"
@@ -97,14 +97,16 @@ public:
     // Set message to "" to disable debug message
     void displayDebug(const char* message);
 
+    // Shows the Sprite Map for the text map for debugging.
+    void debugFont();
+
 protected:
 
     // Default Constructor
-    UserInterface(int iWidth, int iHeight,
-        vector<pair<float, float>> componentScaling,
-        vector<pair<float, float>> componentTranslating);
-    UserInterface(const UserInterface* pCopy);                              // Default Copy Constructor
-    UserInterface& operator=(const UserInterface* pCopy) {return (*this); } // Assignment Operator.
+    UserInterface(vector<pair<float, float>> componentScaling,
+                  vector<pair<float, float>> componentTranslating);
+    UserInterface(const UserInterface* pCopy);            // Default Copy Constructor
+    UserInterface& operator=(const UserInterface* pCopy); // Assignment Operator.
 
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
@@ -116,7 +118,7 @@ protected:
     int m_iHeight;
 
 
-    const char* debugMessage;
+    std::string debugMessage;
     float debugWidth;
     float debugHeight;
 

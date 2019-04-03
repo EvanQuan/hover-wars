@@ -48,8 +48,7 @@ const string  DEFAULT_FONT = ASTRON_BOY_REGULAR_FONT;
 const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
 const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 
-UserInterface::UserInterface(int iWidth, int iHeight,
-                              vector<pair<float, float>> componentScaling,
+UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
                               vector<pair<float, float>> componentTranslating)
 {
     // Get Singleton Handles
@@ -60,9 +59,6 @@ UserInterface::UserInterface(int iWidth, int iHeight,
     m_iComponentCount = componentScaling.size();
 
     initializeComponentCoordinates();
-
-    // Children should do this in getInstance
-    // updateWidthAndHeight(iWidth, iHeight);
 
     initFreeType();
     initializeVBOs();
@@ -358,18 +354,30 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
-        // Triangle strip
+        // Triangles
         /*
             
-            2---3
-            |\  |
-            | \ |
-            |  \|
+            2
+            |\  
+            | \ 
+            |  \
             0---1
         */
         vTextOutput.push_back(vCorners[BOTTOM_LEFT]);
         vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_LEFT]);
+
+        // Triangles
+        /*
+
+            2---3
+             \  |
+              \ |
+               \|
+                1
+        */
+        vTextOutput.push_back(vCorners[TOP_LEFT]);
+        vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_RIGHT]);
 
         // Now advance the cursors for next glyph (note: advance is number of 1/64 pixels)
@@ -382,7 +390,42 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Render Quad
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, vTextOutput.size());
+    glDrawArrays(GL_TRIANGLES, 0, vTextOutput.size());
+
+    // Clean up OpenGL
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+// Shows the Sprite Map for the text map for debugging.
+void UserInterface::debugFont()
+{
+    // Set up OpenGL for Rendering
+    glBindVertexArray(m_iVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
+    // Is text, not an image. This distinguishment needs to be made since images and
+    // text share the same shader.
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", false);
+
+    // Bind Texture.
+    glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_iTextureBuffer);
+    SHADER_MANAGER->setUniformInt(ShaderManager::eShaderType::UI_SHDR, "text", m_iTextureBuffer);
+
+    vec4 vCorners[4] = {
+        vec4(0.0f,  0.0f,  0.0f, 1.0f),
+        vec4(10.0f, 0.0f,  1.0f, 1.0f),
+        vec4(0.0f,  10.0f, 0.0f, 0.0f),
+        vec4(10.0f, 10.0f, 1.0f, 0.0f)
+    };
+
+    // Update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(vec4) << 2), vCorners, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Render Quad
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // Clean up OpenGL
     glBindVertexArray(0);

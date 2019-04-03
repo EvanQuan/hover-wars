@@ -55,7 +55,7 @@ private:
                                     iInstancedBuffer,
                                     iVertexArray,
                                     iIndicesBuffer;
-        vec3                        vNegativeOffset, vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
+        vec3                        m_vNegativeOffset, m_vPositiveOffset; // Specifies the dimensions of the Spacial cube for the Bounding Box.
         eBoundingBoxTypes           eType;
 
         // Check to see if the Bounding Box is loaded.

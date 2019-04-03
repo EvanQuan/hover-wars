@@ -73,6 +73,7 @@ void Spikes::initialize(const string& sFileName,
  * Inherited Pure Virtual Functions                             *
 \****************************************************************/
 
+// Give the Animation tree the world transformation of the Entity for world translation of the spikes.
 void Spikes::update(float fTimeInSeconds)
 {
     for (unsigned int i = 0; i < NUM_SPIKES; ++i)
@@ -89,7 +90,7 @@ void Spikes::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) 
 // Overloaded Handle Collision for Spikes
 void Spikes::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
-    InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg, ABILITY_SPIKES);
+    InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
 }
 

@@ -28,8 +28,8 @@ public:
     virtual void onSleep(PxActor**, PxU32) {}
     virtual void onAdvance(const PxRigidBody*const*, const PxTransform*, const PxU32) {}
 private:
-    PxRigidDynamic *body1 = NULL;
-    PxRigidDynamic *body2 = NULL;
+    PxRigidDynamic *m_pBody1 = NULL;
+    PxRigidDynamic *m_pBody2 = NULL;
 
     std::unordered_map<char, eHovercraft> ownerToHovercraft =
     {

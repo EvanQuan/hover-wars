@@ -8,11 +8,15 @@
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/GameInterface.h"
+#include "UserInterface/PostgameInterface.h"
 #include "Menus/GameMenu.h"
 #include "Menus/StartMenu.h"
 
 // Unit: seconds
-#define GAME_OVER_TIME 0.0
+#define GAME_OVER_TIME 0.0f
+
+// Time before the game resumes
+#define GAME_RESUME_TIME 3.0f
 
 /*************\
  * Constants *
@@ -160,8 +164,17 @@ bool GameManager::renderGraphics()
         startedGameOver = true;
     }
 
+    if (m_bQueueResume)
+    {
+        m_fQueueResumeTime -= frameDeltaTime;
+        if (m_fQueueResumeTime <= 0)
+        {
+            m_bPaused = false;
+            m_bQueueResume = false;
+        }
+    }
     // Update Environment if the game is not paused
-    if (!paused)
+    if (!m_bPaused)
     {
         m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
@@ -186,15 +199,14 @@ bool GameManager::renderGraphics()
         // It also cannot update inside the EntityManager since it is able
         // to be updated while the EntityManager is paused.
         m_pCurrentInterface->update(frameDeltaTime);
+        // drawScene();
         // call function to draw our scene
-        drawScene();
+        // Sound needs to update after the EntityManager to reflect in game changes
+        // Cannot be updated inside the EntityManager as sounds can play while game
+        // is paused.
+        SOUND_MANAGER->update();
     }
-
-    // Sound needs to update after the EntityManager to reflect in game changes
-    // Cannot be updated inside the EntityManager as sounds can play while game
-    // is paused.
-    SOUND_MANAGER->update();
-
+    drawScene();
 
     // check for Window events
     glfwPollEvents();
@@ -216,19 +228,16 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     string sFileName)
 {
     // We intialize all values for the game to immediately start
-    // Initialize Physics
-    m_pPhysicsManager = PHYSICS_MANAGER;
-    m_pPhysicsManager->initPhysics(true);
-    // m_pPhysicsManager->cleanupPhysics();
-    // delete m_pPhysicsManager;
-    // m_pPhysicsManager = PHYSICS_MANAGER;
-    // m_pPhysicsManager->initPhysics(false);
 
-    paused = false;
+    m_pPhysicsManager->initPhysics(true);
+
+    setPaused(false);
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_fGameOverTime = GAME_OVER_TIME;
-    GameInterface::getInstance(m_iWidth, m_iHeight)->reinitialize(gameTime);
+    GameInterface *gameUI = GameInterface::getInstance(m_iWidth, m_iHeight);
+    gameUI->reinitialize(gameTime);
+    gameUI->setDisplayCount(playerCount);
     m_pEntityManager->initializeEnvironment(sFileName);
 
     // Spawn Players
@@ -245,6 +254,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize(playerCount, botCount);
     m_pAIManager->reinitialize();
+
+    setKeyboardHovercraft(playerCount);
 }
 
 /*
@@ -257,18 +268,15 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 */
 void GameManager::endGame()
 {
+    SOUND_MANAGER->setEndGame();
+
     // postgame menu
     cout << "GameManger::endGame()" << endl;
-    paused = true;
+    m_bPaused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
+    setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
-
-    // m_pPhysicsManager->cleanupPhysics();
-    if (nullptr != m_pPhysicsManager)
-    {
-        delete m_pPhysicsManager;
-        m_pPhysicsManager = nullptr;
-    }
+    m_pPhysicsManager->cleanupPhysics();
 }
 
 /*
@@ -284,12 +292,12 @@ void GameManager::drawScene()
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);
-        if (!paused)
+        if (!m_bPaused)
         {
             m_pEntityManager->renderEnvironment();
         }
-        m_pCurrentInterface->render();
         glDisable(GL_DEPTH_TEST);
+        m_pCurrentInterface->render();
 
         // scene is rendered to the back buffer, so swap to front for display
         glfwSwapBuffers(m_pWindow);
@@ -297,18 +305,44 @@ void GameManager::drawScene()
 }
 
 /*
+    Set the keyboard hovercraft according to the number of connected joysticks
+    and players in the game.
+    This should be set at the initialization of a new game as the pregame menu
+    determines how many players there will be in a given game.
+
+    @param playerCount  for the given game
+*/
+void GameManager::setKeyboardHovercraft(int playerCount)
+{
+    int joystickCount = INPUT_HANDLER->getJoystickCount();
+
+    if (playerCount == joystickCount)
+    {
+        // If all the players have joysticks, then the keyboard is not necessary.
+        // Set it to control player 1 by default.
+        m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+    }
+    else
+    {
+        // Due to how the pregame menu is set up, the user can choose to have
+        // one extra player more than there are connected joysticks, but less
+        // than the max player count.
+        // Under this assumption, the keyboard will control the last player,
+        // which does not have a joystick.
+        m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
+    }
+
+
+}
+
+/*
     Initialize all start-of-program state.
-    This should only be called once at the start of the game.
+    This should only be called once at the start of the program.
 
-    Shaders:
-        Initialize shaders and geometry.
-        Contains any initializion requirements in order to start drawing.
+    Initialize shaders and geometry.
+    Contains any initializion requirements in order to start drawing.
 
-    Debug:
-        Initialize a new game and immediately enter the game menu and interface
-
-    Release:
-        Set the game to use the start menu and and start interface
+    Set the game to use the start menu and and start interface
 
     @return true if initialzation successful
 */
@@ -328,19 +362,13 @@ bool GameManager::initialize()
     // uses GameInterface, which requires GameManager to already be instantiated.
     m_pGameStats     = GameStats::getInstance(m_iWidth, m_iHeight);
 
-#ifdef NDEBUG
+
     // Game starts paused as the player starts in the start menu
-    paused = true;
+    m_bPaused = true;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
-#else
-    initializeNewGame(1, 0, 9999999.0f, RELEASE_ENV);
-    // initializeNewGame(1, 4, 9999999.0f, DEBUG_ENV);
-    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance()); 
-    m_pCurrentInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
-#endif
 
     // Return error results
     return true; 
@@ -402,5 +430,21 @@ void GameManager::intersectPlane(float fX, float fY)
             vIntersection = vCameraPos + (fT*vRay);
 
         EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 60.f, 5.0f, 100, false, 2.0f);
+    }
+}
+
+void GameManager::setPaused(bool paused)
+{
+    if (paused)
+    {
+        // Pause immediately
+        m_bPaused = true;
+    }
+    else
+    {
+        // Queue up unpause. When the game resumes, there is a buffer time
+        // before the environment begins updating again.
+        m_bQueueResume = true;
+        m_fQueueResumeTime = GAME_RESUME_TIME;
     }
 }

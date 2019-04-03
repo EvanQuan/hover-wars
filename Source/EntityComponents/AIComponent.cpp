@@ -5,13 +5,29 @@
 #include "EntityHeaders/HovercraftEntity.h"
 
 
-const vec2 seekPointsAI[] = { vec2(18,7),vec2(31,18),vec2(7,18),vec2(18,31),
-vec2(31,31),vec2(7,7),vec2(31,7),vec2(7,31) };
+/*
+    Locations on the map that the AI can seek for.
+    If the AI is in 
+    @TODO describe what these are for/what they mean
+
+    // Original order, if it matters?
+    // vec2(18,7),     vec2(31,18),    vec2(7,18),     vec2(18,31),
+    // vec2(31,31),    vec2(7,7),      vec2(31,7),     vec2(7,31)
+*/
+const vec2 seekPointsAI[] = {
+    vec2(7,  7),    vec2(18,  7),   vec2(31,  7),
+    vec2(7, 18),                    vec2(31, 18),
+    vec2(7, 31),    vec2(18, 31),   vec2(31, 31)
+};
+
+#define SEEK_POINTS_SIZE 8
 #define ACCURACY_THRESHOLD 0.01
-#define DISTANCE_BOX 5
+#define DISTANCE_BOX 15
 #define CYCLE_TIME 7
 #define MAX_TIME_TARGET CYCLE_TIME*4
 #define PROC_DISTANCE 125
+#define MOVEMENT_RATE 20
+
 AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
 {
 
@@ -21,11 +37,12 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
     //    }
     //}
 
-    /* initialize random seed: */
-     srand(static_cast<unsigned int>(time(NULL)));
-    // timeChased = rand() % (MAX_TIME_TARGET);
-    timeChased = static_cast<float>(FuncUtils::random(0, MAX_TIME_TARGET - 1));
+    timeChased = static_cast<float>(FuncUtils::random(MAX_TIME_TARGET));
+
+    m_pSpatialDataMap = SPATIAL_DATA_MAP;
 }
+
+// @AustinEaton : Function not Implemented
 void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
     //for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {
    //     performMutation(playerPos, playerVel, botPos, botVel, botRotation, 0);
@@ -35,35 +52,67 @@ AIComponent::~AIComponent() {
     // Nothing to destruct
 }
 
-void AIComponent::genRandomAction(Action *action) {
-    action->actionsToTake[0] = (float)(rand() % 2);
-    action->actionsToTake[1] = (float)(rand() % 3 - 1);
-    action->actionsToTake[2] = (float)(rand() % 3 - 1);
-    action->actionsToTake[3] = (float)(rand() % 3 - 1);
-    action->actionsToTake[4] = (float)(rand() % 2);
-}
-void AIComponent::mutateSet(int setIndex, int mutations) {
-    for (int i = 0; i < mutations; i++) {
-        int randomIndex = rand() % LOOK_AHEAD_FRAMES;
-        genRandomAction(&frames[setIndex][randomIndex]);
-    }
-
-}
+// @Deprecated, use glm::distance(vec3 a, vec3 b)
 float getDistance(vec3 a, vec3 b) {
     return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z));
 }
+
+// @Deprecated, use glm::distance(vec2 a, vec2 b)
 float getDistance(vec2 a, vec2 b) {
     return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
 }
-//TODO maybe make it go to center?
-vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) {
+/*
+    Get the path for seek mode.
+
+    @return the seek path
+
+    @modifies seekLocation
+    @modifies LastIndex
+
+*/
+vector<uvec2> AIComponent::getSeekPath(const HovercraftEntity *bot,
+                                       unsigned int minXBot, unsigned int minYBot,
+                                       unsigned int maxXBot, unsigned int maxYBot)
+{
+    if (glm::distance(vec2(minXBot, minYBot), seekLocation) < 2) {
+        vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
+        seekLocation = vec2(currSeekLock.x, currSeekLock.y);
+        LastIndex = (int)currSeekLock.z;
+    }
+    return m_pSpatialDataMap->getShortestPath(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
+}
+
+/*
+    Get the path for chase mode
+
+    @param target   to chase
+*/
+vector<uvec2> AIComponent::getChasePath(const HovercraftEntity *target,
+                                        unsigned int minXBot, unsigned int minYBot,
+                                        unsigned int maxXBot, unsigned int maxYBot,
+                                        unsigned int minXPlayer, unsigned int minYPlayer,
+                                        unsigned int maxXPlayer, unsigned int maxYPlayer) const
+{
+    return m_pSpatialDataMap->getShortestPath(vec2(minXPlayer, minYPlayer),
+                                                vec2(maxXPlayer, maxYPlayer),
+                                                vec2(minXBot + 1, minYBot + 1),
+                                                vec2(maxXBot + 1, maxYBot + 1));
+}
+/*
+    TODO maybe make it go to center?
+    Given the current position, get the 2nd closest seek point
+
+    @param currentPos   of the AI
+    @return the seek position that is closest to the currentPos
+*/
+vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) const {
     vec2 nearest = currentPos;
     vec2 nearest2nd = currentPos;
-    float distance = 1000000;
-    float distance2 = 1000000;
+    float distance = numeric_limits<float>::max();
+    float distance2 = numeric_limits<float>::max();
     int lowestIndex = -1;
-    for (int i = 0; i < seekPointsAI->length(); i++) {
-        float currDis = getDistance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
+    for (int i = 0; i < SEEK_POINTS_SIZE; i++) {
+        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
         if (currDis < distance && i != LastIndex) {
             if (distance < distance2) {
                 nearest2nd = nearest;
@@ -72,8 +121,7 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) {
             }
             nearest = seekPointsAI[i];
             distance = currDis;
-        }
-        else if (currDis < distance2 && i != LastIndex) {
+        } else if (currDis < distance2 && i != LastIndex) {
             nearest2nd = seekPointsAI[i];
             distance2 = currDis;
             lowestIndex = i;
@@ -81,12 +129,19 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) {
     }
     return vec3(nearest2nd, lowestIndex);
 }
-vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) {
+
+/*
+    Given the current position, get the closest seek point
+
+    @param currentPos   of the AI
+    @return the seek position that is closest to the currentPos
+*/
+vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
     vec2 nearest = currentPos;
-    float distance = 1000000;
+    float distance = numeric_limits<float>::max();
     int lastLoc = -1;
-    for (int i = 0; i < seekPointsAI->length(); i++) {
-        float currDis = getDistance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
+    for (int i = 0; i < SEEK_POINTS_SIZE; i++) {
+        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
         if (currDis < distance) {
             nearest = seekPointsAI[i];
             distance = currDis;
@@ -95,95 +150,94 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) {
     }
     return vec3(nearest, lastLoc);
 }
-float AIComponent::evaluateSet(int setIndex, glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown) {
-    float evaluation = 0;
-    float framesTaken = 1;
-    for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
-        // botPos.x += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[2] * 10;
-        // botPos.y += frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[3] * 10;
-        float rot = frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[1] * 0.01f;
-        rot = rot - (float)(floor(rot * (2 * 3.14159)) / (2 * 3.14159));
-        botRotation += rot;
-        //if (frames[setIndex][i + currentPlace % LOOK_AHEAD_FRAMES].actionsToTake[0] == 1) {
-        glm::vec3 rocketDir = glm::vec3(cos(botRotation), sin(botRotation), 0);
-        // if (playerVel.x == 0) {
-        playerVel.x = 0.00001f;
-        // }
-         //if (playerVel.y == 0) {
-        playerVel.y = 0.00001f;
-        //}
-        float mRocket = rocketDir.y / rocketDir.x;
-        float mPlayer = playerVel.y / playerVel.x;
-        float negXRocket = -1 * mRocket * botPos.x;
-        float negXPlayer = -1 * mPlayer * playerPos.x;
-        float rocketTotal = negXRocket + botPos.y;
-        float playerTotal = negXPlayer + playerPos.y;
-        float totalAmount = rocketTotal - playerTotal;
-        float totalM = mPlayer - mRocket;
-        float intersectionX = totalAmount / totalM;//good old algebra for line intersections
-        vec3 intersectionPoint = vec3(intersectionX, intersectionX * mPlayer + negXPlayer + playerPos.y, 0);
-        vec3 difference = botPos - playerPos;
-        difference /= difference.length();
-        framesTaken = ((intersectionPoint - playerPos).x / playerVel.x) - ((intersectionPoint - botPos).x / playerVel.x);
-        if ((intersectionX < 0 && rocketDir.x < 0) || (intersectionX > 0 && rocketDir.x > 0)) {
-            //evaluation = 50 / framesTaken;
-        }
 
-        //}
-    }
-    evaluation = 50 / framesTaken;
+/*
+    @NOTE
+    I have no idea what's going on here. The seek point is being updated, but
+    according to what? Nearest? What makes this different than getNearestSeekPoint
 
-    //evaluation += (playerPos - botPos).length() * DISTANCE_REDUCTION_EVAL;
-    return evaluation;
-}
+    @param botPos           of bot to determine seek point
 
-void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, Action *a) {
-
-    //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
-    a->actionsToTake[ACTION_FIRE_ROCKET] = 0;
-    a->actionsToTake[ACTION_FLAMETRAIL] = 0;
-
-    unsigned int minXBot, minYBot, maxXBot, maxYBot;
-    SPATIAL_DATA_MAP->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);
-    if (currentState == 0) {
-        unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
-        SPATIAL_DATA_MAP->getMapIndices(mPlayer, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
-        path = SPATIAL_DATA_MAP->modifiedDikjistras(vec2(minXPlayer, minYPlayer), vec2(maxXPlayer, maxYPlayer), vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
-    }
-    else if (currentState == 1) {
-        if (getDistance(vec2(minXBot, minYBot), seekLocation) < 2) {
-            vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
-            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
-            LastIndex = (int)currSeekLock.z;
-        }
-
-        path = SPATIAL_DATA_MAP->modifiedDikjistras(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
-    }
-    vec2 offset = SPATIAL_DATA_MAP->getWorldOffset();
-    glm::vec3 nextPos = vec3(0, 0, 0);//mPlayer->getPosition();
+    @modifies seekPoint     based on what?
+*/
+void AIComponent::updateSeekPoint(const vec3 &botPos)
+{
+    vec2 offset = m_pSpatialDataMap->getWorldOffset();
+    float tileSize = m_pSpatialDataMap->getTileSize();
+    glm::vec3 nextPos = vec3(0, 0, 0);
     if (path.size() >= 2) {
-        for (int i = 0; i < (int)path.size(); i++) {
-            nextPos = vec3(path.at(i).x * SPATIAL_DATA_MAP->getTileSize() + offset.x, 0, path.at(i).y * SPATIAL_DATA_MAP->getTileSize() + offset.y);
+        for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
+            nextPos = vec3(path.at(i).x * tileSize + offset.x,
+                           0,
+                           path.at(i).y * tileSize + offset.y);
             if (abs((botPos - nextPos).x) + abs((botPos - nextPos).z) > DISTANCE_BOX) {
                 break;
             }
         }
         seekPoint = nextPos;
     }
-    vec3 difference = mPlayer->getPosition() - botPos;
-    float distanceToTarget = getDistance(mPlayer->getPosition(), botPos);
-    //std::cout << "Distance to Target: " << distanceToTarget << std::endl;
+}
+/*
+    @param target           hovercraft the AI is to target. Could be a player or bot.
+    @param bot              corresponding to this AIComponent
+    @param fTimeInSeconds   time since last update in seconds
+    @return a               the action the AI should act upon. Represnts all
+                            the actions that should be performed by the
+                            specified bot.
+
+    @NOTE: Handles the movement of the bot entity so that part of the action
+           should be dissregarded. however it does not handle the lanuching of
+           rockets and abilities, that should be handled by the caller.
+
+
+*/
+void AIComponent::getCurrentAction(HovercraftEntity *target,
+                                   HovercraftEntity *bot,
+                                   float fTimeInSeconds,
+                                   Action *a) {
+
+    //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
+
+    // Seet zero ability usage so they aren't used
+    a->shouldFireRocket = false;
+    a->shouldActivateTrail = false;
+    glm::vec3 botPos = bot->getPosition();
+    glm::vec3 botVel = bot->getLinearVelocity();
+
+    unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
+    m_pSpatialDataMap->getMapIndices(target, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
+
+    unsigned int minXBot, minYBot, maxXBot, maxYBot;
+    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);// get bot loc on grid
+
+    switch (m_eCurrentMode) {
+    case MODE_CHASE:
+        path = getChasePath(target, minXBot, minYBot,
+                                    maxXBot, maxYBot,
+                                    minXPlayer, minYPlayer,
+                                    maxXPlayer, maxYPlayer);
+        break;
+    case MODE_SEEK:
+        path = getSeekPath(bot, minXBot, minYBot,
+                                maxXBot, maxYBot);
+        break;
+    }
+
+    updateSeekPoint(botPos);
+
+    vec3 difference = target->getPosition() - botPos;
+    float distanceToTarget = glm::distance(target->getPosition(), botPos);
+
     if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
-        if (currentState != 1) {
+        if (m_eCurrentMode  == MODE_CHASE) {
             vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
             seekLocation = vec2(currSeekLock.x, currSeekLock.y);
             LastIndex = (int)currSeekLock.z;
         }
-        currentState = 1;
+        m_eCurrentMode = MODE_SEEK;
         nextPosMove = true;
-    }
-    else {
-        currentState = 0;
+    } else {
+        m_eCurrentMode = MODE_CHASE;
         nextPosMove = false;
     }
     if (timeChased > MAX_TIME_TARGET) {
@@ -198,60 +252,41 @@ void AIComponent::popCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *
     float yVal = mSlope * dirVector.x;
 
 
-    glm::vec3 playerPos = mPlayer->getPosition();
+    glm::vec3 playerPos = target->getPosition();
     int XvalMul = (int)(difference.x / abs(difference.x));
 
     if (yVal > dirVector.z) {
-        a->actionsToTake[1] = (float)(1 * XvalMul);
-    }
-    else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && currentState == 0) {
-        a->actionsToTake[1] = 0;
-        a->actionsToTake[ACTION_FIRE_ROCKET] = 1;
-    }
-    else {
-        a->actionsToTake[1] = (float)(-1 * XvalMul);
+        a->turn = static_cast<float>(1 * XvalMul);
+    } else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && m_eCurrentMode == 0) {
+        a->turn = 0.0f;
+        a->shouldFireRocket = true;
+    } else {
+        a->turn = static_cast<float>(-1 * XvalMul);
     }
 
     bool isXdistance = false;
+    vec2 differenceSum = vec2(0,0);
+
     if ((botPos.x - seekPoint.x) > 0) {
-        a->actionsToTake[2] = -1;
+        differenceSum.x += MOVEMENT_RATE * -1;
+    } else {
+        differenceSum.x += MOVEMENT_RATE;
     }
-    else {
-        a->actionsToTake[2] = 1;
-    }
+
     if ((botPos.z - seekPoint.z) > 0) {
-        a->actionsToTake[3] = -1;
+        differenceSum.y += MOVEMENT_RATE * -1;
+    } else {
+        differenceSum.y += MOVEMENT_RATE;
     }
-    else {
-        a->actionsToTake[3] = 1;
-    }
+
     if (nextPosMove) {
-        a->actionsToTake[eAction::ACTION_FLAMETRAIL] = 1;
+        a->shouldActivateTrail = true;
     }
-    //a->actionsToTake[2] = difference.x/100.0f;
-    //a->actionsToTake[3] = difference.z/100.0f;
-    // std::cout << "bot rotation: "<< (botPos.z - seekPoint.z) <<"                                               " << angle << std::endl;
-#ifndef NDEBUG
-    //std::cout << "difference y: " << difference.x << " y: " << difference.y << " z: " << difference.z << std::endl;
-    //currentPlace = (1 + currentPlace) % LOOK_AHEAD_FRAMES;
-#endif
-}
-void AIComponent::performMutation(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation, float CurrcoolDown) {
-    for (int i = 0; i < MUTATION_SET; i++) {
-        if (i != currentBest) {
-            //sets all others sets equal to the current best set
-            memcpy(frames[i], frames[currentBest], sizeof(Action) * LOOK_AHEAD_FRAMES);
-            //mutates each set
-            mutateSet(i, MUTATIONS_PER_FRAME);
 
-            float eval = evaluateSet(i, playerPos, playerVel, botPos, botVel, botRotation, CurrcoolDown);
-
-            if (eval > currentBestEval) {
-                currentBest = i;
-                currentBestEval = eval;
-            }
-        }
-    }
+    // move bot based off distance sum
+    bot->setPosition(vec2(botPos.x + differenceSum.x * fTimeInSeconds,
+                          botPos.z + differenceSum.y * fTimeInSeconds));
+    botPos = bot->getPosition();
 }
 void AIComponent::update(float fTimeInSeconds)
 {

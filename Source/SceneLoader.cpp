@@ -42,6 +42,7 @@
 #define ROCKET                 "rocket"
 #define SPIKES                 "spikes"
 #define SPAWNS                 "spawn_points"
+#define SKYBOX                 "skybox"
 
 // Singleton Declaration
 SceneLoader* SceneLoader::m_pInstance = nullptr;
@@ -245,6 +246,11 @@ Spikes* SceneLoader::createSpikesMesh(int iOwnerID)
     return m_pEntityManager->generateSpikesEntity(&SPIKES_PROPERTIES_DEF.pObjectProperties, &SPIKES_PROPERTIES_DEF.sMeshLocation, SPIKES_PROPERTIES_DEF.fScaleProperty, &SPIKES_PROPERTIES_DEF.sShaderProperty, iOwnerID);
 }
 
+void SceneLoader::createSkybox(vector< string > sData)
+{
+    m_pEntityManager->loadSkyBox(&sData);
+}
+
 // Initializes the Spatial Data Map for the scene
 void SceneLoader::initializeSpatialMap(vector< string > sData, unsigned int iLength)
 {
@@ -399,6 +405,8 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         SPIKES_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
     else if (SPAWNS == sIndicator)                      // Parse Spawn Point Information
         saveSpawnPoint(sData, sData.size());
+    else if (SKYBOX == sIndicator)                      // Skybox Information
+        createSkybox(sData);
 
     clearProperties();
 }

@@ -27,16 +27,18 @@ public:
 
     // Methods:
     Texture* loadTexture(const string &sFileName);
+    Texture* loadCubeMap(const vector<string>* sFileNames);
     Texture* genTexture(const vec4* vColor);
     Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);
+    void unloadTexture(Texture** pTexture);
     void unloadAllTextures();
 
 private:
     // Singleton Implementation
     static TextureManager* pInstance;
     TextureManager();
-    TextureManager( const TextureManager& pCopy ) {}
-    TextureManager& operator=( const TextureManager& pRHS ) {}
+    TextureManager(const TextureManager& pCopy);
+    TextureManager& operator=(const TextureManager& pRHS);
 
     // Hash Map
     unordered_map<string, unique_ptr<Texture>> m_pTextureCache;

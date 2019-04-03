@@ -96,10 +96,86 @@ PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts
 }
 
 
+/*
+    Before we check for keyboard input, set cursor direction to invalid
+    (neutral).
+*/
 void PromptMenu::setupKeyCommands()
 {
+    m_eCursorDirectionKeyboard = COMMAND_INVALID_FIXED;
 }
 
+/*
+    Move the keyboard cursor based on the current direction.
+
+    NOTE: If there's a better way to do this, I'd like to know.
+
+    @param direction    to move the keyboard cursor
+*/
+void PromptMenu::moveCursorKeyboard(eFixedCommand direction)
+{
+    switch (m_eCursorDirectionKeyboard)
+    {
+    case COMMAND_INVALID_FIXED: // Neutral
+        switch (direction)
+        {
+        case COMMAND_PROMPT_UP:
+        case COMMAND_PROMPT_RIGHT:
+        case COMMAND_PROMPT_DOWN:
+        case COMMAND_PROMPT_LEFT:
+            m_eCursorDirectionKeyboard = direction;
+            break;
+        }
+        break;
+    case COMMAND_PROMPT_UP:
+        switch (direction)
+        {
+        case COMMAND_PROMPT_RIGHT:
+        case COMMAND_PROMPT_LEFT:
+            m_eCursorDirectionKeyboard = direction;
+            break;
+        case COMMAND_PROMPT_DOWN:
+            m_eCursorDirectionKeyboard = COMMAND_INVALID_FIXED;
+            break;
+        }
+    case COMMAND_PROMPT_DOWN:
+        switch (direction)
+        {
+        case COMMAND_PROMPT_RIGHT:
+        case COMMAND_PROMPT_LEFT:
+            m_eCursorDirectionKeyboard = direction;
+            break;
+        case COMMAND_PROMPT_UP:
+            m_eCursorDirectionKeyboard = COMMAND_INVALID_FIXED;
+            break;
+        }
+    case COMMAND_PROMPT_RIGHT:
+        switch (direction)
+        {
+        case COMMAND_PROMPT_UP:
+        case COMMAND_PROMPT_DOWN:
+            m_eCursorDirectionKeyboard = direction;
+            break;
+        case COMMAND_PROMPT_LEFT:
+            m_eCursorDirectionKeyboard = COMMAND_INVALID_FIXED;
+            break;
+        }
+    case COMMAND_PROMPT_LEFT:
+        switch (direction)
+        {
+        case COMMAND_PROMPT_UP:
+        case COMMAND_PROMPT_DOWN:
+            m_eCursorDirectionKeyboard = direction;
+            break;
+        case COMMAND_PROMPT_RIGHT:
+            m_eCursorDirectionKeyboard = COMMAND_INVALID_FIXED;
+            break;
+        }
+    }
+}
+
+// @EvanQuan : hovercraft not referenced
+// Not referenced due to inherited virtual function
 void PromptMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
 {
     switch (command)
@@ -225,6 +301,11 @@ bool PromptMenu::moveLeftColumn()
     return oldCursorColumn != m_iCursorColumn;
 }
 
+/*
+    Move the cursor in the menu in the menu prompt map, based on the direction.
+    If the cursor goes beyond the bounds of the prompt map, it will re-enter on
+    the other side (modulo) so that the cursor cycles its movement.
+*/
 void PromptMenu::moveCursor(eFixedCommand direction)
 {
     //if (m_fSecondsToNextRepeat > 0.0f) {
@@ -291,12 +372,15 @@ void PromptMenu::updateTimeValues(float fTimeInSeconds)
     }
 }
 
-void PromptMenu::handleAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+//@EvanQuan : Functions not implemented
+void PromptMenu::handleAccumulatedKeyCommands(eFixedCommand command)
 {
+    moveCursorKeyboard(command);
 }
 
-void PromptMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft, eFixedCommand command)
+void PromptMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft)
 {
+    executeFixedCommand(hovercraft, m_eCursorDirectionKeyboard);
 }
 
 void PromptMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)

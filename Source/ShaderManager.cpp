@@ -103,9 +103,13 @@ ShaderManager::ShaderManager()
     m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/shadow.vert");
     m_pShader[eShaderType::SHADOW_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/shadow.frag");
 
-    // UI Shader (does nothing)
+    // UI Shader
     m_pShader[eShaderType::UI_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/ui.vert");
     m_pShader[eShaderType::UI_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/ui.frag");
+
+    // SkyBox Shader
+    m_pShader[eShaderType::SKYBOX_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/skybox.vert");
+    m_pShader[eShaderType::SKYBOX_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/skybox.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

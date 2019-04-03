@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 #include "EntityComponentHeaders/AnimationComponent.h"
+#include "EntityHeaders/HovercraftEntity.h"
 
 using namespace SpriteSheetDatabase;
 
@@ -23,25 +24,25 @@ FlameTrail::~FlameTrail()
 }
 
 /****************************************************************\
- * Inherited Virtual Functions                             *
+ * Inherited Virtual Functions                                  *
 \****************************************************************/
 
 void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
+    cout << "FLAME COLLISION DETECTED" << endl;
     // copy and pasted from rocket, may be differenet
     if (m_iOwnerID != pOther->getID())
     {
-        cout << "flame collision" << endl;
-        // SOUND_MANAGER->play(SoundManager::eSoundEvent::);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
-        // InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
-
-        // clear Rocket Rendering; Remove Instance from Mesh
-        // string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
-        // m_pMesh->removeInstance(m_pReferenceMap[sHashKey]);
-        // m_pPhysicsComponent->flagForRemoval(sHashKey);
-        // m_pReferenceMap.erase(sHashKey);        
+        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
     }
+}
+
+void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
+{
+    // TODO add flame hit sound here, as at will only occur if a hovercraft
+    // collides with this
+    cout << "FLAME HIT PLAYER " << hit->getID() << endl;
 }
 
 /****************************************************************\
@@ -69,9 +70,6 @@ void FlameTrail::initialize()
 
 void FlameTrail::update(float fTimeInSeconds)
 {
-    // Local Variables
-    bool bFlagForDeletion = false;
-
     // Update the Physics for the flame trail based on current Flame Trail
     for (unordered_map<string, float>::iterator pIter = m_pReferenceMap.begin();
         pIter != m_pReferenceMap.end();)

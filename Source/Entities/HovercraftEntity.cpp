@@ -13,37 +13,54 @@
 
 // Ability Defines
 /*
-Rocket
-Spikes
-Trail
-Dash - (all 4 directions count as 1 ability for cool down purposes)
+    Rocket
+    Spikes
+    Trail
+    Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
-#define ROCKET_SPEED            50.0f
+#define ROCKET_SPEED            100.0f
 #define FLAME_SPACING           0.25f
 
+/*
+    Length of the rocket hit box
+    This value is currently determined by the size of the model of the rocket,
+    so probably should not be manipulated. The radius of the rocket is
+    currently defined in PhysicsManager.
+*/
+#define ROCKET_BOUNDING_BOX     0.5f
 
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
+/*
+    If the hovercraft exceeds a certain elevant, they lose control until they
+    return below it. This prevents hovercrafts from continuing to apply a
+    driving force when they are in the air.
+*/
 #define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
 
 /*
-Cooldowns
+    Cooldowns
 
-The time the hovercraft must wait until they can use the ability again.
-These are the base cooldowns that all hovercrafts start with, and so
-should be a bit on the long end.
+    The time the hovercraft must wait until they can use the ability again.
+    These are the base cooldowns that all hovercrafts start with, and so
+    should be a bit on the long end.
 
-Units: seconds
+    Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        5.0f // 2
-#define SPIKES_BASE_COOLDOWN        3.0f // 2
+#define ROCKET_BASE_COOLDOWN        5.0f
+#define SPIKES_BASE_COOLDOWN        4.0f
 #define TRAIL_COOLDOWN              0.0f
-#define DASH_BASE_COOLDOWN          3.0f // 2
+// Cooldown between dash usages
+#define DASH_BASE_COOLDOWN          0.5f
+// Time to gain a dash charge
+#define DASH_BASE_RECHARGE          4.0f
+
+#define DASH_MAX_CHARGE_COUNT       3
 
 /*
-Once spikes are activated, they are enabled for a duration before deactivating.
+    Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         1.0f
+#define SPIKES_DURATION         1.5f
 
 /*
 Power up cooldowns
@@ -52,14 +69,15 @@ These are the minimum cooldowns for these abilities.
 
 */
 #define ROCKET_MIN_COOLDOWN 1.0f
-#define SPIKES_MIN_COOLDOWN SPIKES_DURATION
-#define DASH_MIN_COOLDOWN   0.5f
+#define SPIKES_MIN_COOLDOWN SPIKES_DURATION + 0.5f
+#define DASH_MIN_RECHARGE   1.0f
 
 /*
     Multiplies all cool down values to decrease them. Should be below 1.0
 */
 #define COOLDOWN_REDUCTION 0.9f
 
+#define TRAIL_RECHARGE_INCREASE 1.1f
 /*
 Total time the trail can be activated from full to empty.
 
@@ -94,7 +112,8 @@ Time multiplier for the trail to recharge from empty to full.
 < 1: recharge rate is slower than drain rate
 
 */
-#define TRAIL_RECHARGE_MULTIPLIER 0.3f
+#define TRAIL_BASE_RECHARGE_MULTIPLIER 0.3f // 9 sec
+#define TRAIL_MAX_RECHARGE_MULTIPLIER 1.0f  // 3 sec
 
 /*
 The interval of time between each created flame while the trail trail is
@@ -121,7 +140,7 @@ After getting hit, the hovercraft is invulnerable for a duration of time
 
 Unit : seconds
 */
-#define INVINCIBLE_TIME 2.0f
+#define INVINCIBLE_TIME 1.0f
 
 /*
 Determines from what horizontal angle the camera is tracking the hovercraft.
@@ -216,10 +235,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
-    m_pGmStats                  = GAME_STATS;
-
-    // Unused?
-    // m_fMinimumDistanceBetweenFlames = 5.0f;
+    m_pGameStats                = GAME_STATS;
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -238,6 +254,8 @@ void HovercraftEntity::reinitialize()
     m_bInvincible = false;
 
     outOfControlTime = 0.0f;
+
+    m_iDashMaxCharges = DASH_MAX_CHARGE_COUNT;
 
     initializeCooldowns();
     initializePowerups();
@@ -263,27 +281,14 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // If there's a new Transformation, apply it to the Mesh.
     m_pMesh->updateInstance(&m4NewTransform, m_sName);
+
     // Check to update Dynamic Position in Spatial Map
     vec3 vNewPosition = m4NewTransform[3];
-    if (m_vPosition != vNewPosition)
-    {
-        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
-    }
 
+    updateSpatialMap(vNewPosition);
 
-    vec3 dirVector;
-    getDirectionVector(&dirVector);
-    if (abs(dirVector.y) > 0.1f) {
-        //TODO set quat for rotation
-        vec3 newQuatAxis = vec3(dirVector.x,0.1f * (dirVector.y/abs(dirVector.y)), dirVector.z);
+    updatePhysicsComponent();
 
-        PxPlane plane = PxPlane(PxVec3(0,0,0), PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z), PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
-        PxTransform newTrans = getGlobalTransform();
-
-        newTrans.q = PxQuat(0, plane.n);
-
-        m_pPhysicsComponent->setGlobalPos(newTrans);
-    }
     // Calculate Position Averages for Camera
     m_vPosition = vNewPosition;
     updateInControl(fTimeInSeconds);
@@ -294,6 +299,41 @@ void HovercraftEntity::update(float fTimeInSeconds)
     updateQueuedActions();
 }
 
+void HovercraftEntity::updateSpatialMap(vec3 &vNewPosition)
+{
+    if (m_vPosition != vNewPosition)
+    {
+        m_pSpatialMap->updateDynamicPosition(this, &vNewPosition);
+    }
+}
+
+/*
+    Update the location of the physics component.
+*/
+void HovercraftEntity::updatePhysicsComponent()
+{
+    vec3 dirVector;
+    getDirectionVector(&dirVector);
+    if (abs(dirVector.y) > 0.1f) {
+        //TODO set quat for rotation
+        vec3 newQuatAxis = vec3(dirVector.x,
+                                0.1f * (dirVector.y/abs(dirVector.y)),
+                                dirVector.z);
+
+        PxPlane plane = PxPlane(PxVec3(0,0,0),
+                                PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z),
+                                PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
+        PxTransform newTrans = getGlobalTransform();
+
+        newTrans.q = PxQuat(0, plane.n);
+
+        m_pPhysicsComponent->setGlobalPos(newTrans);
+    }
+
+}
+void HovercraftEntity::setPosition(vec2 pos) {
+    m_pPhysicsComponent->setPosition(pos);
+}
 void HovercraftEntity::updateQueuedActions()
 {
     /* Currently coded for only speed power up */
@@ -314,7 +354,10 @@ void HovercraftEntity::updateQueuedActions()
     Hovercraft Entity will handle its "death" logic and award points to the
     attacker.
 
-    @param  attacker        to award points to
+    @param attacker         to award points to
+    @param ability          that hit this. An invalid ability will still
+                            register a hit, but not increment any ability
+                            kill stats.
 */
 void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
@@ -322,31 +365,44 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
         return;
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
-    eHovercraft hit = GAME_STATS->getEHovercraft(m_iID);
-    if (m_pGmStats->hasLargestScore(hit))
+    bool attackerHadLargestScore = m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
+    if (m_pGameStats->hasLargestScore(m_eHovercraft))
     {
-        // attackerHovercraft->enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        // If the attacker hit the hovercraft with the largest score, give them
+        // a speed boost
         attackerHovercraft->queuePowerup(ePowerup::POWERUP_SPEED_BOOST);
     }
     setInvincible();
-    m_pGmStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(hit), ability);
+    m_pGameStats->addScore(attacker,
+                         static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
+                         ability);
     resetMaxCooldowns();
     attackerHovercraft->reduceMaxCooldowns();
 }
 
+/*
+    Permanently reduce the max cooldowns of all abilities.
+*/
 void HovercraftEntity::reduceMaxCooldowns()
 {
-    m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
-    m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
-    m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN, m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+    m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN,
+                                                      m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN,
+                                                      m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
+    m_fTrailRechargeMultipler = FuncUtils::min(TRAIL_MAX_RECHARGE_MULTIPLIER,
+                                               m_fTrailRechargeMultipler * TRAIL_RECHARGE_INCREASE);
+    // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN,
+    //                                                   m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+    m_fDashMaxRecharge = FuncUtils::max(DASH_MIN_RECHARGE,
+                                        m_fDashMaxRecharge * COOLDOWN_REDUCTION);
 }
 
 void HovercraftEntity::resetMaxCooldowns()
 {
     m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
-    m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
+    // m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
+    m_fDashMaxRecharge = DASH_BASE_RECHARGE;
 }
 
 /*
@@ -392,7 +448,8 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
-        cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost enabled" << endl;
+        cout << m_eHovercraft << " speed boost enabled" << endl;
+        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_MIN_COOLDOWN;
@@ -400,24 +457,39 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     case POWERUP_SPIKES_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_MIN_COOLDOWN;
         break;
-    case POWERUP_DASH_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_MIN_COOLDOWN;
+    case POWERUP_DASH_RECHARGE:
+        // m_fMaxCooldowns[COOLDOWN_DASH] = DASH_MIN_COOLDOWN;
         break;
     default:
         return;
     }
     m_vPowerupsEnabled[powerup] = true;
     m_vPowerupsTime[powerup] = POWERUP_DURATION;
-    SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED);
-    GAME_STATS->addScore(GAME_STATS->getEHovercraft(m_iID), GameStats::PICKUP_POWERUP);
+    GAME_STATS->addScore(m_eHovercraft, GameStats::PICKUP_POWERUP);
 }
 
+/*
+    Queues up a powerup to activate for the next frame update.
+    For now, coded to speed boost only
+
+    @param powerup  to queue
+*/
 void HovercraftEntity::queuePowerup(ePowerup powerup)
 {
-    // For now, coded to speed boost only
-    queuedActions[QUEUED_SPEED_BOOST] = true;
+    switch (powerup)
+    {
+    case POWERUP_SPEED_BOOST:
+        queuedActions[QUEUED_SPEED_BOOST] = true;
+        break;
+    }
 }
 
+/*
+    Queues up a push for the next frame update
+
+    @param x    x-coordinate of push in world-space
+    @param y    y-coordinate of push in world-space
+*/
 void HovercraftEntity::queuePush(float x, float y)
 {
     queuedX = x;
@@ -437,6 +509,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
         cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost disabled" << endl;
+        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_DEACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
@@ -444,8 +517,8 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     case POWERUP_SPIKES_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
         break;
-    case POWERUP_DASH_COOLDOWN:
-        m_fMaxCooldowns[COOLDOWN_DASH] = DASH_BASE_COOLDOWN;
+    case POWERUP_DASH_RECHARGE:
+        // m_fMaxCooldowns[COOLDOWN_DASH] = DASH_BASE_COOLDOWN;
         break;
     default:
         return;
@@ -480,7 +553,6 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pPhysicsComponent = pEntityMngr->generatePhysicsComponent(m_iID);
     m_pPhysicsComponent->initializeVehicle(getName(),
                                            true,
-                                           m_pMesh,
                                            &sBounding,
                                            pObjectProperties->vPosition,
                                            MAX_NORMAL_SPEED);
@@ -549,24 +621,30 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         // TODO check if need to determine which velocity to do
 
         
-        vec3 myVelocity = getLinearVelocity();
-        vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
-        float mySpeed = glm::length(myVelocity);
-        float otherSpeed = glm::length(otherVelocity);
+        // vec3 myVelocity = getLinearVelocity();
+        // vec3 otherVelocity = pOtherHovercraft->getLinearVelocity();
+        // float mySpeed = glm::length(myVelocity);
+        // float otherSpeed = glm::length(otherVelocity);
 
-        // Multithread issues, can't do push
-        if (mySpeed > otherSpeed) {
+        // Multithread issues, can't do push directly
+        // Disabled for now until rotation collision bug is fixed
+        // if (mySpeed > otherSpeed) {
             // pOtherHovercraft->setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-            pOtherHovercraft->queuePush(myVelocity.x, myVelocity.y);
-        } else {
+            // pOtherHovercraft->queuePush(myVelocity.x, myVelocity.y);
+        // } else {
             // setLoseControl(LOSE_CONTROL_COLLISION_TIME);
-            queuePush(otherVelocity.x, otherVelocity.y);
-        }
+            // queuePush(otherVelocity.x, otherVelocity.y);
+        // }
 
         break;
     }
 }
 
+/*
+    Set the duration for the hovercraft to ignore input.
+
+    @param seconds  until control is regained
+*/
 void HovercraftEntity::setLoseControl(float seconds)
 {
     outOfControlTime = seconds;
@@ -597,6 +675,12 @@ void HovercraftEntity::initializeCooldowns()
 
     m_fTrailGauge = TRAIL_GAUGE_FULL;
     m_fSecondsSinceLastFlame = 0.0f;
+    m_fTrailRechargeMultipler = TRAIL_BASE_RECHARGE_MULTIPLIER;
+
+    m_iDashCharges = DASH_MAX_CHARGE_COUNT;
+    m_fDashMaxRecharge = DASH_BASE_RECHARGE;
+    m_fDashRecharge = 0.0f;
+
 }
 
 /*
@@ -687,6 +771,7 @@ void HovercraftEntity::updateCooldowns(float fTimeInSeconds)
     }
     updateTrail(fTimeInSeconds);
     updateSpikes(fTimeInSeconds);
+    updateDash(fTimeInSeconds);
 }
 
 /*
@@ -746,7 +831,7 @@ void HovercraftEntity::updateTrail(float fTimeInSeconds)
         if (m_fSecondsSinceTrailDeactivated > TRAIL_RECHARGE_COOLDOWN
             && m_fTrailGauge < TRAIL_GAUGE_FULL)
         {
-            float newGaugeValue = m_fTrailGauge + (fTimeInSeconds * TRAIL_RECHARGE_MULTIPLIER);
+            float newGaugeValue = m_fTrailGauge + (fTimeInSeconds * m_fTrailRechargeMultipler);
             if (newGaugeValue < TRAIL_GAUGE_FULL)
             {
                 m_fTrailGauge = newGaugeValue;
@@ -777,6 +862,20 @@ void HovercraftEntity::createTrailInstance()
     m_pPhysicsComponent->getTransformMatrix(&m4TransformMat);
     vNormal = m4TransformMat[1];
     m_pFireTrail->spawnFlame(&vNormal, &vAdjustedPosition);
+}
+
+void HovercraftEntity::updateDash(float fTimeInSeconds)
+{
+    if (m_iDashCharges < DASH_MAX_CHARGE_COUNT)
+    {
+        m_fDashRecharge -= fTimeInSeconds;
+        if (m_fDashRecharge <= 0)
+        {
+            m_iDashCharges++;
+            /* TODO play charge sound effect */
+            m_fDashRecharge = m_fDashMaxRecharge;
+        }
+    }
 }
 
 /*
@@ -890,7 +989,10 @@ void HovercraftEntity::shootRocket()
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
     m_pPhysicsComponent->getDirectionVector(&vVelocity);
     vVelocity *= ROCKET_SPEED;
-    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, 0.5f);
+    // The rocket is at the hovercraft's origin
+    float translateUp = 0.0f; // + is up, - is down
+    m4CurrentTransform *= translate(vec3(0.0f, translateUp, 0.0f));
+    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
 
@@ -940,7 +1042,11 @@ void HovercraftEntity::deactivateTrail()
 
 void HovercraftEntity::dash(eAbility direction)
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_DASH);
+    if (!canDash()) {
+        return;
+    }
+
+    SOUND_MANAGER->play(SoundManager::SOUND_DASH_ACTIVATE);
     switch (direction)
     {
     case ABILITY_DASH_BACK:
@@ -958,6 +1064,8 @@ void HovercraftEntity::dash(eAbility direction)
     }
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
+    m_iDashCharges--;
+    m_fDashRecharge = m_fDashMaxRecharge;
 }
 
 void HovercraftEntity::push(float x, float y) {
@@ -971,5 +1079,12 @@ float HovercraftEntity::getTrailGaugePercent() const
 
 void HovercraftEntity::setInvincible()
 {
-    m_bInvincible = true;  m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
+    m_bInvincible = true;
+    m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
+}
+
+void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
+{
+    m_eHovercraft = hovercraft;
+    m_bIsPlayer = m_pGameStats->isPlayer(hovercraft);
 }

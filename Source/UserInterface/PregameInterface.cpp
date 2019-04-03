@@ -5,28 +5,28 @@
 // Singleton instance
 PregameInterface* PregameInterface::m_pInstance = nullptr;
 
-PregameInterface::PregameInterface(int iWidth, int iHeight) : MenuInterface(iWidth, iHeight,
+PregameInterface::PregameInterface() : MenuInterface(
     // Scaling
     vector<pair<float, float>>
     {
         // 0 Background
         {0.0f, 0.0f},
         // 1 Player count
-        {0.0f, 0.0f},
-        // 2 Bot count
-        {0.0f, 0.0f},
+        {0.2f, 0.7f},
+        // 2 Player count number
+        {0.6f, 0.7f},
+        // 3 Bot count
+        {0.2f, 0.6f},
+        // 4 Bot count number
+        {0.6f, 0.6f},
+        // 5 Game time
+        {0.2f, 0.5f},
+        // 6 Game time number
+        {0.3f, 0.5f},
         // 3 Main menu
-        {0.0f, 0.0f},
+        {0.2f, 0.4f},
         // 4 Start game
-        {0.0f, 0.0f},
-        // 5 Player count number
-        {0.0f, 0.0f},
-        // 6 Bot count number
-        {0.0f, 0.0f},
-        // 7 Game time
-        { 0.0f, 0.0f },
-        // 8 Game time number
-        { 0.0f, 0.0f },
+        {0.5f, 0.4f},
     },
     // Translating
     vector<pair<float, float>>
@@ -34,21 +34,21 @@ PregameInterface::PregameInterface(int iWidth, int iHeight) : MenuInterface(iWid
         // 0 Background
         {0.0f, 0.0f},
         // 1 Player count
-        {0.25f, 0.07f},
+        {0.0f, 0.0f},
         // 2 Bot count
-        {0.25f, 0.5f},
+        {0.0f, 0.0f},
         // 3 Main menu
-        {0.25f, 0.2f},
+        {0.0f, 0.0f},
         // 4 Start game
-        {0.75f, 0.2f},
+        {0.0f, 0.0f},
         // 5 Player count number
-        {0.5f, 0.7f},
+        {0.0f, 0.0f},
         // 6 Bot count number
-        {0.5f, 0.5f},
+        {0.0f, 0.0f},
         // 7 Game time
-        {0.25f, 0.3f},
+        {0.0f, 0.0f},
         // 8 Game time number
-        {0.5f, 0.3f},
+        {0.0f, 0.0f},
     }
 )
 {
@@ -59,8 +59,9 @@ PregameInterface* PregameInterface::getInstance(int iWidth, int iHeight)
 {
     if (m_pInstance == nullptr)
     {
-        m_pInstance = new PregameInterface(iWidth, iHeight);
+        m_pInstance = new PregameInterface();
     }
+    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
     return m_pInstance;
 }
 
@@ -130,6 +131,9 @@ void PregameInterface::renderGameTime(int i_GameTime) {
         case 4:
             renderImage(IMAGE_4_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
+        default:
+            renderImage(IMAGE_1_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
     }
 }
 
@@ -155,7 +159,7 @@ void PregameInterface::renderOption() {
     }
     else if (option == GAME_TIME_OPTION) {
         renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_2, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
+        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_2, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
