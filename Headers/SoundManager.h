@@ -94,6 +94,8 @@ public:
     // looping at different locations.
     // How do we make the sound follow the location as it moves?
 
+    void stopAllEvents();
+
     static SoundManager* getInstance();
 
     void loadFiles();

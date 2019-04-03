@@ -47,6 +47,15 @@ SoundManager::~SoundManager() {
     delete advancedSettings;
 }
 
+void SoundManager::stopAllEvents()
+{
+    for (auto it : mEvents)
+    {
+        it.second->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+    }
+    updateChannels();
+}
+
 SoundManager* SoundManager::getInstance() {
     if (nullptr == m_pInstance) {
         m_pInstance = new SoundManager();
