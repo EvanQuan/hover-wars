@@ -97,8 +97,13 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             // Max player count is calculated every player count change as
             // joysticks may be connected or disconnected mid menu. This allows
             // us to not have to restart the game if this happens.
+#ifdef _DEBUG
+            maxPlayerCount = MAX_PLAYER_COUNT;
+#else
             maxPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
                                               MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
+#endif // _DEBUG
+
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
