@@ -14,7 +14,7 @@ PauseInterface::PauseInterface() : MenuInterface(
         // 1 Prompt 1
         {0.4f, 0.6f},
         // 2 Prompt 2
-        {0.4f, 0.5f},
+        {0.4f, 0.4f},
     },
     // Translating
     vector<pair<float, float>>
