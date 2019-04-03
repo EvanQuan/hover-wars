@@ -58,9 +58,9 @@ public:
     physx::PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createHovercraftEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(const char* sEntityID, float x, float y, float z, float radius);
-    void createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody, PxShape** pReturnShape);
-    void createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody, PxShape** pReturnShape);
-    void removeRigidDynamicObj(PxRigidDynamic* pActor, PxShape* pShape);
+    void createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody);
+    void createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody);
+    void removeRigidDynamicObj(PxRigidDynamic* pActor);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);

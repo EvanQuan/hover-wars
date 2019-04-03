@@ -271,9 +271,10 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_iSplitHeight = m_iHeight;
     m_iSplitWidth = m_iWidth;
     if (playerCount > 1)
-        m_iSplitHeight /=2;
+        m_iSplitHeight >>= 1;
     if (playerCount > 2)
-        m_iSplitWidth /= 2;
+        m_iSplitWidth >>= 1;
+
 
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
 
@@ -354,7 +355,7 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     glBindFramebuffer(GL_FRAMEBUFFER, sNewBlock.iFrameBuffer);
 
     // Create color attachment texture
-    sNewBlock.pColorBuffer = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight);
+    sNewBlock.pColorBuffer = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight, iPlayer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sNewBlock.pColorBuffer->getTextureID(), 0);
 
     //create renderbuffer object for depth and stencil attachment
@@ -404,7 +405,6 @@ void GameManager::endGame()
 
     resizeWindow(m_iWidth, m_iHeight);
 
-
     m_pPhysicsManager->cleanupPhysics();
 }
 
@@ -436,6 +436,7 @@ void GameManager::drawScene()
 
                 // Render Frame
                 m_pEntityManager->renderEnvironment(i);
+
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -480,8 +481,6 @@ void GameManager::setKeyboardHovercraft(int playerCount)
         // which does not have a joystick.
         m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
     }
-
-
 }
 
 // Name: renderSplitScreen
@@ -528,8 +527,6 @@ bool GameManager::initialize()
     if (!m_pShaderManager->initializeShaders())
     {
         cout << "Couldn't initialize shaders." << endl;
-        // Note: in release mode, there is some error in initializing the shaders.
-        // For now, we will continue loading the rest of the game as normal.
         return false;
     }
 
@@ -581,9 +578,9 @@ void GameManager::resizeWindow( int iWidth, int iHeight )
 
     // Calculate SplitScreen Size
     if (iSize > 1)
-        m_iSplitHeight <<= 1;
+        m_iSplitHeight >>= 1;
     if (iSize > 2)
-        m_iSplitWidth <<= 1;
+        m_iSplitWidth >>= 1;
 
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
     m_pCurrentInterface->updateWidthAndHeight(iWidth, iHeight);
