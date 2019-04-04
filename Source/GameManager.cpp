@@ -688,11 +688,13 @@ void GameManager::setPaused(bool paused)
     {
         // Immediately not in game
         m_bInGame = false;
+        m_bPaused = true;
     }
     else
     {
         // Queue up unpause. When the game resumes, there is a buffer time
         // before the environment begins updating again.
+        m_bInGame = true;
         m_bQueueResume = true;
         m_fQueueResumeTime = GAME_RESUME_TIME;
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_COUNTDOWN_TICK);
