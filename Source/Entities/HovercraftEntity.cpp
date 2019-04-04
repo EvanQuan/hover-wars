@@ -874,7 +874,7 @@ void HovercraftEntity::updateDash(float fTimeInSeconds)
         {
             m_iDashCharges++;
             /* TODO play charge sound effect */
-            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_DASH_RECHARGE);
+            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_DASH_RECHARGE, m_bIsPlayer);
             m_fDashRecharge = m_fDashMaxRecharge;
         }
     }
