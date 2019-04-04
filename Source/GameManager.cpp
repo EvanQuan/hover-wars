@@ -204,6 +204,7 @@ bool GameManager::renderGraphics()
     {
         m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
+        SOUND_MANAGER->update();
         if (startedGameOver)
         {
             // Decrease real time
@@ -230,7 +231,6 @@ bool GameManager::renderGraphics()
         // Sound needs to update after the EntityManager to reflect in game changes
         // Cannot be updated inside the EntityManager as sounds can play while game
         // is paused.
-        SOUND_MANAGER->update();
     }
     drawScene();
 
@@ -295,6 +295,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_pAIManager->reinitialize();
 
     setKeyboardHovercraft(playerCount);
+
+    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
 }
 
 // Name: generateFrameBuffer
