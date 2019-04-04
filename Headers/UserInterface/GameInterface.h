@@ -37,8 +37,8 @@ public:
 
     enum eNotification
     {
-        NOTIFICATION_NEW_LEADER, 
-        NOTIFICATION_TIME, 
+        NOTIFICATION_TIME_MINOR, 
+        NOTIFICATION_TIME_MAJOR, 
         NOTIFICATION_3, 
         NOTIFICATION_2, 
         NOTIFICATION_1, 
@@ -93,6 +93,7 @@ private:
         COMPONENT_SCORE_CHANGE,
         COMPONENT_MESSAGE,
         COMPONENT_POWERUP,
+        COMPONENT_NOTIFICATION,
         COMPONENT_COUNT
     };
 
@@ -104,7 +105,6 @@ private:
     SoundManager* m_pSoundManager;
 
     void displayMessage(eHovercraft hovercraft, std::string text);
-    void displayNotification(std::string text);
     /*
     Other classes should not be able to directly tell the UI to render text or
     images. Instead, the UI gathers the necessary information from other
@@ -122,6 +122,8 @@ private:
 
     // Score
     void renderScores();
+    
+    void renderNotifications();
 
     // Cooldowns
     void updateCooldowns();
