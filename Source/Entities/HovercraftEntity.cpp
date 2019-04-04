@@ -680,7 +680,7 @@ void HovercraftEntity::initializeCooldowns()
 
     m_iDashCharges = DASH_MAX_CHARGE_COUNT;
     m_fDashMaxRecharge = DASH_BASE_RECHARGE;
-    m_fDashRecharge = 0.0f;
+    m_fDashRecharge = DASH_BASE_RECHARGE;
 
 }
 
@@ -874,6 +874,7 @@ void HovercraftEntity::updateDash(float fTimeInSeconds)
         {
             m_iDashCharges++;
             /* TODO play charge sound effect */
+            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_DASH_RECHARGE);
             m_fDashRecharge = m_fDashMaxRecharge;
         }
     }
@@ -1066,7 +1067,6 @@ void HovercraftEntity::dash(eAbility direction)
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
     m_iDashCharges--;
-    m_fDashRecharge = m_fDashMaxRecharge;
 }
 
 void HovercraftEntity::push(float x, float y) {
