@@ -16,17 +16,17 @@ PregameInterface::PregameInterface() : MenuInterface(
         // 2 Player count number
         {0.6f, 0.7f},
         // 3 Bot count
-        {0.2f, 0.6f},
+        {0.2f, 0.55f},
         // 4 Bot count number
-        {0.6f, 0.6f},
+        {0.6f, 0.55f},
         // 5 Game time
-        {0.2f, 0.5f},
+        {0.2f, 0.40f},
         // 6 Game time number
-        {0.6f, 0.5f},
+        {0.6f, 0.40f},
         // 3 Main menu
-        {0.2f, 0.4f},
+        {0.2f, 0.25f},
         // 4 Start game
-        {0.5f, 0.4f},
+        {0.5f, 0.25f},
     },
     // Translating
     vector<pair<float, float>>
@@ -101,6 +101,9 @@ void PregameInterface::renderNumberOfPlayer(int i_NumOfPlayer) {
 void PregameInterface::renderNumberOfBot(int i_NumOfBot) {
     // get the bot count and render number
     switch(i_NumOfBot) {
+        case 0:
+            renderImage(IMAGE_0, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
+            break;
         case 1:
             renderImage(IMAGE_1, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
             break;
@@ -119,17 +122,35 @@ void PregameInterface::renderNumberOfBot(int i_NumOfBot) {
 void PregameInterface::renderGameTime(int i_GameTime) {
     // get the player count and render number
     switch(i_GameTime) {
-        case 1:
+        case 60:
             renderImage(IMAGE_1_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
-        case 2:
+        case 120:
             renderImage(IMAGE_2_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
-        case 3:
+        case 180:
             renderImage(IMAGE_3_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
-        case 4:
+        case 240:
             renderImage(IMAGE_4_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
+        case 300:
+            renderImage(IMAGE_5_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
+        case 360:
+            renderImage(IMAGE_6_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
+        case 420:
+            renderImage(IMAGE_7_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
+        case 480:
+            renderImage(IMAGE_8_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
+        case 540:
+            renderImage(IMAGE_9_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            break;
+        case 600:
+            renderImage(IMAGE_10_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         default:
             renderImage(IMAGE_1_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
@@ -142,7 +163,7 @@ void PregameInterface::renderOption() {
     string option = m->getCurrentPrompt();
     renderNumberOfPlayer(m->getPlayerCount());
     renderNumberOfBot(m->getBotCount());
-    renderGameTime(1);
+    renderGameTime(m->getGameTime());
 
     if (option == PLAY_COUNT_OPTION) {
         renderImage(IMAGE_NUMBER_OF_PLAYER_2, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);

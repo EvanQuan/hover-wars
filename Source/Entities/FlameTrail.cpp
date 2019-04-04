@@ -41,6 +41,8 @@ void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
 {
     // TODO add flame hit sound here, as at will only occur if a hovercraft
     // collides with this
+    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
+
     cout << "FLAME HIT PLAYER " << hit->getID() << endl;
 }
 
@@ -86,6 +88,8 @@ void FlameTrail::update(float fTimeInSeconds)
             ++pIter;
     }
 }
+
+
 
 /****************************************************************\
  * Billboard Functions                                          *

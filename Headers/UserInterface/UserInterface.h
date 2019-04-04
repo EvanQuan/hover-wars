@@ -18,6 +18,11 @@
 #define COLOR_GREEN             vec3(0.0, 1.0, 0.0)
 #define COLOR_YELLOW            vec3(1.0, 1.0, 0.0)
 
+// font website: https://fontmeme.com/tron-font/
+// size 30
+// effect 'Style-Neon'
+// color 00FCFF and FF00E1
+#define IMAGE_0 "textures/menu/0.png"
 #define IMAGE_1 "textures/menu/1.png"
 #define IMAGE_2 "textures/menu/2.png"
 #define IMAGE_3 "textures/menu/3.png"
@@ -50,6 +55,16 @@
 #define IMAGE_2_MIN "textures/menu/2_min.png"
 #define IMAGE_3_MIN "textures/menu/3_min.png"
 #define IMAGE_4_MIN "textures/menu/4_min.png"
+#define IMAGE_5_MIN "textures/menu/5_min.png"
+#define IMAGE_6_MIN "textures/menu/6_min.png"
+#define IMAGE_7_MIN "textures/menu/7_min.png"
+#define IMAGE_8_MIN "textures/menu/8_min.png"
+#define IMAGE_9_MIN "textures/menu/9_min.png"
+#define IMAGE_10_MIN "textures/menu/10_min.png"
+#define IMAGE_CONTROLLER_1 "textures/menu/controller.png"
+#define IMAGE_CONTROLLER_2 "textures/menu/controller2.png"
+#define IMAGE_GAME_RULE_1 "textures/menu/game_rule.png"
+#define IMAGE_GAME_RULE_2 "textures/menu/game_rule2.png"
 
 // Forward Declaration
 class ShaderManager;

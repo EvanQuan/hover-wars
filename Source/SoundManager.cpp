@@ -695,7 +695,6 @@ void SoundManager::downPosition() {
 
 void SoundManager::start() {
     play(MUSIC_INGAME);
-    // play(SOUND_HOVERCAR_ENGINE);
 }
 
 // Call every frame (or more often)
@@ -706,5 +705,5 @@ void SoundManager::update() {
     // the code, it doesn't make sense. Perhaps it has to do with how the sound is threaded
     // and that this action is not thread-safe. I don't know.
     // For now, we will disable this.
-    // setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30.0f);
+    setSpeedParameter(ENTITY_MANAGER->getPlayer(HOVERCRAFT_PLAYER_1)->getSpeed() / 30.0f);
 }
