@@ -121,6 +121,7 @@ private:
     Unit : seconds
     */
     float m_fGameTime;
+    bool m_bHasStartedWarning;
 
     /*
     Tracks how long the message has been displayed for

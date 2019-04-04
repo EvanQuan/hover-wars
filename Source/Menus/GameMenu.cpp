@@ -11,6 +11,7 @@ Constructor
 */
 void GameMenu::enter()
 {
+    cout << "ENTERED GAME MENU" << endl;
     m_pGameManager->setPaused(false);
 }
 GameMenu::GameMenu() : Menu(

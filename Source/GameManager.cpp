@@ -8,9 +8,11 @@
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/GameInterface.h"
+#include "UserInterface/LoadingInterface.h"
 #include "UserInterface/PostgameInterface.h"
 #include "Menus/GameMenu.h"
 #include "Menus/StartMenu.h"
+#include "Menus/LoadingMenu.h"
 #include "TextureManager.h"
 
 // Unit: seconds
@@ -184,7 +186,6 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
-    m_fGameTime -= frameDeltaTime;
     if (!startedGameOver && (m_fGameTime < 0))
     {
         startedGameOver = true;
@@ -204,7 +205,22 @@ bool GameManager::renderGraphics()
     {
         m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
+
+        // Sound needs to update after the EntityManager to reflect in game changes
+        // Cannot be updated inside the EntityManager as sounds can play while game
+        // is paused.
         SOUND_MANAGER->update();
+
+        // Only update game time if the game is playing to ensure the GameInterface
+        // and the Game Time are in perfect sync.
+        m_fGameTime -= frameDeltaTime;
+        cout << m_fGameTime << endl;
+
+        // The user interface should update after the EntityManager and
+        // CommandHandler has changed in order to reflect their changes.
+        // It also cannot update inside the EntityManager since it is able
+        // to be updated while the EntityManager is paused.
+        m_pGameInterface->update(frameDeltaTime);
         if (startedGameOver)
         {
             // Decrease real time
@@ -220,17 +236,7 @@ bool GameManager::renderGraphics()
                 // Music change/fade?
             }
         }
-
-        // The user interface should update after the EntityManager and
-        // CommandHandler has changed in order to reflect their changes.
-        // It also cannot update inside the EntityManager since it is able
-        // to be updated while the EntityManager is paused.
-        m_pCurrentInterface->update(frameDeltaTime);
         // drawScene();
-        // call function to draw our scene
-        // Sound needs to update after the EntityManager to reflect in game changes
-        // Cannot be updated inside the EntityManager as sounds can play while game
-        // is paused.
     }
     drawScene();
 
@@ -253,8 +259,12 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     float gameTime,
                                     string sFileName)
 {
-    // We intialize all values for the game to immediately start
 
+    // Before we initialize, set to LoadingMenu and Interface
+    setCurrentInterface(LoadingInterface::getInstance(m_iWidth, m_iHeight));
+    m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
+
+    // We intialize all values for the game to immediately start
     m_pPhysicsManager->initPhysics(true);
 
     setPaused(false);
@@ -295,6 +305,11 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_pAIManager->reinitialize();
 
     setKeyboardHovercraft(playerCount);
+
+    // Only after everything has loaded, switch to the game menu.
+    // Don't need to switch to GameInterface, as the GameInterface is directly
+    // rendered for each player.
+    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
 
     SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
 }
