@@ -122,6 +122,7 @@ private:
     // which might be shared with a joystick
     eHovercraft m_eKeyboardHovercraft;
 
+    void updateGameTime(float frameDeltaTime);
     /*
         Tracks the time of a given game. Specified by the user in the
         PregameMenu, and counts down at the start of the game (after
@@ -155,7 +156,9 @@ private:
     bool m_bInGame;
     /*
         If the game is paused, then the EntityManager and AIManager do not
-        update.
+        update. The user can be in game and yet paused at the same time. This
+        would occur during the buffer time when resuming or starting a new game
+        to get the player raed.
     */
     bool m_bPaused;
 };

@@ -619,17 +619,6 @@ void SoundManager::setSpeedParameter(float speedPercent) {
     updateChannels();
 }
 
-void SoundManager::togglePaused() {
-    // Toggle pause status
-    isPaused = !isPaused;
-
-    if (isPaused) {
-        setPauseMenu();
-    } else {
-        setResumeGame();
-    }
-}
-
 void SoundManager::setPauseMenu() {
     // Pause all the playing events
     for (auto it : mEvents)

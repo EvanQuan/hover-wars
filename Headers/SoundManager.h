@@ -106,8 +106,6 @@ public:
     // Change to private method
     void setSpeedParameter(float speed);
 
-    // @Deprecated
-    void togglePaused();
     void setPauseMenu();
     void setResumeGame();
     void setEndGame();

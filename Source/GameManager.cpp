@@ -190,37 +190,28 @@ bool GameManager::renderGraphics()
     {
         startedGameOver = true;
     }
-
-    if (m_bQueueResume)
-    {
-        m_fQueueResumeTime -= frameDeltaTime;
-        if (m_fQueueResumeTime <= 0)
-        {
-            m_bInGame = true;
-            m_bQueueResume = false;
-        }
-    }
     // Update Environment if the game is not paused
     if (m_bInGame)
     {
-        m_pAIManager->update(frameDeltaTime);
-        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
+        updateGameTime(frameDeltaTime);
+        if (!m_bPaused)
+        {
+            m_pAIManager->update(frameDeltaTime);
+            m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
 
-        // Sound needs to update after the EntityManager to reflect in game changes
-        // Cannot be updated inside the EntityManager as sounds can play while game
-        // is paused.
-        SOUND_MANAGER->update();
+            // Sound needs to update after the EntityManager to reflect in game changes
+            // Cannot be updated inside the EntityManager as sounds can play while game
+            // is paused.
+            SOUND_MANAGER->update();
+            // The user interface should update after the EntityManager and
+            // CommandHandler has changed in order to reflect their changes.
+            // It also cannot update inside the EntityManager since it is able
+            // to be updated while the EntityManager is paused.
+            m_pGameInterface->update(frameDeltaTime);
+        }
 
-        // Only update game time if the game is playing to ensure the GameInterface
-        // and the Game Time are in perfect sync.
-        m_fGameTime -= frameDeltaTime;
-        cout << m_fGameTime << endl;
 
-        // The user interface should update after the EntityManager and
-        // CommandHandler has changed in order to reflect their changes.
-        // It also cannot update inside the EntityManager since it is able
-        // to be updated while the EntityManager is paused.
-        m_pGameInterface->update(frameDeltaTime);
+
         if (startedGameOver)
         {
             // Decrease real time
@@ -269,6 +260,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     setPaused(false);
     startedGameOver = false;
     m_fGameTime = gameTime;
+    m_bPaused = true;
+    m_bInGame = true;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pGameInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
     m_pGameInterface->reinitialize(gameTime);
@@ -426,6 +419,7 @@ void GameManager::endGame()
     // postgame menu
     cout << "GameManger::endGame()" << endl;
     m_bInGame = false;
+    m_bPaused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
@@ -519,6 +513,33 @@ void GameManager::setKeyboardHovercraft(int playerCount)
         // Under this assumption, the keyboard will control the last player,
         // which does not have a joystick.
         m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
+    }
+}
+
+/*
+    Update the game time only while in game. This should only be called while
+    in game.
+*/
+void GameManager::updateGameTime(float frameDeltaTime)
+{
+    // Only update game time if the game is playing to ensure the GameInterface
+    // and the Game Time are in perfect sync.
+    if (!m_bPaused)
+    {
+        m_fGameTime -= frameDeltaTime;
+        cout << m_fGameTime << endl;
+    }
+
+    // If in game, check to see if queued to resume. This should be the case
+    // when resuming from pause or at the start of the game.
+    if (m_bQueueResume)
+    {
+        m_fQueueResumeTime -= frameDeltaTime;
+        if (m_fQueueResumeTime <= 0)
+        {
+            m_bPaused = false;
+            m_bQueueResume = false;
+        }
     }
 }
 
