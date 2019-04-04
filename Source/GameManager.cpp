@@ -186,7 +186,6 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environemnt can respond to the commands issued this frame.
     m_pCommandHandler->update(frameDeltaTime);
-    m_fGameTime -= frameDeltaTime;
     if (!startedGameOver && (m_fGameTime < 0))
     {
         startedGameOver = true;
@@ -211,6 +210,11 @@ bool GameManager::renderGraphics()
         // Cannot be updated inside the EntityManager as sounds can play while game
         // is paused.
         SOUND_MANAGER->update();
+
+        // Only update game time if the game is playing to ensure the GameInterface
+        // and the Game Time are in perfect sync.
+        m_fGameTime -= frameDeltaTime;
+        cout << m_fGameTime << endl;
 
         // The user interface should update after the EntityManager and
         // CommandHandler has changed in order to reflect their changes.
