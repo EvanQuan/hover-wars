@@ -306,6 +306,7 @@ void GameInterface::renderGameTime()
     if (secondsRemaining <= TIME_WARNING_SOUND_START && !m_bHasStartedWarning)
     {
         m_bHasStartedWarning = true;
+        m_pSoundManager->stopEvent(SoundManager::eSoundEvent::MUSIC_INGAME);
         m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_LOOP);
     }
     vec3 color = secondsRemaining <= TIME_WARNING2_START ?TIME_WARNING2_COLOR

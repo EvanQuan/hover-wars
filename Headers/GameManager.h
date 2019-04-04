@@ -45,7 +45,7 @@ public:
 
     eHovercraft getKeyboardHovercraft() const { return m_eKeyboardHovercraft; }
 
-    bool isPaused() const { return m_bPaused; }
+    bool isPaused() const { return m_bInGame; }
     void setPaused(bool paused);
 
     void addInterface(UserInterface* ui);
@@ -89,39 +89,21 @@ private:
 
     // Update Variables
     /*
-    The time since graphics have been initialized.
-    This is tracked to ensure that all values update correctly for every frame
-    update.
+        The time since graphics have been initialized.
+        This is tracked to ensure that all values update correctly for every
+        frame update.
 
-    Unit: seconds
+        Unit: seconds
     */
     duration<float> m_fFrameTime;
     /*
-    This depends the rate at which the window is re-rendered.
-    Since it is costly to re-render the window, it is locked to re-render at a
-    fixed rate, even if the enviroment updates at a faster rate.
+        This depends the rate at which the window is re-rendered.
+        Since it is costly to re-render the window, it is locked to re-render
+        at a fixed rate, even if the enviroment updates at a faster rate.
 
-    Unit: seconds
+        Unit: seconds
     */
     duration<float> m_fMaxDeltaTime;
-
-    /*
-    After the game has ended, there is a duration of slow motion before the
-    game moves to the post game menu.
-
-    Unit: seconds
-    */
-    float m_fGameTime;
-    /*
-    After the game has been signaled to end, there is some delay before the
-    game actually ends. In other words, the game remains in the GameMenu for
-    this duration before moving onto the PostgameMenu.
-
-    Unit: seconds
-    */
-    float m_fGameOverTime;
-    // Signifies of the game has ended
-    bool startedGameOver;
 
     // Manager Pointers
     EntityManager*      m_pEntityManager;
@@ -135,13 +117,45 @@ private:
     GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
 
-    // If the game is paused, the environment will not update
-    bool m_bQueueResume;
-    float m_fQueueResumeTime;
-    bool m_bPaused;
-
     void setKeyboardHovercraft(int playerCount);
     // The keyboard corresponds to its own hovercraft
     // which might be shared with a joystick
     eHovercraft m_eKeyboardHovercraft;
+
+    /*
+        Tracks the time of a given game. Specified by the user in the
+        PregameMenu, and counts down at the start of the game (after
+        initialization).
+
+        Unit: seconds
+    */
+    float m_fGameTime;
+    /*
+        After the user resumes the game from a pause, or starts a new game,
+        there is a buffer time before the environment updates in order for
+        the player to get ready.
+
+        Unit: seconds
+    */
+    float m_fResumeTime;
+    float m_fGameOverTime;
+    // Signifies of the game has ended
+    bool startedGameOver;
+
+    // If the game is paused, the environment will not update
+    bool m_bQueueResume;
+    /*
+        After the game has been signaled to end, there is some delay before the
+        game actually ends. In other words, the game remains in the GameMenu
+        for this duration before moving onto the PostgameMenu.
+
+        Unit: seconds
+    */
+    float m_fQueueResumeTime;
+    bool m_bInGame;
+    /*
+        If the game is paused, then the EntityManager and AIManager do not
+        update.
+    */
+    bool m_bPaused;
 };

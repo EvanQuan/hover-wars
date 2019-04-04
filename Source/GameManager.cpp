@@ -196,12 +196,12 @@ bool GameManager::renderGraphics()
         m_fQueueResumeTime -= frameDeltaTime;
         if (m_fQueueResumeTime <= 0)
         {
-            m_bPaused = false;
+            m_bInGame = true;
             m_bQueueResume = false;
         }
     }
     // Update Environment if the game is not paused
-    if (!m_bPaused)
+    if (m_bInGame)
     {
         m_pAIManager->update(frameDeltaTime);
         m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
@@ -236,7 +236,6 @@ bool GameManager::renderGraphics()
                 // Music change/fade?
             }
         }
-        // drawScene();
     }
     drawScene();
 
@@ -426,7 +425,7 @@ void GameManager::endGame()
 
     // postgame menu
     cout << "GameManger::endGame()" << endl;
-    m_bPaused = true;
+    m_bInGame = false;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
     m_pEntityManager->purgeEnvironment();
@@ -451,7 +450,7 @@ void GameManager::drawScene()
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);
-        if (!m_bPaused)
+        if (m_bInGame)
         {
             // Set up Render for this frame
             m_pEntityManager->setupRender();
@@ -482,7 +481,7 @@ void GameManager::drawScene()
             renderSplitScreen();
         }
         glDisable(GL_DEPTH_TEST);
-        if (m_bPaused)
+        if (!m_bInGame)
         {
             // Pause check is to avoid double rendering the Game interface.
             m_pCurrentInterface->render();
@@ -577,7 +576,7 @@ bool GameManager::initialize()
 
 
     // Game starts paused as the player starts in the start menu
-    m_bPaused = true;
+    m_bInGame = false;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
@@ -666,8 +665,8 @@ void GameManager::setPaused(bool paused)
 {
     if (paused)
     {
-        // Pause immediately
-        m_bPaused = true;
+        // Immediately not in game
+        m_bInGame = false;
     }
     else
     {
@@ -675,5 +674,6 @@ void GameManager::setPaused(bool paused)
         // before the environment begins updating again.
         m_bQueueResume = true;
         m_fQueueResumeTime = GAME_RESUME_TIME;
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_COUNTDOWN_TICK);
     }
 }

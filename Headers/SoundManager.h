@@ -95,6 +95,7 @@ public:
     // How do we make the sound follow the location as it moves?
 
     void stopAllEvents();
+    void stopEvent(eSoundEvent soundEvent, bool bImmediate = true);
 
     static SoundManager* getInstance();
 
@@ -161,7 +162,6 @@ private:
     void playEventDirect(const string& sEventName);
 
     // void stopChannel(int iChannelId);
-    void stopEvent(eSoundEvent soundEvent, bool bImmediate = true);
     void pauseEvent(const string& sEventName);
     void resumeEvent(const string& sEventName);
 
