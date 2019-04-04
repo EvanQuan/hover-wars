@@ -31,7 +31,18 @@ public:
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
+        // @Deprecated
         KILL_MESSAGE_NEW_LEADER,
+    };
+
+    enum eNotification
+    {
+        NOTIFICATION_NEW_LEADER, 
+        NOTIFICATION_TIME, 
+        NOTIFICATION_3, 
+        NOTIFICATION_2, 
+        NOTIFICATION_1, 
+        NOTIFICATION_GO, 
     };
 
     static GameInterface* getInstance(int iWidth, int iHeight);
@@ -59,7 +70,9 @@ public:
 
     void setFocus(eHovercraft hovercraft);
 
-    void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
+    void displayKillMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
+    // Send a message to everyone.
+    void displayNotification(eNotification message);
     void displayPowerup(eHovercraft hovercraft, ePowerup powerup);
 
     // Display debug message
@@ -91,6 +104,7 @@ private:
     SoundManager* m_pSoundManager;
 
     void displayMessage(eHovercraft hovercraft, std::string text);
+    void displayNotification(std::string text);
     /*
     Other classes should not be able to directly tell the UI to render text or
     images. Instead, the UI gathers the necessary information from other
@@ -132,6 +146,13 @@ private:
     std::string m_sMessages[MAX_HOVERCRAFT_COUNT];
     float m_fPowerupMessageTimes[MAX_HOVERCRAFT_COUNT];
     float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
+
+    /*
+        Notifications are singular messages shared amongst all players.
+        Their location is different than messages.
+    */
+    std::string m_sNotification;
+    float m_fNotificationTime;
 
     /*
     Score updates appear temporarily just as messages are
