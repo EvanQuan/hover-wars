@@ -78,13 +78,17 @@ private:
     void cleanupFrameBuffers();
     void generateFrameBuffer(unsigned int iPlayer);
 
+    // Map Rendering variables
+    vector< vec3 > m_vPositions, m_vColors;
+    GLuint m_iMapVAO, m_iMapVBO;
+    void renderMap();
+
     // Screen Height and Width
     int m_iWidth, m_iSplitWidth;
     int m_iHeight, m_iSplitHeight;
 
     // Window Reference
     GLFWwindow* m_pWindow;
-
 
     // Update Variables
     /*

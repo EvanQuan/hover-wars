@@ -99,6 +99,7 @@ public:
     HovercraftEntity* getBot(eHovercraft bot) const;
     bool botExists(eHovercraft bot) const;
     int getPlayerSize() const;
+    void getPlayerPositions(vector<vec3>* vReturnPositions) const;
 
 
     // Returns constant pointers to the Player and Bot lists.

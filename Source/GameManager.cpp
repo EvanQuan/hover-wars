@@ -29,6 +29,16 @@
  * Constants *
 \*************/
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
+const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
+    vec3(0.0f, 0.0f, 1.0f), /*PLAYER 1*/
+    vec3(0.0f, 1.0f, 0.0f), /*PLAYER 2*/
+    vec3(1.0f, 0.0f, 0.0f), /*PLAYER 3*/
+    vec3(1.0f, 0.0f, 1.0f), /*PLAYER 4*/
+    vec3(0.0f, 1.0f, 1.0f), /*BOT 1*/
+    vec3(1.0f, 1.0f, 0.0f), /*BOT 2*/
+    vec3(0.0f), /*BOT 3*/
+    vec3(0.5f)  /*BOT 4*/
+};
 
 // Singleton Variable initialization
 GameManager* GameManager::m_pInstance = nullptr;
@@ -62,6 +72,9 @@ GameManager::GameManager(GLFWwindow* rWindow)
     glGenVertexArrays(1, &m_iVertexArray);
     m_iVertexBuffer = m_pShaderManager->genVertexBuffer(m_iVertexArray, nullptr, (sizeof(vec4) << 4), GL_STATIC_DRAW);
     m_pShaderManager->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), nullptr);
+
+    // Generate VAO for rendering Map items
+    glGenVertexArrays(1, &m_iMapVAO);
 }
 
 /*
@@ -104,6 +117,10 @@ GameManager::~GameManager()
     // Split Screen Clean Up
     glDeleteBuffers(1, &m_iVertexBuffer);
     glDeleteVertexArrays(1, &m_iVertexArray);
+
+    // Map Clean up
+    glDeleteBuffers(1, &m_iMapVBO);
+    glDeleteVertexArrays(1, &m_iMapVAO);
 
     // Clean up Allocated Memory
     // NOTE: crash at glDeleteBuffers in destructor
@@ -275,19 +292,36 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     if (playerCount > 2)
         m_iSplitWidth >>= 1;
 
-
+    // Set up EntitManager for Camera Frustums
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
 
     // Spawn Players
     for (unsigned int i = 0; i < playerCount; i++) {
-        SCENE_LOADER->createPlayer(i);
+        m_vPositions.push_back(SCENE_LOADER->createPlayer(i));
+        m_vColors.push_back(COLORS[i]);
         generateSplitScreen(i);
     }
 
     // Spawn Bots
     for (unsigned int i = 0; i < botCount; i++) {
-        SCENE_LOADER->createBot();
+        m_vPositions.push_back(SCENE_LOADER->createBot());
+        m_vColors.push_back(COLORS[MAX_PLAYER_COUNT + i]);
     }
+
+    // Setup Map Data
+    vector< vec3 > vCombinedData = m_vPositions;
+    vCombinedData.insert(vCombinedData.end(), m_vColors.begin(), m_vColors.end());
+    m_iMapVBO = m_pShaderManager->genVertexBuffer(m_iMapVAO,
+                                                  vCombinedData.data(),
+                                                  (vCombinedData.size() * sizeof(vec3)),
+                                                  GL_DYNAMIC_DRAW);
+   //glBindVertexArray(m_iMapVAO);
+   //glBufferSubData(GL_ARRAY_BUFFER,
+   //                m_vPositions.size() * sizeof(vec3),
+   //                m_vColors.size() * sizeof(vec3), m_vColors.data());
+    m_pShaderManager->setAttrib(m_iMapVAO, 0, 3, 0, nullptr);
+    m_pShaderManager->setAttrib(m_iMapVAO, 1, 3, 0, (void*)(m_vPositions.size() * sizeof(vec3)));
+    glBindVertexArray(0);
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
@@ -416,6 +450,11 @@ void GameManager::endGame()
 
     cleanupFrameBuffers();
 
+    // Clean up Map information
+    glDeleteBuffers(1, &m_iMapVBO);
+    m_vColors.clear();
+    m_vPositions.clear();
+
     resizeWindow(m_iWidth, m_iHeight);
 
     m_pPhysicsManager->cleanupPhysics();
@@ -439,6 +478,12 @@ void GameManager::drawScene()
             // Set up Render for this frame
             m_pEntityManager->setupRender();
 
+            // Set Map Position Data.
+            m_pEntityManager->getPlayerPositions(&m_vPositions);
+            glBindBuffer(GL_ARRAY_BUFFER, m_iMapVBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, m_vPositions.size() * sizeof(vec3), m_vPositions.data());
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
             // Render each screen
             for( unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
             {
@@ -449,7 +494,7 @@ void GameManager::drawScene()
 
                 // Render Frame
                 m_pEntityManager->renderEnvironment(i);
-
+                renderMap();
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -520,6 +565,23 @@ void GameManager::renderSplitScreen()
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glBindVertexArray(0);
+}
+
+// Name: renderMap
+// Written by: James Coté
+// Description: Draws the Map triangles on the screen for directing toward other players that
+//              aren't on screen.
+void GameManager::renderMap()
+{
+    // Set up OpenGL for rendering
+    glBindVertexArray(m_iMapVAO);
+    glUseProgram(m_pShaderManager->getProgram(ShaderManager::eShaderType::MAP_SHDR));
+
+    glPointSize(20.0);
+    glDrawArrays(GL_POINTS, 0, m_vPositions.size());
+    glPointSize(1.0);
+
     glBindVertexArray(0);
 }
 

@@ -841,6 +841,21 @@ HovercraftEntity* EntityManager::getBot(eHovercraft bot) const
     return m_pBotEntityList.at(bot - HOVERCRAFT_BOT_1);
 }
 
+// Populates the vector with the corresponding Positions of all Players and Bots.
+void EntityManager::getPlayerPositions(vector<vec3>* vReturnPositions) const
+{
+    // Ensure parity between the sizes.
+    assert(vReturnPositions->size() == (m_pPlayerEntityList.size() + m_pBotEntityList.size()));
+
+    // Set all the Player Positions
+    for (unsigned int i = 0; i < m_pPlayerEntityList.size(); ++i)
+        (*vReturnPositions)[i] = m_pPlayerEntityList[i]->getPosition();
+
+    // Set all the Bot Positions (Offset from the Number of players)
+    for (unsigned int i = 0; i < m_pBotEntityList.size(); ++i)
+        (*vReturnPositions)[i + m_pPlayerEntityList.size()] = m_pBotEntityList[i]->getPosition();
+}
+
 /*********************************************************************************\
 * Camera Management                                                              *
 \*********************************************************************************/
