@@ -180,7 +180,8 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         break;
     case KILL_MESSAGE_KILLSTREAK:
         m_pSoundManager->play(SoundManager::SOUND_KILL_STREAK, playerInvolved);
-        displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
+        displayMessage(attacker, "You have a killstreak of "
+            + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
         break;
     case KILL_MESSAGE_KILL:
         m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
@@ -192,7 +193,8 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
             player < playerCount;
             player++)
         {
-            string newLeaderName = attacker == player ? "You are" : m_eHovercraftToString.at(attacker) + " is";
+            string newLeaderName = attacker == player ?
+                "You are" : m_eHovercraftToString.at(attacker) + " is";
             displayMessage(static_cast<eHovercraft>(player),
                 newLeaderName + " now in the lead");
         }
