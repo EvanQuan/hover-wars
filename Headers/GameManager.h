@@ -64,6 +64,11 @@ private:
     static GameManager* m_pInstance;
 
     bool renderGraphics();
+    void updateTime();
+    void checkIfStartedGameOver();
+    void updateInGame();
+    void checkIfShouldEndGame();
+    void updateEnvironment();
     void drawScene();
     void renderSplitScreen();
 
@@ -104,6 +109,25 @@ private:
         Unit: seconds
     */
     duration<float> m_fMaxDeltaTime;
+
+    /*
+        Difference in time from this frame and the last.
+        Needed for updating all the entities every frame.
+
+        This is only needed for the EntityManager.
+    */
+    duration<double> m_fFrameDeltaTimePrecise;
+
+    /*
+        Difference in time from this frame and the last.
+        Needed for updating all the entities every frame.
+
+        Do not confuse this with EntityManager's delta time, which is much
+        smaller since it updates more frequently than every frame update.
+
+        Unit: seconds
+    */
+    float m_fFrameDeltaTime;
 
     // Manager Pointers
     EntityManager*      m_pEntityManager;

@@ -170,70 +170,107 @@ void GameManager::startRendering()
 */
 bool GameManager::renderGraphics()
 {
-    // Update Timer
-    m_pTimer.updateTimeSinceLastFrame();
-    std::chrono::duration<double> fSecondsSinceLastFrame = m_pTimer.getFrameTimeSinceLastFrame();
-    m_fFrameTime += fSecondsSinceLastFrame;
-    /*
-    Get the delta since the last frame and update based on that delta.
-    Do not confuse this with EntityManager's delta time, which is much smaller
-    since it updates more frequently than every frame update.
-
-    Unit: seconds
-    */
-    float frameDeltaTime = static_cast<float>(fSecondsSinceLastFrame.count());
+    updateTime();
     // Execute all commands for this frame
     // These should be done before the EntityManager updates so that the
-    // environemnt can respond to the commands issued this frame.
-    m_pCommandHandler->update(frameDeltaTime);
-    if (!startedGameOver && (m_fGameTime < 0))
-    {
-        startedGameOver = true;
-    }
-    // Update Environment if the game is not paused
+    // environment can respond to the commands issued this frame.
+    m_pCommandHandler->update(m_fFrameDeltaTime);
+    checkIfStartedGameOver();
+
     if (m_bInGame)
     {
-        updateGameTime(frameDeltaTime);
-        if (!m_bPaused)
-        {
-            m_pAIManager->update(frameDeltaTime);
-            m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
-
-            // Sound needs to update after the EntityManager to reflect in game changes
-            // Cannot be updated inside the EntityManager as sounds can play while game
-            // is paused.
-            SOUND_MANAGER->update();
-            // The user interface should update after the EntityManager and
-            // CommandHandler has changed in order to reflect their changes.
-            // It also cannot update inside the EntityManager since it is able
-            // to be updated while the EntityManager is paused.
-            m_pGameInterface->update(frameDeltaTime);
-        }
-
-
-
-        if (startedGameOver)
-        {
-            // Decrease real time
-            m_fGameOverTime -= frameDeltaTime;
-            if (m_fGameOverTime <= 0)
-            {
-                endGame();
-            }
-            else
-            {
-                // Do whatever you want for this duration.
-                // Slow mo?
-                // Music change/fade?
-            }
-        }
+        updateInGame();
     }
+
     drawScene();
 
     // check for Window events
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_pWindow);
+}
+
+/*
+    Update all time values for a given render update.
+*/
+void GameManager::updateTime()
+{
+    m_pTimer.updateTimeSinceLastFrame();
+    m_fFrameDeltaTimePrecise = m_pTimer.getFrameTimeSinceLastFrame();
+    m_fFrameTime += m_fFrameDeltaTimePrecise;
+    m_fFrameDeltaTime = static_cast<float>(m_fFrameDeltaTimePrecise.count());
+}
+
+/*
+    If the game has initiated game, either by time out, or the user ending the
+    game manually from the pause menu, then the game will "start" game over.
+    There may be some lag time between starting game over and ending the game.
+*/
+void GameManager::checkIfStartedGameOver()
+{
+    if (!startedGameOver && (m_fGameTime < 0))
+    {
+        startedGameOver = true;
+    }
+}
+
+/*
+    Update the game environment if in the game.
+    This should only be called if in the game as it requires all the in game
+    entities to already be instantiated.
+*/
+void GameManager::updateInGame()
+{
+    updateGameTime(m_fFrameDeltaTime);
+    if (!m_bPaused)
+    {
+        updateEnvironment();
+    }
+    checkIfShouldEndGame();
+}
+
+/*
+    The game should end if the startedGameOver flag has been enabled.
+    Once enabled, there is a buffer time until the game actually ends.
+*/
+void GameManager::checkIfShouldEndGame()
+{
+    if (startedGameOver)
+    {
+        // Decrease real time
+        m_fGameOverTime -= m_fFrameDeltaTime;
+        if (m_fGameOverTime <= 0)
+        {
+            endGame();
+        }
+        else
+        {
+            // Do whatever you want for this duration.
+            // Slow mo?
+            // Music change/fade?
+        }
+    }
+}
+
+/*
+    Once in game, calling this will update the environment of the game.
+    If the game is paused, yet the environment is still rendering, then this
+    should not be called.
+*/
+void GameManager::updateEnvironment()
+{
+    m_pAIManager->update(m_fFrameDeltaTime);
+    m_pEntityManager->updateEnvironment(m_fFrameDeltaTimePrecise);
+
+    // Sound needs to update after the EntityManager to reflect in game changes
+    // Cannot be updated inside the EntityManager as sounds can play while game
+    // is paused.
+    SOUND_MANAGER->update();
+    // The user interface should update after the EntityManager and
+    // CommandHandler has changed in order to reflect their changes.
+    // It also cannot update inside the EntityManager since it is able
+    // to be updated while the EntityManager is paused.
+    m_pGameInterface->update(m_fFrameDeltaTime);
 }
 
 /*
