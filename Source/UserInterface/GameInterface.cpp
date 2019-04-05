@@ -38,12 +38,12 @@ Coordinate system:
 */
 #define TIME_SCALE              1.0f
 #define TIME_COLOR              COLOR_WHITE
-#define TIME_WARNING1_COLOR     COLOR_YELLOW
-#define TIME_WARNING2_COLOR     COLOR_RED
+#define TIME_WARNING_MINOR_COLOR     COLOR_YELLOW
+#define TIME_WARNING_MAJOR_COLOR     COLOR_RED
 // Seconds until game time changes color
-#define TIME_WARNING1_START      30
-#define TIME_WARNING2_START      10
-#define TIME_WARNING_SOUND_START TIME_WARNING2_START + 2
+#define TIME_WARNING_MINOR      30
+#define TIME_WARNING_MAJOR      10
+#define TIME_WARNING_SOUND_START TIME_WARNING_MAJOR + 2
 
 #define TRAIL_SCALE             1.0f
 
@@ -62,6 +62,7 @@ Coordinate system:
 #define MESSAGE_SCALE           1.0f
 #define MESSAGE_COLOR           COLOR_WHITE
 
+#define NOTIFICATION_DURATION   MESSAGE_DURATION
 
 // Singleton instance
 GameInterface* GameInterface::m_pInstance = nullptr;
@@ -87,7 +88,9 @@ GameInterface::GameInterface() : UserInterface(
         // 7 Message
         {0.36f, 0.65f},
         // 8 Powerup
-        {0.45f, 0.33f}
+        {0.45f, 0.33f}, 
+        // 9 Notification
+        {0.36f, 0.65f},
     },
     // Translating
     vector<pair<float, float>>
@@ -109,7 +112,9 @@ GameInterface::GameInterface() : UserInterface(
         // 7 Message
         {0.00f, 0.0f},
         // 8 Powerup
-        {0.0f, 0.0f}
+        {0.0f, 0.0f},
+        // 9 Notification
+        {0.0f, -10.0f},
 
     }
 )
@@ -147,7 +152,7 @@ may be played for other displayed UI's.
 @param hit          of kill
 @param message      to display
 */
-void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message)
+void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message)
 {
     bool attackerIsPlayer = GAME_STATS->isPlayer(attacker);
     bool hitIsPlayer = GAME_STATS->isPlayer(hit);
@@ -171,8 +176,8 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
             displayMessage(static_cast<eHovercraft>(player),
                 attackerName + " got first blood against " + hitName);
         }
-        // displayMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
-        // displayMessage(hit, m_eHovercraftToString.at(attacker) + " got first blood against you");
+        // displayKillMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
+        // displayKillMessage(hit, m_eHovercraftToString.at(attacker) + " got first blood against you");
         break;
     case KILL_MESSAGE_REVENGE:
         m_pSoundManager->play(SoundManager::SOUND_KILL_REVENGE, playerInvolved);
@@ -203,6 +208,32 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
     }
 }
 
+void GameInterface::displayNotification(eNotification message)
+{
+    switch (message)
+    {
+    case NOTIFICATION_TIME_MINOR:
+        m_sNotification = std::to_string(TIME_WARNING_MINOR) + "s remaining";
+        break;
+    case NOTIFICATION_TIME_MAJOR:
+        m_sNotification = std::to_string(TIME_WARNING_MAJOR) + "s remaining";
+        break;
+    case NOTIFICATION_3:
+        m_sNotification = "3";
+        break;
+    case NOTIFICATION_2:
+        m_sNotification = "2";
+        break;
+    case NOTIFICATION_1:
+        m_sNotification = "1";
+        break;
+    case NOTIFICATION_GO:
+        m_sNotification = "GO";
+        break;
+    }
+    m_fNotificationTime = NOTIFICATION_DURATION;
+}
+
 void GameInterface::displayPowerup(eHovercraft hovercraft, ePowerup powerup)
 {
     string message = "";
@@ -229,7 +260,6 @@ void GameInterface::displayMessage(eHovercraft hovercraft, std::string text)
     m_fMessageTimes[hovercraft] = MESSAGE_DURATION;
 }
 
-
 /*
 This visually updates the GameInterface to all value changes since last update.
 
@@ -253,10 +283,20 @@ void GameInterface::update(float fSecondsSinceLastUpdate)
     }
 }
 
+/*
+    Initialize all values to the start of a new game.
+*/
 void GameInterface::reinitialize(float gameTime)
 {
     m_fGameTime = gameTime;
     m_bHasStartedWarning = false;
+
+    for (int i = 0; i < MAX_HOVERCRAFT_COUNT; ++i)
+    {
+        m_fPowerupMessageTimes[i] = 0;
+        m_fMessageTimes[i] = 0;
+    }
+    m_fNotificationTime = 0;
 }
 
 /*
@@ -271,6 +311,7 @@ void GameInterface::render()
     renderScores();
     renderCooldowns();
     renderMessages();
+    renderNotifications();
 }
 
 /*
@@ -293,6 +334,7 @@ void GameInterface::updateGameTime(float fSecondsSinceLastUpdate)
     }
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round. Not sure if its worth the cost to check.
+    m_fNotificationTime -= fSecondsSinceLastUpdate;
 }
 
 /*
@@ -309,8 +351,8 @@ void GameInterface::renderGameTime()
         m_pSoundManager->stopEvent(SoundManager::eSoundEvent::MUSIC_INGAME);
         m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_LOOP);
     }
-    vec3 color = secondsRemaining <= TIME_WARNING2_START ?TIME_WARNING2_COLOR
-        : secondsRemaining <= TIME_WARNING1_START ? TIME_WARNING1_COLOR : TIME_COLOR;
+    vec3 color = secondsRemaining <= TIME_WARNING_MAJOR ?TIME_WARNING_MAJOR_COLOR
+        : secondsRemaining <= TIME_WARNING_MINOR ? TIME_WARNING_MINOR_COLOR : TIME_COLOR;
     renderText(FuncUtils::timeToString(secondsRemaining),
                m_vComponentCoordinates[COMPONENT_TIME].first,
                m_vComponentCoordinates[COMPONENT_TIME].second,
@@ -356,6 +398,17 @@ void GameInterface::renderMessages()
     if (!debugMessage.empty())
     {
         renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
+    }
+}
+
+void GameInterface::renderNotifications()
+{
+    for (int player = 0; player < MAX_HOVERCRAFT_COUNT; player++)
+    {
+        renderText(m_sNotification,
+            m_vComponentCoordinates[COMPONENT_NOTIFICATION].first,
+            m_vComponentCoordinates[COMPONENT_NOTIFICATION].second,
+            MESSAGE_SCALE, MESSAGE_COLOR);
     }
 }
 

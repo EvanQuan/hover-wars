@@ -286,7 +286,7 @@ void GameStats::updateScoreLeaders(eHovercraft candidate)
         // after first blood happened.
         if (firstBloodHappened)
         {
-            m_pGameInterface->displayMessage(candidate,
+            m_pGameInterface->displayKillMessage(candidate,
                                              HOVERCRAFT_INVALID, /* Hit doesn't matter */
                                              GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
         } else if (queueFirstBlood) {
@@ -378,7 +378,7 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
 
-    m_pGameInterface->displayMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
+    m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
     // cout << "Player " << attacker << " hit Player " << attacker << endl;
@@ -441,7 +441,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
         queueFirstBlood = true;
-        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
+        m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     return basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
 }
@@ -565,7 +565,7 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     {
         if (!(isBot(attacker) && isBot(hit)))
         {
-            m_pGameInterface->displayMessage(attacker, hit,
+            m_pGameInterface->displayKillMessage(attacker, hit,
                 GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
         }
     }
@@ -666,7 +666,7 @@ void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
     // Ad hoc for single player
     if (!(isBot(attacker) && isBot(hit)))
     {
-        m_pGameInterface->displayMessage(attacker, hit,
+        m_pGameInterface->displayKillMessage(attacker, hit,
             GameInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
 
     }
@@ -682,7 +682,7 @@ void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
     if (!(isBot(attacker) && isBot(hit)))
     {
-        m_pGameInterface->displayMessage(attacker, hit,
+        m_pGameInterface->displayKillMessage(attacker, hit,
             GameInterface::eKillMessage::KILL_MESSAGE_REVENGE);
     }
     stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;
