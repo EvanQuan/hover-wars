@@ -1,0 +1,263 @@
+
+Changed to 0B7CABD8 menu:
+> Insert Coin
+
+Changed to 0B7EA260 menu:
+> New Game
+
+Changed to 0B87F370 menu:
+> Start Game
+
+Changed to 0B7BA5A0 menu:
+> Loading
+initPhysics
+	start...
+gWorldmaterial initialized
+Players:
+ID: 44 | Hovercraft: 0
+ID: 48 | Hovercraft: 1
+Bots:
+ID: 52 | Hovercraft: 4
+ID: 56 | Hovercraft: 5
+ID: 60 | Hovercraft: 6
+ID: 64 | Hovercraft: 7
+ENTERED GAME MENU
+Player 0: 0
+Player 1: 0
+Bot 4: 0
+Bot 5: 0
+Bot 6: 0
+Bot 7: 160
+Score leader: 7: 160
+Highest score: 160
+Player 0: 0
+Player 1: 0
+Bot 4: 0
+Bot 5: 0
+Bot 6: 0
+Bot 7: 170
+Score leader: 7: 170
+Highest score: 170
+Player 0: 0
+Player 1: 0
+Bot 4: 10
+Bot 5: 0
+Bot 6: 0
+Bot 7: 170
+Score leader: 7: 170
+Highest score: 170
+Player 0: 0
+Player 1: 0
+Bot 4: 10
+Bot 5: 0
+Bot 6: 0
+Bot 7: 200
+Score leader: 7: 200
+Highest score: 200
+Player 0: 0
+Player 1: 0
+Bot 4: 0
+Bot 5: 0
+Bot 6: 0
+Bot 7: 260
+Score leader: 7: 260
+Highest score: 260
+Player 0: 0
+Player 1: 0
+Bot 4: 0
+Bot 5: 0
+Bot 6: 0
+Bot 7: 330
+Score leader: 7: 330
+Highest score: 330
+Player 0: 0
+Player 1: 0
+Bot 4: 10
+Bot 5: 0
+Bot 6: 0
+Bot 7: 330
+Score leader: 7: 330
+Highest score: 330
+Player 0: 0
+Player 1: 0
+Bot 4: 40
+Bot 5: 0
+Bot 6: 0
+Bot 7: 330
+Score leader: 7: 330
+Highest score: 330
+Player 0: 0
+Player 1: 0
+Bot 4: 90
+Bot 5: 0
+Bot 6: 0
+Bot 7: 330
+Score leader: 7: 330
+Highest score: 330
+Player 0: 0
+Player 1: 0
+Bot 4: 160
+Bot 5: 0
+Bot 6: 0
+Bot 7: 330
+Score leader: 7: 330
+Highest score: 330
+Player 0: 0
+Player 1: 0
+Bot 4: 250
+Bot 5: 0
+Bot 6: 0
+Bot 7: 330
+Score leader: 7: 330
+Highest score: 330
+Player 0: 0
+Player 1: 0
+Bot 4: 250
+Bot 5: 0
+Bot 6: 0
+Bot 7: 420
+Score leader: 7: 420
+Highest score: 420
+Player 0: 0
+Player 1: 0
+Bot 4: 510
+Bot 5: 0
+Bot 6: 0
+Bot 7: 340
+Score leader: 4: 510
+Highest score: 510
+Player 0: 0
+Player 1: 0
+Bot 4: 520
+Bot 5: 0
+Bot 6: 0
+Bot 7: 340
+Score leader: 4: 520
+Highest score: 520
+Player 0: 0
+Player 1: 0
+Bot 4: 650
+Bot 5: 0
+Bot 6: 0
+Bot 7: 310
+Score leader: 4: 650
+Highest score: 650
+ROCKET HIT PLAYER 64
+Player 0: 0
+Player 1: 0
+Bot 4: 650
+Bot 5: 0
+Bot 6: 0
+Bot 7: 320
+Score leader: 4: 650
+Highest score: 650
+Player 0: 0
+Player 1: 0
+Bot 4: 550
+Bot 5: 0
+Bot 6: 0
+Bot 7: 420
+Score leader: 4: 550
+Highest score: 550
+ROCKET HIT PLAYER 52
+Player 0: 0
+Player 1: 0
+Bot 4: 550
+Bot 5: 0
+Bot 6: 0
+Bot 7: 430
+Score leader: 4: 550
+Highest score: 550
+Player 0: 0
+Player 1: 0
+Bot 4: 550
+Bot 5: 0
+Bot 6: 10
+Bot 7: 430
+Score leader: 4: 550
+Highest score: 550
+ROCKET HIT PLAYER 56
+Player 0: 0
+Player 1: 0
+Bot 4: 680
+Bot 5: 0
+Bot 6: 10
+Bot 7: 380
+Score leader: 4: 680
+Highest score: 680
+ROCKET HIT PLAYER 64
+Player 0: 0
+Player 1: 0
+Bot 4: 640
+Bot 5: 0
+Bot 6: 10
+Bot 7: 400
+Score leader: 4: 640
+Highest score: 640
+ROCKET HIT PLAYER 52
+Player 0: 0
+Player 1: 0
+Bot 4: 640
+Bot 5: 0
+Bot 6: 10
+Bot 7: 410
+Score leader: 4: 640
+Highest score: 640
+Player 0: 0
+Player 1: 0
+Bot 4: 640
+Bot 5: 20
+Bot 6: 0
+Bot 7: 410
+Score leader: 4: 640
+Highest score: 640
+Player 0: 0
+Player 1: 0
+Bot 4: 640
+Bot 5: 50
+Bot 6: 0
+Bot 7: 410
+Score leader: 4: 640
+Highest score: 640
+Player 0: 0
+Player 1: 0
+Bot 4: 640
+Bot 5: 100
+Bot 6: 0
+Bot 7: 410
+Score leader: 4: 640
+Highest score: 640
+Player 0: 0
+Player 1: 0
+Bot 4: 610
+Bot 5: 100
+Bot 6: 0
+Bot 7: 440
+Score leader: 4: 610
+Highest score: 610
+ROCKET HIT PLAYER 52
+Player 0: 0
+Player 1: 0
+Bot 4: 610
+Bot 5: 100
+Bot 6: 0
+Bot 7: 450
+Score leader: 4: 610
+Highest score: 610
+Player 0: 0
+Player 1: 0
+Bot 4: 610
+Bot 5: 290
+Bot 6: 0
+Bot 7: 400
+Score leader: 4: 610
+Highest score: 610
+ROCKET HIT PLAYER 64
+Player 0: 0
+Player 1: 0
+Bot 4: 610
+Bot 5: 380
+Bot 6: 0
+Bot 7: 400
+Score leader: 4: 610
+Highest score: 610

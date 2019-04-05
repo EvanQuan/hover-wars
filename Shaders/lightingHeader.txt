@@ -1,3 +1,7 @@
+
+layout (location = 0) out vec4 vFragColor;
+layout (location = 1) out vec4 vBrightColor;
+
 struct Material {
 	sampler2D vDiffuse;
 	sampler2D vSpecular;
@@ -113,10 +117,12 @@ vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	}
 
 	// Apply Diffuse Value
-	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor * light.fLightPower / distance);
+	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor * light.fLightPower);
 	
 	// Apply Specular value
-	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor * light.fLightPower / distance);
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor * light.fLightPower);
+	
+	colorLinear *= 1.0 / (distance * distance);
 
 	return colorLinear;
 }
@@ -167,6 +173,23 @@ vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera
 	}
 	
 	return colorLinear;
+}
+
+void calcBrightColor( vec4 vFragmentColor )
+{
+	//float fBrightness = dot(vFragmentColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	float fBrightness = (THRESHOLD.r * vFragmentColor.r) + 
+						(THRESHOLD.g * vFragmentColor.g) + 
+						(THRESHOLD.b * vFragmentColor.b);
+	
+	if( fBrightness > 0.6 )
+		vBrightColor = vec4(vFragmentColor.rgb, 1.0);
+	else
+	{
+		vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+	
+		//vBrightColor = vec4( vec3(fBrightness), 1.0);
+	}
 }
 
 

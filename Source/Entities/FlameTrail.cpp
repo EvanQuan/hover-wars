@@ -43,7 +43,7 @@ void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
     // collides with this
     SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
 
-    cout << "FLAME HIT PLAYER " << hit->getID() << endl;
+    //cout << "FLAME HIT PLAYER " << hit->getID() << endl;
 }
 
 /****************************************************************\

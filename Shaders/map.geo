@@ -14,7 +14,7 @@ layout (triangle_strip, max_vertices = 4) out;
 in float bDrawTri[];
 in vec3 vColor[];
 
-out vec4 vFragColor;
+out vec4 color;
 
 // Constants
 float f45Deg_Rad 		= 0.785398;
@@ -64,19 +64,19 @@ void main(void)
 				1
 		*/
 		gl_Position = vec4( gl_in[0].gl_Position.xy + (fSideLength * transpose(m2Rotation) * vToCenter.xy), gl_in[0].gl_Position.z, 1.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		
 		gl_Position = vec4( gl_in[0].gl_Position.xy, gl_in[0].gl_Position.z, 1.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		
 		gl_Position = vec4( gl_in[0].gl_Position.xy + (fMidLength * vToCenter.xy), gl_in[0].gl_Position.z, 1.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 	
 		gl_Position = vec4(gl_in[0].gl_Position.xy + (fSideLength * m2Rotation * vToCenter.xy), gl_in[0].gl_Position.z, 1.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		EndPrimitive();
 	}
@@ -95,22 +95,22 @@ void main(void)
 		*/
 		gl_Position = vec4( gl_in[0].gl_Position.xy + (fSideLength * transpose(m2Rotation) * OverheadDir.xy), gl_in[0].gl_Position.z, 1.0);
 		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		
 		gl_Position = vec4( gl_in[0].gl_Position.xy, gl_in[0].gl_Position.z, 1.0);
 		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		
 		gl_Position = vec4( gl_in[0].gl_Position.xy + (fMidLength * OverheadDir.xy), gl_in[0].gl_Position.z, 1.0);
 		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 	
 		gl_Position = vec4(gl_in[0].gl_Position.xy + (fSideLength * m2Rotation * OverheadDir.xy), gl_in[0].gl_Position.z, 1.0);
 		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
-		vFragColor = vec4( vColor[0], 1.0 );
+		color = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		EndPrimitive();
 	}

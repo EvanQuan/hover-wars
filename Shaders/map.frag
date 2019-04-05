@@ -1,9 +1,9 @@
 
 
-out vec4 color;
-in vec4 vFragColor;
+in vec4 color;
 
 void main(void)
 {
-    color = vFragColor;
+    vFragColor = color;
+	vBrightColor = vFragColor;
 }

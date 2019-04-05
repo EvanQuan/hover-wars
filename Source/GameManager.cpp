@@ -444,7 +444,9 @@ void GameManager::cleanupFrameBuffers()
         // Delete Render and Frame Buffers
         glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
         glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
-        pTxtMngr->unloadTexture(&pRenderBlock.pColorBuffer);
+
+        for( unsigned int i = 0; i < 2; ++i )
+            pTxtMngr->unloadTexture(&(pRenderBlock.pColorBuffer[i]));
     }
     m_pFrameBufferTextures.clear();
 }
@@ -457,14 +459,22 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     glBindFramebuffer(GL_FRAMEBUFFER, sNewBlock.iFrameBuffer);
 
     // Create color attachment texture
-    sNewBlock.pColorBuffer = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight, iPlayer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sNewBlock.pColorBuffer->getTextureID(), 0);
+    // 2 Color Attachments are generated, one for FragColor and the other for BrightColors to apply Bloom
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        sNewBlock.pColorBuffer[i] = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight, iPlayer, i);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, sNewBlock.pColorBuffer[i]->getTextureID(), 0);
+    }
 
     //create renderbuffer object for depth and stencil attachment
     glGenRenderbuffers(1, &sNewBlock.iRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, sNewBlock.iRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_iSplitWidth, m_iSplitHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, sNewBlock.iRenderBuffer);
+
+    // Tell Opengl that this Frame Buffer renders to two color buffers
+    unsigned int iAttachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, iAttachments);
 
     // Verify that Framebuffer is set up correctly
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -641,12 +651,20 @@ void GameManager::renderSplitScreen()
     glUseProgram(m_pShaderManager->getProgram(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR));
     glViewport(0, 0, m_iWidth, m_iHeight);
 
-    // Bind each Frame Buffer and Render image
     for (unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
     {
-        m_pFrameBufferTextures[i].pColorBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+        m_pFrameBufferTextures[i].pColorBuffer[0]->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+        m_pFrameBufferTextures[i].pColorBuffer[1]->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "bloomBuffer");
         glDrawArrays(GL_TRIANGLE_STRIP, (i << 2), 4);
     }
+    
+    // Bind each Frame Buffer and Render image
+    // Debug for BrightBuffer
+    //for (unsigned int i = 0; i < 2; ++i)
+    //{
+    //    m_pFrameBufferTextures[0].pColorBuffer[i]->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+    //    glDrawArrays(GL_TRIANGLE_STRIP, (i << 2), 4);
+    //}
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);

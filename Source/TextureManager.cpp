@@ -130,7 +130,7 @@ Texture* TextureManager::genTexture(const vec4* vColor)
         // generate new texture unique_ptr
         unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashName, Texture::manager_cookie());
 
-        pNewTexture->genTexture(vColor, 1, 1, GL_RGBA, GL_RGBA, GL_FLOAT);
+        pNewTexture->genTexture(vColor, 1, 1, GL_RGB16F, GL_RGBA, GL_FLOAT);
 
         pReturnTexture = pNewTexture.get();
 
@@ -178,11 +178,11 @@ Texture* TextureManager::genDepthBuffer(unsigned int iWidth, unsigned int iHeigh
 }
 
 // Generates a Frame Buffer Object as a Texture
-Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight, unsigned int iPlayer)
+Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int iHeight, unsigned int iPlayer, unsigned int iBufferNum)
 {
     // Attempt to grab it from the texture cache if it already exists
     Texture* pReturnTexture = nullptr;
-    string sHashValue = "FrameBuffer" + to_string(iWidth) + to_string(iHeight) + to_string(iPlayer);
+    string sHashValue = "FrameBuffer" + to_string(iWidth) + to_string(iHeight) + to_string(iPlayer) + to_string(iBufferNum);
 
     if (m_pTextureCache.end() != m_pTextureCache.find(sHashValue))
     {
@@ -196,11 +196,13 @@ Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int
 
         // Generate Texture information in GPU
         // Generate as 16bit Floating Point internal Format for HDR rendering
-        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGB16F, GL_RGB, GL_FLOAT);
 
         // Set Texture Parameters
         pNewTexture->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         pNewTexture->setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        pNewTexture->setTexParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        pNewTexture->setTexParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         // Return the raw pointer to the caller
         pReturnTexture = pNewTexture.get();

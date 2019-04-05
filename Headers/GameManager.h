@@ -77,7 +77,7 @@ private:
     struct sRenderBlock
     {
         GLuint iRenderBuffer, iFrameBuffer;
-        Texture* pColorBuffer;
+        Texture* pColorBuffer[2];
     };
     vector< sRenderBlock > m_pFrameBufferTextures;
     void generateSplitScreen(unsigned int iPlayer);
