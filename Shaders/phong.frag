@@ -16,7 +16,7 @@ void main(void)
 		discard;
 		
 	// result
-	vec4 vColorLinear = vec4(0.0);
+	vec3 vColorLinear = vec3(0.0);
 	
 	// add directional light's contribution
 	if( usingDirectionalLight )
@@ -31,7 +31,7 @@ void main(void)
 		vColorLinear += CalcSpotLight( pSpotLights[i], fs_in.NormalVector, fs_in.vFragPosition, fs_in.ToCamera );
 	
 	// Calculate the final color of the fragment
-    color = vColorLinear;
+    color = vec4(vColorLinear, 1.0);
 	//color = vec4(fs_in.ToCamera, 1.0);
 	//color = vec4(TexCoords, 0.0, 1.0);
 	//color = vec4(fs_in.NormalVector, 1.0);

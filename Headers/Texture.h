@@ -29,7 +29,7 @@ public:
     virtual ~Texture();
     
     // Public Functions
-    void genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GLenum eFormat, GLenum eType );
+    void genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GLenum eInternalFormat, GLenum eFormat, GLenum eType );
     void genCubeMap( const vector<string>* sFileNames );
     void setTexParameter(GLenum eTexEnum, GLint iParam);
     void setTexParameterfv(GLenum eTexEnum, const GLfloat* pParams);

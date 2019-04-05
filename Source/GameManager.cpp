@@ -536,7 +536,6 @@ void GameManager::drawScene()
             {
                 // Bind Frame Buffer
                 glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[screen].iFrameBuffer);
-                assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
                 glViewport(0, 0, m_iSplitWidth, m_iSplitHeight);
 
                 // Render Frame
@@ -610,7 +609,7 @@ void GameManager::updateGameTime(float frameDeltaTime)
     if (!m_bPaused)
     {
         m_fGameTime -= frameDeltaTime;
-        cout << m_fGameTime << endl;
+        //cout << m_fGameTime << endl;
     }
 
     // If in game, check to see if queued to resume. This should be the case
@@ -645,7 +644,7 @@ void GameManager::renderSplitScreen()
     // Bind each Frame Buffer and Render image
     for (unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
     {
-        m_pFrameBufferTextures[i].pColorBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "text");
+        m_pFrameBufferTextures[i].pColorBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
         glDrawArrays(GL_TRIANGLE_STRIP, (i << 2), 4);
     }
 
