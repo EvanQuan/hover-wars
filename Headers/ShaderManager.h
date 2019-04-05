@@ -22,7 +22,7 @@ public:
         PARTICLE_SHDR,
         WORLD_SHDR,
         BILLBOARD_SHDR,
-        BOID_SHDR,
+        MAP_SHDR,
         DEBUG_SHDR,
         SHADOW_SHDR,
         UI_SHDR,
