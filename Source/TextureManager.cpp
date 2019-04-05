@@ -195,12 +195,8 @@ Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int
         unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashValue, Texture::manager_cookie());
 
         // Generate Texture information in GPU
-        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-        //glGenTextures(1, &pNewTexture->m_TextureName);
-        //pNewTexture->m_uiWidth = iWidth;
-        //pNewTexture->m_uiHeight = iHeight;
-        //glBindTexture(GL_TEXTURE_2D, pNewTexture->m_TextureName);
-        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, iWidth, iHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
+        // Generate as 16bit Floating Point internal Format for HDR rendering
+        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 
         // Set Texture Parameters
         pNewTexture->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
