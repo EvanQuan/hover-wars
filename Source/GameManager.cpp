@@ -38,8 +38,8 @@ const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
     vec3(1.0f, 0.0f, 1.0f), /*PLAYER 4*/
     vec3(0.0f, 1.0f, 1.0f), /*BOT 1*/
     vec3(1.0f, 1.0f, 0.0f), /*BOT 2*/
-    vec3(0.0f), /*BOT 3*/
-    vec3(0.5f)  /*BOT 4*/
+    vec3(0.5f),             /*BOT 3*/
+    vec3(1.0f)              /*BOT 4*/
 };
 
 // Singleton Variable initialization
