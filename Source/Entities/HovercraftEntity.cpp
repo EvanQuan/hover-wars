@@ -186,12 +186,13 @@ If negative, the camera will look behind the car's centre.
 Distance between look-at position and camera.
 */
 #define FRONT_CAMERA_RADIUS     10.0f   // r        meters
-#define BACK_CAMERA_LONGITUDE   FRONT_CAMERA_LONGITUDE  // theta    degrees
+#define BACK_CAMERA_LONGITUDE   -FRONT_CAMERA_LONGITUDE  // theta    degrees
 
 /*
 This determines the pitch that the camera
 */
-#define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
+#define BACK_CAMERA_LATITUDE    -FRONT_CAMERA_LATITUDE   // phi      degrees
+// #define BACK_CAMERA_LATITUDE    40.0f   // phi      degrees
 
 /*
 Distance between look-at position and camera.
@@ -679,7 +680,7 @@ void HovercraftEntity::initializeCooldowns()
 
     m_iDashCharges = DASH_MAX_CHARGE_COUNT;
     m_fDashMaxRecharge = DASH_BASE_RECHARGE;
-    m_fDashRecharge = 0.0f;
+    m_fDashRecharge = DASH_BASE_RECHARGE;
 
 }
 
@@ -873,6 +874,7 @@ void HovercraftEntity::updateDash(float fTimeInSeconds)
         {
             m_iDashCharges++;
             /* TODO play charge sound effect */
+            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_DASH_RECHARGE, m_bIsPlayer);
             m_fDashRecharge = m_fDashMaxRecharge;
         }
     }
@@ -1065,7 +1067,6 @@ void HovercraftEntity::dash(eAbility direction)
 
     m_fCooldowns[COOLDOWN_DASH] = m_fMaxCooldowns[COOLDOWN_DASH];
     m_iDashCharges--;
-    m_fDashRecharge = m_fDashMaxRecharge;
 }
 
 void HovercraftEntity::push(float x, float y) {

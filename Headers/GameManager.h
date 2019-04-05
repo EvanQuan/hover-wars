@@ -11,6 +11,7 @@ class EntityManager;
 class CommandHandler;
 class ShaderManager;
 class UserInterface;
+class GameInterface;
 class GameStats;
 class Texture;
 
@@ -44,7 +45,7 @@ public:
 
     eHovercraft getKeyboardHovercraft() const { return m_eKeyboardHovercraft; }
 
-    bool isPaused() const { return m_bPaused; }
+    bool isPaused() const { return m_bInGame; }
     void setPaused(bool paused);
 
     void addInterface(UserInterface* ui);
@@ -63,6 +64,11 @@ private:
     static GameManager* m_pInstance;
 
     bool renderGraphics();
+    void updateTime();
+    void checkIfStartedGameOver();
+    void updateInGame();
+    void checkIfShouldEndGame();
+    void updateEnvironment();
     void drawScene();
     void renderSplitScreen();
 
@@ -92,39 +98,40 @@ private:
 
     // Update Variables
     /*
-    The time since graphics have been initialized.
-    This is tracked to ensure that all values update correctly for every frame
-    update.
+        The time since graphics have been initialized.
+        This is tracked to ensure that all values update correctly for every
+        frame update.
 
-    Unit: seconds
+        Unit: seconds
     */
     duration<float> m_fFrameTime;
     /*
-    This depends the rate at which the window is re-rendered.
-    Since it is costly to re-render the window, it is locked to re-render at a
-    fixed rate, even if the enviroment updates at a faster rate.
+        This depends the rate at which the window is re-rendered.
+        Since it is costly to re-render the window, it is locked to re-render
+        at a fixed rate, even if the enviroment updates at a faster rate.
 
-    Unit: seconds
+        Unit: seconds
     */
     duration<float> m_fMaxDeltaTime;
 
     /*
-    After the game has ended, there is a duration of slow motion before the
-    game moves to the post game menu.
+        Difference in time from this frame and the last.
+        Needed for updating all the entities every frame.
 
-    Unit: seconds
+        This is only needed for the EntityManager.
     */
-    float m_fGameTime;
+    duration<double> m_fFrameDeltaTimePrecise;
+
     /*
-    After the game has been signaled to end, there is some delay before the
-    game actually ends. In other words, the game remains in the GameMenu for
-    this duration before moving onto the PostgameMenu.
+        Difference in time from this frame and the last.
+        Needed for updating all the entities every frame.
 
-    Unit: seconds
+        Do not confuse this with EntityManager's delta time, which is much
+        smaller since it updates more frequently than every frame update.
+
+        Unit: seconds
     */
-    float m_fGameOverTime;
-    // Signifies of the game has ended
-    bool startedGameOver;
+    float m_fFrameDeltaTime;
 
     // Manager Pointers
     EntityManager*      m_pEntityManager;
@@ -135,15 +142,51 @@ private:
     GameStats*          m_pGameStats;
     PhysicsManager*     m_pPhysicsManager;
     UserInterface*      m_pCurrentInterface;
+    GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
-
-    // If the game is paused, the environment will not update
-    bool m_bQueueResume;
-    float m_fQueueResumeTime;
-    bool m_bPaused;
 
     void setKeyboardHovercraft(int playerCount);
     // The keyboard corresponds to its own hovercraft
     // which might be shared with a joystick
     eHovercraft m_eKeyboardHovercraft;
+
+    void updateGameTime(float frameDeltaTime);
+    /*
+        Tracks the time of a given game. Specified by the user in the
+        PregameMenu, and counts down at the start of the game (after
+        initialization).
+
+        Unit: seconds
+    */
+    float m_fGameTime;
+    /*
+        After the user resumes the game from a pause, or starts a new game,
+        there is a buffer time before the environment updates in order for
+        the player to get ready.
+
+        Unit: seconds
+    */
+    float m_fResumeTime;
+    float m_fGameOverTime;
+    // Signifies of the game has ended
+    bool startedGameOver;
+
+    // If the game is paused, the environment will not update
+    bool m_bQueueResume;
+    /*
+        After the game has been signaled to end, there is some delay before the
+        game actually ends. In other words, the game remains in the GameMenu
+        for this duration before moving onto the PostgameMenu.
+
+        Unit: seconds
+    */
+    float m_fQueueResumeTime;
+    bool m_bInGame;
+    /*
+        If the game is paused, then the EntityManager and AIManager do not
+        update. The user can be in game and yet paused at the same time. This
+        would occur during the buffer time when resuming or starting a new game
+        to get the player raed.
+    */
+    bool m_bPaused;
 };

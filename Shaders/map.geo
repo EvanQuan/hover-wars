@@ -21,7 +21,7 @@ float f45Deg_Rad 		= 0.785398;
 float fSideLength 		= 0.05;
 float fMidLength 		= 0.025;
 vec3 OverheadDir		= vec3( 0.0, 1.0, 0.0 );
-float fOverheadOffset	= 0.2;
+float fOverheadOffset	= 0.1;
 
 // Pulled from https://bit.ly/2Vmyqi3
 // Create a Quaternion from a given axis and angle
@@ -83,7 +83,6 @@ void main(void)
 	else
 	{
 		// Move position to above vehicle
-		vec3 vPosition = gl_in[0].gl_Position.xyz + (fOverheadOffset * OverheadDir);
 		vec3 vAxis = vec3( 0.0, 0.0, 1.0 );
 		float fScale = length(vAxis);
 		
@@ -94,19 +93,23 @@ void main(void)
 			  \|/
 			   2
 		*/
-		gl_Position = vec4( vPosition.xy + (fSideLength * transpose(m2Rotation) * OverheadDir.xy), vPosition.z, 1.0);
+		gl_Position = vec4( gl_in[0].gl_Position.xy + (fSideLength * transpose(m2Rotation) * OverheadDir.xy), gl_in[0].gl_Position.z, 1.0);
+		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
 		vFragColor = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		
-		gl_Position = vec4( vPosition.xy, vPosition.z, 1.0);
+		gl_Position = vec4( gl_in[0].gl_Position.xy, gl_in[0].gl_Position.z, 1.0);
+		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
 		vFragColor = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		
-		gl_Position = vec4( vPosition.xy + (fMidLength * OverheadDir.xy), vPosition.z, 1.0);
+		gl_Position = vec4( gl_in[0].gl_Position.xy + (fMidLength * OverheadDir.xy), gl_in[0].gl_Position.z, 1.0);
+		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
 		vFragColor = vec4( vColor[0], 1.0 );
 		EmitVertex();
 	
-		gl_Position = vec4(vPosition.xy + (fSideLength * m2Rotation * OverheadDir.xy), vPosition.z, 1.0);
+		gl_Position = vec4(gl_in[0].gl_Position.xy + (fSideLength * m2Rotation * OverheadDir.xy), gl_in[0].gl_Position.z, 1.0);
+		gl_Position += vec4((fOverheadOffset * OverheadDir), 0.0);
 		vFragColor = vec4( vColor[0], 1.0 );
 		EmitVertex();
 		EndPrimitive();

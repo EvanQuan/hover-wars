@@ -8,9 +8,11 @@
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/GameInterface.h"
+#include "UserInterface/LoadingInterface.h"
 #include "UserInterface/PostgameInterface.h"
 #include "Menus/GameMenu.h"
 #include "Menus/StartMenu.h"
+#include "Menus/LoadingMenu.h"
 #include "TextureManager.h"
 
 // Unit: seconds
@@ -185,76 +187,107 @@ void GameManager::startRendering()
 */
 bool GameManager::renderGraphics()
 {
-    // Update Timer
-    m_pTimer.updateTimeSinceLastFrame();
-    std::chrono::duration<double> fSecondsSinceLastFrame = m_pTimer.getFrameTimeSinceLastFrame();
-    m_fFrameTime += fSecondsSinceLastFrame;
-    /*
-    Get the delta since the last frame and update based on that delta.
-    Do not confuse this with EntityManager's delta time, which is much smaller
-    since it updates more frequently than every frame update.
-
-    Unit: seconds
-    */
-    float frameDeltaTime = static_cast<float>(fSecondsSinceLastFrame.count());
+    updateTime();
     // Execute all commands for this frame
     // These should be done before the EntityManager updates so that the
-    // environemnt can respond to the commands issued this frame.
-    m_pCommandHandler->update(frameDeltaTime);
-    m_fGameTime -= frameDeltaTime;
-    if (!startedGameOver && (m_fGameTime < 0))
+    // environment can respond to the commands issued this frame.
+    m_pCommandHandler->update(m_fFrameDeltaTime);
+    checkIfStartedGameOver();
+
+    if (m_bInGame)
     {
-        startedGameOver = true;
+        updateInGame();
     }
 
-    if (m_bQueueResume)
-    {
-        m_fQueueResumeTime -= frameDeltaTime;
-        if (m_fQueueResumeTime <= 0)
-        {
-            m_bPaused = false;
-            m_bQueueResume = false;
-        }
-    }
-    // Update Environment if the game is not paused
-    if (!m_bPaused)
-    {
-        m_pAIManager->update(frameDeltaTime);
-        m_pEntityManager->updateEnvironment(fSecondsSinceLastFrame);
-        if (startedGameOver)
-        {
-            // Decrease real time
-            m_fGameOverTime -= frameDeltaTime;
-            if (m_fGameOverTime <= 0)
-            {
-                endGame();
-            }
-            else
-            {
-                // Do whatever you want for this duration.
-                // Slow mo?
-                // Music change/fade?
-            }
-        }
-
-        // The user interface should update after the EntityManager and
-        // CommandHandler has changed in order to reflect their changes.
-        // It also cannot update inside the EntityManager since it is able
-        // to be updated while the EntityManager is paused.
-        m_pCurrentInterface->update(frameDeltaTime);
-        // drawScene();
-        // call function to draw our scene
-        // Sound needs to update after the EntityManager to reflect in game changes
-        // Cannot be updated inside the EntityManager as sounds can play while game
-        // is paused.
-        SOUND_MANAGER->update();
-    }
     drawScene();
 
     // check for Window events
     glfwPollEvents();
 
     return !glfwWindowShouldClose(m_pWindow);
+}
+
+/*
+    Update all time values for a given render update.
+*/
+void GameManager::updateTime()
+{
+    m_pTimer.updateTimeSinceLastFrame();
+    m_fFrameDeltaTimePrecise = m_pTimer.getFrameTimeSinceLastFrame();
+    m_fFrameTime += m_fFrameDeltaTimePrecise;
+    m_fFrameDeltaTime = static_cast<float>(m_fFrameDeltaTimePrecise.count());
+}
+
+/*
+    If the game has initiated game, either by time out, or the user ending the
+    game manually from the pause menu, then the game will "start" game over.
+    There may be some lag time between starting game over and ending the game.
+*/
+void GameManager::checkIfStartedGameOver()
+{
+    if (!startedGameOver && (m_fGameTime < 0))
+    {
+        startedGameOver = true;
+    }
+}
+
+/*
+    Update the game environment if in the game.
+    This should only be called if in the game as it requires all the in game
+    entities to already be instantiated.
+*/
+void GameManager::updateInGame()
+{
+    updateGameTime(m_fFrameDeltaTime);
+    if (!m_bPaused)
+    {
+        updateEnvironment();
+    }
+    checkIfShouldEndGame();
+}
+
+/*
+    The game should end if the startedGameOver flag has been enabled.
+    Once enabled, there is a buffer time until the game actually ends.
+*/
+void GameManager::checkIfShouldEndGame()
+{
+    if (startedGameOver)
+    {
+        // Decrease real time
+        m_fGameOverTime -= m_fFrameDeltaTime;
+        if (m_fGameOverTime <= 0)
+        {
+            endGame();
+        }
+        else
+        {
+            // Do whatever you want for this duration.
+            // Slow mo?
+            // Music change/fade?
+        }
+    }
+}
+
+/*
+    Once in game, calling this will update the environment of the game.
+    If the game is paused, yet the environment is still rendering, then this
+    should not be called.
+*/
+void GameManager::updateEnvironment()
+{
+    m_pAIManager->update(m_fFrameDeltaTime);
+    m_pEntityManager->updateEnvironment(m_fFrameDeltaTimePrecise);
+
+    // Sound needs to update after the EntityManager to reflect in game changes
+    // Cannot be updated inside the EntityManager as sounds can play while game
+    // is paused.
+    SOUND_MANAGER->update();
+    // The user interface should update after the EntityManager and
+    // CommandHandler has changed in order to reflect their changes.
+    // It also cannot update inside the EntityManager since it is able
+    // to be updated while the EntityManager is paused.
+    m_pGameInterface->update(m_fFrameDeltaTime);
 }
 
 /*
@@ -270,17 +303,23 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     float gameTime,
                                     string sFileName)
 {
-    // We intialize all values for the game to immediately start
 
+    // Before we initialize, set to LoadingMenu and Interface
+    setCurrentInterface(LoadingInterface::getInstance(m_iWidth, m_iHeight));
+    m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
+
+    // We intialize all values for the game to immediately start
     m_pPhysicsManager->initPhysics(true);
 
     setPaused(false);
     startedGameOver = false;
     m_fGameTime = gameTime;
+    m_bPaused = true;
+    m_bInGame = true;
     m_fGameOverTime = GAME_OVER_TIME;
-    GameInterface *gameUI = GameInterface::getInstance(m_iWidth, m_iHeight);
-    gameUI->reinitialize(gameTime);
-    gameUI->setDisplayCount(playerCount);
+    m_pGameInterface = GameInterface::getInstance(m_iWidth, m_iHeight);
+    m_pGameInterface->reinitialize(gameTime);
+    m_pGameInterface->setDisplayCount(playerCount);
     TextureManager* pTxtMngr = TEXTURE_MANAGER;
     m_pEntityManager->initializeEnvironment(sFileName);
 
@@ -329,6 +368,13 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_pAIManager->reinitialize();
 
     setKeyboardHovercraft(playerCount);
+
+    // Only after everything has loaded, switch to the game menu.
+    // Don't need to switch to GameInterface, as the GameInterface is directly
+    // rendered for each player.
+    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+
+    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
 }
 
 // Name: generateFrameBuffer
@@ -443,6 +489,7 @@ void GameManager::endGame()
 
     // postgame menu
     cout << "GameManger::endGame()" << endl;
+    m_bInGame = false;
     m_bPaused = true;
     COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
     setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
@@ -473,7 +520,7 @@ void GameManager::drawScene()
 
         // Render the Scene
         glEnable(GL_DEPTH_TEST);
-        if (!m_bPaused)
+        if (m_bInGame)
         {
             // Set up Render for this frame
             m_pEntityManager->setupRender();
@@ -485,16 +532,23 @@ void GameManager::drawScene()
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             // Render each screen
-            for( unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
+            for( unsigned int screen = 0; screen < m_pFrameBufferTextures.size(); ++screen)
             {
                 // Bind Frame Buffer
-                glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[i].iFrameBuffer);
+                glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[screen].iFrameBuffer);
                 assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
                 glViewport(0, 0, m_iSplitWidth, m_iSplitHeight);
 
                 // Render Frame
-                m_pEntityManager->renderEnvironment(i);
-                renderMap();
+                m_pEntityManager->renderEnvironment(screen);
+				renderMap();
+                // Render the UI
+                // Since the GameInterface is rendering directly, we do not need to
+                // switch to the GameInterface
+                m_pGameInterface->setFocus(static_cast<eHovercraft>(screen));
+                m_pGameInterface->render();
+
+
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -504,7 +558,11 @@ void GameManager::drawScene()
             renderSplitScreen();
         }
         glDisable(GL_DEPTH_TEST);
-        m_pCurrentInterface->render();
+        if (!m_bInGame)
+        {
+            // Pause check is to avoid double rendering the Game interface.
+            m_pCurrentInterface->render();
+        }
         
 
         // scene is rendered to the back buffer, so swap to front for display
@@ -538,6 +596,33 @@ void GameManager::setKeyboardHovercraft(int playerCount)
         // Under this assumption, the keyboard will control the last player,
         // which does not have a joystick.
         m_eKeyboardHovercraft = static_cast<eHovercraft>(joystickCount);
+    }
+}
+
+/*
+    Update the game time only while in game. This should only be called while
+    in game.
+*/
+void GameManager::updateGameTime(float frameDeltaTime)
+{
+    // Only update game time if the game is playing to ensure the GameInterface
+    // and the Game Time are in perfect sync.
+    if (!m_bPaused)
+    {
+        m_fGameTime -= frameDeltaTime;
+        cout << m_fGameTime << endl;
+    }
+
+    // If in game, check to see if queued to resume. This should be the case
+    // when resuming from pause or at the start of the game.
+    if (m_bQueueResume)
+    {
+        m_fQueueResumeTime -= frameDeltaTime;
+        if (m_fQueueResumeTime <= 0)
+        {
+            m_bPaused = false;
+            m_bQueueResume = false;
+        }
     }
 }
 
@@ -612,7 +697,7 @@ bool GameManager::initialize()
 
 
     // Game starts paused as the player starts in the start menu
-    m_bPaused = true;
+    m_bInGame = false;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
@@ -701,14 +786,17 @@ void GameManager::setPaused(bool paused)
 {
     if (paused)
     {
-        // Pause immediately
+        // Immediately not in game
+        m_bInGame = false;
         m_bPaused = true;
     }
     else
     {
         // Queue up unpause. When the game resumes, there is a buffer time
         // before the environment begins updating again.
+        m_bInGame = true;
         m_bQueueResume = true;
         m_fQueueResumeTime = GAME_RESUME_TIME;
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_COUNTDOWN_TICK);
     }
 }

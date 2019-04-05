@@ -1,7 +1,7 @@
 #include "Menus/PregameMenu.h"
 #include "Menus/MainMenu.h"
-#include "Menus/GameMenu.h"
-#include "UserInterface/GameInterface.h"
+#include "Menus/LoadingMenu.h"
+#include "UserInterface/LoadingInterface.h"
 #include "UserInterface/MainInterface.h"
 #include "CommandHandler.h"
 
@@ -68,13 +68,8 @@ void PregameMenu::select(eFixedCommand command)
         back();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
-        // Let GameManager initialize a new game before switching to game menu
-        // controls
         m_pGameManager->initializeNewGame(m_iPlayerCount, m_iBotCount,
                                           static_cast<float>(m_fGameTime), RELEASE_ENV);
-        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->getWidth(),
-                                                                       m_pGameManager->getHeight()));
-        nextMenu(GameMenu::getInstance());
         break;
     }
 }

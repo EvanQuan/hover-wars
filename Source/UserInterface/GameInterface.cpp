@@ -43,6 +43,7 @@ Coordinate system:
 // Seconds until game time changes color
 #define TIME_WARNING1_START      30
 #define TIME_WARNING2_START      10
+#define TIME_WARNING_SOUND_START TIME_WARNING2_START + 2
 
 #define TRAIL_SCALE             1.0f
 
@@ -180,7 +181,8 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
         break;
     case KILL_MESSAGE_KILLSTREAK:
         m_pSoundManager->play(SoundManager::SOUND_KILL_STREAK, playerInvolved);
-        displayMessage(attacker, "You have a killstreak of " + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
+        displayMessage(attacker, "You have a killstreak of "
+            + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
         break;
     case KILL_MESSAGE_KILL:
         m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
@@ -192,7 +194,8 @@ void GameInterface::displayMessage(eHovercraft attacker, eHovercraft hit, eKillM
             player < playerCount;
             player++)
         {
-            string newLeaderName = attacker == player ? "You are" : m_eHovercraftToString.at(attacker) + " is";
+            string newLeaderName = attacker == player ?
+                "You are" : m_eHovercraftToString.at(attacker) + " is";
             displayMessage(static_cast<eHovercraft>(player),
                 newLeaderName + " now in the lead");
         }
@@ -253,6 +256,7 @@ void GameInterface::update(float fSecondsSinceLastUpdate)
 void GameInterface::reinitialize(float gameTime)
 {
     m_fGameTime = gameTime;
+    m_bHasStartedWarning = false;
 }
 
 /*
@@ -299,6 +303,12 @@ The time is formatted as
 void GameInterface::renderGameTime()
 {
     int secondsRemaining = static_cast<int>(m_fGameTime);
+    if (secondsRemaining <= TIME_WARNING_SOUND_START && !m_bHasStartedWarning)
+    {
+        m_bHasStartedWarning = true;
+        m_pSoundManager->stopEvent(SoundManager::eSoundEvent::MUSIC_INGAME);
+        m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_LOOP);
+    }
     vec3 color = secondsRemaining <= TIME_WARNING2_START ?TIME_WARNING2_COLOR
         : secondsRemaining <= TIME_WARNING1_START ? TIME_WARNING1_COLOR : TIME_COLOR;
     renderText(FuncUtils::timeToString(secondsRemaining),

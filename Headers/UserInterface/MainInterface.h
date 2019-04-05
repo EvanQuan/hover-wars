@@ -2,7 +2,10 @@
 #include "UserInterface/MenuInterface.h"
 
 #define NEW_GAME_OPTION "New Game"
+#define GAME_RULE "Rules"
+#define GAME_CONTROLLER "Controls"
 #define QUIT_OPTION "Quit"
+
 
 class MainInterface final : public MenuInterface
 {
@@ -27,6 +30,8 @@ private:
         BACKGROUND = 0,
         TITLE,
         NEW_GAME,
+        RULE,
+        CONTROLLER,
         EXIT
     };
 
