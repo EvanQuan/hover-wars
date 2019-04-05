@@ -186,9 +186,9 @@ void calcBrightColor( vec4 vFragmentColor )
 		vBrightColor = vec4(vFragmentColor.rgb, 1.0);
 	else
 	{
-		vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+		//vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 	
-		//vBrightColor = vec4( vec3(fBrightness), 1.0);
+		vBrightColor = vec4( vec3(fBrightness), 1.0);
 	}
 }
 

@@ -114,6 +114,10 @@ ShaderManager::ShaderManager()
     // Split Screen Shader
     m_pShader[eShaderType::SPLIT_SCREEN_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/splitScreen.vert");
     m_pShader[eShaderType::SPLIT_SCREEN_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/splitScreen.frag");
+
+    // Gaussian Blur Shader
+    m_pShader[eShaderType::BLUR_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/blur.vert");
+    m_pShader[eShaderType::BLUR_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/blur.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

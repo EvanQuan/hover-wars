@@ -1,263 +1,278 @@
+ERROR compiling shader:
 
-Changed to 0B7CABD8 menu:
-> Insert Coin
+#version 430 core
+// Structures for Different Light Sources
+struct DirLight {
+	vec3 vDirection;
+	vec3 vAmbient;
+	vec3 vDiffuse;
+	vec3 vSpecular;
+};
 
-Changed to 0B7EA260 menu:
-> New Game
+struct PointLight {
+	float fLightPower;
+	vec3 vPosition;
+	vec3 vColor;
+};
 
-Changed to 0B87F370 menu:
-> Start Game
+struct SpotLight {
+	float fCosPhi;
+	float fCosCutoff;
+	vec3 vPosition;
+	vec3 vDirection;
+	vec3 vColor;
+};
 
-Changed to 0B7BA5A0 menu:
-> Loading
-initPhysics
-	start...
-gWorldmaterial initialized
-Players:
-ID: 44 | Hovercraft: 0
-ID: 48 | Hovercraft: 1
-Bots:
-ID: 52 | Hovercraft: 4
-ID: 56 | Hovercraft: 5
-ID: 60 | Hovercraft: 6
-ID: 64 | Hovercraft: 7
-ENTERED GAME MENU
-Player 0: 0
-Player 1: 0
-Bot 4: 0
-Bot 5: 0
-Bot 6: 0
-Bot 7: 160
-Score leader: 7: 160
-Highest score: 160
-Player 0: 0
-Player 1: 0
-Bot 4: 0
-Bot 5: 0
-Bot 6: 0
-Bot 7: 170
-Score leader: 7: 170
-Highest score: 170
-Player 0: 0
-Player 1: 0
-Bot 4: 10
-Bot 5: 0
-Bot 6: 0
-Bot 7: 170
-Score leader: 7: 170
-Highest score: 170
-Player 0: 0
-Player 1: 0
-Bot 4: 10
-Bot 5: 0
-Bot 6: 0
-Bot 7: 200
-Score leader: 7: 200
-Highest score: 200
-Player 0: 0
-Player 1: 0
-Bot 4: 0
-Bot 5: 0
-Bot 6: 0
-Bot 7: 260
-Score leader: 7: 260
-Highest score: 260
-Player 0: 0
-Player 1: 0
-Bot 4: 0
-Bot 5: 0
-Bot 6: 0
-Bot 7: 330
-Score leader: 7: 330
-Highest score: 330
-Player 0: 0
-Player 1: 0
-Bot 4: 10
-Bot 5: 0
-Bot 6: 0
-Bot 7: 330
-Score leader: 7: 330
-Highest score: 330
-Player 0: 0
-Player 1: 0
-Bot 4: 40
-Bot 5: 0
-Bot 6: 0
-Bot 7: 330
-Score leader: 7: 330
-Highest score: 330
-Player 0: 0
-Player 1: 0
-Bot 4: 90
-Bot 5: 0
-Bot 6: 0
-Bot 7: 330
-Score leader: 7: 330
-Highest score: 330
-Player 0: 0
-Player 1: 0
-Bot 4: 160
-Bot 5: 0
-Bot 6: 0
-Bot 7: 330
-Score leader: 7: 330
-Highest score: 330
-Player 0: 0
-Player 1: 0
-Bot 4: 250
-Bot 5: 0
-Bot 6: 0
-Bot 7: 330
-Score leader: 7: 330
-Highest score: 330
-Player 0: 0
-Player 1: 0
-Bot 4: 250
-Bot 5: 0
-Bot 6: 0
-Bot 7: 420
-Score leader: 7: 420
-Highest score: 420
-Player 0: 0
-Player 1: 0
-Bot 4: 510
-Bot 5: 0
-Bot 6: 0
-Bot 7: 340
-Score leader: 4: 510
-Highest score: 510
-Player 0: 0
-Player 1: 0
-Bot 4: 520
-Bot 5: 0
-Bot 6: 0
-Bot 7: 340
-Score leader: 4: 520
-Highest score: 520
-Player 0: 0
-Player 1: 0
-Bot 4: 650
-Bot 5: 0
-Bot 6: 0
-Bot 7: 310
-Score leader: 4: 650
-Highest score: 650
-ROCKET HIT PLAYER 64
-Player 0: 0
-Player 1: 0
-Bot 4: 650
-Bot 5: 0
-Bot 6: 0
-Bot 7: 320
-Score leader: 4: 650
-Highest score: 650
-Player 0: 0
-Player 1: 0
-Bot 4: 550
-Bot 5: 0
-Bot 6: 0
-Bot 7: 420
-Score leader: 4: 550
-Highest score: 550
-ROCKET HIT PLAYER 52
-Player 0: 0
-Player 1: 0
-Bot 4: 550
-Bot 5: 0
-Bot 6: 0
-Bot 7: 430
-Score leader: 4: 550
-Highest score: 550
-Player 0: 0
-Player 1: 0
-Bot 4: 550
-Bot 5: 0
-Bot 6: 10
-Bot 7: 430
-Score leader: 4: 550
-Highest score: 550
-ROCKET HIT PLAYER 56
-Player 0: 0
-Player 1: 0
-Bot 4: 680
-Bot 5: 0
-Bot 6: 10
-Bot 7: 380
-Score leader: 4: 680
-Highest score: 680
-ROCKET HIT PLAYER 64
-Player 0: 0
-Player 1: 0
-Bot 4: 640
-Bot 5: 0
-Bot 6: 10
-Bot 7: 400
-Score leader: 4: 640
-Highest score: 640
-ROCKET HIT PLAYER 52
-Player 0: 0
-Player 1: 0
-Bot 4: 640
-Bot 5: 0
-Bot 6: 10
-Bot 7: 410
-Score leader: 4: 640
-Highest score: 640
-Player 0: 0
-Player 1: 0
-Bot 4: 640
-Bot 5: 20
-Bot 6: 0
-Bot 7: 410
-Score leader: 4: 640
-Highest score: 640
-Player 0: 0
-Player 1: 0
-Bot 4: 640
-Bot 5: 50
-Bot 6: 0
-Bot 7: 410
-Score leader: 4: 640
-Highest score: 640
-Player 0: 0
-Player 1: 0
-Bot 4: 640
-Bot 5: 100
-Bot 6: 0
-Bot 7: 410
-Score leader: 4: 640
-Highest score: 640
-Player 0: 0
-Player 1: 0
-Bot 4: 610
-Bot 5: 100
-Bot 6: 0
-Bot 7: 440
-Score leader: 4: 610
-Highest score: 610
-ROCKET HIT PLAYER 52
-Player 0: 0
-Player 1: 0
-Bot 4: 610
-Bot 5: 100
-Bot 6: 0
-Bot 7: 450
-Score leader: 4: 610
-Highest score: 610
-Player 0: 0
-Player 1: 0
-Bot 4: 610
-Bot 5: 290
-Bot 6: 0
-Bot 7: 400
-Score leader: 4: 610
-Highest score: 610
-ROCKET HIT PLAYER 64
-Player 0: 0
-Player 1: 0
-Bot 4: 610
-Bot 5: 380
-Bot 6: 0
-Bot 7: 400
-Score leader: 4: 610
-Highest score: 610
+layout (std140, binding = 2) uniform Lights
+{
+	int numPointLights;
+	int numSpotLights;
+	bool usingDirectionalLight;
+	DirLight pDirectionalLight;
+	PointLight pPointLights[12];
+	SpotLight pSpotLights[12];
+};
+
+// The Threshold to determine if the fragment is sufficiently bright enough to bloom
+const vec3 THRESHOLD = vec3(0.2126, 0.7152, 0.0722);
+
+// Shadow Map Uniforms
+uniform sampler2D DirectionalLightShadow;
+
+layout (location = 0) out vec4 vFragColor;
+layout (location = 1) out vec4 vBrightColor;
+
+struct Material {
+	sampler2D vDiffuse;
+	sampler2D vSpecular;
+	float fShininess;
+};
+
+layout (std140, binding = 0) uniform Matrices
+{
+	mat4 projection;
+	mat4 modelview;
+	mat4 modelviewInv;
+	mat4 dirLightSpaceMat;
+	mat4 spotLightSpaceMat[4];
+};
+
+// Defaulted to Chrome
+uniform Material sMaterial;
+in vec2 TexCoords;
+
+// Algorithm derived from:
+//	https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
+float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fLightDotNormal )
+{
+	// Shadow Bias to counter Shadow Acne
+	float fBias = 0.0005;
+	int iRange = 3;
+	float fDivisor = 49.0;
+	
+	// Perspective Division
+	vec3 vProjCoords = vFragPosLightSpace.xyz / vFragPosLightSpace.w;
+	
+	// transform to [0, 1] range
+	vProjCoords = vProjCoords * 0.5 + 0.5;
+
+	// Compute Return Shadow Value
+	float fReturnShadow = 0.0;
+	
+	vec2 texelSize = 1.0 / textureSize(sShadowMap, 0);
+	for( int iX = -iRange; iX <= iRange; ++iX )
+	{
+		for( int iY = -iRange; iY <= iRange; ++iY )
+		{
+			float pcfDepth = texture(sShadowMap, vProjCoords.xy + vec2(iX, iY) * texelSize).r;
+			fReturnShadow += (vProjCoords.z - fBias > pcfDepth ? 1.0 : 0.0);
+		}
+	}
+	
+	// Get average of kernel
+	fReturnShadow /= fDivisor;
+	
+	// Clamp the outside of the frustrum
+	if( vProjCoords.z > 1.0 )
+		fReturnShadow = 0.0;
+	
+	// Check whether current frag position is in shadow
+	return fReturnShadow;
+}
+
+// Calculates information about a specified directional light.
+vec3 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFragPos )
+{	
+	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
+	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
+	
+	vec3 vToLight = normalize( -vLightDirection );
+	
+	float lambertian = max(dot(vToLight, vNormal), 0.0);
+	float specular = 0.0;
+	
+	if( lambertian > 0.0 )
+	{
+		// Blinn-Phong Calculation
+		vec3 vHalfDir = normalize( vToLight + vToCamera );
+		float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+		specular = pow( specAngle, sMaterial.fShininess );
+	}
+	
+	// Get shadow value
+	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow, dot(vToLight, vNormal) );
+
+	// Apply Diffuse Value
+	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (shadowValue * lambertian * light.vDiffuse);
+	
+	// Apply Specular value
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (shadowValue * specular * light.vSpecular);
+
+	// Apply Ambient Value
+	colorLinear += texture(sMaterial.vDiffuse, TexCoords ).rgb * light.vAmbient;
+	
+	return colorLinear;
+}
+
+// Calculate information about a given point light with the current Frag Position
+//	Using a Blinn-Phong calculation adapted from goo.gl/vzRHX2 (Wikipedia)
+vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+{
+	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
+	lightCameraSpace /= lightCameraSpace.w;
+	
+	vec3 vToLight = lightCameraSpace.xyz - vFragPos;
+	float distance = length(vToLight);
+	vToLight = normalize(vToLight);
+	
+	float lambertian = max(dot(vToLight, vNormal), 0.0);
+	float specular = 0.0;
+	
+	if( lambertian > 0.0 )
+	{
+		// Blinn-Phong Calculation
+		vec3 vHalfDir = normalize( vToLight + vToCamera );
+		float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+		specular = pow( specAngle, sMaterial.fShininess );
+	}
+
+	// Apply Diffuse Value
+	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor * light.fLightPower);
+	
+	// Apply Specular value
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor * light.fLightPower);
+	
+	colorLinear *= 1.0 / (distance * distance);
+
+	return colorLinear;
+}
+
+vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+{
+	// Convert the Camera to view space
+	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
+	lightCameraSpace /= lightCameraSpace.w;
+	
+	// Get To Light vector as well as distance from Fragment to Light.
+	vec3 vToLight = lightCameraSpace.xyz - vFragPos;
+	float fDist = length(vToLight);
+	vToLight = normalize( vToLight );
+	
+	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
+	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
+	
+	// Return Values
+	vec3 colorLinear = vec3(0.0);
+	
+	// Calculate angle of Light to FragPos and SpotLight direction to determine if fragment lies within spotlight.
+	float fTheta = dot( vLightDirection, -vToLight );
+	
+	if( fTheta > light.fCosPhi )
+	{
+		// Intensity for soft edge dropoff
+		float fIntensity = clamp((fTheta - light.fCosPhi)/(light.fCosCutoff - light.fCosPhi), 0.0, 1.0);
+		float lambertian = max(dot(vToLight, vNormal), 0.0);
+		float specular = 0.0;
+		
+		if( lambertian > 0.0 )
+		{
+			// Blinn-Phong Calculation
+			vec3 vHalfDir = normalize( vToLight + vToCamera );
+			float specAngle = max( dot( vHalfDir, vNormal), 0.0);
+			specular = pow( specAngle, sMaterial.fShininess );
+		}
+
+		// Apply Diffuse Value
+		colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor);
+		
+		// Apply Specular value
+		colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor);
+		
+		// Apply Intensity modifier
+		colorLinear *= fIntensity;
+	}
+	
+	return colorLinear;
+}
+
+void calcBrightColor( vec4 vFragmentColor )
+{
+	//float fBrightness = dot(vFragmentColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	float fBrightness = (THRESHOLD.r * vFragmentColor.r) + 
+						(THRESHOLD.g * vFragmentColor.g) + 
+						(THRESHOLD.b * vFragmentColor.b);
+	
+	if( fBrightness > 0.6 )
+		vBrightColor = vec4(vFragmentColor.rgb, 1.0);
+	else
+	{
+		vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+	
+		//vBrightColor = vec4( vec3(fBrightness), 1.0);
+	}
+}
+
+
+// interpolated colour received from vertex stage
+
+uniform sampler2D mTexture;
+
+// first output is mapped to the framebuffer's colour index by default
+out vec4 FragmentColour;
+in vec2 texCoord;
+
+uniform bool horizontal;
+uniform float blurValues[1000] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.16216);
+uniform int matrixSize = 5;
+void main(void)
+{
+	const float weightMul = 1.0f;
+	vec2 tex_offset = 1.0 / textureSize(mTexture, 0); // gets size of single texel
+	vec3 result = texture(mTexture, texCoord).rgb * blurValues[0]; // current fragment's contribution
+	if (horizontal)
+	{
+		for (int i = 1; i < matrixSize; ++i)
+		{
+			result += texture(mTexture, texCoord + vec2(tex_offset.x * i, 0.0)).rgb * blurValues[i] * weightMul;
+			result += texture(mTexture, texCoord - vec2(tex_offset.x * i, 0.0)).rgb * blurValues[i] * weightMul;
+		}
+	}
+	else
+	{
+		for (int i = 1; i < matrixSize; ++i)
+		{
+			result += texture(mTexture, texCoord + vec2(0.0, tex_offset.y * i)).rgb * blurValues[i] * weightMul;
+			result += texture(mTexture, texCoord - vec2(0.0, tex_offset.y * i)).rgb * blurValues[i] * weightMul;
+		}
+	}
+	FragmentColour = vec4(result, 1.0);
+}
+0(243) : error C1060: incompatible types in initialization
+ 
+ERROR linking shader program:
+Fragment info
+-------------
+0(243) : error C1060: incompatible types in initialization
+(0) : error C2003: incompatible options for link
+ 
+Couldn't initialize shaders.

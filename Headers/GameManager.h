@@ -78,9 +78,15 @@ private:
     {
         GLuint iRenderBuffer, iFrameBuffer;
         Texture* pColorBuffer[2];
+        struct sPingPongBuffer
+        {
+            GLuint iFBO;
+            Texture* pBuffer;
+        } pPingPongBuffers[2];
     };
     vector< sRenderBlock > m_pFrameBufferTextures;
     void generateSplitScreen(unsigned int iPlayer);
+    void blurBloomBuffer(unsigned int iScreen);
     void cleanupFrameBuffers();
     void generateFrameBuffer(unsigned int iPlayer);
 
