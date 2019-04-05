@@ -213,19 +213,25 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createPlayer(unsigned int iPlayerNumber)
+vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber)
 {
     getNextSpawnPoint(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition);
     m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
+
+    // Return starting position
+    return m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition;
 }
 
 // Generates a Bot Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createBot()
+vec3 SceneLoader::createBot()
 {
     getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
     m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
+
+    // Return starting position
+    return HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition;
 }
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)

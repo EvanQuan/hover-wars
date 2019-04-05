@@ -22,9 +22,9 @@ public:
     void createPointLight( vector< string > sData, int iLength );
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
-    void createPlayer(unsigned int iPlayerNumber);
+    vec3 createPlayer(unsigned int iPlayerNumber);
     void createCube(vector< string > sData, int iLength);
-    void createBot();
+    vec3 createBot();
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void createSkybox(vector< string > sData);
     Rocket* createRocketMesh(int iOwnerID);
