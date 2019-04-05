@@ -22,7 +22,7 @@ using namespace std;
 // --------------------------------------------------------------------------
 // FreeImage implementation of the InitializeTexture() function
 
-bool InitializeTexture(Texture *mytex, const string &imageFileName)
+bool InitializeTexture(Texture *mytex, const string &imageFileName, bool bGammaCorrection)
 {
     // Local Variables
     int iWidth, iHeight, nrComponents;
@@ -34,24 +34,29 @@ bool InitializeTexture(Texture *mytex, const string &imageFileName)
     {
         // Get the format of the Texture
         GLenum eFormat = GL_RED;
+        GLenum eInternalFormat = GL_RED;
         switch (nrComponents)
         {
         case 1:
-            eFormat = GL_RED;
+            eFormat = eInternalFormat = GL_RED;
             break;
         case 3:
+            eInternalFormat = bGammaCorrection ? GL_SRGB : GL_RGB;
             eFormat = GL_RGB;
             break;
         case 4:
+            eInternalFormat = bGammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
             eFormat = GL_RGBA;
             break;
         }
 
         // Generate Texture in GPU
-        mytex->genTexture(data, iWidth, iHeight, eFormat, GL_UNSIGNED_BYTE);
+        mytex->genTexture(data, iWidth, iHeight, eInternalFormat, eFormat, GL_UNSIGNED_BYTE);
         mytex->genMipMaps();
         mytex->setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
         mytex->setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+        mytex->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        mytex->setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         bReturnValue = true;
     }

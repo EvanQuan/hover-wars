@@ -117,6 +117,8 @@ vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	
 	// Apply Specular value
 	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(specular * light.vColor * light.fLightPower / distance, 1.0);
+	
+	//colorLinear *= 1.0 / (distance * distance);
 
 	return colorLinear;
 }

@@ -66,7 +66,7 @@ Texture* TextureManager::loadTexture(const string& sFileName )
         // Generate Texture Smart Pointer
         unique_ptr<Texture> pNewTexture = make_unique<Texture>(sFileName, Texture::manager_cookie() );
 
-        if ( InitializeTexture( pNewTexture.get(), sFileName ) )
+        if ( InitializeTexture( pNewTexture.get(), sFileName, true ) )
         {
             // Return the raw pointer to the caller
             pReturnTexture = pNewTexture.get();
@@ -130,7 +130,7 @@ Texture* TextureManager::genTexture(const vec4* vColor)
         // generate new texture unique_ptr
         unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashName, Texture::manager_cookie());
 
-        pNewTexture->genTexture(vColor, 1, 1, GL_RGBA, GL_FLOAT);
+        pNewTexture->genTexture(vColor, 1, 1, GL_RGBA, GL_RGBA, GL_FLOAT);
 
         pReturnTexture = pNewTexture.get();
 
@@ -157,7 +157,7 @@ Texture* TextureManager::genDepthBuffer(unsigned int iWidth, unsigned int iHeigh
         unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashValue, Texture::manager_cookie());
 
         // Generate Texture information in GPU
-        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_DEPTH_COMPONENT, GL_FLOAT);
+        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
 
         // Set Texture Parameters
         pNewTexture->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -195,7 +195,12 @@ Texture* TextureManager::genFrameBufferTexture(unsigned int iWidth, unsigned int
         unique_ptr<Texture> pNewTexture = make_unique<Texture>(sHashValue, Texture::manager_cookie());
 
         // Generate Texture information in GPU
-        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGB, GL_UNSIGNED_BYTE);
+        pNewTexture->genTexture(nullptr, iWidth, iHeight, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+        //glGenTextures(1, &pNewTexture->m_TextureName);
+        //pNewTexture->m_uiWidth = iWidth;
+        //pNewTexture->m_uiHeight = iHeight;
+        //glBindTexture(GL_TEXTURE_2D, pNewTexture->m_TextureName);
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, iWidth, iHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
 
         // Set Texture Parameters
         pNewTexture->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);

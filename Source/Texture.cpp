@@ -16,14 +16,14 @@ Texture::~Texture()
 }
 
 // Binds Texture Data to the GPU and stores the Width, Height and Handle to the Texture information
-void Texture::genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GLenum eFormat, GLenum eType )
+void Texture::genTexture( const void* pBits, GLuint uiWidth, GLuint uiHeight, GLenum eInternalFormat, GLenum eFormat, GLenum eType )
 {
     m_uiHeight = uiHeight;
     m_uiWidth = uiWidth;
 
     glGenTextures( 1, &m_TextureName );
     glBindTexture(GL_TEXTURE_2D, m_TextureName );
-    glTexImage2D( GL_TEXTURE_2D, 0, eFormat, m_uiWidth, m_uiHeight, 0, eFormat, eType, pBits );
+    glTexImage2D( GL_TEXTURE_2D, 0, eInternalFormat, m_uiWidth, m_uiHeight, 0, eFormat, eType, pBits );
     glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
