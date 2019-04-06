@@ -160,11 +160,11 @@ void InputHandler::debugKeyCommands(int key, int action)
             break;
             // Testing game stats kill updates
         case GLFW_KEY_R:
-            cout << "R" << endl;
+            //cout << "R" << endl;
             GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
             break;
         case GLFW_KEY_T:
-            cout << "T" << endl;
+            //cout << "T" << endl;
             GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
             break;
         case GLFW_KEY_Y:

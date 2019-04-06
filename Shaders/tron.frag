@@ -30,5 +30,11 @@ void main(void)
 	
 	// Calculate the final vFragColor of the fragment
     vFragColor = vec4(vColorLinear, 1.0);
-	calcBrightColor( vFragColor );
+	
+	vec3 vTextureColor = texture(sMaterial.vDiffuse, TexCoords).rgb;
+	
+	if( vec3(0.0) != vTextureColor )
+		vBrightColor = vec4(vTextureColor, 1.0);
+	else
+		vBrightColor = vec4(vFragColor.rgb, 1.0);
 }

@@ -173,81 +173,110 @@ skybox {
 #                           = As well as the Near Plane (nP) and the Far Plane (fP)
 #           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 directional_light {
-    -1 -1 -1
-    0.05 0.05 0.05
+    0 -1 1
+    0.0 0.0 0.0
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
-    1000.0 1.0 1200.0
+    7500.0 1.0 7700.0
     8192 8192 1000.0
 }
 
+# Blue Square
 point_light {
-    65 5 -24.5
-    0.0 0.0 1.0
-    5.0
+    24.5 7 65
+    0.0 0.0 2.55
+    25.0
 }
 point_light {
-    65 5 24.5
-    0.0 0.0 1.0
-    5.0
+    65 7 24.5
+    0.0 0.0 2.55
+    25.0
 }
 point_light {
-    140 5 0
-    0.0 0.0 1.0
-    5.0
-}
-
-
-point_light {
-    -65 5 -24.5
-    1.0 0.0 0.0
-    5.0
+    105.5 7 65
+    0.0 0.0 2.55
+    25.0
 }
 point_light {
-    -65 5 24.5
-    1.0 0.0 0.0
-    5.0
-}
-point_light {
-    -140 5 0
-    1.0 0.0 0.0
-    5.0
+    65 7 105.5
+    0.0 0.0 2.55
+    25.0
 }
 
-
-
+#Red Square
 point_light {
-    -24.5 5 65
-    0.0 1.0 0.0
-    5.0
+    -24.5 7 -65
+    2.55 0.0 0.0
+    25.0
 }
 point_light {
-    24.5 5 65
-    0.0 1.0 0.0
-    5.0
+    -105.5 7 -65
+    2.55 0.0 0.0
+    25.0
 }
 point_light {
-    0 5 140
-    0.0 1.0 0.0
-    5.0
-}
-
-point_light {
-    -24.5 5 -65
-    0.6 0.2 0.8
-    5.0
+    -65 7 -24.5
+    2.55 0.0 0.0
+    25.0
 }
 point_light {
-    24.5 5 -65
-    0.6 0.2 0.8
-    5.0
+    -65 7 -105.5
+    2.55 0.0 0.0
+    25.0
 }
 
+#Green Square
 point_light {
-    0 5 -140
-    0.6 0.2 0.8
-    5.0
+    -65 7 24.5
+    0.0 2.55 0.0
+    25.0
 }
+point_light {
+    -24.5 7 65
+    0.0 2.55 0.0
+    25.0
+}
+point_light {
+    -65 7 105.5
+    0.0 2.55 0.0
+    25.0
+}
+point_light {
+    -105.5 7 65
+    0.0 2.55 0.0
+    25.0
+}
+
+#Magenta Square
+point_light {
+    65 7 -24.5
+    2.55 0.0 2.55
+    25.0
+}
+point_light {
+    24.5 7 -65
+    2.55 0.0 2.55
+    25.0
+}
+point_light {
+    65 7 -105.5
+    2.55 0.0 2.55
+    25.0
+}
+point_light {
+    105.5 7 -65
+    2.55 0.0 2.55
+    25.0
+}
+
+spotlight {
+	0.0 7 150.0  
+	0.0 -1.0 0.0  
+	0 2.55 2.55
+	60  
+	20
+}
+
 spawn_points {
 	0 5 0
 	15 5 0
@@ -281,14 +310,14 @@ spawn_points {
 plane {
     0 0 0
     0 1 0
-    10000 10000
+    400 400
     +material {
-        textures/groundSeamless.jpg
-        0 0 0
-        0
+        textures/floor.png
+		textures/squareSpecMap.png
+        1.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
 }
 
@@ -383,36 +412,68 @@ player_4 {
 cube {
     65 5 65
     10 80 80
+	+material {
+        textures/blue_wall.png
+		textures/squareSpecMap.png
+        1.0
+    }
     +bounding {
         box
         10 80 80
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     65 5 -65
     10 80 80
+	+material {
+        textures/magenta_wall.png
+		textures/squareSpecMap.png
+        1.0
+    }
     +bounding {
         box
         10 80 80
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     -65 5 -65
     10 80 80
+	+material {
+        textures/red_wall.png
+		textures/squareSpecMap.png
+        1.0
+    }
     +bounding {
         box
         10 80 80
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     -65 5 65
     10 80 80
+	+material {
+        textures/green_wall.png
+		textures/squareSpecMap.png
+        1.0
+    }
     +bounding {
         box
         10 80 80
+    }
+	+shader {
+        tron_shdr
     }
 }
 # Wall

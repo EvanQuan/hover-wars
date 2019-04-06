@@ -27,6 +27,9 @@
 #define TOP_LEFT 2
 #define TOP_RIGHT 3
 
+// Blur
+#define BLUR_AMOUNT 10
+
 /*************\
  * Constants *
 \*************/
@@ -40,6 +43,13 @@ const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
     vec3(1.0f, 1.0f, 0.0f), /*BOT 2*/
     vec3(0.5f),             /*BOT 3*/
     vec3(1.0f)              /*BOT 4*/
+};
+
+const vec4 BLUR_QUAD[4]{
+    vec4(-1.0f, -1.0f, 0.0f, 0.0f), /*Bottom Left*/
+    vec4(1.0f,  -1.0f, 1.0f, 0.0f), /*Bottom Right*/
+    vec4(-1.0f, 1.0f,  0.0f, 1.0f), /*Top Left*/
+    vec4(1.0f,  1.0f,  1.0f, 1.0f), /*Top Right*/
 };
 
 // Singleton Variable initialization
@@ -74,6 +84,11 @@ GameManager::GameManager(GLFWwindow* rWindow)
     glGenVertexArrays(1, &m_iVertexArray);
     m_iVertexBuffer = m_pShaderManager->genVertexBuffer(m_iVertexArray, nullptr, (sizeof(vec4) << 4), GL_STATIC_DRAW);
     m_pShaderManager->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), nullptr);
+
+    // Generate VAO and VBO for Blur Rendering Quad
+    glGenVertexArrays(1, &m_iBlurVAO);
+    m_iBlurVBO = m_pShaderManager->genVertexBuffer(m_iBlurVAO, BLUR_QUAD, (sizeof(vec4) << 2), GL_STATIC_DRAW);
+    m_pShaderManager->setAttrib(m_iBlurVAO, 0, 4, sizeof(vec4), nullptr);
 
     // Generate VAO for rendering Map items
     glGenVertexArrays(1, &m_iMapVAO);
@@ -113,6 +128,8 @@ GameManager::~GameManager()
         // Delete Render and Frame Buffers
         glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
         glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
+        for (sRenderBlock::sPingPongBuffer pBuffer : pRenderBlock.pPingPongBuffers)
+            glDeleteFramebuffers(1, &pBuffer.iFBO);
     }
     m_pFrameBufferTextures.clear();
 
@@ -123,6 +140,10 @@ GameManager::~GameManager()
     // Map Clean up
     glDeleteBuffers(1, &m_iMapVBO);
     glDeleteVertexArrays(1, &m_iMapVAO);
+
+    // Blur Clean up
+    glDeleteBuffers(1, &m_iBlurVBO);
+    glDeleteVertexArrays(1, &m_iBlurVAO);
 
     // Clean up Allocated Memory
     // NOTE: crash at glDeleteBuffers in destructor
@@ -354,10 +375,6 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                                   vCombinedData.data(),
                                                   (vCombinedData.size() * sizeof(vec3)),
                                                   GL_DYNAMIC_DRAW);
-   //glBindVertexArray(m_iMapVAO);
-   //glBufferSubData(GL_ARRAY_BUFFER,
-   //                m_vPositions.size() * sizeof(vec3),
-   //                m_vColors.size() * sizeof(vec3), m_vColors.data());
     m_pShaderManager->setAttrib(m_iMapVAO, 0, 3, 0, nullptr);
     m_pShaderManager->setAttrib(m_iMapVAO, 1, 3, 0, (void*)(m_vPositions.size() * sizeof(vec3)));
     glBindVertexArray(0);
@@ -382,12 +399,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 void GameManager::generateSplitScreen(unsigned int iPlayer)
 {
     // Local Variables
-    vec4 vCorners[4] = {
-        vec4(-1.0f, -1.0f, 0.0f, 0.0f), /*Bottom Left*/
-        vec4(1.0f,  -1.0f, 1.0f, 0.0f), /*Bottom Right*/
-        vec4(-1.0f, 1.0f,  0.0f, 1.0f), /*Top Left*/
-        vec4(1.0f,  1.0f,  1.0f, 1.0f), /*Top Right*/
-    };
+    vec4 vCorners[4];
+    memcpy(vCorners, BLUR_QUAD, (sizeof(vec4) << 2));
 
     /*
         (0, 1)-----(0.5, 1)------(1, 1)
@@ -444,7 +457,16 @@ void GameManager::cleanupFrameBuffers()
         // Delete Render and Frame Buffers
         glDeleteRenderbuffers(1, &pRenderBlock.iRenderBuffer);
         glDeleteFramebuffers(1, &pRenderBlock.iFrameBuffer);
-        pTxtMngr->unloadTexture(&pRenderBlock.pColorBuffer);
+
+        for( unsigned int i = 0; i < 2; ++i )
+            pTxtMngr->unloadTexture(&(pRenderBlock.pColorBuffer[i]));
+
+        // Clean up Ping Pong Buffers
+        for (sRenderBlock::sPingPongBuffer pBuffer : pRenderBlock.pPingPongBuffers)
+        {
+            TEXTURE_MANAGER->unloadTexture(&pBuffer.pBuffer);
+            glDeleteFramebuffers(1, &pBuffer.iFBO);
+        }
     }
     m_pFrameBufferTextures.clear();
 }
@@ -457,8 +479,12 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     glBindFramebuffer(GL_FRAMEBUFFER, sNewBlock.iFrameBuffer);
 
     // Create color attachment texture
-    sNewBlock.pColorBuffer = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight, iPlayer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sNewBlock.pColorBuffer->getTextureID(), 0);
+    // 2 Color Attachments are generated, one for FragColor and the other for BrightColors to apply Bloom
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        sNewBlock.pColorBuffer[i] = TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight, iPlayer, i);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, sNewBlock.pColorBuffer[i]->getTextureID(), 0);
+    }
 
     //create renderbuffer object for depth and stencil attachment
     glGenRenderbuffers(1, &sNewBlock.iRenderBuffer);
@@ -469,6 +495,26 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
     // Verify that Framebuffer is set up correctly
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         cout << "ERROR: Framebuffer is not complete.\n";
+
+    // Tell Opengl that this Frame Buffer renders to two color buffers
+    unsigned int iAttachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, iAttachments);
+
+    // Generate Pingpong Buffers
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        glGenFramebuffers(1, &sNewBlock.pPingPongBuffers[i].iFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, sNewBlock.pPingPongBuffers[i].iFBO);
+        sNewBlock.pPingPongBuffers[i].pBuffer =
+            TEXTURE_MANAGER->genFrameBufferTexture(m_iSplitWidth, m_iSplitHeight,
+                                                   iPlayer, i + 2);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+            sNewBlock.pPingPongBuffers[i].pBuffer->getTextureID(), 0);
+
+        // Verify that Framebuffer is set up correctly
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            cout << "ERROR: Framebuffer is not complete.\n";
+    }
 
     // Save Render Block and unbind frame buffer.
     m_pFrameBufferTextures.push_back(sNewBlock);
@@ -539,15 +585,15 @@ void GameManager::drawScene()
                 glViewport(0, 0, m_iSplitWidth, m_iSplitHeight);
 
                 // Render Frame
-                m_pEntityManager->renderEnvironment(screen);
-				renderMap();
+                m_pEntityManager->renderEnvironment(screen);                
+                renderMap();
                 // Render the UI
                 // Since the GameInterface is rendering directly, we do not need to
                 // switch to the GameInterface
                 m_pGameInterface->setFocus(static_cast<eHovercraft>(screen));
                 m_pGameInterface->render();
-
-
+                // Blur the Bloom Buffer
+                blurBloomBuffer(screen);
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -625,6 +671,49 @@ void GameManager::updateGameTime(float frameDeltaTime)
     }
 }
 
+
+// Name: blurBloomBuffer
+// Description: Applies a gaussian blur shader to the bloom buffer
+//      for the specified frame buffer.
+//  Algorithm modified from: https://learnopengl.com/Advanced-Lighting/Bloom
+void GameManager::blurBloomBuffer(unsigned int iScreen)
+{
+    // Bind Vertex Array and Use Blur Program
+    glBindVertexArray(m_iBlurVAO);
+    glUseProgram(m_pShaderManager->getProgram(ShaderManager::eShaderType::BLUR_SHDR));
+    
+    // Local variables
+    unsigned int iAmount = BLUR_AMOUNT;
+    bool bFirstIteration = true, bHorizontal = true;
+
+    // Ping Pong between the blur buffers to apply gaussian blur in horizontal and vertical patterns.
+    for (unsigned int i = 0; i < iAmount; ++i)
+    {
+        // Bind this Frame Buffer
+        glBindFramebuffer(GL_FRAMEBUFFER, m_pFrameBufferTextures[iScreen].pPingPongBuffers[bHorizontal].iFBO);
+
+        // Set Horizontal/Vertical setting
+        m_pShaderManager->setUniformBool(ShaderManager::eShaderType::BLUR_SHDR, "horizontal", bHorizontal);
+
+        // This is first iteration? bind the Buffer to blur
+        if (bFirstIteration)
+        {
+            m_pFrameBufferTextures[iScreen].pColorBuffer[1]->bindTexture(ShaderManager::eShaderType::BLUR_SHDR, "mTexture");
+            bFirstIteration = false;
+        }
+        else    // Otherwise, apply opposite blur to previous output.
+            m_pFrameBufferTextures[iScreen].pPingPongBuffers[!bHorizontal].pBuffer->bindTexture(ShaderManager::eShaderType::BLUR_SHDR, "mTexture");
+
+        // Draw Screen Quad.
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        bHorizontal = !bHorizontal;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindVertexArray(0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 // Name: renderSplitScreen
 // Written by: James Coté
 // Description: Draws each Frame Buffer into set up quads in screen space.
@@ -641,12 +730,24 @@ void GameManager::renderSplitScreen()
     glUseProgram(m_pShaderManager->getProgram(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR));
     glViewport(0, 0, m_iWidth, m_iHeight);
 
-    // Bind each Frame Buffer and Render image
     for (unsigned int i = 0; i < m_pFrameBufferTextures.size(); ++i)
     {
-        m_pFrameBufferTextures[i].pColorBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+        m_pFrameBufferTextures[i].pColorBuffer[0]->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+        m_pFrameBufferTextures[i].pPingPongBuffers[BLUR_AMOUNT & 1].pBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "bloomBuffer");
         glDrawArrays(GL_TRIANGLE_STRIP, (i << 2), 4);
     }
+    
+    // Bind each Frame Buffer and Render image
+    // Debug for BrightBuffer
+    // TODO: TEST WITH SEPERATE QUAD THAT TAKES UP SCREEN SPACE
+    //for (unsigned int i = 0; i < 2; ++i)
+    //{
+    //    //if (i == 0)
+    //    m_pFrameBufferTextures[0].pPingPongBuffers[i].pBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+    //    //else
+    //    //    m_pFrameBufferTextures[0].pPingPongBuffers[1].pBuffer->bindTexture(ShaderManager::eShaderType::SPLIT_SCREEN_SHDR, "hdrBuffer");
+    //    glDrawArrays(GL_TRIANGLE_STRIP, (i << 2), 4);
+    //}
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);

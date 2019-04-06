@@ -204,7 +204,7 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
         CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
 
-        m_pEntityManager->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions);
+        m_pEntityManager->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
         outputError(CUBE, sData);
