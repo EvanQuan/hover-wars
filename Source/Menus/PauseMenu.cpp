@@ -59,3 +59,14 @@ void PauseMenu::enter()
     GAME_MANAGER->setPaused(true);
     SOUND_MANAGER->setPauseMenu();
 }
+
+/*
+    Only let the pauser affect the pause menu.
+*/
+void PauseMenu::executeFixedCommand(eHovercraft hovercraft, eFixedCommand command)
+{
+    if (hovercraft == m_ePauser)
+    {
+        PromptMenu::executeFixedCommand(hovercraft, command);
+    }
+}

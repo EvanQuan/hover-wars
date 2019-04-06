@@ -155,6 +155,7 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                       eFixedCommand command)
 {
+    PauseMenu *pauseMenu;
     switch (command)
     {
     case COMMAND_ABILITY_ROCKET:
@@ -178,7 +179,10 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
     case COMMAND_MENU_PAUSE_TOGGLE:
         m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
                                                                         m_pGameManager->getHeight()));
-        nextMenu(PauseMenu::getInstance());
+        pauseMenu = static_cast<PauseMenu*>(PauseMenu::getInstance());
+        nextMenu(pauseMenu);
+        // Set pauser to the one who initiated pause
+        pauseMenu->setPauser(hovercraft->getEHovercraft());
        break;
     case COMMAND_MENU_START:
        break;
