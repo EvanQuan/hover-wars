@@ -419,9 +419,7 @@ void GameInterface::displayDebug(std::string message)
 
 void GameInterface::renderScores()
 {
-    // TODO put this in the proper place, font, scale etc.
-    // Ad hoc for single player
-    std::string score = std::to_string(GAME_STATS->get(HOVERCRAFT_PLAYER_1,
+    std::string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
                         GameStats::eHovercraftStat::SCORE_CURRENT));
     renderText("Score: " + score,
                m_vComponentCoordinates[COMPONENT_SCORE].first,

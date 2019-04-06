@@ -10,6 +10,12 @@ public:
 
     static Menu* getInstance();
 
+    void setPauser(eHovercraft pauser) { m_ePauser = pauser; }
+    /*
+        @return the player that paused the game. Only this player can control
+        the pause menu.
+    */
+    eHovercraft getPauser() const { return m_ePauser; }
 private:
     PauseMenu();
 
@@ -19,5 +25,14 @@ private:
 
     void enter();
 
+    // @Override
+    void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);
+
+    /*
+        The player that paused the game. Only this player is allowed to
+        navigate the pause menu to prevent accidental (or intentional) unpause
+        from other players.
+    */
+    eHovercraft m_ePauser;
     static PauseMenu* m_pInstance;
 };
