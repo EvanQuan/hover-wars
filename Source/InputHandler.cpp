@@ -403,6 +403,10 @@ Registers a joystick as not connected to the game.
 void InputHandler::disconnectJoystick(int joystickID)
 {
     m_pJoystickIsPresent[joystickID] = false;
+    for (int button = 0; button < MAX_BUTTON_COUNT; button++)
+    {
+        m_joystickButtons[joystickID][button] = INPUT_RELEASED;
+    }
     // debugPrintJoystickInformation(joystickID);
 
 }
@@ -417,6 +421,8 @@ void InputHandler::joystickCallback(int joystickID, int event)
 {
     if (event == GLFW_CONNECTED)
     {
+        // Just for fun. Temporary, may change to another sound.
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_POWERUP_SPAWN);
         m_pInstance->initializeJoystick(joystickID);
     }
     else if (event == GLFW_DISCONNECTED)
@@ -468,6 +474,11 @@ CommandHandler after the input has been processed.
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
+    // Double check
+    if (!m_pJoystickIsPresent[joystickID])
+    {
+        return;
+    }
     // Update actual buttons
     for (int button = BUTTON_A; button < MAX_BUTTON_INDEX; button++)
     {
