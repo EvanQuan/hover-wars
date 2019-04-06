@@ -86,9 +86,12 @@ private:
     };
     vector< sRenderBlock > m_pFrameBufferTextures;
     void generateSplitScreen(unsigned int iPlayer);
-    void blurBloomBuffer(unsigned int iScreen);
     void cleanupFrameBuffers();
     void generateFrameBuffer(unsigned int iPlayer);
+
+    // Blur Rendering variables
+    GLuint m_iBlurVAO, m_iBlurVBO;
+    void blurBloomBuffer(unsigned int iScreen);
 
     // Map Rendering variables
     vector< vec3 > m_vPositions, m_vColors;

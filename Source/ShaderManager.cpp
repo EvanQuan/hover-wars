@@ -19,8 +19,8 @@
 // POINT_LIGHT_SIZE: float bytesize of 4 -> 16 bytes due to spacing requirements of uniform buffers
 #define NUM_POINT_LIGHT_PARAMS          3
 #define POINT_LIGHT_SIZE                (sizeof(vec4) * NUM_POINT_LIGHT_PARAMS)
-#define MAX_NUM_POINT_LIGHTS            12
-#define MAX_NUM_SPOT_LIGHTS             12
+#define MAX_NUM_POINT_LIGHTS            16
+#define MAX_NUM_SPOT_LIGHTS             16
 #define NUM_SPOT_LIGHT_PARAMS           4
 #define SPOT_LIGHT_SIZE                 (sizeof(vec4) * NUM_SPOT_LIGHT_PARAMS)
 #define SPOT_LIGHT_OFFSET               (POINT_LIGHT_OFFSET + (POINT_LIGHT_SIZE * MAX_NUM_POINT_LIGHTS))
@@ -44,7 +44,8 @@ const unordered_map<string, ShaderManager::eShaderType> ShaderManager::pShaderTy
     make_pair<string, eShaderType>("toon_shdr", shader_Type::TOON_SHDR),
     make_pair<string, eShaderType>("blinn_phong_shdr", shader_Type::BLINN_PHONG_SHDR),
     make_pair<string, eShaderType>("world_shdr", shader_Type::WORLD_SHDR),
-    make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR)
+    make_pair<string, eShaderType>("billboard_shdr", shader_Type::BILLBOARD_SHDR),
+    make_pair<string, eShaderType>("tron_shdr", shader_Type::TRON_SHDR)
 };
 
 // Public - Not a singleton
@@ -118,6 +119,10 @@ ShaderManager::ShaderManager()
     // Gaussian Blur Shader
     m_pShader[eShaderType::BLUR_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/blur.vert");
     m_pShader[eShaderType::BLUR_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/blur.frag");
+
+    // Gaussian Blur Shader
+    m_pShader[eShaderType::TRON_SHDR].storeShadrLoc(Shader::eShader::VERTEX, "Shaders/tron.vert");
+    m_pShader[eShaderType::TRON_SHDR].storeShadrLoc(Shader::eShader::FRAGMENT, "Shaders/tron.frag");
 }
 
 // Get the Singleton ShaderManager Object.  Initialize it if nullptr.

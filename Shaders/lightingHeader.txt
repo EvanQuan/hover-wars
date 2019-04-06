@@ -26,7 +26,7 @@ in vec2 TexCoords;
 float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fLightDotNormal )
 {
 	// Shadow Bias to counter Shadow Acne
-	float fBias = 0.0005;
+	float fBias = 0.0025;
 	int iRange = 3;
 	float fDivisor = 49.0;
 	
@@ -182,13 +182,13 @@ void calcBrightColor( vec4 vFragmentColor )
 						(THRESHOLD.g * vFragmentColor.g) + 
 						(THRESHOLD.b * vFragmentColor.b);
 	
-	if( fBrightness > 0.6 )
+	if( fBrightness > 0.5 )
 		vBrightColor = vec4(vFragmentColor.rgb, 1.0);
 	else
 	{
-		//vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+		vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 	
-		vBrightColor = vec4( vec3(fBrightness), 1.0);
+		//vBrightColor = vec4( vec3(fBrightness), 1.0);
 	}
 }
 

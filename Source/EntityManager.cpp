@@ -240,7 +240,9 @@ void EntityManager::setupRender()
         pDirectionalLightComponent->setupShadowFBO();       // Set up Frame Buffer for Shadow
         pDirectionalLightComponent->setupPMVMatrices();     // Set the Lighting ModelView and Projection Matrices for generating a Depth Buffer from Light Position
         m_bShadowDraw = true;                               // Render For Shadow Map
+        glCullFace(GL_FRONT);
         doRender();                                         // Do the Render
+        glCullFace(GL_BACK);
         pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
         resetFBO();                                         // Reset the Frame Buffer for typical rendering.
     }
