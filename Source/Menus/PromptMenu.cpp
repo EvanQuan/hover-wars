@@ -13,7 +13,7 @@
 
     Unit : seconds
 */
-#define PROMPT_REPEAT_DELAY 0.15f
+#define PROMPT_REPEAT_DELAY 0.25f
 
 /*
     To prevent very slight joystick movement from registering as cursor movement,
