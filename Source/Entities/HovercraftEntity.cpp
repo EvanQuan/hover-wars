@@ -449,7 +449,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
-        cout << m_eHovercraft << " speed boost enabled" << endl;
+        //cout << m_eHovercraft << " speed boost enabled" << endl;
         SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
@@ -509,7 +509,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     {
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
-        cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost disabled" << endl;
+        //cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost disabled" << endl;
         SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_DEACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:

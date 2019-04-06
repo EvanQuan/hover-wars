@@ -106,8 +106,10 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, strin
         Width = (x-axis)
         Height = (z-axis)
     */
-    float fHalfHeight = static_cast<float>(iHeight) * 0.5f;
-    float fHalfWidth = static_cast<float>(iWidth) * 0.5f;
+    float fHeight = static_cast<float>(iHeight);
+    float fWidth = static_cast<float>(iWidth);
+    float fHalfHeight = fHeight * 0.5f;
+    float fHalfWidth = fWidth * 0.5f;
     vNormal = normalize(vNormal); // Normalize Normal Vector
     m_pVertices.push_back(vec3(-fHalfWidth, 0.f, -fHalfHeight));
     m_pVertices.push_back(vec3(-fHalfWidth, 0.f, fHalfHeight));
@@ -117,11 +119,14 @@ void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, strin
     // Generate Normals for each Vertex.
     m_pNormals.insert(m_pNormals.begin(), 4, vNormal);
 
+    fHalfHeight *= 0.1f;
+    fHalfWidth *= 0.1f;
+
     // Generate UVs for Plane
     m_pUVs.push_back(vec2(0.0, 0.0));
-    m_pUVs.push_back(vec2(0.0, 1.0));
-    m_pUVs.push_back(vec2(1.0, 0.0));
-    m_pUVs.push_back(vec2(1.0, 1.0));
+    m_pUVs.push_back(vec2(0.0, fHalfHeight));
+    m_pUVs.push_back(vec2(fHalfWidth, 0.0));
+    m_pUVs.push_back(vec2(fHalfWidth, fHalfHeight));
 
     // Generate Indices
     m_pIndices = { 0, 1, 2, 1, 2, 3 };
