@@ -75,10 +75,6 @@ public:
     void displayNotification(eNotification message);
     void displayPowerup(eHovercraft hovercraft, ePowerup powerup);
 
-    // Display debug message
-    // Set message to "" to disable debug message
-    void displayDebug(std::string message);
-
 private:
 
     // Used for m_vComponentScaling and m_vComponentCoordinates

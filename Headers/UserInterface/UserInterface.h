@@ -104,10 +104,6 @@ public:
 
     virtual void updateWidthAndHeight(int iWidth, int iHeight) final;
 
-    // Display debug message
-    // Set message to "" to disable debug message
-    void displayDebug(const char* message);
-
     // Shows the Sprite Map for the text map for debugging.
     void debugFont();
 
@@ -127,11 +123,6 @@ protected:
     int m_iWidth;
     // height of the window in pixels
     int m_iHeight;
-
-
-    std::string debugMessage;
-    float debugWidth;
-    float debugHeight;
 
     /*
         Determines how each UI component is scaled based on window dimensions.

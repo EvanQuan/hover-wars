@@ -124,7 +124,6 @@ GameInterface::GameInterface() : UserInterface(
     GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
-    debugMessage = "";
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;
 }
@@ -430,12 +429,6 @@ void GameInterface::renderMessages()
             m_vComponentCoordinates[COMPONENT_POWERUP].second,
             MESSAGE_SCALE, MESSAGE_COLOR);
     }
-
-    // @TODO remove this?
-    if (!debugMessage.empty())
-    {
-        renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
-    }
 }
 
 /*
@@ -453,11 +446,6 @@ void GameInterface::renderNotifications()
                 MESSAGE_SCALE, MESSAGE_COLOR);
         }
     }
-}
-
-void GameInterface::displayDebug(std::string message)
-{
-    debugMessage = message;
 }
 
 void GameInterface::renderScores()
@@ -573,14 +561,7 @@ Values:
 */
 void GameInterface::setDisplayCount(int count)
 {
-    if (DISPLAY_COUNT_MIN > count)
-    {
-        count = DISPLAY_COUNT_MIN;
-    }
-    else if (DISPLAY_COUNT_MAX < count)
-    {
-        count = DISPLAY_COUNT_MAX;
-    }
+    count = FuncUtils::bound(count, DISPLAY_COUNT_MIN, DISPLAY_COUNT_MAX);
     m_iDisplayCount = count;
 }
 

@@ -64,14 +64,29 @@ private:
     GameManager(const GameManager* pCopy);
     static GameManager* m_pInstance;
 
+    // Rendering
     bool renderGraphics();
+    void drawScene();
+    void renderSplitScreen();
+
+    void updateEnvironment();
+
+    // Initializing a new game
+    void calculateScreenDimensions(unsigned int playerCount);
+    void spawnPlayers(unsigned int playerCount);
+    void spawnBots(unsigned int botCount);
+    void setupMapData();
+
+    // Time
     void updateTime();
     void checkIfStartedGameOver();
     void updateInGame();
     void checkIfShouldEndGame();
-    void updateEnvironment();
-    void drawScene();
-    void renderSplitScreen();
+    void startResumeCountdown();
+    void resumeGame();
+    void pauseGame();
+    void checkIfShouldUpdateGameTime(float frameDeltaTime);
+    void checkIfShouldResumeGame(float frameDeltaTime);
 
     // Split Screen Rendering variables
     GLuint m_iVertexArray, m_iVertexBuffer;
