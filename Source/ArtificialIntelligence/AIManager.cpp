@@ -48,7 +48,7 @@ void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
     PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
     glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
     glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getLinearVelocity();
-    ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
+    // ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 
 /*
