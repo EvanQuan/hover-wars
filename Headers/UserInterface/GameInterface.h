@@ -116,6 +116,8 @@ private:
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
     void renderGameTime();
+    void startMajorTimeWarning();
+    void startMinorTimeWarning();
     
     // Message
     void renderMessages();
@@ -137,7 +139,8 @@ private:
     Unit : seconds
     */
     float m_fGameTime;
-    bool m_bHasStartedWarning;
+    bool m_bHasStartedMajorWarning;
+    bool m_bHasStartedMinorWarning;
 
     /*
     Tracks how long the message has been displayed for
@@ -151,7 +154,7 @@ private:
 
     /*
         Notifications are singular messages shared amongst all players.
-        Their location is different than messages.
+        Their location is different than messages to prevent meessagee overlap.
     */
     std::string m_sNotification;
     float m_fNotificationTime;

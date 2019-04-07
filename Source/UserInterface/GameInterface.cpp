@@ -43,7 +43,9 @@ Coordinate system:
 // Seconds until game time changes color
 #define TIME_WARNING_MINOR      30
 #define TIME_WARNING_MAJOR      10
-#define TIME_WARNING_SOUND_START TIME_WARNING_MAJOR + 2
+// Time to start the major time warning countdown tick.
+#define TIME_WARNING_MAJOR_START TIME_WARNING_MAJOR
+#define TIME_WARNING_MINOR_START TIME_WARNING_MINOR
 
 #define TRAIL_SCALE             1.0f
 
@@ -86,11 +88,11 @@ GameInterface::GameInterface() : UserInterface(
         // 6 Score Change
         {0.47f, 0.58f},
         // 7 Message
-        {0.36f, 0.65f},
+        {0.37f, 0.65f},
         // 8 Powerup
         {0.45f, 0.33f}, 
         // 9 Notification
-        {0.36f, 0.65f},
+        {0.42f, 0.75f},
     },
     // Translating
     vector<pair<float, float>>
@@ -114,7 +116,7 @@ GameInterface::GameInterface() : UserInterface(
         // 8 Powerup
         {0.0f, 0.0f},
         // 9 Notification
-        {0.0f, -10.0f},
+        {0.0f, 0.0f},
 
     }
 )
@@ -289,7 +291,8 @@ void GameInterface::update(float fSecondsSinceLastUpdate)
 void GameInterface::reinitialize(float gameTime)
 {
     m_fGameTime = gameTime;
-    m_bHasStartedWarning = false;
+    m_bHasStartedMajorWarning = false;
+    m_bHasStartedMinorWarning = false;
 
     for (int i = 0; i < MAX_HOVERCRAFT_COUNT; ++i)
     {
@@ -345,19 +348,53 @@ The time is formatted as
 void GameInterface::renderGameTime()
 {
     int secondsRemaining = static_cast<int>(m_fGameTime);
-    if (secondsRemaining <= TIME_WARNING_SOUND_START && !m_bHasStartedWarning)
+    vec3 color;
+    if (secondsRemaining <= TIME_WARNING_MAJOR_START)
     {
-        m_bHasStartedWarning = true;
-        m_pSoundManager->stopEvent(SoundManager::eSoundEvent::MUSIC_INGAME);
-        m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_LOOP);
+        if (!m_bHasStartedMajorWarning)
+        {
+            startMajorTimeWarning();
+        }
+        color = TIME_WARNING_MAJOR_COLOR;
     }
-    vec3 color = secondsRemaining <= TIME_WARNING_MAJOR ?TIME_WARNING_MAJOR_COLOR
-        : secondsRemaining <= TIME_WARNING_MINOR ? TIME_WARNING_MINOR_COLOR : TIME_COLOR;
+    else if (secondsRemaining <= TIME_WARNING_MINOR_START)
+    {
+        if (!m_bHasStartedMinorWarning)
+        {
+            startMinorTimeWarning();
+        }
+        color = TIME_WARNING_MINOR_COLOR;
+    } 
+    else
+    {
+        color = TIME_COLOR;
+    }
     renderText(FuncUtils::timeToString(secondsRemaining),
                m_vComponentCoordinates[COMPONENT_TIME].first,
                m_vComponentCoordinates[COMPONENT_TIME].second,
                TIME_SCALE, color);
 
+}
+
+/*
+    The major time warning notifies all players of the remaining time, and begins
+    the time countdown tick.
+*/
+void GameInterface::startMajorTimeWarning()
+{
+    m_bHasStartedMajorWarning = true;
+    m_pSoundManager->stopEvent(SoundManager::eSoundEvent::MUSIC_INGAME);
+    m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_LOOP);
+    displayNotification(NOTIFICATION_TIME_MAJOR);
+}
+
+/*
+    The minor time warning notifies all players of the remaining time.
+*/
+void GameInterface::startMinorTimeWarning()
+{
+    m_bHasStartedMinorWarning = true;
+    displayNotification(NOTIFICATION_TIME_MINOR);
 }
 
 /*
@@ -401,14 +438,20 @@ void GameInterface::renderMessages()
     }
 }
 
+/*
+    Render the notification message to all players.
+*/
 void GameInterface::renderNotifications()
 {
     for (int player = 0; player < MAX_HOVERCRAFT_COUNT; player++)
     {
-        renderText(m_sNotification,
-            m_vComponentCoordinates[COMPONENT_NOTIFICATION].first,
-            m_vComponentCoordinates[COMPONENT_NOTIFICATION].second,
-            MESSAGE_SCALE, MESSAGE_COLOR);
+        if (m_fNotificationTime > 0)
+        {
+            renderText(m_sNotification,
+                m_vComponentCoordinates[COMPONENT_NOTIFICATION].first,
+                m_vComponentCoordinates[COMPONENT_NOTIFICATION].second,
+                MESSAGE_SCALE, MESSAGE_COLOR);
+        }
     }
 }
 
