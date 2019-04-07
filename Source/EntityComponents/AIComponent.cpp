@@ -43,11 +43,12 @@ AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEnt
 }
 
 // @AustinEaton : Function not Implemented
-void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
+// void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation) {
     //for (int i = 0; i < GA_ITERATIONS_PER_FRAME * 50; i++) {
-   //     performMutation(playerPos, playerVel, botPos, botVel, botRotation, 0);
+   //     performMutation(targetPosition, playerVel, botPos, botVel, botRotation, 0);
    // }
-}
+// }
+
 AIComponent::~AIComponent() {
     // Nothing to destruct
 }
@@ -70,9 +71,7 @@ float getDistance(vec2 a, vec2 b) {
     @modifies LastIndex
 
 */
-vector<uvec2> AIComponent::getSeekPath(const HovercraftEntity *bot,
-                                       unsigned int minXBot, unsigned int minYBot,
-                                       unsigned int maxXBot, unsigned int maxYBot)
+vector<uvec2> AIComponent::getSeekPath()
 {
     if (glm::distance(vec2(minXBot, minYBot), seekLocation) < 2) {
         vec3 currSeekLock = get2ndNearestSeekPoint(vec2(minXBot, minYBot));
@@ -87,16 +86,60 @@ vector<uvec2> AIComponent::getSeekPath(const HovercraftEntity *bot,
 
     @param target   to chase
 */
-vector<uvec2> AIComponent::getChasePath(const HovercraftEntity *target,
-                                        unsigned int minXBot, unsigned int minYBot,
-                                        unsigned int maxXBot, unsigned int maxYBot,
-                                        unsigned int minXPlayer, unsigned int minYPlayer,
-                                        unsigned int maxXPlayer, unsigned int maxYPlayer) const
+vector<uvec2> AIComponent::getChasePath() const
 {
-    return m_pSpatialDataMap->getShortestPath(vec2(minXPlayer, minYPlayer),
-                                                vec2(maxXPlayer, maxYPlayer),
+    return m_pSpatialDataMap->getShortestPath(vec2(minXTarget, minYTarget),
+                                                vec2(maxXTarget, maxYTarget),
                                                 vec2(minXBot + 1, minYBot + 1),
                                                 vec2(maxXBot + 1, maxYBot + 1));
+}
+/*
+    Update the target and bot locations on the spatial data map.
+*/
+void AIComponent::updateBotAndTargetLocations(const HovercraftEntity* target, const HovercraftEntity* bot)
+{
+    m_pSpatialDataMap->getMapIndices(target, &minXTarget, &maxXTarget, &minYTarget, &maxYTarget);
+    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);
+}
+void AIComponent::determinePath()
+{
+    switch (m_eCurrentMode) {
+    case MODE_CHASE:
+        path = getChasePath();
+        break;
+    case MODE_SEEK:
+        path = getSeekPath();
+        break;
+    }
+}
+/*
+    Determinw which mode the AI should be in.
+*/
+void AIComponent::determineMode(const HovercraftEntity* target,
+                                const vec3 &botPos)
+{
+    float distanceToTarget = glm::distance(target->getPosition(), botPos);
+
+    if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
+        if (m_eCurrentMode  == MODE_CHASE) {
+            vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
+            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
+            LastIndex = (int)currSeekLock.z;
+        }
+        m_eCurrentMode = MODE_SEEK;
+    } else {
+        m_eCurrentMode = MODE_CHASE;
+    }
+
+}
+
+/*
+    To fire the rocket, the accuracy should be under the ACCURACY_THRESHOLD,
+    and the bot must be in chase mode.
+*/
+bool AIComponent::shouldFireRocket(float accuracy)
+{
+    return (accuracy < ACCURACY_THRESHOLD) && m_eCurrentMode == MODE_CHASE;
 }
 /*
     TODO maybe make it go to center?
@@ -199,95 +242,85 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
 
     // Seet zero ability usage so they aren't used
-    a->shouldFireRocket = false;
-    a->shouldActivateTrail = false;
     glm::vec3 botPos = bot->getPosition();
-    glm::vec3 botVel = bot->getLinearVelocity();
 
-    unsigned int minXPlayer, minYPlayer, maxXPlayer, maxYPlayer;
-    m_pSpatialDataMap->getMapIndices(target, &minXPlayer, &maxXPlayer, &minYPlayer, &maxYPlayer);
+    updateBotAndTargetLocations(target, bot);
 
-    unsigned int minXBot, minYBot, maxXBot, maxYBot;
-    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);// get bot loc on grid
-
-    switch (m_eCurrentMode) {
-    case MODE_CHASE:
-        path = getChasePath(target, minXBot, minYBot,
-                                    maxXBot, maxYBot,
-                                    minXPlayer, minYPlayer,
-                                    maxXPlayer, maxYPlayer);
-        break;
-    case MODE_SEEK:
-        path = getSeekPath(bot, minXBot, minYBot,
-                                maxXBot, maxYBot);
-        break;
-    }
+    determinePath();
 
     updateSeekPoint(botPos);
 
-    vec3 difference = target->getPosition() - botPos;
-    float distanceToTarget = glm::distance(target->getPosition(), botPos);
+    determineMode(target, botPos);
 
-    if (distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME) {
-        if (m_eCurrentMode  == MODE_CHASE) {
-            vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
-            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
-            LastIndex = (int)currSeekLock.z;
-        }
-        m_eCurrentMode = MODE_SEEK;
-        nextPosMove = true;
-    } else {
-        m_eCurrentMode = MODE_CHASE;
-        nextPosMove = false;
-    }
     if (timeChased > MAX_TIME_TARGET) {
         timeChased = 0;
     }
-    vec3 dirVector;
-    bot->getDirectionVector(&dirVector);
-    dirVector /= dirVector.length();
-    difference /= difference.length();
 
-    float mSlope = difference.z / difference.x;
-    float yVal = mSlope * dirVector.x;
+    vec3 distanceFromTarget = target->getPosition() - botPos;
+    vec3 botDirectionVector;
+    bot->getDirectionVector(&botDirectionVector);
+
+    // Normalize
+    botDirectionVector /= botDirectionVector.length();
+    distanceFromTarget /= distanceFromTarget.length();
+
+    float mSlope = distanceFromTarget.z / distanceFromTarget.x;
+    float yVal = mSlope * botDirectionVector.x;
 
 
-    glm::vec3 playerPos = target->getPosition();
-    int XvalMul = (int)(difference.x / abs(difference.x));
+    glm::vec3 targetPosition = target->getPosition();
 
-    if (yVal > dirVector.z) {
+    // So this will be either -1 or 1?
+    int XvalMul = static_cast<int>((distanceFromTarget.x / abs(distanceFromTarget.x)));
+
+    float accuracy = abs(yVal - botDirectionVector.z);
+    a->shouldFireRocket = shouldFireRocket(accuracy);
+
+    // Determine turn angle (and rocket shooting)
+    // @Austin Is the order intentional?
+    // ie. if the bot should fire a rocket, they won't if the first if statement case
+    // is true, since this is an if-else-if chain.
+    if (yVal > botDirectionVector.z) {
+        // Turn right
         a->turn = static_cast<float>(1 * XvalMul);
-    } else if (abs(yVal - dirVector.z) < ACCURACY_THRESHOLD && m_eCurrentMode == 0) {
+    } else if (a->shouldFireRocket) {
+        // Don't turn, and shoot
         a->turn = 0.0f;
-        a->shouldFireRocket = true;
     } else {
+        // Turn left
         a->turn = static_cast<float>(-1 * XvalMul);
     }
 
-    bool isXdistance = false;
     vec2 differenceSum = vec2(0,0);
 
     if ((botPos.x - seekPoint.x) > 0) {
+        // Move left
         differenceSum.x += MOVEMENT_RATE * -1;
     } else {
+        // Move right
         differenceSum.x += MOVEMENT_RATE;
     }
 
     if ((botPos.z - seekPoint.z) > 0) {
+        // Move back
         differenceSum.y += MOVEMENT_RATE * -1;
     } else {
+        // Move right
         differenceSum.y += MOVEMENT_RATE;
     }
 
-    if (nextPosMove) {
-        a->shouldActivateTrail = true;
-    }
+    // @Austin explain why should the trail activate if in seek mode?
+    a->shouldActivateTrail = m_eCurrentMode == MODE_SEEK;
 
     // move bot based off distance sum
     bot->setPosition(vec2(botPos.x + differenceSum.x * fTimeInSeconds,
                           botPos.z + differenceSum.y * fTimeInSeconds));
+
+    // @Austin Why are we updating the local variable at the very end of the
+    // function if it's immediately getting destroyed as the function returns?
     botPos = bot->getPosition();
 }
+
 void AIComponent::update(float fTimeInSeconds)
 {
     timeChased += fTimeInSeconds;
