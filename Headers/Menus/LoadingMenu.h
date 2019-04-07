@@ -18,5 +18,8 @@ private:
     // LoadingMenu cannot go back to anything
     void back() {}
 
+    // @Override
+    void enter();
+
     static LoadingMenu* m_pInstance;
 };

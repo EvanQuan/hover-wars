@@ -22,6 +22,9 @@ private:
 
     void back();
 
+    // @Override
+    void enter();
+
     int m_iBotCount;
     int m_iPlayerCount;
     int m_fGameTime;

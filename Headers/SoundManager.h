@@ -74,7 +74,9 @@ public:
         // For resuming the game
         SOUND_UI_END_GAME_CHEER,
         SOUND_UI_NEW_LEADER,
+        // For major time warnings
         SOUND_UI_TIME_REMAINING_LOOP,
+        // For reesuming the game
         SOUND_UI_COUNTDOWN_TICK,
     };
 

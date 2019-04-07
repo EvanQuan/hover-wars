@@ -80,6 +80,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_pPhysicsManager = PHYSICS_MANAGER;
 
+    m_pSoundManager = SOUND_MANAGER;
+
     // Generate VAO and VBO for rendering SplitScreen Quads
     glGenVertexArrays(1, &m_iVertexArray);
     m_iVertexBuffer = m_pShaderManager->genVertexBuffer(m_iVertexArray, nullptr, (sizeof(vec4) << 4), GL_STATIC_DRAW);
@@ -193,7 +195,7 @@ void GameManager::setCurrentInterface(UserInterface* ui)
 */
 void GameManager::startRendering()
 {
-    SOUND_MANAGER->start();
+    m_pSoundManager->start();
     resetTime();
 
     while (renderGraphics());
@@ -303,7 +305,7 @@ void GameManager::updateEnvironment()
     // Sound needs to update after the EntityManager to reflect in game changes
     // Cannot be updated inside the EntityManager as sounds can play while game
     // is paused.
-    SOUND_MANAGER->update();
+    m_pSoundManager->update();
     // The user interface should update after the EntityManager and
     // CommandHandler has changed in order to reflect their changes.
     // It also cannot update inside the EntityManager since it is able
@@ -326,13 +328,11 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 {
 
     // Before we initialize, set to LoadingMenu and Interface
-    setCurrentInterface(LoadingInterface::getInstance(m_iWidth, m_iHeight));
     m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
 
     // We intialize all values for the game to immediately start
     m_pPhysicsManager->initPhysics(true);
 
-    setPaused(false);
     startedGameOver = false;
     m_fGameTime = gameTime;
     m_bPaused = true;
@@ -391,7 +391,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // rendered for each player.
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
 
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
+    m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
 }
 
 // Name: generateFrameBuffer
@@ -531,14 +531,13 @@ void GameManager::generateFrameBuffer(unsigned int iPlayer)
 */
 void GameManager::endGame()
 {
-    SOUND_MANAGER->setEndGame();
+    m_pSoundManager->setEndGame();
 
     // postgame menu
     cout << "GameManger::endGame()" << endl;
     m_bInGame = false;
     m_bPaused = true;
-    COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
-    setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
+    m_pCommandHandler->setCurrentMenu(PostgameMenu::getInstance());
     m_pEntityManager->purgeEnvironment();
 
     cleanupFrameBuffers();
@@ -800,6 +799,7 @@ bool GameManager::initialize()
     m_bInGame = false;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
+
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 
@@ -889,6 +889,7 @@ void GameManager::setPaused(bool paused)
         // Immediately not in game
         m_bInGame = false;
         m_bPaused = true;
+        m_pSoundManager->setPauseMenu();
     }
     else
     {
@@ -897,6 +898,6 @@ void GameManager::setPaused(bool paused)
         m_bInGame = true;
         m_bQueueResume = true;
         m_fQueueResumeTime = GAME_RESUME_TIME;
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_COUNTDOWN_TICK);
+        m_pSoundManager->setResumeGame();
     }
 }

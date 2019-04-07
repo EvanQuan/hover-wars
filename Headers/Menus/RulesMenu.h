@@ -18,5 +18,8 @@ private:
     // RulesMenu cannot go back to anything
     void back() {}
 
+    // @Override
+    void enter();
+
     static RulesMenu* m_pInstance;
 };

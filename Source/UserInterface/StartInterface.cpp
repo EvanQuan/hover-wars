@@ -52,13 +52,13 @@ void StartInterface::reinitialize(float gameTime)
 
 void StartInterface::render()
 {
-    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderImage(IMAGE_BACKGROUND_START_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
     renderOption(); 
 }
 
 void StartInterface::renderOption() {
-    StartMenu* m = (StartMenu* )StartMenu::getInstance();
+    StartMenu* m = static_cast<StartMenu*>(StartMenu::getInstance());
     string option = m->getCurrentPrompt();
     if (option == INSERT_COIN_OPTION) {
         renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
