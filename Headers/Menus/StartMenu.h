@@ -18,5 +18,8 @@ private:
     // StartMenu cannot go back to anything
     void back() {}
 
+    // @Override
+    void start();
+
     static StartMenu* m_pInstance;
 };

@@ -328,7 +328,6 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 {
 
     // Before we initialize, set to LoadingMenu and Interface
-    setCurrentInterface(LoadingInterface::getInstance(m_iWidth, m_iHeight));
     m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
 
     // We intialize all values for the game to immediately start
@@ -538,8 +537,7 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     m_bInGame = false;
     m_bPaused = true;
-    COMMAND_HANDLER->setCurrentMenu(PostgameMenu::getInstance());
-    setCurrentInterface(PostgameInterface::getInstance(m_iWidth, m_iHeight));
+    m_pCommandHandler->setCurrentMenu(PostgameMenu::getInstance());
     m_pEntityManager->purgeEnvironment();
 
     cleanupFrameBuffers();
@@ -801,6 +799,7 @@ bool GameManager::initialize()
     m_bInGame = false;
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
+
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
     m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 

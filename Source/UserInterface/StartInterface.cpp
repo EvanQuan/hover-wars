@@ -58,7 +58,7 @@ void StartInterface::render()
 }
 
 void StartInterface::renderOption() {
-    StartMenu* m = (StartMenu* )StartMenu::getInstance();
+    StartMenu* m = static_cast<StartMenu*>(StartMenu::getInstance());
     string option = m->getCurrentPrompt();
     if (option == INSERT_COIN_OPTION) {
         renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);

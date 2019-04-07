@@ -1,8 +1,7 @@
 #include "Menus/PauseMenu.h"
 #include "Menus/GameMenu.h"
 #include "Menus/MainMenu.h"
-#include "UserInterface/GameInterface.h"
-#include "UserInterface/MainInterface.h"
+#include "UserInterface/PauseInterface.h"
 #include "CommandHandler.h"
 
 // Singleton instance
@@ -36,8 +35,6 @@ void PauseMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_MENU_PAUSE_TOGGLE:
-        m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->getWidth(),
-                                                                       m_pGameManager->getHeight()));
         nextMenu(GameMenu::getInstance());
         break;
     case COMMAND_PROMPT_NEXT_MENU:
@@ -56,6 +53,8 @@ void PauseMenu::enter()
 { 
     PromptMenu::enter();
     GAME_MANAGER->setPaused(true);
+    m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
+                                                                   m_pGameManager->getHeight()));
 }
 
 /*

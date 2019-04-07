@@ -1,8 +1,7 @@
 #include "Menus/PregameMenu.h"
 #include "Menus/MainMenu.h"
 #include "Menus/LoadingMenu.h"
-#include "UserInterface/LoadingInterface.h"
-#include "UserInterface/MainInterface.h"
+#include "UserInterface/PregameInterface.h"
 #include "CommandHandler.h"
 
 
@@ -77,9 +76,15 @@ void PregameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PregameMenu::back()
 {
-    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
     nextMenu(MainMenu::getInstance());
+}
+
+void PregameMenu::enter()
+{
+    PromptMenu::enter();
+    m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->getWidth(),
+                                                                   m_pGameManager->getHeight()));
+
 }
 
 void PregameMenu::moveCursor(eFixedCommand direction)

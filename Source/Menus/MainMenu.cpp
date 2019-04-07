@@ -6,6 +6,7 @@
 #include "UserInterface/PregameInterface.h"
 #include "UserInterface/RulesInterface.h"
 #include "UserInterface/ControlsInterface.h"
+#include "UserInterface/MainInterface.h"
 #include "CommandHandler.h"
 
 // Singleton instance
@@ -69,4 +70,10 @@ void MainMenu::select(eFixedCommand command)
 void MainMenu::back()
 {
     nextMenu(StartMenu::getInstance());
+}
+
+void MainMenu::enter()
+{
+    PromptMenu::enter();
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }

@@ -1,6 +1,6 @@
 #include "Menus/PostgameMenu.h"
 #include "Menus/MainMenu.h"
-#include "UserInterface/MainInterface.h"
+#include "UserInterface/PostgameInterface.h"
 #include "GameStats.h"
 #include "CommandHandler.h"
 
@@ -40,13 +40,14 @@ void PostgameMenu::select(eFixedCommand command)
 // Back returns to the mainmenu screen
 void PostgameMenu::back()
 {
-    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
     nextMenu(MainMenu::getInstance());
 }
 
 void PostgameMenu::enter()
 {
+    PromptMenu::enter();
+    m_pGameManager->setCurrentInterface(PostgameInterface::getInstance(m_pGameManager->getWidth(),
+                                                                   m_pGameManager->getHeight()));
     endGameStats = GAME_STATS->getEndGameStats();
     for (EndGameStat s : endGameStats)
     {
