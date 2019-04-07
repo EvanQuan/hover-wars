@@ -6,7 +6,7 @@ uniform sampler2D mTexture;
 //out vec4 FragmentColour;
 
 uniform bool horizontal;
-uniform float blurValues[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.16216);
+uniform float blurValues[5] = float[] (0.0999673828, 0.114416346, 0.119682685, 0.114416346, 0.0999673828);
 uniform int matrixSize = 5;
 void main(void)
 {

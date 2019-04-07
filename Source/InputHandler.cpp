@@ -193,7 +193,7 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
             // Get cursor position
             double fX, fY;
             glfwGetCursorPos(window, &fX, &fY);
-            m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
+            //m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
 #endif
         }
         else if (GLFW_RELEASE == action)    // Release tracking

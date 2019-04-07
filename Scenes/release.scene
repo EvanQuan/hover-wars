@@ -174,7 +174,7 @@ skybox {
 #           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 directional_light {
     0 -1 1
-    0.0 0.0 0.0
+    1.0 1.0 1.0
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     7500.0 1.0 7700.0
@@ -185,88 +185,88 @@ directional_light {
 point_light {
     24.5 7 65
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     65 7 24.5
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     105.5 7 65
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     65 7 105.5
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 
 #Red Square
 point_light {
     -24.5 7 -65
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 point_light {
     -105.5 7 -65
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 point_light {
     -65 7 -24.5
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 point_light {
     -65 7 -105.5
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 
 #Green Square
 point_light {
     -65 7 24.5
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 point_light {
     -24.5 7 65
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 point_light {
     -65 7 105.5
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 point_light {
     -105.5 7 65
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 
 #Magenta Square
 point_light {
     65 7 -24.5
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     24.5 7 -65
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     65 7 -105.5
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     105.5 7 -65
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 
 spotlight {
@@ -464,8 +464,8 @@ cube {
     -65 5 65
     10 80 80
 	+material {
-        textures/green_wall.png
-		textures/squareSpecMap.png
+        textures/green_wall_side.png
+		0.0 0.0 0.0
         1.0
     }
     +bounding {
