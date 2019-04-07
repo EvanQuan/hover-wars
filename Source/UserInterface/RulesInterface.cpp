@@ -52,7 +52,7 @@ void RulesInterface::reinitialize(float gameTime)
 
 void RulesInterface::render()
 {
-    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderImage(IMAGE_BACKGROUND_MAIN_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
     renderOption();
 }
