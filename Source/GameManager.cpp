@@ -231,6 +231,54 @@ bool GameManager::renderGraphics()
 }
 
 /*
+    Calculate the height and width of the screens depending on the number of
+    players in the game.
+*/
+void GameManager::calculateScreenDimensions(unsigned int playerCount)
+{
+    // Figure out Frame Buffer Sizes for multiple players
+    m_iSplitHeight = m_iHeight;
+    m_iSplitWidth = m_iWidth;
+    if (playerCount > 1)
+        m_iSplitHeight >>= 1;
+    if (playerCount > 2)
+        m_iSplitWidth >>= 1;
+
+    // Set up EntitManager for Camera Frustums
+    m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
+}
+
+void GameManager::spawnPlayers(unsigned int playerCount)
+{
+    for (unsigned int i = 0; i < playerCount; i++) {
+        m_vPositions.push_back(SCENE_LOADER->createPlayer(i));
+        m_vColors.push_back(COLORS[i]);
+        generateSplitScreen(i);
+    }
+}
+
+void GameManager::spawnBots(unsigned int botCount)
+{
+    for (unsigned int i = 0; i < botCount; i++) {
+        m_vPositions.push_back(SCENE_LOADER->createBot());
+        m_vColors.push_back(COLORS[MAX_PLAYER_COUNT + i]);
+    }
+}
+
+void GameManager::setupMapData()
+{
+    vector< vec3 > vCombinedData = m_vPositions;
+    vCombinedData.insert(vCombinedData.end(), m_vColors.begin(), m_vColors.end());
+    m_iMapVBO = m_pShaderManager->genVertexBuffer(m_iMapVAO,
+                                                  vCombinedData.data(),
+                                                  (vCombinedData.size() * sizeof(vec3)),
+                                                  GL_DYNAMIC_DRAW);
+    m_pShaderManager->setAttrib(m_iMapVAO, 0, 3, 0, nullptr);
+    m_pShaderManager->setAttrib(m_iMapVAO, 1, 3, 0, (void*)(m_vPositions.size() * sizeof(vec3)));
+    glBindVertexArray(0);
+}
+
+/*
     Update all time values for a given render update.
 */
 void GameManager::updateTime()
@@ -344,40 +392,12 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     TextureManager* pTxtMngr = TEXTURE_MANAGER;
     m_pEntityManager->initializeEnvironment(sFileName);
 
-    // Figure out Frame Buffer Sizes for multiple players
-    m_iSplitHeight = m_iHeight;
-    m_iSplitWidth = m_iWidth;
-    if (playerCount > 1)
-        m_iSplitHeight >>= 1;
-    if (playerCount > 2)
-        m_iSplitWidth >>= 1;
+    calculateScreenDimensions(playerCount);
 
-    // Set up EntitManager for Camera Frustums
-    m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
+    spawnPlayers(playerCount);
+    spawnBots(botCount);
 
-    // Spawn Players
-    for (unsigned int i = 0; i < playerCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createPlayer(i));
-        m_vColors.push_back(COLORS[i]);
-        generateSplitScreen(i);
-    }
-
-    // Spawn Bots
-    for (unsigned int i = 0; i < botCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createBot());
-        m_vColors.push_back(COLORS[MAX_PLAYER_COUNT + i]);
-    }
-
-    // Setup Map Data
-    vector< vec3 > vCombinedData = m_vPositions;
-    vCombinedData.insert(vCombinedData.end(), m_vColors.begin(), m_vColors.end());
-    m_iMapVBO = m_pShaderManager->genVertexBuffer(m_iMapVAO,
-                                                  vCombinedData.data(),
-                                                  (vCombinedData.size() * sizeof(vec3)),
-                                                  GL_DYNAMIC_DRAW);
-    m_pShaderManager->setAttrib(m_iMapVAO, 0, 3, 0, nullptr);
-    m_pShaderManager->setAttrib(m_iMapVAO, 1, 3, 0, (void*)(m_vPositions.size() * sizeof(vec3)));
-    glBindVertexArray(0);
+    setupMapData();
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
@@ -394,8 +414,15 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
 }
 
-// Name: generateFrameBuffer
-// 
+/*
+    Generate each players' screen for split-screen multiplayer.
+    If there is only 1 player, that player will take the entire screen.
+    If there are 2 playere, the screen will split horizontally in half.
+    If there are 3 or 4 players, the screen will split into 4 quadrants.
+
+    @param iPlayer  to generate screen for. Value should correspond to
+                    eHovecraft value.
+*/
 void GameManager::generateSplitScreen(unsigned int iPlayer)
 {
     // Local Variables
@@ -649,25 +676,8 @@ void GameManager::setKeyboardHovercraft(int playerCount)
 */
 void GameManager::updateGameTime(float frameDeltaTime)
 {
-    // Only update game time if the game is playing to ensure the GameInterface
-    // and the Game Time are in perfect sync.
-    if (!m_bPaused)
-    {
-        m_fGameTime -= frameDeltaTime;
-        //cout << m_fGameTime << endl;
-    }
-
-    // If in game, check to see if queued to resume. This should be the case
-    // when resuming from pause or at the start of the game.
-    if (m_bQueueResume)
-    {
-        m_fQueueResumeTime -= frameDeltaTime;
-        if (m_fQueueResumeTime <= 0)
-        {
-            m_bPaused = false;
-            m_bQueueResume = false;
-        }
-    }
+    checkIfShouldUpdateGameTime(frameDeltaTime);
+    checkIfShouldResumeGame(frameDeltaTime);
 }
 
 
@@ -886,18 +896,75 @@ void GameManager::setPaused(bool paused)
 {
     if (paused)
     {
-        // Immediately not in game
-        m_bInGame = false;
-        m_bPaused = true;
-        m_pSoundManager->setPauseMenu();
+        pauseGame();
     }
     else
     {
-        // Queue up unpause. When the game resumes, there is a buffer time
-        // before the environment begins updating again.
-        m_bInGame = true;
-        m_bQueueResume = true;
-        m_fQueueResumeTime = GAME_RESUME_TIME;
-        m_pSoundManager->setResumeGame();
+        startResumeCountdown();
     }
 }
+
+/*
+    When the user wants to resume (unpause) the game, there is a countdown
+    before the environment begins again in order for the player to get ready.
+*/
+void GameManager::startResumeCountdown()
+{
+    m_bInGame = true;
+    m_bQueueResume = true;
+    m_fQueueResumeTime = GAME_RESUME_TIME;
+    m_pSoundManager->setResumeCountdown();
+    m_pGameInterface->startResumeCountdown();
+}
+
+/*
+    Resume the game without delay.
+*/
+void GameManager::resumeGame()
+{
+    m_bPaused = false;
+    m_bQueueResume = false;
+    m_pSoundManager->setResumeGame();
+}
+
+/*
+    When the game pauses, all the in-game sounds are paused and saved.
+    If the game resumes, these saved paused events should reesume.
+*/
+void GameManager::pauseGame()
+{
+    m_bInGame = false;
+    m_bPaused = true;
+    m_pSoundManager->setPauseMenu();
+}
+
+/*
+    Only update game time if the game is playing to ensure the GameInterface
+    and the Game Time are in perfect sync.
+*/
+void GameManager::checkIfShouldUpdateGameTime(float frameDeltaTime)
+{
+    if (!m_bPaused)
+    {
+        m_fGameTime -= frameDeltaTime;
+    }
+}
+
+/*
+    If in game, check to see if queued to resume. This should be the case
+    when resuming from pause or at the start of the game.
+*/
+void GameManager::checkIfShouldResumeGame(float frameDeltaTime)
+{
+    if (m_bQueueResume)
+    {
+        m_fQueueResumeTime -= frameDeltaTime;
+        // Update countdown ticking for game UI
+        m_pGameInterface->updateResumeCountdown(m_fFrameDeltaTime);
+        if (m_fQueueResumeTime <= 0)
+        {
+            resumeGame();
+        }
+    }
+}
+

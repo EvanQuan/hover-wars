@@ -65,6 +65,13 @@ Coordinate system:
 #define MESSAGE_COLOR           COLOR_WHITE
 
 #define NOTIFICATION_DURATION   MESSAGE_DURATION
+#define RESUME_TICK_DURATION 1.0f
+#define RESUME_COUNTDOWN_DURATION COUNTDOWN_TICKS * RESUME_TICK_DURATION
+
+#define COUNTDOWN_3_COLOR COLOR_RED
+#define COUNTDOWN_2_COLOR COLOR_YELLOW
+#define COUNTDOWN_1_COLOR COLOR_GREEN
+#define COUNTDOWN_GO_COLOR COLOR_WHITE
 
 // Singleton instance
 GameInterface* GameInterface::m_pInstance = nullptr;
@@ -93,6 +100,8 @@ GameInterface::GameInterface() : UserInterface(
         {0.45f, 0.33f}, 
         // 9 Notification
         {0.42f, 0.75f},
+        // 10 Resume game countdown
+        {0.48f, 0.50f},
     },
     // Translating
     vector<pair<float, float>>
@@ -110,21 +119,21 @@ GameInterface::GameInterface() : UserInterface(
         // 5 Score
         {0.0f, 0.0f},
         // 6 Score Change
-        {0.00f, 0.00f},
+        {0.0f, 0.0f},
         // 7 Message
-        {0.00f, 0.0f},
+        {0.0f, 0.0f},
         // 8 Powerup
         {0.0f, 0.0f},
         // 9 Notification
         {0.0f, 0.0f},
-
+        // 10 Resume game countdown
+        {0.0f, 0.0f},
     }
 )
 {
     GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
-    debugMessage = "";
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;
 }
@@ -220,18 +229,6 @@ void GameInterface::displayNotification(eNotification message)
     case NOTIFICATION_TIME_MAJOR:
         m_sNotification = std::to_string(TIME_WARNING_MAJOR) + "s remaining";
         break;
-    case NOTIFICATION_3:
-        m_sNotification = "3";
-        break;
-    case NOTIFICATION_2:
-        m_sNotification = "2";
-        break;
-    case NOTIFICATION_1:
-        m_sNotification = "1";
-        break;
-    case NOTIFICATION_GO:
-        m_sNotification = "GO";
-        break;
     }
     m_fNotificationTime = NOTIFICATION_DURATION;
 }
@@ -263,26 +260,50 @@ void GameInterface::displayMessage(eHovercraft hovercraft, std::string text)
 }
 
 /*
-This visually updates the GameInterface to all value changes since last update.
+    This updates the GameInterface stat values since last update.
 
-Under the scenes, this retrieves all needed the values from GameStats and
-displays them. This is why it does not need a time value in order to determine
-time-sensitive information such as cooldown and game time.
-@TODO this may change later on.
+    This should be called once per frame update when in game and while not
+    paused.
 
-This should be called once per frame update.
-
+    Units: seconds
 */
-void GameInterface::update(float fSecondsSinceLastUpdate)
+void GameInterface::update(float fFrameDeltaTime)
 {
     if (m_iDisplayCount > 0)
     {
-        // system("CLS");
-
-        updateGameTime(fSecondsSinceLastUpdate);
-        // updateScores();
-        // updateCooldowns();
+        updateGameTime(fFrameDeltaTime);
     }
+}
+
+void GameInterface::updateResumeCountdown(float fFrameDeltaTime)
+{
+    float tickTime = m_fResumeTime[m_iCurrentTick];
+
+    if (tickTime <= 0 && m_iCurrentTick == 0) {
+        // Leave early if done with countdown
+        return;
+    }
+
+    tickTime -= fFrameDeltaTime;
+
+    m_fResumeTime[m_iCurrentTick] = tickTime;
+    
+    // Update tick if time is exceeded
+    if (tickTime <= 0)
+    {
+        m_iCurrentTick = FuncUtils::max(0, m_iCurrentTick - 1);
+        cout << "tick: " << m_iCurrentTick << endl;
+    }
+
+}
+
+void GameInterface::startResumeCountdown()
+{
+    for (int i = 0; i < COUNTDOWN_TICKS; ++i)
+    {
+        m_fResumeTime[i] = RESUME_TICK_DURATION;
+    }
+    m_iCurrentTick = COUNTDOWN_TICKS - 1;
 }
 
 /*
@@ -300,6 +321,7 @@ void GameInterface::reinitialize(float gameTime)
         m_fMessageTimes[i] = 0;
     }
     m_fNotificationTime = 0;
+    startResumeCountdown();
 }
 
 /*
@@ -315,15 +337,17 @@ void GameInterface::render()
     renderCooldowns();
     renderMessages();
     renderNotifications();
+    renderResumeCountdown();
 }
 
 /*
 
 */
-void GameInterface::updateGameTime(float fSecondsSinceLastUpdate)
+void GameInterface::updateGameTime(float fFrameDeltaTime)
 {
 
-    m_fGameTime -= fSecondsSinceLastUpdate;
+    updateResumeCountdown(fFrameDeltaTime);
+    m_fGameTime -= fFrameDeltaTime;
     if (m_fGameTime < 0)
     {
         m_fGameTime = 0;
@@ -331,13 +355,13 @@ void GameInterface::updateGameTime(float fSecondsSinceLastUpdate)
 
     for (int player = 0; player < m_iDisplayCount; player++)
     {
-        m_fMessageTimes[player] -= fSecondsSinceLastUpdate;
-        m_fScoreChangeTimes[player] -= fSecondsSinceLastUpdate;
-        m_fPowerupMessageTimes[player] -= fSecondsSinceLastUpdate;
+        m_fMessageTimes[player] -= fFrameDeltaTime;
+        m_fScoreChangeTimes[player] -= fFrameDeltaTime;
+        m_fPowerupMessageTimes[player] -= fFrameDeltaTime;
     }
     // TODO make sure time does not become negative, or if it does, it signifies
     // the end of the round. Not sure if its worth the cost to check.
-    m_fNotificationTime -= fSecondsSinceLastUpdate;
+    m_fNotificationTime -= fFrameDeltaTime;
 }
 
 /*
@@ -430,12 +454,6 @@ void GameInterface::renderMessages()
             m_vComponentCoordinates[COMPONENT_POWERUP].second,
             MESSAGE_SCALE, MESSAGE_COLOR);
     }
-
-    // @TODO remove this?
-    if (!debugMessage.empty())
-    {
-        renderText(debugMessage, debugWidth, debugHeight, 1.0f, COLOR_WHITE);
-    }
 }
 
 /*
@@ -455,14 +473,46 @@ void GameInterface::renderNotifications()
     }
 }
 
-void GameInterface::displayDebug(std::string message)
+void GameInterface::renderResumeCountdown()
 {
-    debugMessage = message;
+    // Check that there is resume time left.
+    float tickTime = m_fResumeTime[m_iCurrentTick];
+
+    if (tickTime >= 0)
+    {
+        string message;
+        vec3 color;
+        switch (m_iCurrentTick)
+        {
+        case 0:
+            message = "GO";
+            color = COUNTDOWN_GO_COLOR;
+            break;
+        case 1:
+            message = "1";
+            color = COUNTDOWN_1_COLOR;
+            break;
+        case 2:
+            message = "2";
+            color = COUNTDOWN_2_COLOR;
+            break;
+        case 3:
+            message = "3";
+            color = COUNTDOWN_3_COLOR;
+            break;
+        }
+
+        renderText(message,
+            m_vComponentCoordinates[COMPONENT_COUNTDOWN].first,
+            m_vComponentCoordinates[COMPONENT_COUNTDOWN].second,
+            MESSAGE_SCALE, color);
+    }
+
 }
 
 void GameInterface::renderScores()
 {
-    std::string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
+    string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
                         GameStats::eHovercraftStat::SCORE_CURRENT));
     renderText("Score: " + score,
                m_vComponentCoordinates[COMPONENT_SCORE].first,
@@ -573,15 +623,7 @@ Values:
 */
 void GameInterface::setDisplayCount(int count)
 {
-    if (DISPLAY_COUNT_MIN > count)
-    {
-        count = DISPLAY_COUNT_MIN;
-    }
-    else if (DISPLAY_COUNT_MAX < count)
-    {
-        count = DISPLAY_COUNT_MAX;
-    }
-    m_iDisplayCount = count;
+    m_iDisplayCount = FuncUtils::bound(count, DISPLAY_COUNT_MIN, DISPLAY_COUNT_MAX);
 }
 
 /*

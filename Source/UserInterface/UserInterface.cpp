@@ -64,7 +64,6 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    debugMessage = "";
     m_Textures[IMAGE_0] = TEXTURE_MANAGER->loadTexture(IMAGE_0);
     m_Textures[IMAGE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1);
     m_Textures[IMAGE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2);
@@ -280,10 +279,6 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_iWidth = iWidth;
     m_iHeight = iHeight;
 
-    // debug
-    debugWidth =  iWidth * 0.5f;
-    debugHeight =  iHeight * 0.5f;
-
     // Update UI Projection Matrix Uniform for UI Shader
     mat4 m4UIProjection = ortho(0.0f, static_cast<GLfloat>(m_iWidth), 0.0f, static_cast<GLfloat>(m_iHeight), 0.0f, 1.0f);
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
@@ -294,11 +289,6 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
         m_vComponentCoordinates[component].first = (m_iWidth * m_vComponentScaling[component].first) + m_vComponentTranslating[component].first;
         m_vComponentCoordinates[component].second = (m_iHeight * m_vComponentScaling[component].second) + m_vComponentTranslating[component].second;
     }
-}
-
-void UserInterface::displayDebug(const char* message)
-{
-    debugMessage = message;
 }
 
 void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
