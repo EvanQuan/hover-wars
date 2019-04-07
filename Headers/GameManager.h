@@ -14,6 +14,7 @@ class UserInterface;
 class GameInterface;
 class GameStats;
 class Texture;
+class SoundManager;
 
 // Class: Game Manager
 // Purpose: Manages Game States and handles initialization of a level and handling of
@@ -153,6 +154,7 @@ private:
     UserInterface*      m_pCurrentInterface;
     GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
+    SoundManager*       m_pSoundManager;
 
     void setKeyboardHovercraft(int playerCount);
     // The keyboard corresponds to its own hovercraft

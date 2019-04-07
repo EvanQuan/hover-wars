@@ -39,7 +39,6 @@ void PauseMenu::select(eFixedCommand command)
         m_pGameManager->setCurrentInterface(GameInterface::getInstance(m_pGameManager->getWidth(),
                                                                        m_pGameManager->getHeight()));
         nextMenu(GameMenu::getInstance());
-        SOUND_MANAGER->setResumeGame();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
         m_pGameManager->endGame();
@@ -57,7 +56,6 @@ void PauseMenu::enter()
 { 
     PromptMenu::enter();
     GAME_MANAGER->setPaused(true);
-    SOUND_MANAGER->setPauseMenu();
 }
 
 /*
