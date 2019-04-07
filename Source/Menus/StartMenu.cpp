@@ -34,7 +34,7 @@ void StartMenu::select(eFixedCommand command)
     }
 }
 
-void StartMenu::start()
+void StartMenu::enter()
 {
     PromptMenu::enter();
     m_pGameManager->setCurrentInterface(StartInterface::getInstance(m_pGameManager->getWidth(),
