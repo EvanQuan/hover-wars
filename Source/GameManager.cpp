@@ -914,6 +914,7 @@ void GameManager::startResumeCountdown()
     m_bQueueResume = true;
     m_fQueueResumeTime = GAME_RESUME_TIME;
     m_pSoundManager->setResumeCountdown();
+    m_pGameInterface->startResumeCountdown();
 }
 
 /*
@@ -958,6 +959,8 @@ void GameManager::checkIfShouldResumeGame(float frameDeltaTime)
     if (m_bQueueResume)
     {
         m_fQueueResumeTime -= frameDeltaTime;
+        // Update countdown ticking for game UI
+        m_pGameInterface->updateResumeCountdown(m_fFrameDeltaTime);
         if (m_fQueueResumeTime <= 0)
         {
             resumeGame();

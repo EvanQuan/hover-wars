@@ -563,7 +563,9 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        if (!(isBot(attacker) && isBot(hit)))
+        // Only display kill message if players are involved (either attacker or hit).
+        // This avoids unnecessary work to do and sound effects.
+        if (isPlayer(attacker) || isPlayer(hit))
         {
             m_pGameInterface->displayKillMessage(attacker, hit,
                 GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
