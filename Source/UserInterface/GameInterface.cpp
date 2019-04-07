@@ -276,11 +276,7 @@ void GameInterface::update(float fSecondsSinceLastUpdate)
 {
     if (m_iDisplayCount > 0)
     {
-        // system("CLS");
-
         updateGameTime(fSecondsSinceLastUpdate);
-        // updateScores();
-        // updateCooldowns();
     }
 }
 
@@ -561,8 +557,7 @@ Values:
 */
 void GameInterface::setDisplayCount(int count)
 {
-    count = FuncUtils::bound(count, DISPLAY_COUNT_MIN, DISPLAY_COUNT_MAX);
-    m_iDisplayCount = count;
+    m_iDisplayCount = FuncUtils::bound(count, DISPLAY_COUNT_MIN, DISPLAY_COUNT_MAX);
 }
 
 /*
