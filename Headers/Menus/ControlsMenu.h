@@ -18,5 +18,8 @@ private:
     // ControlsMenu cannot go back to anything
     void back() {}
 
+    // @Override
+    void enter();
+
     static ControlsMenu* m_pInstance;
 };
