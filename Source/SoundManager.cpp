@@ -514,6 +514,7 @@ void SoundManager::playEvent(const string& sEventName) {
         testAttrubute.position = FMOD_VECTOR{ 0.0f, 0.0f, 0.0f };
         tFoundIt->second->set3DAttributes(&testAttrubute);
     }
+    tFoundIt->second->setPaused(false);
     tFoundIt->second->start();
     // cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
@@ -632,19 +633,20 @@ void SoundManager::setPauseMenu() {
     updateChannels();
 }
 
-void SoundManager::setResumeGame() {
-
+void SoundManager::setResumeCountdown()
+{
     stopEvent(MUSIC_PAUSE);
+    play(SOUND_UI_COUNTDOWN_TICK);
+    updateChannels();
+}
 
+void SoundManager::setResumeGame() {
     // Unpause all in game sound events that were previously paused and end
     // pause music
     for (auto it : mEvents)
     {
         it.second->setPaused(false);
     }
-
-    play(SOUND_UI_COUNTDOWN_TICK);
-    cout << "countdown tick" << endl;
     updateChannels();
 }
 
@@ -653,7 +655,6 @@ void SoundManager::setEndGame()
     stopAllEvents();
     play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
     play(MUSIC_INGAME);
-    updateChannels();
 }
 
 // @Deprecated

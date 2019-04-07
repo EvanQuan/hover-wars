@@ -666,6 +666,7 @@ void GameManager::updateGameTime(float frameDeltaTime)
         {
             m_bPaused = false;
             m_bQueueResume = false;
+            m_pSoundManager->setResumeGame();
         }
     }
 }
@@ -898,6 +899,6 @@ void GameManager::setPaused(bool paused)
         m_bInGame = true;
         m_bQueueResume = true;
         m_fQueueResumeTime = GAME_RESUME_TIME;
-        m_pSoundManager->setResumeGame();
+        m_pSoundManager->setResumeCountdown();
     }
 }

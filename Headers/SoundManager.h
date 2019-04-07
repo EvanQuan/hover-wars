@@ -109,6 +109,7 @@ public:
     void setSpeedParameter(float speed);
 
     void setPauseMenu();
+    void setResumeCountdown();
     void setResumeGame();
     void setEndGame();
 
