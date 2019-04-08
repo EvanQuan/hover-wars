@@ -252,14 +252,16 @@ void PhysicsManager::initPhysics(bool interactive)
     gErrorCallback = new PxDefaultErrorCallback();
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
-    // gPvd = PxCreatePvd(*gFoundation);
-// #ifdef _DEBUG
-    // transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-    // gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-// #endif
-
+    
+#ifdef _DEBUG
+    gPvd = PxCreatePvd(*gFoundation);
+    transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+    gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+#else
     gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true);
-    // gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, pvd);
+#endif
+   
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
@@ -270,21 +272,23 @@ void PhysicsManager::initPhysics(bool interactive)
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_PAIRS;
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
     gScene = gPhysics->createScene(sceneDesc);
-    // PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-    // if (pvdClient)
-    // {
-        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-    // }
+#ifdef _DEBUG
+    PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+    if (pvdClient)
+    {
+        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+        pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+    }
+    bool extensionsInitialized = PxInitExtensions(*gPhysics, gPvd);
+    if (!extensionsInitialized) {
+        std::cout << ("PxInitExtensions failed!") << std::endl;
+    }
+#endif
     gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
     gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
     cout << "gWorldmaterial initialized" << endl;
-    // bool extensionsInitialized = PxInitExtensions(*gPhysics, gPvd);
-    // if (!extensionsInitialized) {
-        // std::cout << ("PxInitExtensions failed!") << std::endl;
-    // }
 
     gCook = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, PxCookingParams(PxTolerancesScale()));
     if (!gCook) {
@@ -358,12 +362,6 @@ void PhysicsManager::cleanupPhysics()
         }
         staticObjects.clear();
 
-        // Crashes, which means these are probably deleted in vehile loop
-        // for (PxRigidDynamic *object : dynamicObjects) {
-            // if (object != nullptr) {
-                // object->release();
-            // }
-        // }
         dynamicObjects.clear();
 
         for (PxTriangleMesh *object : triangleMeshes) {
@@ -384,13 +382,12 @@ void PhysicsManager::cleanupPhysics()
         gScene->release();
         gDispatcher->release();
         gPhysics->release();
-        // PxPvdTransport* transport = gPvd->getTransport();
-        // gPvd->disconnect();
-        // gPvd->release();
-// #ifdef _DEBUG
-        // transport->release();
-// #endif
-        // manager->release();
+#ifdef _DEBUG
+        PxPvdTransport* transport = gPvd->getTransport();
+        gPvd->disconnect();
+        gPvd->release();
+        transport->release();
+#endif
         gFoundation->release();
 
 
@@ -405,7 +402,6 @@ void PhysicsManager::cleanupPhysics()
         gPhysics = NULL;
         gDispatcher = NULL;
         gScene = NULL;
-        // manager = NULL;
         gCarMaterial = NULL;
         gWorldMaterial = NULL;
         
@@ -427,7 +423,6 @@ PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, 
     PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     body->attachShape(*shape);
     body->setName(sEntityID);
-    // cout << "\"" << body->getName() << "\"" << endl;
     gScene->addActor(*body);
 
     staticObjects.push_back(body);
@@ -568,6 +563,7 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     // Set up Physics Body
     *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
     (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+    (*pReturnBody)->setMaxAngularVelocity(0.0f);
     (*pReturnBody)->setLinearVelocity(pxRocketVel);
     (*pReturnBody)->attachShape(*pShape);
     (*pReturnBody)->setName(cName);

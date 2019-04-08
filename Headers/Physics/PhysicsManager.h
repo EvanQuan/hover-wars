@@ -115,7 +115,6 @@ private:
 
     physx::PxDefaultCpuDispatcher*  gDispatcher     = NULL;
     physx::PxScene*                 gScene          = NULL;
-    // physx::PxControllerManager*     manager         = NULL;
 
     physx::PxMaterial*              gCarMaterial    = NULL;
     physx::PxMaterial*              gWorldMaterial  = NULL;
