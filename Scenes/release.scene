@@ -87,31 +87,28 @@ rocket {
         1.0
     }
     +material {
-         textures/missile/missile_diffuse.jpg
+         textures/missile/missile_diffuse_pink.jpg
          1.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
 }
 
 # Information for Spikes in this Scene
 spikes {
     +mesh {
-        models/spikes2.obj
+        models/spikes3.obj
         1.0
     }
     +material {
-        textures/defaultTexture.png
-        0.0
+        textures/tronBase.png
+        0.3500 0.3500 0.3500
+        32.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
-}
-
-spawn_points {
-    0 5 0
 }
 
 # Starfield Setup
@@ -174,7 +171,7 @@ skybox {
 #           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 directional_light {
     0 -1 1
-    0.0 0.0 0.0
+	0.5 0.5 0.5
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     7500.0 1.0 7700.0
@@ -185,88 +182,88 @@ directional_light {
 point_light {
     24.5 7 65
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     65 7 24.5
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     105.5 7 65
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     65 7 105.5
     0.0 0.0 2.55
-    25.0
+    5.0
 }
 
 #Red Square
 point_light {
     -24.5 7 -65
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 point_light {
     -105.5 7 -65
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 point_light {
     -65 7 -24.5
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 point_light {
     -65 7 -105.5
     2.55 0.0 0.0
-    25.0
+    5.0
 }
 
 #Green Square
 point_light {
     -65 7 24.5
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 point_light {
     -24.5 7 65
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 point_light {
     -65 7 105.5
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 point_light {
     -105.5 7 65
     0.0 2.55 0.0
-    25.0
+    5.0
 }
 
 #Magenta Square
 point_light {
     65 7 -24.5
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     24.5 7 -65
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     65 7 -105.5
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 point_light {
     105.5 7 -65
     2.55 0.0 2.55
-    25.0
+    5.0
 }
 
 spotlight {
@@ -333,7 +330,7 @@ hovercraft {
         32.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
     +bounding {
         spatial
@@ -351,7 +348,7 @@ player_1 {
         32.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
     +bounding {
         spatial
@@ -368,7 +365,7 @@ player_2 {
         32.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
     +bounding {
         spatial
@@ -385,7 +382,7 @@ player_3 {
         32.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
     +bounding {
         spatial
@@ -402,7 +399,7 @@ player_4 {
         32.0
     }
     +shader {
-        blinn_phong_shdr
+        tron_shdr
     }
     +bounding {
         spatial
@@ -414,7 +411,7 @@ cube {
     10 80 80
 	+material {
         textures/blue_wall.png
-		textures/squareSpecMap.png
+		0.0 0.0 0.0
         1.0
     }
     +bounding {
@@ -431,7 +428,7 @@ cube {
     10 80 80
 	+material {
         textures/magenta_wall.png
-		textures/squareSpecMap.png
+		0.0 0.0 0.0
         1.0
     }
     +bounding {
@@ -448,7 +445,7 @@ cube {
     10 80 80
 	+material {
         textures/red_wall.png
-		textures/squareSpecMap.png
+		0.0 0.0 0.0
         1.0
     }
     +bounding {
@@ -464,8 +461,8 @@ cube {
     -65 5 65
     10 80 80
 	+material {
-        textures/green_wall.png
-		textures/squareSpecMap.png
+        textures/green_wall_side.png
+		0.0 0.0 0.0
         1.0
     }
     +bounding {
@@ -481,50 +478,98 @@ cube {
 cube {
     141 5 0
     10 2 50
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 50
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     141 5 98
     10 2 86
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 86
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     141 5 -98
     10 2 86
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 86
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     166 5 55
     10 52 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 52 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     166 5 -55
     10 52 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 52 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     192 5 0
     10 2 110
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 110
+    }
+	+shader {
+        tron_shdr
     }
 }
 
@@ -536,50 +581,98 @@ cube {
 cube {
     -141 5 0
     10 2 50
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 50
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -141 5 98
     10 2 86
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 86
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -141 5 -98
     10 2 86
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 86
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -166 5 55
     10 52 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 52 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -166 5 -55
     10 52 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 52 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     -192 5 0
     10 2 110
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 110
+    }
+	+shader {
+        tron_shdr
     }
 }
 
@@ -593,50 +686,98 @@ cube {
 cube {
     0 5 -141
     10 50 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 50 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     98 5 -141
     10 86 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 86 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -98 5 -141
     10 86 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 86 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     55 5 -166
     10 2 52
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 52
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -55 5 -166
     10 2 52
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 52
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     0 5 -192
     10 110 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 110 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 
@@ -648,50 +789,98 @@ cube {
 cube {
     0 5 141
     10 50 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 50 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     98 5 141
     10 86 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 86 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -98 5 141
     10 86 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 86 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     55 5 166
     10 2 52
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 52
+    }
+	+shader {
+        tron_shdr
     }
 }
 cube {
     -55 5 166
     10 2 52
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 2 52
+    }
+	+shader {
+        tron_shdr
     }
 }
 
 cube {
     0 5 192
     10 110 2
+	+material {
+        textures/yellow_wall_side.png
+		0.0 0.0 0.0
+        1.0
+    }
     +bounding {
         box
         10 110 2
+    }
+	+shader {
+        tron_shdr
     }
 }
 

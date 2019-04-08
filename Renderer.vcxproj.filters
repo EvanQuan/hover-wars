@@ -121,9 +121,6 @@
     <ClInclude Include="Headers\EntityHeaders\Rocket.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\EntityHeaders\Spikes.h">
-      <Filter>Headers\EntityHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\EntityHeaders\SpotLight.h">
       <Filter>Headers\EntityHeaders</Filter>
     </ClInclude>
@@ -348,9 +345,6 @@
       <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\Rocket.cpp">
-      <Filter>Source\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Entities\Spikes.cpp">
       <Filter>Source\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\Entities\SpotLight.cpp">

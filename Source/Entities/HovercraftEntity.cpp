@@ -1,7 +1,7 @@
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityHeaders/FlameTrail.h"
 #include "EntityHeaders/Rocket.h"
-#include "EntityHeaders/Spikes.h"
+#include "EntityComponentHeaders/AnimationComponent.h"
 #include "SceneLoader.h"
 #include "MeshManager.h"
 #include "EntityManager.h"
@@ -219,6 +219,40 @@ In other words, the spring will pull together faster the higher the constant is.
 #define SPRING_MOVEMENT_CONSTANT 50.0f  // unitless
 #define SPRING_ROTATION_CONSTANT 20.0f  // unitless
 
+/**********************\
+ * SPIKES INFORMATION *
+\**********************/
+/***********\
+ * DEFINES *
+\***********/
+#define RIGHT_SPIKES    0
+#define LEFT_SPIKES     1
+#define BACK_SPIKES    2
+#define FRONT_SPIKES     3
+#define RADIANS_90      1.5708f
+#define RADIANS_180     3.14159f
+#define X_OFFSET        0.5f
+#define Y_OFFSET        -0.05f
+#define Z_ORIGIN        -0.5f
+#define Z_BACK_OFFSET   2.05f
+#define Z_FRONT_OFFSET  2.0f
+#define ANIMATION_TIME  0.1f
+
+/*************\
+ * CONSTANTS *
+\*************/
+const vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
+const vec3 ORIGIN(0.0f, 0.0f, Z_ORIGIN);
+const quat ROTATIONS[NUM_SPIKES] = { angleAxis(RADIANS_90, UP_VECTOR),   /*RIGHT*/
+                                     angleAxis(-RADIANS_90, UP_VECTOR),  /*LEFT*/
+                                     angleAxis(0.0f, UP_VECTOR),         /*BACK*/
+                                     angleAxis(RADIANS_180, UP_VECTOR) }; /*FRONT*/
+const vec3 POSITIONS[NUM_SPIKES] = { vec3(-X_OFFSET, Y_OFFSET, Z_ORIGIN),    /*RIGHT*/
+                                     vec3(X_OFFSET, Y_OFFSET, Z_ORIGIN),     /*LEFT*/
+                                     vec3(0.0f, 0.1f, Z_ORIGIN - Z_BACK_OFFSET),    /*BACK*/
+                                     vec3(0.0f, -0.25f, Z_ORIGIN + Z_FRONT_OFFSET) };  /*FRONT*/
+const float SCALES[NUM_SPIKES] = { 0.5f, 0.5f, 0.4f, 0.25f };
+
 
 const vec3 FRONT_CAMERA_START_VIEW = vec3(FRONT_CAMERA_LONGITUDE, FRONT_CAMERA_LATITUDE, FRONT_CAMERA_RADIUS); // (Theta, Phi, Radius)
 const vec3 BACK_CAMERA_START_VIEW = vec3(BACK_CAMERA_LONGITUDE, BACK_CAMERA_LATITUDE, BACK_CAMERA_RADIUS); // (Theta, Phi, Radius)
@@ -237,6 +271,7 @@ HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
     m_pGameStats                = GAME_STATS;
+    m_pSoundMngr                = SOUND_MANAGER;
 }
 
 HovercraftEntity::~HovercraftEntity()
@@ -278,7 +313,10 @@ void HovercraftEntity::update(float fTimeInSeconds)
 
     // Get the Transformation from the Physics component
     m_pPhysicsComponent->getTransformMatrix(&m4NewTransform);
-    m_pSpikes->updateWorldTransform(&m4NewTransform);
+
+    // Spike Animations
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+        m_pSpikeAnimations[i]->setWorldTransform(&m4NewTransform);
 
     // If there's a new Transformation, apply it to the Mesh.
     m_pMesh->updateInstance(&m4NewTransform, m_sName);
@@ -450,7 +488,7 @@ void HovercraftEntity::enablePowerup(ePowerup powerup)
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_POWERUP_SPEED);
         //cout << m_eHovercraft << " speed boost enabled" << endl;
-        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, m_bIsPlayer);
+        m_pSoundMngr->play(SoundManager::SOUND_POWERUP_SPEED_ACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_MIN_COOLDOWN;
@@ -510,7 +548,7 @@ void HovercraftEntity::disablePowerup(ePowerup powerup)
     case POWERUP_SPEED_BOOST:
         m_pPhysicsComponent->setMaxSpeed(MAX_NORMAL_SPEED);
         //cout << GAME_STATS->getEHovercraft(m_iID) << " speed boost disabled" << endl;
-        SOUND_MANAGER->play(SoundManager::SOUND_POWERUP_SPEED_DEACTIVATE, m_bIsPlayer);
+        m_pSoundMngr->play(SoundManager::SOUND_POWERUP_SPEED_DEACTIVATE, m_bIsPlayer);
         break;
     case POWERUP_ROCKET_COOLDOWN:
         m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
@@ -541,8 +579,11 @@ void HovercraftEntity::initialize(const string& sFileName,
 {
     // Load Mesh and Rendering Component
     EntityManager* pEntityMngr = ENTITY_MANAGER;
+    ShaderManager::eShaderType eShader = SHADER_MANAGER->getShaderType(sShaderType);
     m_pMesh = MESH_MANAGER->loadMeshFromFile(sFileName, pObjectProperties, m_sName, fScale);
-    m_pRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
+    m_pSpikesMesh = SCENE_LOADER->createSpikesMesh(m_sName);
+    m_pRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pMesh, true, eShader, GL_TRIANGLES);
+    m_pSpikesRenderComponent = pEntityMngr->generateRenderComponent(m_iID, m_pSpikesMesh, true, eShader, GL_TRIANGLES);
     m_vPosition = pObjectProperties->vPosition;
 
     vec3 vNegCorner, vPosCorner;
@@ -570,9 +611,15 @@ void HovercraftEntity::initialize(const string& sFileName,
     // Create Rocket Mesh
     m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
 
-    // Create Spikes Mesh
-    m_pSpikes = SCENE_LOADER->createSpikesMesh(m_iID);
-
+    // Initialize Spikes Animations
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+    {
+        m_pSpikeAnimations[i] = ENTITY_MANAGER->generateAnimationComponent(m_iID);
+        m_pSpikeAnimations[i]->initializeComponent(m_pSpikesMesh);
+        m_pSpikeAnimations[i]->addKeyFrame(&ORIGIN, &ROTATIONS[i], 0.0f, ANIMATION_TIME);
+        m_pSpikeAnimations[i]->addKeyFrame(&POSITIONS[i], &ROTATIONS[i],
+            SCALES[i], ANIMATION_TIME);
+    }
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
     {
@@ -609,13 +656,13 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
-           SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
+           m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
            reduceMaxCooldowns();
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
             this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()), ABILITY_SPIKES);
-            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
+            m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
         // Momentarily lose control of vehicle to prevent air moving
 
@@ -789,7 +836,7 @@ void HovercraftEntity::updateSpikes(float fTimeInSeconds)
     {
         m_bSpikesActivated = false;
         m_fSecondsSinceSpikesActivated = 0.0f;
-        m_pSpikes->animateSpikes();
+        animateSpikes();
     }
 }
 
@@ -874,7 +921,7 @@ void HovercraftEntity::updateDash(float fTimeInSeconds)
         {
             m_iDashCharges++;
             /* TODO play charge sound effect */
-            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_DASH_RECHARGE, m_bIsPlayer);
+            m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_DASH_RECHARGE, m_bIsPlayer);
             m_fDashRecharge = m_fDashMaxRecharge;
         }
     }
@@ -1003,13 +1050,13 @@ void HovercraftEntity::shootRocket()
 */
 void HovercraftEntity::activateSpikes()
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_SPIKES_ACTIVATE);
+    m_pSoundMngr->play(SoundManager::SOUND_SPIKES_ACTIVATE);
 
     m_fCooldowns[COOLDOWN_SPIKES] = m_fMaxCooldowns[COOLDOWN_SPIKES];
 
     m_bSpikesActivated = true;
     m_fSecondsSinceSpikesActivated = 0.0f;
-    m_pSpikes->animateSpikes();
+    animateSpikes();
 }
 
 /*
@@ -1021,7 +1068,7 @@ void HovercraftEntity::activateTrail()
     // any fuel due to trail recharge cooldown. Need to check fuel first.
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
     {
-        SOUND_MANAGER->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
         m_bTrailActivated = true;
         m_fSecondsSinceLastFlame = 0.0f;
         m_fSecondsSinceTrailDeactivated = 0.0f;
@@ -1036,7 +1083,7 @@ void HovercraftEntity::deactivateTrail()
 {
     if (m_bTrailActivated)
     {
-        SOUND_MANAGER->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_pSoundMngr->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
         m_bTrailActivated = false;
         m_vPositionOfLastFlame = vec3(numeric_limits<float>::max());    // Set Last Position so next spawn will always spawn
     }
@@ -1048,7 +1095,7 @@ void HovercraftEntity::dash(eAbility direction)
         return;
     }
 
-    SOUND_MANAGER->play(SoundManager::SOUND_DASH_ACTIVATE);
+    m_pSoundMngr->play(SoundManager::SOUND_DASH_ACTIVATE);
     switch (direction)
     {
     case ABILITY_DASH_BACK:
@@ -1089,3 +1136,12 @@ void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
     m_eHovercraft = hovercraft;
     m_bIsPlayer = m_pGameStats->isPlayer(hovercraft);
 }
+
+// Activates Spikes
+void HovercraftEntity::animateSpikes()
+{
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+        m_pSpikeAnimations[i]->animateToNextFrame();
+    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_ACTIVATE);
+}
+

@@ -28,7 +28,7 @@
 #define TOP_RIGHT 3
 
 // Blur
-#define BLUR_AMOUNT 2
+#define BLUR_AMOUNT 10
 
 /*************\
  * Constants *

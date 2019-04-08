@@ -117,12 +117,12 @@ vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	}
 
 	// Apply Diffuse Value
-	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor * light.fLightPower);
+	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor * light.fLightPower / distance);
 	
 	// Apply Specular value
-	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor * light.fLightPower);
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor * light.fLightPower / distance);
 	
-	colorLinear *= 1.0 / (distance * distance);
+	//colorLinear *= 1.0 / (distance * distance);
 
 	return colorLinear;
 }

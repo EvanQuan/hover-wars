@@ -251,9 +251,9 @@ Rocket* SceneLoader::createRocketMesh(int iOwnerID)
 }
 
 // Generates a Spikes Entity based off the saved Spikes Properties loaded from the Scene.
-Spikes* SceneLoader::createSpikesMesh(int iOwnerID)
+Mesh* SceneLoader::createSpikesMesh(string sHashKey)
 {
-    return m_pEntityManager->generateSpikesEntity(&SPIKES_PROPERTIES_DEF.pObjectProperties, &SPIKES_PROPERTIES_DEF.sMeshLocation, SPIKES_PROPERTIES_DEF.fScaleProperty, &SPIKES_PROPERTIES_DEF.sShaderProperty, iOwnerID);
+    return MESH_MANAGER->loadMeshFromFile(SPIKES_PROPERTIES_DEF.sMeshLocation, &SPIKES_PROPERTIES_DEF.pObjectProperties, sHashKey,  SPIKES_PROPERTIES_DEF.fScaleProperty);
 }
 
 void SceneLoader::createSkybox(vector< string > sData)

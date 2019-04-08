@@ -34,7 +34,10 @@ void main(void)
 	vec3 vTextureColor = texture(sMaterial.vDiffuse, TexCoords).rgb;
 	
 	if( vec3(0.0) != vTextureColor )
+	//if (vTextureColor.r >= 1.0f && vTextureColor.g >= 1.0f && vTextureColor.b >= 1.0f)
 		vBrightColor = vec4(vTextureColor, 1.0);
+	//else if ( vFragColor.r + vFragColor.g + vFragColor.b > 1.0 )
+	//	vBrightColor = vFragColor;
 	else
-		vBrightColor = vec4(vFragColor.rgb, 1.0);
+		vBrightColor = vec4(vec3(0.0), 1.0);
 }

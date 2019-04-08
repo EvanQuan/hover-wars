@@ -55,8 +55,6 @@ bool InitializeTexture(Texture *mytex, const string &imageFileName, bool bGammaC
         mytex->genMipMaps();
         mytex->setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
         mytex->setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
-        mytex->setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        mytex->setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         bReturnValue = true;
     }
