@@ -21,7 +21,19 @@ const vec2 seekPointsAI[] = {
 };
 
 #define SEEK_POINTS_SIZE 8
-#define ACCURACY_THRESHOLD 0.01
+
+/*
+    If the target enters the distance threshold of the bot, then the bot will
+    be able to activate spikes.
+*/
+#define SPIKES_DISTANCE_THRESHOLD 5
+/*
+    If the target is within the distance threshold, there is a percent chance
+    the bot will activate spikes.
+*/
+#define SPIKES_ACITVATION_CHANCE 50
+
+#define ROCKET_ACCURACY_THRESHOLD 0.01
 #define DISTANCE_BOX 15
 #define CYCLE_TIME 7
 #define MAX_TIME_TARGET CYCLE_TIME*4
@@ -234,12 +246,25 @@ void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
 }
 
 /*
-    To fire the rocket, the accuracy should be under the ACCURACY_THRESHOLD,
+    To fire the rocket, the accuracy should be under the ROCKET_ACCURACY_THRESHOLD,
     and the bot must be in chase mode.
 */
 bool AIComponent::shouldFireRocket(float accuracy)
 {
-    return (accuracy < ACCURACY_THRESHOLD) && m_eCurrentMode == MODE_CHASE;
+    return (accuracy < ROCKET_ACCURACY_THRESHOLD) && m_eCurrentMode == MODE_CHASE;
+}
+
+bool AIComponent::shouldActivateSpikes(float distanceToTarget)
+{
+    return distanceToTarget <= SPIKES_DISTANCE_THRESHOLD
+        && FuncUtils::random(1, 100) <= SPIKES_ACITVATION_CHANCE;
+}
+
+bool AIComponent::shouldActivateTrail()
+{
+    // @Austin explain why should the trail activate if and only if in seek
+    // mode?
+    return m_eCurrentMode == MODE_SEEK;
 }
 
 /*
@@ -376,8 +401,8 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     determineTurn(distanceVectorToTarget, botDirectionVector, a);
     determinePosition(bot, botPosition, fTimeInSeconds);
 
-    // @Austin explain why should the trail activate if in seek mode?
-    a->shouldActivateTrail = m_eCurrentMode == MODE_SEEK;
+    a->shouldActivateSpikes = shouldActivateSpikes(distanceToTarget);
+    a->shouldActivateTrail = shouldActivateTrail();
 }
 
 void AIComponent::update(float fTimeInSeconds)

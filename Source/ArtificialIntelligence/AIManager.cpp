@@ -183,6 +183,9 @@ void AIManager::executeAction(HovercraftEntity *bot, Action &a)
     if (a.shouldFireRocket) {
         bot->useAbility(eAbility::ABILITY_ROCKET);
     }
+    if (a.shouldActivateSpikes) {
+        bot->useAbility(eAbility::ABILITY_SPIKES);
+    }
     if (a.shouldActivateTrail) {
         if (bot->getTrailGaugePercent() > 0.5f) {
             // Nested, so that the bot neither activates or deactivates

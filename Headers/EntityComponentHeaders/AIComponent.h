@@ -24,6 +24,11 @@ For collisions
 struct Action {
     // Signifies AI should fire a rocket for the next update
     bool shouldFireRocket = false;
+    // Signifies the AI should activate the flame trail for the next update
+    bool shouldActivateTrail = false;
+    // Signifies the AI should activate spikes for the next update
+    // @TODO implement
+    bool shouldActivateSpikes = false;
     // Determines the extend and angle at which the hovercraft is to turn
     // -1: turn left, 0: neutral, 1: turn right
     float turn = 0.0f;
@@ -33,11 +38,6 @@ struct Action {
     // Sideways movement
     // -1: left, 0: neutral, 1: right
     float moveX = 0.0f;
-    // Signifies the AI should activate the flame trail for the next update
-    bool shouldActivateTrail = false;
-    // Signifies the AI should activate spikes for the next update
-    // @TODO implement
-    bool shouldActivateSpikes = false;
 };
 class AIComponent final :
     public EntityComponent
@@ -78,6 +78,8 @@ private:
 
     void determineTurn(const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
     bool shouldFireRocket(float accuracy);
+    bool shouldActivateSpikes(float distanceToTarget);
+    bool shouldActivateTrail();
     bool shouldChooseSeekMode(float distanceToTarget);
 
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
