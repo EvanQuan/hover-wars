@@ -56,8 +56,8 @@ private:
 
     HovercraftEntity* getTarget(const eHovercraft &bot, const vec3 &botPosition);
 
-    void executeAction(HovercraftEntity* bot, Action &a);
-    bool shouldMove(HovercraftEntity* bot, Action &a);
+    void executeAction(HovercraftEntity *bot, const Action &a);
+    bool shouldMove(const HovercraftEntity *bot, const Action &a) const;
 
     eAIType m_eAIType;
 };

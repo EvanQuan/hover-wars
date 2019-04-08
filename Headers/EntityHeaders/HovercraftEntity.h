@@ -124,7 +124,7 @@ public:
     */
     void resetMaxCooldowns();
 
-    bool canUse(eAbility ability);
+    bool isOffCooldown(eAbility ability) const;
 
     bool canDash() const { return m_iDashCharges > 0; }
 

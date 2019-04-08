@@ -935,7 +935,7 @@ void HovercraftEntity::updateDash(float fTimeInSeconds)
 */
 bool HovercraftEntity::useAbility(eAbility ability)
 {
-    if (!canUse(ability)) {
+    if (!isOffCooldown(ability)) {
         return false;
     }
 
@@ -971,7 +971,7 @@ bool HovercraftEntity::useAbility(eAbility ability)
     @param ability  to check if on cooldown
     @return true is the ability is off cooldown and can be used.
 */
-bool HovercraftEntity::canUse(eAbility ability)
+bool HovercraftEntity::isOffCooldown(eAbility ability) const
 {
     /*
     Since there are more abilities than there are cooldown, (each dash shares a

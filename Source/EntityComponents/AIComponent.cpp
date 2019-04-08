@@ -205,7 +205,8 @@ void AIComponent::determinePosition(HovercraftEntity *bot,
 
     @modifies a
 */
-void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
+void AIComponent::determineTurn(const HovercraftEntity *bot,
+                                const vec3 &distanceVectorToTarget,
                                 const vec3 &botDirectionVector,
                                 Action *a)
 {
@@ -232,7 +233,7 @@ void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
     int XvalMul = static_cast<int>((normalizedDistanceVectorToTarget.x / abs(normalizedDistanceVectorToTarget.x)));
 
     float accuracy = abs(yVal - botDirectionVector.z);
-    a->shouldFireRocket = shouldFireRocket(accuracy);
+    a->shouldFireRocket = shouldFireRocket(bot, accuracy);
 
     // @Austin Is the order intentional?
     // ie. if the bot should fire a rocket, they won't if the first if statement case
@@ -255,26 +256,26 @@ void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
     To fire the rocket, the accuracy should be under the
     ROCKET_ACCURACY_THRESHOLD, and the bot must be in chase mode.
 */
-bool AIComponent::shouldFireRocket(HovercraftEntity *bot, float accuracy)
+bool AIComponent::shouldFireRocket(const HovercraftEntity *bot, float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)
         && m_eCurrentMode == MODE_CHASE
-        && bot->canUse(eAbility::ABILITY_ROCKET);
+        && bot->isOffCooldown(eAbility::ABILITY_ROCKET);
 }
 
-bool AIComponent::shouldActivateSpikes(HovercraftEntity *bot, float distanceToTarget)
+bool AIComponent::shouldActivateSpikes(const HovercraftEntity *bot, float distanceToTarget)
 {
     return distanceToTarget <= SPIKES_DISTANCE_THRESHOLD
         && FuncUtils::random(1, 100) <= SPIKES_ACITVATION_CHANCE
-        && bot->canUse(eAbility::ABILITY_SPIKES);
+        && bot->isOffCooldown(eAbility::ABILITY_SPIKES);
 }
 
-bool AIComponent::shouldActivateTrail(HovercraftEntity *bot)
+// @note bot may be used later
+bool AIComponent::shouldActivateTrail(const HovercraftEntity *bot)
 {
     // @Austin explain why should the trail activate if and only if in seek
     // mode?
-    return m_eCurrentMode == MODE_SEEK
-        && bot->getTrailGaugePercent() > TRAIL_ACTIVATION_THRESHOLD;
+    return m_eCurrentMode == MODE_SEEK;
 }
 
 /*
@@ -412,7 +413,7 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
         timeChased = 0;
     }
 
-    determineTurn(distanceVectorToTarget, botDirectionVector, a);
+    determineTurn(bot, distanceVectorToTarget, botDirectionVector, a);
     determinePosition(bot, botPosition, fTimeInSeconds);
 
     a->shouldActivateSpikes = shouldActivateSpikes(bot, distanceToTarget);

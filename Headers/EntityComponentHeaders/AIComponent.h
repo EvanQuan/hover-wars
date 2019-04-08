@@ -75,12 +75,12 @@ private:
     void determineMode(float distanceToTarget);
     void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
 
-    void determineTurn(const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
+    void determineTurn(const HovercraftEntity *bot, const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
     bool shouldChooseSeekMode(float distanceToTarget);
 
-    bool shouldFireRocket(HovercraftEntity *bot, float accuracy);
-    bool shouldActivateSpikes(HovercraftEntity *bot, float distanceToTarget);
-    bool shouldActivateTrail(HovercraftEntity *bot);
+    bool shouldFireRocket(const HovercraftEntity *bot, float accuracy);
+    bool shouldActivateSpikes(const HovercraftEntity *bot, float distanceToTarget);
+    bool shouldActivateTrail(const HovercraftEntity *bot);
 
 
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];

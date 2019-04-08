@@ -133,6 +133,9 @@ eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPl
     case AI_SOLO:
         return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
     }
+
+    // Fallback
+    return nearestPlayer;
 }
 
 /*
@@ -168,8 +171,10 @@ HovercraftEntity* AIManager::getTarget(const eHovercraft &bot,
 
     @param bot      to execute action
     @param action   to execute
+
+    @modifies bot
 */
-void AIManager::executeAction(HovercraftEntity *bot, Action &a)
+void AIManager::executeAction(HovercraftEntity *bot, const Action &a)
 {
     float turnValue = a.turn;
     if (turnValue != 0) {
@@ -187,7 +192,9 @@ void AIManager::executeAction(HovercraftEntity *bot, Action &a)
         bot->useAbility(eAbility::ABILITY_SPIKES);
     }
     if (a.shouldActivateTrail) {
-        bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
+        if (bot->getTrailGaugePercent() > 0.5) {
+            bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
+        }
     } else {
         bot->useAbility(eAbility::ABILITY_TRAIL_DEACTIVATE);
     }
@@ -200,7 +207,7 @@ void AIManager::executeAction(HovercraftEntity *bot, Action &a)
     @parm bot   to check if it should move
     @param a    to determine whether the bot should move
 */
-bool AIManager::shouldMove(HovercraftEntity *bot, Action &a)
+bool AIManager::shouldMove(const HovercraftEntity *bot, const Action &a) const
 {
     return bot->isInControl()
         && !(static_cast<int>(a.moveX) == 0 && static_cast<int>(a.moveY) == 0);
