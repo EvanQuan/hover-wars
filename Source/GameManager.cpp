@@ -408,12 +408,12 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     setKeyboardHovercraft(playerCount);
 
+    m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
+
     // Only after everything has loaded, switch to the game menu.
     // Don't need to switch to GameInterface, as the GameInterface is directly
     // rendered for each player.
     m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
-
-    m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_HOVERCAR_ENGINE);
 }
 
 /*
