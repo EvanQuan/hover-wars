@@ -367,11 +367,13 @@ void GameManager::updateEnvironment()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
+    @param eAIType       of game
     @param sFileName    of .scene environment to load
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,
                                     float gameTime,
+                                    eAIType aiType,
                                     string sFileName)
 {
 
@@ -402,7 +404,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize(playerCount, botCount);
-    m_pAIManager->reinitialize();
+    m_pAIManager->reinitialize(aiType);
 
     setKeyboardHovercraft(playerCount);
 

@@ -195,14 +195,16 @@ void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
     vec3 normalizedBotDirection = glm::normalize(botDirectionVector);
     vec3 normalizedDistanceVectorToTarget = glm::normalize(distanceVectorToTarget);
 
-    // @Austin previously this was calculated with the length() method.
-    // The length() method does not return the length (magnitude) of the vector, but rather
-    // the number of elements the vec3 contains, which in this case for a vec3 is ALWAYS 3.
-    // (If you look at the definition of glm::vec3::length(), it actually
-    // hardcoded to return the value 3. I'm not sure if this was your intention
-    // to divide bot direction vector and the distance to target vectors by 3.
+    // @Austin previously this was calculated with the vec3::length() method.
+    // The vec3::length() method does not return the length (magnitude) of the
+    // vector, but rather the number of elements the vec3 contains, which in
+    // this case for a vec3 is ALWAYS 3. (If you look at the definition of
+    // glm::vec3::length(), it's actually hardcoded to return the value 3. I'm
+    // not sure if this was your intention to divide bot direction vector and
+    // the distance to target vectors by 3.
 
-    // vec3 normalizedBotDirection = botDirectionVector / botDirectionVector.length();
+    // Old code:
+    // botDirectionVector /= botDirectionVector.length(); // same as botDirectionVector /= 3;
     // distanceVectorToTarget /= distanceVectorToTarget.length();
 
     float mSlope = normalizedDistanceVectorToTarget.z / normalizedDistanceVectorToTarget.x;

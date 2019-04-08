@@ -16,10 +16,13 @@ public:
         Initialize everything that's needed for the start of a new game.
         This should be called after all bot entities have been created.
 
+        @param aiType   to initialize for the given game
     */
-    void reinitialize();
+    void reinitialize(eAIType aiType);
 
     void update(float fTimeInSeconds);
+
+    eAIType getAIType() const { return m_eAIType; }
 private:
     AIManager();
 
@@ -55,6 +58,8 @@ private:
 
     void executeAction(HovercraftEntity* bot, Action &a);
     bool shouldMove(HovercraftEntity* bot, Action &a);
+
+    eAIType m_eAIType;
 };
 
 
