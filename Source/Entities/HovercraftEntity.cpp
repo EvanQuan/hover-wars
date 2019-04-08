@@ -28,7 +28,7 @@
     so probably should not be manipulated. The radius of the rocket is
     currently defined in PhysicsManager.
 */
-#define ROCKET_BOUNDING_BOX     0.5f
+#define ROCKET_BOUNDING_BOX     1.0f
 
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
 /*
@@ -1036,11 +1036,13 @@ void HovercraftEntity::shootRocket()
     mat4 m4CurrentTransform;
     vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
-    m_pPhysicsComponent->getDirectionVector(&vVelocity);
-    vVelocity *= ROCKET_SPEED;
+    vVelocity = m4CurrentTransform[2];
+    vVelocity = normalize(vVelocity);
+    
     // The rocket is at the hovercraft's origin
-    float translateUp = 0.0f; // + is up, - is down
-    m4CurrentTransform *= translate(vec3(0.0f, translateUp, 0.0f));
+    float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
+    m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
+    vVelocity *= ROCKET_SPEED;
     m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
@@ -1069,7 +1071,7 @@ void HovercraftEntity::activateTrail()
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
     {
         m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
-        m_bTrailActivated = true;
+        //m_bTrailActivated = true;
         m_fSecondsSinceLastFlame = 0.0f;
         m_fSecondsSinceTrailDeactivated = 0.0f;
     }
