@@ -37,7 +37,13 @@ const vec2 seekPointsAI[] = {
 #define DISTANCE_BOX 15
 #define CYCLE_TIME 7
 #define MAX_TIME_TARGET CYCLE_TIME*4
-#define PROC_DISTANCE 125
+
+#define TRAIL_ACTIVATION_THRESHOLD 0.5
+/*
+    If the target enters the chase distance, the bot will change to chase mode.
+    Otherwise, the bot will go into seek mode.
+*/
+#define CHASE_DISTANCE 125
 
 /*
     As the AI sets the position of the bot hovercrafts, we must ensure that the
@@ -165,7 +171,7 @@ void AIComponent::determineMode(float distanceToTarget)
     Determine the global position in world space the bot should be.
     This will modifiy the global position of the bot.
 
-    @modifies bot
+    @modifies bot   position
 */
 void AIComponent::determinePosition(HovercraftEntity *bot,
                                     const vec3 &botPos,
@@ -246,33 +252,38 @@ void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
 }
 
 /*
-    To fire the rocket, the accuracy should be under the ROCKET_ACCURACY_THRESHOLD,
-    and the bot must be in chase mode.
+    To fire the rocket, the accuracy should be under the
+    ROCKET_ACCURACY_THRESHOLD, and the bot must be in chase mode.
 */
-bool AIComponent::shouldFireRocket(float accuracy)
+bool AIComponent::shouldFireRocket(HovercraftEntity *bot, float accuracy)
 {
-    return (accuracy < ROCKET_ACCURACY_THRESHOLD) && m_eCurrentMode == MODE_CHASE;
+    return (accuracy < ROCKET_ACCURACY_THRESHOLD)
+        && m_eCurrentMode == MODE_CHASE
+        && bot->canUse(eAbility::ABILITY_ROCKET);
 }
 
-bool AIComponent::shouldActivateSpikes(float distanceToTarget)
+bool AIComponent::shouldActivateSpikes(HovercraftEntity *bot, float distanceToTarget)
 {
     return distanceToTarget <= SPIKES_DISTANCE_THRESHOLD
-        && FuncUtils::random(1, 100) <= SPIKES_ACITVATION_CHANCE;
+        && FuncUtils::random(1, 100) <= SPIKES_ACITVATION_CHANCE
+        && bot->canUse(eAbility::ABILITY_SPIKES);
 }
 
-bool AIComponent::shouldActivateTrail()
+bool AIComponent::shouldActivateTrail(HovercraftEntity *bot)
 {
     // @Austin explain why should the trail activate if and only if in seek
     // mode?
-    return m_eCurrentMode == MODE_SEEK;
+    return m_eCurrentMode == MODE_SEEK
+        && bot->getTrailGaugePercent() > TRAIL_ACTIVATION_THRESHOLD;
 }
 
 /*
-    If the target is too far away, (beyond the PROC_DISTANCE), or the time
+    If the target is too far away, (beyond the CHASE_DISTANCE), or the time
 */
 bool AIComponent::shouldChooseSeekMode(float distanceToTarget)
 {
-    return distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME;
+    return distanceToTarget > CHASE_DISTANCE
+        || timeChased < CYCLE_TIME;
 }
 /*
     TODO maybe make it go to center?
@@ -357,6 +368,7 @@ void AIComponent::updateSeekPoint(const vec3 &botPos)
     @param target           hovercraft the AI is to target. Could be a player or bot.
     @param bot              corresponding to this AIComponent
     @param fTimeInSeconds   time since last update in seconds
+
     @return a               the action the AI should act upon. Represnts all
                             the actions that should be performed by the
                             specified bot.
@@ -372,7 +384,8 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
                                    float fTimeInSeconds,
                                    Action *a) {
 
-    //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));// not sure if an array in a struct is deep or shallow copied
+    // not sure if an array in a struct is deep or shallow copied
+    //memcpy(a, &frames[currentBest][currentPlace], sizeof(Action));
 
     // Seet zero ability usage so they aren't used
     const vec3 botPosition = bot->getPosition();
@@ -394,6 +407,7 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
 
     determineMode(distanceToTarget);
 
+    // @Austin Should this be done here or in update()?
     if (timeChased > MAX_TIME_TARGET) {
         timeChased = 0;
     }
@@ -401,8 +415,8 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
     determineTurn(distanceVectorToTarget, botDirectionVector, a);
     determinePosition(bot, botPosition, fTimeInSeconds);
 
-    a->shouldActivateSpikes = shouldActivateSpikes(distanceToTarget);
-    a->shouldActivateTrail = shouldActivateTrail();
+    a->shouldActivateSpikes = shouldActivateSpikes(bot, distanceToTarget);
+    a->shouldActivateTrail = shouldActivateTrail(bot);
 }
 
 void AIComponent::update(float fTimeInSeconds)

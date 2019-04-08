@@ -211,7 +211,7 @@ float GameStats::get(eHovercraft hovercraft, eCooldown cooldown) const
 /*
     @return true is ability is ready to be used
 */
-bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const
+bool GameStats::canUse(eHovercraft hovercraft, eCooldown cooldown) const
 {
     return cooldowns[hovercraft][cooldown] <= 0.0f;
 }

@@ -83,7 +83,6 @@ public:
     float getTrailGaugePercent() const;
 
     // Get all the cooldowns to be used by the UI.
-    // NOTE: why not send m_fCooldowns directly (make public)?
     // @return an array of all ability cooldowns.
     float* getCooldowns() { return m_fCooldowns; }
 
@@ -124,6 +123,8 @@ public:
         Reset the maximum cooldowns to the base cooldowns.
     */
     void resetMaxCooldowns();
+
+    bool canUse(eAbility ability);
 
     bool canDash() const { return m_iDashCharges > 0; }
 
@@ -223,7 +224,6 @@ private:
 
     // Cooldowns
     void initializeCooldowns();
-    bool isOnCooldown(eAbility ability);
     // Current cooldown value
     float m_fCooldowns[COOLDOWN_COUNT];
     // Maximum cooldown value

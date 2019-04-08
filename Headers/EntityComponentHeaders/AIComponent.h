@@ -27,7 +27,6 @@ struct Action {
     // Signifies the AI should activate the flame trail for the next update
     bool shouldActivateTrail = false;
     // Signifies the AI should activate spikes for the next update
-    // @TODO implement
     bool shouldActivateSpikes = false;
     // Determines the extend and angle at which the hovercraft is to turn
     // -1: turn left, 0: neutral, 1: turn right
@@ -77,10 +76,12 @@ private:
     void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
 
     void determineTurn(const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
-    bool shouldFireRocket(float accuracy);
-    bool shouldActivateSpikes(float distanceToTarget);
-    bool shouldActivateTrail();
     bool shouldChooseSeekMode(float distanceToTarget);
+
+    bool shouldFireRocket(HovercraftEntity *bot, float accuracy);
+    bool shouldActivateSpikes(HovercraftEntity *bot, float distanceToTarget);
+    bool shouldActivateTrail(HovercraftEntity *bot);
+
 
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;

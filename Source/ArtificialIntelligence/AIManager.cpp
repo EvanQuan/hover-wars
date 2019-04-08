@@ -187,11 +187,7 @@ void AIManager::executeAction(HovercraftEntity *bot, Action &a)
         bot->useAbility(eAbility::ABILITY_SPIKES);
     }
     if (a.shouldActivateTrail) {
-        if (bot->getTrailGaugePercent() > 0.5f) {
-            // Nested, so that the bot neither activates or deactivates
-            // with a low fuel gauge to prevent audio spam
-            bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
-        }
+        bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
     } else {
         bot->useAbility(eAbility::ABILITY_TRAIL_DEACTIVATE);
     }

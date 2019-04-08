@@ -188,7 +188,7 @@ public:
     // Cooldowns
     float get(eHovercraft hovercraft, eCooldown cooldown) const;
     void useAbility(eHovercraft hovercraft, eAbility ability);
-    bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const;
+    bool canUse(eHovercraft hovercraft, eCooldown cooldown) const;
 
     void reinitialize(int playerCount, int botCount);
 
