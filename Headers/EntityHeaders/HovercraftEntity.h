@@ -119,6 +119,12 @@ public:
         minimum cooldown values.
     */
     void reduceMaxCooldowns();
+
+    /*
+        Reduce the current cooldown by a fixed factor.
+        This should be a reward for hitting another hovercraft.
+    */
+    void reduceCooldown(eAbility ability);
     /*
         Reset the maximum cooldowns to the base cooldowns.
     */

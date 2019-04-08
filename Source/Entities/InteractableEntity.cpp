@@ -60,15 +60,16 @@ void InteractableEntity::handleCollision(Entity* pOther,
 {
     if (ENTITY_HOVERCRAFT == pOther->getType() && m_iOwnerID != pOther->getID())
     {
-        eHovercraft owner = GAME_STATS->getEHovercraft(m_iOwnerID);
+        eHovercraft eOwner = GAME_STATS->getEHovercraft(m_iOwnerID);
+        HovercraftEntity* owner = ENTITY_MANAGER->getHovercraft(eOwner);
         HovercraftEntity* hit = static_cast<HovercraftEntity*>(pOther);
 
         // cout << owner << "[ID: " << m_iOwnerID << "] hit "
         // << GAME_STATS->getEHovercraft(hit->getID())
         // << "[ID: "<< hit->getID() << "]"<< endl;
 
-        hit->getHitBy(owner, getAbility());
-        handleHovercraftCollision(hit);
+        hit->getHitBy(eOwner, getAbility());
+        handleHovercraftCollision(owner, hit);
     }
 }
 

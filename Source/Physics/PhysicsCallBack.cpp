@@ -75,6 +75,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 {
                     // Do not play ground collision sounds
                     // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
+                    cout << iColliderID << " collided with " << iCollidedID << endl;
                 }
                 else    // Tell the Entity Manager to Dispatch the  Collision between the two colliding entities
                 {

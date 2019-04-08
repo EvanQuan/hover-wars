@@ -56,7 +56,7 @@ This should be relatively high to make car collisions satisfying.
 #define CAR_RESTITUTION 1.0f // 0.2f
 
 // Definition for for Cap Radius of Rockets
-#define CAP_RADIUS 0.2f // 0.2f is safe, 0.5 is large
+#define CAP_RADIUS 0.25f // 0.2f is safe, 0.5 is large
 
 /*
 World Restitution

@@ -29,6 +29,7 @@ public:
     {
         SOUND_ROCKET_ACTIVATE,
         SOUND_ROCKET_EXPLOSION,
+        SOUND_ROCKET_RECHARGE,
         SOUND_ROCKET_REFLECT,
 
         SOUND_SPIKES_ACTIVATE,
@@ -210,6 +211,8 @@ private:
                                            "event:/rocket/rocket_explosion_04",
                                            "event:/rocket/rocket_explosion_05",
                                            "event:/rocket/rocket_explosion_06",
+                                         }},
+        {SOUND_ROCKET_RECHARGE,         { "event:/rocket/rocket_recharge",
                                          }},
         {SOUND_ROCKET_REFLECT,          { "event:/rocket/rocket_reflect",
                                          }},

@@ -48,9 +48,16 @@ PregameMenu::PregameMenu() : PromptMenu(
     // initial bot and player values, these SHOULD persist between menu changes
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
+#ifdef NDEBUG
     m_iBotCount = MAX_BOT_COUNT;
     m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
+#else
+    m_iBotCount = 0;
+    m_iPlayerCount = 2;
+
+#endif // NDEBUG
+
     m_eAIType = AI_ON_SAME_TEAM;
     m_fGameTime = DEFAULT_GAME_TIME;
 }

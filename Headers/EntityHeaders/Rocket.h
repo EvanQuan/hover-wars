@@ -53,5 +53,5 @@ private:
     // @Override
     eAbility getAbility() const { return eAbility::ABILITY_ROCKET; }
     // @Override
-    void handleHovercraftCollision(HovercraftEntity* hit);
+    void handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity *hit);
 };
