@@ -24,8 +24,9 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-void AIManager::reinitialize()
+void AIManager::reinitialize(eAIType aiType)
 {
+    m_eAIType = aiType;
     m_vAIComponents.clear();
     const vector<HovercraftEntity*>* bots = m_pEntityMngr->getBotList();
     for (size_t i = 0, size = bots->size(); i < size; i++)
@@ -42,12 +43,13 @@ void AIManager::reinitialize()
 */
 void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 {
-    glm::vec3 botVel = bot->getLinearVelocity();
-    glm::vec3 botPos = bot->getPosition();
-    PxTransform globalTransform = bot->getGlobalTransform();
-    PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
-    glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
-    glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getLinearVelocity();
+    // @Note It looks like nothing actually needs to be initialized?
+    // glm::vec3 botVel = bot->getLinearVelocity();
+    // glm::vec3 botPos = bot->getPosition();
+    // PxTransform globalTransform = bot->getGlobalTransform();
+    // PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
+    // glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
+    // glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getLinearVelocity();
     // ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 
@@ -124,8 +126,13 @@ eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPl
         // If there are no other bots, then the only choice is the player
         return nearestPlayer;
     }
-    // Otherwise, choose the closer one
-    return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
+
+    switch (m_eAIType) {
+    case AI_ON_SAME_TEAM:
+        return nearestPlayer;
+    case AI_SOLO:
+        return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
+    }
 }
 
 /*

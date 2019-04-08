@@ -9,9 +9,10 @@ public:
     ~PregameMenu() {}
 
     static Menu* getInstance();
-    int getPlayerCount() { return m_iPlayerCount; };
-    int getBotCount() { return m_iBotCount; };
-    int getGameTime() { return m_fGameTime; };
+    int getPlayerCount() const { return m_iPlayerCount; };
+    int getBotCount() const { return m_iBotCount; };
+    int getGameTime() const { return m_fGameTime; };
+    eAIType getAIType() const { return m_eAIType; };
 
 private:
     PregameMenu();
@@ -28,6 +29,8 @@ private:
     int m_iBotCount;
     int m_iPlayerCount;
     int m_fGameTime;
+
+    eAIType m_eAIType;
 
     static PregameMenu* m_pInstance;
 };
