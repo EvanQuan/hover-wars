@@ -6,7 +6,7 @@
  * Forward Declarations *
 \************************/
 class Rocket;
-class Spikes;
+class Mesh;
 class EntityManager;
 
 // Solely Generates Objects and assigns IDs to them.
@@ -28,7 +28,7 @@ public:
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void createSkybox(vector< string > sData);
     Rocket* createRocketMesh(int iOwnerID);
-    Spikes* createSpikesMesh(int iOwnerID);
+    Mesh* createSpikesMesh(string sHashKey);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
     void getNextSpawnPoint(vec3* vPosition);

@@ -87,7 +87,7 @@ rocket {
         1.0
     }
     +material {
-         textures/missile/missile_diffuse.jpg
+         textures/missile/missile_diffuse_pink.jpg
          1.0
     }
     +shader {
@@ -98,11 +98,11 @@ rocket {
 # Information for Spikes in this Scene
 spikes {
     +mesh {
-        models/spikes2.obj
+        models/spikes3.obj
         1.0
     }
     +material {
-        textures/defaultTexture.png
+        textures/tronBase.png
         0.0
     }
     +shader {

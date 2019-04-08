@@ -2,7 +2,6 @@
 #include "EntityHeaders/StaticEntity.h"
 #include "EntityHeaders/Rocket.h"
 #include "EntityHeaders/FlameTrail.h"
-#include "EntityHeaders/Spikes.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
@@ -559,23 +558,6 @@ Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties,
     unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID);
     pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
     Rocket* pReturnEntity = pNewEntity.get();
-
-    // Store Interactable Entity in Entity List.
-    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));
-
-    // Return InteractableEntity
-    return pReturnEntity;
-}
-
-Spikes* EntityManager::generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
-{
-    // Get a new ID for this Entity.
-    int iNewEntityID = getNewEntityID();
-
-    // Create and Initialize new Interactable Entity
-    unique_ptr<Spikes> pNewEntity = make_unique<Spikes>(iNewEntityID, iOwnerID);
-    pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
-    Spikes* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));

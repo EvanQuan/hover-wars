@@ -13,6 +13,8 @@
 class FlameTrail;
 class Rocket;
 class Spikes;
+class AnimationComponent;
+class SoundManager;
 
 /***********\
  * Defines *
@@ -31,6 +33,7 @@ Used by GameInterface.
 Unit : seconds
 */
 #define POWERUP_TIME 15.0f
+#define NUM_SPIKES 4
 
 
 class HovercraftEntity :
@@ -168,16 +171,18 @@ private:
 
     // Private Variables
     int activeCameraIndex;
-    Mesh* m_pMesh;
+    Mesh *m_pMesh, *m_pSpikesMesh;
     SpatialDataMap* m_pSpatialMap;
-    RenderComponent* m_pRenderComponent;
+    RenderComponent *m_pRenderComponent, *m_pSpikesRenderComponent;
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
+    AnimationComponent* m_pSpikeAnimations[NUM_SPIKES];
     FlameTrail* m_pFireTrail;
     Rocket* m_pRocket;
     Spikes* m_pSpikes;
     PhysicsComponent* m_pPhysicsComponent;
     GameStats* m_pGameStats;
+    SoundManager* m_pSoundMngr;
 
     /*
     These should lag behind
@@ -196,6 +201,7 @@ private:
     void updateCooldowns(float fTimeInSeconds);
     void updateSpatialMap(vec3 &vNewPosition);
     void updatePhysicsComponent();
+    void animateSpikes();
 
     // Abilities
     void shootRocket();
