@@ -231,7 +231,8 @@ In other words, the spring will pull together faster the higher the constant is.
 #define FRONT_SPIKES     3
 #define RADIANS_90      1.5708f
 #define RADIANS_180     3.14159f
-#define X_OFFSET        0.65f
+#define X_OFFSET        0.5f
+#define Y_OFFSET        -0.05f
 #define Z_ORIGIN        -0.5f
 #define Z_BACK_OFFSET   2.05f
 #define Z_FRONT_OFFSET  2.0f
@@ -246,8 +247,8 @@ const quat ROTATIONS[NUM_SPIKES] = { angleAxis(RADIANS_90, UP_VECTOR),   /*RIGHT
                                      angleAxis(-RADIANS_90, UP_VECTOR),  /*LEFT*/
                                      angleAxis(0.0f, UP_VECTOR),         /*BACK*/
                                      angleAxis(RADIANS_180, UP_VECTOR) }; /*FRONT*/
-const vec3 POSITIONS[NUM_SPIKES] = { vec3(-X_OFFSET, 0.0f, Z_ORIGIN),    /*RIGHT*/
-                                     vec3(X_OFFSET, 0.0f, Z_ORIGIN),     /*LEFT*/
+const vec3 POSITIONS[NUM_SPIKES] = { vec3(-X_OFFSET, Y_OFFSET, Z_ORIGIN),    /*RIGHT*/
+                                     vec3(X_OFFSET, Y_OFFSET, Z_ORIGIN),     /*LEFT*/
                                      vec3(0.0f, 0.1f, Z_ORIGIN - Z_BACK_OFFSET),    /*BACK*/
                                      vec3(0.0f, -0.25f, Z_ORIGIN + Z_FRONT_OFFSET) };  /*FRONT*/
 const float SCALES[NUM_SPIKES] = { 0.5f, 0.5f, 0.4f, 0.25f };

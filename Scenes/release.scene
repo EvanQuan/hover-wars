@@ -103,7 +103,8 @@ spikes {
     }
     +material {
         textures/tronBase.png
-        0.0
+        0.3500 0.3500 0.3500
+        32.0
     }
     +shader {
         tron_shdr
