@@ -627,16 +627,16 @@ void SoundManager::setPauseMenu() {
         it.second->setPaused(true);
     }
     // play pause music
-    auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+    auto tFoundIt = mEvents.find(getPath(SOUND_MUSIC_PAUSE));
     tFoundIt->second->setPaused(false);
-    play(MUSIC_PAUSE);
+    play(SOUND_MUSIC_PAUSE);
     updateChannels();
 }
 
 void SoundManager::setResumeCountdown()
 {
-    stopEvent(MUSIC_PAUSE);
-    play(SOUND_UI_COUNTDOWN_TICK);
+    stopEvent(SOUND_MUSIC_PAUSE);
+    play(SOUND_UI_RESUME_COUNTDOWN);
     updateChannels();
 }
 
@@ -654,7 +654,7 @@ void SoundManager::setEndGame()
 {
     stopAllEvents();
     play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
-    play(MUSIC_INGAME);
+    play(SOUND_MUSIC_INGAME);
 }
 
 // @Deprecated
@@ -678,7 +678,7 @@ void SoundManager::downPosition() {
 }
 
 void SoundManager::start() {
-    play(MUSIC_INGAME);
+    play(SOUND_MUSIC_INGAME);
 }
 
 // Call every frame (or more often)

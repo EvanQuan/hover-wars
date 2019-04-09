@@ -37,6 +37,9 @@ PregameMenu::PregameMenu() : PromptMenu(
         {
             { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
         },
+        {
+            { "AI", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
+        },
     }
 )
 {
@@ -45,9 +48,17 @@ PregameMenu::PregameMenu() : PromptMenu(
     // initial bot and player values, these SHOULD persist between menu changes
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
+#ifdef NDEBUG
     m_iBotCount = MAX_BOT_COUNT;
     m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
+#else
+    m_iBotCount = 0;
+    m_iPlayerCount = 2;
+
+#endif // NDEBUG
+
+    m_eAIType = AI_ON_SAME_TEAM;
     m_fGameTime = DEFAULT_GAME_TIME;
 }
 
@@ -67,8 +78,11 @@ void PregameMenu::select(eFixedCommand command)
         back();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->initializeNewGame(m_iPlayerCount, m_iBotCount,
-                                          static_cast<float>(m_fGameTime), RELEASE_ENV);
+        m_pGameManager->initializeNewGame(m_iPlayerCount,
+                                          m_iBotCount,
+                                          static_cast<float>(m_fGameTime),
+                                          m_eAIType,
+                                          RELEASE_ENV);
         break;
     }
 }
@@ -151,6 +165,25 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                                                MIN_GAME_TIME, MAX_GAME_TIME);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
+                break;
+            }
+        case eFixedCommand::COMMAND_PROMPT_SELECT_4: // AI
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+            case COMMAND_PROMPT_RIGHT:
+                // Currently there are only 2 AI configurations, so we will
+                // toggle between them.
+                if (m_eAIType == AI_ON_SAME_TEAM)
+                {
+                    m_eAIType = AI_SOLO;
+                }
+                else
+                {
+                    m_eAIType = AI_ON_SAME_TEAM;
+                }
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_eAIType << endl;
                 break;
             }
     }

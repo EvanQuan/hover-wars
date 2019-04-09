@@ -54,6 +54,7 @@
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\Enums\eAbility.h" />
+    <ClInclude Include="Headers\Enums\eAIType.h" />
     <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h" />
     <ClInclude Include="Headers\Enums\eCooldown.h" />
     <ClInclude Include="Headers\Enums\eEntityTypes.h" />

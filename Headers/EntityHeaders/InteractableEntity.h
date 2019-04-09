@@ -44,7 +44,7 @@ protected:
     // Extra collision processing for Hovercraft collisions.
     // This prevents subclasses needing to reimplement hovercraft checks
     // if they want extra behaviour for colliding with hovercrafts
-    virtual void handleHovercraftCollision(HovercraftEntity* hit) {};
+    virtual void handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity *hit) {};
     // Protected Variables
     int m_iOwnerID;
 

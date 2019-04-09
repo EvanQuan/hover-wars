@@ -68,9 +68,10 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
     }
 }
 
-void Rocket::handleHovercraftCollision(HovercraftEntity* hit)
+void Rocket::handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity *hit)
 {
     cout << "ROCKET HIT PLAYER " << hit->getID() << endl;
+    owner->reduceCooldown(eAbility::ABILITY_ROCKET);
 }
 
 // clear Rocket Rendering; Remove Instance from Mesh, remove from Physics
@@ -110,6 +111,7 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
                                           m4InitialTransform, vVelocity, fBBLength);
 }
 
+// @TODO unused
 void Rocket::reflect(unsigned int iVictimMsg)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);

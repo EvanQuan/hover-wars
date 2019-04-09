@@ -1,8 +1,28 @@
-﻿# CPSC 585 - Games Programming - Winter 2019
+# Hover Wars
+
+CPSC 585 - Games Programming - Winter 2019
+
+<!-- ![](title-image) -->
+
+## Table of Contents
+
+<details>
+<summary>Click here to show.</summary>
+
+1. [Compilation](#compilation)
+2. [Controls](#controls)
+3. [Write-Up](#write-up)
+    - [Since Milestone 4](#since-milestone-4)
+    - [Since Milestone 3](#since-milestone-3)
+    - [Since Milestone 2](#since-milestone-2)
+4. [Team](#team)
+5. [Libraries](#libraries)
+
+</details>
 
 ## Compilation
 
-### Compiling on Windows:
+#### Compiling on Windows:
 
 **Compiled using MSVS 2017.**
 
@@ -10,7 +30,10 @@
 
 ## Controls
 
-#### Keyboard
+##### Keyboard
+
+<details>
+<summary>Click here to show.</summary>
 
 ##### Movement
 
@@ -86,10 +109,15 @@
 
 **T** - Player 2 hits Player 1
 
-#### XBOX Controller
+</details>
+
+##### XBOX/PlayStation Controller
+
+<details>
+<summary>Click here to show.</summary>
 
 **Left Joystick** - Applies a force on the vehicle in that direction on the
-                xz-plane, WRT to Vehicle space.
+                    xz-plane, WRT to Vehicle space.
 
 **Right Joystick** - Rotates the vehicle left or right.
 
@@ -105,9 +133,20 @@
 
 **D-pad** - Honk
 
+</details>
+
 ## Write-Up:
 
-Since Milestone 3:
+##### Since Milestone 4:
+
+<details>
+<summary>Click here to show.</summary>
+</details>
+
+##### Since Milestone 3:
+
+<details>
+<summary>Click here to show.</summary>
 
 ### Game Rules
 
@@ -268,8 +307,12 @@ Flame Trail
 - Hovercraft centre of gravity has been lowered to make flipping more
   difficult and recovering from flipping easier.
 
+</details>
 
-Since Milestone 2:
+##### Since Milestone 2:
+
+<details>
+<summary>Click here to show.</summary>
 
 ### Font Rendering
 
@@ -278,7 +321,7 @@ bitmap layout of all the valid characters for rendering text. Then each glyph
 information (uv offset/size, bearing, advance) is stored in a hashmap for
 indexing into the bitmap. This allows us to render full lines of text with
 1 draw call as opposed to having a texture for each glyph and a draw call for
-each character. 
+each character.
 
 ### Spatial Data Map
 There's a basic Spatial Data Map in place that is intended to be utilized for
@@ -496,12 +539,14 @@ Collision sounds
     - Domination and revenge sounds play when players dominate another player
       or get revenge
 
-- AI 
-    - The AI works on a basic follow model. 
+- AI
+    - The AI works on a basic follow model.
     - It oscillates between following the player and seeking a random point on
       the map.
-    - The goal of this AI is to collide with the player with spikes engaged. 
+    - The goal of this AI is to collide with the player with spikes engaged.
     - This will result in the AI gaining a point.
+
+</details>
 
 ## Team
 

@@ -39,6 +39,14 @@
 #define LOSE_CONTROL_COLLISION_ELEVATION 2.3f
 
 /*
+    If a hovercraft successfully hits another hovercraft with a rocket,
+    the rocket cooldown will be reduced by this multiplier value.
+
+    This rewards higher rocket accuracy instead of spamming.
+*/
+#define COOLDOWN_REDUCTION_ON_HIT 0.5f
+
+/*
     Cooldowns
 
     The time the hovercraft must wait until they can use the ability again.
@@ -47,7 +55,7 @@
 
     Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        5.0f
+#define ROCKET_BASE_COOLDOWN        6.0f
 #define SPIKES_BASE_COOLDOWN        4.0f
 #define TRAIL_COOLDOWN              0.0f
 // Cooldown between dash usages
@@ -60,7 +68,7 @@
 /*
     Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         1.5f
+#define SPIKES_DURATION         1.0f
 
 /*
 Power up cooldowns
@@ -68,14 +76,14 @@ Power up cooldowns
 These are the minimum cooldowns for these abilities.
 
 */
-#define ROCKET_MIN_COOLDOWN 1.0f
-#define SPIKES_MIN_COOLDOWN SPIKES_DURATION + 0.5f
+#define ROCKET_MIN_COOLDOWN 2.0f
+#define SPIKES_MIN_COOLDOWN 2.0f
 #define DASH_MIN_RECHARGE   1.0f
 
 /*
     Multiplies all cool down values to decrease them. Should be below 1.0
 */
-#define COOLDOWN_REDUCTION 0.9f
+#define MAX_COOLDOWN_REDUCTION_ON_KILL 0.9f
 
 #define TRAIL_RECHARGE_INCREASE 1.1f
 /*
@@ -425,21 +433,32 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 void HovercraftEntity::reduceMaxCooldowns()
 {
     m_fMaxCooldowns[COOLDOWN_ROCKET] = FuncUtils::max(ROCKET_MIN_COOLDOWN,
-                                                      m_fMaxCooldowns[COOLDOWN_ROCKET] * COOLDOWN_REDUCTION);
+                                                      m_fMaxCooldowns[COOLDOWN_ROCKET] * MAX_COOLDOWN_REDUCTION_ON_KILL);
     m_fMaxCooldowns[COOLDOWN_SPIKES] = FuncUtils::max(SPIKES_MIN_COOLDOWN,
-                                                      m_fMaxCooldowns[COOLDOWN_SPIKES] * COOLDOWN_REDUCTION);
+                                                      m_fMaxCooldowns[COOLDOWN_SPIKES] * MAX_COOLDOWN_REDUCTION_ON_KILL);
     m_fTrailRechargeMultipler = FuncUtils::min(TRAIL_MAX_RECHARGE_MULTIPLIER,
                                                m_fTrailRechargeMultipler * TRAIL_RECHARGE_INCREASE);
     // m_fMaxCooldowns[COOLDOWN_DASH]   = FuncUtils::max(DASH_MIN_COOLDOWN,
-    //                                                   m_fMaxCooldowns[COOLDOWN_DASH] * COOLDOWN_REDUCTION);
+    //                                                   m_fMaxCooldowns[COOLDOWN_DASH] * MAX_COOLDOWN_REDUCTION_ON_KILL);
     m_fDashMaxRecharge = FuncUtils::max(DASH_MIN_RECHARGE,
-                                        m_fDashMaxRecharge * COOLDOWN_REDUCTION);
+                                        m_fDashMaxRecharge * MAX_COOLDOWN_REDUCTION_ON_KILL);
+}
+
+void HovercraftEntity::reduceCooldown(eAbility ability)
+{
+    // Right now we only will use rockets
+    switch (ability)
+    {
+    case ABILITY_ROCKET:
+        m_fCooldowns[COOLDOWN_ROCKET] *= COOLDOWN_REDUCTION_ON_HIT;
+    }
 }
 
 void HovercraftEntity::resetMaxCooldowns()
 {
     m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
+    // Dash cooldown is constant. It is the dash recharge that is altered.
     // m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
     m_fDashMaxRecharge = DASH_BASE_RECHARGE;
 }
@@ -814,8 +833,24 @@ void HovercraftEntity::updateCooldowns(float fTimeInSeconds)
 {
     for (int i = 0; i < ABILITY_COUNT; i++)
     {
-        float newCooldown = m_fCooldowns[i] - fTimeInSeconds;
-        m_fCooldowns[i] = newCooldown > 0.0f ? newCooldown : 0.0f;
+        if (m_fCooldowns[i] > 0)
+        {
+            // Ensure that cooldown values are never negative
+            float newCooldown = m_fCooldowns[i] - fTimeInSeconds;
+            if (newCooldown > 0.0f)
+            {
+                m_fCooldowns[i] = newCooldown;
+            }
+            else
+            {
+                // Ability is now off cooldown.
+                m_fCooldowns[i] = 0.0f;
+                if (static_cast<eAbility>(i) == ABILITY_ROCKET)
+                {
+                    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_ROCKET_RECHARGE, m_bIsPlayer);
+                }
+            }
+        }
     }
     updateTrail(fTimeInSeconds);
     updateSpikes(fTimeInSeconds);
@@ -935,7 +970,7 @@ void HovercraftEntity::updateDash(float fTimeInSeconds)
 */
 bool HovercraftEntity::useAbility(eAbility ability)
 {
-    if (isOnCooldown(ability)) {
+    if (!isOffCooldown(ability)) {
         return false;
     }
 
@@ -966,12 +1001,12 @@ bool HovercraftEntity::useAbility(eAbility ability)
 }
 
 /*
-    Check if an ability is on cooldown.
+    Check if an ability is available to use.
 
     @param ability  to check if on cooldown
-    @return true is the ability on cooldown and cannot be used.
+    @return true is the ability is off cooldown and can be used.
 */
-bool HovercraftEntity::isOnCooldown(eAbility ability)
+bool HovercraftEntity::isOffCooldown(eAbility ability) const
 {
     /*
     Since there are more abilities than there are cooldown, (each dash shares a
@@ -981,7 +1016,7 @@ bool HovercraftEntity::isOnCooldown(eAbility ability)
     If the value at that index is greater than 0, then there is still some time
     left to wait before it can be used.
     */
-    return m_fCooldowns[ability >= COOLDOWN_COUNT ? COOLDOWN_DASH : ability] > 0;
+    return m_fCooldowns[ability >= COOLDOWN_COUNT ? COOLDOWN_DASH : ability] <= 0;
 }
 
 /*
@@ -1036,8 +1071,7 @@ void HovercraftEntity::shootRocket()
     mat4 m4CurrentTransform;
     vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
-    vVelocity = m4CurrentTransform[2];
-    vVelocity = normalize(vVelocity);
+    vVelocity = normalize(m4CurrentTransform[2]);
     
     // The rocket is at the hovercraft's origin
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
