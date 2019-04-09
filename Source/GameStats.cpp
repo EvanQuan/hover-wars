@@ -82,29 +82,6 @@ GameStats::~GameStats()
 }
 
 /*
-    In order to keep track of cooldowns, GameStats must be updated in sync with the
-    rest of the game.
-
-    This will decrease the cooldown value all all abilities by the time that has
-    passed.
-
-    @NOTE the cooldown values will become negative once they hit zero. When
-    factoring all cooldown ability checks and updates amongst the stats,
-    UserInterface, and hovercraft entities, it it cheaper this way.
-    This may change later in the future.
-*/
-void GameStats::update(float fSecondsSinceLastUpdate)
-{
-    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
-    {
-        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
-        {
-            cooldowns[player][cooldown] -= fSecondsSinceLastUpdate;
-        }
-    }
-}
-
-/*
     Initialize all stats and cooldowns to 0.
 
     This should be called at the start of every game, or if the game resets.
@@ -116,7 +93,6 @@ void GameStats::reinitialize(int playerCount, int botCount)
     m_iBotCount = botCount;
 
     initializeStats();
-    initializeCooldowns();
     correspondEntitiesToHovercrafts();
     firstBloodHappened = false;
     queueFirstBlood = false;
@@ -139,20 +115,6 @@ void GameStats::initializeStats()
     for (int i = 0; i < GLOBALSTAT_COUNT; i++)
     {
         globalStats[i] = 0;
-    }
-}
-
-/*
-    Set all cooldown timings to 0
-*/
-void GameStats::initializeCooldowns()
-{
-    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
-    {
-        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
-        {
-            cooldowns[player][cooldown] = 0.0f;
-        }
     }
 }
 
@@ -198,22 +160,6 @@ void GameStats::correspondEntitiesToHovercrafts()
 int GameStats::get(eHovercraft hovercraft, eHovercraftStat stat) const
 {
     return stats[hovercraft][stat];
-}
-
-/*
-    Get a cooldown.
-*/
-float GameStats::get(eHovercraft hovercraft, eCooldown cooldown) const
-{
-    return cooldowns[hovercraft][cooldown];
-}
-
-/*
-    @return true is ability is ready to be used
-*/
-bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const
-{
-    return cooldowns[hovercraft][cooldown] <= 0.0f;
 }
 
 /*
