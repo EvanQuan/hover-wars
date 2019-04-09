@@ -20,7 +20,7 @@
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
 #define ROCKET_SPEED            100.0f
-#define FLAME_SPACING           0.25f
+#define FLAME_SPACING           1.0f
 
 /*
     Length of the rocket hit box
@@ -1071,7 +1071,7 @@ void HovercraftEntity::activateTrail()
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
     {
         m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
-        //m_bTrailActivated = true;
+        m_bTrailActivated = true;
         m_fSecondsSinceLastFlame = 0.0f;
         m_fSecondsSinceTrailDeactivated = 0.0f;
     }
