@@ -825,12 +825,16 @@ bool GameManager::initialize()
 
 void GameManager::rotateCamera(vec2 pDelta)
 {
-    m_pEntityManager->rotateCamera(pDelta);
+    if (m_bInGame) {
+        m_pEntityManager->rotateCamera(pDelta);
+    }
 }
 
 void GameManager::zoomCamera(float fDelta)
 {
-    m_pEntityManager->zoomCamera(fDelta);
+    if (m_bInGame) {
+        m_pEntityManager->zoomCamera(fDelta);
+    }
 }
 
 /*
