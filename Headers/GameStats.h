@@ -143,14 +143,6 @@ public:
         PICKUP_POWERUP,
     };
 
-    enum eCooldown
-    {
-        COOLDOWN_ROCKET = 0,
-        COOLDOWN_SPIKES,
-        COOLDOWN_TRAIL_ACTIVATE,
-        COOLDOWN_DASH,
-        COOLDOWN_COUNT,
-    };
 
     /*
         End game stats have different index values than normal stats since they
@@ -178,17 +170,13 @@ public:
 
     ~GameStats();
 
-    void update(float fSecondsSinceLastUpdate);
-
     // Stats
     int get(eHovercraft hovercraft, eHovercraftStat stat) const;
     void addScore(eHovercraft hovercraft, eAddScoreReason reason);
     void addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability);
 
     // Cooldowns
-    float get(eHovercraft hovercraft, eCooldown cooldown) const;
     void useAbility(eHovercraft hovercraft, eAbility ability);
-    bool isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const;
 
     void reinitialize(int playerCount, int botCount);
 
@@ -215,7 +203,6 @@ private:
     static GameStats* m_pInstance;
 
     void initializeStats();
-    void initializeCooldowns();
     void correspondEntitiesToHovercrafts();
 
     int getLargestScore();
@@ -250,8 +237,6 @@ private:
     int stats[MAX_HOVERCRAFT_COUNT][HOVERCRAFTSTAT_COUNT];
 
     int globalStats[GLOBALSTAT_COUNT];
-
-    float cooldowns[MAX_HOVERCRAFT_COUNT][COOLDOWN_COUNT];
 
     // Tracks first blood
     bool firstBloodHappened;

@@ -242,6 +242,9 @@
     <ClInclude Include="Headers\Menus\LoadingMenu.h">
       <Filter>Headers\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eAIType.h">
+      <Filter>Headers\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
