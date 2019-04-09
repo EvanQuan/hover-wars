@@ -143,8 +143,8 @@ int FuncUtils::addModulo(int value, int increase, int min, int max)
 */
 int FuncUtils::subtractModulo(int value, int decrease, int min, int max)
 {
-    max++;
-    return FuncUtils::max(min, (((value - decrease) % max) + max) % max);
+    int loop = (((value - decrease) % (max + 1)) + max + 1) % (max + 1);
+    return FuncUtils::max(min, loop < min ? max : loop);
 }
 
 #define SECONDS_PER_MINUTE 60
