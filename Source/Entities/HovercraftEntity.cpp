@@ -20,7 +20,7 @@
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
 #define ROCKET_SPEED            100.0f
-#define FLAME_SPACING           0.25f
+#define FLAME_SPACING           1.0f
 
 /*
     Length of the rocket hit box
@@ -28,7 +28,7 @@
     so probably should not be manipulated. The radius of the rocket is
     currently defined in PhysicsManager.
 */
-#define ROCKET_BOUNDING_BOX     0.5f
+#define ROCKET_BOUNDING_BOX     1.0f
 
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
 /*
@@ -623,6 +623,7 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
 void HovercraftEntity::initialize(const string& sFileName,
                                   const ObjectInfo* pObjectProperties,
                                   const string& sShaderType,
+                                  const vec3* vColor,
                                   float fScale)
 {
     // Load Mesh and Rendering Component
@@ -653,11 +654,11 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, vColor, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
-    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
+    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID, vColor);
 
     // Initialize Spikes Animations
     for (unsigned int i = 0; i < NUM_SPIKES; ++i)
@@ -1100,13 +1101,12 @@ void HovercraftEntity::shootRocket()
     mat4 m4CurrentTransform;
     vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
-    m_pPhysicsComponent->getDirectionVector(&vVelocity);
-    vVelocity.y = 0; // remove any vertical velocity
-    vVelocity *= ROCKET_SPEED;
+    vVelocity = normalize(m4CurrentTransform[2]);
+    
     // The rocket is at the hovercraft's origin
-    // float translateUp = -0.000001f; // + is up, - is down
-    float translateUp = 0.00f; // + is up, - is down
-    m4CurrentTransform *= translate(vec3(0.0f, translateUp, 0.0f));
+    float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
+    m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
+    vVelocity *= ROCKET_SPEED;
     m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }

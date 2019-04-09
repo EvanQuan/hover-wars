@@ -35,14 +35,14 @@
 \*************/
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
-    vec3(0.0f, 0.0f, 1.0f), /*PLAYER 1*/
-    vec3(0.0f, 1.0f, 0.0f), /*PLAYER 2*/
-    vec3(1.0f, 0.0f, 0.0f), /*PLAYER 3*/
-    vec3(1.0f, 0.0f, 1.0f), /*PLAYER 4*/
-    vec3(0.0f, 1.0f, 1.0f), /*BOT 1*/
-    vec3(1.0f, 1.0f, 0.0f), /*BOT 2*/
-    vec3(0.5f),             /*BOT 3*/
-    vec3(1.0f)              /*BOT 4*/
+    vec3(0.0f, 0.0f, 1.0f),   /*PLAYER 1*/
+    vec3(0.0f, 1.0f, 0.0f),   /*PLAYER 2*/
+    vec3(1.0f, 0.0f, 0.0f),   /*PLAYER 3*/
+    vec3(1.0f, 0.0f, 1.0f),   /*PLAYER 4*/
+    vec3(0.0f, 1.0f, 1.0f),   /*BOT 1*/
+    vec3(1.0f, 1.0f, 0.0f),   /*BOT 2*/
+    vec3(0.5f),               /*BOT 3*/
+    vec3(1.0f)                /*BOT 4*/
 };
 
 const vec4 BLUR_QUAD[4]{
@@ -251,7 +251,7 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
 void GameManager::spawnPlayers(unsigned int playerCount)
 {
     for (unsigned int i = 0; i < playerCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createPlayer(i));
+        m_vPositions.push_back(SCENE_LOADER->createPlayer(i, &COLORS[i]));
         m_vColors.push_back(COLORS[i]);
         generateSplitScreen(i);
     }
@@ -260,7 +260,7 @@ void GameManager::spawnPlayers(unsigned int playerCount)
 void GameManager::spawnBots(unsigned int botCount)
 {
     for (unsigned int i = 0; i < botCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createBot());
+        m_vPositions.push_back(SCENE_LOADER->createBot(&COLORS[MAX_PLAYER_COUNT + i]));
         m_vColors.push_back(COLORS[MAX_PLAYER_COUNT + i]);
     }
 }
@@ -893,8 +893,6 @@ void GameManager::intersectPlane(float fX, float fY)
         // Not behind camera.
         if (fT >= 0)
             vIntersection = vCameraPos + (fT*vRay);
-
-        EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 60.f, 5.0f, 100, false, 2.0f);
     }
 }
 

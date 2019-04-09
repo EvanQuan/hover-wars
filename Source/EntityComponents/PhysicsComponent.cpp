@@ -271,19 +271,6 @@ void PhysicsComponent::initializeRocket(const char* sName,
     assert(nullptr != pIter->second);
 }
 
-// Initializes a new Flame Object in the Physics Manager and stores it in the component to manage locally.
-void PhysicsComponent::initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius)
-{
-    // Generate the Flame in the Physics Manager
-    PxRigidDynamic* pNewBody = nullptr;
-    m_pDynamicObjects.insert(make_pair((sName), pNewBody));
-    unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
-    m_pPhysicsManager->createFlameObject(pIter->first.c_str(), vPosition, fHeight, fRadius, &(pIter->second));
-
-    // Store Flame internally for management.
-    assert(nullptr != pIter->second);
-}
-
 // Remove and unload a DynamicBody from the Physics scene with the given Hashkey.
 void PhysicsComponent::removeInstance(string sHashKey)
 {

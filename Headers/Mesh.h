@@ -101,7 +101,7 @@ private:
     // Billboard Information
     struct sBillboardInfo
     {
-        vec3 vPosition, vNormal;
+        vec3 vPosition, vNormal, vColor;
         vec2 vUVStart, vUVEnd, vDimensions;
         float fDuration;
     };
@@ -109,7 +109,7 @@ private:
 
     // Billboard Functionality -> Only accessable within AnimationComponent
     void updateBillboardVBO();
-    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration);
+    unsigned int addBillboard(const vec3* vPosition, const vec3* vNormal, const vec3* vColor, const vec2* vUVStart, const vec2* vUVEnd, float fHeight, float fWidth, float fDuration);
     void flushBillboards();
 
     // Friend Class: MeshManager to create Meshes.

@@ -56,6 +56,7 @@ public:
     void initialize(const string& sFileName,
         const ObjectInfo* pObjectProperties,
         const string& sShaderType,
+        const vec3* vColor,
         float fScale);
 
     void reinitialize();

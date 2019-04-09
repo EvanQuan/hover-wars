@@ -25,8 +25,9 @@ public:
     void renderEmitters();
 
     // Generate a new Emitter with the given parameters
-    void generateEmitter(vec3 vPos,
-                         vec3 vNormal,
+    void generateEmitter(const vec3& vPos,
+                         const vec3& vNormal,
+                         const vec3* vColor,
                          float fAngleFromNormal,
                          float fParticleDuration,
                          unsigned int iNumParticles,
