@@ -65,7 +65,7 @@ private:
         string      sMeshLocation, sShaderProperty;
         float       fScaleProperty;
         ObjectInfo  pObjectProperties;
-        
+
 
         // Default Constructor
         sMeshProperties()
@@ -107,7 +107,6 @@ private:
 
     void clearProperties();     // Clear any properties
     void resetAllProperties();
-    
+
     string trimString( const string& sStr );
 };
-

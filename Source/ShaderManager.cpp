@@ -58,7 +58,7 @@ ShaderManager::ShaderManager()
     glGenBuffers(1, &m_iMatricesBuffer);
     glGenBuffers(1, &m_iLightsBuffer);
     glBindBuffer(GL_UNIFORM_BUFFER, m_iMatricesBuffer);
-    glBufferData(GL_UNIFORM_BUFFER, UNIFORM_MATRICES_SIZE, NULL, GL_STATIC_DRAW);    
+    glBufferData(GL_UNIFORM_BUFFER, UNIFORM_MATRICES_SIZE, NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, m_iLightsBuffer);
     glBufferData(GL_UNIFORM_BUFFER, LIGHT_BUFFER_SIZE, NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);

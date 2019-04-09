@@ -55,7 +55,7 @@ struct ObjectInfo
         vPosition = vec3(0.0f);
     }
 
-    // Assignment Operator overload for Copying 
+    // Assignment Operator overload for Copying
     ObjectInfo& operator=(const ObjectInfo& pCopy)
     {
         vPosition       = pCopy.vPosition;

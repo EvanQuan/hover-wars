@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
@@ -62,7 +62,7 @@ void computeWheelCenterActorOffsets
 }
 
 void setupWheelsSimulationData
-(const PxF32 wheelMass, const PxF32 wheelMOI, const PxF32 wheelRadius, const PxF32 wheelWidth, 
+(const PxF32 wheelMass, const PxF32 wheelMOI, const PxF32 wheelRadius, const PxF32 wheelWidth,
  const PxU32 numWheels, const PxVec3* wheelCenterActorOffsets,
  const PxVec3& chassisCMOffset, const PxF32 chassisMass,
  PxVehicleWheelsSimData* wheelsSimData)
@@ -102,7 +102,7 @@ void setupWheelsSimulationData
         {
             suspensions[i].mMaxCompression = 0.3f;
             suspensions[i].mMaxDroop = 0.1f;
-            suspensions[i].mSpringStrength = 35000.0f;    
+            suspensions[i].mSpringStrength = 35000.0f;
             suspensions[i].mSpringDamperRate = 4500.0f;
             suspensions[i].mSprungMass = suspSprungMasses[i];
         }
@@ -162,7 +162,7 @@ void setupWheelsSimulationData
         wheelsSimData->setSuspForceAppPointOffset(i, suspForceAppCMOffsets[i]);
         wheelsSimData->setTireForceAppPointOffset(i, tireForceAppCMOffsets[i]);
         wheelsSimData->setSceneQueryFilterData(i, qryFilterData);
-        wheelsSimData->setWheelShapeMapping(i, PxI32(i)); 
+        wheelsSimData->setWheelShapeMapping(i, PxI32(i));
     }
 }
 
@@ -223,7 +223,7 @@ PxVehicleNoDrive* createVehicleNoDrive(const VehicleDesc& vehicleDesc, PxPhysics
         nodrive::computeWheelCenterActorOffsets(frontZ, rearZ, chassisDims, wheelWidth, wheelRadius, numWheels, wheelCentreActorOffsets);
 
         nodrive::setupWheelsSimulationData
-            (vehicleDesc.wheelMass, vehicleDesc.wheelMOI, wheelRadius, wheelWidth, 
+            (vehicleDesc.wheelMass, vehicleDesc.wheelMOI, wheelRadius, wheelWidth,
              numWheels, wheelCentreActorOffsets,
              vehicleDesc.chassisCMOffset, vehicleDesc.chassisMass,
              wheelsSimData);
@@ -243,4 +243,3 @@ PxVehicleNoDrive* createVehicleNoDrive(const VehicleDesc& vehicleDesc, PxPhysics
 }
 
 } // namespace snippetvehicle
-
