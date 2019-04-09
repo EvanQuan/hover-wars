@@ -15,7 +15,7 @@ public:
     virtual ~Emitter();
 
     // Functions to initialize and update Emitter.
-    void initializeEmitter(unsigned int iMaxParticles, vec3 vEmitterNormal, float fAngleFromNormal, float fDefaultDuration, float fRadius, bool bExplosion);
+    void initializeEmitter(unsigned int iMaxParticles, const vec3* vEmitterNormal, const vec3* vColor, float fAngleFromNormal, float fDefaultDuration, float fRadius, bool bExplosion);
     bool update(float fDelta);
     void draw();
 

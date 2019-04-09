@@ -27,7 +27,7 @@ public:
     vec3 createBot(const vec3* vColor);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void createSkybox(vector< string > sData);
-    Rocket* createRocketMesh(int iOwnerID);
+    Rocket* createRocketMesh(int iOwnerID, const vec3* vColor);
     Mesh* createSpikesMesh(string sHashKey);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );

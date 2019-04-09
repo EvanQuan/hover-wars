@@ -66,7 +66,7 @@ public:
 
     // Interactable Entity Generation Functions
     FlameTrail* generateFlameTrailEntity(const vec3* vPosition, const vec3* vColor, int iOwnerID, float fFlameHeight, float fFlameWidth);
-    Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
+    Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, const vec3* vColor, float fScale, const string* sShaderType, int iOwnerID);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);

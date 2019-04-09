@@ -37,7 +37,8 @@ Emitter::~Emitter()
 
 // Initializes the Emitter 
 void Emitter::initializeEmitter(unsigned int iMaxParticles, 
-                                vec3 vEmitterNormal, 
+                                const vec3* vEmitterNormal,
+                                const vec3* vColor,
                                 float fAngleFromNormal, 
                                 float fDefaultDuration, float fRadius, bool bExplosion)
 {
@@ -45,11 +46,11 @@ void Emitter::initializeEmitter(unsigned int iMaxParticles,
     m_iMaxNumParticles = iMaxParticles;
     m_pParticleList.reserve(iMaxParticles);    // Reserve maximum size to avoid resizing computation
     m_pPositions.reserve(iMaxParticles);    // Reserve maximum size to avoid resizing computation
-    m_iCurrNumParticles = 0;
-    m_vEmitterNormal = vEmitterNormal;
-    m_fAngleFromNormal = fAngleFromNormal;
-    m_fDefaultDuration = fDefaultDuration;
-    m_fRadius = fRadius;
+    m_iCurrNumParticles     = 0;
+    m_vEmitterNormal        = *vEmitterNormal;
+    m_fAngleFromNormal      = fAngleFromNormal;
+    m_fDefaultDuration      = fDefaultDuration;
+    m_fRadius               = fRadius;
     unsigned int m = 0, n = 0;
     m_vOrthogonalVec = vec3(0.0);
 
@@ -77,7 +78,8 @@ void Emitter::initializeEmitter(unsigned int iMaxParticles,
     m_iVertexBuffer = SHADER_MANAGER->genVertexBuffer(m_iVertexArray, m_pPositions.data(), m_pPositions.size() * sizeof(vec3), GL_DYNAMIC_DRAW);
     SHADER_MANAGER->setAttrib(m_iVertexArray, 0, 3, 0, (void*)0);
 
-    m_pDiffuseTexture = TEXTURE_MANAGER->genTexture(&COLOR);
+    vec4 vTexColor(*vColor, 1.0);
+    m_pDiffuseTexture = TEXTURE_MANAGER->genTexture(&vTexColor);
 }
 
 // Integrate Particle Positions, velocities and forces as well as updating the remaining duration for

@@ -629,7 +629,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
-    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
+    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID, vColor);
 
     // Initialize Spikes Animations
     for (unsigned int i = 0; i < NUM_SPIKES; ++i)

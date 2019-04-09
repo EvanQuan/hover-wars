@@ -13,11 +13,12 @@
 #define EXPLOSION_RADIUS    3.0f
 
 // Default Constructor
-Rocket::Rocket(int iID, int iOwnerID)
+Rocket::Rocket(int iID, int iOwnerID, const vec3* vColor)
     : InteractableEntity( iID, iOwnerID, vec3(0.0), INTER_ROCKET )
 {
-    m_pEmitterEngine = EMITTER_ENGINE;
-    m_iRocketID = 0;
+    m_pEmitterEngine    = EMITTER_ENGINE;
+    m_iRocketID         = 0;
+    m_vExplosionColor   = *vColor;
 }
 
 // Destructor
@@ -89,7 +90,7 @@ void Rocket::removeFromScene(unsigned int iVictimMsg)
     mat4 m4FinalTransform;
     m_pMesh->removeInstance(sHashKey);
     m_pPhysicsComponent->getTransformMatrix(sHashKey, &m4FinalTransform);
-    m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], ANGLE_FROM_NORMAL, PARTICLE_DURATION, NUM_PARTICLES, true, EXPLOSION_RADIUS);
+    m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], &m_vExplosionColor, ANGLE_FROM_NORMAL, PARTICLE_DURATION, NUM_PARTICLES, true, EXPLOSION_RADIUS);
     m_pPhysicsComponent->flagForRemoval(sHashKey);
     m_pReferenceList.erase(remove(m_pReferenceList.begin(),
                                   m_pReferenceList.end(),

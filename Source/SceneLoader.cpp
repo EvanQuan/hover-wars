@@ -245,9 +245,9 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 }
 
 // Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
-Rocket* SceneLoader::createRocketMesh(int iOwnerID)
+Rocket* SceneLoader::createRocketMesh(int iOwnerID, const vec3* vColor)
 {
-    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
+    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, vColor, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
 }
 
 // Generates a Spikes Entity based off the saved Spikes Properties loaded from the Scene.
