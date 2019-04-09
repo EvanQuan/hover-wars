@@ -155,6 +155,9 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                       eFixedCommand command)
 {
+    if (m_pGameManager->isPaused()) {
+        return;
+    }
     PauseMenu *pauseMenu;
     switch (command)
     {
@@ -389,7 +392,7 @@ void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft)
 
 void GameMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
 {
-    return executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
+    executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
 }
 
 void GameMenu::updateRightStick(eHovercraft hovercraft, float x, float y)
