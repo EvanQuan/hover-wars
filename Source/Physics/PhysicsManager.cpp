@@ -199,7 +199,83 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
 /****************************************************************************\
  * Public Functions                                                            *
 \****************************************************************************/
+PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize)
+{
+    const PxReal heightScale = 0.001f;
 
+    PxU32 hfNumVerts = hfSize * hfSize;
+    PxHeightFieldSample* samples = new PxHeightFieldSample[hfNumVerts];
+    memset(samples, 0, hfNumVerts * sizeof(PxHeightFieldSample));
+
+    for (PxU32 x = 0; x < hfSize; x++)
+        for (PxU32 y = 0; y < hfSize; y++)
+        {
+            samples[x + y * hfSize].height = (PxI16)0; // (x + y / heightScale);
+            samples[x + y * hfSize].setTessFlag();
+            samples[x + y * hfSize].materialIndex0 = 1;
+            samples[x + y * hfSize].materialIndex1 = 1;
+        }
+
+    PxHeightFieldDesc hfDesc;
+    hfDesc.format = PxHeightFieldFormat::eS16_TM;
+    hfDesc.nbColumns = hfSize;
+    hfDesc.nbRows = hfSize;
+    hfDesc.samples.data = samples;
+    hfDesc.samples.stride = sizeof(PxHeightFieldSample);
+
+    PxHeightField* heightField = gCook->createHeightField(hfDesc, gPhysics->getPhysicsInsertionCallback());
+
+    PxTransform pose = PxTransform(PxIdentity);
+    pose.p = PxVec3(-(hfSize / 2 * hfScale), 0, -(hfSize / 2 * hfScale));
+
+    PxRigidStatic* hfActor = gPhysics->createRigidStatic(pose);
+    if (!hfActor)
+        cout << "creating heightfield actor failed" << endl;
+
+    PxHeightFieldGeometry hfGeom(heightField, PxMeshGeometryFlags(), heightScale, hfScale, hfScale);
+    PxShape* hfShape = PxRigidActorExt::createExclusiveShape(*hfActor, hfGeom, *gWorldMaterial);
+    //setCCDActive(*hfShape);
+    if (!hfShape)
+        cout << "creating heightfield shape failed" << endl;
+    hfActor->setName(C_SUBTYPE_GROUND + "");// :p fix later @austin
+    gScene->addActor(*hfActor);
+
+    return hfActor;
+}
+//
+//void PhysicsManager::createFloorHeightMap(const int columns, const int rows) {
+//    PxHeightFieldSample* samples = new PxHeightFieldSample[columns *rows];
+//    const PxReal heightScale = 0.001f;
+//
+//    for (PxU32 x = 0; x < rows; x++)
+//        for (PxU32 y = 0; y < columns; y++)
+//        {
+//            samples[x + y * columns].height = (PxI16)(1.0f / heightScale);
+//            samples[x + y * columns].setTessFlag();
+//            samples[x + y * columns].materialIndex0 = 1;
+//            samples[x + y * columns].materialIndex1 = 1;
+//        }
+//
+//
+//
+//    PxHeightFieldDesc hfDesc;
+//    hfDesc.format = PxHeightFieldFormat::eS16_TM;
+//    hfDesc.nbColumns = 5;
+//    hfDesc.nbRows = 5;
+//    hfDesc.samples.data = samples;
+//    hfDesc.samples.stride = sizeof(PxHeightFieldSample);
+//
+//    PxHeightField* aHeightField = gCook->createHeightField(hfDesc,
+//        gPhysics->getPhysicsInsertionCallback());
+//    PxHeightFieldGeometry hfGeom(aHeightField, PxMeshGeometryFlags(), 10.0f /* height scale*/, 100,
+//        100);
+//    PxRigidActor *aHeightFieldActor = gPhysics->createRigidStatic(PxTransform(PxIdentity));
+//    PxShape* aHeightFieldShape = PxRigidActorExt::createExclusiveShape(*aHeightFieldActor,
+//        hfGeom, *gWorldMaterial, PxShapeFlag::eSIMULATION_SHAPE);
+//    PxShape *shapeWorld = gPhysics->createShape(hfGeom, *gWorldMaterial);
+//    aHeightFieldActor->attachShape(*shapeWorld);
+//    gScene->addActor(*aHeightFieldActor);
+//}
 // Name: Update
 // Description: Provides Frame by Frame update functionality for Physics.
 //        Updates on a different interval than standard framerate.
@@ -252,14 +328,14 @@ void PhysicsManager::initPhysics(bool interactive)
     gErrorCallback = new PxDefaultErrorCallback();
     // Comment each of these lines, tell us what each function is doing and why it is necessary.
     gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *gAllocator, *gErrorCallback);
-    // gPvd = PxCreatePvd(*gFoundation);
+     gPvd = PxCreatePvd(*gFoundation);
 // #ifdef _DEBUG
-    // transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-    // gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+     transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+     gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 // #endif
 
-    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true);
-    // gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, pvd);
+    //gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true);
+    gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0.0f, GRAVITY, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
@@ -270,13 +346,13 @@ void PhysicsManager::initPhysics(bool interactive)
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_PAIRS;
     sceneDesc.flags |= PxSceneFlag::eENABLE_KINEMATIC_STATIC_PAIRS;
     gScene = gPhysics->createScene(sceneDesc);
-    // PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
-    // if (pvdClient)
-    // {
-        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-        // pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-    // }
+     PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
+     if (pvdClient)
+     {
+         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
+         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
+         pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
+     }
     gCarMaterial = gPhysics->createMaterial(CAR_STATIC_FRICTION, CAR_DYNAMIC_FRICTION, CAR_RESTITUTION);
     gWorldMaterial = gPhysics->createMaterial(WORLD_STATIC_FRICTION, WORLD_DYNAMIC_FRICTION, WORLD_RESTITUTION);
 
@@ -290,7 +366,8 @@ void PhysicsManager::initPhysics(bool interactive)
     if (!gCook) {
         std::cout << ("PxCreateCooking failed!") << std::endl;
     }
-
+    //const int columns = 100;
+    //createFloorHeightMap(5, columns);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -302,7 +379,7 @@ void PhysicsManager::initPhysics(bool interactive)
     //Create the batched scene queries for the suspension raycasts.
     gVehicleSceneQueryData = snippetvehicle
                              ::VehicleSceneQueryData
-                             ::allocate(1, PX_MAX_NB_WHEELS, 1, 1,
+                             ::allocate(8, PX_MAX_NB_WHEELS, 1, 1,
                                         snippetvehicle::WheelSceneQueryPreFilterBlocking,
                                         NULL, *gAllocator);
     gBatchQuery = snippetvehicle::VehicleSceneQueryData::setUpBatchedSceneQuery(0, *gVehicleSceneQueryData, gScene);
@@ -315,7 +392,7 @@ void PhysicsManager::initPhysics(bool interactive)
 
     PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics);
     gGroundPlane->setName(NAME_GROUND);
-    // cout << "\"" << gGroundPlane->getName() << "\"" << endl;
+     cout << "\"" << gGroundPlane->getName() << "\"" << endl;
     gScene->addActor(*gGroundPlane);
     staticObjects.push_back(gGroundPlane);
     
@@ -328,8 +405,8 @@ void PhysicsManager::initPhysics(bool interactive)
     //createMeshObject(3,3,3,5,"memeteam.txt");
     //createHovercraftEntity(0,0,0);
     //createRocketP(5,5,5,1,0,1);
-}
 
+}
 // This function is public. Probably intended as a sort of soft reset at the end of a match
 //    that will set up Physics to be restarted as everything gets loaded in for a new match
 // Also called from the Destructor before the Destructor performs any hard clean up.

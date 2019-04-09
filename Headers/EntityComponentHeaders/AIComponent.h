@@ -65,7 +65,8 @@ private:
         MODE_CHASE,
         // Wants to move towards the nearest seek point on the map
         // Path calculation is based on location of nearest seek points.
-        MODE_SEEK
+        MODE_SEEK,
+        MODE_EVADE
     };
 
     vector<uvec2> getSeekPath();
@@ -78,7 +79,10 @@ private:
 
     void determineTurn(const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
     bool shouldFireRocket(float accuracy);
-    bool shouldChooseSeekMode(float distanceToTarget);
+
+    eMode modeSequence[10];
+    int durations[10];
+    int currentActionNum = 0;
 
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
@@ -97,6 +101,7 @@ private:
 
     vec2 seekLocation;
     int lastIndex = -1;
+
     vec3 get2ndNearestSeekPoint(vec2 currentPos) const;
     vec3 getNearestSeekPoint(vec2 currentPos) const;
 

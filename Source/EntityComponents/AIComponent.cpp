@@ -7,12 +7,6 @@
 
 /*
     Locations on the map that the AI can seek for.
-    If the AI is in 
-    @TODO describe what these are for/what they mean
-
-    // Original order, if it matters?
-    // vec2(18,7),     vec2(31,18),    vec2(7,18),     vec2(18,31),
-    // vec2(31,31),    vec2(7,7),      vec2(31,7),     vec2(7,31)
 */
 const vec2 seekPointsAI[] = {
     vec2(7,  7),    vec2(18,  7),   vec2(31,  7),
@@ -25,7 +19,6 @@ const vec2 seekPointsAI[] = {
 #define DISTANCE_BOX 15
 #define CYCLE_TIME 7
 #define MAX_TIME_TARGET CYCLE_TIME*4
-#define PROC_DISTANCE 125
 
 /*
     As the AI sets the position of the bot hovercrafts, we must ensure that the
@@ -35,12 +28,10 @@ const vec2 seekPointsAI[] = {
 
 AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
 {
-
-    ////for (int j = 0; j < MUTATION_SET; j++) {
-    //    for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
-    //        genRandomAction(&frames[j][i]);
-    //    }
-    //}
+    for (int i = 0; i < 10; i++) {
+        modeSequence[i] = static_cast<eMode>(FuncUtils::random(3) % 3);
+        durations[i] = static_cast<int>(FuncUtils::random(20) + (modeSequence[i] == MODE_CHASE ? 5 : 0));
+    }
 
     timeChased = static_cast<float>(FuncUtils::random(MAX_TIME_TARGET));
 
@@ -121,7 +112,7 @@ void AIComponent::determinePath()
     case MODE_CHASE:
         path = getChasePath();
         break;
-    case MODE_SEEK:
+    default:
         path = getSeekPath();
         break;
     }
@@ -135,18 +126,18 @@ void AIComponent::determinePath()
 */
 void AIComponent::determineMode(float distanceToTarget)
 {
-    if (shouldChooseSeekMode(distanceToTarget)) {
-        if (m_eCurrentMode  == MODE_CHASE) {
-            // @NOTE what is going on here?
-            vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
-            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
-            lastIndex = static_cast<int>(currSeekLock.z);
+    if (timeChased > durations[currentActionNum]) {
+        if (modeSequence[currentActionNum] != MODE_CHASE) {
+            if (m_eCurrentMode == MODE_CHASE) {
+                vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
+                seekLocation = vec2(currSeekLock.x, currSeekLock.y);
+                lastIndex = (int)currSeekLock.z;
+            }
         }
-        m_eCurrentMode = MODE_SEEK;
-    } else {
-        m_eCurrentMode = MODE_CHASE;
+        currentActionNum = (currentActionNum + 1) % 10;
+        timeChased = 0;
+        m_eCurrentMode = modeSequence[currentActionNum];
     }
-
 }
 
 /*
@@ -239,15 +230,7 @@ void AIComponent::determineTurn(const vec3 &distanceVectorToTarget,
 */
 bool AIComponent::shouldFireRocket(float accuracy)
 {
-    return (accuracy < ACCURACY_THRESHOLD) && m_eCurrentMode == MODE_CHASE;
-}
-
-/*
-    If the target is too far away, (beyond the PROC_DISTANCE), or the time
-*/
-bool AIComponent::shouldChooseSeekMode(float distanceToTarget)
-{
-    return distanceToTarget > PROC_DISTANCE || timeChased < CYCLE_TIME;
+    return (accuracy < ACCURACY_THRESHOLD) || m_eCurrentMode != MODE_CHASE;
 }
 /*
     TODO maybe make it go to center?
@@ -278,7 +261,7 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) const {
             lowestIndex = i;
         }
     }
-    return vec3(nearest2nd, lowestIndex);
+    return vec3(seekPointsAI[static_cast<eMode>(FuncUtils::random(8) % 8)], lowestIndex);
 }
 
 /*
@@ -369,9 +352,8 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
 
     determineMode(distanceToTarget);
 
-    if (timeChased > MAX_TIME_TARGET) {
-        timeChased = 0;
-    }
+
+
 
     determineTurn(distanceVectorToTarget, botDirectionVector, a);
     determinePosition(bot, botPosition, fTimeInSeconds);
