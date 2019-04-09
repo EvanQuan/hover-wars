@@ -8,7 +8,7 @@
  * DEFINES *
 \***********/
 #define ANGLE_FROM_NORMAL   360.0f
-#define PARTICLE_DURATION   3.0f
+#define PARTICLE_DURATION   2.0f
 #define NUM_PARTICLES       100
 #define EXPLOSION_RADIUS    3.0f
 
@@ -88,7 +88,10 @@ void Rocket::removeFromScene(unsigned int iVictimMsg)
     mat4 m4FinalTransform;
     m_pMesh->removeInstance(sHashKey);
     m_pPhysicsComponent->getTransformMatrix(sHashKey, &m4FinalTransform);
+
+    // Explosion
     m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], &m_vExplosionColor, ANGLE_FROM_NORMAL, PARTICLE_DURATION, NUM_PARTICLES, true, EXPLOSION_RADIUS);
+
     m_pPhysicsComponent->flagForRemoval(sHashKey);
     m_pReferenceList.erase(remove(m_pReferenceList.begin(),
                                   m_pReferenceList.end(),
