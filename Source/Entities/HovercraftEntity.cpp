@@ -56,7 +56,7 @@
     Units: seconds
 */
 #define ROCKET_BASE_COOLDOWN        6.0f
-#define SPIKES_BASE_COOLDOWN        4.0f
+#define SPIKES_BASE_COOLDOWN        6.0f
 #define TRAIL_COOLDOWN              0.0f
 // Cooldown between dash usages
 #define DASH_BASE_COOLDOWN          0.5f
@@ -453,7 +453,10 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
                          static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
                          ability);
     resetMaxCooldowns();
+
+    // Award attacker
     attackerHovercraft->reduceMaxCooldowns();
+    attackerHovercraft->reduceCooldown(ability);
 }
 
 /*
@@ -475,11 +478,15 @@ void HovercraftEntity::reduceMaxCooldowns()
 
 void HovercraftEntity::reduceCooldown(eAbility ability)
 {
-    // Right now we only will use rockets
+    // Right now we only will use rockets and spikes
     switch (ability)
     {
     case ABILITY_ROCKET:
         m_fCooldowns[COOLDOWN_ROCKET] *= COOLDOWN_REDUCTION_ON_HIT;
+        break;
+    case ABILITY_SPIKES:
+        m_fCooldowns[COOLDOWN_SPIKES] *= COOLDOWN_REDUCTION_ON_HIT;
+        break;
     }
 }
 
@@ -765,7 +772,7 @@ void HovercraftEntity::initializeCooldowns()
     }
 
     m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
-    m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_DURATION;
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_TRAIL_ACTIVATE] = TRAIL_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_TRAIL_DEACTIVATE] = TRAIL_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;

@@ -79,8 +79,6 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 
 void Rocket::handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity *hit)
 {
-    cout << "ROCKET HIT PLAYER " << hit->getID() << endl;
-    owner->reduceCooldown(eAbility::ABILITY_ROCKET);
 }
 
 // clear Rocket Rendering; Remove Instance from Mesh, remove from Physics
