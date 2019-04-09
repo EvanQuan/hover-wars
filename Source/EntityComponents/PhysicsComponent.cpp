@@ -21,7 +21,8 @@ Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MOMENTUM 5.0f // 3.0f
+#define ANGULAR_MOMENTUM_MULTIPLIER 2.0f // 5.0f
+#define ANGULAR_MOMENTUM_EXPONENT 2.0f // 5.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
@@ -160,10 +161,13 @@ void PhysicsComponent::push(float x, float y, float force)
     setSteerAngle(angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    // if (!isInAir) {
-    // TODO Find out why this is a problem? Initially the player is in the air and can't turn?
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-    // }
+    // Small joystick movements result in small turning values to make aiming easier.
+    // Large joystick movements result in large turning values to make drastic turns more responsive.
+    // By making the growth exponential instad of linear, this further helps both types of joystick movement.
+    float angularMomentum = (x > 0 ? -1 : 1) * std::pow(x * ANGULAR_MOMENTUM_MULTIPLIER, ANGULAR_MOMENTUM_EXPONENT);
+    // float angularMomentum = -x * 4;
+    // cout << "angularMomentum: " << angularMomentum << endl;
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, angularMomentum, 0));
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
