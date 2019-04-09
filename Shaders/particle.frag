@@ -1,7 +1,6 @@
 
-out vec4 color;
-
 void main(void)
 {    
-	color = texture(sMaterial.vDiffuse, TexCoords);
+	vFragColor = texture(sMaterial.vDiffuse, TexCoords);
+	calcBrightColor( vFragColor );
 }

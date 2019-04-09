@@ -145,7 +145,7 @@ void InputHandler::debugKeyCommands(int key, int action)
             GameInterface::getInstance(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight())->setFocus(HOVERCRAFT_PLAYER_1);
             break;
         case GLFW_KEY_MINUS:
-            // SOUND_MANAGER->play(SoundManager::MUSIC_INGAME);
+            // SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_INGAME);
             break;
         case GLFW_KEY_DOWN:
             // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);
@@ -160,11 +160,11 @@ void InputHandler::debugKeyCommands(int key, int action)
             break;
             // Testing game stats kill updates
         case GLFW_KEY_R:
-            cout << "R" << endl;
+            //cout << "R" << endl;
             GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_1, GameStats::eAddScoreReason::HIT_PLAYER_2);
             break;
         case GLFW_KEY_T:
-            cout << "T" << endl;
+            //cout << "T" << endl;
             GAME_STATS->addScore(eHovercraft::HOVERCRAFT_PLAYER_2, GameStats::eAddScoreReason::HIT_PLAYER_1);
             break;
         case GLFW_KEY_Y:
@@ -193,7 +193,7 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
             // Get cursor position
             double fX, fY;
             glfwGetCursorPos(window, &fX, &fY);
-            m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
+            //m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
 #endif
         }
         else if (GLFW_RELEASE == action)    // Release tracking
@@ -403,6 +403,10 @@ Registers a joystick as not connected to the game.
 void InputHandler::disconnectJoystick(int joystickID)
 {
     m_pJoystickIsPresent[joystickID] = false;
+    for (int button = 0; button < MAX_BUTTON_COUNT; button++)
+    {
+        m_joystickButtons[joystickID][button] = INPUT_RELEASED;
+    }
     // debugPrintJoystickInformation(joystickID);
 
 }
@@ -417,6 +421,8 @@ void InputHandler::joystickCallback(int joystickID, int event)
 {
     if (event == GLFW_CONNECTED)
     {
+        // Just for fun. Temporary, may change to another sound.
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_POWERUP_SPAWN);
         m_pInstance->initializeJoystick(joystickID);
     }
     else if (event == GLFW_DISCONNECTED)
@@ -468,6 +474,11 @@ CommandHandler after the input has been processed.
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
+    // Double check
+    if (!m_pJoystickIsPresent[joystickID])
+    {
+        return;
+    }
     // Update actual buttons
     for (int button = BUTTON_A; button < MAX_BUTTON_INDEX; button++)
     {

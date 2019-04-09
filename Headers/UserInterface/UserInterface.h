@@ -29,13 +29,15 @@
 #define IMAGE_4 "textures/menu/4.png"
 #define IMAGE_MAIN_MENU_BUTTON_1 "textures/menu/main_menu_button.png"
 #define IMAGE_MAIN_MENU_BUTTON_2 "textures/menu/main_menu_button2.png"
-#define IMAGE_BACKGROUND "textures/menu/main_menu.png"
+#define IMAGE_BACKGROUND_START_MENU "textures/menu/start_menu.jpg"
+#define IMAGE_BACKGROUND_MAIN_MENU "textures/menu/post_menu3.jpg"
 #define IMAGE_NEW_GAME_1 "textures/menu/new_game.png"
 #define IMAGE_NEW_GAME_2 "textures/menu/new_game2.png"
 #define IMAGE_EXIT_1 "textures/menu/exit.png"
 #define IMAGE_EXIT_2 "textures/menu/exit2.png"
-#define IMAGE_PAUSE_MENU "textures/menu/pause_menu.jpg"
-#define IMAGE_POST_MENU "textures/menu/post_menu.jpg" 
+#define IMAGE_BACKGROUND_PAUSE_MENU "textures/menu/pause_menu4.jpg"
+#define IMAGE_BACKGROUND_POST_MENU "textures/menu/post_menu3.jpg" 
+#define IMAGE_BACKGROUND_PRE_MENU "textures/menu/pre_menu2.jpg" 
 #define IMAGE_RESUME_1 "textures/menu/resume.png"
 #define IMAGE_RESUME_2 "textures/menu/resume2.png"
 #define IMAGE_START_1 "textures/menu/start.png"
@@ -43,10 +45,10 @@
 #define IMAGE_TITLE "textures/menu/Title.png"
 #define IMAGE_INSERT_COIN_1 "textures/menu/insert_coin.png"
 #define IMAGE_INSERT_COIN_2 "textures/menu/insert_coin2.png"
-#define IMAGE_NUMBER_OF_PLAYER_1 "textures/menu/number_of_player.png"
-#define IMAGE_NUMBER_OF_PLAYER_2 "textures/menu/number_of_player2.png"
-#define IMAGE_NUMBER_OF_BOT_1 "textures/menu/number_of_bot.png"
-#define IMAGE_NUMBER_OF_BOT_2 "textures/menu/number_of_bot2.png"
+#define IMAGE_NUMBER_OF_PLAYER_1 "textures/menu/players.png"
+#define IMAGE_NUMBER_OF_PLAYER_2 "textures/menu/players2.png"
+#define IMAGE_NUMBER_OF_BOT_1 "textures/menu/bots.png"
+#define IMAGE_NUMBER_OF_BOT_2 "textures/menu/bots2.png"
 #define IMAGE_END_GAME_1 "textures/menu/end_game.png"
 #define IMAGE_END_GAME_2 "textures/menu/end_game2.png"
 #define IMAGE_GAME_TIME_1 "textures/menu/game_time.png"
@@ -61,11 +63,10 @@
 #define IMAGE_8_MIN "textures/menu/8_min.png"
 #define IMAGE_9_MIN "textures/menu/9_min.png"
 #define IMAGE_10_MIN "textures/menu/10_min.png"
-#define IMAGE_CONTROLLER_1 "textures/menu/controller.png"
-#define IMAGE_CONTROLLER_2 "textures/menu/controller2.png"
-#define IMAGE_GAME_RULE_1 "textures/menu/game_rule.png"
-#define IMAGE_GAME_RULE_2 "textures/menu/game_rule2.png"
-#define IMAGE_CONTROLLER_MENU "textures/menu/controller_menu.png"
+#define IMAGE_CONTROLLER_1 "textures/menu/controls.png"
+#define IMAGE_CONTROLLER_2 "textures/menu/controls2.png"
+#define IMAGE_GAME_RULE_1 "textures/menu/rules.png"
+#define IMAGE_GAME_RULE_2 "textures/menu/rules2.png"
 
 // Forward Declaration
 class ShaderManager;
@@ -103,10 +104,6 @@ public:
 
     virtual void updateWidthAndHeight(int iWidth, int iHeight) final;
 
-    // Display debug message
-    // Set message to "" to disable debug message
-    void displayDebug(const char* message);
-
     // Shows the Sprite Map for the text map for debugging.
     void debugFont();
 
@@ -126,11 +123,6 @@ protected:
     int m_iWidth;
     // height of the window in pixels
     int m_iHeight;
-
-
-    std::string debugMessage;
-    float debugWidth;
-    float debugHeight;
 
     /*
         Determines how each UI component is scaled based on window dimensions.

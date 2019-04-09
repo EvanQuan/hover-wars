@@ -13,6 +13,8 @@
 class FlameTrail;
 class Rocket;
 class Spikes;
+class AnimationComponent;
+class SoundManager;
 
 /***********\
  * Defines *
@@ -31,6 +33,7 @@ Used by GameInterface.
 Unit : seconds
 */
 #define POWERUP_TIME 15.0f
+#define NUM_SPIKES 4
 
 
 class HovercraftEntity :
@@ -80,7 +83,6 @@ public:
     float getTrailGaugePercent() const;
 
     // Get all the cooldowns to be used by the UI.
-    // NOTE: why not send m_fCooldowns directly (make public)?
     // @return an array of all ability cooldowns.
     float* getCooldowns() { return m_fCooldowns; }
 
@@ -117,10 +119,18 @@ public:
         minimum cooldown values.
     */
     void reduceMaxCooldowns();
+
+    /*
+        Reduce the current cooldown by a fixed factor.
+        This should be a reward for hitting another hovercraft.
+    */
+    void reduceCooldown(eAbility ability);
     /*
         Reset the maximum cooldowns to the base cooldowns.
     */
     void resetMaxCooldowns();
+
+    bool isOffCooldown(eAbility ability) const;
 
     bool canDash() const { return m_iDashCharges > 0; }
 
@@ -168,16 +178,18 @@ private:
 
     // Private Variables
     int activeCameraIndex;
-    Mesh* m_pMesh;
+    Mesh *m_pMesh, *m_pSpikesMesh;
     SpatialDataMap* m_pSpatialMap;
-    RenderComponent* m_pRenderComponent;
+    RenderComponent *m_pRenderComponent, *m_pSpikesRenderComponent;
     CameraComponent* m_pActiveCameraComponent;
     CameraComponent* m_pCmrComponents[MAX_CAMERAS_PER_PLAYER];
+    AnimationComponent* m_pSpikeAnimations[NUM_SPIKES];
     FlameTrail* m_pFireTrail;
     Rocket* m_pRocket;
     Spikes* m_pSpikes;
     PhysicsComponent* m_pPhysicsComponent;
     GameStats* m_pGameStats;
+    SoundManager* m_pSoundMngr;
 
     /*
     These should lag behind
@@ -196,6 +208,7 @@ private:
     void updateCooldowns(float fTimeInSeconds);
     void updateSpatialMap(vec3 &vNewPosition);
     void updatePhysicsComponent();
+    void animateSpikes();
 
     // Abilities
     void shootRocket();
@@ -217,7 +230,6 @@ private:
 
     // Cooldowns
     void initializeCooldowns();
-    bool isOnCooldown(eAbility ability);
     // Current cooldown value
     float m_fCooldowns[COOLDOWN_COUNT];
     // Maximum cooldown value

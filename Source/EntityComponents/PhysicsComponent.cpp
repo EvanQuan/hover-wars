@@ -172,7 +172,8 @@ PhysicsComponent::~PhysicsComponent()
     for (unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.begin();
         pIter != m_pDynamicObjects.end();
         ++pIter)
-        pIter->second->release();
+        m_pPhysicsManager->removeRigidDynamicObj(pIter->second);
+    m_pDynamicObjects.clear();
 }
 
 /************************************************************************************\
@@ -254,9 +255,8 @@ void PhysicsComponent::initializeRocket(const char* sName,
                                         float fBBLength)
 {
     // Generate the Rocket in the Physics Manager
-    PxRigidDynamic *pNewRocket = nullptr;
-    // Store Rocket internally for management.
-    m_pDynamicObjects.insert(make_pair((sName), pNewRocket)); 
+    PxRigidDynamic* pNewBody = nullptr;
+    m_pDynamicObjects.insert(make_pair((sName), pNewBody));
     unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
     m_pPhysicsManager->createRocketObjects(pIter->first.c_str(),
                                            m4Transform, vVelocity,
@@ -271,12 +271,13 @@ void PhysicsComponent::initializeRocket(const char* sName,
 void PhysicsComponent::initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius)
 {
     // Generate the Flame in the Physics Manager
-    PxRigidDynamic *pNewFlame = nullptr;
-    m_pPhysicsManager->createFlameObject(sName, vPosition, fHeight, fRadius, &pNewFlame);
+    PxRigidDynamic* pNewBody = nullptr;
+    m_pDynamicObjects.insert(make_pair((sName), pNewBody));
+    unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
+    m_pPhysicsManager->createFlameObject(pIter->first.c_str(), vPosition, fHeight, fRadius, &(pIter->second));
 
     // Store Flame internally for management.
-    assert(nullptr != pNewFlame);
-    m_pDynamicObjects.insert(make_pair((sName), pNewFlame));
+    assert(nullptr != pIter->second);
 }
 
 // Remove and unload a DynamicBody from the Physics scene with the given Hashkey.
@@ -289,6 +290,15 @@ void PhysicsComponent::removeInstance(string sHashKey)
         m_pPhysicsManager->removeRigidDynamicObj(m_pDynamicObjects[sHashKey]);
         m_pDynamicObjects.erase(sHashKey);
     }
+}
+
+// Flag an object for removal
+//  Since the collision call back is on a separate thread, it's not possible to remove the object during the collision
+//  call back. Flag it for removal and remove it outside of the callback thread.
+void PhysicsComponent::flagForRemoval(string sHashKey)
+{
+    // Disable simulation
+    m_pObjectsFlaggedForRemoval.push_back(sHashKey);
 }
 
 void PhysicsComponent::scaleInstance(string sHashKey, float fScale)

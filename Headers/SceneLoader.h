@@ -6,7 +6,7 @@
  * Forward Declarations *
 \************************/
 class Rocket;
-class Spikes;
+class Mesh;
 class EntityManager;
 
 // Solely Generates Objects and assigns IDs to them.
@@ -22,13 +22,13 @@ public:
     void createPointLight( vector< string > sData, int iLength );
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
-    void createPlayer();
+    vec3 createPlayer(unsigned int iPlayerNumber);
     void createCube(vector< string > sData, int iLength);
-    void createBot();
+    vec3 createBot();
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void createSkybox(vector< string > sData);
     Rocket* createRocketMesh(int iOwnerID);
-    Spikes* createSpikesMesh(int iOwnerID);
+    Mesh* createSpikesMesh(string sHashKey);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
     void getNextSpawnPoint(vec3* vPosition);
@@ -49,6 +49,10 @@ private:
         CURRENT_PROPERTIES = 0,
         ROCKET_PROPERTIES,
         HC_PROPERTIES,
+        PLAYER_1_PROPERTIES,
+        PLAYER_2_PROPERTIES,
+        PLAYER_3_PROPERTIES,
+        PLAYER_4_PROPERTIES,
         SPIKES_PROPERTIES,
         MAX_PROPERTIES
     };

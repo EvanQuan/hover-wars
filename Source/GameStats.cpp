@@ -82,29 +82,6 @@ GameStats::~GameStats()
 }
 
 /*
-    In order to keep track of cooldowns, GameStats must be updated in sync with the
-    rest of the game.
-
-    This will decrease the cooldown value all all abilities by the time that has
-    passed.
-
-    @NOTE the cooldown values will become negative once they hit zero. When
-    factoring all cooldown ability checks and updates amongst the stats,
-    UserInterface, and hovercraft entities, it it cheaper this way.
-    This may change later in the future.
-*/
-void GameStats::update(float fSecondsSinceLastUpdate)
-{
-    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
-    {
-        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
-        {
-            cooldowns[player][cooldown] -= fSecondsSinceLastUpdate;
-        }
-    }
-}
-
-/*
     Initialize all stats and cooldowns to 0.
 
     This should be called at the start of every game, or if the game resets.
@@ -116,7 +93,6 @@ void GameStats::reinitialize(int playerCount, int botCount)
     m_iBotCount = botCount;
 
     initializeStats();
-    initializeCooldowns();
     correspondEntitiesToHovercrafts();
     firstBloodHappened = false;
     queueFirstBlood = false;
@@ -139,20 +115,6 @@ void GameStats::initializeStats()
     for (int i = 0; i < GLOBALSTAT_COUNT; i++)
     {
         globalStats[i] = 0;
-    }
-}
-
-/*
-    Set all cooldown timings to 0
-*/
-void GameStats::initializeCooldowns()
-{
-    for (int player = HOVERCRAFT_PLAYER_1; player < MAX_HOVERCRAFT_COUNT; player++)
-    {
-        for (int cooldown = 0; cooldown < COOLDOWN_COUNT; cooldown++)
-        {
-            cooldowns[player][cooldown] = 0.0f;
-        }
     }
 }
 
@@ -198,22 +160,6 @@ void GameStats::correspondEntitiesToHovercrafts()
 int GameStats::get(eHovercraft hovercraft, eHovercraftStat stat) const
 {
     return stats[hovercraft][stat];
-}
-
-/*
-    Get a cooldown.
-*/
-float GameStats::get(eHovercraft hovercraft, eCooldown cooldown) const
-{
-    return cooldowns[hovercraft][cooldown];
-}
-
-/*
-    @return true is ability is ready to be used
-*/
-bool GameStats::isOnCooldown(eHovercraft hovercraft, eCooldown cooldown) const
-{
-    return cooldowns[hovercraft][cooldown] <= 0.0f;
 }
 
 /*
@@ -286,7 +232,7 @@ void GameStats::updateScoreLeaders(eHovercraft candidate)
         // after first blood happened.
         if (firstBloodHappened)
         {
-            m_pGameInterface->displayMessage(candidate,
+            m_pGameInterface->displayKillMessage(candidate,
                                              HOVERCRAFT_INVALID, /* Hit doesn't matter */
                                              GameInterface::eKillMessage::KILL_MESSAGE_NEW_LEADER);
         } else if (queueFirstBlood) {
@@ -378,7 +324,7 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
     updateAttackerAndHitKills(attacker, hit);
     updateAttackerAndHitKillstreak(attacker, hit);
 
-    m_pGameInterface->displayMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
+    m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
 #ifndef NDEBUG
     // cout << "Player " << attacker << " hit Player " << attacker << endl;
@@ -441,7 +387,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
         queueFirstBlood = true;
-        m_pGameInterface->displayMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
+        m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     return basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
 }
@@ -563,9 +509,11 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
     if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
     {
-        if (!(isBot(attacker) && isBot(hit)))
+        // Only display kill message if players are involved (either attacker or hit).
+        // This avoids unnecessary work to do and sound effects.
+        if (isPlayer(attacker) || isPlayer(hit))
         {
-            m_pGameInterface->displayMessage(attacker, hit,
+            m_pGameInterface->displayKillMessage(attacker, hit,
                 GameInterface::eKillMessage::KILL_MESSAGE_KILLSTREAK);
         }
     }
@@ -666,7 +614,7 @@ void GameStats::dominate(eHovercraft attacker, eHovercraft hit)
     // Ad hoc for single player
     if (!(isBot(attacker) && isBot(hit)))
     {
-        m_pGameInterface->displayMessage(attacker, hit,
+        m_pGameInterface->displayKillMessage(attacker, hit,
             GameInterface::eKillMessage::KILL_MESSAGE_DOMINATION);
 
     }
@@ -682,7 +630,7 @@ void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 {
     if (!(isBot(attacker) && isBot(hit)))
     {
-        m_pGameInterface->displayMessage(attacker, hit,
+        m_pGameInterface->displayKillMessage(attacker, hit,
             GameInterface::eKillMessage::KILL_MESSAGE_REVENGE);
     }
     stats[hit][IS_DOMINATING_PLAYER_1 + attacker] = false;

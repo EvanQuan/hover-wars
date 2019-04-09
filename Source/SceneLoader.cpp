@@ -29,6 +29,10 @@
 #define DIRECTIONAL_LIGHT      "directional_light"
 #define SPOTLIGHT              "spotlight"
 #define HC                     "hovercraft"
+#define PLAYER_1               "player_1"
+#define PLAYER_2               "player_2"
+#define PLAYER_3               "player_3"
+#define PLAYER_4               "player_4"
 #define STATIC_MESH            "static_mesh"
 #define SPATIAL_MAP            "spatial_map"
 #define BOIDS                  "boids"
@@ -200,7 +204,7 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
         CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);
         vDimensions = vec3(stof(sData[3])/*Height*/, stof(sData[4])/*Width*/, stof(sData[5])/*Depth*/);
 
-        m_pEntityManager->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions);
+        m_pEntityManager->generateStaticCube(&CURRENT_PROPERTIES_DEF.pObjectProperties, &vDimensions, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
         outputError(CUBE, sData);
@@ -209,19 +213,25 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createPlayer()
+vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber)
 {
-    getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
-    m_pEntityManager->generatePlayerEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
+    getNextSpawnPoint(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition);
+    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
+
+    // Return starting position
+    return m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition;
 }
 
 // Generates a Bot Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-void SceneLoader::createBot()
+vec3 SceneLoader::createBot()
 {
     getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
     m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
+
+    // Return starting position
+    return HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition;
 }
 // Generates a Static Mesh Object at a specified location.
 void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
@@ -241,9 +251,9 @@ Rocket* SceneLoader::createRocketMesh(int iOwnerID)
 }
 
 // Generates a Spikes Entity based off the saved Spikes Properties loaded from the Scene.
-Spikes* SceneLoader::createSpikesMesh(int iOwnerID)
+Mesh* SceneLoader::createSpikesMesh(string sHashKey)
 {
-    return m_pEntityManager->generateSpikesEntity(&SPIKES_PROPERTIES_DEF.pObjectProperties, &SPIKES_PROPERTIES_DEF.sMeshLocation, SPIKES_PROPERTIES_DEF.fScaleProperty, &SPIKES_PROPERTIES_DEF.sShaderProperty, iOwnerID);
+    return MESH_MANAGER->loadMeshFromFile(SPIKES_PROPERTIES_DEF.sMeshLocation, &SPIKES_PROPERTIES_DEF.pObjectProperties, sHashKey,  SPIKES_PROPERTIES_DEF.fScaleProperty);
 }
 
 void SceneLoader::createSkybox(vector< string > sData)
@@ -393,6 +403,14 @@ void SceneLoader::handleData( vector< string >& sData, const string& sIndicator 
         createSpotLight(sData, sData.size());
     else if (HC == sIndicator)                          // Save Hovercraft Information
         HOVERCRAFT_PROPERTIES_DEF = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_1 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_1_PROPERTIES] = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_2 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_2_PROPERTIES] = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_3 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_3_PROPERTIES] = CURRENT_PROPERTIES_DEF;
+    else if (PLAYER_4 == sIndicator)                          // Save Hovercraft Information
+        m_sProperties[PLAYER_4_PROPERTIES] = CURRENT_PROPERTIES_DEF;
     else if (STATIC_MESH == sIndicator)                 // Parse Static Mesh
         createStaticMesh(sData, sData.size());
     else if (SPATIAL_MAP == sIndicator)                 // Parse Spatial Data Map Information

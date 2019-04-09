@@ -6,7 +6,7 @@
 
     Unit : seconds
 */
-#define PROMPT_START_REPEAT_DELAY 0.5f
+#define PROMPT_START_REPEAT_DELAY 0.75f
 /*
     As the prompt repeats, there is a delay betweeen each repeat to ensure the
     cursor does not move too quickly.
@@ -308,9 +308,6 @@ bool PromptMenu::moveLeftColumn()
 */
 void PromptMenu::moveCursor(eFixedCommand direction)
 {
-    //if (m_fSecondsToNextRepeat > 0.0f) {
-        //return;
-    //}
     m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
     bool moved = false;
     switch (direction)
@@ -344,13 +341,14 @@ void PromptMenu::moveCursor(eFixedCommand direction)
 }
 
 /*
-    The the user has just released cursor movement, which resets the start
-    repeat delay.
+    The the user has just released cursor movement, which resets the cursor
+    direction to neutral, and resets the start delay to 0, so they can
+    immediately press again without delay.
 */
 void PromptMenu::releaseCursor()
 {
     m_fSecondsToStartRepeat = PROMPT_START_REPEAT_DELAY;
-    // m_fSecondsToNextRepeat = PROMPT_REPEAT_DELAY;
+    m_fSecondsToNextRepeat = 0;
     m_eCursorDirection = COMMAND_INVALID_FIXED;
 }
 

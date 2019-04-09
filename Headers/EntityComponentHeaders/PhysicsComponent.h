@@ -39,7 +39,7 @@ public:
     void initializeVehicle(const char* sEntityID, bool bStatic, const ObjectInfo::BoundingBox *bb, vec3 position, float maxNormalSpeed);
     void initializeRocket(const char* sName, const mat4* m4Transform, const vec3* vVelocity, float fBBLength);
     void initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius);
-    void flagForRemoval(string sHashKey) { m_pObjectsFlaggedForRemoval.push_back(sHashKey); }
+    void flagForRemoval(string sHashKey);
     void removeInstance(string sHashKey);
     void scaleInstance(string sHashKey, float fScale);
     vec3 getLinearVelocity();
@@ -85,7 +85,7 @@ private:
     PhysicsManager* m_pPhysicsManager;      // Reference to Physics Manager for calling for any updates necessary.
     mat4 m_pTransformationMatrix;           // Stored Locally, maybe pulled from PhysicsManager on update?
     unordered_map<string, PxRigidDynamic*>  m_pDynamicObjects;
-    vector<string>                          m_pObjectsFlaggedForRemoval;
+    vector<string>                m_pObjectsFlaggedForRemoval;
 
     void setDriveTorque(float torque)
     {

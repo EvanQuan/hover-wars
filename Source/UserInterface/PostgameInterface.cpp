@@ -60,7 +60,7 @@ void PostgameInterface::reinitialize(float gameTime)
 
 void PostgameInterface::render()
 {
-    renderImage(IMAGE_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderScore();
     renderOption();
 }

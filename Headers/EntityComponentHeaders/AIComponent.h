@@ -24,6 +24,10 @@ For collisions
 struct Action {
     // Signifies AI should fire a rocket for the next update
     bool shouldFireRocket = false;
+    // Signifies the AI should activate the flame trail for the next update
+    bool shouldActivateTrail = false;
+    // Signifies the AI should activate spikes for the next update
+    bool shouldActivateSpikes = false;
     // Determines the extend and angle at which the hovercraft is to turn
     // -1: turn left, 0: neutral, 1: turn right
     float turn = 0.0f;
@@ -33,11 +37,6 @@ struct Action {
     // Sideways movement
     // -1: left, 0: neutral, 1: right
     float moveX = 0.0f;
-    // Signifies the AI should activate the flame trail for the next update
-    bool shouldActivateTrail = false;
-    // Signifies the AI should activate spikes for the next update
-    // @TODO implement
-    bool shouldActivateSpikes = false;
 };
 class AIComponent final :
     public EntityComponent
@@ -46,7 +45,7 @@ public:
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
     AIComponent(int iEntityID, int iComponentID);
     ~AIComponent();
-    void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPos, glm::vec3 botVel, float botRotation);
+    // void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPosition, glm::vec3 botVel, float botRotation);
     // After Initialization, the update function should handle things for the Physics of this Entity.
     //    It's not necessarily necessary for the physics component to push information to the Entity as it updates, 
     //    moreso for it to hold and manage the physics information for the entity while providing functions that allow
@@ -68,20 +67,22 @@ private:
         MODE_SEEK
     };
 
-    vector<uvec2> getSeekPath(const HovercraftEntity* bot,
-                              unsigned int minXBot,
-                              unsigned int minYBot,
-                              unsigned int maxXBot,
-                              unsigned int maxYBot);
-    vector<uvec2> getChasePath(const HovercraftEntity *target,
-                              unsigned int minXBot,
-                              unsigned int minYBot,
-                              unsigned int maxXBot,
-                              unsigned int maxYBot,
-                              unsigned int minXPlayer,
-                              unsigned int minYPlayer,
-                              unsigned int maxXPlayer,
-                              unsigned int maxYPlayer) const;
+    vector<uvec2> getSeekPath();
+    vector<uvec2> getChasePath() const;
+
+    void updateBotAndTargetLocations(const HovercraftEntity *target, const HovercraftEntity *bot);
+    void determinePath();
+    void determineMode(float distanceToTarget);
+    void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
+
+    void determineTurn(const HovercraftEntity *bot, const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
+    bool shouldChooseSeekMode(float distanceToTarget);
+
+    bool shouldFireRocket(const HovercraftEntity *bot, float accuracy);
+    bool shouldActivateSpikes(const HovercraftEntity *bot, float distanceToTarget);
+    bool shouldActivateTrail(const HovercraftEntity *bot);
+
+
     Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
@@ -98,13 +99,17 @@ private:
     eMode m_eCurrentMode = MODE_CHASE;
 
     vec2 seekLocation;
-    int LastIndex = -1;
-    bool nextPosMove = false;
+    int lastIndex = -1;
     vec3 get2ndNearestSeekPoint(vec2 currentPos) const;
     vec3 getNearestSeekPoint(vec2 currentPos) const;
 
     void updateSeekPoint(const vec3 &botPos);
     SpatialDataMap *m_pSpatialDataMap;
+
+    // Player location
+    unsigned int minXTarget, minYTarget, maxXTarget, maxYTarget;
+    // Bot location
+    unsigned int minXBot, minYBot, maxXBot, maxYBot;
 
 };
 

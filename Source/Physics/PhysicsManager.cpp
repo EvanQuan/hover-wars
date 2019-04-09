@@ -56,7 +56,7 @@ This should be relatively high to make car collisions satisfying.
 #define CAR_RESTITUTION 1.0f // 0.2f
 
 // Definition for for Cap Radius of Rockets
-#define CAP_RADIUS 0.2f // 0.2f is safe, 0.5 is large
+#define CAP_RADIUS 0.25f // 0.2f is safe, 0.5 is large
 
 /*
 World Restitution
@@ -553,13 +553,13 @@ PxRigidStatic *PhysicsManager::createSphereObject(const char* sEntityID, float x
 void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody)
 {
     // Generate Shape for the Rocket.
-    PxShape* shape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength), *gWorldMaterial);
+    PxShape* pShape = gPhysics->createShape(PxCapsuleGeometry(CAP_RADIUS, fBBLength), *gWorldMaterial);
 
     // Generate Transform to given position.
     PxMat44 pxTransform;
     memcpy(&pxTransform, m4Transform, sizeof(mat4));
     PxTransform pxLocalTransform(pxTransform);
-    shape->setLocalPose(PxTransform(PxQuat(RADIANS_90, PxVec3(0.0f, 1.0f, 0.0f))));
+    pShape->setLocalPose(PxTransform(PxQuat(RADIANS_90, PxVec3(0.0f, 1.0f, 0.0f))));
 
     // Set Velocity
     PxVec3 pxRocketVel;
@@ -569,10 +569,9 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
     (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
     (*pReturnBody)->setLinearVelocity(pxRocketVel);
-    (*pReturnBody)->attachShape(*shape);
+    (*pReturnBody)->attachShape(*pShape);
     (*pReturnBody)->setName(cName);
 
-    shapes.push_back(shape);
     // Add To Scene
     // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));
@@ -595,12 +594,10 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
 
     // Set up Physics Body
     *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
-    (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
     (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
     (*pReturnBody)->attachShape(*pShape);
     (*pReturnBody)->setName(cName);
 
-    shapes.push_back(pShape);
     // Add to Scene
     // cout << "\"" << (*pReturnBody)->getName() << "\"" << endl;
     gScene->addActor(*(*pReturnBody));

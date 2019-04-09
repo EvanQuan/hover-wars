@@ -1,6 +1,6 @@
 #include "Menus/MainMenu.h"
 #include "Menus/RulesMenu.h"
-#include "UserInterface/MainInterface.h"
+#include "UserInterface/RulesInterface.h"
 #include "CommandHandler.h"
 
 // Singleton instance
@@ -29,9 +29,14 @@ void RulesMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(),
-                                                                       m_pGameManager->getHeight()));
         nextMenu(MainMenu::getInstance());
         break;
     }
+}
+
+void RulesMenu::enter()
+{
+    PromptMenu::enter();
+    m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->getWidth(),
+                                                                    m_pGameManager->getHeight()));
 }

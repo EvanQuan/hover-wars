@@ -18,4 +18,7 @@ private:
     void back();
 
     static MainMenu* m_pInstance;
+
+    // @Override
+    void enter();
 };

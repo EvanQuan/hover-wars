@@ -29,6 +29,7 @@ public:
     {
         SOUND_ROCKET_ACTIVATE,
         SOUND_ROCKET_EXPLOSION,
+        SOUND_ROCKET_RECHARGE,
         SOUND_ROCKET_REFLECT,
 
         SOUND_SPIKES_ACTIVATE,
@@ -65,8 +66,8 @@ public:
         SOUND_POWERUP_SPEED_ACTIVATE,
         SOUND_POWERUP_SPEED_DEACTIVATE,
 
-        MUSIC_INGAME,
-        MUSIC_PAUSE,
+        SOUND_MUSIC_INGAME,
+        SOUND_MUSIC_PAUSE,
 
         SOUND_UI_CURSOR_MOVE,
         SOUND_UI_CURSOR_SELECT,
@@ -74,8 +75,10 @@ public:
         // For resuming the game
         SOUND_UI_END_GAME_CHEER,
         SOUND_UI_NEW_LEADER,
+        // For major time warnings
         SOUND_UI_TIME_REMAINING_LOOP,
-        SOUND_UI_COUNTDOWN_TICK,
+        // For reesuming the game
+        SOUND_UI_RESUME_COUNTDOWN,
     };
 
     void play(eSoundEvent sound);
@@ -95,6 +98,7 @@ public:
     // How do we make the sound follow the location as it moves?
 
     void stopAllEvents();
+    void stopEvent(eSoundEvent soundEvent, bool bImmediate = true);
 
     static SoundManager* getInstance();
 
@@ -105,9 +109,8 @@ public:
     // Change to private method
     void setSpeedParameter(float speed);
 
-    // @Deprecated
-    void togglePaused();
     void setPauseMenu();
+    void setResumeCountdown();
     void setResumeGame();
     void setEndGame();
 
@@ -161,7 +164,6 @@ private:
     void playEventDirect(const string& sEventName);
 
     // void stopChannel(int iChannelId);
-    void stopEvent(eSoundEvent soundEvent, bool bImmediate = true);
     void pauseEvent(const string& sEventName);
     void resumeEvent(const string& sEventName);
 
@@ -209,6 +211,8 @@ private:
                                            "event:/rocket/rocket_explosion_04",
                                            "event:/rocket/rocket_explosion_05",
                                            "event:/rocket/rocket_explosion_06",
+                                         }},
+        {SOUND_ROCKET_RECHARGE,         { "event:/rocket/rocket_recharge",
                                          }},
         {SOUND_ROCKET_REFLECT,          { "event:/rocket/rocket_reflect",
                                          }},
@@ -281,9 +285,9 @@ private:
                                          }},
         {SOUND_POWERUP_SPEED_DEACTIVATE, { "event:/powerup/speedboost_end",
                                          }},
-        {MUSIC_INGAME,                   { "event:/background/music_loop_retro",
+        {SOUND_MUSIC_INGAME,                   { "event:/background/music_loop_retro",
                                          }},
-        {MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
+        {SOUND_MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
                                          }},
         {SOUND_UI_CURSOR_MOVE,           { "event:/ui/cursor/cursor_move_01",
                                            "event:/ui/cursor/cursor_move_02",
@@ -303,7 +307,7 @@ private:
                                          }},
         {SOUND_UI_NEW_LEADER,            { "event:/ui/notification/new_leader",
                                          }},
-        {SOUND_UI_COUNTDOWN_TICK,        { "event:/ui/notification/countdown_tick",
+        {SOUND_UI_RESUME_COUNTDOWN,        { "event:/ui/notification/countdown_tick",
                                          }},
     };
 };

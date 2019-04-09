@@ -2,7 +2,6 @@
 #include "EntityHeaders/StaticEntity.h"
 #include "EntityHeaders/Rocket.h"
 #include "EntityHeaders/FlameTrail.h"
-#include "EntityHeaders/Spikes.h"
 #include "EntityComponentHeaders/CameraComponent.h"
 #include "EntityComponentHeaders/RenderComponent.h"
 #include "EntityComponentHeaders/LightingComponent.h"
@@ -240,7 +239,9 @@ void EntityManager::setupRender()
         pDirectionalLightComponent->setupShadowFBO();       // Set up Frame Buffer for Shadow
         pDirectionalLightComponent->setupPMVMatrices();     // Set the Lighting ModelView and Projection Matrices for generating a Depth Buffer from Light Position
         m_bShadowDraw = true;                               // Render For Shadow Map
+        glCullFace(GL_FRONT);
         doRender();                                         // Do the Render
+        glCullFace(GL_BACK);
         pDirectionalLightComponent->setupShadowUniforms();  // Set the Shadow Map in the Shaders.
         resetFBO();                                         // Reset the Frame Buffer for typical rendering.
     }
@@ -565,23 +566,6 @@ Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties,
     return pReturnEntity;
 }
 
-Spikes* EntityManager::generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
-{
-    // Get a new ID for this Entity.
-    int iNewEntityID = getNewEntityID();
-
-    // Create and Initialize new Interactable Entity
-    unique_ptr<Spikes> pNewEntity = make_unique<Spikes>(iNewEntityID, iOwnerID);
-    pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
-    Spikes* pReturnEntity = pNewEntity.get();
-
-    // Store Interactable Entity in Entity List.
-    m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewEntity)));
-
-    // Return InteractableEntity
-    return pReturnEntity;
-}
-
 // Generates a Static light at a given position. Position and Color are required, but default meshes and textures are available.
 void EntityManager::generateStaticPointLight( const ObjectInfo* pObjectProperties, float fPower, const vec3* vColor, const string& sMeshLocation, float m_fMeshScale)
 {
@@ -839,6 +823,21 @@ bool EntityManager::botExists(eHovercraft bot) const
 HovercraftEntity* EntityManager::getBot(eHovercraft bot) const
 {
     return m_pBotEntityList.at(bot - HOVERCRAFT_BOT_1);
+}
+
+// Populates the vector with the corresponding Positions of all Players and Bots.
+void EntityManager::getPlayerPositions(vector<vec3>* vReturnPositions) const
+{
+    // Ensure parity between the sizes.
+    assert(vReturnPositions->size() == (m_pPlayerEntityList.size() + m_pBotEntityList.size()));
+
+    // Set all the Player Positions
+    for (unsigned int i = 0; i < m_pPlayerEntityList.size(); ++i)
+        (*vReturnPositions)[i] = m_pPlayerEntityList[i]->getPosition();
+
+    // Set all the Bot Positions (Offset from the Number of players)
+    for (unsigned int i = 0; i < m_pBotEntityList.size(); ++i)
+        (*vReturnPositions)[i + m_pPlayerEntityList.size()] = m_pBotEntityList[i]->getPosition();
 }
 
 /*********************************************************************************\

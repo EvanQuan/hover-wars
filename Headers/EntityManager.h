@@ -11,7 +11,6 @@
 \************************/
 class FlameTrail;
 class Rocket;
-class Spikes;
 class EntityComponent;
 class CameraComponent;
 class RenderComponent;
@@ -68,7 +67,6 @@ public:
     // Interactable Entity Generation Functions
     FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);
     Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
-    Spikes*     generateSpikesEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
 
     // Entity Component functions
     CameraComponent* generateCameraComponent(int iEntityID);
@@ -99,6 +97,7 @@ public:
     HovercraftEntity* getBot(eHovercraft bot) const;
     bool botExists(eHovercraft bot) const;
     int getPlayerSize() const;
+    void getPlayerPositions(vector<vec3>* vReturnPositions) const;
 
 
     // Returns constant pointers to the Player and Bot lists.

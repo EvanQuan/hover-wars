@@ -64,7 +64,6 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    debugMessage = "";
     m_Textures[IMAGE_0] = TEXTURE_MANAGER->loadTexture(IMAGE_0);
     m_Textures[IMAGE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1);
     m_Textures[IMAGE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2);
@@ -72,13 +71,15 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_4] = TEXTURE_MANAGER->loadTexture(IMAGE_4);
     m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
     m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
-    m_Textures[IMAGE_BACKGROUND] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND);
+    m_Textures[IMAGE_BACKGROUND_START_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_START_MENU);
+    m_Textures[IMAGE_BACKGROUND_MAIN_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_MAIN_MENU);
     m_Textures[IMAGE_MAIN_MENU_BUTTON_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON_1);
     m_Textures[IMAGE_MAIN_MENU_BUTTON_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MAIN_MENU_BUTTON_2);
     m_Textures[IMAGE_NEW_GAME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_1);
     m_Textures[IMAGE_NEW_GAME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NEW_GAME_2);
-    m_Textures[IMAGE_PAUSE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_PAUSE_MENU);
-    m_Textures[IMAGE_POST_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_POST_MENU);
+    m_Textures[IMAGE_BACKGROUND_PAUSE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_PAUSE_MENU);
+    m_Textures[IMAGE_BACKGROUND_POST_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_POST_MENU);
+    m_Textures[IMAGE_BACKGROUND_PRE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_PRE_MENU);
     m_Textures[IMAGE_RESUME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_1);
     m_Textures[IMAGE_RESUME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_RESUME_2);
     m_Textures[IMAGE_START_1] = TEXTURE_MANAGER->loadTexture(IMAGE_START_1);
@@ -279,10 +280,6 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
     m_iWidth = iWidth;
     m_iHeight = iHeight;
 
-    // debug
-    debugWidth =  iWidth * 0.5f;
-    debugHeight =  iHeight * 0.5f;
-
     // Update UI Projection Matrix Uniform for UI Shader
     mat4 m4UIProjection = ortho(0.0f, static_cast<GLfloat>(m_iWidth), 0.0f, static_cast<GLfloat>(m_iHeight), 0.0f, 1.0f);
     m_pShdrMngr->setUnifromMatrix4x4(ShaderManager::eShaderType::UI_SHDR, "UIProjection", &m4UIProjection);
@@ -293,11 +290,6 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
         m_vComponentCoordinates[component].first = (m_iWidth * m_vComponentScaling[component].first) + m_vComponentTranslating[component].first;
         m_vComponentCoordinates[component].second = (m_iHeight * m_vComponentScaling[component].second) + m_vComponentTranslating[component].second;
     }
-}
-
-void UserInterface::displayDebug(const char* message)
-{
-    debugMessage = message;
 }
 
 void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)

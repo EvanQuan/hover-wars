@@ -50,11 +50,11 @@
     <ClInclude Include="Headers\EntityHeaders\InteractableEntity.h" />
     <ClInclude Include="Headers\EntityHeaders\PointLight.h" />
     <ClInclude Include="Headers\EntityHeaders\Rocket.h" />
-    <ClInclude Include="Headers\EntityHeaders\Spikes.h" />
     <ClInclude Include="Headers\EntityHeaders\SpotLight.h" />
     <ClInclude Include="Headers\EntityHeaders\StaticEntity.h" />
     <ClInclude Include="Headers\EntityManager.h" />
     <ClInclude Include="Headers\Enums\eAbility.h" />
+    <ClInclude Include="Headers\Enums\eAIType.h" />
     <ClInclude Include="Headers\Enums\eBoundingBoxTypes.h" />
     <ClInclude Include="Headers\Enums\eCooldown.h" />
     <ClInclude Include="Headers\Enums\eEntityTypes.h" />
@@ -70,6 +70,7 @@
     <ClInclude Include="Headers\Menus\ControlsMenu.h" />
     <ClInclude Include="Headers\Menus\EndMenu.h" />
     <ClInclude Include="Headers\Menus\GameMenu.h" />
+    <ClInclude Include="Headers\Menus\LoadingMenu.h" />
     <ClInclude Include="Headers\Menus\MainMenu.h" />
     <ClInclude Include="Headers\Menus\Menu.h" />
     <ClInclude Include="Headers\Menus\PauseMenu.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\UserInterface\ControlsInterface.h" />
     <ClInclude Include="Headers\UserInterface\GameInterface.h" />
+    <ClInclude Include="Headers\UserInterface\LoadingInterface.h" />
     <ClInclude Include="Headers\UserInterface\MainInterface.h" />
     <ClInclude Include="Headers\UserInterface\MenuInterface.h" />
     <ClInclude Include="Headers\UserInterface\PauseInterface.h" />
@@ -122,7 +124,6 @@
     <ClCompile Include="Source\Entities\InteractableEntity.cpp" />
     <ClCompile Include="Source\Entities\PointLight.cpp" />
     <ClCompile Include="Source\Entities\Rocket.cpp" />
-    <ClCompile Include="Source\Entities\Spikes.cpp" />
     <ClCompile Include="Source\Entities\SpotLight.cpp" />
     <ClCompile Include="Source\Entities\StaticEntity.cpp" />
     <ClCompile Include="Source\EntityComponents\AIComponent.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="Source\Menus\ControlsMenu.cpp" />
     <ClCompile Include="Source\Menus\EndMenu.cpp" />
     <ClCompile Include="Source\Menus\GameMenu.cpp" />
+    <ClCompile Include="Source\Menus\LoadingMenu.cpp" />
     <ClCompile Include="Source\Menus\MainMenu.cpp" />
     <ClCompile Include="Source\Menus\Menu.cpp" />
     <ClCompile Include="Source\Menus\PauseMenu.cpp" />
@@ -170,6 +172,7 @@
     <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\UserInterface\ControlsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\LoadingInterface.cpp" />
     <ClCompile Include="Source\UserInterface\MainInterface.cpp" />
     <ClCompile Include="Source\UserInterface\MenuInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PauseInterface.cpp" />

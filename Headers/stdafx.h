@@ -36,6 +36,7 @@
 
 // Game Enums
 #include "Enums/eAbility.h"
+#include "Enums/eAIType.h"
 #include "Enums/ePlayer.h"
 #include "Enums/ePowerup.h"
 #include "Enums/eFixedCommand.h"

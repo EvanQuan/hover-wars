@@ -29,7 +29,6 @@ FlameTrail::~FlameTrail()
 
 void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned int iVictimMsg)
 {
-    cout << "FLAME COLLISION DETECTED" << endl;
     // copy and pasted from rocket, may be differenet
     if (m_iOwnerID != pOther->getID())
     {
@@ -42,7 +41,9 @@ void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
 {
     // TODO add flame hit sound here, as at will only occur if a hovercraft
     // collides with this
-    cout << "FLAME HIT PLAYER " << hit->getID() << endl;
+    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
+
+    //cout << "FLAME HIT PLAYER " << hit->getID() << endl;
 }
 
 /****************************************************************\
@@ -80,13 +81,15 @@ void FlameTrail::update(float fTimeInSeconds)
         // Handle Certain Thresholds of the Duration
         if (pIter->second <= 0.0f)      // Delete the Physics Actor
         {
-            m_pPhysicsComponent->removeInstance(pIter->first);
+            m_pPhysicsComponent->flagForRemoval(pIter->first);
             pIter = m_pReferenceMap.erase(pIter);
         }
         else
             ++pIter;
     }
 }
+
+
 
 /****************************************************************\
  * Billboard Functions                                          *
@@ -105,6 +108,5 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
     m_pReferenceMap.insert(make_pair(sHashKey, m_sSpriteSheetInfo.fDuration));
 
     // Grab Pointer to HashKey to give to Physics Component as Name.
-    unordered_map<string, float>::iterator pIter = m_pReferenceMap.find(sHashKey);
-    m_pPhysicsComponent->initializeFlame(pIter->first.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
+    m_pPhysicsComponent->initializeFlame(sHashKey.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
 }

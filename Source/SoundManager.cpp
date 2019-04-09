@@ -514,6 +514,7 @@ void SoundManager::playEvent(const string& sEventName) {
         testAttrubute.position = FMOD_VECTOR{ 0.0f, 0.0f, 0.0f };
         tFoundIt->second->set3DAttributes(&testAttrubute);
     }
+    tFoundIt->second->setPaused(false);
     tFoundIt->second->start();
     // cout << "event: " << tFoundIt->first << " played " << tFoundIt->second << endl;
 }
@@ -619,17 +620,6 @@ void SoundManager::setSpeedParameter(float speedPercent) {
     updateChannels();
 }
 
-void SoundManager::togglePaused() {
-    // Toggle pause status
-    isPaused = !isPaused;
-
-    if (isPaused) {
-        setPauseMenu();
-    } else {
-        setResumeGame();
-    }
-}
-
 void SoundManager::setPauseMenu() {
     // Pause all the playing events
     for (auto it : mEvents)
@@ -637,30 +627,25 @@ void SoundManager::setPauseMenu() {
         it.second->setPaused(true);
     }
     // play pause music
-    auto tFoundIt = mEvents.find(getPath(MUSIC_PAUSE));
+    auto tFoundIt = mEvents.find(getPath(SOUND_MUSIC_PAUSE));
     tFoundIt->second->setPaused(false);
-    play(MUSIC_PAUSE);
+    play(SOUND_MUSIC_PAUSE);
+    updateChannels();
+}
+
+void SoundManager::setResumeCountdown()
+{
+    stopEvent(SOUND_MUSIC_PAUSE);
+    play(SOUND_UI_RESUME_COUNTDOWN);
     updateChannels();
 }
 
 void SoundManager::setResumeGame() {
-
-    stopEvent(MUSIC_PAUSE);
-    play(SOUND_UI_COUNTDOWN_TICK);
-
-    cout << "start of countdown" << endl;
-    // Wait until tick is over
-    // while (isEventPlaying(SOUND_UI_COUNTDOWN_TICK));
-    // FuncUtils::sleep(3);
-
-    cout << "end of countdown" << endl;
-
-    // Unpause event and end pause music
+    // Unpause all in game sound events that were previously paused and end
+    // pause music
     for (auto it : mEvents)
     {
-        bool eventPaused;
-        it.second->getPaused(&eventPaused);
-        it.second->setPaused(!eventPaused);
+        it.second->setPaused(false);
     }
     updateChannels();
 }
@@ -669,8 +654,7 @@ void SoundManager::setEndGame()
 {
     stopAllEvents();
     play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
-    play(MUSIC_INGAME);
-    updateChannels();
+    play(SOUND_MUSIC_INGAME);
 }
 
 // @Deprecated
@@ -694,8 +678,7 @@ void SoundManager::downPosition() {
 }
 
 void SoundManager::start() {
-    play(MUSIC_INGAME);
-    play(SOUND_HOVERCAR_ENGINE);    // should not be here?
+    play(SOUND_MUSIC_INGAME);
 }
 
 // Call every frame (or more often)

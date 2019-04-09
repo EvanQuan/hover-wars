@@ -26,9 +26,12 @@ layout (std140, binding = 2) uniform Lights
 	int numSpotLights;
 	bool usingDirectionalLight;
 	DirLight pDirectionalLight;
-	PointLight pPointLights[12];
-	SpotLight pSpotLights[12];
+	PointLight pPointLights[16];
+	SpotLight pSpotLights[16];
 };
+
+// The Threshold to determine if the fragment is sufficiently bright enough to bloom
+const vec3 THRESHOLD = vec3(0.2126, 0.7152, 0.0722);
 
 // Shadow Map Uniforms
 uniform sampler2D DirectionalLightShadow;

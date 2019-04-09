@@ -22,12 +22,14 @@ public:
         PARTICLE_SHDR,
         WORLD_SHDR,
         BILLBOARD_SHDR,
-        BOID_SHDR,
+        MAP_SHDR,
         DEBUG_SHDR,
         SHADOW_SHDR,
         UI_SHDR,
         SKYBOX_SHDR,
         SPLIT_SCREEN_SHDR,
+        BLUR_SHDR,
+        TRON_SHDR,
         MAX_SHDRS
     };
     const static unordered_map<string, eShaderType> pShaderTypeMap;

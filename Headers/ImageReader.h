@@ -24,7 +24,7 @@
 // Prototype for a function that loads an image with a given file name into
 // an instance of the above structure. Returns true if successful.
 
-bool InitializeTexture(Texture *texture, const std::string &imageFileName);
+bool InitializeTexture(Texture *texture, const std::string &imageFileName, bool bGammaCorrection);
 
 // --------------------------------------------------------------------------
 #endif

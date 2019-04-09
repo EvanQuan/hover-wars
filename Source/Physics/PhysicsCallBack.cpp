@@ -29,6 +29,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
 
     // Generate Pointer to Entity Manager
     EntityManager* m_pEntMngr = ENTITY_MANAGER;
+    int iColliderID, iCollidedID;
 
     // std::cout << "Collision detected" << std::endl;
     for (PxU32 i = 0; i < nbPairs; i++)
@@ -59,8 +60,14 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 // The ground has its own special ID since its not treated the same
                 // as the other entities
                 // @NOTE this crashes when sCollider == ""
-                int iColliderID = (HitterResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(HitterResults.front()));
-                int iCollidedID = (VictimResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(VictimResults.front()));
+                try {
+                    iColliderID = (HitterResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(HitterResults.front()));
+                    iCollidedID = (VictimResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(VictimResults.front()));
+                }
+                catch (invalid_argument e)
+                {
+                    continue;
+                }
                 unsigned int iColliderMsg = 0, iCollidedMsg = 0;
 
                 // Simply play sound when collided with ground
@@ -68,6 +75,7 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 {
                     // Do not play ground collision sounds
                     // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
+                    // cout << iColliderID << " collided with " << iCollidedID << endl;
                 }
                 else    // Tell the Entity Manager to Dispatch the  Collision between the two colliding entities
                 {

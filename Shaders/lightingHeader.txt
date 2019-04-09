@@ -1,3 +1,7 @@
+
+layout (location = 0) out vec4 vFragColor;
+layout (location = 1) out vec4 vBrightColor;
+
 struct Material {
 	sampler2D vDiffuse;
 	sampler2D vSpecular;
@@ -22,7 +26,7 @@ in vec2 TexCoords;
 float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fLightDotNormal )
 {
 	// Shadow Bias to counter Shadow Acne
-	float fBias = 0.0005;
+	float fBias = 0.0025;
 	int iRange = 3;
 	float fDivisor = 49.0;
 	
@@ -57,7 +61,7 @@ float ShadowCalculation( vec4 vFragPosLightSpace, sampler2D sShadowMap, float fL
 }
 
 // Calculates information about a specified directional light.
-vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFragPos )
+vec3 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFragPos )
 {	
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
 	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
@@ -79,20 +83,20 @@ vec4 CalcDirLight( DirLight light, vec3 vNormal, vec3 vToCamera, vec4 vShadowFra
 	float shadowValue = 1.0 - ShadowCalculation( vShadowFragPos, DirectionalLightShadow, dot(vToLight, vNormal) );
 
 	// Apply Diffuse Value
-	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * vec4(shadowValue * lambertian * light.vDiffuse, 1.0);
+	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (shadowValue * lambertian * light.vDiffuse);
 	
 	// Apply Specular value
-	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(shadowValue * specular * light.vSpecular, 1.0);
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (shadowValue * specular * light.vSpecular);
 
 	// Apply Ambient Value
-	colorLinear += texture(sMaterial.vDiffuse, TexCoords ) * vec4(light.vAmbient, 1.0);
+	colorLinear += texture(sMaterial.vDiffuse, TexCoords ).rgb * light.vAmbient;
 	
 	return colorLinear;
 }
 
 // Calculate information about a given point light with the current Frag Position
 //	Using a Blinn-Phong calculation adapted from goo.gl/vzRHX2 (Wikipedia)
-vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+vec3 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
 {
 	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
 	lightCameraSpace /= lightCameraSpace.w;
@@ -113,15 +117,17 @@ vec4 CalcPointLight( PointLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCame
 	}
 
 	// Apply Diffuse Value
-	vec4 colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * vec4(lambertian * light.vColor * light.fLightPower / distance, 1.0);
+	vec3 colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor * light.fLightPower / distance);
 	
 	// Apply Specular value
-	colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(specular * light.vColor * light.fLightPower / distance, 1.0);
+	colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor * light.fLightPower / distance);
+	
+	//colorLinear *= 1.0 / (distance * distance);
 
 	return colorLinear;
 }
 
-vec4 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
+vec3 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera )
 {
 	// Convert the Camera to view space
 	vec4 lightCameraSpace = modelview * vec4(light.vPosition, 1.0);
@@ -136,7 +142,7 @@ vec4 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera
 	vec3 vLightDirection = normalize( normalMatrix * light.vDirection );
 	
 	// Return Values
-	vec4 colorLinear = vec4(0.0);
+	vec3 colorLinear = vec3(0.0);
 	
 	// Calculate angle of Light to FragPos and SpotLight direction to determine if fragment lies within spotlight.
 	float fTheta = dot( vLightDirection, -vToLight );
@@ -157,16 +163,33 @@ vec4 CalcSpotLight( SpotLight light, vec3 vNormal, vec3 vFragPos, vec3 vToCamera
 		}
 
 		// Apply Diffuse Value
-		colorLinear = texture( sMaterial.vDiffuse, TexCoords ) * vec4(lambertian * light.vColor, 1.0);
+		colorLinear = texture( sMaterial.vDiffuse, TexCoords ).rgb * (lambertian * light.vColor);
 		
 		// Apply Specular value
-		colorLinear += texture(sMaterial.vSpecular, TexCoords ) * vec4(specular * light.vColor, 1.0);
+		colorLinear += texture(sMaterial.vSpecular, TexCoords ).rgb * (specular * light.vColor);
 		
 		// Apply Intensity modifier
 		colorLinear *= fIntensity;
 	}
 	
 	return colorLinear;
+}
+
+void calcBrightColor( vec4 vFragmentColor )
+{
+	//float fBrightness = dot(vFragmentColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	float fBrightness = (THRESHOLD.r * vFragmentColor.r) + 
+						(THRESHOLD.g * vFragmentColor.g) + 
+						(THRESHOLD.b * vFragmentColor.b);
+	
+	if( fBrightness > 0.5 )
+		vBrightColor = vec4(vFragmentColor.rgb, 1.0);
+	else
+	{
+		vBrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+	
+		//vBrightColor = vec4( vec3(fBrightness), 1.0);
+	}
 }
 
 

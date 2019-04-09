@@ -6,6 +6,7 @@
 #include "UserInterface/PregameInterface.h"
 #include "UserInterface/RulesInterface.h"
 #include "UserInterface/ControlsInterface.h"
+#include "UserInterface/MainInterface.h"
 #include "CommandHandler.h"
 
 // Singleton instance
@@ -45,18 +46,12 @@ void MainMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->getWidth(),
-                                                                          m_pGameManager->getHeight()));
         nextMenu(PregameMenu::getInstance());
         break;
     case COMMAND_PROMPT_SELECT:
-        m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->getWidth(),
-                                                                        m_pGameManager->getHeight()));
         nextMenu(RulesMenu::getInstance());
         break;
     case COMMAND_PROMPT_SELECT_2:
-        m_pGameManager->setCurrentInterface(ControlsInterface::getInstance(m_pGameManager->getWidth(),
-                                                                           m_pGameManager->getHeight()));
         nextMenu(ControlsMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:
@@ -69,4 +64,10 @@ void MainMenu::select(eFixedCommand command)
 void MainMenu::back()
 {
     nextMenu(StartMenu::getInstance());
+}
+
+void MainMenu::enter()
+{
+    PromptMenu::enter();
+    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }

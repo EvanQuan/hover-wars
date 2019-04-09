@@ -7,6 +7,8 @@
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
 
+#define COUNTDOWN_TICKS 4
+
 // Forward Declaration
 class EntityManager;
 class HovercraftEntity;
@@ -31,7 +33,14 @@ public:
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
+        // @Deprecated
         KILL_MESSAGE_NEW_LEADER,
+    };
+
+    enum eNotification
+    {
+        NOTIFICATION_TIME_MINOR, 
+        NOTIFICATION_TIME_MAJOR, 
     };
 
     static GameInterface* getInstance(int iWidth, int iHeight);
@@ -49,7 +58,10 @@ public:
     This should be called once per frame update.
     
     */
-    void update(float fSecondsSinceLastUpdate);
+    void update(float fFrameDeltaTime);
+    void updateResumeCountdown(float fFrameDeltaTime);
+
+    void startResumeCountdown();
 
     void reinitialize(float gameTime);
 
@@ -59,12 +71,10 @@ public:
 
     void setFocus(eHovercraft hovercraft);
 
-    void displayMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
+    void displayKillMessage(eHovercraft attacker, eHovercraft hit, eKillMessage message);
+    // Send a message to everyone.
+    void displayNotification(eNotification message);
     void displayPowerup(eHovercraft hovercraft, ePowerup powerup);
-
-    // Display debug message
-    // Set message to "" to disable debug message
-    void displayDebug(std::string message);
 
 private:
 
@@ -80,7 +90,21 @@ private:
         COMPONENT_SCORE_CHANGE,
         COMPONENT_MESSAGE,
         COMPONENT_POWERUP,
+        COMPONENT_NOTIFICATION,
+        COMPONENT_COUNTDOWN,
         COMPONENT_COUNT
+    };
+
+    /*
+        Resume count down notifications display in their own location to
+        prevent message or notification overlap.
+    */
+    enum eResumeCountdown
+    {
+        RESUME_3, 
+        RESUME_2, 
+        RESUME_1, 
+        RESUME_GO, 
     };
 
     GameInterface();                                        // Default Constructor
@@ -102,12 +126,17 @@ private:
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
     void renderGameTime();
+    void startMajorTimeWarning();
+    void startMinorTimeWarning();
     
     // Message
     void renderMessages();
 
     // Score
     void renderScores();
+    
+    void renderNotifications();
+    void renderResumeCountdown();
 
     // Cooldowns
     void updateCooldowns();
@@ -121,16 +150,31 @@ private:
     Unit : seconds
     */
     float m_fGameTime;
+    bool m_bHasStartedMajorWarning;
+    bool m_bHasStartedMinorWarning;
 
     /*
     Tracks how long the message has been displayed for
 
     Unit : seconds
     */
-    std::string m_sPowerupMessages[MAX_HOVERCRAFT_COUNT];
-    std::string m_sMessages[MAX_HOVERCRAFT_COUNT];
+    string m_sPowerupMessages[MAX_HOVERCRAFT_COUNT];
+    string m_sMessages[MAX_HOVERCRAFT_COUNT];
     float m_fPowerupMessageTimes[MAX_HOVERCRAFT_COUNT];
     float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
+
+    /*
+        Notifications are singular messages shared amongst all players.
+        Their location is different than messages to prevent meessagee overlap.
+    */
+    string m_sNotification;
+    float m_fNotificationTime;
+
+    // The message for the current countdown tick 
+    string m_sResumeMessage;
+    // The time for the entire resume countdown
+    float m_fResumeTime[COUNTDOWN_TICKS];
+    int m_iCurrentTick;
 
     /*
     Score updates appear temporarily just as messages are

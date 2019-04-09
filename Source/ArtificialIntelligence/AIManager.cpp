@@ -24,8 +24,9 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-void AIManager::reinitialize()
+void AIManager::reinitialize(eAIType aiType)
 {
+    m_eAIType = aiType;
     m_vAIComponents.clear();
     const vector<HovercraftEntity*>* bots = m_pEntityMngr->getBotList();
     for (size_t i = 0, size = bots->size(); i < size; i++)
@@ -42,13 +43,14 @@ void AIManager::reinitialize()
 */
 void AIManager::initializeAIComponent(HovercraftEntity* bot, AIComponent* ai)
 {
-    glm::vec3 botVel = bot->getLinearVelocity();
-    glm::vec3 botPos = bot->getPosition();
-    PxTransform globalTransform = bot->getGlobalTransform();
-    PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
-    glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
-    glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getLinearVelocity();
-    ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
+    // @Note It looks like nothing actually needs to be initialized?
+    // glm::vec3 botVel = bot->getLinearVelocity();
+    // glm::vec3 botPos = bot->getPosition();
+    // PxTransform globalTransform = bot->getGlobalTransform();
+    // PxVec3 vForce = globalTransform.q.rotate(PxVec3(0, 1, 0));
+    // glm::vec3 playerPos = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getPosition();
+    // glm::vec3 playerVel = m_pEntityMngr->getPlayer(eHovercraft::HOVERCRAFT_PLAYER_1)->getLinearVelocity();
+    // ai->initalize(playerPos, playerVel, botPos, botVel, atan2(vForce.x, vForce.z));
 }
 
 /*
@@ -124,8 +126,16 @@ eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPl
         // If there are no other bots, then the only choice is the player
         return nearestPlayer;
     }
-    // Otherwise, choose the closer one
-    return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
+
+    switch (m_eAIType) {
+    case AI_ON_SAME_TEAM:
+        return nearestPlayer;
+    case AI_SOLO:
+        return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
+    }
+
+    // Fallback
+    return nearestPlayer;
 }
 
 /*
@@ -161,8 +171,10 @@ HovercraftEntity* AIManager::getTarget(const eHovercraft &bot,
 
     @param bot      to execute action
     @param action   to execute
+
+    @modifies bot
 */
-void AIManager::executeAction(HovercraftEntity *bot, Action &a)
+void AIManager::executeAction(HovercraftEntity *bot, const Action &a)
 {
     float turnValue = a.turn;
     if (turnValue != 0) {
@@ -176,10 +188,11 @@ void AIManager::executeAction(HovercraftEntity *bot, Action &a)
     if (a.shouldFireRocket) {
         bot->useAbility(eAbility::ABILITY_ROCKET);
     }
+    if (a.shouldActivateSpikes) {
+        bot->useAbility(eAbility::ABILITY_SPIKES);
+    }
     if (a.shouldActivateTrail) {
-        if (bot->getTrailGaugePercent() > 0.5f) {
-            // Nested, so that the bot neither activates or deactivates
-            // with a low fuel gauge to prevent audio spam
+        if (bot->getTrailGaugePercent() > 0.5) {
             bot->useAbility(eAbility::ABILITY_TRAIL_ACTIVATE);
         }
     } else {
@@ -194,7 +207,7 @@ void AIManager::executeAction(HovercraftEntity *bot, Action &a)
     @parm bot   to check if it should move
     @param a    to determine whether the bot should move
 */
-bool AIManager::shouldMove(HovercraftEntity *bot, Action &a)
+bool AIManager::shouldMove(const HovercraftEntity *bot, const Action &a) const
 {
     return bot->isInControl()
         && !(static_cast<int>(a.moveX) == 0 && static_cast<int>(a.moveY) == 0);

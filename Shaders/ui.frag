@@ -10,10 +10,6 @@ uniform sampler2D text;
  */
 uniform bool isImage;
 
-
-// Output Fragment color
-out vec4 color;
-
 // Main: just output the color of the fragment
 void main()
 {
@@ -21,12 +17,14 @@ void main()
     {
         // We do not want to alter the texture colors at each coordinate.
         // since the image already supplies the desired colors.
-        color = texture(text, TexCoords);
+        vFragColor = texture(text, TexCoords);
     }
     else
     {
         // Make all the text color the same as textColor.
-        color = vec4(textColor, texture(text, TexCoords).r);
+        vFragColor = vec4(textColor, texture(text, TexCoords).r);
 		//color = texture(text, TexCoords); // For Debugging
     }
+	
+	vBrightColor = vec4(0.0, 0.0, 0.0, 0.0);
 }

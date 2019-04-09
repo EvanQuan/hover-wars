@@ -76,7 +76,7 @@ void PregameInterface::reinitialize(float gameTime)
 
 void PregameInterface::render()
 {
-    renderImage(IMAGE_BACKGROUND, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderImage(IMAGE_BACKGROUND_PRE_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderOption();
 }
 
