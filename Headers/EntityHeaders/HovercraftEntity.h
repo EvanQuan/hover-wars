@@ -145,6 +145,8 @@ public:
 
     bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
 
+    bool m_bIsDashing() const;
+
     // Should be initialized AFTER the hovercraft has been created when
     // GameStats corresponds entities to hovercrafts.
     // This prevents other classes from constantly needing to ask GameStats

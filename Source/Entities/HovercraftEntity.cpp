@@ -437,7 +437,7 @@ void HovercraftEntity::updateQueuedActions()
 */
 void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
-    if (isInvincible()) {
+    if (isInvincible() || (ability == eAbility::ABILITY_TRAIL_ACTIVATE && m_bIsDashing()) ) {
         return;
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
@@ -1195,6 +1195,11 @@ void HovercraftEntity::setInvincible()
 {
     m_bInvincible = true;
     m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
+}
+
+bool HovercraftEntity::m_bIsDashing() const
+{
+    return m_pPhysicsComponent->isDashing();
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
