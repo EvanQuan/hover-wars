@@ -32,10 +32,18 @@ public:
 
 
 private:
-    float                                               m_fHeight,
-                                                        m_fWidth;
-    SpriteSheetDatabase::sSpriteSheetInfo               m_sSpriteSheetInfo;
-    unordered_map<string/*HashKey*/, float/*Duration*/> m_pReferenceMap;
+    float                                   m_fHeight,
+                                            m_fWidth;
+    SpriteSheetDatabase::sSpriteSheetInfo   m_sSpriteSheetInfo;
+    PhysicsManager*                         m_pPhysXMngr;
+
+    // Physics Data References
+    struct sReferenceBlock
+    {
+        float              fDuration;  // Duration for the Flame Trail left
+        PxRigidDynamic*    pActorRef;  
+    };
+    vector<sReferenceBlock> m_pReferenceMap;
 
     // @Override
     eAbility getAbility() const { return eAbility::ABILITY_TRAIL_ACTIVATE; }

@@ -20,7 +20,7 @@
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
 #define ROCKET_SPEED            100.0f
-#define FLAME_SPACING           0.25f
+#define FLAME_SPACING           1.0f
 
 /*
     Length of the rocket hit box
@@ -1071,8 +1071,7 @@ void HovercraftEntity::shootRocket()
     mat4 m4CurrentTransform;
     vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
-    vVelocity = m4CurrentTransform[2];
-    vVelocity = normalize(vVelocity);
+    vVelocity = normalize(m4CurrentTransform[2]);
     
     // The rocket is at the hovercraft's origin
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
@@ -1106,7 +1105,7 @@ void HovercraftEntity::activateTrail()
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
     {
         m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
-        //m_bTrailActivated = true;
+        m_bTrailActivated = true;
         m_fSecondsSinceLastFlame = 0.0f;
         m_fSecondsSinceTrailDeactivated = 0.0f;
     }

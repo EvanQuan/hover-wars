@@ -12,9 +12,10 @@ FlameTrail::FlameTrail(int iID, int iOwnerID,
                        float fHeight, float fWidth )
     : InteractableEntity( iID, iOwnerID, *vPosition, INTER_FLAME_TRAIL )
 {
-    m_fHeight = fHeight;
-    m_fWidth = fWidth;
-    m_sSpriteSheetInfo = vSpriteInformation[eSpriteEnum::FIRE_SPRITE];
+    m_fHeight           = fHeight;
+    m_fWidth            = fWidth;
+    m_sSpriteSheetInfo  = vSpriteInformation[eSpriteEnum::FIRE_SPRITE];
+    m_pPhysXMngr        = PHYSICS_MANAGER;
 }
 
 // Destructor
@@ -34,6 +35,12 @@ void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsi
     {
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
+    }
+    else if (eEntityType::ENTITY_INTERACTABLE == pOther->getType() &&
+        eInteractType::INTER_ROCKET == static_cast<InteractableEntity*>(pOther)->getInteractableType())
+    {
+        // Tell the rocket to explode.
+        pOther->handleCollision(this, iVictimMsg, iColliderMsg);
     }
 }
 
@@ -62,6 +69,9 @@ void FlameTrail::initialize()
     m_pAnimationComponent = pEntityManager->generateAnimationComponent(m_iID);
     m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &m_sSpriteSheetInfo, m_fHeight, m_fWidth);
 
+    // Generate Physics Actor
+    m_sName = to_string(m_iID) + " " + to_string(m_iOwnerID);
+
     // Generate the Render Component
     m_pRenderComponent = pEntityManager->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
 
@@ -71,21 +81,35 @@ void FlameTrail::initialize()
 
 void FlameTrail::update(float fTimeInSeconds)
 {
+    // Local variables
+    bool bDeletionFlag = false;
+
     // Update the Physics for the flame trail based on current Flame Trail
-    for (unordered_map<string, float>::iterator pIter = m_pReferenceMap.begin();
-        pIter != m_pReferenceMap.end();)
+    for (vector<sReferenceBlock>::iterator pIter = m_pReferenceMap.begin();
+        pIter != m_pReferenceMap.end();
+        ++pIter)
     {
         // Track Duration
-        pIter->second -= fTimeInSeconds;
+        pIter->fDuration -= fTimeInSeconds;
 
         // Handle Certain Thresholds of the Duration
-        if (pIter->second <= 0.0f)      // Delete the Physics Actor
+        if (pIter->fDuration <= 0.0f)      // Delete the Physics Actor
         {
-            m_pPhysicsComponent->flagForRemoval(pIter->first);
-            pIter = m_pReferenceMap.erase(pIter);
+            m_pPhysXMngr->removeRigidDynamicObj(pIter->pActorRef);
+            bDeletionFlag = true;
         }
-        else
-            ++pIter;
+    }
+
+    if (bDeletionFlag)
+    {
+        m_pReferenceMap.erase(
+            remove_if(
+                m_pReferenceMap.begin(),
+                m_pReferenceMap.end(),
+                [](sReferenceBlock const& p) {return p.fDuration <= 0.0f; }
+            ),
+            m_pReferenceMap.end()
+        );
     }
 }
 
@@ -104,9 +128,11 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
      unsigned int iFlameIndex = m_pAnimationComponent->addBillboard(vPosition, vNormal);
 
     // Store the duration locally to manage the Physics Component.
-    string sHashKey = to_string(m_iID) + " " + to_string(iFlameIndex);
-    m_pReferenceMap.insert(make_pair(sHashKey, m_sSpriteSheetInfo.fDuration));
+    sReferenceBlock pNewBlock;
+    pNewBlock.fDuration = m_sSpriteSheetInfo.fDuration;
+    m_pPhysXMngr->createFlameObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f, &pNewBlock.pActorRef);
+    m_pReferenceMap.push_back(pNewBlock);
 
     // Grab Pointer to HashKey to give to Physics Component as Name.
-    m_pPhysicsComponent->initializeFlame(sHashKey.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
+    //m_pPhysicsComponent->initializeFlame(sHashKey.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f);
 }
