@@ -26,7 +26,7 @@ const vec2 seekPointsAI[] = {
     If the target enters the distance threshold of the bot, then the bot will
     be able to activate spikes.
 */
-#define SPIKES_DISTANCE_THRESHOLD 5
+#define SPIKES_DISTANCE_THRESHOLD 10
 /*
     If the target is within the distance threshold, there is a percent chance
     the bot will activate spikes.

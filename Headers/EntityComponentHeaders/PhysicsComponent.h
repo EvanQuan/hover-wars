@@ -60,6 +60,8 @@ public:
     void setMaxSpeed(float maxSpeed);
 
     void setGlobalPos(PxTransform trans);
+
+    bool isDashing() const { return m_bIsDashing; }
 private:
     bool isInAir;
     float lastDeltaTime = 0;
@@ -76,7 +78,7 @@ private:
     /*
     If true, the max speed is the dash max speed, otherwise the normal max speed
     */
-    bool isDashing;
+    bool m_bIsDashing;
     void releaseAllControls();
     physx::PxVehicleNoDrive *gVehicleNoDrive;
     physx::PxRigidDynamic *body;

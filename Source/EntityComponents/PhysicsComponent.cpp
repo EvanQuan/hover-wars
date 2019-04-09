@@ -69,7 +69,7 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
 
-    isDashing = false;
+    m_bIsDashing = false;
     m_fMaxDashSpeed = MAX_DASH_SPEED;
 }
 
@@ -141,7 +141,7 @@ void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
     setMaxSpeedToDash();
     m_fSecondsSinceLastDash = 0.0f;
-    isDashing = true;
+    m_bIsDashing = true;
 
     push(x, y, DASH_FORCE);
 }
@@ -196,7 +196,7 @@ void PhysicsComponent::update(float fTimeInSeconds)
     {
         m_fSecondsSinceLastDash += fTimeInSeconds;
 
-        if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
+        if (m_bIsDashing && (m_fSecondsSinceLastDash > DASH_TIME))
         {
             setMaxSpeedToNormal();
         }
@@ -357,7 +357,7 @@ void PhysicsComponent::getDirectionVector(vec3* vReturnVector)
 void PhysicsComponent::setMaxSpeed(float maxSpeed)
 {
     m_fMaxSpeed = maxSpeed;
-    if (!isDashing)
+    if (!m_bIsDashing)
     {
         // Update normal speed if not dashing
         setMaxSpeedToNormal();
