@@ -22,7 +22,7 @@ public:
     void getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCorner) const;
 
     // Function to Initialize the Light.
-    void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection, 
+    void initialize(float fPhi, float fSoftPhi, bool bStatic, const vec3* vColor, const vec3* vDirection,
                         const string& sMeshLocation, const ObjectInfo* pObjectProperties, float m_fMeshScale = 1.0f);
 
     const LightingComponent* getLightingComponent() const { return m_pLightingComponent; }
@@ -38,4 +38,3 @@ private:
     RenderComponent* m_pRenderComponent;
     LightingComponent* m_pLightingComponent;
 };
-

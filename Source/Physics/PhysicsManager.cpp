@@ -255,7 +255,7 @@ void PhysicsManager::initPhysics(bool interactive)
     
 #ifdef _DEBUG
     gPvd = PxCreatePvd(*gFoundation);
-    transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
+    PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
     gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
     gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 #else
@@ -387,7 +387,10 @@ void PhysicsManager::cleanupPhysics()
         gPvd->disconnect();
         gPvd->release();
         transport->release();
+
+        PxCloseExtensions();
 #endif
+        
         gFoundation->release();
 
 
@@ -590,6 +593,13 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
 
     // Set up Physics Body
     *pReturnBody = gPhysics->createRigidDynamic(pxLocalTransform);
+    (*pReturnBody)->setMass(0.01f);
+    (*pReturnBody)->setRigidDynamicLockFlags(   PxRigidDynamicLockFlag::eLOCK_ANGULAR_X |
+                                                PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y |
+                                                PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z |
+                                                PxRigidDynamicLockFlag::eLOCK_LINEAR_X |
+                                                PxRigidDynamicLockFlag::eLOCK_LINEAR_Y |
+                                                PxRigidDynamicLockFlag::eLOCK_LINEAR_Z);
     (*pReturnBody)->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
     (*pReturnBody)->attachShape(*pShape);
     (*pReturnBody)->setName(cName);

@@ -21,7 +21,8 @@ Angular momementum.
 
 The greater this value, the faster the maximum turning rate.
 */
-#define ANGULAR_MOMENTUM 5.0f // 3.0f
+#define ANGULAR_MOMENTUM_MULTIPLIER 2.0f // 5.0f
+#define ANGULAR_MOMENTUM_EXPONENT 2.0f // 5.0f
 /*
 This determines the amount of force applied to the car when movement is intiated.
 The greater the force, the faster it will accelerate.
@@ -68,7 +69,7 @@ PhysicsComponent::PhysicsComponent(int iEntityID, int iComponentID)
     m_pPhysicsManager = PHYSICS_MANAGER;    // Grab reference to Physics Manager
     m_pTransformationMatrix = mat4(1.0f);
 
-    isDashing = false;
+    m_bIsDashing = false;
     m_fMaxDashSpeed = MAX_DASH_SPEED;
 }
 
@@ -140,7 +141,7 @@ void PhysicsComponent::dash(float x, float y) {
     // Increase the max speed so that dashing can go faster than normal movement
     setMaxSpeedToDash();
     m_fSecondsSinceLastDash = 0.0f;
-    isDashing = true;
+    m_bIsDashing = true;
 
     push(x, y, DASH_FORCE);
 }
@@ -160,10 +161,13 @@ void PhysicsComponent::push(float x, float y, float force)
     setSteerAngle(angle);
 }
 void PhysicsComponent::rotatePlayer(float x) {
-    // if (!isInAir) {
-    // TODO Find out why this is a problem? Initially the player is in the air and can't turn?
-        gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, -x * ANGULAR_MOMENTUM, 0));
-    // }
+    // Small joystick movements result in small turning values to make aiming easier.
+    // Large joystick movements result in large turning values to make drastic turns more responsive.
+    // By making the growth exponential instad of linear, this further helps both types of joystick movement.
+    float angularMomentum = (x > 0 ? -1 : 1) * std::pow(x * ANGULAR_MOMENTUM_MULTIPLIER, ANGULAR_MOMENTUM_EXPONENT);
+    // float angularMomentum = -x * 4;
+    // cout << "angularMomentum: " << angularMomentum << endl;
+    gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, angularMomentum, 0));
 }
 // Virtual Destructor, clean up any memory necessary here.
 PhysicsComponent::~PhysicsComponent()
@@ -192,7 +196,7 @@ void PhysicsComponent::update(float fTimeInSeconds)
     {
         m_fSecondsSinceLastDash += fTimeInSeconds;
 
-        if (isDashing && (m_fSecondsSinceLastDash > DASH_TIME))
+        if (m_bIsDashing && (m_fSecondsSinceLastDash > DASH_TIME))
         {
             setMaxSpeedToNormal();
         }
@@ -264,19 +268,6 @@ void PhysicsComponent::initializeRocket(const char* sName,
                                            &(pIter->second));
 
     // Ensure the rocket was created properly.
-    assert(nullptr != pIter->second);
-}
-
-// Initializes a new Flame Object in the Physics Manager and stores it in the component to manage locally.
-void PhysicsComponent::initializeFlame(const char* sName, const vec3* vPosition, float fHeight, float fRadius)
-{
-    // Generate the Flame in the Physics Manager
-    PxRigidDynamic* pNewBody = nullptr;
-    m_pDynamicObjects.insert(make_pair((sName), pNewBody));
-    unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.find(sName);
-    m_pPhysicsManager->createFlameObject(pIter->first.c_str(), vPosition, fHeight, fRadius, &(pIter->second));
-
-    // Store Flame internally for management.
     assert(nullptr != pIter->second);
 }
 
@@ -366,7 +357,7 @@ void PhysicsComponent::getDirectionVector(vec3* vReturnVector)
 void PhysicsComponent::setMaxSpeed(float maxSpeed)
 {
     m_fMaxSpeed = maxSpeed;
-    if (!isDashing)
+    if (!m_bIsDashing)
     {
         // Update normal speed if not dashing
         setMaxSpeedToNormal();

@@ -200,7 +200,7 @@ void AnimationComponent::animateToNextFrame()
  * Billboard/Sprite Functionality                                *
 \*****************************************************************/
 
-unsigned int AnimationComponent::addBillboard(const vec3* vPosition, const vec3* vNormal)
+unsigned int AnimationComponent::addBillboard(const vec3* vPosition, const vec3* vNormal, const vec3* vColor)
 {
     // Local Variables
     vec2 vUVRandStart = vec2(0.0f);
@@ -211,7 +211,7 @@ unsigned int AnimationComponent::addBillboard(const vec3* vPosition, const vec3*
     vUVRandEnd = vUVRandStart + (m_vSpriteHxW - m_vSpriteHxWBorder);    // Calculate the End UV Coordinates of the random sprite
     vUVRandStart += m_vSpriteHxWBorder;                                 // Calculate the Beginning UV coordinates of the random sprite
 
-    return m_pMesh->addBillboard(vPosition, vNormal, &vUVRandStart, &vUVRandEnd, m_fBillboardHeight, m_fBillboardWidth, m_fDuration);
+    return m_pMesh->addBillboard(vPosition, vNormal, vColor, &vUVRandStart, &vUVRandEnd, m_fBillboardHeight, m_fBillboardWidth, m_fDuration);
 }
 
 void AnimationComponent::initializeComponentAsBillboard( Mesh* pMesh, const sSpriteSheetInfo* pSpriteInfo, float fBillboardHeight, float fBillboardWidth)

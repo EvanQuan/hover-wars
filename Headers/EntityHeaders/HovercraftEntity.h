@@ -56,6 +56,7 @@ public:
     void initialize(const string& sFileName,
         const ObjectInfo* pObjectProperties,
         const string& sShaderType,
+        const vec3* vColor,
         float fScale);
 
     void reinitialize();
@@ -144,6 +145,8 @@ public:
 
     bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
 
+    bool m_bIsDashing() const;
+
     // Should be initialized AFTER the hovercraft has been created when
     // GameStats corresponds entities to hovercrafts.
     // This prevents other classes from constantly needing to ask GameStats
@@ -208,6 +211,7 @@ private:
     void updateCooldowns(float fTimeInSeconds);
     void updateSpatialMap(vec3 &vNewPosition);
     void updatePhysicsComponent();
+    void resetIfNotHorizontal();
     void animateSpikes();
 
     // Abilities

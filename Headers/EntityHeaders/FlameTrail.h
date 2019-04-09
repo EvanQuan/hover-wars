@@ -19,6 +19,7 @@ class FlameTrail
 public:
     FlameTrail(int iID, int iOwnerID,
                const vec3* vPosition,
+               const vec3* vColor,
                float fHeight, float fWidth);
     virtual ~FlameTrail();
 
@@ -32,10 +33,19 @@ public:
 
 
 private:
-    float                                               m_fHeight,
-                                                        m_fWidth;
-    SpriteSheetDatabase::sSpriteSheetInfo               m_sSpriteSheetInfo;
-    unordered_map<string/*HashKey*/, float/*Duration*/> m_pReferenceMap;
+    float                                   m_fHeight,
+                                            m_fWidth;
+    SpriteSheetDatabase::sSpriteSheetInfo   m_sSpriteSheetInfo;
+    PhysicsManager*                         m_pPhysXMngr;
+    vec3                                    m_vColor;
+
+    // Physics Data References
+    struct sReferenceBlock
+    {
+        float              fDuration;  // Duration for the Flame Trail left
+        PxRigidDynamic*    pActorRef;  
+    };
+    vector<sReferenceBlock> m_pReferenceMap;
 
     // @Override
     eAbility getAbility() const { return eAbility::ABILITY_TRAIL_ACTIVATE; }

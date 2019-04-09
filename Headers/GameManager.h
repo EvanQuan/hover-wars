@@ -46,7 +46,7 @@ public:
 
     eHovercraft getKeyboardHovercraft() const { return m_eKeyboardHovercraft; }
 
-    bool isPaused() const { return m_bInGame; }
+    bool isPaused() const { return m_bPaused; }
     void setPaused(bool paused);
 
     void addInterface(UserInterface* ui);

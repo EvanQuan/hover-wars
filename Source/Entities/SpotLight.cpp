@@ -8,10 +8,10 @@ const int LIGHT_WIDTH = LIGHT_HEIGHT;
 const int LIGHT_DEPTH = LIGHT_HEIGHT;
 
 // Constructor
-SpotLight::SpotLight(int iID, const vec3* vPosition) 
+SpotLight::SpotLight(int iID, const vec3* vPosition)
     : Entity( iID, *vPosition, ENTITY_SPOT_LIGHT )
 {
-    
+
 }
 
 // Destructor

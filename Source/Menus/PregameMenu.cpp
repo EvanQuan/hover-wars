@@ -49,13 +49,12 @@ PregameMenu::PregameMenu() : PromptMenu(
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
 #ifdef NDEBUG
-    m_iBotCount = MAX_BOT_COUNT;
-    m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
+    m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount(),
                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
+    m_iBotCount = m_iPlayerCount;
 #else
     m_iBotCount = 0;
     m_iPlayerCount = 2;
-
 #endif // NDEBUG
 
     m_eAIType = AI_ON_SAME_TEAM;
@@ -103,32 +102,22 @@ void PregameMenu::enter()
 
 void PregameMenu::moveCursor(eFixedCommand direction)
 {
-    int maxPlayerCount;
     PromptMenu::moveCursor(direction);
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
-            // Max player count is calculated every player count change as
-            // joysticks may be connected or disconnected mid menu. This allows
-            // us to not have to restart the game if this happens.
-#ifdef _DEBUG
-            maxPlayerCount = MAX_PLAYER_COUNT;
-#else
-            maxPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
-                                              MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
-#endif // _DEBUG
 
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
                 m_iPlayerCount = FuncUtils::subtractModulo(m_iPlayerCount, 1,
-                                                           MIN_PLAYER_COUNT, maxPlayerCount);
+                                                           MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iPlayerCount = FuncUtils::addModulo(m_iPlayerCount, 1,
-                                                      MIN_PLAYER_COUNT, maxPlayerCount);
+                                                      MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;

@@ -72,7 +72,6 @@ private:
     // extra stuff to delete
     std::vector<physx::PxTriangleMesh*> triangleMeshes;
     std::vector<physx::PxShape*> shapes;
-    PxPvdTransport* transport;
 
     PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
