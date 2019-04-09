@@ -4,6 +4,14 @@
 #include "SoundManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 
+/***********\
+ * DEFINES *
+\***********/
+#define ANGLE_FROM_NORMAL   360.0f
+#define PARTICLE_DURATION   3.0f
+#define NUM_PARTICLES       100
+#define EXPLOSION_RADIUS    3.0f
+
 // Default Constructor
 Rocket::Rocket(int iID, int iOwnerID)
     : InteractableEntity( iID, iOwnerID, vec3(0.0), INTER_ROCKET )
@@ -78,7 +86,10 @@ void Rocket::handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity
 void Rocket::removeFromScene(unsigned int iVictimMsg)
 {
     string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
+    mat4 m4FinalTransform;
     m_pMesh->removeInstance(sHashKey);
+    m_pPhysicsComponent->getTransformMatrix(sHashKey, &m4FinalTransform);
+    m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], ANGLE_FROM_NORMAL, PARTICLE_DURATION, NUM_PARTICLES, true, EXPLOSION_RADIUS);
     m_pPhysicsComponent->flagForRemoval(sHashKey);
     m_pReferenceList.erase(remove(m_pReferenceList.begin(),
                                   m_pReferenceList.end(),

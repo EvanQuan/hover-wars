@@ -2,12 +2,13 @@
 #include <glm/gtc/random.hpp>
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "MeshManager.h"
 
 /*************\
  * Constants *
 \*************/
 const vec3 GRAVITY = vec3(0.0f, -9.81f, 0.0f); 
-const vec4 COLOR = vec4(1.f, 0.f, 0.f, 1.0f);
+const vec4 COLOR = vec4(2.26f, 0.88f, 0.34f, 1.0f);
 
 // Default Constructor
 Emitter::Emitter(const vec3* vPosition)
@@ -132,7 +133,7 @@ void Emitter::draw()
 
     m_pDiffuseTexture->bindTexture(ShaderManager::eShaderType::PARTICLE_SHDR, "sMaterial.vDiffuse");
 
-    glPointSize(10.f);
+    glPointSize(5.f);
     glDrawArrays(GL_POINTS, 0, m_pPositions.size());
     glPointSize(1.f);
 
