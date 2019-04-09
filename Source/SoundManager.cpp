@@ -695,7 +695,7 @@ void SoundManager::downPosition() {
 
 void SoundManager::start() {
     play(MUSIC_INGAME);
-    play(SOUND_HOVERCAR_ENGINE);
+    play(SOUND_HOVERCAR_ENGINE);    // should not be here?
 }
 
 // Call every frame (or more often)

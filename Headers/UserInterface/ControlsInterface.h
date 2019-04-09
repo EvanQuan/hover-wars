@@ -23,11 +23,7 @@ private:
     enum eUIComponent
     {
         BACKGROUND = 0,
-        TITLE,
-        INSERT_COIN
     };
 
     static ControlsInterface* m_pInstance;
-
-    void renderOption();
 };
