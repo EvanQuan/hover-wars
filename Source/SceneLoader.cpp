@@ -213,10 +213,10 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber)
+vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber, const vec3* vColor)
 {
     getNextSpawnPoint(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition);
-    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
+    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, vColor, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
 
     // Return starting position
     return m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition;
@@ -225,10 +225,10 @@ vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber)
 // Generates a Bot Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-vec3 SceneLoader::createBot()
+vec3 SceneLoader::createBot(const vec3* vColor)
 {
     getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
-    m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
+    m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, vColor, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
 
     // Return starting position
     return HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition;

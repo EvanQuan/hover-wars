@@ -594,6 +594,7 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
 void HovercraftEntity::initialize(const string& sFileName,
                                   const ObjectInfo* pObjectProperties,
                                   const string& sShaderType,
+                                  const vec3* vColor,
                                   float fScale)
 {
     // Load Mesh and Rendering Component
@@ -624,7 +625,7 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, vColor, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh

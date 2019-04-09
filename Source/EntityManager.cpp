@@ -498,14 +498,14 @@ void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, cons
 Generate a Player Entity at a starting position with a given Material, scale,
 mesh location and shader type.
 */
-void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
+void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, const vec3* vColor, float fScale, const string& sShaderType)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize Player Entity.
     unique_ptr<HovercraftEntity> pNewPlayer = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale);
+    pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, vColor, fScale);
 
     // Store Player Entity In Player Entity List as well as Master Entity List.
     m_pPlayerEntityList.push_back(pNewPlayer.get());
@@ -517,14 +517,14 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
 Generate a Bot Entity at a starting position with a given Material, scale,
 mesh location and shader type.
 */
-void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType)
+void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, const vec3* vColor, float fScale, const string& sShaderType)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize a new Bot Entity
     unique_ptr<HovercraftEntity> pNewBot = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, fScale);
+    pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, vColor, fScale);
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List
     m_pBotEntityList.push_back(pNewBot.get());
@@ -533,13 +533,13 @@ void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const
 }
 
 // Generates and Returns an Interactable Entity with a specified Position.
-FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth)
+FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, const vec3* vColor, int iOwnerID, float fFlameHeight, float fFlameWidth)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition, fFlameHeight, fFlameWidth);
+    unique_ptr<FlameTrail> pNewEntity = make_unique<FlameTrail>(iNewEntityID, iOwnerID, vPosition, vColor, fFlameHeight, fFlameWidth);
     FlameTrail* pReturnEntity = pNewEntity.get();
 
     // Store Interactable Entity in Entity List.

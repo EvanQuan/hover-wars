@@ -9,6 +9,7 @@ using namespace SpriteSheetDatabase;
 // Default Constructor
 FlameTrail::FlameTrail(int iID, int iOwnerID,
                        const vec3* vPosition,
+                       const vec3* vColor,
                        float fHeight, float fWidth )
     : InteractableEntity( iID, iOwnerID, *vPosition, INTER_FLAME_TRAIL )
 {
@@ -16,6 +17,7 @@ FlameTrail::FlameTrail(int iID, int iOwnerID,
     m_fWidth            = fWidth;
     m_sSpriteSheetInfo  = vSpriteInformation[eSpriteEnum::FIRE_SPRITE];
     m_pPhysXMngr        = PHYSICS_MANAGER;
+    m_vColor            = *vColor;
 }
 
 // Destructor
@@ -125,7 +127,7 @@ void FlameTrail::update(float fTimeInSeconds)
 void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
 {
     // Add a flame To the Animation Component (Also adds it to the Mesh).
-     unsigned int iFlameIndex = m_pAnimationComponent->addBillboard(vPosition, vNormal);
+     unsigned int iFlameIndex = m_pAnimationComponent->addBillboard(vPosition, vNormal, &m_vColor);
 
     // Store the duration locally to manage the Physics Component.
     sReferenceBlock pNewBlock;

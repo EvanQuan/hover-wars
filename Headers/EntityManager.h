@@ -59,13 +59,13 @@ public:
     void generateDirectionalLight( const vec3* vDirection, const vec3* vAmbientColor, const vec3* vDiffuseColor, const vec3* vSpecularColor,
                                     float fPosition, float fNearPlane, float fFarPlane, unsigned int iShadowHeight, unsigned int iShadowWidth, float fShadowFrame);
     void generateStaticSpotLight(const ObjectInfo* pObjectProperties, float fPhi, float fSoftPhi, const vec3* vColor, const vec3* vDirection, const string& sMeshLocation = "", float m_fMeshScale = 1.0);
-    void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
-    void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "");
+    void generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, const vec3* vColor, float fScale, const string& sShaderType = "");
+    void generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, const vec3* vColor, float fScale, const string& sShaderType = "");
     vec3 getEntityPosition(int iEntityID);
     void dispatchCollision(int iColliderID, int iCollidedID, unsigned int iColliderMsg, unsigned int iCollidedMsg);
 
     // Interactable Entity Generation Functions
-    FlameTrail* generateFlameTrailEntity(const vec3* vPosition, int iOwnerID, float fFlameHeight, float fFlameWidth);
+    FlameTrail* generateFlameTrailEntity(const vec3* vPosition, const vec3* vColor, int iOwnerID, float fFlameHeight, float fFlameWidth);
     Rocket*     generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID);
 
     // Entity Component functions
