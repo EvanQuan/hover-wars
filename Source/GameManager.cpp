@@ -35,14 +35,14 @@
 \*************/
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
-    vec3(0.0f, 0.0f, 2.0f),    /*PLAYER 1*/
-    vec3(0.0f, 2.0f, 0.0f),    /*PLAYER 2*/
-    vec3(2.0f, 0.0f, 0.0f),    /*PLAYER 3*/
-    vec3(2.0f, 0.0f, 2.0f),   /*PLAYER 4*/
-    vec3(0.0f, 2.0f, 2.0f),   /*BOT 1*/
-    vec3(2.0f, 2.0f, 0.0f),   /*BOT 2*/
-    vec3(1.5f),                 /*BOT 3*/
-    vec3(2.0f)                 /*BOT 4*/
+    vec3(0.0f, 0.0f, 1.0f),   /*PLAYER 1*/
+    vec3(0.0f, 1.0f, 0.0f),   /*PLAYER 2*/
+    vec3(1.0f, 0.0f, 0.0f),   /*PLAYER 3*/
+    vec3(1.0f, 0.0f, 1.0f),   /*PLAYER 4*/
+    vec3(0.0f, 1.0f, 1.0f),   /*BOT 1*/
+    vec3(1.0f, 1.0f, 0.0f),   /*BOT 2*/
+    vec3(0.5f),               /*BOT 3*/
+    vec3(1.0f)                /*BOT 4*/
 };
 
 const vec4 BLUR_QUAD[4]{
