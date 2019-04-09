@@ -569,7 +569,8 @@ void SceneLoader::resetAllProperties()
 */
 void SceneLoader::postInitialize()
 {
-    spawnIndex = FuncUtils::random(m_vSpawnPoints.size());
+    // Shuffle the order of spawn points so they are different every game.
+    std::random_shuffle(std::begin(m_vSpawnPoints), std::end(m_vSpawnPoints));
 }
 
 /************************************************************************\
@@ -583,6 +584,9 @@ void SceneLoader::saveSpawnPoint(vector< string > sData, int iLength)
 
 void SceneLoader::getNextSpawnPoint(vec3* vPosition)
 {
+    // Modulo loop ensures no two hovercrafts are spawned at the same location,
+    // unless all spawn points are already used. Ideally the file should have enough
+    // spawn points for each hovercraft possible so that this never happens.
     spawnIndex = FuncUtils::addModulo(spawnIndex, 1, 0, m_vSpawnPoints.size() - 1);
     *vPosition = m_vSpawnPoints[spawnIndex];
 }

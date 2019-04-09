@@ -207,7 +207,7 @@ namespace FuncUtils
 
         @param value
         @param increase
-        @param min
+        @param minG
         @param max
     */
     int addModulo(int value, int increase, int min, int max);
