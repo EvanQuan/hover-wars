@@ -325,6 +325,8 @@ void SceneLoader::loadFromFile( string sFileName )
 
     // Close File
     inFile.close();
+
+    postInitialize();
 }
 
 // outputError - Outputs information about an error creating an object.  Usually if 
@@ -560,6 +562,14 @@ void SceneLoader::resetAllProperties()
     m_vSpawnPoints.clear();
 
     spawnIndex = 0;
+}
+
+/*
+    Initialize any properties after the scene is finished loading and the file is closed.
+*/
+void SceneLoader::postInitialize()
+{
+    spawnIndex = FuncUtils::random(m_vSpawnPoints.size());
 }
 
 /************************************************************************\

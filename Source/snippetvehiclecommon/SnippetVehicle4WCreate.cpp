@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -33,7 +33,7 @@
 
 namespace snippetvehicle
 {
-    
+
 using namespace physx;
 
 namespace fourwheel
@@ -63,7 +63,7 @@ void computeWheelCenterActorOffsets4W(const PxF32 wheelFrontZ, const PxF32 wheel
 }
 
 void setupWheelsSimulationData
-(const PxF32 wheelMass, const PxF32 wheelMOI, const PxF32 wheelRadius, const PxF32 wheelWidth, 
+(const PxF32 wheelMass, const PxF32 wheelMOI, const PxF32 wheelRadius, const PxF32 wheelWidth,
  const PxU32 numWheels, const PxVec3* wheelCenterActorOffsets,
  const PxVec3& chassisCMOffset, const PxF32 chassisMass,
  PxVehicleWheelsSimData* wheelsSimData)
@@ -104,7 +104,7 @@ void setupWheelsSimulationData
         //Compute the mass supported by each suspension spring.
         PxF32 suspSprungMasses[PX_MAX_NB_WHEELS];
         PxVehicleComputeSprungMasses
-            (numWheels, wheelCenterActorOffsets, 
+            (numWheels, wheelCenterActorOffsets,
              chassisCMOffset, chassisMass, 1, suspSprungMasses);
 
         //Set the suspension data.
@@ -112,7 +112,7 @@ void setupWheelsSimulationData
         {
             suspensions[i].mMaxCompression = 0.3f;
             suspensions[i].mMaxDroop = 0.1f;
-            suspensions[i].mSpringStrength = 35000.0f;    
+            suspensions[i].mSpringStrength = 35000.0f;
             suspensions[i].mSpringDamperRate = 4500.0f;
             suspensions[i].mSprungMass = suspSprungMasses[i];
         }
@@ -145,15 +145,15 @@ void setupWheelsSimulationData
             suspTravelDirections[i] = PxVec3(0,-1,0);
 
             //Wheel center offset is offset from rigid body center of mass.
-            wheelCentreCMOffsets[i] = 
+            wheelCentreCMOffsets[i] =
                 wheelCenterActorOffsets[i] - chassisCMOffset;
 
-            //Suspension force application point 0.3 metres below 
+            //Suspension force application point 0.3 metres below
             //rigid body center of mass.
             suspForceAppCMOffsets[i] =
                 PxVec3(wheelCentreCMOffsets[i].x,-0.3f,wheelCentreCMOffsets[i].z);
 
-            //Tire force application point 0.3 metres below 
+            //Tire force application point 0.3 metres below
             //rigid body center of mass.
             tireForceAppCMOffsets[i] =
                 PxVec3(wheelCentreCMOffsets[i].x,-0.3f,wheelCentreCMOffsets[i].z);
@@ -177,7 +177,7 @@ void setupWheelsSimulationData
         wheelsSimData->setSuspForceAppPointOffset(i, suspForceAppCMOffsets[i]);
         wheelsSimData->setTireForceAppPointOffset(i, tireForceAppCMOffsets[i]);
         wheelsSimData->setSceneQueryFilterData(i, qryFilterData);
-        wheelsSimData->setWheelShapeMapping(i, PxI32(i)); 
+        wheelsSimData->setWheelShapeMapping(i, PxI32(i));
     }
 
     //Add a front and rear anti-roll bar
@@ -257,7 +257,7 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 
         //Set up the simulation data for all wheels.
         fourwheel::setupWheelsSimulationData
-            (vehicle4WDesc.wheelMass, vehicle4WDesc.wheelMOI, wheelRadius, wheelWidth, 
+            (vehicle4WDesc.wheelMass, vehicle4WDesc.wheelMOI, wheelRadius, wheelWidth,
              numWheels, wheelCenterActorOffsets,
              vehicle4WDesc.chassisCMOffset, vehicle4WDesc.chassisMass,
              wheelsSimData);
@@ -316,5 +316,3 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 }
 
 } //namespace snippetvehicle
-
-

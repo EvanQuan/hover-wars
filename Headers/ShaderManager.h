@@ -58,7 +58,7 @@ public:
                              const void* pData, GLsizeiptr pSize, GLenum usage );
     GLuint genInstanceBuffer(GLuint iVertArray, GLuint iStartIndex, const void* pData, GLsizeiptr pSize, GLenum usage);
 
-    // Shader Uniform Variable Manipulation 
+    // Shader Uniform Variable Manipulation
     void setUnifromMatrix4x4( eShaderType eType, string sVarName, const mat4* pResultingMatrix );
     void setUniformVec3( eShaderType eType, string sVarName, const glm::vec3* pValue );
     void setUniformVec4( eShaderType eType, string sVarName, const vec4* pValue );
@@ -82,4 +82,3 @@ private:
     // Shader Variables
     Shader m_pShader[MAX_SHDRS];
 };
-

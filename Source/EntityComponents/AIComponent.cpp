@@ -34,11 +34,12 @@ const vec2 seekPointsAI[] = {
 #define SPIKES_ACITVATION_CHANCE 50
 
 #define ROCKET_ACCURACY_THRESHOLD 0.01
+/*
+    TODO document
+*/
 #define DISTANCE_BOX 15
 #define CYCLE_TIME 7
 #define MAX_TIME_TARGET CYCLE_TIME*4
-
-#define TRAIL_ACTIVATION_THRESHOLD 0.5
 /*
     If the target enters the chase distance, the bot will change to chase mode.
     Otherwise, the bot will go into seek mode.
@@ -51,7 +52,8 @@ const vec2 seekPointsAI[] = {
 */
 #define MOVEMENT_RATE 20
 
-AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
+AIComponent::AIComponent(int iEntityID, int iComponentID)
+    : EntityComponent(iEntityID, iComponentID)
 {
 
     ////for (int j = 0; j < MUTATION_SET; j++) {
@@ -101,7 +103,10 @@ vector<uvec2> AIComponent::getSeekPath()
         seekLocation = vec2(currSeekLock.x, currSeekLock.y);
         lastIndex = static_cast<int>(currSeekLock.z);
     }
-    return m_pSpatialDataMap->getShortestPath(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
+    return m_pSpatialDataMap->getShortestPath(seekLocation,
+                                              seekLocation,
+                                              vec2(minXBot, minYBot),
+                                              vec2(maxXBot, maxYBot));
 }
 
 /*
@@ -122,10 +127,13 @@ vector<uvec2> AIComponent::getChasePath() const
     @modifies minXTarget, maxXTarget, minYTarget, maxYTarget
     @modifies minXBot, maxXBot, minYBot, maxYBot
 */
-void AIComponent::updateBotAndTargetLocations(const HovercraftEntity* target, const HovercraftEntity* bot)
+void AIComponent::updateBotAndTargetLocations(const HovercraftEntity* target,
+                                              const HovercraftEntity* bot)
 {
-    m_pSpatialDataMap->getMapIndices(target, &minXTarget, &maxXTarget, &minYTarget, &maxYTarget);
-    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);
+    m_pSpatialDataMap->getMapIndices(target, &minXTarget, &maxXTarget,
+                                             &minYTarget, &maxYTarget);
+    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot,
+                                          &minYBot, &maxYBot);
 }
 
 /*
@@ -256,14 +264,20 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     To fire the rocket, the accuracy should be under the
     ROCKET_ACCURACY_THRESHOLD, and the bot must be in chase mode.
 */
-bool AIComponent::shouldFireRocket(const HovercraftEntity *bot, float accuracy)
+bool AIComponent::shouldFireRocket(const HovercraftEntity *bot,
+                                   float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)
         && m_eCurrentMode == MODE_CHASE
         && bot->isOffCooldown(eAbility::ABILITY_ROCKET);
 }
 
-bool AIComponent::shouldActivateSpikes(const HovercraftEntity *bot, float distanceToTarget)
+/*
+    If the target is inside the activation threshold, there is a random chance
+    spikes will activate.
+*/
+bool AIComponent::shouldActivateSpikes(const HovercraftEntity *bot,
+                                       float distanceToTarget)
 {
     return distanceToTarget <= SPIKES_DISTANCE_THRESHOLD
         && FuncUtils::random(1, 100) <= SPIKES_ACITVATION_CHANCE
@@ -300,7 +314,8 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) const {
     float distance2 = numeric_limits<float>::max();
     int lowestIndex = -1;
     for (int i = 0; i < SEEK_POINTS_SIZE; i++) {
-        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
+        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y),
+                                      vec3(currentPos.x, 0, currentPos.y));
         if (currDis < distance && i != lastIndex) {
             if (distance < distance2) {
                 nearest2nd = nearest;
@@ -329,7 +344,8 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
     float distance = numeric_limits<float>::max();
     int lastLoc = -1;
     for (int i = 0; i < SEEK_POINTS_SIZE; i++) {
-        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
+        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y),
+                                      vec3(currentPos.x, 0, currentPos.y));
         if (currDis < distance) {
             nearest = seekPointsAI[i];
             distance = currDis;
@@ -342,7 +358,8 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
 /*
     @NOTE
     I have no idea what's going on here. The seek point is being updated, but
-    according to what? Nearest? What makes this different than getNearestSeekPoint
+    according to what? Nearest? What makes this different than
+    getNearestSeekPoint
 
     @param botPosition           of bot to determine seek point
 
@@ -354,7 +371,8 @@ void AIComponent::updateSeekPoint(const vec3 &botPos)
     float tileSize = m_pSpatialDataMap->getTileSize();
     glm::vec3 nextPos = vec3(0, 0, 0);
     if (path.size() >= 2) {
-        for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
+        // get path position that is sufficently far away for seek point.
+        for (int i = 0; i < (int)path.size(); i++) { 
             nextPos = vec3(path.at(i).x * tileSize + offset.x,
                            0,
                            path.at(i).y * tileSize + offset.y);
