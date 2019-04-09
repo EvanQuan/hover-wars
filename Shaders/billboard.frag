@@ -1,4 +1,10 @@
 
+in vec3 vFragTinge;
+
+vec3 getBWFragment( vec3 vColor )
+{
+	return vec3(dot(THRESHOLD, vColor));
+}
 
 void main(void)
 {    
@@ -11,6 +17,7 @@ void main(void)
 	if( fK < 0.1 )
 		discard;
 		
+	vColor.rgb = getBWFragment(vColor.rgb) * vFragTinge; // Tinge the Billboard with a color change.
 	vFragColor = vColor;
 	
 	if( vFragColor.r > 0.3 )

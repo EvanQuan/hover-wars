@@ -19,6 +19,7 @@ class FlameTrail
 public:
     FlameTrail(int iID, int iOwnerID,
                const vec3* vPosition,
+               const vec3* vColor,
                float fHeight, float fWidth);
     virtual ~FlameTrail();
 
@@ -36,6 +37,7 @@ private:
                                             m_fWidth;
     SpriteSheetDatabase::sSpriteSheetInfo   m_sSpriteSheetInfo;
     PhysicsManager*                         m_pPhysXMngr;
+    vec3                                    m_vColor;
 
     // Physics Data References
     struct sReferenceBlock

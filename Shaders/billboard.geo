@@ -12,6 +12,7 @@ layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
 
 in vec3 vNormal[];
+in vec3 vTinge[];
 in vec2 vDimensions[];
 in vec3 vToCamera[];
 in vec2 vUVStart[];
@@ -19,6 +20,7 @@ in vec2 vUVEnd[];
 in float fDuration[];
 
 out vec2 TexCoords;
+out vec3 vFragTinge;
 
 void main(void)
 {	
@@ -42,15 +44,19 @@ void main(void)
 	*/
 	gl_Position = projection * modelview * vec4( gl_in[0].gl_Position.xyz - vRightVector, 1.0 );   /* P1 */
 	TexCoords = vec2( vUVStart[0].x, vUVEnd[0].y );
+	vFragTinge = vTinge[0];
 	EmitVertex();
 	gl_Position = projection * modelview * vec4( gl_in[0].gl_Position.xyz + vRightVector, 1.0 );  /* P2 */
 	TexCoords = vec2( vUVEnd[0] );
+	vFragTinge = vTinge[0];
 	EmitVertex();
 	gl_Position = projection * modelview * vec4( gl_in[0].gl_Position.xyz + vUpVector - vRightVector, 1.0 );   /* P3 */
 	TexCoords = vec2( vUVStart[0] );
+	vFragTinge = vTinge[0];
 	EmitVertex();
 	gl_Position = projection * modelview * vec4( gl_in[0].gl_Position.xyz + vUpVector + vRightVector, 1.0 );  /* P4 */
 	TexCoords = vec2( vUVEnd[0].x, vUVStart[0].y );
+	vFragTinge = vTinge[0];
 	EmitVertex();
 	EndPrimitive();
 }
