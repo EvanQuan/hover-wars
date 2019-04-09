@@ -209,6 +209,7 @@ private:
     void updateCooldowns(float fTimeInSeconds);
     void updateSpatialMap(vec3 &vNewPosition);
     void updatePhysicsComponent();
+    void resetIfNotHorizontal();
     void animateSpikes();
 
     // Abilities

@@ -31,6 +31,7 @@ GameMenu::GameMenu() : Menu(
     unordered_map<int, eFixedCommand>
     {
         {GLFW_KEY_P,            COMMAND_MENU_PAUSE_TOGGLE},
+        {GLFW_KEY_ESCAPE,       COMMAND_MENU_PAUSE_TOGGLE},
         {GLFW_KEY_LEFT_SHIFT,   COMMAND_ABILITY_TRAIL_ACTIVATE},
         {GLFW_KEY_SPACE,        COMMAND_ABILITY_ROCKET},
         {GLFW_KEY_LEFT_CONTROL, COMMAND_ABILITY_SPIKES},
@@ -39,7 +40,6 @@ GameMenu::GameMenu() : Menu(
         {GLFW_KEY_H,            COMMAND_DASH_LEFT},
         {GLFW_KEY_SEMICOLON,    COMMAND_DASH_RIGHT},
         //
-        {GLFW_KEY_ESCAPE,       COMMAND_CLOSE_WINDOW},
         {GLFW_KEY_TAB,          COMMAND_MENU_BACK},
         {GLFW_KEY_COMMA,        COMMAND_CAMERA_BACK},
 #ifndef NDEBUG
@@ -155,6 +155,9 @@ void GameMenu::executeIfHovercraftExists(eHovercraft hovercraft,
 void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
                                       eFixedCommand command)
 {
+    if (m_pGameManager->isPaused()) {
+        return;
+    }
     PauseMenu *pauseMenu;
     switch (command)
     {
@@ -389,7 +392,7 @@ void GameMenu::executeAccumulatedKeyCommands(eHovercraft hovercraft)
 
 void GameMenu::updateLeftStick(eHovercraft hovercraft, float x, float y)
 {
-    return executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
+    executeIfHovercraftExists(hovercraft, COMMAND_MOVE, x, y);
 }
 
 void GameMenu::updateRightStick(eHovercraft hovercraft, float x, float y)

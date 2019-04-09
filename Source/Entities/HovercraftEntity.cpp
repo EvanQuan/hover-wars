@@ -246,6 +246,10 @@ In other words, the spring will pull together faster the higher the constant is.
 #define Z_FRONT_OFFSET  2.0f
 #define ANIMATION_TIME  0.1f
 
+// Threshold of the y-component (vertical) of the hovercraft direction vector
+// that will reset the hovercraft's y-component if it is exceeded.
+#define HORIZONTAL_DEVIATION_THRESHOLD 0.1
+
 /*************\
  * CONSTANTS *
 \*************/
@@ -359,9 +363,26 @@ void HovercraftEntity::updateSpatialMap(vec3 &vNewPosition)
 */
 void HovercraftEntity::updatePhysicsComponent()
 {
+    resetIfNotHorizontal();
+}
+
+/*
+    If the y-component (vertical) that the Hovercraft is facing deviates too
+    far from horizontal, the global position is reset such that it back to
+    horizontal. This prevents hovercrafts from riding up walls if they
+    constantly push against walls, or climbing on other hovercrafts when they
+    collide.
+
+    @NOTE currently bugged. Resets x and z component of rotation (in cartesian
+          coordinates) as well.
+*/
+void HovercraftEntity::resetIfNotHorizontal()
+{
     vec3 dirVector;
     getDirectionVector(&dirVector);
-    if (abs(dirVector.y) > 0.1f) {
+
+    // Check if not horizontal.
+    if (abs(dirVector.y) > HORIZONTAL_DEVIATION_THRESHOLD) {
         //TODO set quat for rotation
         vec3 newQuatAxis = vec3(dirVector.x,
                                 0.1f * (dirVector.y/abs(dirVector.y)),
@@ -370,9 +391,17 @@ void HovercraftEntity::updatePhysicsComponent()
         PxPlane plane = PxPlane(PxVec3(0,0,0),
                                 PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z),
                                 PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
+
         PxTransform newTrans = getGlobalTransform();
 
-        newTrans.q = PxQuat(0, plane.n);
+        // cout << newTrans.q.x << " " << newTrans.q.y << " " << newTrans.q.z << " " << newTrans.q.w;
+        // cout << newTrans.q.y << endl;
+
+        // newTrans.q = PxQuat(newTrans.q.getNormalized().getAngle(), plane.n.getNormalized());
+        newTrans.q = PxQuat(0, plane.n.getNormalized());
+
+        // Original. 
+        // newTrans.q = PxQuat(0, plane.n);
 
         m_pPhysicsComponent->setGlobalPos(newTrans);
     }

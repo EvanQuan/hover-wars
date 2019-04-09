@@ -49,9 +49,9 @@ PregameMenu::PregameMenu() : PromptMenu(
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
 #ifdef NDEBUG
-    m_iBotCount = MAX_BOT_COUNT;
-    m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount() + 1,
+    m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount(),
                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
+    m_iBotCount = m_iPlayerCount;
 #else
     m_iBotCount = 0;
     m_iPlayerCount = 2;
