@@ -19,6 +19,9 @@
     Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
+/*
+    Unit : meters / second
+*/
 #define ROCKET_SPEED            100.0f
 #define FLAME_SPACING           1.0f
 
@@ -30,6 +33,7 @@
 */
 #define ROCKET_BOUNDING_BOX     1.0f
 
+// @Deprecated - Hovercrafts don't lose control
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
 /*
     If the hovercraft exceeds a certain elevant, they lose control until they
@@ -85,6 +89,10 @@ These are the minimum cooldowns for these abilities.
 */
 #define MAX_COOLDOWN_REDUCTION_ON_KILL 0.9f
 
+/*
+    Multiplies the trail recharge multiplier when max cooldown reduction is
+    applied.
+*/
 #define TRAIL_RECHARGE_INCREASE 1.1f
 /*
 Total time the trail can be activated from full to empty.
@@ -98,9 +106,12 @@ Represents the trail gauge is empty.
 #define TRAIL_GAUGE_EMPTY       0.0f
 
 // Fire Defines
-#define FIRE_HEIGHT             2.0
-#define FIRE_WIDTH              2.0
+#define FIRE_HEIGHT             3.0
+#define FIRE_WIDTH              3.0
 
+/*
+    Duration powerups last before disapating.
+*/
 #define POWERUP_DURATION        15.0f
 
 /*
@@ -121,6 +132,7 @@ Time multiplier for the trail to recharge from empty to full.
 
 */
 #define TRAIL_BASE_RECHARGE_MULTIPLIER 0.3f // 9 sec
+
 #define TRAIL_MAX_RECHARGE_MULTIPLIER 1.0f  // 3 sec
 
 /*
