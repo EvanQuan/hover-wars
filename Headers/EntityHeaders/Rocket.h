@@ -22,7 +22,7 @@ class Rocket
     : public InteractableEntity
 {
 public:
-    Rocket(int iID, int iOwnerID);
+    Rocket(int iID, int iOwnerID, const vec3* vColor);
     virtual ~Rocket();
 
     // Implementation of inherited functionality
@@ -47,6 +47,7 @@ private:
     vector<string>                          m_pReferenceList;
     unsigned int                            m_iRocketID;
     unsigned int getNewRocketID()           { return ++m_iRocketID; }
+    vec3                                    m_vExplosionColor;
 
     void removeFromScene(unsigned int iVictimMsg);
 

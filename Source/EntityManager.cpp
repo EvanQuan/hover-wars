@@ -549,13 +549,13 @@ FlameTrail* EntityManager::generateFlameTrailEntity(const vec3* vPosition, const
     return pReturnEntity;
 }
 
-Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, float fScale, const string* sShaderType, int iOwnerID)
+Rocket* EntityManager::generateRocketEntity(const ObjectInfo* pObjectProperties, const string* sMeshLocation, const vec3* vColor, float fScale, const string* sShaderType, int iOwnerID)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize new Interactable Entity
-    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID);
+    unique_ptr<Rocket> pNewEntity = make_unique<Rocket>(iNewEntityID, iOwnerID, vColor);
     pNewEntity->initialize(*sMeshLocation, pObjectProperties, *sShaderType, fScale);
     Rocket* pReturnEntity = pNewEntity.get();
 
