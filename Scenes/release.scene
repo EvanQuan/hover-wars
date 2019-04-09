@@ -9,7 +9,7 @@
 # Lighting Instructions
 #
 # Lights can be described as:
-#       point_light         { x y z  r g b  p } 
+#       point_light         { x y z  r g b  p }
 #           - "x y z"   = the Position of the light in World Space
 #           - "r g b"   = the color of the light
 #           - "p"       = power of the light
@@ -76,7 +76,7 @@
 #               diffuse shader will be used (PLANE_SHADER internally).
 #           - TODO: list valid <shader type> inputs here.
 #       +bounding   { "box"  h w l }
-#           - "box" :> specifies a cubic box to bound the object 
+#           - "box" :> specifies a cubic box to bound the object
 #                   :> <h w l> - height width length as floats
 # ============================================================
 
@@ -178,25 +178,25 @@ directional_light {
     8192 8192 1000.0
 }
 
-# Blue Square
+# Cyan Square
 point_light {
     24.5 7 65
-    0.0 0.0 2.55
+    0.0 2.55 2.55
     5.0
 }
 point_light {
     65 7 24.5
-    0.0 0.0 2.55
+    0.0 2.55 2.55
     5.0
 }
 point_light {
     105.5 7 65
-    0.0 0.0 2.55
+    0.0 2.55 2.55
     5.0
 }
 point_light {
     65 7 105.5
-    0.0 0.0 2.55
+    0.0 2.55 2.55
     5.0
 }
 
@@ -244,33 +244,33 @@ point_light {
     5.0
 }
 
-#Magenta Square
+#Blue Square
 point_light {
     65 7 -24.5
-    2.55 0.0 2.55
+    0.0 0.00 2.55
     5.0
 }
 point_light {
     24.5 7 -65
-    2.55 0.0 2.55
+    0.0 0.00 2.55
     5.0
 }
 point_light {
     65 7 -105.5
-    2.55 0.0 2.55
+    0.0 0.00 2.55
     5.0
 }
 point_light {
     105.5 7 -65
-    2.55 0.0 2.55
+    0.0 0.00 2.55
     5.0
 }
 
 spotlight {
-	0.0 7 150.0  
-	0.0 -1.0 0.0  
+	0.0 7 150.0
+	0.0 -1.0 0.0
 	0 2.55 2.55
-	60  
+	60
 	20
 }
 
@@ -309,7 +309,7 @@ plane {
     0 1 0
     400 400
     +material {
-        textures/floor.png
+        textures/magenta_floor.png
 		textures/squareSpecMap.png
         1.0
     }
@@ -317,7 +317,6 @@ plane {
         tron_shdr
     }
 }
-
 
 hovercraft {
     +mesh {
@@ -410,7 +409,7 @@ cube {
     65 5 65
     10 80 80
 	+material {
-        textures/blue_wall.png
+        textures/cyan_wall.png
 		0.0 0.0 0.0
         1.0
     }
@@ -427,7 +426,7 @@ cube {
     65 5 -65
     10 80 80
 	+material {
-        textures/magenta_wall.png
+        textures/blue_wall.png
 		0.0 0.0 0.0
         1.0
     }
@@ -573,11 +572,6 @@ cube {
     }
 }
 
-
-
-
-
-
 cube {
     -141 5 0
     10 2 50
@@ -676,13 +670,6 @@ cube {
     }
 }
 
-
-
-
-
-
-
-
 cube {
     0 5 -141
     10 50 2
@@ -780,11 +767,6 @@ cube {
         tron_shdr
     }
 }
-
-
-
-
-
 
 cube {
     0 5 141

@@ -7,7 +7,7 @@
 /*************\
  * Constants *
 \*************/
-const vec3 GRAVITY = vec3(0.0f, -9.81f, 0.0f); 
+const vec3 GRAVITY = vec3(0.0f, -9.81f, 0.0f);
 const vec4 COLOR = vec4(2.26f, 0.88f, 0.34f, 1.0f);
 
 // Default Constructor
