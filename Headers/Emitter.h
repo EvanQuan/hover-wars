@@ -40,7 +40,8 @@ private:
     vector<unique_ptr<sParticleInformation>> m_pParticleList;
     vector< vec3 > m_pPositions;
 
-    Texture* m_pDiffuseTexture;
+    Texture*    m_pDiffuseTexture;
+    Mesh*       m_pBillboardMesh;
 
     // Private Functions
     void spawnNewParticle();
