@@ -23,10 +23,16 @@ private:
 
     void back();
 
+    // @Override
+    void updateTimeValues(float fTimeInSeconds);
+
     vector<EndGameStat> endGameStats;
 
     int m_iBotCount;
     int m_iPlayerCount;
 
     static PostgameMenu* m_pInstance;
+
+    bool m_bIgnoreUserInput;
+    float m_fIgnoreUserInputTime;
 };

@@ -4,6 +4,9 @@
 #include "GameStats.h"
 #include "CommandHandler.h"
 
+
+// Unit: seconds
+#define IGNORE_INPUT_TIME 2.0f
 // Singleton instance
 PostgameMenu* PostgameMenu::m_pInstance = nullptr;
 
@@ -29,6 +32,10 @@ Menu* PostgameMenu::getInstance()
 
 void PostgameMenu::select(eFixedCommand command)
 {
+    if (m_bIgnoreUserInput)
+    {
+        return;
+    }
     switch (command)
     {
     case COMMAND_PROMPT_BACK:
@@ -41,6 +48,16 @@ void PostgameMenu::select(eFixedCommand command)
 void PostgameMenu::back()
 {
     nextMenu(MainMenu::getInstance());
+}
+
+void PostgameMenu::updateTimeValues(float fTimeInSeconds)
+{
+    m_fIgnoreUserInputTime -= fTimeInSeconds;
+
+    if (m_fIgnoreUserInputTime <= 0)
+    {
+        m_bIgnoreUserInput = false;
+    }
 }
 
 void PostgameMenu::enter()
@@ -56,4 +73,8 @@ void PostgameMenu::enter()
     }
 
     cout << "> " << getCurrentPrompt() << endl;
+
+    m_bIgnoreUserInput = true;
+    m_fIgnoreUserInputTime = IGNORE_INPUT_TIME;
 }
+
