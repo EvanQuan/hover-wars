@@ -108,5 +108,7 @@ private:
     void clearProperties();     // Clear any properties
     void resetAllProperties();
 
+    void postInitialize();
+
     string trimString( const string& sStr );
 };
