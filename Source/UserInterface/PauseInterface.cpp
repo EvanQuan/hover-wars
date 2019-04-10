@@ -42,7 +42,7 @@ PauseInterface* PauseInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void PauseInterface::update(float fSecondsSinceLastUpdate)
+void PauseInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

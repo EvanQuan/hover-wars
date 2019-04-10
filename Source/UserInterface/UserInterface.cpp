@@ -31,6 +31,11 @@ Coordinate system:
 #define MESSAGE_SCALE           1.0f
 #define MESSAGE_COLOR           COLOR_WHITE
 
+// Unit: seconds
+#define GLOBAL_MESSAGE_TIME 3.0f
+#define GLOBAL_MESSAGE_X 0.0f
+#define GLOBAL_MESSAGE_Y 0.0f
+
 
 /*************\
  * Constants *
@@ -127,6 +132,14 @@ void UserInterface::initializeComponentCoordinates()
     for (int i = 0; i < m_iComponentCount; i++)
     {
         m_vComponentCoordinates.push_back(make_pair(0.0f, 0.0f));
+    }
+}
+
+void UserInterface::renderGlobalMessage()
+{
+    if (m_fGlobalMessageTime > 0)
+    {
+        renderText(m_sGlobalMessage, GLOBAL_MESSAGE_X, GLOBAL_MESSAGE_Y, 1.0, COLOR_WHITE);
     }
 }
 
@@ -428,6 +441,12 @@ void UserInterface::debugFont()
     // Clean up OpenGL
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void UserInterface::displayGlobalMessage(string message)
+{
+    m_sGlobalMessage = message;
+    m_fGlobalMessageTime = GLOBAL_MESSAGE_TIME;
 }
 
 /*

@@ -10,9 +10,9 @@
 #define MASTER_BANK_STRINGS_PATH "Sound/Desktop/Master Bank.strings.bank"
 
 /*
-@Stephen What does this impact? Describe why this is here.
+    @Stephen What does this impact? Describe why this is here.
 */
-#define MAX_CHANNELS 1000 // 10 // 20
+#define MAX_CHANNELS 2000 // 10 // 20
 #define NO_EXTRA_DRIVER_DATA 0
 
 // Initialize Static Instance Variable
@@ -33,8 +33,11 @@ SoundManager::SoundManager() {
     advancedSettings->cbSize = sizeof(FMOD_ADVANCEDSETTINGS);
     advancedSettings->randomSeed = FuncUtils::random(0, std::numeric_limits<int>::max());
     errorCheck(m_pSystem->setAdvancedSettings(advancedSettings));
-
-    errorCheck(m_pStudioSystem->initialize(MAX_CHANNELS, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, NO_EXTRA_DRIVER_DATA));   // Initialize system.
+    // Initialize system.
+    errorCheck(m_pStudioSystem->initialize(MAX_CHANNELS,
+                                           FMOD_STUDIO_INIT_NORMAL,
+                                           FMOD_INIT_NORMAL,
+                                           NO_EXTRA_DRIVER_DATA));
 
 }
 
@@ -185,7 +188,8 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
            developed. As all abilities will be interactable entitise, context
            collisions will be determined in handleBaseCollisionSound.
 */
-void SoundManager::handleContextCollisionSound(HovercraftEntity* collider, HovercraftEntity* collided)
+void SoundManager::handleContextCollisionSound(HovercraftEntity* collider,
+                                               HovercraftEntity* collided)
 {
     if (collider->hasSpikesActivated()
         || collided->hasSpikesActivated())

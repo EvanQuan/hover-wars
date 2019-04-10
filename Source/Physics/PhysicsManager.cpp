@@ -197,7 +197,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
 }
 
 /****************************************************************************\
- * Public Functions                                                            *
+ * Public Functions                                                         *
 \****************************************************************************/
 
 // Name: Update
@@ -693,7 +693,7 @@ void PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     //Vehicle update.
     const PxVec3 grav = gScene->getGravity();
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
-    PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
+    PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults,vehicle->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicleWheels, vehicleQueryResults);
 //    cout << "1: " << wheelQueryResults[0].isInAir
 //        << " 2: " << wheelQueryResults[1].isInAir

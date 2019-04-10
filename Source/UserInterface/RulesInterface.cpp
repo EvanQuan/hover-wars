@@ -42,7 +42,7 @@ RulesInterface* RulesInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void RulesInterface::update(float fSecondsSinceLastUpdate)
+void RulesInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

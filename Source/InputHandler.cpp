@@ -5,8 +5,6 @@
 #include "EntityManager.h"
 #include "SoundManager.h"
 #include "GameStats.h"
-// debug
-#include "UserInterface/GameInterface.h"
 
 /***********\
  * Defines *
@@ -18,7 +16,7 @@ InputHandler* InputHandler::m_pInstance = nullptr;
 
 InputHandler::InputHandler(GLFWwindow *rWindow)
 {
-    m_gameManager = GAME_MANAGER;
+    m_pGameManager = GAME_MANAGER;
     m_pEntityManager = ENTITY_MANAGER;
     // Keyboard
     glfwSetKeyCallback(rWindow, InputHandler::keyCallback);
@@ -193,7 +191,7 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
             // Get cursor position
             double fX, fY;
             glfwGetCursorPos(window, &fX, &fY);
-            //m_pInstance->m_gameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
+            //m_pInstance->m_pGameManager->intersectPlane(static_cast<float>(fX), static_cast<float>(fY)); // TESTING
 #endif
         }
         else if (GLFW_RELEASE == action)    // Release tracking
@@ -216,8 +214,9 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
 */
 void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
-    if (m_pInstance->m_bRotateFlag)
-        m_pInstance->m_gameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float) x, (float) y));
+    if (m_pInstance->m_bRotateFlag) {
+        m_pInstance->m_pGameManager->rotateCamera(m_pInstance->m_pInitialPos - vec2((float)x, (float)y));
+    }
 
     // Set new current position
     m_pInstance->m_pInitialPos.x = (float) x;
@@ -233,7 +232,7 @@ Handle scroll wheel callbacks
 */
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    m_pInstance->m_gameManager->zoomCamera((float) yoffset * ZOOM_SCALE);
+    m_pInstance->m_pGameManager->zoomCamera((float) yoffset * ZOOM_SCALE);
 }
 
 /*
@@ -412,28 +411,29 @@ void InputHandler::disconnectJoystick(int joystickID)
 }
 
 /*
-Checks for joystick connection/disconnection.
+    Checks for joystick connection/disconnection.
 
-@param joystickID   to check
-@param event        to indicate what happened to joystick
+    @param joystickID   to check
+    @param event        to indicate what happened to joystick
 */
 void InputHandler::joystickCallback(int joystickID, int event)
 {
-    if (event == GLFW_CONNECTED)
+    switch (event)
     {
-        // Just for fun. Temporary, may change to another sound.
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_POWERUP_SPAWN);
+    case GLFW_CONNECTED:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->initializeJoystick(joystickID);
-    }
-    else if (event == GLFW_DISCONNECTED)
-    {
+        break;
+    case GLFW_DISCONNECTED:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->disconnectJoystick(joystickID);
+        break;
     }
 }
 
 /*
-Get the input status of all the present controllers and stores it.
-This is called once per frame.
+    Get the input status of all the present controllers and stores it.
+    This is called once per frame.
 */
 void InputHandler::updateJoysticks()
 {
@@ -463,14 +463,14 @@ int InputHandler::getJoystickCount()
 }
 
 /*
-Convert raw joystick input values to values that the command handler can read and
-alter after processing.
+    Convert raw joystick input values to values that the command handler can
+    read and alter after processing.
 
-Can only set values to just pressed and just released if there is a change in
-pressed/released state. Changes to pressed and released are made in the
-CommandHandler after the input has been processed.
+    Can only set values to just pressed and just released if there is a change in
+    pressed/released state. Changes to pressed and released are made in the
+    CommandHandler after the input has been processed.
 
-@param joystickID   to update
+    @param joystickID   to update
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {

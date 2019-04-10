@@ -14,7 +14,7 @@ public:
     StartInterface(const StartInterface* pCopy);                              // Default Copy Constructor
     StartInterface& operator=(const StartInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 

@@ -134,7 +134,7 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
     // Store the duration locally to manage the Physics Component.
     sReferenceBlock pNewBlock;
     pNewBlock.fDuration = m_sSpriteSheetInfo.fDuration;
-    m_pPhysXMngr->createFlameObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f,
+    m_pPhysXMngr->createCylinderObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f,
                                     m_fWidth * 0.5f, &pNewBlock.pActorRef);
     m_pReferenceMap.push_back(pNewBlock);
 

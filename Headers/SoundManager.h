@@ -77,8 +77,10 @@ public:
         SOUND_UI_NEW_LEADER,
         // For major time warnings
         SOUND_UI_TIME_REMAINING_LOOP,
-        // For reesuming the game
+        // For resuming the game
         SOUND_UI_RESUME_COUNTDOWN,
+        // For controller connecting
+        SOUND_UI_CONTROLLER_CONNECT,
     };
 
     void play(eSoundEvent sound);
@@ -308,6 +310,8 @@ private:
         {SOUND_UI_NEW_LEADER,            { "event:/ui/notification/new_leader",
                                          }},
         {SOUND_UI_RESUME_COUNTDOWN,        { "event:/ui/notification/countdown_tick",
+                                         }},
+        {SOUND_UI_CONTROLLER_CONNECT,    { "event:/ui/notification/controller_connect",
                                          }},
     };
 };

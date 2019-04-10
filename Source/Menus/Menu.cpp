@@ -18,7 +18,7 @@ Menu::Menu(
     m_justReleasedButtonToFixedCommand = justReleasedButtonToFixedCommand;
 
     m_pInputHandler = InputHandler::getInstance();
-    bWireFrameEnabled = false;
+    m_bWireFrameEnabled = false;
 
     m_pGameManager = GameManager::getInstance();
     m_pEntityMngr = ENTITY_MANAGER;
@@ -41,10 +41,10 @@ void Menu::nextMenu(Menu* next)
 void Menu::debugToggleWireframe()
 {
     // Toggle Boolean
-    bWireFrameEnabled = !bWireFrameEnabled;
+    m_bWireFrameEnabled = !m_bWireFrameEnabled;
 
     // Set Polygon mode based on current setting.
-    if (bWireFrameEnabled) {
+    if (m_bWireFrameEnabled) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     } else {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

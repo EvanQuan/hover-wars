@@ -19,7 +19,7 @@ public:
     PregameInterface(const PregameInterface* pCopy);                              // Default Copy Constructor
     PregameInterface& operator=(const PregameInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 

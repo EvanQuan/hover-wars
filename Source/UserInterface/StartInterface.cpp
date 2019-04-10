@@ -42,7 +42,7 @@ StartInterface* StartInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void StartInterface::update(float fSecondsSinceLastUpdate)
+void StartInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

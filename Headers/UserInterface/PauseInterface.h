@@ -15,7 +15,7 @@ public:
     PauseInterface(const PauseInterface* pCopy);                              // Default Copy Constructor
     PauseInterface& operator=(const PauseInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 

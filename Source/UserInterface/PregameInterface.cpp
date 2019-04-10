@@ -66,7 +66,7 @@ PregameInterface* PregameInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void PregameInterface::update(float fSecondsSinceLastUpdate)
+void PregameInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

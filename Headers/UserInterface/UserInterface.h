@@ -96,7 +96,14 @@ public:
     This should be called once per frame update.
     
     */
-    virtual void update(float fSecondsSinceLastUpdate) = 0;
+    virtual void update(float fDeltaTime) {
+        m_fGlobalMessageTime -= fDeltaTime;
+        updateOverride(fDeltaTime);
+        renderGlobalMessage();
+    }
+
+    virtual void updateOverride(float fFrameDeltaTime) = 0;
+
 
     virtual void reinitialize(float gameTime) = 0;
 
@@ -106,6 +113,8 @@ public:
 
     // Shows the Sprite Map for the text map for debugging.
     void debugFont();
+
+    void displayGlobalMessage(string message);
 
 protected:
 
@@ -148,6 +157,8 @@ private:
     // The UI needs to render its own components
     ShaderManager *m_pShdrMngr;
 
+    void renderGlobalMessage();
+
 
     // Initializes FreeType and the Font Library
     void initFreeType();
@@ -175,5 +186,8 @@ private:
     int m_iComponentCount;
 
     map<string, Texture*>m_Textures;
+
+    string m_sGlobalMessage;
+    float m_fGlobalMessageTime;
 
 };
