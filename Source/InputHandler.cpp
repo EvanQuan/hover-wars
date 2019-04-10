@@ -419,17 +419,19 @@ void InputHandler::disconnectJoystick(int joystickID)
 */
 void InputHandler::joystickCallback(int joystickID, int event)
 {
+    string name;
     switch (event)
     {
     case GLFW_CONNECTED:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->initializeJoystick(joystickID);
-        GAME_MANAGER->getMenuInterface()->displayGlobalMessage("connected");
+        name = m_pInstance->m_pJoystickNames[joystickID];
+        GAME_MANAGER->getMenuInterface()->displayGlobalMessage(name + " " + std::to_string(joystickID + 1) + " connected");
         break;
     case GLFW_DISCONNECTED:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->disconnectJoystick(joystickID);
-        GAME_MANAGER->getMenuInterface()->displayGlobalMessage("disconnected.");
+        GAME_MANAGER->getMenuInterface()->displayGlobalMessage("Controller " + std::to_string(joystickID + 1) +  " disconnected.");
         break;
     }
 }

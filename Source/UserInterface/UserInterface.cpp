@@ -33,8 +33,8 @@ Coordinate system:
 
 // Unit: seconds
 #define GLOBAL_MESSAGE_TIME 3.0f
-#define GLOBAL_MESSAGE_X 500.0f
-#define GLOBAL_MESSAGE_Y 500.0f
+#define GLOBAL_MESSAGE_X 0.5f
+#define GLOBAL_MESSAGE_Y 0.5f
 
 
 /*************\
@@ -139,7 +139,7 @@ void UserInterface::renderGlobalMessage()
 {
     if (m_fGlobalMessageTime > 0)
     {
-        renderText(m_sGlobalMessage, GLOBAL_MESSAGE_X, GLOBAL_MESSAGE_Y, 1.0, COLOR_WHITE);
+        renderText(m_sGlobalMessage, m_fGlobalMessageX, m_fGlobalMessageY, 1.0, COLOR_WHITE);
     }
 }
 
@@ -308,6 +308,10 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
         m_vComponentCoordinates[component].first = (m_iWidth * m_vComponentScaling[component].first) + m_vComponentTranslating[component].first;
         m_vComponentCoordinates[component].second = (m_iHeight * m_vComponentScaling[component].second) + m_vComponentTranslating[component].second;
     }
+    // Update global message coordinates
+    m_fGlobalMessageX = (m_iWidth * GLOBAL_MESSAGE_X);
+    m_fGlobalMessageY = (m_iHeight * GLOBAL_MESSAGE_Y);
+
 }
 
 void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)

@@ -180,6 +180,7 @@ private:
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
     void initializeComponentCoordinates();
+
     /*
         m_vComponentScaling and m_vComponentTranslating should have the same
         number of elements. They size is tracked here.
@@ -188,7 +189,10 @@ private:
 
     map<string, Texture*>m_Textures;
 
+    // Global message values
     string m_sGlobalMessage;
     float m_fGlobalMessageTime;
+    float m_fGlobalMessageX;
+    float m_fGlobalMessageY;
 
 };
