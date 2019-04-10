@@ -3,7 +3,7 @@
 # Stage, commit and push
 
 git add .
-printf "\nCommit meesage:\n> "
+printf "\nCommit message:\n> "
 read message
 git commit -m "$message"
 git push

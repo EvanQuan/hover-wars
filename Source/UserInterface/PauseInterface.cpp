@@ -42,7 +42,7 @@ PauseInterface* PauseInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void PauseInterface::update(float fSecondsSinceLastUpdate)
+void PauseInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -50,7 +50,7 @@ void PauseInterface::reinitialize(float gameTime)
 {
 }
 
-void PauseInterface::render()
+void PauseInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_PAUSE_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderOption();

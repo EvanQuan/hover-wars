@@ -34,7 +34,7 @@ ControlsInterface* ControlsInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void ControlsInterface::update(float fSecondsSinceLastUpdate)
+void ControlsInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -42,7 +42,7 @@ void ControlsInterface::reinitialize(float gameTime)
 {
 }
 
-void ControlsInterface::render()
+void ControlsInterface::renderOverride()
 {
     renderImage(IMAGE_CONTROLLER_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 2.0f);
 }

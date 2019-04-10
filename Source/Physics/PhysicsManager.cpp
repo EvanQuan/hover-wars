@@ -11,6 +11,7 @@
 #include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
+#include "Mesh.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -197,7 +198,7 @@ snippetvehicle::VehicleDesc PhysicsManager::initVehicleDesc(PxVec3 chassisDims)
 }
 
 /****************************************************************************\
- * Public Functions                                                            *
+ * Public Functions                                                         *
 \****************************************************************************/
 
 // Name: Update
@@ -237,6 +238,24 @@ static PxFilterFlags filterShader(
 }
 // Initialization of Physics will happen here, this will be called in main, immediately
 //    after constructing the PhysicsManager Instance.
+PxRigidStatic* PhysicsManager::createDrivablePlane(const PxFilterData& simFilterData, PxMaterial* material, PxPhysics* physics, PxRigidStatic * body)
+{
+
+
+    //Get the plane shape so we can set query and simulation filter data.
+    PxShape* shapes[1];
+    body->getShapes(shapes, 1);
+
+    //Set the query filter data of the ground plane so that the vehicle raycasts can hit the ground.
+    PxFilterData qryFilterData;
+    snippetvehicle::setupDrivableSurface(qryFilterData);
+    shapes[0]->setQueryFilterData(qryFilterData);
+
+    //Set the simulation filter data of the ground plane so that it collides with the chassis of a vehicle but not the wheels.
+    shapes[0]->setSimulationFilterData(simFilterData);
+
+    return body;
+}
 void PhysicsManager::initPhysics(bool interactive)
 {
     cout << "initPhysics" << endl;
@@ -317,7 +336,15 @@ void PhysicsManager::initPhysics(bool interactive)
     //Create a plane to drive on.
     PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 
-    PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics);
+
+    //Add a plane to the scene.
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(200, 1, 200), *gWorldMaterial);
+    PxTransform localTm(PxVec3(0, -1, 0));
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    body->attachShape(*shape);
+
+
+    PxRigidStatic* gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics, body);
     gGroundPlane->setName(NAME_GROUND);
     // cout << "\"" << gGroundPlane->getName() << "\"" << endl;
     gScene->addActor(*gGroundPlane);
@@ -343,9 +370,6 @@ void PhysicsManager::cleanupPhysics()
         // the physics before it's been initalized
         PX_UNUSED(m_bInteractive);
 
-        for (PxTriangleMesh *mesh : triangleMeshes) {
-            mesh->release();
-        }
         triangleMeshes.clear();
         for (PxShape *shape : shapes) {
             shape->release();
@@ -419,104 +443,59 @@ void PhysicsManager::cleanupPhysics()
 //    functions private. This will ensure that only Physics Components can call these functions
 //    which will prevent users from misusing your code or intended design, allowing for less
 //    errors down the line due to misuse.
-PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, float y, float z,float scale,string filename) {
-    PxTriangleMesh* triangleMesh = generateMesh(filename, scale);
-    PxShape* shape = gPhysics->createShape(PxTriangleMeshGeometry(triangleMesh), *gCarMaterial);
-    PxTransform localTm(PxVec3(x, y, z));
-    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
-    body->attachShape(*shape);
-    body->setName(sEntityID);
-    gScene->addActor(*body);
+PxRigidStatic *PhysicsManager::createStaticMeshObject(const char* sEntityID, const Mesh* pMesh, const vec3* vPos) {
 
-    staticObjects.push_back(body);
+    // Local Variables
+    PxConvexMesh* pPxConMesh = nullptr;
+    PxCookingParams params = gCook->getParams();
+    PxConvexMeshDesc pPxConMeshDesc;
+    PxDefaultMemoryOutputStream writeBuffer;
+    PxRigidStatic *pPxRigidBody = nullptr;
+    PxShape* pPxShape;
+    const PxU32 numTrisPerLeaf = 15;
 
-    triangleMeshes.push_back(triangleMesh);
+    // Use BVH34 midphase
+    params.midphaseDesc = PxMeshMidPhase::eBVH34;
 
-    return body;
-}
-const int MAXLINE = 256;
-PxTriangleMesh *PhysicsManager::generateMesh(string filename,float m_scale) {
-    ifstream inFile(filename, ios::in);
-    vector<PxVec3> vertices;
-    vector<PxU32> verticesFinal;
-    while (inFile)
-    {
-        string currLine;
-        getline(inFile, currLine);
-        if (currLine[0] == 'v' && currLine[1] == ' ') {
-            currLine = currLine.substr(2, currLine.length() - 2);
-            stringstream ss(currLine);
-            PxVec3 vertex;
-            ss >> vertex.x;
-            ss >> vertex.y;
-            ss >> vertex.z;
-            vertex *= m_scale;
-            // cout << vertex.x << "," << vertex.y << "," << vertex.z << "\n";
-            vertices.push_back(vertex);
-        }
-        else if (currLine[0] == 'f' && currLine[1] == ' ') {
-            currLine = currLine.substr(2, currLine.length() - 2);
-            stringstream ss;
-            PxU32 indice;
-            int i;
-            for (i = 0; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
-                ss << currLine[i];
-            }
-            ss >> indice;
-            // std::cout << indice << ",";
-            stringstream ss2;
-            while (currLine[i] != ' ')
-                i++;
-            i++;
-            for (; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
-                ss2 << currLine[i];
-            }
-            PxU32 indice2;
-            ss2 >> indice2;
-            // std::cout << indice2 << ",";
-            stringstream ss3;
-            while (currLine[i] != ' ')
-                i++;
-            i++;
-            for (; currLine[i] != ' ' && currLine[i] != '/'&& currLine[i] != '\n'; i++) {
-                ss3 << currLine[i];
-            }
-            PxU32 indice3;
-
-            ss3 >> indice3;
-            // std::cout << indice3 << "\n";
-            verticesFinal.push_back(indice3);
-            verticesFinal.push_back(indice2);
-            verticesFinal.push_back(indice);
-
-        }
-
-    }
-    PxTolerancesScale scale;
-    PxCookingParams params(scale);
+    // Setup cooking parameters
     // disable mesh cleaning - perform mesh validation on development configurations
     params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
     // disable edge precompute, edges are set for each triangle, slows contact generation
     params.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
     // lower hierarchy for internal mesh
+    params.midphaseDesc.mBVH34Desc.numPrimsPerLeaf = numTrisPerLeaf;
     gCook->setParams(params);
-    PxTriangleMeshDesc meshDesc;
-    meshDesc.points.count = vertices.size();
-    meshDesc.points.stride = sizeof(PxVec3);
-    meshDesc.points.data = &vertices[0];
 
-    meshDesc.triangles.count = verticesFinal.size()/3;
-    meshDesc.triangles.stride = 3 * sizeof(PxU32);
-    meshDesc.triangles.data = &verticesFinal[0];
+    // Set up Mesh Description from Given Mesh
+    pPxConMeshDesc.points.count = pMesh->getVertices().size();
+    pPxConMeshDesc.points.stride = sizeof(PxVec3);
+    pPxConMeshDesc.points.data = pMesh->getVertices().data();
+    pPxConMeshDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
 
-    PxDefaultMemoryOutputStream writeBuffer;
-    bool status = gCook->cookTriangleMesh(meshDesc, writeBuffer);
-    if (!status){
+//#ifdef _DEBUG
+//    PX_ASSERT(gCook->validateTriangleMesh(meshDesc));
+//#endif
+
+    // Cook the Mesh
+    if (!gCook->cookConvexMesh(pPxConMeshDesc, writeBuffer))
         std::cout << "cooking failed" << std::endl;
-        return NULL;
+    else
+    {
+        PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+        pPxConMesh = gPhysics->createConvexMesh(readBuffer);
+        pPxShape = gPhysics->createShape(PxConvexMeshGeometry(pPxConMesh), *gWorldMaterial);
+        PxVec3 pPxPos;
+        memcpy(&pPxPos, vPos, sizeof(vec3));
+        PxTransform localTm(pPxPos);
+        pPxRigidBody = gPhysics->createRigidStatic(localTm);
+        pPxRigidBody->attachShape(*pPxShape);
+        pPxRigidBody->setName(sEntityID);
+        gScene->addActor(*pPxRigidBody);
+
+        staticObjects.push_back(pPxRigidBody);
     }
-    PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-    return gPhysics->createTriangleMesh(readBuffer);
+
+    return pPxRigidBody;
 }
 
 PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x,float y, float z, float sizeX,float sizeY,float sizeZ) {
@@ -576,10 +555,13 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     gScene->addActor(*(*pReturnBody));
 }
 
-// Name: createFlameObject
+// Name: createCylinderObject
 // Written By: James Coté
-// Description: Generates a Cylindrical bounding box at a given position with a specified Height and Radius 
-void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody)
+// Description: Generates a Cylindrical bounding box at a given position with a
+// specified Height and Radius. Object ignores gravity. Used for creating flame
+// trail entities.
+void PhysicsManager::createCylinderObject(const char* cName, const vec3* vPosition,
+                                       float fHeight, float fRadius, PxRigidDynamic** pReturnBody)
 {
     // Generate Cylindrical Shape
     PxShape* pShape = gPhysics->createShape(PxCapsuleGeometry(fRadius, fHeight), *gWorldMaterial);
@@ -610,7 +592,7 @@ void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition,
 }
 
 // Removes a Rigid Dynamic Object from the scene and releases the actor
-void PhysicsManager::removeRigidDynamicObj(PxRigidDynamic* pActor)
+void PhysicsManager::removeRigidActor(PxRigidActor* pActor)
 {
     gScene->removeActor(*pActor, false);
     pActor->release();
@@ -677,11 +659,9 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
 }
 
 /*
-Update the car over a period of time.
-
-@return true if the car is in the air, meaning all 4 wheels are in the air.
+    Update the car over a period of time.
 */
-bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
+void PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     const PxF32 timestep = fTimeDelta;
     //Raycasts.
     PxVehicleWheels* vehicleWheels[1] = { vehicle };
@@ -692,16 +672,16 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     //Vehicle update.
     const PxVec3 grav = gScene->getGravity();
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
-    PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults, vehicle->mWheelsSimData.getNbWheels()} };
+    PxVehicleWheelQueryResult vehicleQueryResults[1] = { {wheelQueryResults,vehicle->mWheelsSimData.getNbWheels()} };
     PxVehicleUpdates(timestep, grav, *gFrictionPairs, 1, vehicleWheels, vehicleQueryResults);
 //    cout << "1: " << wheelQueryResults[0].isInAir
 //        << " 2: " << wheelQueryResults[1].isInAir
 //        << " 3: " << wheelQueryResults[2].isInAir
 //        << " 4: " << wheelQueryResults[3].isInAir << endl;
-    return wheelQueryResults[0].isInAir
-        && wheelQueryResults[1].isInAir
-        && wheelQueryResults[2].isInAir
-        && wheelQueryResults[3].isInAir;
+    // return wheelQueryResults[0].isInAir
+        // && wheelQueryResults[1].isInAir
+        // && wheelQueryResults[2].isInAir
+        // && wheelQueryResults[3].isInAir;
 }
 
 // bool PhysicsManager::updateRocket(PxRigidDynamic *rocket, float fTimeDelta) {

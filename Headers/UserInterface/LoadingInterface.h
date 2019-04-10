@@ -12,11 +12,11 @@ public:
     LoadingInterface(const LoadingInterface* pCopy);                              // Default Copy Constructor
     LoadingInterface& operator=(const LoadingInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
 private:
 

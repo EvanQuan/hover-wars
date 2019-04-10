@@ -14,11 +14,11 @@ public:
     PostgameInterface(const PostgameInterface* pCopy);                              // Default Copy Constructor
     PostgameInterface& operator=(const PostgameInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
 private:
 

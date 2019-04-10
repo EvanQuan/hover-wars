@@ -49,6 +49,4 @@ private:
 
     // @Override
     eAbility getAbility() const { return eAbility::ABILITY_TRAIL_ACTIVATE; }
-    // @Override
-    void handleHovercraftCollision(HovercraftEntity* hit);
 };

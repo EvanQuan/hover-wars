@@ -42,7 +42,7 @@ LoadingInterface* LoadingInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void LoadingInterface::update(float fSecondsSinceLastUpdate)
+void LoadingInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -50,6 +50,6 @@ void LoadingInterface::reinitialize(float gameTime)
 {
 }
 
-void LoadingInterface::render()
+void LoadingInterface::renderOverride()
 {
 }

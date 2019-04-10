@@ -34,7 +34,7 @@ RulesInterface* RulesInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void RulesInterface::update(float fSecondsSinceLastUpdate)
+void RulesInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -42,7 +42,7 @@ void RulesInterface::reinitialize(float gameTime)
 {
 }
 
-void RulesInterface::render()
+void RulesInterface::renderOverride()
 {
     renderImage(IMAGE_RULE_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
 }

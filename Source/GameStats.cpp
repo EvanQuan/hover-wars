@@ -8,13 +8,14 @@ Number of killstreaks against another player to count as domination
 */
 #define DOMINATION_COUNT 3
 /*
-Base points gained for hitting a bot
+After total score gained has been calculated, multiply score gained by value if
+hit a bot
 */
-#define POINTS_GAINED_HIT_BOT 10
+#define POINT_MULTIPLIER_HIT_BOT 0.3
 /*
-Base points gained for hitting a player
+Base points gained for hitting a hovercraft
 */
-#define POINTS_GAINED_HIT_PLAYER 50
+#define POINTS_GAINED_HIT_BASE 50
 /*
 Number of extra points gained when a player gets revenge
 */
@@ -51,7 +52,7 @@ risky as you will lose more points.
 /*
 Notifies a killstreak message once player hits a milestone.
 */
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 7
 
 
 // Singleton instance
@@ -376,8 +377,7 @@ void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 */
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
-    int basePoints = GAME_STATS->isPlayer(attacker) ?
-        POINTS_GAINED_HIT_PLAYER : POINTS_GAINED_HIT_BOT;
+    int basePoints = POINTS_GAINED_HIT_BASE;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
     int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
@@ -389,7 +389,12 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
         queueFirstBlood = true;
         m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
-    return basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
+    int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
+    if (isBot(hit))
+    {
+        totalGained *= POINT_MULTIPLIER_HIT_BOT;
+    }
+    return totalGained;
 }
 
 /*

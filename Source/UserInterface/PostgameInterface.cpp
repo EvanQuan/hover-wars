@@ -273,7 +273,7 @@ PostgameInterface* PostgameInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void PostgameInterface::update(float fSecondsSinceLastUpdate)
+void PostgameInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -281,7 +281,7 @@ void PostgameInterface::reinitialize(float gameTime)
 {
 }
 
-void PostgameInterface::render()
+void PostgameInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderImage(IMAGE_PLACEMENT, m_vComponentCoordinates[PLACEMENT].first, m_vComponentCoordinates[PLACEMENT].second, 1.0f);

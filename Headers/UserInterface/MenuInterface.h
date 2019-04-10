@@ -12,9 +12,9 @@ public:
     MenuInterface(const MenuInterface* pCopy);                              // Default Copy Constructor
     MenuInterface& operator=(const MenuInterface* pCopy);                   // Assignment Operator.
 
-    virtual void update(float fSecondsSinceLastUpdate) = 0;
+    virtual void updateOverride(float fSecondsSinceLastUpdate) = 0;
 
     virtual void reinitialize(float gameTime) = 0;
 
-    virtual void render() = 0;
+    virtual void renderOverride() = 0;
 };

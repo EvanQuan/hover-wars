@@ -14,11 +14,11 @@ public:
     RulesInterface(const RulesInterface* pCopy);                              // Default Copy Constructor
     RulesInterface& operator=(const RulesInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
 private:
     enum eUIComponent

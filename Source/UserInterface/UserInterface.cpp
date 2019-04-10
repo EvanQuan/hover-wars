@@ -31,6 +31,11 @@ Coordinate system:
 #define MESSAGE_SCALE           1.0f
 #define MESSAGE_COLOR           COLOR_WHITE
 
+// Unit: seconds
+#define GLOBAL_MESSAGE_TIME 3.0f
+#define GLOBAL_MESSAGE_X 0.5f
+#define GLOBAL_MESSAGE_Y 0.5f
+
 
 /*************\
  * Constants *
@@ -152,6 +157,14 @@ void UserInterface::initializeComponentCoordinates()
     for (int i = 0; i < m_iComponentCount; i++)
     {
         m_vComponentCoordinates.push_back(make_pair(0.0f, 0.0f));
+    }
+}
+
+void UserInterface::renderGlobalMessage()
+{
+    if (m_fGlobalMessageTime > 0)
+    {
+        renderText(m_sGlobalMessage, m_fGlobalMessageX, m_fGlobalMessageY, 1.0, COLOR_WHITE);
     }
 }
 
@@ -296,6 +309,12 @@ void UserInterface::initializeVBOs()
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
 }
 
+void UserInterface::render()
+{
+    renderOverride();
+    renderGlobalMessage();
+}
+
 /*
 Update the window width and height due to window resizing.
 */
@@ -314,6 +333,10 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
         m_vComponentCoordinates[component].first = (m_iWidth * m_vComponentScaling[component].first) + m_vComponentTranslating[component].first;
         m_vComponentCoordinates[component].second = (m_iHeight * m_vComponentScaling[component].second) + m_vComponentTranslating[component].second;
     }
+    // Update global message coordinates
+    m_fGlobalMessageX = (m_iWidth * GLOBAL_MESSAGE_X);
+    m_fGlobalMessageY = (m_iHeight * GLOBAL_MESSAGE_Y);
+
 }
 
 void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
@@ -453,6 +476,12 @@ void UserInterface::debugFont()
     // Clean up OpenGL
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void UserInterface::displayGlobalMessage(string message)
+{
+    m_sGlobalMessage = message;
+    m_fGlobalMessageTime = GLOBAL_MESSAGE_TIME;
 }
 
 /*

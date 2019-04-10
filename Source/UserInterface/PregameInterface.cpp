@@ -74,7 +74,7 @@ PregameInterface* PregameInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void PregameInterface::update(float fSecondsSinceLastUpdate)
+void PregameInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -82,7 +82,7 @@ void PregameInterface::reinitialize(float gameTime)
 {
 }
 
-void PregameInterface::render()
+void PregameInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_PRE_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderOption();

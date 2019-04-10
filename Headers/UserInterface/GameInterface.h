@@ -33,7 +33,6 @@ public:
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
-        // @Deprecated
         KILL_MESSAGE_NEW_LEADER,
     };
 
@@ -58,14 +57,14 @@ public:
     This should be called once per frame update.
     
     */
-    void update(float fFrameDeltaTime);
+    void updateOverride(float fFrameDeltaTime);
     void updateResumeCountdown(float fFrameDeltaTime);
 
     void startResumeCountdown();
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
     void setDisplayCount(int count);
 
@@ -92,6 +91,7 @@ private:
         COMPONENT_POWERUP,
         COMPONENT_NOTIFICATION,
         COMPONENT_COUNTDOWN,
+        COMPONENT_KILL_DEATHS,
         COMPONENT_COUNT
     };
 
@@ -137,6 +137,7 @@ private:
     
     void renderNotifications();
     void renderResumeCountdown();
+    void renderKillsAndDeaths();
 
     // Cooldowns
     void updateCooldowns();

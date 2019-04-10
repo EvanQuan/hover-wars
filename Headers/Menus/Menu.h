@@ -82,7 +82,7 @@ private:
         return FuncUtils::getOrDefault(m_justReleasedButtonToFixedCommand, button, COMMAND_INVALID_FIXED);
     };
 
-    bool bWireFrameEnabled;
+    bool m_bWireFrameEnabled;
 
     unordered_map<int, eFixedCommand> m_pressedKeyToFixedCommand;
     unordered_map<int, eFixedCommand> m_justPressedKeyToFixedCommand;

@@ -46,15 +46,6 @@ void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsi
     }
 }
 
-void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
-{
-    // TODO add flame hit sound here, as at will only occur if a hovercraft
-    // collides with this
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
-
-    //cout << "FLAME HIT PLAYER " << hit->getID() << endl;
-}
-
 /****************************************************************\
  * Inherited Pure Virtual Functions                             *
 \****************************************************************/
@@ -69,13 +60,15 @@ void FlameTrail::initialize()
     // Generate the Mesh
     m_pMesh = MESH_MANAGER->generateBillboardMesh(&pFlameTrailInfo, this);
     m_pAnimationComponent = pEntityManager->generateAnimationComponent(m_iID);
-    m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &m_sSpriteSheetInfo, m_fHeight, m_fWidth);
+    m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &m_sSpriteSheetInfo,
+                                                          m_fHeight, m_fWidth);
 
     // Generate Physics Actor
     m_sName = to_string(m_iID) + " " + to_string(m_iOwnerID);
 
     // Generate the Render Component
-    m_pRenderComponent = pEntityManager->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
+    m_pRenderComponent = pEntityManager->generateRenderComponent(m_iID, m_pMesh, false,
+        ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
 
     // Get a Physics Component for this Entity
     m_pPhysicsComponent = pEntityManager->generatePhysicsComponent(m_iID);
@@ -97,7 +90,7 @@ void FlameTrail::update(float fTimeInSeconds)
         // Handle Certain Thresholds of the Duration
         if (pIter->fDuration <= 0.0f)      // Delete the Physics Actor
         {
-            m_pPhysXMngr->removeRigidDynamicObj(pIter->pActorRef);
+            m_pPhysXMngr->removeRigidActor(pIter->pActorRef);
             bDeletionFlag = true;
         }
     }
@@ -132,7 +125,8 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
     // Store the duration locally to manage the Physics Component.
     sReferenceBlock pNewBlock;
     pNewBlock.fDuration = m_sSpriteSheetInfo.fDuration;
-    m_pPhysXMngr->createFlameObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f, &pNewBlock.pActorRef);
+    m_pPhysXMngr->createCylinderObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f,
+                                    m_fWidth * 0.5f, &pNewBlock.pActorRef);
     m_pReferenceMap.push_back(pNewBlock);
 
     // Grab Pointer to HashKey to give to Physics Component as Name.

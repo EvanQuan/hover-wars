@@ -37,16 +37,16 @@ const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
     // Player colours should be very distinct from each other and stand out
     vec3(1.0f, 0.0f, 0.0f),   //PLAYER 1 - Red (because red fire is cool, and should be in every game)
-    vec3(0.0f, 1.0f, 1.0f),   //PLAYER 2 - Cyan (because pure blue is too dark, and makes flame difficult to see)
+    vec3(0.0f, 0.74901960784f, 1.0f),   //PLAYER 2 - Cyan (because pure blue is too dark, and makes flame difficult to see)
     vec3(0.0f, 1.0f, 0.0f),   //PLAYER 3 - Green
-    vec3(1.0f, 0.0f, 1.0f),   //PLAYER 4 - Pink
+    vec3(1.0f, 0.75294117647f, 0.79607843137f),   //PLAYER 4 - Pink
     // Bot colours should be very similar to each other so players can easily
     // tell they are a bot rather than a player. Distinguishing between
     // different bots is not as important as identifying them as bots.
-    vec3(1.0f),               //BOT 1    - White
-    vec3(0.0f),               //BOT 2    - Black
-    vec3(0.7f),               //BOT 3    - Light Grey
-    vec3(0.3f)                //BOT 4    - Dark Grey
+    vec3(1.0f, 0.54901960784f, 0.0f),               //BOT 1    - White
+    vec3(1.0f, 0.0f, 1.0f),               //BOT 2    - Black
+    vec3(1.0f, 1.0f, 0.0f),               //BOT 3    - Light Grey
+    vec3(1.0f)                //BOT 4    - Dark Grey
 };
 
 const vec4 BLUR_QUAD[4]{
@@ -188,9 +188,9 @@ void GameManager::addInterface(UserInterface* ui)
 {
     m_vInterfaceInstances.push_back(ui);
 }
-void GameManager::setCurrentInterface(UserInterface* ui)
+void GameManager::setCurrentInterface(MenuInterface* ui)
 {
-    m_pCurrentInterface = ui;
+    m_pMenuInterface = ui;
 }
 /*
     Start rendering game to screen. This call with block until the game loop
@@ -219,6 +219,7 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environment can respond to the commands issued this frame.
     m_pCommandHandler->update(m_fFrameDeltaTime);
+    m_pMenuInterface->update(m_fFrameDeltaTime);
     checkIfStartedGameOver();
 
     if (m_bInGame)
@@ -358,7 +359,7 @@ void GameManager::updateEnvironment()
     // Cannot be updated inside the EntityManager as sounds can play while game
     // is paused.
     m_pSoundManager->update();
-    // The user interface should update after the EntityManager and
+    // The game interface should update after the EntityManager and
     // CommandHandler has changed in order to reflect their changes.
     // It also cannot update inside the EntityManager since it is able
     // to be updated while the EntityManager is paused.
@@ -637,8 +638,8 @@ void GameManager::drawScene()
         glDisable(GL_DEPTH_TEST);
         if (!m_bInGame)
         {
-            // Pause check is to avoid double rendering the Game interface.
-            m_pCurrentInterface->render();
+            // In game check is to avoid double rendering the user interface.
+            m_pMenuInterface->render();
         }
         
 
@@ -817,7 +818,7 @@ bool GameManager::initialize()
     m_fGameOverTime = GAME_OVER_TIME;
 
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
-    m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
+    m_pMenuInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 
     // Return error results
     return true; 
@@ -868,7 +869,7 @@ void GameManager::resizeWindow( int iWidth, int iHeight )
         generateFrameBuffer(i);
 
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
-    m_pCurrentInterface->updateWidthAndHeight(iWidth, iHeight);
+    m_pMenuInterface->updateWidthAndHeight(iWidth, iHeight);
 }
 
 /*

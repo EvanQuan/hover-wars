@@ -13,11 +13,11 @@ public:
     ControlsInterface(const ControlsInterface* pCopy);              // Default Copy Constructor
     ControlsInterface& operator=(const ControlsInterface* pCopy);   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
 private:
     enum eUIComponent

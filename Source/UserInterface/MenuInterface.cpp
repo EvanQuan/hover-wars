@@ -8,7 +8,3 @@ MenuInterface::MenuInterface(
 {
     /* TODO */
 }
-
-// void MenuInterface::render()
-// {
-// }

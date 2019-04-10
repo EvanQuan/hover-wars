@@ -102,6 +102,8 @@ GameInterface::GameInterface() : UserInterface(
         {0.42f, 0.75f},
         // 10 Resume game countdown
         {0.48f, 0.50f},
+        // 11 Kill/ deaths
+        {0.7f, 0.9f},
     },
     // Translating
     vector<pair<float, float>>
@@ -127,6 +129,8 @@ GameInterface::GameInterface() : UserInterface(
         // 9 Notification
         {0.0f, 0.0f},
         // 10 Resume game countdown
+        {0.0f, 0.0f},
+        // 11 Kill/deaths
         {0.0f, 0.0f},
     }
 )
@@ -267,7 +271,7 @@ void GameInterface::displayMessage(eHovercraft hovercraft, std::string text)
 
     Units: seconds
 */
-void GameInterface::update(float fFrameDeltaTime)
+void GameInterface::updateOverride(float fFrameDeltaTime)
 {
     if (m_iDisplayCount > 0)
     {
@@ -329,12 +333,13 @@ Renders the most recently updated state to the screen.
 This this be called every render update, after the environment has been
 rendered to ensure the UI is on top.
 */
-void GameInterface::render()
+void GameInterface::renderOverride()
 {
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
     renderGameTime();
     renderScores();
     renderCooldowns();
+    renderKillsAndDeaths();
     renderMessages();
     renderNotifications();
     renderResumeCountdown();
@@ -508,6 +513,21 @@ void GameInterface::renderResumeCountdown()
             MESSAGE_SCALE, color);
     }
 
+}
+
+void GameInterface::renderKillsAndDeaths()
+{
+    int kills = GAME_STATS->get(m_eHovercraftFocus,
+            GameStats::eHovercraftStat::KILLS_TOTAL);
+    int deaths = GAME_STATS->get(m_eHovercraftFocus,
+            GameStats::eHovercraftStat::DEATHS_TOTAL);
+
+    string kdr = "K/D   " + std::to_string(kills) + "/" + std::to_string(deaths);
+
+    renderText(kdr,
+        m_vComponentCoordinates[COMPONENT_KILL_DEATHS].first,
+        m_vComponentCoordinates[COMPONENT_KILL_DEATHS].second,
+        SCORE_SCALE, SCORE_COLOR);
 }
 
 void GameInterface::renderScores()

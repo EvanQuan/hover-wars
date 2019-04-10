@@ -42,7 +42,7 @@ StartInterface* StartInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void StartInterface::update(float fSecondsSinceLastUpdate)
+void StartInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
@@ -50,7 +50,7 @@ void StartInterface::reinitialize(float gameTime)
 {
 }
 
-void StartInterface::render()
+void StartInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_START_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);

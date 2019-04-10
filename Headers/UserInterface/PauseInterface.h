@@ -15,11 +15,11 @@ public:
     PauseInterface(const PauseInterface* pCopy);                              // Default Copy Constructor
     PauseInterface& operator=(const PauseInterface* pCopy);                   // Assignment Operator.
 
-    void update(float fSecondsSinceLastUpdate);
+    void updateOverride(float fSecondsSinceLastUpdate);
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
 private:
     enum eUIComponent

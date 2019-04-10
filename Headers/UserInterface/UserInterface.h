@@ -122,16 +122,26 @@ public:
     This should be called once per frame update.
     
     */
-    virtual void update(float fSecondsSinceLastUpdate) = 0;
+    virtual void update(float fDeltaTime) final {
+        m_fGlobalMessageTime -= fDeltaTime;
+        updateOverride(fDeltaTime);
+        renderGlobalMessage();
+    }
+
+    virtual void updateOverride(float fFrameDeltaTime) = 0;
+
 
     virtual void reinitialize(float gameTime) = 0;
 
-    virtual void render() = 0;
+    virtual void render() final;
+    virtual void renderOverride() {};
 
     virtual void updateWidthAndHeight(int iWidth, int iHeight) final;
 
     // Shows the Sprite Map for the text map for debugging.
     void debugFont();
+
+    void displayGlobalMessage(string message);
 
 protected:
 
@@ -174,6 +184,8 @@ private:
     // The UI needs to render its own components
     ShaderManager *m_pShdrMngr;
 
+    void renderGlobalMessage();
+
 
     // Initializes FreeType and the Font Library
     void initFreeType();
@@ -194,6 +206,7 @@ private:
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
     void initializeComponentCoordinates();
+
     /*
         m_vComponentScaling and m_vComponentTranslating should have the same
         number of elements. They size is tracked here.
@@ -201,5 +214,11 @@ private:
     int m_iComponentCount;
 
     map<string, Texture*>m_Textures;
+
+    // Global message values
+    string m_sGlobalMessage;
+    float m_fGlobalMessageTime;
+    float m_fGlobalMessageX;
+    float m_fGlobalMessageY;
 
 };
