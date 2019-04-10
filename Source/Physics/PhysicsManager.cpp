@@ -11,6 +11,7 @@
 #include "snippetvehiclecommon/SnippetVehicleFilterShader.h"
 #include "snippetvehiclecommon/SnippetVehicleTireFriction.h"
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
+#include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -237,6 +238,24 @@ static PxFilterFlags filterShader(
 }
 // Initialization of Physics will happen here, this will be called in main, immediately
 //    after constructing the PhysicsManager Instance.
+PxRigidStatic* PhysicsManager::createDrivablePlane(const PxFilterData& simFilterData, PxMaterial* material, PxPhysics* physics, PxRigidStatic * body)
+{
+
+
+    //Get the plane shape so we can set query and simulation filter data.
+    PxShape* shapes[1];
+    body->getShapes(shapes, 1);
+
+    //Set the query filter data of the ground plane so that the vehicle raycasts can hit the ground.
+    PxFilterData qryFilterData;
+    snippetvehicle::setupDrivableSurface(qryFilterData);
+    shapes[0]->setQueryFilterData(qryFilterData);
+
+    //Set the simulation filter data of the ground plane so that it collides with the chassis of a vehicle but not the wheels.
+    shapes[0]->setSimulationFilterData(simFilterData);
+
+    return body;
+}
 void PhysicsManager::initPhysics(bool interactive)
 {
     cout << "initPhysics" << endl;
@@ -317,7 +336,15 @@ void PhysicsManager::initPhysics(bool interactive)
     //Create a plane to drive on.
     PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 
-    PxRigidStatic* gGroundPlane = snippetvehicle::createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics);
+
+    //Add a plane to the scene.
+    PxShape* shape = gPhysics->createShape(PxBoxGeometry(200, 1, 200), *gWorldMaterial);
+    PxTransform localTm(PxVec3(0, -1, 0));
+    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    body->attachShape(*shape);
+
+
+    PxRigidStatic* gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics, body);
     gGroundPlane->setName(NAME_GROUND);
     // cout << "\"" << gGroundPlane->getName() << "\"" << endl;
     gScene->addActor(*gGroundPlane);

@@ -137,12 +137,12 @@ void InputHandler::debugKeyCommands(int key, int action)
         case GLFW_KEY_8:
             m_pEntityManager->getPlayer(HOVERCRAFT_PLAYER_1)->enablePowerup(POWERUP_DASH_RECHARGE);
             break;
-        case GLFW_KEY_9:
-            GameInterface::getInstance(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight())->setFocus(HOVERCRAFT_PLAYER_2);
-            break;
-        case GLFW_KEY_0:
-            GameInterface::getInstance(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight())->setFocus(HOVERCRAFT_PLAYER_1);
-            break;
+        //case GLFW_KEY_9:
+        //    GameInterface::getInstance(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight())->setFocus(HOVERCRAFT_PLAYER_2);
+        //    break;
+        //case GLFW_KEY_0:
+        //    GameInterface::getInstance(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight())->setFocus(HOVERCRAFT_PLAYER_1);
+        //    break;
         case GLFW_KEY_MINUS:
             // SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_INGAME);
             break;
