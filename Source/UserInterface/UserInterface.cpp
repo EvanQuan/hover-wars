@@ -110,6 +110,11 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_GAME_RULE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_RULE_1);
     m_Textures[IMAGE_GAME_RULE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_RULE_2);
     m_Textures[IMAGE_CONTROLLER_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_CONTROLLER_MENU);
+    m_Textures[IMAGE_RULE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_RULE_MENU);
+    m_Textures[IMAGE_AI_1] = TEXTURE_MANAGER->loadTexture(IMAGE_AI_1);
+    m_Textures[IMAGE_AI_2] = TEXTURE_MANAGER->loadTexture(IMAGE_AI_2);
+    m_Textures[IMAGE_CONFIG_1] = TEXTURE_MANAGER->loadTexture(IMAGE_CONFIG_1);
+    m_Textures[IMAGE_CONFIG_2] = TEXTURE_MANAGER->loadTexture(IMAGE_CONFIG_2);
 
 }
 

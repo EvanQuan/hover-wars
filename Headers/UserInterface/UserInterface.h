@@ -67,6 +67,12 @@
 #define IMAGE_CONTROLLER_2 "textures/menu/controls2.png"
 #define IMAGE_GAME_RULE_1 "textures/menu/rules.png"
 #define IMAGE_GAME_RULE_2 "textures/menu/rules2.png"
+#define IMAGE_CONTROLLER_MENU "textures/menu/controller_menu.png"
+#define IMAGE_RULE_MENU "textures/menu/rule_menu.png"
+#define IMAGE_AI_1 "textures/menu/ai.png"
+#define IMAGE_AI_2 "textures/menu/ai_2.png"
+#define IMAGE_CONFIG_1 "textures/menu/config_1.png"
+#define IMAGE_CONFIG_2 "textures/menu/config_2.png"
 
 // Forward Declaration
 class ShaderManager;

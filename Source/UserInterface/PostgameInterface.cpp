@@ -22,7 +22,9 @@ PostgameInterface::PostgameInterface() : MenuInterface(
     {
         // 0 Background
         {0.0f, 0.0f},
-        // 1 Prompt 1
+        // 1 Placement
+        {0.0f, 0.0f},
+        // 2 Awards
         {0.0f, 0.0f},
 
     },
@@ -31,8 +33,10 @@ PostgameInterface::PostgameInterface() : MenuInterface(
     {
         // 0 Background
         {0.0f, 0.0f},
-        // 1 Prompt 1
+        // 1 Placement
         {0.47f, 0.1f},
+        // 2 Awards
+        {0.0f, 0.0f},
     }
 )
 {
@@ -62,23 +66,17 @@ void PostgameInterface::render()
 {
     renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderScore();
-    renderOption();
+
 }
 
 void PostgameInterface::renderScore()
 {
-
-}
-
-void PostgameInterface::renderOption()
-{
     PostgameMenu* m = (PostgameMenu*)PostgameMenu::getInstance();
     string option = m->getCurrentPrompt();
 
-    if (option == BACK_TO_MAIN_MENU_OPTION) {
-        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
-    else {
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+    vector<EndGameStat> endGameStats = GAME_STATS->getEndGameStats();
+    for (EndGameStat s : endGameStats)
+    {
+
     }
 }

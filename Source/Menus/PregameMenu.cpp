@@ -156,6 +156,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
                 break;
             }
+            break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_4: // AI
             switch (direction)
             {
@@ -175,6 +176,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                 cout << "\t" << m_eAIType << endl;
                 break;
             }
+            break;
     }
 }
 

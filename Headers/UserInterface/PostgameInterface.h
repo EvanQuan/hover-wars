@@ -25,10 +25,11 @@ private:
     enum eUIComponent
     {
         BACKGROUND = 0,
-        MAIN_MENU,
+        PLACEMENT,
+        AWARDS,
+
     };
     static PostgameInterface* m_pInstance;
 
-    void renderOption();
     void renderScore();
 };
