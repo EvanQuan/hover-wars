@@ -470,6 +470,13 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     // Award attacker
     attackerHovercraft->reduceMaxCooldowns();
     attackerHovercraft->reduceCooldown(ability);
+
+    switch (ability)
+    {
+    case ABILITY_TRAIL_ACTIVATE:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
+        break;
+    }
 }
 
 /*
