@@ -86,12 +86,9 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, string sHashKey, flo
                 m4Transformation = translate(vPosition) * m4Transformation;
 
             // Store initial transformation
-            //m_m4ListOfInstances.push_back(m4Transformation);
             m_m4InstanceMap.insert(make_pair(sHashKey, m4Transformation));
+            loadInstanceBuffer();
         }
-
-        // Initialize VBOs
-        //initalizeVBOs();
     }
 
     // Return result

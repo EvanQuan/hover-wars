@@ -1,7 +1,9 @@
 #pragma once
 
- #include "GameManager.h"
-// class GameManager;
+// Forward Declaration of Game Manager and Entity Manager
+class GameManager;
+class EntityManager;
+
 /*
 Receives and stores user input (mouse, keyboard and controller).
 */
@@ -117,8 +119,8 @@ private:
 
     // The only reason this needed is for mouse input, which may not actually
     // be needed for the final product. ie. this may be removed later on.
-    GameManager* m_pGameManager;
-    EntityManager* m_pEntityManager;
+    GameManager*    m_pGameManager;
+    EntityManager*  m_pEntityManager;
 
     // Joysticks
     void updateJoystickButtonStates(int joystick);
