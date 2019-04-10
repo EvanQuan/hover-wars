@@ -69,13 +69,15 @@ void FlameTrail::initialize()
     // Generate the Mesh
     m_pMesh = MESH_MANAGER->generateBillboardMesh(&pFlameTrailInfo, this);
     m_pAnimationComponent = pEntityManager->generateAnimationComponent(m_iID);
-    m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &m_sSpriteSheetInfo, m_fHeight, m_fWidth);
+    m_pAnimationComponent->initializeComponentAsBillboard(m_pMesh, &m_sSpriteSheetInfo,
+                                                          m_fHeight, m_fWidth);
 
     // Generate Physics Actor
     m_sName = to_string(m_iID) + " " + to_string(m_iOwnerID);
 
     // Generate the Render Component
-    m_pRenderComponent = pEntityManager->generateRenderComponent(m_iID, m_pMesh, false, ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
+    m_pRenderComponent = pEntityManager->generateRenderComponent(m_iID, m_pMesh, false,
+        ShaderManager::eShaderType::BILLBOARD_SHDR, GL_POINTS);
 
     // Get a Physics Component for this Entity
     m_pPhysicsComponent = pEntityManager->generatePhysicsComponent(m_iID);
@@ -132,7 +134,8 @@ void FlameTrail::spawnFlame(const vec3* vNormal, const vec3* vPosition)
     // Store the duration locally to manage the Physics Component.
     sReferenceBlock pNewBlock;
     pNewBlock.fDuration = m_sSpriteSheetInfo.fDuration;
-    m_pPhysXMngr->createFlameObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f, m_fWidth * 0.5f, &pNewBlock.pActorRef);
+    m_pPhysXMngr->createFlameObject(m_sName.c_str(), vPosition, m_fHeight * 0.5f,
+                                    m_fWidth * 0.5f, &pNewBlock.pActorRef);
     m_pReferenceMap.push_back(pNewBlock);
 
     // Grab Pointer to HashKey to give to Physics Component as Name.

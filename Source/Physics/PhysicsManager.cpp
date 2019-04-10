@@ -576,10 +576,13 @@ void PhysicsManager::createRocketObjects(const char* cName, const mat4* m4Transf
     gScene->addActor(*(*pReturnBody));
 }
 
-// Name: createFlameObject
+// Name: createCylinderObject
 // Written By: James Coté
-// Description: Generates a Cylindrical bounding box at a given position with a specified Height and Radius 
-void PhysicsManager::createFlameObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody)
+// Description: Generates a Cylindrical bounding box at a given position with a
+// specified Height and Radius. Object ignores gravity. Used for creating flame
+// trail entities.
+void PhysicsManager::createCylinderObject(const char* cName, const vec3* vPosition,
+                                       float fHeight, float fRadius, PxRigidDynamic** pReturnBody)
 {
     // Generate Cylindrical Shape
     PxShape* pShape = gPhysics->createShape(PxCapsuleGeometry(fRadius, fHeight), *gWorldMaterial);
@@ -677,11 +680,9 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
 }
 
 /*
-Update the car over a period of time.
-
-@return true if the car is in the air, meaning all 4 wheels are in the air.
+    Update the car over a period of time.
 */
-bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
+void PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     const PxF32 timestep = fTimeDelta;
     //Raycasts.
     PxVehicleWheels* vehicleWheels[1] = { vehicle };
@@ -698,10 +699,10 @@ bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
 //        << " 2: " << wheelQueryResults[1].isInAir
 //        << " 3: " << wheelQueryResults[2].isInAir
 //        << " 4: " << wheelQueryResults[3].isInAir << endl;
-    return wheelQueryResults[0].isInAir
-        && wheelQueryResults[1].isInAir
-        && wheelQueryResults[2].isInAir
-        && wheelQueryResults[3].isInAir;
+    // return wheelQueryResults[0].isInAir
+        // && wheelQueryResults[1].isInAir
+        // && wheelQueryResults[2].isInAir
+        // && wheelQueryResults[3].isInAir;
 }
 
 // bool PhysicsManager::updateRocket(PxRigidDynamic *rocket, float fTimeDelta) {

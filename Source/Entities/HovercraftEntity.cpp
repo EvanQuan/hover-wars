@@ -105,7 +105,8 @@ Represents the trail gauge is empty.
 */
 #define TRAIL_GAUGE_EMPTY       0.0f
 
-// Fire Defines
+// Fire dimensions
+// Affects both the hitboxes and sprite size
 #define FIRE_HEIGHT             3.0
 #define FIRE_WIDTH              3.0
 
@@ -462,8 +463,8 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     }
     setInvincible();
     m_pGameStats->addScore(attacker,
-                         static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
-                         ability);
+                           static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
+                           ability);
     resetMaxCooldowns();
 
     // Award attacker
@@ -673,7 +674,8 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, vColor, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, vColor, m_iID,
+                                                         FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
@@ -686,7 +688,7 @@ void HovercraftEntity::initialize(const string& sFileName,
         m_pSpikeAnimations[i]->initializeComponent(m_pSpikesMesh);
         m_pSpikeAnimations[i]->addKeyFrame(&ORIGIN, &ROTATIONS[i], 0.0f, ANIMATION_TIME);
         m_pSpikeAnimations[i]->addKeyFrame(&POSITIONS[i], &ROTATIONS[i],
-            SCALES[i], ANIMATION_TIME);
+                                           SCALES[i], ANIMATION_TIME);
     }
     // Generate Camera Components
     for (unsigned int i = 0; i < MAX_CAMERAS_PER_PLAYER; ++i)
