@@ -329,7 +329,7 @@ Renders the most recently updated state to the screen.
 This this be called every render update, after the environment has been
 rendered to ensure the UI is on top.
 */
-void GameInterface::render()
+void GameInterface::renderOverride()
 {
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
     renderGameTime();

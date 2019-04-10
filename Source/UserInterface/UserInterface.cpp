@@ -33,8 +33,8 @@ Coordinate system:
 
 // Unit: seconds
 #define GLOBAL_MESSAGE_TIME 3.0f
-#define GLOBAL_MESSAGE_X 0.0f
-#define GLOBAL_MESSAGE_Y 0.0f
+#define GLOBAL_MESSAGE_X 500.0f
+#define GLOBAL_MESSAGE_Y 500.0f
 
 
 /*************\
@@ -282,6 +282,12 @@ void UserInterface::initializeVBOs()
     // 
     // offset is 0
     m_pShdrMngr->setAttrib(m_iVertexArray, 0, 4, sizeof(vec4), 0); // Set Attributes for the Buffer to let OpenGL know how to index the data.
+}
+
+void UserInterface::render()
+{
+    renderOverride();
+    renderGlobalMessage();
 }
 
 /*

@@ -96,7 +96,7 @@ public:
     This should be called once per frame update.
     
     */
-    virtual void update(float fDeltaTime) {
+    virtual void update(float fDeltaTime) final {
         m_fGlobalMessageTime -= fDeltaTime;
         updateOverride(fDeltaTime);
         renderGlobalMessage();
@@ -107,7 +107,8 @@ public:
 
     virtual void reinitialize(float gameTime) = 0;
 
-    virtual void render() = 0;
+    virtual void render() final;
+    virtual void renderOverride() {};
 
     virtual void updateWidthAndHeight(int iWidth, int iHeight) final;
 

@@ -188,9 +188,9 @@ void GameManager::addInterface(UserInterface* ui)
 {
     m_vInterfaceInstances.push_back(ui);
 }
-void GameManager::setCurrentInterface(UserInterface* ui)
+void GameManager::setCurrentInterface(MenuInterface* ui)
 {
-    m_pCurrentInterface = ui;
+    m_pMenuInterface = ui;
 }
 /*
     Start rendering game to screen. This call with block until the game loop
@@ -219,6 +219,7 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environment can respond to the commands issued this frame.
     m_pCommandHandler->update(m_fFrameDeltaTime);
+    m_pMenuInterface->update(m_fFrameDeltaTime);
     checkIfStartedGameOver();
 
     if (m_bInGame)
@@ -358,7 +359,7 @@ void GameManager::updateEnvironment()
     // Cannot be updated inside the EntityManager as sounds can play while game
     // is paused.
     m_pSoundManager->update();
-    // The user interface should update after the EntityManager and
+    // The game interface should update after the EntityManager and
     // CommandHandler has changed in order to reflect their changes.
     // It also cannot update inside the EntityManager since it is able
     // to be updated while the EntityManager is paused.
@@ -637,8 +638,8 @@ void GameManager::drawScene()
         glDisable(GL_DEPTH_TEST);
         if (!m_bInGame)
         {
-            // Pause check is to avoid double rendering the Game interface.
-            m_pCurrentInterface->render();
+            // In game check is to avoid double rendering the user interface.
+            m_pMenuInterface->render();
         }
         
 
@@ -817,7 +818,7 @@ bool GameManager::initialize()
     m_fGameOverTime = GAME_OVER_TIME;
 
     m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
-    m_pCurrentInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
+    m_pMenuInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 
     // Return error results
     return true; 
@@ -868,7 +869,7 @@ void GameManager::resizeWindow( int iWidth, int iHeight )
         generateFrameBuffer(i);
 
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
-    m_pCurrentInterface->updateWidthAndHeight(iWidth, iHeight);
+    m_pMenuInterface->updateWidthAndHeight(iWidth, iHeight);
 }
 
 /*

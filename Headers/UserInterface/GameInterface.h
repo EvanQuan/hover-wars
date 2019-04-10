@@ -65,7 +65,7 @@ public:
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
     void setDisplayCount(int count);
 

@@ -50,6 +50,6 @@ void LoadingInterface::reinitialize(float gameTime)
 {
 }
 
-void LoadingInterface::render()
+void LoadingInterface::renderOverride()
 {
 }

@@ -23,7 +23,7 @@ public:
 
     void reinitialize(float gameTime);
 
-    void render();
+    void renderOverride();
 
 private:
     enum eUIComponent
