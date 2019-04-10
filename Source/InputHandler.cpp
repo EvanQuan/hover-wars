@@ -3,6 +3,7 @@
 #include "GameManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityManager.h"
+#include "UserInterface/MenuInterface.h"
 #include "SoundManager.h"
 #include "GameStats.h"
 
@@ -423,10 +424,12 @@ void InputHandler::joystickCallback(int joystickID, int event)
     case GLFW_CONNECTED:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->initializeJoystick(joystickID);
+        GAME_MANAGER->getMenuInterface()->displayGlobalMessage("connected");
         break;
     case GLFW_DISCONNECTED:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->disconnectJoystick(joystickID);
+        GAME_MANAGER->getMenuInterface()->displayGlobalMessage("disconnected.");
         break;
     }
 }

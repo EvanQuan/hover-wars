@@ -10,6 +10,7 @@ class AIManager;
 class EntityManager;
 class CommandHandler;
 class ShaderManager;
+class MenuInterface;
 class UserInterface;
 class GameInterface;
 class GameStats;
@@ -50,13 +51,15 @@ public:
     void setPaused(bool paused);
 
     void addInterface(UserInterface* ui);
-    void setCurrentInterface(UserInterface* ui);
+    void setCurrentInterface(MenuInterface* ui);
 
     // Automatically called at end of game if time runs out, or if ended thrugh
     // pause menu
     void endGame();
 
     void flagWindowToClose() { glfwSetWindowShouldClose(m_pWindow, GL_TRUE); }
+
+    MenuInterface* getMenuInterface() const { return m_pMenuInterface; }
 
 private:
     // For Singleton Implementation
@@ -166,7 +169,7 @@ private:
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
     PhysicsManager*     m_pPhysicsManager;
-    UserInterface*      m_pCurrentInterface;
+    MenuInterface*      m_pMenuInterface;
     GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
     SoundManager*       m_pSoundManager;

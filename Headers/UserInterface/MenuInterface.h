@@ -16,5 +16,5 @@ public:
 
     virtual void reinitialize(float gameTime) = 0;
 
-    virtual void render() = 0;
+    virtual void renderOverride() = 0;
 };
