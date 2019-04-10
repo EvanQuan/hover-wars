@@ -117,7 +117,7 @@ private:
 
     // The only reason this needed is for mouse input, which may not actually
     // be needed for the final product. ie. this may be removed later on.
-    GameManager* m_gameManager;
+    GameManager* m_pGameManager;
     EntityManager* m_pEntityManager;
 
     // Joysticks

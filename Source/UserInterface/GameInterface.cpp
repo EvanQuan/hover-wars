@@ -267,7 +267,7 @@ void GameInterface::displayMessage(eHovercraft hovercraft, std::string text)
 
     Units: seconds
 */
-void GameInterface::update(float fFrameDeltaTime)
+void GameInterface::updateOverride(float fFrameDeltaTime)
 {
     if (m_iDisplayCount > 0)
     {

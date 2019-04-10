@@ -50,7 +50,7 @@ PostgameInterface* PostgameInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void PostgameInterface::update(float fSecondsSinceLastUpdate)
+void PostgameInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

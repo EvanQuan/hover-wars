@@ -42,7 +42,7 @@ LoadingInterface* LoadingInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void LoadingInterface::update(float fSecondsSinceLastUpdate)
+void LoadingInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

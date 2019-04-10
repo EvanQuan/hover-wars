@@ -58,7 +58,7 @@ public:
     This should be called once per frame update.
     
     */
-    void update(float fFrameDeltaTime);
+    void updateOverride(float fFrameDeltaTime);
     void updateResumeCountdown(float fFrameDeltaTime);
 
     void startResumeCountdown();

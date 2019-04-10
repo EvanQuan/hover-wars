@@ -42,7 +42,7 @@ ControlsInterface* ControlsInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void ControlsInterface::update(float fSecondsSinceLastUpdate)
+void ControlsInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 

@@ -60,7 +60,7 @@ MainInterface* MainInterface::getInstance(int iWidth, int iHeight)
 }
 
 
-void MainInterface::update(float fSecondsSinceLastUpdate)
+void MainInterface::updateOverride(float fSecondsSinceLastUpdate)
 {
 }
 
