@@ -5,13 +5,12 @@
 StaticEntity::StaticEntity(int iID, const vec3* vPosition)
     : Entity( iID, *vPosition, ENTITY_STATIC )
 {
-
+    m_pPhysicsActor = nullptr;
 }
 
 // Destructor
 StaticEntity::~StaticEntity()
 {
-    // Nothing to destruct
 }
 
 /****************************************************************\
@@ -65,7 +64,7 @@ void StaticEntity::loadAsCube(const ObjectInfo* pObjectProperties, const vec3* v
     vec3 boundingBox = pObjectProperties->sObjBoundingBox.vDimensions;
     boundingBox *= 0.5; // TODO
     //std::cout <<"here load As Cube: Static Entity: " << vDimensions->x << " " << vDimensions->y << " " << vDimensions->z << std::endl;
-    PHYSICS_MANAGER->createCubeObject(this->getName(), pObjectProperties->vPosition.x , pObjectProperties->vPosition.y, pObjectProperties->vPosition.z, boundingBox.x, boundingBox .y, boundingBox.z);
+    m_pPhysicsActor = PHYSICS_MANAGER->createCubeObject(this->getName(), pObjectProperties->vPosition.x , pObjectProperties->vPosition.y, pObjectProperties->vPosition.z, boundingBox.x, boundingBox.y, boundingBox.z);
 }
 
 // Load a Static Mesh from a given file
@@ -77,7 +76,6 @@ void StaticEntity::loadFromFile(const string& sFileName, const ObjectInfo* pObje
     // Set up Render component
     m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, true, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
-    // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
-    //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.
-    //m_pPhysicsComponent->initializeVehicle(true, m_pMesh); // PHYSICSTODO
+    // Set up Rigid Static Actor for Mesh.
+    m_pPhysicsActor = PHYSICS_MANAGER->createStaticMeshObject(m_sName.c_str(), m_pMesh, &pObjectProperties->vPosition);
 }

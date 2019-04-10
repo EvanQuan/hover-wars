@@ -686,7 +686,7 @@ bool Mesh::loadObj(const string& sFileName)
                         for (int i = 0; i < 3; ++i)
                         {
                             m_pIndices.push_back(vFaceVerts[j]);
-                            j = (j + 1) % 4;
+                            j = (j + 1) & 3;
                         }
                     }
                     else if (3 != vFaceVerts.size()) // Error
