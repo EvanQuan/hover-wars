@@ -11,7 +11,7 @@ Number of killstreaks against another player to count as domination
 After total score gained has been calculated, multiply score gained by value if
 hit a bot
 */
-#define POINT_MULTIPLIER_HIT_BOT 0.5
+#define POINT_MULTIPLIER_HIT_BOT 0.3
 /*
 Base points gained for hitting a hovercraft
 */
@@ -392,7 +392,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
     if (isBot(hit))
     {
-        totalGained * POINT_MULTIPLIER_HIT_BOT;
+        totalGained *= POINT_MULTIPLIER_HIT_BOT;
     }
     return totalGained;
 }
