@@ -202,7 +202,8 @@ void PhysicsComponent::update(float fTimeInSeconds)
         }
 
 
-        isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
+        // isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
+        PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     }
     else
     {
