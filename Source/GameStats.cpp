@@ -51,7 +51,7 @@ risky as you will lose more points.
 /*
 Notifies a killstreak message once player hits a milestone.
 */
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 7
 
 
 // Singleton instance
