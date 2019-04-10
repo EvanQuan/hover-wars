@@ -90,7 +90,7 @@ void FlameTrail::update(float fTimeInSeconds)
         // Handle Certain Thresholds of the Duration
         if (pIter->fDuration <= 0.0f)      // Delete the Physics Actor
         {
-            m_pPhysXMngr->removeRigidDynamicObj(pIter->pActorRef);
+            m_pPhysXMngr->removeRigidActor(pIter->pActorRef);
             bDeletionFlag = true;
         }
     }

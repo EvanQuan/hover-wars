@@ -1,0 +1,415 @@
+# ============================================================
+# Scene file for rendering
+#
+# Instructions for reading this file:
+#   - lines beginning with ‘#’ are comments
+#   - all positions are expressed in world coords
+#
+# ============================================================
+# Lighting Instructions
+#
+# Lights can be described as:
+#       point_light         { x y z  r g b  p }
+#           - "x y z"   = the Position of the light in World Space
+#           - "r g b"   = the color of the light
+#           - "p"       = power of the light
+#       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
+#           - "dX dY dZ"    = the direction of the light source
+#           - "aR aG aB"    = the ambient color of the light source
+#           - "dR dG dB"    = the diffuse color of the light source
+#           - "sR sG sB"    = the specular color of the light source
+#           - "P nP fP"     = The Position Offset (P) for the source of the Shadow Map
+#                           = As well as the Near Plane (nP) and the Far Plane (fP)
+#           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
+#       spotlight           { x y z  dX dY dZ  r g b  Phi  *softPhi* }
+#           - "x y z"       = the position of the light source
+#           - "dX dY dZ"    = the direction of the spotlight
+#           - "r g b"       = the color of the spotlight
+#           - "Phi"         = the cutoff angle (in degrees) specifying the radius of the spotlight
+#           - "*softPhi*"   = (Optional) a degree from the cutoff angle to smooth out hard edges, default is 5
+#
+# ============================================================
+# Object Instructions
+#
+# Many different objects can be specified with the following syntax:
+#       player  { x y z }
+#           - "x y z"               = the initial position of the player
+#       bot     { x y z }
+#           - "x y z"               = the initial position of the bot
+#       plane   { x y z  nX nY nZ  height  width }
+#           - "x y z"               = the position of the plane
+#           - "nX nY nZ"            = the normal of the plane
+#                                   = the plane will be rotated to align with its normal
+#           - "height  width"       = the height and width of the plane
+#       sphere  { x y z  r }
+#           - "x y z"               = the position of the sphere
+#           - "r"                   = the radius of the sphere
+#       cube    { x y z  height  width  depth }  ** NOT YET IMPLEMENTED **
+#           - "x y z"               = the position of the cube
+#           - "height width depth"  = Specifies the dimensions of the cube
+#       static_mesh { x y z... }
+#           - "x y z..."            = the position of the mesh
+#                                   = multiple positions can be specified for instanced rendering
+#		skybox { <right> <left> <up> <down> <back> <front> }
+#			- <...>					= the texture location for the specified section of the skybox
+#
+# ============================================================
+# Attributes
+#
+# For any object, additional attributes can be given in-line to specify additional
+#   aspects of an object. Those that can't be used for an object will be ignored.
+#
+#       +material   { <diffuse map location> <*specular map location*> S }
+#           - specifies a texture to use for the object.
+#           - <diffuse map location>    = specifies a texture to use as a diffuse map for the object
+#           - <*specular map location*> = (Optional) specifies a texture to use as a specular map.
+#                                       = (Optional) if specified as 3 floats, a texture of that shade will be generated.
+#           - S                         = specifies the shininess of the material
+#       +mesh       { <mesh location>  s }
+#           - specifies a mesh .obj that will be loaded for the object
+#           - if a mesh is expected, but no mesh is given, a cube will be used as default.
+#           - "s"                   = the scale of the mesh *Optional: Default is 1.0f*
+#       +shader     { <shader type> }
+#           - These are application specific and types are specified in
+#               ShaderManager.cpp.
+#           - if shader type is incorrect, or shader not specified, a simple
+#               diffuse shader will be used (PLANE_SHADER internally).
+#           - TODO: list valid <shader type> inputs here.
+#       +bounding   { "box"  h w l }
+#           - "box" :> specifies a cubic box to bound the object
+#                   :> <h w l> - height width length as floats
+# ============================================================
+
+# Information for Rockets in this Scene
+rocket {
+    +mesh {
+        models/rocket2.obj
+        1.0
+    }
+    +material {
+         textures/missile/missile_diffuse_pink.jpg
+         1.0
+    }
+    +shader {
+        tron_shdr
+    }
+}
+
+# Information for Spikes in this Scene
+spikes {
+    +mesh {
+        models/spikes3.obj
+        1.0
+    }
+    +material {
+        textures/tronBase.png
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        tron_shdr
+    }
+}
+
+# Starfield Setup
+#skybox {
+#	textures/skybox/ame_starfield/starfield_ft.tga
+#	textures/skybox/ame_starfield/starfield_bk.tga
+#	textures/skybox/ame_starfield/starfield_up.tga
+#	textures/skybox/ame_starfield/starfield_dn.tga
+#	textures/skybox/ame_starfield/starfield_rt.tga
+#	textures/skybox/ame_starfield/starfield_lf.tga
+#}
+
+# Nebula Setup
+#skybox {
+#	textures/skybox/ame_nebula/purplenebula_ft.tga
+#	textures/skybox/ame_nebula/purplenebula_bk.tga
+#	textures/skybox/ame_nebula/purplenebula_up.tga
+#	textures/skybox/ame_nebula/purplenebula_dn.tga
+#	textures/skybox/ame_nebula/purplenebula_rt.tga
+#	textures/skybox/ame_nebula/purplenebula_lf.tga
+#}
+
+# MoonDust Setup
+skybox {
+	textures/skybox/mp_moondust/moondust_ft.tga
+	textures/skybox/mp_moondust/moondust_bk.tga
+	textures/skybox/mp_moondust/moondust_up.tga
+	textures/skybox/mp_moondust/moondust_dn.tga
+	textures/skybox/mp_moondust/moondust_rt.tga
+	textures/skybox/mp_moondust/moondust_lf.tga
+}
+
+# MainFrame Setup
+#skybox {
+#	textures/skybox/mp_mainframe/mainframe_ft.tga
+#	textures/skybox/mp_mainframe/mainframe_bk.tga
+#	textures/skybox/mp_mainframe/mainframe_up.tga
+#	textures/skybox/mp_mainframe/mainframe_dn.tga
+#	textures/skybox/mp_mainframe/mainframe_rt.tga
+#	textures/skybox/mp_mainframe/mainframe_lf.tga
+#}
+
+# Midnight Setup
+#skybox {
+#	textures/skybox/mnight/mnight_ft.tga
+#	textures/skybox/mnight/mnight_bk.tga
+#	textures/skybox/mnight/mnight_up.tga
+#	textures/skybox/mnight/mnight_dn.tga
+#	textures/skybox/mnight/mnight_rt.tga
+#	textures/skybox/mnight/mnight_lf.tga
+#}
+
+#       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
+#           - "dX dY dZ"    = the direction of the light source
+#           - "aR aG aB"    = the ambient color of the light source
+#           - "dR dG dB"    = the diffuse color of the light source
+#           - "sR sG sB"    = the specular color of the light source
+#           - "P nP fP"     = The Position Offset (P) for the source of the Shadow Map
+#                           = As well as the Near Plane (nP) and the Far Plane (fP)
+#           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
+directional_light {
+    0 -1 1
+	0.5 0.5 0.5
+    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    7500.0 1.0 7700.0
+    8192 8192 1000.0
+}
+
+# Cyan Square
+point_light {
+    24.5 7 65
+    0.0 2.55 2.55
+    5.0
+}
+point_light {
+    65 7 24.5
+    0.0 2.55 2.55
+    5.0
+}
+point_light {
+    105.5 7 65
+    0.0 2.55 2.55
+    5.0
+}
+point_light {
+    65 7 105.5
+    0.0 2.55 2.55
+    5.0
+}
+
+#Red Square
+point_light {
+    -24.5 7 -65
+    2.55 0.0 0.0
+    5.0
+}
+point_light {
+    -105.5 7 -65
+    2.55 0.0 0.0
+    5.0
+}
+point_light {
+    -65 7 -24.5
+    2.55 0.0 0.0
+    5.0
+}
+point_light {
+    -65 7 -105.5
+    2.55 0.0 0.0
+    5.0
+}
+
+#Green Square
+point_light {
+    -65 7 24.5
+    0.0 2.55 0.0
+    5.0
+}
+point_light {
+    -24.5 7 65
+    0.0 2.55 0.0
+    5.0
+}
+point_light {
+    -65 7 105.5
+    0.0 2.55 0.0
+    5.0
+}
+point_light {
+    -105.5 7 65
+    0.0 2.55 0.0
+    5.0
+}
+
+#Blue Square
+point_light {
+    65 7 -24.5
+    0.0 0.00 2.55
+    5.0
+}
+point_light {
+    24.5 7 -65
+    0.0 0.00 2.55
+    5.0
+}
+point_light {
+    65 7 -105.5
+    0.0 0.00 2.55
+    5.0
+}
+point_light {
+    105.5 7 -65
+    0.0 0.00 2.55
+    5.0
+}
+
+spotlight {
+	0.0 7 150.0
+	0.0 -1.0 0.0
+	0 2.55 2.55
+	60
+	20
+}
+
+
+spawn_points {
+	120 0 120
+	-120 0 120
+	120 0 -120
+	-120 0 -120
+	150 0 0
+	-150 0 0
+	0 0 150
+	0 0 -150
+}
+#Indices:
+#       0 - Num_Boids
+#       1 - Avoid Radius
+#       2 - Cohesion Radius
+#       3 - Gather Radius
+#       4 - Min Speed (length)
+#       5 - Max Speed (length)
+#       6 - Boundary Radius
+#       7 - Delta T
+#       8 - Scale
+#       9 - Texture Location (Optional)
+#       10 - Mesh Location (Optional)
+#boids {
+#   10000
+#   0.5 1.0 1.50
+#   5.0 8.0
+#   30.0 0.0005 1.0
+#   textures-256-256/fig-10c.png
+#   models/paper_airplane.obj
+#}
+
+## ground
+plane {
+    0 0 0
+    0 1 0
+    400 400
+    +material {
+        textures/magenta_floor.png
+		textures/squareSpecMap.png
+        1.0
+    }
+    +shader {
+        tron_shdr
+    }
+}
+
+hovercraft {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        tron_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+
+player_1 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map1.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        tron_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+player_2 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map2.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        tron_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+player_3 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map3.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        tron_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+player_4 {
+    +mesh {
+        models/hovercraft/HoverCar.obj
+        0.012
+    }
+    +material {
+        textures/HoverCar/UV_map4.bmp
+        0.3500 0.3500 0.3500
+        32.0
+    }
+    +shader {
+        tron_shdr
+    }
+    +bounding {
+        spatial
+    }
+}
+# Set Spatial Map information for the Scene
+# values are: length, width and tile size in that order.
+#   This will only be evaluated once and multiple specifications of the spatial_map will ignored.
+spatial_map {
+    380 380 10
+}

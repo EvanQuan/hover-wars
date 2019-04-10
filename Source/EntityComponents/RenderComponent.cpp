@@ -35,14 +35,17 @@ void RenderComponent::render()
     {
         // Set up OpenGL state
         glBindVertexArray(m_pMesh->getVertexArray());
+        CheckGLErrors();
 
         if (m_pEntityManager->doShadowDraw()) // Process Shadow Drawing if Specified.
             glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::SHADOW_SHDR));
         else                                // Otherwise, perform regular Render
             glUseProgram(m_pShdrMngr->getProgram(m_eShaderType));
+        CheckGLErrors();
 
         // Bind Texture(s) HERE
         m_pMesh->bindTextures(m_eShaderType);
+        CheckGLErrors();
 
         // Call related glDraw function.
         if (m_bUsingInstanced && m_bUsingIndices)
@@ -53,9 +56,11 @@ void RenderComponent::render()
             glDrawElements(m_eMode, m_pMesh->getCount(), GL_UNSIGNED_INT, nullptr);
         else
             glDrawArrays(m_eMode, 0, m_pMesh->getCount());
+        CheckGLErrors();
 
         // Unbind Texture(s) HERE
         m_pMesh->unbindTextures();
+        CheckGLErrors();
 
         if (!m_pEntityManager->doShadowDraw())
         {

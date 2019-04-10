@@ -145,9 +145,10 @@ public:
     void removeInstance(string sHashKey);                                                                   // Removes a transformation matrix at a given hashkey.
 
     // Getters for Mesh Data
-    const vector<vec3>& getVertices() const { return m_pVertices; }
-    const vector<vec3>& getNormals() const { return m_pNormals; }
-    const vector<vec2>& getUVs() const { return m_pUVs; }
+    const vector<vec3>& getVertices() const         { return m_pVertices; }
+    const vector<vec3>& getNormals() const          { return m_pNormals; }
+    const vector<vec2>& getUVs() const              { return m_pUVs; }
+    const vector<unsigned int>& getIndices() const  { return m_pIndices; }
     GLuint getVertexArray() const { return m_iVertexArray; }
     void getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset);    // Get Spatial Dimensions for the Mesh/BoundingBox.
 

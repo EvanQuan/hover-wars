@@ -33,7 +33,7 @@ private:
 
     Mesh* m_pMesh; // Contains Vertex information about the mesh.
     RenderComponent* m_pRenderComponent; // Component for handling Rendering of the entity
-    PhysicsComponent* m_pPhysicsComponent; // Component for Handling Physics for the Entity
+    PxRigidStatic* m_pPhysicsActor;
 
     const char* m_sPhysicsComponentName;
 };
