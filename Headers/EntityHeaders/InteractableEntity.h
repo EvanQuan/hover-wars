@@ -41,10 +41,7 @@ protected:
     // The ability of the interactable entity when pOther is hit
     // By default, the ability is invalid, which will not process a hit
     virtual eAbility getAbility() const { return eAbility::ABILITY_INVALID; }
-    // Extra collision processing for Hovercraft collisions.
-    // This prevents subclasses needing to reimplement hovercraft checks
-    // if they want extra behaviour for colliding with hovercrafts
-    virtual void handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity *hit) {};
+
     // Protected Variables
     int m_iOwnerID;
 
