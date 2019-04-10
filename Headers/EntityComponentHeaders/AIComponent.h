@@ -73,10 +73,8 @@ private:
 
     void updateBotAndTargetLocations(const HovercraftEntity *target, const HovercraftEntity *bot);
     void determinePath();
-    void determineMode(float distanceToTarget);
+    void determineMode(float distanceToTarget,HovercraftEntity *bot);
     void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
-
-    bool shouldFireRocket(float accuracy);
 
     eMode modeSequence[10];
     int durations[10];
@@ -90,7 +88,6 @@ private:
     bool shouldActivateTrail(const HovercraftEntity *bot);
 
 
-    Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
     int currentPlace = 0;

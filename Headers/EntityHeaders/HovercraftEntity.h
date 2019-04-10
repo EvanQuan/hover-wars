@@ -157,7 +157,12 @@ public:
     bool isBot() const { return !m_bIsPlayer; }
     eHovercraft getEHovercraft() const { return m_eHovercraft; }
 
+    bool hasCollisionEventHappened = false;
+    eHovercraft getLastAttackerBot();
+    eAbility getLastAbilityBot();
 private:
+    eHovercraft lastAttacker;
+    eAbility lastAbility;
     /*
         Queued actions are actions that cannot be applied immediately due to
         multithreading issues. Instead, they are queued and are acted upon

@@ -66,7 +66,7 @@ public:
     void updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
 
     int timesStepped = 0;
-    PxRigidStatic* createFloorHeightMap(PxReal hfScale, PxU32 hfSize);
+    PxRigidStatic* createFloorHeightMap(PxReal hfScale, PxU32 hfSize,PxReal heightScale, float *values);
     PxRigidStatic* createDrivablePlane(const PxFilterData& simFilterData, PxMaterial* material, PxPhysics* physics, PxRigidStatic *stuff);
 private:
     

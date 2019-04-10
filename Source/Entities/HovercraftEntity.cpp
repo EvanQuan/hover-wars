@@ -437,7 +437,13 @@ void HovercraftEntity::updateQueuedActions()
         queuedActions[QUEUED_PUSH] = false;
     }
 }
-
+// getters for the AI
+eHovercraft HovercraftEntity::getLastAttackerBot() {
+    return lastAttacker;
+}
+eAbility HovercraftEntity::getLastAbilityBot() {
+    return lastAbility;
+}
 /*
     Tells the HovercraftEntity that they were damaged. This is where the
     Hovercraft Entity will handle its "death" logic and award points to the
@@ -467,6 +473,9 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
                            ability);
     resetMaxCooldowns();
 
+    lastAttacker = attacker;
+    lastAbility = ability;
+    hasCollisionEventHappened = true;
     // Award attacker
     attackerHovercraft->reduceMaxCooldowns();
     attackerHovercraft->reduceCooldown(ability);

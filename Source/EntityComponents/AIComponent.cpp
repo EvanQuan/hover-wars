@@ -38,7 +38,7 @@ const vec2 seekPointsAI[] = {
     If the target enters the chase distance, the bot will change to chase mode.
     Otherwise, the bot will go into seek mode.
 */
-#define CHASE_DISTANCE 125
+#define CHASE_DISTANCE 30
 
 /*
     As the AI sets the position of the bot hovercrafts, we must ensure that the
@@ -151,7 +151,7 @@ void AIComponent::determinePath()
     @modifies lastIndex
     @modifies m_eCurrentMode
 */
-void AIComponent::determineMode(float distanceToTarget)
+void AIComponent::determineMode(float distanceToTarget, HovercraftEntity *bot)
 {
     if (timeChased > durations[currentActionNum]) {
         if (modeSequence[currentActionNum] != MODE_CHASE) {
@@ -164,6 +164,19 @@ void AIComponent::determineMode(float distanceToTarget)
         currentActionNum = (currentActionNum + 1) % 10;
         timeChased = 0;
         m_eCurrentMode = modeSequence[currentActionNum];
+    }
+    if (bot->hasCollisionEventHappened && (bot->getLastAbilityBot() == eAbility::ABILITY_ROCKET || bot->getLastAbilityBot() == eAbility::ABILITY_SPIKES)) {
+        bot->hasCollisionEventHappened = false;
+        if (m_eCurrentMode == MODE_CHASE) {
+            vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
+            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
+            lastIndex = (int)currSeekLock.z;
+        }
+        m_eCurrentMode = MODE_EVADE;
+        timeChased = 0;
+    }
+    if (CHASE_DISTANCE > distanceToTarget && timeChased > 3) {
+        m_eCurrentMode = MODE_CHASE;
     }
 }
 
@@ -214,18 +227,6 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     vec3 normalizedBotDirection = glm::normalize(botDirectionVector);
     vec3 normalizedDistanceVectorToTarget = glm::normalize(distanceVectorToTarget);
 
-    // @Austin previously this was calculated with the vec3::length() method.
-    // The vec3::length() method does not return the length (magnitude) of the
-    // vector, but rather the number of elements the vec3 contains, which in
-    // this case for a vec3 is ALWAYS 3. (If you look at the definition of
-    // glm::vec3::length(), it's actually hardcoded to return the value 3. I'm
-    // not sure if this was your intention to divide bot direction vector and
-    // the distance to target vectors by 3.
-
-    // Old code:
-    // botDirectionVector /= botDirectionVector.length(); // same as botDirectionVector /= 3;
-    // distanceVectorToTarget /= distanceVectorToTarget.length();
-
     float mSlope = normalizedDistanceVectorToTarget.z / normalizedDistanceVectorToTarget.x;
     float yVal = mSlope * normalizedBotDirection.x;
 
@@ -235,11 +236,6 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     float accuracy = abs(yVal - botDirectionVector.z);
     a->shouldFireRocket = shouldFireRocket(bot, accuracy);
 
-    // @Austin Is the order intentional?
-    // ie. if the bot should fire a rocket, they won't if the first if statement case
-    // is true, since this is an if-else-if chain.
-    // I changed it so that the shouldFireRocket is set beforehand, independent of this
-    // if-else-if chain.
     if (yVal > botDirectionVector.z) {
         // Turn right
         a->turn = static_cast<float>(1 * XvalMul);
@@ -260,7 +256,7 @@ bool AIComponent::shouldFireRocket(const HovercraftEntity *bot,
                                    float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)
-        && m_eCurrentMode == MODE_CHASE
+        && (m_eCurrentMode == MODE_CHASE || m_eCurrentMode == MODE_EVADE)
         && bot->isOffCooldown(eAbility::ABILITY_ROCKET);
 }
 
@@ -279,10 +275,9 @@ bool AIComponent::shouldActivateSpikes(const HovercraftEntity *bot,
 // @note bot may be used later
 bool AIComponent::shouldActivateTrail(const HovercraftEntity *bot)
 {
-    // @Austin explain why should the trail activate if and only if in seek
-    // mode?
     return m_eCurrentMode == MODE_SEEK;
 }
+
 
 /*
     If the target is too far away, (beyond the CHASE_DISTANCE), or the time
@@ -416,13 +411,13 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
 
     updateSeekPoint(botPosition);
 
-    determineMode(distanceToTarget);
+    determineMode(distanceToTarget,bot);
 
     determineTurn(bot, distanceVectorToTarget, botDirectionVector, a);
     determinePosition(bot, botPosition, fTimeInSeconds);
 
     a->shouldActivateSpikes = shouldActivateSpikes(bot, distanceToTarget);
-    a->shouldActivateTrail = true; //shouldActivateTrail(bot);
+    a->shouldActivateTrail = shouldActivateTrail(bot);
 }
 
 void AIComponent::update(float fTimeInSeconds)

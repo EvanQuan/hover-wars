@@ -221,6 +221,50 @@ void PhysicsManager::update(float fTimeDelta)
         stepPhysics(UPDATE_TIME_IN_SECONDS); 
     }
 }
+PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize, PxReal heightScale, float *values)
+{
+
+    PxU32 hfNumVerts = hfSize * hfSize;
+    PxHeightFieldSample* samples = new PxHeightFieldSample[hfNumVerts];
+    memset(samples, 0, hfNumVerts * sizeof(PxHeightFieldSample));
+
+    for (PxU32 x = 0; x < hfSize; x++)
+        for (PxU32 y = 0; y < hfSize; y++)
+        {
+            std::cout << "values: " << x << "," << y * hfSize << std::endl;
+            samples[x + y * hfSize].height = (PxI16)(values[x + y * hfSize] / heightScale);
+            samples[x + y * hfSize].setTessFlag();
+            samples[x + y * hfSize].materialIndex0 = 1;
+            samples[x + y * hfSize].materialIndex1 = 1;
+        }
+
+    PxHeightFieldDesc hfDesc;
+    hfDesc.format = PxHeightFieldFormat::eS16_TM;
+    hfDesc.nbColumns = hfSize;
+    hfDesc.nbRows = hfSize;
+    hfDesc.samples.data = samples;
+    hfDesc.samples.stride = sizeof(PxHeightFieldSample);
+
+    PxHeightField* heightField = gCook->createHeightField(hfDesc, gPhysics->getPhysicsInsertionCallback());
+
+    PxTransform pose = PxTransform(PxIdentity);
+    pose.p = PxVec3(-(hfSize / 2 * hfScale), 0, -(hfSize / 2 * hfScale));
+
+    PxRigidStatic* hfActor = gPhysics->createRigidStatic(pose);
+    if (!hfActor)
+        cout << "creating heightfield actor failed" << endl;
+
+    PxHeightFieldGeometry hfGeom(heightField, PxMeshGeometryFlags(), heightScale, hfScale, hfScale);
+    PxShape* hfShape = PxRigidActorExt::createExclusiveShape(*hfActor, hfGeom, *gWorldMaterial);
+    //setCCDActive(*hfShape);
+    if (!hfShape)
+        cout << "creating heightfield shape failed" << endl;
+    hfActor->setName(C_SUBTYPE_GROUND + "");// :p fix later @austin
+    gScene->addActor(*hfActor);
+
+    return hfActor;
+}
+//
 static PxFilterFlags filterShader(
     PxFilterObjectAttributes attributes0,
     PxFilterData filterData0,
@@ -338,11 +382,24 @@ void PhysicsManager::initPhysics(bool interactive)
 
 
     //Add a plane to the scene.
-    PxShape* shape = gPhysics->createShape(PxBoxGeometry(200, 1, 200), *gWorldMaterial);
-    PxTransform localTm(PxVec3(0, -1, 0));
-    PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
-    body->attachShape(*shape);
-
+    //PxShape* shape = gPhysics->createShape(PxBoxGeometry(200, 1, 200), *gWorldMaterial);
+    //PxTransform localTm(PxVec3(0, -1, 0));
+    //PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
+    //body->attachShape(*shape);
+    vector<float> heightValues;
+    const int numTiles = 20;
+    const int tileWidth = 25;
+    for (int x = 0; x <= numTiles; x++) {
+        for (int y = 0; y <= numTiles; y++) {
+            if (x == 0) {
+                heightValues.push_back(0.0f);
+            }
+            else {
+                heightValues.push_back(0.0f);
+            }
+        }
+    }
+    PxRigidStatic *body = createFloorHeightMap(numTiles, tileWidth, 0.1f, &heightValues[0]);
 
     PxRigidStatic* gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics, body);
     gGroundPlane->setName(NAME_GROUND);
