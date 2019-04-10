@@ -61,10 +61,11 @@ public:
     void removeRigidActor(PxRigidActor* pActor);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
-    void PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
+    void updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
 
     int timesStepped = 0;
-    PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize);
+    PxRigidStatic* createFloorHeightMap(PxReal hfScale, PxU32 hfSize);
+    PxRigidStatic* createDrivablePlane(const PxFilterData& simFilterData, PxMaterial* material, PxPhysics* physics, PxRigidStatic *stuff);
 private:
     
     // extra stuff to delete
