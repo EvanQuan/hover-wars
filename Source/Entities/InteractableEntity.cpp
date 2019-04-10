@@ -69,7 +69,6 @@ void InteractableEntity::handleCollision(Entity* pOther,
         // << "[ID: "<< hit->getID() << "]"<< endl;
 
         hit->getHitBy(eOwner, getAbility());
-        handleHovercraftCollision(owner, hit);
     }
 }
 

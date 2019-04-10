@@ -12,10 +12,8 @@
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
 #include <vector>
 
-enum ePhysicsAxis
-{
-
-};
+// Forward Declaration
+class Mesh;
 
 #define WHEEL_COUNT 4
 /***************************************************************
@@ -54,13 +52,13 @@ public:
     // Scene Setting Functions
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
-    physx::PxRigidStatic *PhysicsManager::createMeshObject(const char* sEntityID, float x, float y, float z, float scale, string filename);
+    physx::PxRigidStatic *PhysicsManager::createStaticMeshObject(const char* sEntityID, const Mesh* pMesh, const vec3* vPos);
     physx::PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createHovercraftEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(const char* sEntityID, float x, float y, float z, float radius);
     void createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody);
     void createCylinderObject(const char* cName, const vec3* vPosition, float fHeight, float fRadius, PxRigidDynamic** pReturnBody);
-    void removeRigidDynamicObj(PxRigidDynamic* pActor);
+    void removeRigidActor(PxRigidActor* pActor);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
     void updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);

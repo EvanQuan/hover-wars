@@ -42,6 +42,8 @@ public:
     // facing the opposite direction and of the specified reflected owner.
     void reflect(unsigned int iVictimMsg);
 
+    void explode(unsigned int iVictimMsg);
+
 private:
     EmitterEngine*                          m_pEmitterEngine;
     vector<string>                          m_pReferenceList;

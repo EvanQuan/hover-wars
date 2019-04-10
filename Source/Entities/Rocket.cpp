@@ -69,11 +69,19 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 {
     if (m_iOwnerID != pOther->getID())
     {
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
-        removeFromScene(iVictimMsg);
+        explode(iVictimMsg);
+
+        if (eEntityType::ENTITY_INTERACTABLE == pOther->getType() &&
+            eInteractType::INTER_ROCKET == static_cast<InteractableEntity*>(pOther)->getInteractableType())
+        {
+            // Tell the rocket to explode.
+            Rocket* pOtherRocket = static_cast<Rocket*>(pOther);
+            pOtherRocket->explode(iColliderMsg);
+        }
+
     }
 }
 
@@ -130,4 +138,11 @@ void Rocket::reflect(unsigned int iVictimMsg)
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
 
     
+}
+
+
+void Rocket::explode(unsigned int iVictimMsg)
+{
+    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
+    removeFromScene(iVictimMsg);
 }

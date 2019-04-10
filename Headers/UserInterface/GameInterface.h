@@ -33,7 +33,6 @@ public:
         KILL_MESSAGE_REVENGE,
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
-        // @Deprecated
         KILL_MESSAGE_NEW_LEADER,
     };
 
@@ -92,6 +91,7 @@ private:
         COMPONENT_POWERUP,
         COMPONENT_NOTIFICATION,
         COMPONENT_COUNTDOWN,
+        COMPONENT_KILL_DEATHS,
         COMPONENT_COUNT
     };
 
@@ -137,6 +137,7 @@ private:
     
     void renderNotifications();
     void renderResumeCountdown();
+    void renderKillsAndDeaths();
 
     // Cooldowns
     void updateCooldowns();

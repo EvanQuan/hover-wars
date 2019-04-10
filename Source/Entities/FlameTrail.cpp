@@ -46,15 +46,6 @@ void FlameTrail::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsi
     }
 }
 
-void FlameTrail::handleHovercraftCollision(HovercraftEntity* hit)
-{
-    // TODO add flame hit sound here, as at will only occur if a hovercraft
-    // collides with this
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
-
-    //cout << "FLAME HIT PLAYER " << hit->getID() << endl;
-}
-
 /****************************************************************\
  * Inherited Pure Virtual Functions                             *
 \****************************************************************/
@@ -99,7 +90,7 @@ void FlameTrail::update(float fTimeInSeconds)
         // Handle Certain Thresholds of the Duration
         if (pIter->fDuration <= 0.0f)      // Delete the Physics Actor
         {
-            m_pPhysXMngr->removeRigidDynamicObj(pIter->pActorRef);
+            m_pPhysXMngr->removeRigidActor(pIter->pActorRef);
             bDeletionFlag = true;
         }
     }

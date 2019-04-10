@@ -176,7 +176,7 @@ PhysicsComponent::~PhysicsComponent()
     for (unordered_map<string, PxRigidDynamic*>::iterator pIter = m_pDynamicObjects.begin();
         pIter != m_pDynamicObjects.end();
         ++pIter)
-        m_pPhysicsManager->removeRigidDynamicObj(pIter->second);
+        m_pPhysicsManager->removeRigidActor(pIter->second);
     m_pDynamicObjects.clear();
 }
 
@@ -279,7 +279,7 @@ void PhysicsComponent::removeInstance(string sHashKey)
     if (!m_bVehicle && (m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end()))
     {
         // Release the Instance from the Physics Scene and erase it from the Object List.
-        m_pPhysicsManager->removeRigidDynamicObj(m_pDynamicObjects[sHashKey]);
+        m_pPhysicsManager->removeRigidActor(m_pDynamicObjects[sHashKey]);
         m_pDynamicObjects.erase(sHashKey);
     }
 }
