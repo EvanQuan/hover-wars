@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #ifndef SNIPPET_VEHICLE_CONCURRENCY_H
 #define SNIPPET_VEHICLE_CONCURRENCY_H
@@ -55,9 +55,9 @@ public:
 
     static VehicleConcurrency* allocate(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, PxAllocatorCallback& allocator)
     {
-        const PxU32 byteSize = 
-            sizeof(VehicleConcurrency) + 
-            sizeof(PxVehicleConcurrentUpdateData)*maxNumVehicles + 
+        const PxU32 byteSize =
+            sizeof(VehicleConcurrency) +
+            sizeof(PxVehicleConcurrentUpdateData)*maxNumVehicles +
             sizeof(PxVehicleWheelConcurrentUpdateData)*maxNumWheelsPerVehicle*maxNumVehicles;
 
         PxU8* buffer = static_cast<PxU8*>(allocator.allocate(byteSize, NULL, NULL, 0));
@@ -75,9 +75,9 @@ public:
         for(PxU32 i=0;i<maxNumVehicles;i++)
         {
             new(vc->mVehicleConcurrentUpdates + i) PxVehicleConcurrentUpdateData();
-            
+
             vc->mVehicleConcurrentUpdates[i].nbConcurrentWheelUpdates = maxNumWheelsPerVehicle;
-            
+
             vc->mVehicleConcurrentUpdates[i].concurrentWheelUpdates = reinterpret_cast<PxVehicleWheelConcurrentUpdateData*>(buffer);
             buffer += sizeof(PxVehicleWheelConcurrentUpdateData)*maxNumWheelsPerVehicle;
 

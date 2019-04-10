@@ -35,14 +35,18 @@
 \*************/
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
-    vec3(0.0f, 0.0f, 1.0f), /*PLAYER 1*/
-    vec3(0.0f, 1.0f, 0.0f), /*PLAYER 2*/
-    vec3(1.0f, 0.0f, 0.0f), /*PLAYER 3*/
-    vec3(1.0f, 0.0f, 1.0f), /*PLAYER 4*/
-    vec3(0.0f, 1.0f, 1.0f), /*BOT 1*/
-    vec3(1.0f, 1.0f, 0.0f), /*BOT 2*/
-    vec3(0.5f),             /*BOT 3*/
-    vec3(1.0f)              /*BOT 4*/
+    // Player colours should be very distinct from each other and stand out
+    vec3(1.0f, 0.0f, 0.0f),   //PLAYER 1 - Red (because red fire is cool, and should be in every game)
+    vec3(0.0f, 1.0f, 1.0f),   //PLAYER 2 - Cyan (because pure blue is too dark, and makes flame difficult to see)
+    vec3(0.0f, 1.0f, 0.0f),   //PLAYER 3 - Green
+    vec3(1.0f, 0.0f, 1.0f),   //PLAYER 4 - Pink
+    // Bot colours should be very similar to each other so players can easily
+    // tell they are a bot rather than a player. Distinguishing between
+    // different bots is not as important as identifying them as bots.
+    vec3(1.0f),               //BOT 1    - White
+    vec3(0.0f),               //BOT 2    - Black
+    vec3(0.7f),               //BOT 3    - Light Grey
+    vec3(0.3f)                //BOT 4    - Dark Grey
 };
 
 const vec4 BLUR_QUAD[4]{
@@ -251,7 +255,7 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
 void GameManager::spawnPlayers(unsigned int playerCount)
 {
     for (unsigned int i = 0; i < playerCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createPlayer(i));
+        m_vPositions.push_back(SCENE_LOADER->createPlayer(i, &COLORS[i]));
         m_vColors.push_back(COLORS[i]);
         generateSplitScreen(i);
     }
@@ -260,7 +264,7 @@ void GameManager::spawnPlayers(unsigned int playerCount)
 void GameManager::spawnBots(unsigned int botCount)
 {
     for (unsigned int i = 0; i < botCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createBot());
+        m_vPositions.push_back(SCENE_LOADER->createBot(&COLORS[MAX_PLAYER_COUNT + i]));
         m_vColors.push_back(COLORS[MAX_PLAYER_COUNT + i]);
     }
 }
@@ -825,12 +829,16 @@ bool GameManager::initialize()
 
 void GameManager::rotateCamera(vec2 pDelta)
 {
-    m_pEntityManager->rotateCamera(pDelta);
+    if (m_bInGame) {
+        m_pEntityManager->rotateCamera(pDelta);
+    }
 }
 
 void GameManager::zoomCamera(float fDelta)
 {
-    m_pEntityManager->zoomCamera(fDelta);
+    if (m_bInGame) {
+        m_pEntityManager->zoomCamera(fDelta);
+    }
 }
 
 /*
@@ -889,8 +897,6 @@ void GameManager::intersectPlane(float fX, float fY)
         // Not behind camera.
         if (fT >= 0)
             vIntersection = vCameraPos + (fT*vRay);
-
-        EMITTER_ENGINE->generateEmitter(vIntersection, vNormal, 60.f, 5.0f, 100, false, 2.0f);
     }
 }
 

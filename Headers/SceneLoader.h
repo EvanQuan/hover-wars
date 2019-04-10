@@ -22,12 +22,12 @@ public:
     void createPointLight( vector< string > sData, int iLength );
     void createDirectionalLight(vector< string > sData, int iLength);
     void createSpotLight(vector< string > sData, int iLength);
-    vec3 createPlayer(unsigned int iPlayerNumber);
+    vec3 createPlayer(unsigned int iPlayerNumber, const vec3* vColor);
     void createCube(vector< string > sData, int iLength);
-    vec3 createBot();
+    vec3 createBot(const vec3* vColor);
     void createStaticMesh(vector< string > sData, unsigned int iLength);
     void createSkybox(vector< string > sData);
-    Rocket* createRocketMesh(int iOwnerID);
+    Rocket* createRocketMesh(int iOwnerID, const vec3* vColor);
     Mesh* createSpikesMesh(string sHashKey);
     void initializeSpatialMap(vector< string > sData, unsigned int iLength);
     void loadFromFile( string sFileName );
@@ -65,7 +65,7 @@ private:
         string      sMeshLocation, sShaderProperty;
         float       fScaleProperty;
         ObjectInfo  pObjectProperties;
-        
+
 
         // Default Constructor
         sMeshProperties()
@@ -107,7 +107,8 @@ private:
 
     void clearProperties();     // Clear any properties
     void resetAllProperties();
-    
+
+    void postInitialize();
+
     string trimString( const string& sStr );
 };
-

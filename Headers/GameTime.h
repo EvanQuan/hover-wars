@@ -60,4 +60,3 @@ private:
     */
     friend class GameManager;
 };
-

@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #ifndef SNIPPET_VEHICLE_FILTERSHADER_H
 #define SNIPPET_VEHICLE_FILTERSHADER_H
@@ -53,7 +53,7 @@ enum
 };
 
 PxFilterFlags VehicleFilterShader
-(PxFilterObjectAttributes attributes0, PxFilterData filterData0, 
+(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
  PxFilterObjectAttributes attributes1, PxFilterData filterData1,
  PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
 

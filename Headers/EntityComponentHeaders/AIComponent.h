@@ -64,7 +64,8 @@ private:
         MODE_CHASE,
         // Wants to move towards the nearest seek point on the map
         // Path calculation is based on location of nearest seek points.
-        MODE_SEEK
+        MODE_SEEK,
+        MODE_EVADE
     };
 
     vector<uvec2> getSeekPath();
@@ -74,6 +75,12 @@ private:
     void determinePath();
     void determineMode(float distanceToTarget);
     void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
+
+    bool shouldFireRocket(float accuracy);
+
+    eMode modeSequence[10];
+    int durations[10];
+    int currentActionNum = 0;
 
     void determineTurn(const HovercraftEntity *bot, const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
     bool shouldChooseSeekMode(float distanceToTarget);
@@ -100,6 +107,7 @@ private:
 
     vec2 seekLocation;
     int lastIndex = -1;
+
     vec3 get2ndNearestSeekPoint(vec2 currentPos) const;
     vec3 getNearestSeekPoint(vec2 currentPos) const;
 

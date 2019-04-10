@@ -10,12 +10,14 @@ layout (std140, binding = 0) uniform Matrices
 
 layout (location = 0) in vec3 vertex;
 layout (location = 1) in vec3 normal;
-layout (location = 2) in vec2 uvStart;
-layout (location = 3) in vec2 uvEnd;
-layout (location = 4) in vec2 Dimensions;
-layout (location = 5) in float Duration;
+layout (location = 2) in vec3 color;
+layout (location = 3) in vec2 uvStart;
+layout (location = 4) in vec2 uvEnd;
+layout (location = 5) in vec2 Dimensions;
+layout (location = 6) in float Duration;
 
 out vec3 vNormal;
+out vec3 vTinge;
 out vec2 vDimensions;
 out vec3 vToCamera;
 out vec2 vUVStart;
@@ -33,6 +35,9 @@ void main(void)
 	// create the Normal Matrix to correct Normal into camera space
 	mat3 normalMatrix = transpose(inverse(mat3(modelview)));
 	vNormal = normal;
+	
+	// Send Tinge Color to mod image
+	vTinge = color;
 	
 	// Send Duration to the geometry shader.
 	fDuration = Duration;

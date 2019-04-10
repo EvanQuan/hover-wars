@@ -7,12 +7,6 @@
 
 /*
     Locations on the map that the AI can seek for.
-    If the AI is in 
-    @TODO describe what these are for/what they mean
-
-    // Original order, if it matters?
-    // vec2(18,7),     vec2(31,18),    vec2(7,18),     vec2(18,31),
-    // vec2(31,31),    vec2(7,7),      vec2(31,7),     vec2(7,31)
 */
 const vec2 seekPointsAI[] = {
     vec2(7,  7),    vec2(18,  7),   vec2(31,  7),
@@ -26,7 +20,7 @@ const vec2 seekPointsAI[] = {
     If the target enters the distance threshold of the bot, then the bot will
     be able to activate spikes.
 */
-#define SPIKES_DISTANCE_THRESHOLD 5
+#define SPIKES_DISTANCE_THRESHOLD 15
 /*
     If the target is within the distance threshold, there is a percent chance
     the bot will activate spikes.
@@ -34,11 +28,12 @@ const vec2 seekPointsAI[] = {
 #define SPIKES_ACITVATION_CHANCE 50
 
 #define ROCKET_ACCURACY_THRESHOLD 0.01
+/*
+    TODO document
+*/
 #define DISTANCE_BOX 15
 #define CYCLE_TIME 7
 #define MAX_TIME_TARGET CYCLE_TIME*4
-
-#define TRAIL_ACTIVATION_THRESHOLD 0.5
 /*
     If the target enters the chase distance, the bot will change to chase mode.
     Otherwise, the bot will go into seek mode.
@@ -51,14 +46,13 @@ const vec2 seekPointsAI[] = {
 */
 #define MOVEMENT_RATE 20
 
-AIComponent::AIComponent(int iEntityID, int iComponentID) : EntityComponent(iEntityID, iComponentID)
+AIComponent::AIComponent(int iEntityID, int iComponentID)
+    : EntityComponent(iEntityID, iComponentID)
 {
-
-    ////for (int j = 0; j < MUTATION_SET; j++) {
-    //    for (int i = 0; i < LOOK_AHEAD_FRAMES; i++) {
-    //        genRandomAction(&frames[j][i]);
-    //    }
-    //}
+    for (int i = 0; i < 10; i++) {
+        modeSequence[i] = static_cast<eMode>(FuncUtils::random(3) % 3);
+        durations[i] = static_cast<int>(FuncUtils::random(20) + (modeSequence[i] == MODE_CHASE ? 10 : 5));
+    }
 
     timeChased = static_cast<float>(FuncUtils::random(MAX_TIME_TARGET));
 
@@ -101,7 +95,10 @@ vector<uvec2> AIComponent::getSeekPath()
         seekLocation = vec2(currSeekLock.x, currSeekLock.y);
         lastIndex = static_cast<int>(currSeekLock.z);
     }
-    return m_pSpatialDataMap->getShortestPath(seekLocation, seekLocation, vec2(minXBot, minYBot), vec2(maxXBot, maxYBot));
+    return m_pSpatialDataMap->getShortestPath(seekLocation,
+                                              seekLocation,
+                                              vec2(minXBot, minYBot),
+                                              vec2(maxXBot, maxYBot));
 }
 
 /*
@@ -122,10 +119,13 @@ vector<uvec2> AIComponent::getChasePath() const
     @modifies minXTarget, maxXTarget, minYTarget, maxYTarget
     @modifies minXBot, maxXBot, minYBot, maxYBot
 */
-void AIComponent::updateBotAndTargetLocations(const HovercraftEntity* target, const HovercraftEntity* bot)
+void AIComponent::updateBotAndTargetLocations(const HovercraftEntity* target,
+                                              const HovercraftEntity* bot)
 {
-    m_pSpatialDataMap->getMapIndices(target, &minXTarget, &maxXTarget, &minYTarget, &maxYTarget);
-    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot, &minYBot, &maxYBot);
+    m_pSpatialDataMap->getMapIndices(target, &minXTarget, &maxXTarget,
+                                             &minYTarget, &maxYTarget);
+    m_pSpatialDataMap->getMapIndices(bot, &minXBot, &maxXBot,
+                                          &minYBot, &maxYBot);
 }
 
 /*
@@ -139,7 +139,7 @@ void AIComponent::determinePath()
     case MODE_CHASE:
         path = getChasePath();
         break;
-    case MODE_SEEK:
+    default:
         path = getSeekPath();
         break;
     }
@@ -153,18 +153,18 @@ void AIComponent::determinePath()
 */
 void AIComponent::determineMode(float distanceToTarget)
 {
-    if (shouldChooseSeekMode(distanceToTarget)) {
-        if (m_eCurrentMode  == MODE_CHASE) {
-            // @NOTE what is going on here?
-            vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
-            seekLocation = vec2(currSeekLock.x, currSeekLock.y);
-            lastIndex = static_cast<int>(currSeekLock.z);
+    if (timeChased > durations[currentActionNum]) {
+        if (modeSequence[currentActionNum] != MODE_CHASE) {
+            if (m_eCurrentMode == MODE_CHASE) {
+                vec3 currSeekLock = getNearestSeekPoint(vec2(minXBot, minYBot));
+                seekLocation = vec2(currSeekLock.x, currSeekLock.y);
+                lastIndex = (int)currSeekLock.z;
+            }
         }
-        m_eCurrentMode = MODE_SEEK;
-    } else {
-        m_eCurrentMode = MODE_CHASE;
+        currentActionNum = (currentActionNum + 1) % 10;
+        timeChased = 0;
+        m_eCurrentMode = modeSequence[currentActionNum];
     }
-
 }
 
 /*
@@ -256,14 +256,20 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     To fire the rocket, the accuracy should be under the
     ROCKET_ACCURACY_THRESHOLD, and the bot must be in chase mode.
 */
-bool AIComponent::shouldFireRocket(const HovercraftEntity *bot, float accuracy)
+bool AIComponent::shouldFireRocket(const HovercraftEntity *bot,
+                                   float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)
         && m_eCurrentMode == MODE_CHASE
         && bot->isOffCooldown(eAbility::ABILITY_ROCKET);
 }
 
-bool AIComponent::shouldActivateSpikes(const HovercraftEntity *bot, float distanceToTarget)
+/*
+    If the target is inside the activation threshold, there is a random chance
+    spikes will activate.
+*/
+bool AIComponent::shouldActivateSpikes(const HovercraftEntity *bot,
+                                       float distanceToTarget)
 {
     return distanceToTarget <= SPIKES_DISTANCE_THRESHOLD
         && FuncUtils::random(1, 100) <= SPIKES_ACITVATION_CHANCE
@@ -300,7 +306,8 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) const {
     float distance2 = numeric_limits<float>::max();
     int lowestIndex = -1;
     for (int i = 0; i < SEEK_POINTS_SIZE; i++) {
-        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
+        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y),
+                                      vec3(currentPos.x, 0, currentPos.y));
         if (currDis < distance && i != lastIndex) {
             if (distance < distance2) {
                 nearest2nd = nearest;
@@ -315,7 +322,7 @@ vec3 AIComponent::get2ndNearestSeekPoint(vec2 currentPos) const {
             lowestIndex = i;
         }
     }
-    return vec3(nearest2nd, lowestIndex);
+    return vec3(seekPointsAI[static_cast<eMode>(FuncUtils::random(8) % 8)], lowestIndex);
 }
 
 /*
@@ -329,7 +336,8 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
     float distance = numeric_limits<float>::max();
     int lastLoc = -1;
     for (int i = 0; i < SEEK_POINTS_SIZE; i++) {
-        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y), vec3(currentPos.x, 0, currentPos.y));
+        float currDis = glm::distance(vec3(seekPointsAI[i].x, 0, seekPointsAI[i].y),
+                                      vec3(currentPos.x, 0, currentPos.y));
         if (currDis < distance) {
             nearest = seekPointsAI[i];
             distance = currDis;
@@ -342,7 +350,8 @@ vec3 AIComponent::getNearestSeekPoint(vec2 currentPos) const {
 /*
     @NOTE
     I have no idea what's going on here. The seek point is being updated, but
-    according to what? Nearest? What makes this different than getNearestSeekPoint
+    according to what? Nearest? What makes this different than
+    getNearestSeekPoint
 
     @param botPosition           of bot to determine seek point
 
@@ -354,7 +363,8 @@ void AIComponent::updateSeekPoint(const vec3 &botPos)
     float tileSize = m_pSpatialDataMap->getTileSize();
     glm::vec3 nextPos = vec3(0, 0, 0);
     if (path.size() >= 2) {
-        for (int i = 0; i < (int)path.size(); i++) { // get path position that is sufficently far away for seek point.
+        // get path position that is sufficently far away for seek point.
+        for (int i = 0; i < (int)path.size(); i++) { 
             nextPos = vec3(path.at(i).x * tileSize + offset.x,
                            0,
                            path.at(i).y * tileSize + offset.y);
@@ -408,16 +418,11 @@ void AIComponent::getCurrentAction(HovercraftEntity *target,
 
     determineMode(distanceToTarget);
 
-    // @Austin Should this be done here or in update()?
-    if (timeChased > MAX_TIME_TARGET) {
-        timeChased = 0;
-    }
-
     determineTurn(bot, distanceVectorToTarget, botDirectionVector, a);
     determinePosition(bot, botPosition, fTimeInSeconds);
 
     a->shouldActivateSpikes = shouldActivateSpikes(bot, distanceToTarget);
-    a->shouldActivateTrail = shouldActivateTrail(bot);
+    a->shouldActivateTrail = true; //shouldActivateTrail(bot);
 }
 
 void AIComponent::update(float fTimeInSeconds)

@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #include <new>
 #include "snippetvehiclecommon/SnippetVehicleCreate.h"
@@ -86,11 +86,11 @@ PxConvexMesh* createChassisMesh(const PxVec3 dims, PxPhysics& physics, PxCooking
     const PxF32 z = dims.z*0.5f;
     PxVec3 verts[8] =
     {
-        PxVec3(x,y,-z), 
+        PxVec3(x,y,-z),
         PxVec3(x,y,z),
         PxVec3(x,-y,z),
         PxVec3(x,-y,-z),
-        PxVec3(-x,y,-z), 
+        PxVec3(-x,y,-z),
         PxVec3(-x,y,z),
         PxVec3(-x,-y,z),
         PxVec3(-x,-y,-z)
@@ -249,7 +249,7 @@ void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rig
         PxVehicleClutchData clutchData = driveSimData->getClutchData();
         clutchData.mStrength *= lengthScale*lengthScale;
         driveSimData->setClutchData(clutchData);
-    }    
+    }
 
     //Scale the collision meshes too.
     {

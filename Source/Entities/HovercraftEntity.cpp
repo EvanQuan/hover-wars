@@ -19,8 +19,11 @@
     Dash - (all 4 directions count as 1 ability for cool down purposes)
 */
 #define ABILITY_COUNT           COOLDOWN_COUNT
+/*
+    Unit : meters / second
+*/
 #define ROCKET_SPEED            100.0f
-#define FLAME_SPACING           0.25f
+#define FLAME_SPACING           1.0f
 
 /*
     Length of the rocket hit box
@@ -28,8 +31,9 @@
     so probably should not be manipulated. The radius of the rocket is
     currently defined in PhysicsManager.
 */
-#define ROCKET_BOUNDING_BOX     0.5f
+#define ROCKET_BOUNDING_BOX     1.0f
 
+// @Deprecated - Hovercrafts don't lose control
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
 /*
     If the hovercraft exceeds a certain elevant, they lose control until they
@@ -56,7 +60,7 @@
     Units: seconds
 */
 #define ROCKET_BASE_COOLDOWN        6.0f
-#define SPIKES_BASE_COOLDOWN        4.0f
+#define SPIKES_BASE_COOLDOWN        6.0f
 #define TRAIL_COOLDOWN              0.0f
 // Cooldown between dash usages
 #define DASH_BASE_COOLDOWN          0.5f
@@ -85,6 +89,10 @@ These are the minimum cooldowns for these abilities.
 */
 #define MAX_COOLDOWN_REDUCTION_ON_KILL 0.9f
 
+/*
+    Multiplies the trail recharge multiplier when max cooldown reduction is
+    applied.
+*/
 #define TRAIL_RECHARGE_INCREASE 1.1f
 /*
 Total time the trail can be activated from full to empty.
@@ -98,9 +106,12 @@ Represents the trail gauge is empty.
 #define TRAIL_GAUGE_EMPTY       0.0f
 
 // Fire Defines
-#define FIRE_HEIGHT             2.0
-#define FIRE_WIDTH              2.0
+#define FIRE_HEIGHT             3.0
+#define FIRE_WIDTH              3.0
 
+/*
+    Duration powerups last before disapating.
+*/
 #define POWERUP_DURATION        15.0f
 
 /*
@@ -121,6 +132,7 @@ Time multiplier for the trail to recharge from empty to full.
 
 */
 #define TRAIL_BASE_RECHARGE_MULTIPLIER 0.3f // 9 sec
+
 #define TRAIL_MAX_RECHARGE_MULTIPLIER 1.0f  // 3 sec
 
 /*
@@ -246,6 +258,10 @@ In other words, the spring will pull together faster the higher the constant is.
 #define Z_FRONT_OFFSET  2.0f
 #define ANIMATION_TIME  0.1f
 
+// Threshold of the y-component (vertical) of the hovercraft direction vector
+// that will reset the hovercraft's y-component if it is exceeded.
+#define HORIZONTAL_DEVIATION_THRESHOLD 0.1
+
 /*************\
  * CONSTANTS *
 \*************/
@@ -359,9 +375,26 @@ void HovercraftEntity::updateSpatialMap(vec3 &vNewPosition)
 */
 void HovercraftEntity::updatePhysicsComponent()
 {
+    resetIfNotHorizontal();
+}
+
+/*
+    If the y-component (vertical) that the Hovercraft is facing deviates too
+    far from horizontal, the global position is reset such that it back to
+    horizontal. This prevents hovercrafts from riding up walls if they
+    constantly push against walls, or climbing on other hovercrafts when they
+    collide.
+
+    @NOTE currently bugged. Resets x and z component of rotation (in cartesian
+          coordinates) as well.
+*/
+void HovercraftEntity::resetIfNotHorizontal()
+{
     vec3 dirVector;
     getDirectionVector(&dirVector);
-    if (abs(dirVector.y) > 0.1f) {
+
+    // Check if not horizontal.
+    if (abs(dirVector.y) > HORIZONTAL_DEVIATION_THRESHOLD) {
         //TODO set quat for rotation
         vec3 newQuatAxis = vec3(dirVector.x,
                                 0.1f * (dirVector.y/abs(dirVector.y)),
@@ -370,9 +403,17 @@ void HovercraftEntity::updatePhysicsComponent()
         PxPlane plane = PxPlane(PxVec3(0,0,0),
                                 PxVec3(newQuatAxis.x, newQuatAxis.y, newQuatAxis.z),
                                 PxVec3(newQuatAxis.z, 0, -newQuatAxis.x));
+
         PxTransform newTrans = getGlobalTransform();
 
-        newTrans.q = PxQuat(0, plane.n);
+        // cout << newTrans.q.x << " " << newTrans.q.y << " " << newTrans.q.z << " " << newTrans.q.w;
+        // cout << newTrans.q.y << endl;
+
+        // newTrans.q = PxQuat(newTrans.q.getNormalized().getAngle(), plane.n.getNormalized());
+        newTrans.q = PxQuat(0, plane.n.getNormalized());
+
+        // Original. 
+        // newTrans.q = PxQuat(0, plane.n);
 
         m_pPhysicsComponent->setGlobalPos(newTrans);
     }
@@ -408,7 +449,7 @@ void HovercraftEntity::updateQueuedActions()
 */
 void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
-    if (isInvincible()) {
+    if (isInvincible() || (ability == eAbility::ABILITY_TRAIL_ACTIVATE && m_bIsDashing()) ) {
         return;
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
@@ -424,7 +465,10 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
                          static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
                          ability);
     resetMaxCooldowns();
+
+    // Award attacker
     attackerHovercraft->reduceMaxCooldowns();
+    attackerHovercraft->reduceCooldown(ability);
 }
 
 /*
@@ -446,11 +490,15 @@ void HovercraftEntity::reduceMaxCooldowns()
 
 void HovercraftEntity::reduceCooldown(eAbility ability)
 {
-    // Right now we only will use rockets
+    // Right now we only will use rockets and spikes
     switch (ability)
     {
     case ABILITY_ROCKET:
         m_fCooldowns[COOLDOWN_ROCKET] *= COOLDOWN_REDUCTION_ON_HIT;
+        break;
+    case ABILITY_SPIKES:
+        m_fCooldowns[COOLDOWN_SPIKES] *= COOLDOWN_REDUCTION_ON_HIT;
+        break;
     }
 }
 
@@ -594,6 +642,7 @@ void HovercraftEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositi
 void HovercraftEntity::initialize(const string& sFileName,
                                   const ObjectInfo* pObjectProperties,
                                   const string& sShaderType,
+                                  const vec3* vColor,
                                   float fScale)
 {
     // Load Mesh and Rendering Component
@@ -624,11 +673,11 @@ void HovercraftEntity::initialize(const string& sFileName,
     m_pMesh->addInstance(&m4InitialTransform, m_sName);
 
     // The fire trail entity is always at the same location as the hovecraft
-    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
+    m_pFireTrail = pEntityMngr->generateFlameTrailEntity(&m_vPosition, vColor, m_iID, FIRE_HEIGHT, FIRE_WIDTH);
     m_pFireTrail->initialize();
 
     // Create Rocket Mesh
-    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID);
+    m_pRocket = SCENE_LOADER->createRocketMesh(m_iID, vColor);
 
     // Initialize Spikes Animations
     for (unsigned int i = 0; i < NUM_SPIKES; ++i)
@@ -735,7 +784,7 @@ void HovercraftEntity::initializeCooldowns()
     }
 
     m_fMaxCooldowns[COOLDOWN_ROCKET] = ROCKET_BASE_COOLDOWN;
-    m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_DURATION;
+    m_fMaxCooldowns[COOLDOWN_SPIKES] = SPIKES_BASE_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_TRAIL_ACTIVATE] = TRAIL_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_TRAIL_DEACTIVATE] = TRAIL_COOLDOWN;
     m_fMaxCooldowns[COOLDOWN_DASH]   = DASH_BASE_COOLDOWN;
@@ -1071,13 +1120,12 @@ void HovercraftEntity::shootRocket()
     mat4 m4CurrentTransform;
     vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
-    m_pPhysicsComponent->getDirectionVector(&vVelocity);
-    vVelocity.y = 0; // remove any vertical velocity
-    vVelocity *= ROCKET_SPEED;
+    vVelocity = normalize(m4CurrentTransform[2]);
+    
     // The rocket is at the hovercraft's origin
-    // float translateUp = -0.000001f; // + is up, - is down
-    float translateUp = 0.00f; // + is up, - is down
-    m4CurrentTransform *= translate(vec3(0.0f, translateUp, 0.0f));
+    float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
+    m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
+    vVelocity *= ROCKET_SPEED;
     m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
@@ -1166,6 +1214,11 @@ void HovercraftEntity::setInvincible()
 {
     m_bInvincible = true;
     m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
+}
+
+bool HovercraftEntity::m_bIsDashing() const
+{
+    return m_pPhysicsComponent->isDashing();
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)

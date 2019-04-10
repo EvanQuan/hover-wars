@@ -213,10 +213,10 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 // Generates a Player Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber)
+vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber, const vec3* vColor)
 {
     getNextSpawnPoint(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition);
-    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
+    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, vColor, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
 
     // Return starting position
     return m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition;
@@ -225,10 +225,10 @@ vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber)
 // Generates a Bot Object at a given position
 // NOTE: This is a temporary testing tool, it may not be possible in the final version of the game to generate this
 //        object from a scene file.
-vec3 SceneLoader::createBot()
+vec3 SceneLoader::createBot(const vec3* vColor)
 {
     getNextSpawnPoint(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition);
-    m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
+    m_pEntityManager->generateBotEntity(&HOVERCRAFT_PROPERTIES_DEF.pObjectProperties, HOVERCRAFT_PROPERTIES_DEF.sMeshLocation, vColor, HOVERCRAFT_PROPERTIES_DEF.fScaleProperty, HOVERCRAFT_PROPERTIES_DEF.sShaderProperty);
 
     // Return starting position
     return HOVERCRAFT_PROPERTIES_DEF.pObjectProperties.vPosition;
@@ -245,9 +245,9 @@ void SceneLoader::createStaticMesh(vector< string > sData, unsigned int iLength)
 }
 
 // Generates a Rocket Entity based off the saved Rocket Properties loaded from the Scene.
-Rocket* SceneLoader::createRocketMesh(int iOwnerID)
+Rocket* SceneLoader::createRocketMesh(int iOwnerID, const vec3* vColor)
 {
-    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
+    return m_pEntityManager->generateRocketEntity(&ROCKET_PROPERTIES_DEF.pObjectProperties, &ROCKET_PROPERTIES_DEF.sMeshLocation, vColor, ROCKET_PROPERTIES_DEF.fScaleProperty, &ROCKET_PROPERTIES_DEF.sShaderProperty, iOwnerID);
 }
 
 // Generates a Spikes Entity based off the saved Spikes Properties loaded from the Scene.
@@ -325,6 +325,8 @@ void SceneLoader::loadFromFile( string sFileName )
 
     // Close File
     inFile.close();
+
+    postInitialize();
 }
 
 // outputError - Outputs information about an error creating an object.  Usually if 
@@ -562,6 +564,15 @@ void SceneLoader::resetAllProperties()
     spawnIndex = 0;
 }
 
+/*
+    Initialize any properties after the scene is finished loading and the file is closed.
+*/
+void SceneLoader::postInitialize()
+{
+    // Shuffle the order of spawn points so they are different every game.
+    std::random_shuffle(std::begin(m_vSpawnPoints), std::end(m_vSpawnPoints));
+}
+
 /************************************************************************\
  * Spawn Points Functionality                                           *
 \************************************************************************/
@@ -573,6 +584,9 @@ void SceneLoader::saveSpawnPoint(vector< string > sData, int iLength)
 
 void SceneLoader::getNextSpawnPoint(vec3* vPosition)
 {
+    // Modulo loop ensures no two hovercrafts are spawned at the same location,
+    // unless all spawn points are already used. Ideally the file should have enough
+    // spawn points for each hovercraft possible so that this never happens.
     spawnIndex = FuncUtils::addModulo(spawnIndex, 1, 0, m_vSpawnPoints.size() - 1);
     *vPosition = m_vSpawnPoints[spawnIndex];
 }

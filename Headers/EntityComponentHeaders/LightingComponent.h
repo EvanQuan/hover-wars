@@ -13,7 +13,7 @@
 
 class Texture;  // Forward Declaration to avoid include loop
 
-class LightingComponent 
+class LightingComponent
     : public EntityComponent
 {
 public:
@@ -56,7 +56,7 @@ public:
     eLightType getType() { return m_eType; }
     void getSpatialDimensions(vec3* pNegativeOffset, vec3* pPositiveOffset);
 
-private: 
+private:
     // Private Copy Constructor and Assignment operator overload.
     LightingComponent(const LightingComponent* pCopy);
     LightingComponent& operator=(const LightingComponent& pRHS);
@@ -74,7 +74,7 @@ private:
 
     // Data Storage for Shader
     vector< vec4 > m_pLightData;
-    
+
     eLightType m_eType;
 
     // Shadow Map Variables

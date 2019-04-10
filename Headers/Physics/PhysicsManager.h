@@ -66,13 +66,12 @@ public:
     bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
 
     int timesStepped = 0;
-
+    PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize);
 private:
-
+    
     // extra stuff to delete
     std::vector<physx::PxTriangleMesh*> triangleMeshes;
     std::vector<physx::PxShape*> shapes;
-    PxPvdTransport* transport;
 
     PxSimulationEventCallback *cb;
     std::vector<physx::PxVehicleNoDrive *> vehicles;
@@ -115,7 +114,6 @@ private:
 
     physx::PxDefaultCpuDispatcher*  gDispatcher     = NULL;
     physx::PxScene*                 gScene          = NULL;
-    // physx::PxControllerManager*     manager         = NULL;
 
     physx::PxMaterial*              gCarMaterial    = NULL;
     physx::PxMaterial*              gWorldMaterial  = NULL;

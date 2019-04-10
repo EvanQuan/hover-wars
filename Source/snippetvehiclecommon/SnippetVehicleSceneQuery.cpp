@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #include <new>
 #include "snippetvehiclecommon/SnippetVehicleSceneQuery.h"
@@ -117,8 +117,8 @@ VehicleSceneQueryData::~VehicleSceneQueryData()
 }
 
 VehicleSceneQueryData* VehicleSceneQueryData::allocate
-(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, const PxU32 maxNumHitPointsPerWheel, const PxU32 numVehiclesInBatch, 
- PxBatchQueryPreFilterShader preFilterShader, PxBatchQueryPostFilterShader postFilterShader, 
+(const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, const PxU32 maxNumHitPointsPerWheel, const PxU32 numVehiclesInBatch,
+ PxBatchQueryPreFilterShader preFilterShader, PxBatchQueryPostFilterShader postFilterShader,
  PxAllocatorCallback& allocator)
 {
     const PxU32 sqDataSize = ((sizeof(VehicleSceneQueryData) + 15) & ~15);
@@ -133,12 +133,12 @@ VehicleSceneQueryData* VehicleSceneQueryData::allocate
 
     const PxU32 size = sqDataSize + raycastResultSize + raycastHitSize + sweepResultSize + sweepHitSize;
     PxU8* buffer = static_cast<PxU8*>(allocator.allocate(size, NULL, NULL, 0));
-    
+
     VehicleSceneQueryData* sqData = new(buffer) VehicleSceneQueryData();
     sqData->mNumQueriesPerBatch = numVehiclesInBatch*maxNumWheelsPerVehicle;
     sqData->mNumHitResultsPerQuery = maxNumHitPointsPerWheel;
     buffer += sqDataSize;
-    
+
     sqData->mRaycastResults = reinterpret_cast<PxRaycastQueryResult*>(buffer);
     buffer += raycastResultSize;
 
@@ -196,7 +196,7 @@ PxBatchQuery* VehicleSceneQueryData::setUpBatchedSceneQuery(const PxU32 batchId,
     return scene->createBatchQuery(sqDesc);
 }
 
-PxRaycastQueryResult* VehicleSceneQueryData::getRaycastQueryResultBuffer(const PxU32 batchId) 
+PxRaycastQueryResult* VehicleSceneQueryData::getRaycastQueryResultBuffer(const PxU32 batchId)
 {
     return (mRaycastResults + batchId*mNumQueriesPerBatch);
 }
@@ -207,7 +207,7 @@ PxSweepQueryResult* VehicleSceneQueryData::getSweepQueryResultBuffer(const PxU32
 }
 
 
-PxU32 VehicleSceneQueryData::getQueryResultBufferSize() const 
+PxU32 VehicleSceneQueryData::getQueryResultBufferSize() const
 {
     return mNumQueriesPerBatch;
 }

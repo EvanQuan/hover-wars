@@ -25,7 +25,7 @@
 //
 // Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
-// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
+// Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #ifndef SNIPPET_VEHICLE_SCENEQUERY_H
 #define SNIPPET_VEHICLE_SCENEQUERY_H
@@ -79,7 +79,7 @@ public:
     //Allocate scene query data for up to maxNumVehicles and up to maxNumWheelsPerVehicle with numVehiclesInBatch per batch query.
     static VehicleSceneQueryData* allocate
         (const PxU32 maxNumVehicles, const PxU32 maxNumWheelsPerVehicle, const PxU32 maxNumHitPointsPerWheel, const PxU32 numVehiclesInBatch,
-         PxBatchQueryPreFilterShader preFilterShader, PxBatchQueryPostFilterShader postFilterShader, 
+         PxBatchQueryPreFilterShader preFilterShader, PxBatchQueryPostFilterShader postFilterShader,
          PxAllocatorCallback& allocator);
 
     //Free allocated buffers.
@@ -89,13 +89,13 @@ public:
     static PxBatchQuery* setUpBatchedSceneQuery(const PxU32 batchId, const VehicleSceneQueryData& vehicleSceneQueryData, PxScene* scene);
 
     //Return an array of scene query results for a single specified batch.
-    PxRaycastQueryResult* getRaycastQueryResultBuffer(const PxU32 batchId); 
+    PxRaycastQueryResult* getRaycastQueryResultBuffer(const PxU32 batchId);
 
     //Return an array of scene query results for a single specified batch.
-    PxSweepQueryResult* getSweepQueryResultBuffer(const PxU32 batchId); 
+    PxSweepQueryResult* getSweepQueryResultBuffer(const PxU32 batchId);
 
     //Get the number of scene query results that have been allocated for a single batch.
-    PxU32 getQueryResultBufferSize() const; 
+    PxU32 getQueryResultBufferSize() const;
 
 private:
 

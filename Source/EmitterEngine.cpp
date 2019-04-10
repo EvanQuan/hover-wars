@@ -65,8 +65,9 @@ void EmitterEngine::renderEmitters()
 }
 
 // Generates a new Emitter with the given parameters
-void EmitterEngine::generateEmitter(vec3 vPos,                      // Position of Emitter
-                                    vec3 vNormal,                   // Direction of Emission
+void EmitterEngine::generateEmitter(const vec3& vPos,               // Position of Emitter
+                                    const vec3& vNormal,            // Direction of Emission
+                                    const vec3* vColor,             // Color of Emission
                                     float fAngleFromNormal,         // Spread of Emission
                                     float fParticleDuration,        // Duration of Particles
                                     unsigned int iNumParticles,     // Number of Particles to spawn
@@ -74,6 +75,6 @@ void EmitterEngine::generateEmitter(vec3 vPos,                      // Position 
                                     float fRadius)                  // Radius of Emission
 {
     unique_ptr<Emitter> pNewEmitter = make_unique<Emitter>(&vPos);  // Generate new Emiter
-    pNewEmitter->initializeEmitter(iNumParticles, vNormal, fAngleFromNormal, fParticleDuration, fRadius, bExplosion);   // Initialize it
+    pNewEmitter->initializeEmitter(iNumParticles, &vNormal, vColor, fAngleFromNormal, fParticleDuration, fRadius, bExplosion);   // Initialize it
     m_pEmitters.push_back(move(pNewEmitter));                       // Store Emitter
 }
