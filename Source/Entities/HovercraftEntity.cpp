@@ -422,10 +422,20 @@ void HovercraftEntity::updateQueuedActions()
         enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
         queuedActions[QUEUED_SPEED_BOOST] = false;
     }
-    if (queuedActions[QUEUED_PUSH])
+    // if (queuedActions[QUEUED_PUSH])
+    // {
+        // push(queuedX, queuedY);
+        // queuedActions[QUEUED_PUSH] = false;
+    // }
+    if (queuedActions[QUEUED_REFLECT])
     {
-        push(queuedX, queuedY);
-        queuedActions[QUEUED_PUSH] = false;
+        
+        m_pRocket->launchRocket(&m_m4ReflectTransform,
+                                &m_vReflectVelocity,
+                                Rocket::BOUNDING_BOX,
+                                false);
+        reduceCooldown(ABILITY_SPIKES);
+        queuedActions[QUEUED_REFLECT] = false;
     }
 }
 
@@ -1127,7 +1137,7 @@ void HovercraftEntity::shootRocket()
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
     m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
     vVelocity *= Rocket::LAUNCH_SPEED;
-    m_pRocket->launchRocket(m_iID, &m4CurrentTransform, &vVelocity, Rocket::BOUNDING_BOX, true);
+    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, Rocket::BOUNDING_BOX, true);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
 
@@ -1227,11 +1237,13 @@ bool HovercraftEntity::isDashing() const
     This will silently launch a new rocket in the opposite direction, and will
     not affect cooldowns or rocket fire count.
 */
-void HovercraftEntity::reflectRocket(const mat4 &transform, const vec3 &velocity)
+void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &velocity)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
     cout << "rocket reflected" << endl;
-    reduceCooldown(ABILITY_SPIKES);
+    m_m4ReflectTransform = transform;
+    m_vReflectVelocity = velocity;
+    queuedActions[QUEUED_REFLECT] = true;
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)

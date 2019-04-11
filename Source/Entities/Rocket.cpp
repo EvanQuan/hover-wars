@@ -145,8 +145,7 @@ void Rocket::removeFromScene(unsigned int iVictimMsg, bool shouldExplode)
  * Rocket Functionality                                                                          *
 \*************************************************************************************************/
 
-void Rocket::launchRocket(const int iEntityID,
-                          const mat4* m4InitialTransform,
+void Rocket::launchRocket(const mat4* m4InitialTransform,
                           const vec3* vVelocity,
                           float fBBLength,
                           bool includeSound)
@@ -190,7 +189,9 @@ void Rocket::reflect(unsigned int iVictimMsg, HovercraftEntity *pOther)
     m_pPhysicsComponent->getTransformMatrix(sHashKey, &transform);
     // vec3 velocity = m_pPhysicsComponent->getDirectionVector(sHashKey);
 
+    // transform[2].y = 0;
     vec3 velocity = glm::normalize(transform[2]) * LAUNCH_SPEED;
+
 
     // 2. flip it's direction by 180
     // float angle = glm::radians(180);

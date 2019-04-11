@@ -48,7 +48,7 @@ public:
 
     // Rocket Functionality
     // Spawns a rocket of the specified parameters
-    void launchRocket(const int iEntityID, const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength, bool includeSound);
+    void launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength, bool includeSound);
 
     // Reflect a rocket. In practice this deletes the rockets, spawns a rocket
     // facing the opposite direction and of the specified reflected owner.
