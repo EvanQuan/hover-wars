@@ -260,7 +260,7 @@ bool AIComponent::shouldFireRocket(const HovercraftEntity *bot,
                                    float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)
-        && m_eCurrentMode == MODE_CHASE
+        && (m_eCurrentMode == MODE_CHASE || m_eCurrentMode == MODE_EVADE)
         && bot->isOffCooldown(eAbility::ABILITY_ROCKET);
 }
 
