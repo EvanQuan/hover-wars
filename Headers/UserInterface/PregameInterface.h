@@ -5,6 +5,7 @@
 #define BACK_OPTION "Back"
 #define PLAY_COUNT_OPTION "Player count"
 #define BOT_COUNT_OPTION "Bot count"
+#define AI_OPTION "AI"
 #define GAME_TIME_OPTION "Game time"
 
 
@@ -35,6 +36,8 @@ private:
         BOT_COUNT_NUMBER,
         GAME_TIME,
         GAME_TIME_NUMBER,
+        AI,
+        AI_TYPE,
         MAIN_MENU,
         START_GAME,
     };
@@ -43,5 +46,6 @@ private:
     void renderNumberOfPlayer(int i_NumOfPlayer);
     void renderNumberOfBot(int i_NumOfBot);
     void renderGameTime(int i_GameTime);
+    void renderAI(eAIType m_eAIType);
     void renderOption();
 };

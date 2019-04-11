@@ -16,6 +16,9 @@ PostgameMenu::PostgameMenu() : PromptMenu(
         {
             { "Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
+        {
+            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
+        },
     }
 )
 {
@@ -40,6 +43,9 @@ void PostgameMenu::select(eFixedCommand command)
     {
     case COMMAND_PROMPT_BACK:
         back();
+        break;
+    case COMMAND_PROMPT_NEXT_MENU:
+        //
         break;
     }
 }

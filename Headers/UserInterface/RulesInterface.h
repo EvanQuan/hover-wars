@@ -24,11 +24,7 @@ private:
     enum eUIComponent
     {
         BACKGROUND = 0,
-        TITLE,
-        INSERT_COIN
     };
 
     static RulesInterface* m_pInstance;
-
-    void renderOption();
 };

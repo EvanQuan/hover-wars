@@ -392,7 +392,8 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
     if (isBot(hit))
     {
-        totalGained *= POINT_MULTIPLIER_HIT_BOT;
+        // @Evan refine this value
+        totalGained >>= 2; // Divide by 4
     }
     return totalGained;
 }
@@ -835,11 +836,11 @@ void GameStats::awardToHovercrafts(eHovercraftStat stat,
             award.points = points;
             award.statValue = stats[hovercraft][stat];
             endGameStats.at(i).awards.push_back(award);
-            cout << "Award "
-                << hovercraft
-                << " with " << name << ": \"" <<
-                description << " of " << award.statValue
-                << "\" +" << points << endl;
+            //cout << "Award "
+            //    << hovercraft
+            //    << " with " << name << ": \"" <<
+            //    description << " of " << award.statValue
+            //    << "\" +" << points << endl;
         }
     }
 }
