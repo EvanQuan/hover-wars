@@ -188,8 +188,7 @@ void Rocket::reflect(unsigned int iVictimMsg, HovercraftEntity *pOther)
     // 1. get rocket's transform and direction
     mat4 transform;
     m_pPhysicsComponent->getTransformMatrix(sHashKey, &transform);
-    vec3 direction;
-    m_pPhysicsComponent->getDirectionVector(sHashKey, &direction);
+    // vec3 velocity = m_pPhysicsComponent->getDirectionVector(sHashKey);
 
     vec3 velocity = glm::normalize(transform[2]) * LAUNCH_SPEED;
 
