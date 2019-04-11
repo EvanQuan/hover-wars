@@ -41,8 +41,8 @@ void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth,floa
 
     m_eType = ENTITY_PLANE; // Set the Entity Type to Plane to avoid reference within the Spatial Map.
 
-    int numTilesX = (iHeight / sizeGrid);
-    int numTilesY = (iWidth / sizeGrid);
+    int numTilesX = static_cast<int>((iHeight / sizeGrid));
+    int numTilesY = static_cast<int>((iWidth / sizeGrid));
    
     PHYSICS_MANAGER->createGroundPlane(sizeGrid, sizeGrid, numTilesX, heightmap,m_sName.c_str());
 

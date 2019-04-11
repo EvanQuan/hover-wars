@@ -13,6 +13,7 @@ public:
     int getBotCount() const { return m_iBotCount; };
     int getGameTime() const { return m_fGameTime; };
     eAIType getAIType() const { return m_eAIType; };
+    unsigned int getMapNumber() const { return m_iMapNumber; };
 
 private:
     PregameMenu();
@@ -29,6 +30,7 @@ private:
     int m_iBotCount;
     int m_iPlayerCount;
     int m_fGameTime;
+    unsigned int m_iMapNumber;
 
     eAIType m_eAIType;
 

@@ -24,7 +24,7 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-void AIManager::reinitialize(eAIType aiType)
+void AIManager::reinitialize(eAIType aiType, unsigned int mapNumber)
 {
     m_eAIType = aiType;
     m_vAIComponents.clear();
@@ -32,7 +32,7 @@ void AIManager::reinitialize(eAIType aiType)
     for (size_t i = 0, size = bots->size(); i < size; i++)
     {
         HovercraftEntity* bot = bots->at(i);
-        AIComponent* ai = m_pEntityMngr->generateAIComponent(bot->getID());
+        AIComponent* ai = m_pEntityMngr->generateAIComponent(bot->getID(), mapNumber);
         initializeAIComponent(bot, ai);
         m_vAIComponents.push_back(ai);
     }

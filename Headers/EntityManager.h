@@ -74,7 +74,7 @@ public:
     LightingComponent* generateLightingComponent(int iEntityID);
     PhysicsComponent* generatePhysicsComponent(int iEntityID);
     AnimationComponent* generateAnimationComponent(int iEntityID);
-    AIComponent* EntityManager::generateAIComponent(int iEntityID);
+    AIComponent* EntityManager::generateAIComponent(int iEntityID, unsigned int mapNumber);
     // Camera Management
     void updateWidthAndHeight(int iWidth, int iHeight);
     void rotateCamera(vec2 pDelta); 

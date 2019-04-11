@@ -60,7 +60,12 @@ using namespace physx;
 
 /* DEFINES */
 #define INPUT_SIZE          128
-#define RELEASE_ENV         "Scenes/newScene.scene" // file path
+#define MAP_1               "Scenes/release.scene" // file path
+#define MAP_2               "Scenes/newScene.scene" // file path
+#define MAP_1_NUMBER        0
+#define MAP_2_NUMBER        1
+#define MIN_MAP_NUMBER      MAP_1_NUMBER
+#define MAX_MAP_NUMBER      MAP_2_NUMBER
 #define DEBUG_ENV           "Scenes/debug.scene"   // file path
 #define DEBUG_NO_AI_ENV     "Scenes/debug_no_ai.scene"   // file path
 #define LIGHT_MOVE_FACTOR   0.05f

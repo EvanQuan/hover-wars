@@ -31,7 +31,7 @@ public:
     // Graphics Application
     bool initialize();
     void startRendering();
-    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eAIType aiType, string sFileName);
+    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eAIType aiType, unsigned int mapNumber);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height Getters and Setters
