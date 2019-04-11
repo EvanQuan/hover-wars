@@ -69,19 +69,30 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 {
     if (m_iOwnerID != pOther->getID())
     {
+        eEntityType pOtherType = pOther->getType();
+
+        eInteractType pOtherInteractType;
+        Rocket *pOtherRocket;
+        switch (pOtherType)
+        {
+        case ENTITY_INTERACTABLE:
+            // Tell the rocket to explode.
+            pOtherInteractType = static_cast<InteractableEntity*>(pOther)->getInteractableType();
+            switch (pOtherInteractType)
+            {
+            case INTER_ROCKET:
+                // If the other entity is also a rocket, tell that rocket to
+                // explode as well.
+                pOtherRocket = static_cast<Rocket*>(pOther);
+                pOtherRocket->explode(iColliderMsg);
+                break;
+            }
+            break;
+        }
         // Tell the Other Entity that they've been hit via the Inherited Collision Handler
         InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
         explode(iVictimMsg);
-
-        if (eEntityType::ENTITY_INTERACTABLE == pOther->getType() &&
-            eInteractType::INTER_ROCKET == static_cast<InteractableEntity*>(pOther)->getInteractableType())
-        {
-            // Tell the rocket to explode.
-            Rocket* pOtherRocket = static_cast<Rocket*>(pOther);
-            pOtherRocket->explode(iColliderMsg);
-        }
-
     }
 }
 
@@ -90,15 +101,18 @@ void Rocket::handleHovercraftCollision(HovercraftEntity *owner, HovercraftEntity
 }
 
 // clear Rocket Rendering; Remove Instance from Mesh, remove from Physics
-void Rocket::removeFromScene(unsigned int iVictimMsg)
+void Rocket::removeFromScene(unsigned int iVictimMsg, bool shouldExplode)
 {
     string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
-    mat4 m4FinalTransform;
     m_pMesh->removeInstance(sHashKey);
-    m_pPhysicsComponent->getTransformMatrix(sHashKey, &m4FinalTransform);
 
-    // Explosion
-    m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], &m_vExplosionColor, ANGLE_FROM_NORMAL, PARTICLE_DURATION, NUM_PARTICLES, true, EXPLOSION_RADIUS);
+    if (shouldExplode)
+    {
+        mat4 m4FinalTransform;
+        m_pPhysicsComponent->getTransformMatrix(sHashKey, &m4FinalTransform);
+        m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], &m_vExplosionColor,
+            ANGLE_FROM_NORMAL, PARTICLE_DURATION, NUM_PARTICLES, true, EXPLOSION_RADIUS);
+    }
 
     m_pPhysicsComponent->flagForRemoval(sHashKey);
     m_pReferenceList.erase(remove(m_pReferenceList.begin(),
@@ -111,10 +125,16 @@ void Rocket::removeFromScene(unsigned int iVictimMsg)
  * Rocket Functionality                                                                          *
 \*************************************************************************************************/
 
-void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength)
+void Rocket::launchRocket(const mat4* m4InitialTransform,
+                          const vec3* vVelocity,
+                          float fBBLength,
+                          bool includeSound)
 {
     // Play sound for Rocket activation
-    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+    if (includeSound)
+    {
+        SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_ACTIVATE);
+    }
 
     // Generate Hash Key (<Rocket Entity ID> <Transformation Index>)
     // Transformation index used to differentiate rocket A from rocket B for
@@ -136,13 +156,20 @@ void Rocket::launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity,
 void Rocket::reflect(unsigned int iVictimMsg)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+    // 1. get rocket's direction vector
+    // 2. flip it 180
+    // 3. launch rocket with new direction with the owner's ID without sound
 
-    
+    // 4. Silently remove this rocket without explosion
+    removeFromScene(iVictimMsg, false);
 }
 
 
+/*
+    @param iVictimMsg   of the rocket to explode
+*/
 void Rocket::explode(unsigned int iVictimMsg)
 {
     SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
-    removeFromScene(iVictimMsg);
+    removeFromScene(iVictimMsg, true);
 }

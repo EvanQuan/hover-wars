@@ -1135,7 +1135,7 @@ void HovercraftEntity::shootRocket()
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
     m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
     vVelocity *= ROCKET_SPEED;
-    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX);
+    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX, true);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
 
