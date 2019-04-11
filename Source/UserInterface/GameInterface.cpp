@@ -443,6 +443,7 @@ void GameInterface::renderMessages()
     {
         int scoreChange = GAME_STATS->get(m_eHovercraftFocus,
                                           GameStats::eHovercraftStat::SCORE_CHANGE);
+        // cout << "GameInterface score change for " << m_eHovercraftFocus << ": " << scoreChange << endl;
         bool scoreIncreased = scoreChange >= 0;
         if (scoreChange != 0)
         {

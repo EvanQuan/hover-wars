@@ -166,7 +166,7 @@ void PhysicsComponent::rotatePlayer(float x) {
     // By making the growth exponential instad of linear, this further helps both types of joystick movement.
     float angularMomentum = (x > 0 ? -1 : 1) * std::abs(std::pow(x * ANGULAR_MOMENTUM_MULTIPLIER, ANGULAR_MOMENTUM_EXPONENT));
     // float angularMomentum = -x * 4;
-    cout << "angularMomentum: " << angularMomentum << endl;
+    // cout << "angularMomentum: " << angularMomentum << endl;
     gVehicleNoDrive->getRigidDynamicActor()->setAngularVelocity(physx::PxVec3(0, angularMomentum, 0));
 }
 // Virtual Destructor, clean up any memory necessary here.
