@@ -221,7 +221,7 @@ private:
     void animateSpikes();
 
     // Abilities
-    void shootRocket();
+    void activateRocket();
     void activateSpikes();
     void updateSpikes(float fTimeInSeconds);
 

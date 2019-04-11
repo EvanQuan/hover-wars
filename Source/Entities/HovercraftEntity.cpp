@@ -1037,7 +1037,7 @@ bool HovercraftEntity::useAbility(eAbility ability)
     switch (ability)
     {
     case ABILITY_ROCKET:
-        shootRocket();
+        activateRocket();
         break;
     case ABILITY_SPIKES:
         activateSpikes();
@@ -1126,7 +1126,7 @@ void HovercraftEntity::turn(float x)
 /*
     Shoot a rocket and put it on cool down.
 */
-void HovercraftEntity::shootRocket()
+void HovercraftEntity::activateRocket()
 {
     mat4 m4CurrentTransform;
     vec3 vVelocity;

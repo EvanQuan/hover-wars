@@ -23,7 +23,7 @@ For collisions
 */
 struct Action {
     // Signifies AI should fire a rocket for the next update
-    bool shouldFireRocket = false;
+    bool shouldActivateRocket = false;
     // Signifies the AI should activate the flame trail for the next update
     bool shouldActivateTrail = false;
     // Signifies the AI should activate spikes for the next update
@@ -76,7 +76,7 @@ private:
     void determineMode(float distanceToTarget);
     void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
 
-    bool shouldFireRocket(float accuracy);
+    bool shouldActivateRocket(float accuracy);
 
     eMode modeSequence[10];
     int durations[10];
@@ -85,7 +85,7 @@ private:
     void determineTurn(const HovercraftEntity *bot, const vec3 &distanceVectorToTarget, const vec3 &botDirectionVector, Action *a);
     bool shouldChooseSeekMode(float distanceToTarget);
 
-    bool shouldFireRocket(const HovercraftEntity *bot, float accuracy);
+    bool shouldActivateRocket(const HovercraftEntity *bot, float accuracy);
     bool shouldActivateSpikes(const HovercraftEntity *bot, float distanceToTarget);
     bool shouldActivateTrail(const HovercraftEntity *bot);
 

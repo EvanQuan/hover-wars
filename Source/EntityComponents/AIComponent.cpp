@@ -233,17 +233,17 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     int XvalMul = static_cast<int>((normalizedDistanceVectorToTarget.x / abs(normalizedDistanceVectorToTarget.x)));
 
     float accuracy = abs(yVal - botDirectionVector.z);
-    a->shouldFireRocket = shouldFireRocket(bot, accuracy);
+    a->shouldActivateRocket = shouldActivateRocket(bot, accuracy);
 
     // @Austin Is the order intentional?
     // ie. if the bot should fire a rocket, they won't if the first if statement case
     // is true, since this is an if-else-if chain.
-    // I changed it so that the shouldFireRocket is set beforehand, independent of this
+    // I changed it so that the shouldActivateRocket is set beforehand, independent of this
     // if-else-if chain.
     if (yVal > botDirectionVector.z) {
         // Turn right
         a->turn = static_cast<float>(1 * XvalMul);
-    } else if (a->shouldFireRocket) {
+    } else if (a->shouldActivateRocket) {
         // Don't turn, and shoot
         a->turn = 0.0f;
     } else {
@@ -256,7 +256,7 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     To fire the rocket, the accuracy should be under the
     ROCKET_ACCURACY_THRESHOLD, and the bot must be in chase mode.
 */
-bool AIComponent::shouldFireRocket(const HovercraftEntity *bot,
+bool AIComponent::shouldActivateRocket(const HovercraftEntity *bot,
                                    float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)
