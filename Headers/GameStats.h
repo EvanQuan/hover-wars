@@ -56,6 +56,7 @@ Player:
     Abilities:
         Total abilities used
         Count of each ability used
+        Rockets reflected
 
 Game:
     Kills
@@ -121,6 +122,7 @@ public:
         KILLS_WITH_ROCKET,
         KILLS_WITH_SPIKES,
         KILLS_WITH_TRAIL,
+        ROCKETS_REFLECTED,
         HOVERCRAFTSTAT_COUNT,
     };
 
@@ -174,6 +176,7 @@ public:
     int get(eHovercraft hovercraft, eHovercraftStat stat) const;
     void addScore(eHovercraft hovercraft, eAddScoreReason reason);
     void addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbility ability);
+    void reflectRocket(eHovercraft hovercraft);
 
     // Cooldowns
     void useAbility(eHovercraft hovercraft, eAbility ability);

@@ -249,12 +249,12 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     int XvalMul = static_cast<int>((normalizedDistanceVectorToTarget.x / abs(normalizedDistanceVectorToTarget.x)));
 
     float accuracy = abs(yVal - botDirectionVector.z);
-    a->shouldFireRocket = shouldFireRocket(bot, accuracy);
+    a->shouldActivateRocket = shouldActivateRocket(bot, accuracy);
 
     if (yVal > botDirectionVector.z) {
         // Turn right
         a->turn = static_cast<float>(1 * XvalMul);
-    } else if (a->shouldFireRocket) {
+    } else if (a->shouldActivateRocket) {
         // Don't turn, and shoot
         a->turn = 0.0f;
     } else {
@@ -267,7 +267,7 @@ void AIComponent::determineTurn(const HovercraftEntity *bot,
     To fire the rocket, the accuracy should be under the
     ROCKET_ACCURACY_THRESHOLD, and the bot must be in chase mode.
 */
-bool AIComponent::shouldFireRocket(const HovercraftEntity *bot,
+bool AIComponent::shouldActivateRocket(const HovercraftEntity *bot,
                                    float accuracy)
 {
     return (accuracy < ROCKET_ACCURACY_THRESHOLD)

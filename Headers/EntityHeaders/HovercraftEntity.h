@@ -145,7 +145,10 @@ public:
 
     bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
 
-    bool m_bIsDashing() const;
+    bool isDashing() const;
+
+    // Public access for Rocket class
+    void reflectRocket(mat4 &transform, vec3 &velocity);
 
     // Should be initialized AFTER the hovercraft has been created when
     // GameStats corresponds entities to hovercrafts.
@@ -175,12 +178,15 @@ private:
     {
         QUEUED_SPEED_BOOST = 0,
         QUEUED_PUSH,
+        QUEUED_REFLECT,
         QUEUED_COUNT
     };
 
     bool queuedActions[QUEUED_COUNT];
     float queuedX;
     float queuedY;
+    mat4 m_m4ReflectTransform;
+    vec3 m_vReflectVelocity;
 
     void updateQueuedActions();
 
@@ -220,7 +226,7 @@ private:
     void animateSpikes();
 
     // Abilities
-    void shootRocket();
+    void activateRocket();
     void activateSpikes();
     void updateSpikes(float fTimeInSeconds);
 

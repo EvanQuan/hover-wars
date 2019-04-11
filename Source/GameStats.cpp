@@ -38,6 +38,8 @@ priority targets to attack.
 #define POINTS_GAINED_PER_HIT_KILLSTREAK 10
 /*
 Base points for picking up a power up
+
+@Deprecated
 */
 #define POINTS_GAINED_PICKUP_POWERUP 10
 /*
@@ -127,7 +129,9 @@ void GameStats::correspondEntitiesToHovercrafts()
     const vector<HovercraftEntity*>* bots = pEntityManager->getBotList();
     HovercraftEntity* player;
     HovercraftEntity* bot;
+#ifdef _DEBUG
     cout << "Players:" << endl;
+#endif
     int id;
     eHovercraft hovercraft;
     for (size_t i = 0, size = players->size(); i < size; ++i)
@@ -137,10 +141,15 @@ void GameStats::correspondEntitiesToHovercrafts()
         hovercraft = static_cast<eHovercraft>(i);
         entityIDToHovercraft.insert({id, hovercraft});
         player->correspondToEHovercraft(hovercraft);
-
+#ifdef _DEBUG
         cout << "ID: " << id << " | Hovercraft: " << hovercraft << endl;
+#endif // _DEBUG
+
     }
+#ifdef _DEBUG
     cout << "Bots:" << endl;
+#endif // _DEBUG
+
     for (size_t i = 0, size = bots->size(); i < size; ++i)
     {
         bot = bots->at(i);
@@ -148,7 +157,9 @@ void GameStats::correspondEntitiesToHovercrafts()
         hovercraft = static_cast<eHovercraft>(i + HOVERCRAFT_BOT_1);
         entityIDToHovercraft.insert({id, hovercraft});
         bot->correspondToEHovercraft(hovercraft);
+#ifdef _DEBUG
         cout << "ID: " << id << " | Hovercraft: " << hovercraft << endl;
+#endif // _DEBUG
     }
 }
 
@@ -185,7 +196,10 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         break;
     }
     checkForNewScoreLeader(hovercraft);
+#ifdef _DEBUG
     debugPrintAllScores();
+#endif // _DEBUG
+
 }
 
 /*
@@ -276,6 +290,11 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbilit
     {
         stats[hovercraft][KILLS_WITH_ROCKET + ability]++;
     }
+}
+
+void GameStats::reflectRocket(eHovercraft hovercraft)
+{
+    stats[hovercraft][ROCKETS_REFLECTED]++;
 }
 
 /*
@@ -651,7 +670,7 @@ void GameStats::revenge(eHovercraft attacker, eHovercraft hit)
 */
 void GameStats::pickupPowerup(eHovercraft hovercraft)
 {
-    addScore(hovercraft, POINTS_GAINED_PICKUP_POWERUP);
+    // addScore(hovercraft, POINTS_GAINED_PICKUP_POWERUP);
     addPowerupCount(hovercraft);
     // hard coded for now
     m_pGameInterface->displayPowerup(hovercraft, POWERUP_SPEED_BOOST);
@@ -911,6 +930,7 @@ void GameStats::awardAwards()
     awardHighestNonZeroStat(KILLS_WITH_TRAIL,              "Pyromaniac",        "Most flame trail kills",   200);
     awardHighestNonZeroStat(KILLS_WITH_SPIKES,             "Porcupine",         "Most spike kills",         300);
     awardHighestNonZeroStat(DEATHS_TOTAL,                  "Consolation",       "Most deaths",              100);
+    awardHighestNonZeroStat(ROCKETS_REFLECTED,             "Mirror, Mirror",    "Most rocket reflects",     300);
     awardLowestStat(DEATHS_TOTAL,                          "Survivor",          "Least deaths",             500);
     // Special awards
     awardZeroStat(DEATHS_TOTAL,                            "Untouchable",       "Zero deaths",              500);

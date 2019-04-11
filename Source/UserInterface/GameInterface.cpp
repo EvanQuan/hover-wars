@@ -423,6 +423,7 @@ void GameInterface::startMajorTimeWarning()
 void GameInterface::startMinorTimeWarning()
 {
     m_bHasStartedMinorWarning = true;
+    m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_WARNING);
     displayNotification(NOTIFICATION_TIME_MINOR);
 }
 
@@ -442,6 +443,7 @@ void GameInterface::renderMessages()
     {
         int scoreChange = GAME_STATS->get(m_eHovercraftFocus,
                                           GameStats::eHovercraftStat::SCORE_CHANGE);
+        // cout << "GameInterface score change for " << m_eHovercraftFocus << ": " << scoreChange << endl;
         bool scoreIncreased = scoreChange >= 0;
         if (scoreChange != 0)
         {

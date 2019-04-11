@@ -350,34 +350,34 @@ void PostgameInterface::renderScore(int placements, int score)
     if (score > 999) {
         switch (thousand) {
         case 0:
-            renderImage(IMAGE_0, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_0, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 1:
-            renderImage(IMAGE_1, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_1, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 2:
-            renderImage(IMAGE_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 3:
-            renderImage(IMAGE_3, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_3, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 4:
-            renderImage(IMAGE_4, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_4, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 5:
-            renderImage(IMAGE_5, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_5, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 6:
-            renderImage(IMAGE_6, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_6, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 7:
-            renderImage(IMAGE_7, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_7, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 8:
-            renderImage(IMAGE_8, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_8, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         case 9:
-            renderImage(IMAGE_9, m_vComponentCoordinates[14 + placements * 5].first + 0.1, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_9, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
             break;
         }
     }
@@ -385,34 +385,34 @@ void PostgameInterface::renderScore(int placements, int score)
     if (score > 99) {
         switch (hundred) {
         case 0:
-            renderImage(IMAGE_0, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_0, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 1:
-            renderImage(IMAGE_1, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_1, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 2:
-            renderImage(IMAGE_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 3:
-            renderImage(IMAGE_3, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_3, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 4:
-            renderImage(IMAGE_4, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_4, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 5:
-            renderImage(IMAGE_5, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_5, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 6:
-            renderImage(IMAGE_6, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_6, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 7:
-            renderImage(IMAGE_7, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_7, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 8:
-            renderImage(IMAGE_8, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_8, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 9:
-            renderImage(IMAGE_9, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_9, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         }
     }
@@ -420,72 +420,72 @@ void PostgameInterface::renderScore(int placements, int score)
     if (score > 9) {
         switch (ten) {
         case 0:
-            renderImage(IMAGE_0, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_0, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 1:
-            renderImage(IMAGE_1, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_1, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 2:
-            renderImage(IMAGE_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 3:
-            renderImage(IMAGE_3, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_3, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 4:
-            renderImage(IMAGE_4, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_4, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 5:
-            renderImage(IMAGE_5, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_5, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 6:
-            renderImage(IMAGE_6, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_6, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 7:
-            renderImage(IMAGE_7, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_7, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 8:
-            renderImage(IMAGE_8, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_8, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         case 9:
-            renderImage(IMAGE_9, m_vComponentCoordinates[16 + placements * 5].first + 0.3, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_9, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
             break;
         }
     }
 
     switch (one) {
     case 0:
-        renderImage(IMAGE_0, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_0, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 1:
-        renderImage(IMAGE_1, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_1, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 2:
-        renderImage(IMAGE_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 3:
-        renderImage(IMAGE_3, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_3, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 4:
-        renderImage(IMAGE_4, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_4, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 5:
-        renderImage(IMAGE_5, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_5, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 6:
-        renderImage(IMAGE_6, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_6, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 7:
-        renderImage(IMAGE_7, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_7, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 8:
-        renderImage(IMAGE_8, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_8, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     case 9:
-        renderImage(IMAGE_9, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
+        renderImage(IMAGE_9, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     }
 
-    renderImage(IMAGE_POINT, m_vComponentCoordinates[18 + placements * 5].first + 0.4, m_vComponentCoordinates[18 + placements * 5].second, 1.0f);
+    renderImage(IMAGE_POINT, m_vComponentCoordinates[18 + placements * 5].first + 0.4f, m_vComponentCoordinates[18 + placements * 5].second, 1.0f);
 }
 
 
@@ -495,15 +495,15 @@ void PostgameInterface::renderOption()
     string option = m->getCurrentPrompt();
 
     if (option == BACK_TO_MAIN_MENU_OPTION) {
-        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4, m_vComponentCoordinates[AWARDS].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
     else if (option == AWARDS_OPTION) {
-        renderImage(IMAGE_AWARDS_1, m_vComponentCoordinates[AWARDS].first + 0.4, m_vComponentCoordinates[AWARDS].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first + 0.4, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+        renderImage(IMAGE_AWARDS_1, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
     else {
-        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4, m_vComponentCoordinates[AWARDS].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
 }

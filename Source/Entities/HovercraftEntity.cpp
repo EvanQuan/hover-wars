@@ -22,16 +22,7 @@
 /*
     Unit : meters / second
 */
-#define ROCKET_SPEED            100.0f
 #define FLAME_SPACING           1.0f
-
-/*
-    Length of the rocket hit box
-    This value is currently determined by the size of the model of the rocket,
-    so probably should not be manipulated. The radius of the rocket is
-    currently defined in PhysicsManager.
-*/
-#define ROCKET_BOUNDING_BOX     1.0f
 
 // @Deprecated - Hovercrafts don't lose control
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
@@ -59,7 +50,7 @@
 
     Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        6.0f
+#define ROCKET_BASE_COOLDOWN        5.0f
 #define SPIKES_BASE_COOLDOWN        6.0f
 #define TRAIL_COOLDOWN              0.0f
 // Cooldown between dash usages
@@ -435,10 +426,20 @@ void HovercraftEntity::updateQueuedActions()
         enablePowerup(ePowerup::POWERUP_SPEED_BOOST);
         queuedActions[QUEUED_SPEED_BOOST] = false;
     }
-    if (queuedActions[QUEUED_PUSH])
+    // if (queuedActions[QUEUED_PUSH])
+    // {
+        // push(queuedX, queuedY);
+        // queuedActions[QUEUED_PUSH] = false;
+    // }
+    if (queuedActions[QUEUED_REFLECT])
     {
-        push(queuedX, queuedY);
-        queuedActions[QUEUED_PUSH] = false;
+        
+        m_pRocket->launchRocket(&m_m4ReflectTransform,
+                                &m_vReflectVelocity,
+                                Rocket::BOUNDING_BOX,
+                                false);
+        reduceCooldown(ABILITY_SPIKES);
+        queuedActions[QUEUED_REFLECT] = false;
     }
 }
 // getters for the AI
@@ -460,9 +461,10 @@ eAbility HovercraftEntity::getLastAbilityBot() {
 */
 void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
-    if (isInvincible() || (ability == eAbility::ABILITY_TRAIL_ACTIVATE && m_bIsDashing()) ) {
+    if (isInvincible() || (ability == eAbility::ABILITY_TRAIL_ACTIVATE && isDashing()) ) {
         return;
     }
+    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_PULSE_IMPACT, m_bIsPlayer);
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
     bool attackerHadLargestScore = m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
     if (m_pGameStats->hasLargestScore(m_eHovercraft))
@@ -735,8 +737,9 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
 {
     // Get the Type of the Other Entity
     eEntityType eOtherType = pOther->getType();
+    // eInteractType eOtherInteractableType;
     HovercraftEntity* pOtherHovercraft;
-    // InteractableEntity* pOtherIE;
+    // InteractableEntity* pOtherInteractable;
     switch (eOtherType)
     {
     case ENTITY_HOVERCRAFT:
@@ -755,7 +758,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
             m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
         // Momentarily lose control of vehicle to prevent air moving
-
+    
         // TODO check if need to determine which velocity to do
 
         
@@ -1048,7 +1051,7 @@ bool HovercraftEntity::useAbility(eAbility ability)
     switch (ability)
     {
     case ABILITY_ROCKET:
-        shootRocket();
+        activateRocket();
         break;
     case ABILITY_SPIKES:
         activateSpikes();
@@ -1137,7 +1140,7 @@ void HovercraftEntity::turn(float x)
 /*
     Shoot a rocket and put it on cool down.
 */
-void HovercraftEntity::shootRocket()
+void HovercraftEntity::activateRocket()
 {
     mat4 m4CurrentTransform;
     vec3 vVelocity;
@@ -1147,8 +1150,8 @@ void HovercraftEntity::shootRocket()
     // The rocket is at the hovercraft's origin
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
     m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
-    vVelocity *= ROCKET_SPEED;
-    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX);
+    vVelocity *= Rocket::LAUNCH_SPEED;
+    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, Rocket::BOUNDING_BOX, true);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
 
@@ -1175,7 +1178,7 @@ void HovercraftEntity::activateTrail()
     // any fuel due to trail recharge cooldown. Need to check fuel first.
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
     {
-        m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, m_iID, 0);
         m_bTrailActivated = true;
         m_fSecondsSinceLastFlame = 0.0f;
         m_fSecondsSinceTrailDeactivated = 0.0f;
@@ -1190,7 +1193,7 @@ void HovercraftEntity::deactivateTrail()
 {
     if (m_bTrailActivated)
     {
-        m_pSoundMngr->endLoop(SoundManager::SOUND_TRAIL, 0, 0);
+        m_pSoundMngr->endLoop(SoundManager::SOUND_TRAIL, m_iID, 0);
         m_bTrailActivated = false;
         m_vPositionOfLastFlame = vec3(numeric_limits<float>::max());    // Set Last Position so next spawn will always spawn
     }
@@ -1238,9 +1241,22 @@ void HovercraftEntity::setInvincible()
     m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
 }
 
-bool HovercraftEntity::m_bIsDashing() const
+bool HovercraftEntity::isDashing() const
 {
     return m_pPhysicsComponent->isDashing();
+}
+
+/*
+    Reflect a rocket of a specified tranform and direction.
+    This will silently launch a new rocket in the opposite direction, and will
+    not affect cooldowns or rocket fire count.
+*/
+void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &velocity)
+{
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+    m_m4ReflectTransform = transform;
+    m_vReflectVelocity = velocity;
+    queuedActions[QUEUED_REFLECT] = true;
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
@@ -1252,8 +1268,9 @@ void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
 // Activates Spikes
 void HovercraftEntity::animateSpikes()
 {
-    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i) {
         m_pSpikeAnimations[i]->animateToNextFrame();
+    }
     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_ACTIVATE);
 }
 

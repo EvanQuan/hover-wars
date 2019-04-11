@@ -185,7 +185,7 @@ void AIManager::executeAction(HovercraftEntity *bot, const Action &a)
     if (shouldMove(bot, a)) {
         bot->move(moveX, moveY);
     }
-    if (a.shouldFireRocket) {
+    if (a.shouldActivateRocket) {
         bot->useAbility(eAbility::ABILITY_ROCKET);
     }
     if (a.shouldActivateSpikes) {

@@ -9,6 +9,9 @@
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
 #define MASTER_BANK_STRINGS_PATH "Sound/Desktop/Master Bank.strings.bank"
 
+#define MUSIC_BANK_PATH         "Sound/Desktop/Music Bank.bank"
+#define MUSIC_BANK_STRINGS_PATH "Sound/Desktop/Music Bank.strings.bank"
+
 /*
     @Stephen What does this impact? Describe why this is here.
 */
@@ -220,6 +223,32 @@ void SoundManager::play(eSoundEvent sound, vec3 location)
 void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 {
     auto eventInstance = mEvents[getPath(sound)];
+    switch (entityID) {
+    case 37:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_1)];
+        break;
+    case 40:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_2)];
+        break;
+    case 43:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_3)];
+        break;
+    case 46:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_4)];
+        break;
+    case 49:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_5)];
+        break;
+    case 52:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_6)];
+        break;
+    case 55:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_7)];
+        break;
+    case 58:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_8)];
+        break;
+    }
     const char* end = "shouldGoToEnd";
     eventInstance->setParameterValue(end, 0.0);
     eventInstance->start();
@@ -237,6 +266,32 @@ void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
 void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
 {
     auto eventInstance = mEvents[getPath(sound)];
+    switch (entityID) {
+    case 37:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_1)];
+        break;
+    case 40:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_2)];
+        break;
+    case 43:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_3)];
+        break;
+    case 46:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_4)];
+        break;
+    case 49:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_5)];
+        break;
+    case 52:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_6)];
+        break;
+    case 55:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_7)];
+        break;
+    case 58:
+        eventInstance = mEvents[getPath(SOUND_TRAIL_8)];
+        break;
+    }
     const char* end = "shouldGoToEnd";
     eventInstance->setParameterValue(end, 1.0);
     this->updateChannels();
@@ -282,6 +337,9 @@ void SoundManager::endLoop(eSoundEvent sound, vec3 location, int entityID, int l
 void SoundManager::loadFiles() {
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+
+    // m_pInstance->loadBank(MUSIC_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MUSIC_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
 
     loadAllEvents();
 }
@@ -423,7 +481,6 @@ void SoundManager::loadAllEvents()
         {
             loadEvent(sound);
         }
-
     }
 }
 

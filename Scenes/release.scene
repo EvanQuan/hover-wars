@@ -1,4 +1,4 @@
-# ============================================================
+# ============================================================ {{{
 # Scene file for rendering
 #
 # Instructions for reading this file:
@@ -50,8 +50,8 @@
 #       static_mesh { x y z... }
 #           - "x y z..."            = the position of the mesh
 #                                   = multiple positions can be specified for instanced rendering
-#		skybox { <right> <left> <up> <down> <back> <front> }
-#			- <...>					= the texture location for the specified section of the skybox
+#       skybox { <right> <left> <up> <down> <back> <front> }
+#           - <...>                 = the texture location for the specified section of the skybox
 #
 # ============================================================
 # Attributes
@@ -78,8 +78,9 @@
 #       +bounding   { "box"  h w l }
 #           - "box" :> specifies a cubic box to bound the object
 #                   :> <h w l> - height width length as floats
-# ============================================================
+# ============================================================ }}}
 
+# Interactable Entities {{{
 # Information for Rockets in this Scene
 rocket {
     +mesh {
@@ -110,57 +111,59 @@ spikes {
         tron_shdr
     }
 }
-
+# }}}
+# Skybox {{{
 # Starfield Setup
 #skybox {
-#	textures/skybox/ame_starfield/starfield_ft.tga
-#	textures/skybox/ame_starfield/starfield_bk.tga
-#	textures/skybox/ame_starfield/starfield_up.tga
-#	textures/skybox/ame_starfield/starfield_dn.tga
-#	textures/skybox/ame_starfield/starfield_rt.tga
-#	textures/skybox/ame_starfield/starfield_lf.tga
+#   textures/skybox/ame_starfield/starfield_ft.tga
+#   textures/skybox/ame_starfield/starfield_bk.tga
+#   textures/skybox/ame_starfield/starfield_up.tga
+#   textures/skybox/ame_starfield/starfield_dn.tga
+#   textures/skybox/ame_starfield/starfield_rt.tga
+#   textures/skybox/ame_starfield/starfield_lf.tga
 #}
 
 # Nebula Setup
 #skybox {
-#	textures/skybox/ame_nebula/purplenebula_ft.tga
-#	textures/skybox/ame_nebula/purplenebula_bk.tga
-#	textures/skybox/ame_nebula/purplenebula_up.tga
-#	textures/skybox/ame_nebula/purplenebula_dn.tga
-#	textures/skybox/ame_nebula/purplenebula_rt.tga
-#	textures/skybox/ame_nebula/purplenebula_lf.tga
+#   textures/skybox/ame_nebula/purplenebula_ft.tga
+#   textures/skybox/ame_nebula/purplenebula_bk.tga
+#   textures/skybox/ame_nebula/purplenebula_up.tga
+#   textures/skybox/ame_nebula/purplenebula_dn.tga
+#   textures/skybox/ame_nebula/purplenebula_rt.tga
+#   textures/skybox/ame_nebula/purplenebula_lf.tga
 #}
 
 # MoonDust Setup
 skybox {
-	textures/skybox/mp_moondust/moondust_ft.tga
-	textures/skybox/mp_moondust/moondust_bk.tga
-	textures/skybox/mp_moondust/moondust_up.tga
-	textures/skybox/mp_moondust/moondust_dn.tga
-	textures/skybox/mp_moondust/moondust_rt.tga
-	textures/skybox/mp_moondust/moondust_lf.tga
+    textures/skybox/mp_moondust/moondust_ft.tga
+    textures/skybox/mp_moondust/moondust_bk.tga
+    textures/skybox/mp_moondust/moondust_up.tga
+    textures/skybox/mp_moondust/moondust_dn.tga
+    textures/skybox/mp_moondust/moondust_rt.tga
+    textures/skybox/mp_moondust/moondust_lf.tga
 }
 
 # MainFrame Setup
 #skybox {
-#	textures/skybox/mp_mainframe/mainframe_ft.tga
-#	textures/skybox/mp_mainframe/mainframe_bk.tga
-#	textures/skybox/mp_mainframe/mainframe_up.tga
-#	textures/skybox/mp_mainframe/mainframe_dn.tga
-#	textures/skybox/mp_mainframe/mainframe_rt.tga
-#	textures/skybox/mp_mainframe/mainframe_lf.tga
+#   textures/skybox/mp_mainframe/mainframe_ft.tga
+#   textures/skybox/mp_mainframe/mainframe_bk.tga
+#   textures/skybox/mp_mainframe/mainframe_up.tga
+#   textures/skybox/mp_mainframe/mainframe_dn.tga
+#   textures/skybox/mp_mainframe/mainframe_rt.tga
+#   textures/skybox/mp_mainframe/mainframe_lf.tga
 #}
 
 # Midnight Setup
 #skybox {
-#	textures/skybox/mnight/mnight_ft.tga
-#	textures/skybox/mnight/mnight_bk.tga
-#	textures/skybox/mnight/mnight_up.tga
-#	textures/skybox/mnight/mnight_dn.tga
-#	textures/skybox/mnight/mnight_rt.tga
-#	textures/skybox/mnight/mnight_lf.tga
+#   textures/skybox/mnight/mnight_ft.tga
+#   textures/skybox/mnight/mnight_bk.tga
+#   textures/skybox/mnight/mnight_up.tga
+#   textures/skybox/mnight/mnight_dn.tga
+#   textures/skybox/mnight/mnight_rt.tga
+#   textures/skybox/mnight/mnight_lf.tga
 #}
-
+# }}}
+# Lights {{{
 #       directional_light   { dX dY dZ  aR aG aB  dR dG dB  sR sG sB  P nP fP  sH sW sF }
 #           - "dX dY dZ"    = the direction of the light source
 #           - "aR aG aB"    = the ambient color of the light source
@@ -171,14 +174,14 @@ skybox {
 #           - "sH sW sF"    = The Shadow Height (sH), Width (sW) and Frame Dimensions (sF) of the Shadow Buffer
 directional_light {
     0 -1 1
-	0.5 0.5 0.5
+    0.5 0.5 0.5
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
     7500.0 1.0 7700.0
     8192 8192 1000.0
 }
 
-# Cyan Square
+# Cyan lights {{{
 point_light {
     24.5 7 65
     0.0 2.55 2.55
@@ -199,8 +202,8 @@ point_light {
     0.0 2.55 2.55
     5.0
 }
-
-#Red Square
+# }}}
+#Red lights {{{
 point_light {
     -24.5 7 -65
     2.55 0.0 0.0
@@ -221,8 +224,8 @@ point_light {
     2.55 0.0 0.0
     5.0
 }
-
-#Green Square
+# }}}
+#Green lights {{{
 point_light {
     -65 7 24.5
     0.0 2.55 0.0
@@ -243,8 +246,8 @@ point_light {
     0.0 2.55 0.0
     5.0
 }
-
-#Blue Square
+# }}}
+#Blue lights {{{
 point_light {
     65 7 -24.5
     0.0 0.00 2.55
@@ -265,46 +268,28 @@ point_light {
     0.0 0.00 2.55
     5.0
 }
+# }}}
 
 spotlight {
-	0.0 7 150.0
-	0.0 -1.0 0.0
-	0 2.55 2.55
-	60
-	20
+    0.0 7 150.0
+    0.0 -1.0 0.0
+    0 2.55 2.55
+    60
+    20
 }
+# }}}
 
 
 spawn_points {
-	120 0 120
-	-120 0 120
-	120 0 -120
-	-120 0 -120
-	150 0 0
-	-150 0 0
-	0 0 150
-	0 0 -150
+    120 0 120
+    -120 0 120
+    120 0 -120
+    -120 0 -120
+    150 0 0
+    -150 0 0
+    0 0 150
+    0 0 -150
 }
-#Indices:
-#       0 - Num_Boids
-#       1 - Avoid Radius
-#       2 - Cohesion Radius
-#       3 - Gather Radius
-#       4 - Min Speed (length)
-#       5 - Max Speed (length)
-#       6 - Boundary Radius
-#       7 - Delta T
-#       8 - Scale
-#       9 - Texture Location (Optional)
-#       10 - Mesh Location (Optional)
-#boids {
-#   10000
-#   0.5 1.0 1.50
-#   5.0 8.0
-#   30.0 0.0005 1.0
-#   textures-256-256/fig-10c.png
-#   models/paper_airplane.obj
-#}
 
 ## ground
 plane {
@@ -337,7 +322,7 @@ plane {
 	0 0 0 0 0    0 0 0 0 0    0 0 0 0 0   0 0 0 0 0
     +material {
         textures/magenta_floor.png
-		textures/squareSpecMap.png
+        textures/squareSpecMap.png
         1.0
     }
     +shader {
@@ -345,6 +330,7 @@ plane {
     }
 }
 
+# Hovercrafts {{{
 hovercraft {
     +mesh {
         models/hovercraft/HoverCar.obj
@@ -431,268 +417,347 @@ player_4 {
         spatial
     }
 }
+# }}}
 
+# Cyan {{{
+# cyan base
 cube {
     65 5 65
     10 80 80
-	+material {
+    +material {
         textures/cyan_wall.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 80 80
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
-
+# cyan tower
+cube {
+    65 5 65
+    200 20 20
+    +material {
+        textures/cyan_wall.png
+        0.0 0.0 0.0
+        1.0
+    }
+    +bounding {
+        box
+        200 20 20
+    }
+    +shader {
+        tron_shdr
+    }
+}
+# }}}
+# Blue {{{
+# blue base
 cube {
     65 5 -65
     10 80 80
-	+material {
+    +material {
         textures/blue_wall.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 80 80
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
-
+# blue tower
+cube {
+    65 5 -65
+    200 20 20
+    +material {
+        textures/blue_wall.png
+        0.0 0.0 0.0
+        1.0
+    }
+    +bounding {
+        box
+        200 20 20
+    }
+    +shader {
+        tron_shdr
+    }
+}
+# }}}
+# Red {{{
+# red base
 cube {
     -65 5 -65
     10 80 80
-	+material {
+    +material {
         textures/red_wall.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 80 80
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
-
+# red tower
+cube {
+    -65 5 -65
+    200 20 20
+    +material {
+        textures/red_wall.png
+        0.0 0.0 0.0
+        1.0
+    }
+    +bounding {
+        box
+        200 20 20
+    }
+    +shader {
+        tron_shdr
+    }
+}
+# }}}
+# Green {{{
+# green base
 cube {
     -65 5 65
     10 80 80
-	+material {
+    +material {
         textures/green_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 80 80
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
-# Wall
-# Player should not be able to pass this
+# green tower
 cube {
-    290 5 0
-    10 200 250
-	+material {
+    -65 5 65
+    200 20 20
+    +material {
         textures/green_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
-		box
+        box
+        200 20 20
+    }
+    +shader {
+        tron_shdr
+    }
+}
+# }}}
+
+# Outer Wall {{{
+cube {
+    290 5 0
+    10 200 250
+    +material {
+        textures/green_wall_side.png
+        0.0 0.0 0.0
+        1.0
+    }
+    +bounding {
+        box
         10 200 250
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     -290 5 0
     10 200 250
-	+material {
+    +material {
         textures/green_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 200 250
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     0 5 -290
-	10 250 200 
-	+material {
+    10 250 200 
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 250 200 
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     0 5 290
     10 250 200 
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 250 200 
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     265 5 204
     10 250 300
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 250 300
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     265 5 -204
     10 250 300
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 250 300
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     -265 5 204
     10 250 300
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 250 300
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     -265 5 -204
     10 250 300
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 250 300
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     204 5 265
     10 300 250
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 300 250
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     -204 5 265
     10 300 250
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 300 250
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     204 5 -265
     10 300 250
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 300 250
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
 cube {
     -204 5 -265
     10 300 250
-	+material {
+    +material {
         textures/yellow_wall_side.png
-		0.0 0.0 0.0
+        0.0 0.0 0.0
         1.0
     }
     +bounding {
         box
         10 300 250
     }
-	+shader {
+    +shader {
         tron_shdr
     }
 }
+# }}}
 
 # Set Spatial Map information for the Scene
 # values are: length, width and tile size in that order.
