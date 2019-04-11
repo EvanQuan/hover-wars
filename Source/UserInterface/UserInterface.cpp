@@ -74,6 +74,11 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2);
     m_Textures[IMAGE_3] = TEXTURE_MANAGER->loadTexture(IMAGE_3);
     m_Textures[IMAGE_4] = TEXTURE_MANAGER->loadTexture(IMAGE_4);
+    m_Textures[IMAGE_5] = TEXTURE_MANAGER->loadTexture(IMAGE_5);
+    m_Textures[IMAGE_6] = TEXTURE_MANAGER->loadTexture(IMAGE_6);
+    m_Textures[IMAGE_7] = TEXTURE_MANAGER->loadTexture(IMAGE_7);
+    m_Textures[IMAGE_8] = TEXTURE_MANAGER->loadTexture(IMAGE_8);
+    m_Textures[IMAGE_9] = TEXTURE_MANAGER->loadTexture(IMAGE_9);
     m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
     m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
     m_Textures[IMAGE_BACKGROUND_START_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_START_MENU);
@@ -114,7 +119,27 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_CONTROLLER_2] = TEXTURE_MANAGER->loadTexture(IMAGE_CONTROLLER_2);
     m_Textures[IMAGE_GAME_RULE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_RULE_1);
     m_Textures[IMAGE_GAME_RULE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_RULE_2);
-
+    m_Textures[IMAGE_CONTROLLER_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_CONTROLLER_MENU);
+    m_Textures[IMAGE_RULE_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_RULE_MENU);
+    m_Textures[IMAGE_AI_1] = TEXTURE_MANAGER->loadTexture(IMAGE_AI_1);
+    m_Textures[IMAGE_AI_2] = TEXTURE_MANAGER->loadTexture(IMAGE_AI_2);
+    m_Textures[IMAGE_CONFIG_1] = TEXTURE_MANAGER->loadTexture(IMAGE_CONFIG_1);
+    m_Textures[IMAGE_CONFIG_2] = TEXTURE_MANAGER->loadTexture(IMAGE_CONFIG_2);
+    m_Textures[IMAGE_PLACEMENT] = TEXTURE_MANAGER->loadTexture(IMAGE_PLACEMENT);
+    m_Textures[IMAGE_AWARDS_1] = TEXTURE_MANAGER->loadTexture(IMAGE_AWARDS_1);
+    m_Textures[IMAGE_AWARDS_2] = TEXTURE_MANAGER->loadTexture(IMAGE_AWARDS_2);
+    m_Textures[IMAGE_PLAYER_1] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_1);
+    m_Textures[IMAGE_PLAYER_2] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_2);
+    m_Textures[IMAGE_PLAYER_3] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_3);
+    m_Textures[IMAGE_PLAYER_4] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_4);
+    m_Textures[IMAGE_BOT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_1);
+    m_Textures[IMAGE_BOT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_2);
+    m_Textures[IMAGE_BOT_3] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_3);
+    m_Textures[IMAGE_BOT_4] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_4);
+    m_Textures[IMAGE_NUMBER_1] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_1);
+    m_Textures[IMAGE_NUMBER_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_2);
+    m_Textures[IMAGE_NUMBER_3] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_3);
+    m_Textures[IMAGE_POINT] = TEXTURE_MANAGER->loadTexture(IMAGE_POINT);
 }
 
 UserInterface::~UserInterface()
