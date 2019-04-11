@@ -412,7 +412,7 @@ void PostgameInterface::renderScore(int placements, int score)
             renderImage(IMAGE_8, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         case 9:
-            renderImage(IMAGE_9, m_vComponentCoordinates[15 + placements * 5].first + 0.2, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
+            renderImage(IMAGE_9, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
             break;
         }
     }
