@@ -1241,7 +1241,6 @@ bool HovercraftEntity::isDashing() const
 void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &velocity)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
-    cout << "rocket reflected" << endl;
     m_m4ReflectTransform = transform;
     m_vReflectVelocity = velocity;
     queuedActions[QUEUED_REFLECT] = true;
@@ -1256,8 +1255,9 @@ void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
 // Activates Spikes
 void HovercraftEntity::animateSpikes()
 {
-    for (unsigned int i = 0; i < NUM_SPIKES; ++i)
+    for (unsigned int i = 0; i < NUM_SPIKES; ++i) {
         m_pSpikeAnimations[i]->animateToNextFrame();
+    }
     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_ACTIVATE);
 }
 
