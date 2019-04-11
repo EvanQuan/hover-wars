@@ -9,6 +9,9 @@
 #define MASTER_BANK_PATH         "Sound/Desktop/Master Bank.bank"
 #define MASTER_BANK_STRINGS_PATH "Sound/Desktop/Master Bank.strings.bank"
 
+#define MUSIC_BANK_PATH         "Sound/Desktop/Music Bank.bank"
+#define MUSIC_BANK_STRINGS_PATH "Sound/Desktop/Music Bank.strings.bank"
+
 /*
     @Stephen What does this impact? Describe why this is here.
 */
@@ -334,6 +337,9 @@ void SoundManager::endLoop(eSoundEvent sound, vec3 location, int entityID, int l
 void SoundManager::loadFiles() {
     m_pInstance->loadBank(MASTER_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
     m_pInstance->loadBank(MASTER_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+
+    // m_pInstance->loadBank(MUSIC_BANK_STRINGS_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
+    m_pInstance->loadBank(MUSIC_BANK_PATH, FMOD_STUDIO_LOAD_BANK_NORMAL);
 
     loadAllEvents();
 }
