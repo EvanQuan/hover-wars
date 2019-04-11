@@ -930,6 +930,7 @@ void GameStats::awardAwards()
     awardHighestNonZeroStat(KILLS_WITH_TRAIL,              "Pyromaniac",        "Most flame trail kills",   200);
     awardHighestNonZeroStat(KILLS_WITH_SPIKES,             "Porcupine",         "Most spike kills",         300);
     awardHighestNonZeroStat(DEATHS_TOTAL,                  "Consolation",       "Most deaths",              100);
+    awardHighestNonZeroStat(ROCKETS_REFLECTED,             "Mirror, Mirror",    "Most rocket reflects",     300);
     awardLowestStat(DEATHS_TOTAL,                          "Survivor",          "Least deaths",             500);
     // Special awards
     awardZeroStat(DEATHS_TOTAL,                            "Untouchable",       "Zero deaths",              500);
