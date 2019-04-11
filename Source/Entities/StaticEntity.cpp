@@ -34,12 +34,17 @@ void StaticEntity::getSpatialDimensions(vec3* pNegativeCorner, vec3* pPositiveCo
 \****************************************************************/
 
 // Load a Plane with a given Normal, Height and Width
-void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, const string& sShaderType)
+void StaticEntity::loadAsPlane(const vec3* vNormal, int iHeight, int iWidth,float sizeGrid,float *heightmap, const ObjectInfo* pObjectProperties, const string& sShaderType)
 {
-    m_pMesh = MESH_MANAGER->generatePlaneMesh(true, iHeight, iWidth, pObjectProperties, m_sName, *vNormal);
-    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLE_STRIP);
+    m_pMesh = MESH_MANAGER->generatePlaneMesh(true, iHeight, iWidth,sizeGrid, heightmap, pObjectProperties, m_sName, *vNormal);
+    m_pRenderComponent = ENTITY_MANAGER->generateRenderComponent(m_iID, m_pMesh, false, SHADER_MANAGER->getShaderType(sShaderType), GL_TRIANGLES);
 
     m_eType = ENTITY_PLANE; // Set the Entity Type to Plane to avoid reference within the Spatial Map.
+
+    int numTilesX = (iHeight / sizeGrid);
+    int numTilesY = (iWidth / sizeGrid);
+   
+    PHYSICS_MANAGER->createGroundPlane(sizeGrid, sizeGrid, numTilesX, heightmap,m_sName.c_str());
 
     // PHYSICSTODO: Set up Physics Component as a Static Plane Physics Object
     //m_pPhysicsComponent = ENTITY_MANAGER->generatePhysicsComponent(m_iID); // PHYSICSTODO: The parameters for this could be modified as you see fit.

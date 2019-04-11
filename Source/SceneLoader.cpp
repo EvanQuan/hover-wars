@@ -14,7 +14,7 @@
 #define MAX_CHARS_PER_LINE     256
 #define MAX_SPHERE_PARAMS      4
 #define MAX_CUBE_PARAMS        6
-#define MAX_PLANE_PARAMS       8
+#define MINIMUM_PLANE_SIZE     9
 #define MAX_POINT_LIGHT_PARAMS 7
 #define MAX_DIR_LIGHT_PARAMS   18
 #define MAX_SPOTLIGHT_PARAMS   10
@@ -93,13 +93,24 @@ void SceneLoader::createPlane( vector< string > sData, int iLength )
     vec3 vNormal;
     int iHeight, iWidth;
 
-    if (iLength == MAX_PLANE_PARAMS)
+    if (iLength > MINIMUM_PLANE_SIZE)
     {
-        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);        // Position of Plane
-        vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
         iHeight = stoi(sData[6]);
         iWidth = stoi(sData[7]);
-        m_pEntityManager->generateStaticPlane(&CURRENT_PROPERTIES_DEF.pObjectProperties, iHeight, iWidth, &vNormal, CURRENT_PROPERTIES_DEF.sShaderProperty);
+        float sizeGrid = stof(sData[8]);
+        if (iLength != MINIMUM_PLANE_SIZE + ((iHeight / sizeGrid )*(iWidth / sizeGrid))) { // check for appropriate grid size
+            outputError(PLANE, sData);
+            return;
+        }
+        vector<float> values;
+        for (int i = MINIMUM_PLANE_SIZE; i < MINIMUM_PLANE_SIZE + ((iHeight / sizeGrid)*(iWidth / sizeGrid));i++) {
+            values.push_back(stof(sData[i]));
+        }
+
+        CURRENT_PROPERTIES_DEF.pObjectProperties.vPosition = glm::vec3(stof(sData[0])/*X*/, stof(sData[1])/*Y*/, stof(sData[2])/*Z*/);        // Position of Plane
+        vNormal = vec3(stof(sData[3]),/*X*/ stof(sData[4]),/*Y*/ stof(sData[5]));
+
+        m_pEntityManager->generateStaticPlane(&CURRENT_PROPERTIES_DEF.pObjectProperties, iHeight, iWidth, sizeGrid,&values[0], &vNormal, CURRENT_PROPERTIES_DEF.sShaderProperty);
     }
     else
     {

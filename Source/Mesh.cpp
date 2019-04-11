@@ -97,62 +97,94 @@ bool Mesh::genMesh(const string& sFileName, vec3 vPosition, string sHashKey, flo
 
 // Generate a generic plane at the origin with a given Height and Width
 //    Normals are along the y-axis.
-void Mesh::genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, string sHashKey)
+// 
+void Mesh::genPlane(int tilesX, int tilesY,float gridSize, float *values, vec3 vPosition, vec3 vNormal, string sHashKey)
 {
     // Generate 4 vertices around the origin
     /***********************************
         Width = (x-axis)
         Height = (z-axis)
     */
-    float fHeight = static_cast<float>(iHeight);
-    float fWidth = static_cast<float>(iWidth);
-    float fHalfHeight = fHeight * 0.5f;
-    float fHalfWidth = fWidth * 0.5f;
+
     vNormal = normalize(vNormal); // Normalize Normal Vector
-    m_pVertices.push_back(vec3(-fHalfWidth, 0.f, -fHalfHeight));
+    for (int x = 0; x < tilesX; x++) {
+        for (int y = 0; y < tilesY; y++) {
+            m_pVertices.push_back(vec3(x*gridSize - (((tilesX) * gridSize)/ 2), values[x*tilesX + y],y*gridSize - (((tilesY ) * gridSize) / 2)));
+            m_pUVs.push_back(vec2(x % 2, y % 2));
+            m_pNormals.push_back(vNormal);
+        }
+    }
+    /*
+    vertA___vertB
+    |     X      |
+    vertC___vertD
+    super helpful comment that will definitly make senese when I come back later.
+    */
+    for (int x = 0; x < tilesX -1 ; x++) {
+        for (int y = 0; y < tilesY -1 ; y++) {
+            int vertA = ( y * tilesX)       + x;
+            int vertB = ( y * tilesX)       + x + 1;
+            int vertC = ((y + 1) * tilesX)  + x;
+            int vertD = ((y + 1) * tilesX)  + x + 1;
+
+            m_pIndices.push_back(vertD);
+            m_pIndices.push_back(vertC);
+            m_pIndices.push_back(vertA);
+
+            m_pIndices.push_back(vertB);
+            m_pIndices.push_back(vertD);
+            m_pIndices.push_back(vertA);
+        }
+    }
+    //float fHeight = static_cast<float>(iHeight);
+    //float fWidth = static_cast<float>(iWidth);
+    //float fHalfHeight = fHeight * 0.5f;
+    //float fHalfWidth = fWidth * 0.5f;
+    /*m_pVertices.push_back(vec3(-fHalfWidth, 0.f, -fHalfHeight));
     m_pVertices.push_back(vec3(-fHalfWidth, 0.f, fHalfHeight));
     m_pVertices.push_back(vec3(fHalfWidth, 0.f, -fHalfHeight));
-    m_pVertices.push_back(vec3(fHalfWidth, 0.f, fHalfHeight));
+    m_pVertices.push_back(vec3(fHalfWidth, 0.f, fHalfHeight));*/
 
     // Generate Normals for each Vertex.
-    m_pNormals.insert(m_pNormals.begin(), 4, vNormal);
+    //m_pNormals.insert(m_pNormals.begin(), 4, vNormal);
 
-    fHalfHeight *= 0.1f;
-    fHalfWidth *= 0.1f;
+    //fHalfHeight *= 0.1f;
+    //fHalfWidth *= 0.1f;
 
-    // Generate UVs for Plane
-    m_pUVs.push_back(vec2(0.0, 0.0));
-    m_pUVs.push_back(vec2(0.0, fHalfHeight));
-    m_pUVs.push_back(vec2(fHalfWidth, 0.0));
-    m_pUVs.push_back(vec2(fHalfWidth, fHalfHeight));
+    //// Generate UVs for Plane
+    //m_pUVs.push_back(vec2(0.0, 0.0));
+    //m_pUVs.push_back(vec2(0.0, fHalfHeight));
+    //m_pUVs.push_back(vec2(fHalfWidth, 0.0));
+    //m_pUVs.push_back(vec2(fHalfWidth, fHalfHeight));
 
     // Generate Indices
-    m_pIndices = { 0, 1, 2, 1, 2, 3 };
+    //m_pIndices = { 0, 1, 2, 1, 2, 3 };
 
     // Set Spatial Cube/Plane
-    m_vNegativeOffset = m_pVertices.front();
-    m_vPositiveOffset = m_pVertices.back();
+    //m_vNegativeOffset = m_pVertices.front();
+    //m_vPositiveOffset = m_pVertices.back();
 
-    if (SPATIAL_CALC == m_sBoundingBox.eType)
-        m_sBoundingBox.generateCubicBox(0.0f, static_cast<float>(iWidth), static_cast<float>(iHeight));
+    //if (SPATIAL_CALC == m_sBoundingBox.eType)
+    //    m_sBoundingBox.generateCubicBox(0.0f, static_cast<float>(iWidth), static_cast<float>(iHeight));
 
     // Store Initial Transformation Matrix for Static Meshes
-    if (m_bStaticMesh)
-    {
-        // Translation Matrix
-        mat4 m4TranslationMatrix = getRotationMat4ToNormal(&vNormal);
+    //if (m_bStaticMesh)
+    //{
+    //    // Translation Matrix
+    //    mat4 m4TranslationMatrix = getRotationMat4ToNormal(&vNormal);
 
-        // If translation is necessary, translate plane.
-        if (vec3(0.f) != vPosition)
-            m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
+    //    // If translation is necessary, translate plane.
+    //    if (vec3(0.f) != vPosition)
+    //        m4TranslationMatrix = translate(vPosition) * m4TranslationMatrix;
 
-        // Store Transformation to List
-        //m_m4ListOfInstances.push_back(m4TranslationMatrix);
-        m_m4InstanceMap.insert(make_pair(sHashKey, m4TranslationMatrix));
-    }
+    //    // Store Transformation to List
+    //    //m_m4ListOfInstances.push_back(m4TranslationMatrix);
+    //    m_m4InstanceMap.insert(make_pair(sHashKey, m4TranslationMatrix));
+    //}
+    m_m4InstanceMap.insert(make_pair(sHashKey, mat4(1.0f)));
 
     // Load Mesh into GPU
-    initalizeVBOs();
+    this->initalizeVBOs();
 }
 
 // Generates a Sphere Mesh

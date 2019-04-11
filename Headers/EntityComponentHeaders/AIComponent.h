@@ -54,6 +54,7 @@ public:
     void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, float delta_time, Action *a);
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
+    const static int mapNumber = 1;
 private:
     /*
         Possible modes the AIComponent can be in.
@@ -67,16 +68,16 @@ private:
         MODE_SEEK,
         MODE_EVADE
     };
-
+    vec2 seekPointsAI[8];
     vector<uvec2> getSeekPath();
     vector<uvec2> getChasePath() const;
 
     void updateBotAndTargetLocations(const HovercraftEntity *target, const HovercraftEntity *bot);
     void determinePath();
-    void determineMode(float distanceToTarget);
+    void determineMode(float distanceToTarget,HovercraftEntity *bot);
     void determinePosition(HovercraftEntity *bot, const vec3 &botPosition, float fTimeInSeconds);
 
-    bool shouldActivateRocket(float accuracy);
+    bool shouldFireRocket(float accuracy);
 
     eMode modeSequence[10];
     int durations[10];
@@ -90,7 +91,6 @@ private:
     bool shouldActivateTrail(const HovercraftEntity *bot);
 
 
-    Action frames[MUTATION_SET][LOOK_AHEAD_FRAMES];
     int currentBest = 0;
     float currentBestEval = 0;
     int currentPlace = 0;

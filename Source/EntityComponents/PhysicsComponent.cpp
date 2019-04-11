@@ -110,6 +110,9 @@ void PhysicsComponent::move(float x, float y) {
         releaseAllControls();
         PxTransform globalTransform = body->getGlobalPose();
         PxVec3 vForce = globalTransform.q.rotate(PxVec3(-x, 0, y));
+        vec3 dirVec;
+        this->getDirectionVector(&dirVec);
+        vForce.y = dirVec.y;
         body->addForce(vForce * MOVEMENT_FORCE * lastDeltaTime);
         
         // TODO find out the angle in a better way
@@ -125,6 +128,9 @@ void PhysicsComponent::setGlobalPos(PxTransform trans) {
 }
 void PhysicsComponent::moveGlobal(float x, float y) {
     PxVec3 vForce = PxVec3(y, 0, x);
+    vec3 dirVec;
+    this->getDirectionVector(&dirVec);
+    vForce.y = dirVec.y;
     body->clearForce();
     body->addForce(vForce * MOVEMENT_FORCE); // NOTE: Why are we dividing by 7?
 
@@ -203,7 +209,7 @@ void PhysicsComponent::update(float fTimeInSeconds)
 
 
         // isInAir = PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
-        PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
+        isInAir= PHYSICS_MANAGER->updateCar(gVehicleNoDrive, fTimeInSeconds);
     }
     else
     {

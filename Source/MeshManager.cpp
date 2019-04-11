@@ -86,7 +86,7 @@ Mesh* MeshManager::loadMeshFromFile(const string& sFileName, const ObjectInfo* p
 //                            or creates a new Plane Mesh if one hasn't been created yet.
 // Returns:                Generated plane mesh or nullptr if no mesh was able to be generated.
 // Written by:            James Cote
-Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, const ObjectInfo* pObjectProperties, string sHashKey, vec3 vNormal)
+Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, float gridSize,float * values, const ObjectInfo* pObjectProperties, string sHashKey, vec3 vNormal)
 {
     // Local Variables
     string sHashHandle = "Plane" + to_string(iHeight) + to_string(iWidth) +
@@ -105,7 +105,7 @@ Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, 
     else // Generate a new Plane Mesh of height iHeight and width iWidth
     {
         unique_ptr<Mesh> pNewPlane = make_unique<Mesh>(sHashHandle, bStaticMesh, 1.0f, pObjectProperties, sHashKey, Mesh::manager_cookie());
-        pNewPlane->genPlane(iHeight, iWidth, pObjectProperties->vPosition, vNormal, sHashKey);    // Generate Plane
+        pNewPlane->genPlane(iHeight/gridSize, iWidth / gridSize,gridSize,values, pObjectProperties->vPosition, vNormal, sHashKey);    // Generate Plane
         pReturnMesh = pNewPlane.get();                                                            // Return raw pointer to managed Mesh.
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewPlane)));                             // Insert into Mesh Cache
     }

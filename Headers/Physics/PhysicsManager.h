@@ -52,8 +52,8 @@ public:
     // Scene Setting Functions
     //void createSphereObject();    // This is probably called by Physics Components as necessary to set themselves up within
                                 // the physics scene. Additional specific functions could be generated as neccessary.
-    physx::PxRigidStatic *PhysicsManager::createStaticMeshObject(const char* sEntityID, const Mesh* pMesh, const vec3* vPos);
-    physx::PxRigidStatic *PhysicsManager::createCubeObject(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
+    physx::PxRigidStatic *createStaticMeshObject(const char* sEntityID, const Mesh* pMesh, const vec3* vPos);
+    physx::PxRigidStatic *createCubeObject(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxVehicleNoDrive *createHovercraftEntity(const char* sEntityID, float x, float y, float z, float sizeX, float sizeY, float sizeZ);
     physx::PxRigidStatic *createSphereObject(const char* sEntityID, float x, float y, float z, float radius);
     void createRocketObjects(const char* cName, const mat4* m4Transform, const vec3 *vVelocity, float fBBLength, PxRigidDynamic** pReturnBody);
@@ -61,14 +61,20 @@ public:
     void removeRigidActor(PxRigidActor* pActor);
     glm::mat4 getMat4(physx::PxTransform transform); // Internal Function to swap a PhysX Mat44 to a glm mat4 (column to row-major order)
     void stepPhysics(float fTimeDelta); // This probably functions within the update function to be used as necessary.
-    void updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
-
+    bool updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta);
+    glm::vec3 getClosestNormalOnHeightMap(glm::vec3 pos);
+    float getClosestNormalOnHeightMapDotProduct(glm::vec3 pos,glm::vec3 normDir);
+    void createGroundPlane(float tileX, float tileY, int numTiles, float *heightmap,const char * name);
     int timesStepped = 0;
-    PxRigidStatic* createFloorHeightMap(PxReal hfScale, PxU32 hfSize);
+    PxRigidStatic* createFloorHeightMap(PxReal hfScale, PxU32 hfSize,PxReal heightScale, float *values);
     PxRigidStatic* createDrivablePlane(const PxFilterData& simFilterData, PxMaterial* material, PxPhysics* physics, PxRigidStatic *stuff);
 private:
-    
+    glm::vec3 PhysicsManager::getNormVector(int x, int y);
+    vector<vector<float>> heightMapVec;
+    float tileNum;
+    float tileDistance;
     // extra stuff to delete
+    glm::vec3 getPointAt(int x, int y);
     std::vector<physx::PxTriangleMesh*> triangleMeshes;
     std::vector<physx::PxShape*> shapes;
 
