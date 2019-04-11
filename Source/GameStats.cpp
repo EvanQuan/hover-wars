@@ -392,7 +392,8 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
     if (isBot(hit))
     {
-        totalGained *= POINT_MULTIPLIER_HIT_BOT;
+        // @Evan refine this value
+        totalGained >>= 2; // Divide by 4
     }
     return totalGained;
 }
