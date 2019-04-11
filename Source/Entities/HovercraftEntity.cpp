@@ -261,7 +261,7 @@ In other words, the spring will pull together faster the higher the constant is.
 
 // Threshold of the y-component (vertical) of the hovercraft direction vector
 // that will reset the hovercraft's y-component if it is exceeded.
-#define HORIZONTAL_DEVIATION_THRESHOLD 0.1
+#define HORIZONTAL_DEVIATION_THRESHOLD 0.2
 
 /*************\
  * CONSTANTS *
@@ -331,7 +331,7 @@ void HovercraftEntity::reinitialize()
 */
 void HovercraftEntity::update(float fTimeInSeconds)
 {
-    lowEnoughToMove = m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
+    lowEnoughToMove = m_pPhysicsComponent->isInAir; //m_pPhysicsComponent->getPosition().y < LOSE_CONTROL_COLLISION_ELEVATION;
 
     // New Transformation Matrix
     mat4 m4NewTransform = mat4(1.0f);
@@ -393,9 +393,13 @@ void HovercraftEntity::resetIfNotHorizontal()
 {
     vec3 dirVector;
     getDirectionVector(&dirVector);
-
+    vec3 normDir = normalize(dirVector);
+    float dot = glm::dot(PHYSICS_MANAGER->getClosestNormalOnHeightMap(m_pPhysicsComponent->getPosition()), normDir);
+    //vec3 memes = PHYSICS_MANAGER->getClosestNormalOnHeightMap(m_pPhysicsComponent->getPosition());
+    float memes = PHYSICS_MANAGER->getClosestNormalOnHeightMapDotProduct(m_pPhysicsComponent->getPosition(),normDir);
+    //std::cout << memes.x << "," << memes.y << "," << memes.z << "," << "dot: " << dot << endl;
     // Check if not horizontal.
-    if (abs(dirVector.y) > HORIZONTAL_DEVIATION_THRESHOLD) {
+    if (memes > HORIZONTAL_DEVIATION_THRESHOLD) {
         //TODO set quat for rotation
         vec3 newQuatAxis = vec3(dirVector.x,
                                 0.1f * (dirVector.y/abs(dirVector.y)),
@@ -411,7 +415,7 @@ void HovercraftEntity::resetIfNotHorizontal()
         // cout << newTrans.q.y << endl;
 
         // newTrans.q = PxQuat(newTrans.q.getNormalized().getAngle(), plane.n.getNormalized());
-        newTrans.q = PxQuat(0, plane.n.getNormalized());
+        newTrans.q = PxQuat(newTrans.q.w, plane.n.getNormalized());
 
         // Original. 
         // newTrans.q = PxQuat(0, plane.n);

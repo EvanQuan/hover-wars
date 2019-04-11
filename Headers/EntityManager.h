@@ -51,7 +51,7 @@ public:
     // Entity Functions
     Camera* generateCameraEntity();
     void loadSkyBox(const vector<string>* sData);
-    void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType = "");
+    void generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth,float sizeGrid,float *heightmap, const vec3* vNormal, const string& sShaderType = "");
     void generateStaticSphere(const ObjectInfo* pObjectProperties, float fRadius, const string& sShaderType = "");
     void generateStaticCube(const ObjectInfo* pObjectProperties, const vec3* vDimensions, const string& sShaderType = "");
     void generateStaticMesh(const ObjectInfo* pObjectProperties, const string& sMeshLocation, float fScale, const string& sShaderType = "" );

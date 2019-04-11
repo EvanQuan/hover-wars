@@ -439,14 +439,14 @@ Camera* EntityManager::generateCameraEntity()
 }
 
 // Generates a Static Plane Entity into the world.
-void EntityManager::generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth, const vec3* vNormal, const string& sShaderType)
+void EntityManager::generateStaticPlane(const ObjectInfo* pObjectProperties, int iHeight, int iWidth,float sizeGrid, float * heightmap,const vec3* vNormal, const string& sShaderType)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Create and Initialize Plane Entity
     unique_ptr<StaticEntity> pNewPlane = make_unique<StaticEntity>(iNewEntityID, &pObjectProperties->vPosition);
-    pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, pObjectProperties, sShaderType);
+    pNewPlane->loadAsPlane(vNormal, iHeight, iWidth, sizeGrid, heightmap, pObjectProperties, sShaderType);
 
     // Store Plane Entity in Master Entity List
     m_pMasterEntityList.insert(make_pair(iNewEntityID, move(pNewPlane)));

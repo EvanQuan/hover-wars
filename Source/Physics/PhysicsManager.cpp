@@ -227,16 +227,24 @@ PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize
     PxU32 hfNumVerts = hfSize * hfSize;
     PxHeightFieldSample* samples = new PxHeightFieldSample[hfNumVerts];
     memset(samples, 0, hfNumVerts * sizeof(PxHeightFieldSample));
-
-    for (PxU32 x = 0; x < hfSize; x++)
+    int i = 0;
+    heightMapVec.clear();
+    for (PxU32 x = 0; x < hfSize; x++) {
+        vector<float> xValues;
         for (PxU32 y = 0; y < hfSize; y++)
         {
-            std::cout << "values: " << x << "," << y * hfSize << std::endl;
+            i++;
             samples[x + y * hfSize].height = (PxI16)(values[x + y * hfSize] / heightScale);
+            xValues.push_back(values[x + y * hfSize]);
+            cout << "values in height :" << values[x + y * hfSize] << "," << x << "," << y << endl;
             samples[x + y * hfSize].setTessFlag();
             samples[x + y * hfSize].materialIndex0 = 1;
             samples[x + y * hfSize].materialIndex1 = 1;
         }
+        heightMapVec.push_back(xValues);
+    }
+
+    cout << "times ran: " << i << endl;
 
     PxHeightFieldDesc hfDesc;
     hfDesc.format = PxHeightFieldFormat::eS16_TM;
@@ -248,7 +256,7 @@ PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize
     PxHeightField* heightField = gCook->createHeightField(hfDesc, gPhysics->getPhysicsInsertionCallback());
 
     PxTransform pose = PxTransform(PxIdentity);
-    pose.p = PxVec3(-(hfSize / 2 * hfScale), 0, -(hfSize / 2 * hfScale));
+    pose.p = PxVec3(-((hfSize) / 2.0f * hfScale), 0, -((hfSize ) / 2.0f * hfScale));
 
     PxRigidStatic* hfActor = gPhysics->createRigidStatic(pose);
     if (!hfActor)
@@ -378,7 +386,6 @@ void PhysicsManager::initPhysics(bool interactive)
     gFrictionPairs = snippetvehicle::createFrictionPairs(gCarMaterial);
 
     //Create a plane to drive on.
-    PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
 
 
     //Add a plane to the scene.
@@ -386,26 +393,6 @@ void PhysicsManager::initPhysics(bool interactive)
     //PxTransform localTm(PxVec3(0, -1, 0));
     //PxRigidStatic *body = gPhysics->createRigidStatic(localTm);
     //body->attachShape(*shape);
-    vector<float> heightValues;
-    const int numTiles = 20;
-    const int tileWidth = 25;
-    for (int x = 0; x <= numTiles; x++) {
-        for (int y = 0; y <= numTiles; y++) {
-            if (x == 0) {
-                heightValues.push_back(0.0f);
-            }
-            else {
-                heightValues.push_back(0.0f);
-            }
-        }
-    }
-    PxRigidStatic *body = createFloorHeightMap(numTiles, tileWidth, 0.1f, &heightValues[0]);
-
-    PxRigidStatic* gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics, body);
-    gGroundPlane->setName(NAME_GROUND);
-    // cout << "\"" << gGroundPlane->getName() << "\"" << endl;
-    gScene->addActor(*gGroundPlane);
-    staticObjects.push_back(gGroundPlane);
     
 
 
@@ -492,7 +479,20 @@ void PhysicsManager::cleanupPhysics()
         gPvd = NULL;
     }
 }
+void PhysicsManager::createGroundPlane(float tileX, float tileY, int numTiles,float *heightmap, const char* name) {
 
+    PxFilterData groundPlaneSimFilterData(snippetvehicle::COLLISION_FLAG_GROUND, snippetvehicle::COLLISION_FLAG_GROUND_AGAINST, 0, 0);
+
+    tileNum = numTiles;
+    tileDistance = tileX;
+    PxRigidStatic *body = createFloorHeightMap(tileX, numTiles, 0.1f, heightmap);
+
+    PxRigidStatic* gGroundPlane = createDrivablePlane(groundPlaneSimFilterData, gWorldMaterial, gPhysics, body);
+    gGroundPlane->setName(name);
+    // cout << "\"" << gGroundPlane->getName() << "\"" << endl;
+    gScene->addActor(*gGroundPlane);
+    staticObjects.push_back(gGroundPlane);
+}
 // Make sure these are well commented so others looking at this code can
 //    see how this works. These will probably be called from PhysicsComponents exclusively
 //    which will create an additional layer from Entities to Physics Manager.
@@ -713,19 +713,73 @@ void PhysicsManager::stepPhysics(float fTimeDelta)
     //incrementDrivingMode(timestep);
     gScene->simulate(timestep);
     gScene->fetchResults(true);
+    //Suspension sweeps (instead of raycasts).
 }
 
 /*
     Update the car over a period of time.
 */
-void PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
+glm::vec3 PhysicsManager::getPointAt(int x, int y) {
+    if (x < 0 ) {
+        x = 0;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+    if (x > tileNum-1) {
+        x = tileNum-1;
+    }
+    if (y > tileNum-1) {
+        y = tileNum-1;
+    }
+    return vec3((x - (tileNum / 2.0f)) * tileDistance, heightMapVec.at(y).at(x), (y - (tileNum / 2.0f)) * tileDistance);
+}
+glm::vec3 PhysicsManager::getNormVector(int x, int y) {
+    vec3 diff1 = getPointAt(x + 1, y) - getPointAt(x, y);
+    vec3 diff2 = getPointAt(x, y + 1) - getPointAt(x, y);
+    //std::cout <<"diff1:" << diff1.x << "," << diff1.y << "," << diff1.z << endl;
+    //std::cout <<"diff2:"<< diff2.x << "," << diff2.y << "," << diff2.z << endl;
+    vec3 A = cross(diff1, diff2);
+    vec3 B = cross(getPointAt(x - 1, y) - getPointAt(x, y), getPointAt(x, y - 1) - getPointAt(x, y));
+    return normalize(A + B);
+
+}
+float PhysicsManager::getClosestNormalOnHeightMapDotProduct(glm::vec3 pos,glm::vec3 norm) {
+    int XindexFloor = floor(pos.x / tileDistance + (tileNum / 2.0f));
+    int XindexCeil = ceil(pos.x / tileDistance + (tileNum / 2.0f));
+    int YindexFloor = floor(pos.z / tileDistance + (tileNum / 2.0f));
+    int YindexCeil = ceil(pos.z / tileDistance + (tileNum / 2.0f));
+    vec3 normalizeFloorXY = getNormVector(XindexFloor,YindexFloor);
+    vec3 normalizeCeilXY = getNormVector(XindexCeil, YindexCeil);
+    vec3 normalizeFloorXCeilY = getNormVector(XindexFloor, YindexCeil);
+    vec3 normalizeCeilXFloorY = getNormVector(XindexCeil, YindexFloor);
+    return std::min(
+        std::min(
+            abs(dot(normalizeCeilXY,norm)),
+            abs(dot(normalizeFloorXY, norm))   ),
+        std::min(
+            abs(dot(normalizeFloorXCeilY, norm)),
+            abs(dot(normalizeCeilXFloorY, norm)))); // hey bro i heard you like functions so i put a function in a function in a function in a function so that this would function.
+}
+glm::vec3 PhysicsManager::getClosestNormalOnHeightMap(glm::vec3 pos) {
+    int Xindex = pos.x / tileDistance + (tileNum / 2.0f);
+    int Yindex = pos.z / tileDistance + (tileNum / 2.0f);
+    vec3 diff1 = getPointAt(Xindex + 1, Yindex) - getPointAt(Xindex, Yindex);
+    vec3 diff2 = getPointAt(Xindex, Yindex + 1) - getPointAt(Xindex, Yindex);
+    //std::cout <<"diff1:" << diff1.x << "," << diff1.y << "," << diff1.z << endl;
+    //std::cout <<"diff2:"<< diff2.x << "," << diff2.y << "," << diff2.z << endl;
+    vec3 A = cross(diff1, diff2);
+    vec3 B = cross(getPointAt(Xindex - 1, Yindex) - getPointAt(Xindex, Yindex), getPointAt(Xindex, Yindex - 1) - getPointAt(Xindex, Yindex));
+    return normalize(A + B);
+}
+bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
     const PxF32 timestep = fTimeDelta;
     //Raycasts.
+    //Sweeps provide more information about the geometry under the wheel.
     PxVehicleWheels* vehicleWheels[1] = { vehicle };
     PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
     const PxU32 raycastResultsSize = gVehicleSceneQueryData->getQueryResultBufferSize();
     PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicleWheels, raycastResultsSize, raycastResults);
-
     //Vehicle update.
     const PxVec3 grav = gScene->getGravity();
     PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
@@ -739,6 +793,7 @@ void PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {
         // && wheelQueryResults[1].isInAir
         // && wheelQueryResults[2].isInAir
         // && wheelQueryResults[3].isInAir;
+    return raycastResults->getNbAnyHits() == 1 ? true : false;
 }
 
 // bool PhysicsManager::updateRocket(PxRigidDynamic *rocket, float fTimeDelta) {

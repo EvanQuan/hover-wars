@@ -62,8 +62,8 @@ public:
     void setGlobalPos(PxTransform trans);
 
     bool isDashing() const { return m_bIsDashing; }
-private:
     bool isInAir;
+private:
     float lastDeltaTime = 0;
     float m_fMaxSpeed;
     float m_fMaxDashSpeed;

@@ -8,11 +8,6 @@
 /*
     Locations on the map that the AI can seek for.
 */
-const vec2 seekPointsAI[] = {
-    vec2(7,  7),    vec2(18,  7),   vec2(31,  7),
-    vec2(7, 18),                    vec2(31, 18),
-    vec2(7, 31),    vec2(18, 31),   vec2(31, 31)
-};
 
 #define SEEK_POINTS_SIZE 8
 
@@ -52,6 +47,26 @@ AIComponent::AIComponent(int iEntityID, int iComponentID)
     for (int i = 0; i < 10; i++) {
         modeSequence[i] = static_cast<eMode>(FuncUtils::random(3) % 3);
         durations[i] = static_cast<int>(FuncUtils::random(20) + (modeSequence[i] == MODE_CHASE ? 10 : 5));
+    }
+    if (mapNumber == 0) {
+        seekPointsAI[0] = vec2(7, 7);
+        seekPointsAI[1] = vec2(18, 7);
+        seekPointsAI[2] = vec2(31, 7);
+        seekPointsAI[3] = vec2(7, 18);
+        seekPointsAI[4] = vec2(31, 18);
+        seekPointsAI[5] = vec2(7, 31);
+        seekPointsAI[6] = vec2(18, 31);
+        seekPointsAI[7] = vec2(31, 31);
+    }
+    else if (mapNumber == 1) {
+        seekPointsAI[0] = vec2(5, 5);
+        seekPointsAI[1] = vec2(24, 5);
+        seekPointsAI[2] = vec2(43, 5);
+        seekPointsAI[3] = vec2(41, 24);
+        seekPointsAI[4] = vec2(41, 41);
+        seekPointsAI[5] = vec2(24, 41);
+        seekPointsAI[6] = vec2(5, 41);
+        seekPointsAI[7] = vec2(5, 24);
     }
 
     timeChased = static_cast<float>(FuncUtils::random(MAX_TIME_TARGET));

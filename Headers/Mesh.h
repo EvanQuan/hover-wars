@@ -19,7 +19,7 @@ private:
 
     // Private Methods
     bool genMesh(const string& sFileName, vec3 vPosition, string sHashKey, float fScale = 1.0f);
-    void genPlane(int iHeight, int iWidth, vec3 vPosition, vec3 vNormal, string sHashKey);
+    void genPlane(int iHeight, int iWidth,float gridSize, float * values, vec3 vPosition, vec3 vNormal, string sHashKey);
     void genSphere(float fRadius, vec3 vPosition, string sHashKey);
     void genCube(float fHeight, float fWidth, float fDepth, vec3 vPosition, string sHashKey);
     void genBillboard();

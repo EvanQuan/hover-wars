@@ -54,6 +54,7 @@ public:
     void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, float delta_time, Action *a);
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
+    int mapNumber = 0;
 private:
     /*
         Possible modes the AIComponent can be in.
@@ -67,7 +68,7 @@ private:
         MODE_SEEK,
         MODE_EVADE
     };
-
+    vec2 seekPointsAI[8];
     vector<uvec2> getSeekPath();
     vector<uvec2> getChasePath() const;
 
