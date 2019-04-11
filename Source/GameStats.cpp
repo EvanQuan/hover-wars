@@ -196,7 +196,10 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         break;
     }
     checkForNewScoreLeader(hovercraft);
+#ifdef _DEBUG
     debugPrintAllScores();
+#endif // _DEBUG
+
 }
 
 /*
@@ -329,7 +332,6 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 */
 void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 {
-    cout << attacker << " hit " << hit << " (first blood happend = " << firstBloodHappened << ")" << endl;
     // Update score first
     updateAttackerAndHitScore(attacker, hit);
 
@@ -389,7 +391,6 @@ void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 */
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
-    cout << "getScoreGainedForAttacker" << endl;
     int basePoints = POINTS_GAINED_HIT_BASE;
     int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
     int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
@@ -408,7 +409,6 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
         // @Evan refine this value
         totalGained >>= 2; // Divide by 4
     }
-    cout << "\t" << attacker << " hit " << hit << " for " << totalGained << endl;
     return totalGained;
 }
 
@@ -441,11 +441,6 @@ void GameStats::addScore(eHovercraft attacker, int points)
     stats[attacker][SCORE_CHANGE] = points;
     stats[attacker][SCORE_CURRENT] += points;
     stats[attacker][SCORE_TOTAL] += points;
-
-
-    cout << "addScore(" << attacker << ", " << points << ")" << endl;
-    cout << "\t" << attacker << " score change " << stats[attacker][SCORE_CHANGE] << endl;
-    cout << "\t" << attacker << " score current " << stats[attacker][SCORE_CURRENT] << endl;
 }
 
 void GameStats::removeScore(eHovercraft hit, int points)
