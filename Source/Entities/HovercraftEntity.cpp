@@ -1231,6 +1231,7 @@ void HovercraftEntity::reflectRocket(const mat4 &transform, const vec3 &velocity
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
     cout << "rocket reflected" << endl;
+    reduceCooldown(ABILITY_SPIKES);
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
