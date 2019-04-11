@@ -56,6 +56,7 @@ public:
 
     // Returns the Direction Vector of the current Physics Object
     void getDirectionVector(vec3* vReturnVector);
+    glm::vec3 getDirectionVector(string sHashKey);
 
     void setMaxSpeed(float maxSpeed);
 

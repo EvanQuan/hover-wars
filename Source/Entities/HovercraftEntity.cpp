@@ -22,16 +22,7 @@
 /*
     Unit : meters / second
 */
-#define ROCKET_SPEED            100.0f
 #define FLAME_SPACING           1.0f
-
-/*
-    Length of the rocket hit box
-    This value is currently determined by the size of the model of the rocket,
-    so probably should not be manipulated. The radius of the rocket is
-    currently defined in PhysicsManager.
-*/
-#define ROCKET_BOUNDING_BOX     1.0f
 
 // @Deprecated - Hovercrafts don't lose control
 #define LOSE_CONTROL_COLLISION_TIME 1.0f // 0.8
@@ -450,7 +441,7 @@ void HovercraftEntity::updateQueuedActions()
 */
 void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
 {
-    if (isInvincible() || (ability == eAbility::ABILITY_TRAIL_ACTIVATE && m_bIsDashing()) ) {
+    if (isInvincible() || (ability == eAbility::ABILITY_TRAIL_ACTIVATE && isDashing()) ) {
         return;
     }
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
@@ -722,8 +713,9 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
 {
     // Get the Type of the Other Entity
     eEntityType eOtherType = pOther->getType();
+    // eInteractType eOtherInteractableType;
     HovercraftEntity* pOtherHovercraft;
-    // InteractableEntity* pOtherIE;
+    // InteractableEntity* pOtherInteractable;
     switch (eOtherType)
     {
     case ENTITY_HOVERCRAFT:
@@ -742,7 +734,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
             m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
         }
         // Momentarily lose control of vehicle to prevent air moving
-
+    
         // TODO check if need to determine which velocity to do
 
         
@@ -1134,8 +1126,8 @@ void HovercraftEntity::shootRocket()
     // The rocket is at the hovercraft's origin
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
     m4CurrentTransform = translate((vVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f)) * m4CurrentTransform;
-    vVelocity *= ROCKET_SPEED;
-    m_pRocket->launchRocket(&m4CurrentTransform, &vVelocity, ROCKET_BOUNDING_BOX, true);
+    vVelocity *= Rocket::LAUNCH_SPEED;
+    m_pRocket->launchRocket(m_iID, &m4CurrentTransform, &vVelocity, Rocket::BOUNDING_BOX, true);
     m_fCooldowns[COOLDOWN_ROCKET] = m_fMaxCooldowns[COOLDOWN_ROCKET];
 }
 
@@ -1225,9 +1217,20 @@ void HovercraftEntity::setInvincible()
     m_fSecondsLeftUntilVulnerable = INVINCIBLE_TIME;
 }
 
-bool HovercraftEntity::m_bIsDashing() const
+bool HovercraftEntity::isDashing() const
 {
     return m_pPhysicsComponent->isDashing();
+}
+
+/*
+    Reflect a rocket of a specified tranform and direction.
+    This will silently launch a new rocket in the opposite direction, and will
+    not affect cooldowns or rocket fire count.
+*/
+void HovercraftEntity::reflectRocket(const mat4 &transform, const vec3 &velocity)
+{
+    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+    cout << "rocket reflected" << endl;
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)

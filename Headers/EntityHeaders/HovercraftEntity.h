@@ -145,7 +145,10 @@ public:
 
     bool hasMaxDashCharges() const { return m_iDashCharges == m_iDashMaxCharges; }
 
-    bool m_bIsDashing() const;
+    bool isDashing() const;
+
+    // Public access for Rocket class
+    void reflectRocket(const mat4 &transform, const vec3 &velocity);
 
     // Should be initialized AFTER the hovercraft has been created when
     // GameStats corresponds entities to hovercrafts.

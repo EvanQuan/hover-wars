@@ -22,6 +22,18 @@ class Rocket
     : public InteractableEntity
 {
 public:
+
+    // Unit: meters / second
+    static int LAUNCH_SPEED;
+
+    /*
+        Length of the rocket hit box
+        This value is currently determined by the size of the model of the rocket,
+        so probably should not be manipulated. The radius of the rocket is
+        currently defined in PhysicsManager.
+    */
+    static float BOUNDING_BOX;
+
     Rocket(int iID, int iOwnerID, const vec3* vColor);
     virtual ~Rocket();
 
@@ -36,11 +48,11 @@ public:
 
     // Rocket Functionality
     // Spawns a rocket of the specified parameters
-    void launchRocket(const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength, bool includeSound);
+    void launchRocket(const int iEntityID, const mat4* m4InitialTransform, const vec3* vVelocity, float fBBLength, bool includeSound);
 
     // Reflect a rocket. In practice this deletes the rockets, spawns a rocket
     // facing the opposite direction and of the specified reflected owner.
-    void reflect(unsigned int iVictimMsg);
+    void reflect(unsigned int iVictimMsg, HovercraftEntity *pOther);
 
     void explode(unsigned int iVictimMsg);
 

@@ -12,6 +12,10 @@
 #define NUM_PARTICLES       100
 #define EXPLOSION_RADIUS    3.0f
 
+int Rocket::LAUNCH_SPEED = 100;
+
+float Rocket::BOUNDING_BOX = 1.0f;
+
 // Default Constructor
 Rocket::Rocket(int iID, int iOwnerID, const vec3* vColor)
     : InteractableEntity( iID, iOwnerID, vec3(0.0), INTER_ROCKET )
@@ -73,6 +77,9 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
 
         eInteractType pOtherInteractType;
         Rocket *pOtherRocket;
+        HovercraftEntity *pOtherHovercraft = nullptr;
+
+        bool shouldReflect = false;
         switch (pOtherType)
         {
         case ENTITY_INTERACTABLE:
@@ -88,11 +95,23 @@ void Rocket::handleCollision(Entity* pOther, unsigned int iColliderMsg, unsigned
                 break;
             }
             break;
+        case ENTITY_HOVERCRAFT:
+            // Normally collision between interacable entities and hovercrafts
+            // is done on the hovercraft side. By processing the collision here,
+            // we can determine how the rocket is removed from the scene
+            // instead of guaranteeing an explosion.
+            pOtherHovercraft = static_cast<HovercraftEntity*>(pOther);
+            shouldReflect = pOtherHovercraft->hasSpikesActivated();
+            break;
         }
-        // Tell the Other Entity that they've been hit via the Inherited Collision Handler
-        InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
 
-        explode(iVictimMsg);
+        if (shouldReflect && nullptr != pOtherHovercraft) {
+            reflect(iVictimMsg, pOtherHovercraft);
+        } else {
+            // Tell the Other Entity that they've been hit via the Inherited Collision Handler
+            InteractableEntity::handleCollision(pOther, iColliderMsg, iVictimMsg);
+            explode(iVictimMsg);
+        }
     }
 }
 
@@ -108,6 +127,7 @@ void Rocket::removeFromScene(unsigned int iVictimMsg, bool shouldExplode)
 
     if (shouldExplode)
     {
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
         mat4 m4FinalTransform;
         m_pPhysicsComponent->getTransformMatrix(sHashKey, &m4FinalTransform);
         m_pEmitterEngine->generateEmitter(m4FinalTransform[3], m4FinalTransform[1], &m_vExplosionColor,
@@ -125,7 +145,8 @@ void Rocket::removeFromScene(unsigned int iVictimMsg, bool shouldExplode)
  * Rocket Functionality                                                                          *
 \*************************************************************************************************/
 
-void Rocket::launchRocket(const mat4* m4InitialTransform,
+void Rocket::launchRocket(const int iEntityID,
+                          const mat4* m4InitialTransform,
                           const vec3* vVelocity,
                           float fBBLength,
                           bool includeSound)
@@ -152,13 +173,33 @@ void Rocket::launchRocket(const mat4* m4InitialTransform,
                                           m4InitialTransform, vVelocity, fBBLength);
 }
 
-// @TODO unused
-void Rocket::reflect(unsigned int iVictimMsg)
+/*
+    Remove this rocket from the scene by reflecting. A reflection sound will
+    play and a reflected rocket will be silently launched in its place in the
+    opposite direction.
+
+    @param iVictimMsg   of rocket to reflect so it can be deleted silently
+    @param pOther       hovercraft to reflect rocket, so that the reflected rocket
+                        can switch owner.
+*/
+void Rocket::reflect(unsigned int iVictimMsg, HovercraftEntity *pOther)
 {
-    SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
-    // 1. get rocket's direction vector
-    // 2. flip it 180
+    string sHashKey = to_string(m_iID) + " " + to_string(iVictimMsg);
+    // 1. get rocket's transform and direction
+    mat4 transform;
+    m_pPhysicsComponent->getTransformMatrix(sHashKey, &transform);
+    vec3 direction;
+    m_pPhysicsComponent->getDirectionVector(sHashKey, &direction);
+
+    vec3 velocity = glm::normalize(transform[2]) * LAUNCH_SPEED;
+
+    // 2. flip it's direction by 180
+    // float angle = glm::radians(180);
+    // vec3 axis = vec3(0, 1, 0);
+    velocity = -velocity;
+
     // 3. launch rocket with new direction with the owner's ID without sound
+    pOther->reflectRocket(transform, velocity);
 
     // 4. Silently remove this rocket without explosion
     removeFromScene(iVictimMsg, false);
@@ -166,10 +207,12 @@ void Rocket::reflect(unsigned int iVictimMsg)
 
 
 /*
+    Remove this rocket from the scene by exploding. An explosion sound will
+    play and explosion particles will be emitted in its place.
+
     @param iVictimMsg   of the rocket to explode
 */
 void Rocket::explode(unsigned int iVictimMsg)
 {
-    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_ROCKET_EXPLOSION);
     removeFromScene(iVictimMsg, true);
 }

@@ -334,7 +334,9 @@ void PhysicsComponent::getTransformMatrix(mat4* pReturnTransformMatrix)
 void PhysicsComponent::getTransformMatrix(string sHashKey, mat4* pReturnTransformMatrix)
 {
     if (!m_bVehicle && m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end())
+    {
         *pReturnTransformMatrix = m_pPhysicsManager->getMat4(m_pDynamicObjects[sHashKey]->getGlobalPose());
+    }
 }
 glm::vec3 PhysicsComponent::getPosition() {
     physx::PxVec3 position = body->getGlobalPose().p;
@@ -353,6 +355,16 @@ void PhysicsComponent::getDirectionVector(vec3* vReturnVector)
     PxVec3 vPxReturn = PxVec3(0.0f, 0.0f, 1.0f);                // We Want a forward vector (1 in z-axis) rotated with the global quaternion
     vPxReturn = pRotationQuaternion.rotate(vPxReturn);          // Rotate the Forward Vector
     memcpy(vReturnVector, &vPxReturn, sizeof(vec3));            // Copy PxVec3 to the return Vec3
+}
+
+glm::vec3 PhysicsComponent::getDirectionVector(string sHashKey)
+{
+    if (!m_bVehicle && m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end())
+    {
+        PxVec3 velocity = m_pDynamicObjects[sHashKey]->getLinearVelocity();
+        return glm::vec3(velocity.x, velocity.y, velocity.z);
+    }
+    return glm::vec3();
 }
 
 void PhysicsComponent::setMaxSpeed(float maxSpeed)
