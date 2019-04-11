@@ -43,7 +43,7 @@ class AIComponent final :
 {
 public:
     // Constructor/Destructor - Destructor must be virtual for proper deletion through unique_ptrs
-    AIComponent(int iEntityID, int iComponentID);
+    AIComponent(int iEntityID, int iComponentID, unsigned int mapNumber);
     ~AIComponent();
     // void AIComponent::initalize(glm::vec3 playerPos, glm::vec3 playerVel, glm::vec3 botPosition, glm::vec3 botVel, float botRotation);
     // After Initialization, the update function should handle things for the Physics of this Entity.
@@ -54,7 +54,6 @@ public:
     void AIComponent::getCurrentAction(HovercraftEntity *mPlayer, HovercraftEntity *bot, float delta_time, Action *a);
     // Various initialization functions as needed.
     // this function will allow Entities to retrieve the Transform Matrix required to modify their mesh.
-    const static int mapNumber = 1;
 private:
     /*
         Possible modes the AIComponent can be in.

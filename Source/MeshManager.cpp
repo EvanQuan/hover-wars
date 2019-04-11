@@ -105,7 +105,11 @@ Mesh* MeshManager::generatePlaneMesh(bool bStaticMesh, int iHeight, int iWidth, 
     else // Generate a new Plane Mesh of height iHeight and width iWidth
     {
         unique_ptr<Mesh> pNewPlane = make_unique<Mesh>(sHashHandle, bStaticMesh, 1.0f, pObjectProperties, sHashKey, Mesh::manager_cookie());
-        pNewPlane->genPlane(iHeight/gridSize, iWidth / gridSize,gridSize,values, pObjectProperties->vPosition, vNormal, sHashKey);    // Generate Plane
+        pNewPlane->genPlane(static_cast<int>(iHeight / gridSize),
+                            static_cast<int>(iWidth / gridSize),
+                            gridSize,values,
+                            pObjectProperties->vPosition,
+                            vNormal, sHashKey);    // Generate Plane
         pReturnMesh = pNewPlane.get();                                                            // Return raw pointer to managed Mesh.
         m_pMeshCache.insert(make_pair(sHashHandle, move(pNewPlane)));                             // Insert into Mesh Cache
     }

@@ -372,21 +372,33 @@ void GameManager::updateEnvironment()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
-    @param eAIType       of game
-    @param sFileName    of .scene environment to load
+    @param eAIType      of game
+    @param mapNumber    of map
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,
                                     float gameTime,
                                     eAIType aiType,
-                                    string sFileName)
+                                    unsigned int mapNumber)
 {
-
     // Before we initialize, set to LoadingMenu and Interface
     m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
 
     // We intialize all values for the game to immediately start
     m_pPhysicsManager->initPhysics(true);
+
+    string sFileName;
+    switch (mapNumber)
+    {
+    case MAP_1_NUMBER:
+        sFileName = MAP_1;
+        break;
+    case MAP_2_NUMBER:
+        sFileName = MAP_2;
+        break;
+    default:
+        sFileName = MAP_1;
+    }
 
     startedGameOver = false;
     m_fGameTime = gameTime;
@@ -409,7 +421,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
     m_pGameStats->reinitialize(playerCount, botCount);
-    m_pAIManager->reinitialize(aiType);
+    m_pAIManager->reinitialize(aiType, mapNumber);
 
     setKeyboardHovercraft(playerCount);
 

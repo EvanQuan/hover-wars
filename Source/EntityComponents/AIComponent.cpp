@@ -41,7 +41,7 @@
 */
 #define MOVEMENT_RATE 20
 
-AIComponent::AIComponent(int iEntityID, int iComponentID)
+AIComponent::AIComponent(int iEntityID, int iComponentID, unsigned int mapNumber)
     : EntityComponent(iEntityID, iComponentID)
 {
     for (int i = 0; i < 10; i++) {

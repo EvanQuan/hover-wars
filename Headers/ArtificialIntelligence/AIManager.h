@@ -17,8 +17,9 @@ public:
         This should be called after all bot entities have been created.
 
         @param aiType   to initialize for the given game
+        @param mapNumber of the given game
     */
-    void reinitialize(eAIType aiType);
+    void reinitialize(eAIType aiType, unsigned int mapNumber);
 
     void update(float fTimeInSeconds);
 

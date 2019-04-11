@@ -765,10 +765,10 @@ PhysicsComponent* EntityManager::generatePhysicsComponent(int iEntityID)
     return pReturnComponent;
 }
 
-AIComponent* EntityManager::generateAIComponent(int iEntityID)
+AIComponent* EntityManager::generateAIComponent(int iEntityID, unsigned int mapNumber)
 {
     // Generate new Physics Component
-    unique_ptr<AIComponent> pNewComponent = make_unique<AIComponent>(iEntityID, getNewComponentID());
+    unique_ptr<AIComponent> pNewComponent = make_unique<AIComponent>(iEntityID, getNewComponentID(), mapNumber);
     AIComponent* pReturnComponent = pNewComponent.get();
 
     m_pAIComponents.push_back(pReturnComponent);

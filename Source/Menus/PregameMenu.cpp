@@ -35,10 +35,13 @@ PregameMenu::PregameMenu() : PromptMenu(
             { "Bot count", eFixedCommand::COMMAND_PROMPT_SELECT_2 },
         },
         {
-            { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
+            { "AI", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
         },
         {
-            { "AI", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
+            { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
+        },
+        {
+            { "Map", eFixedCommand::COMMAND_PROMPT_SELECT_5 },
         },
     }
 )
@@ -59,6 +62,7 @@ PregameMenu::PregameMenu() : PromptMenu(
 
     m_eAIType = AI_ON_SAME_TEAM;
     m_fGameTime = DEFAULT_GAME_TIME;
+    m_iMapNumber = MIN_MAP_NUMBER;
 }
 
 Menu* PregameMenu::getInstance()
@@ -81,7 +85,7 @@ void PregameMenu::select(eFixedCommand command)
                                           m_iBotCount,
                                           static_cast<float>(m_fGameTime),
                                           m_eAIType,
-                                          RELEASE_ENV);
+                                          m_iMapNumber);
         break;
     }
 }
@@ -140,24 +144,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                 break;
             }
             break;
-        case eFixedCommand::COMMAND_PROMPT_SELECT_3: // game time
-            switch (direction)
-            {
-            case COMMAND_PROMPT_LEFT:
-                m_fGameTime = FuncUtils::bound(m_fGameTime - GAME_TIME_INTERVAL,
-                                               MIN_GAME_TIME, MAX_GAME_TIME);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
-                cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
-                break;
-            case COMMAND_PROMPT_RIGHT:
-                m_fGameTime = FuncUtils::bound(m_fGameTime + GAME_TIME_INTERVAL,
-                                               MIN_GAME_TIME, MAX_GAME_TIME);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
-                cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
-                break;
-            }
-            break;
-        case eFixedCommand::COMMAND_PROMPT_SELECT_4: // AI
+        case eFixedCommand::COMMAND_PROMPT_SELECT_3: // AI
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
@@ -174,6 +161,41 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                 }
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eAIType << endl;
+                break;
+            }
+            break;
+        case eFixedCommand::COMMAND_PROMPT_SELECT_4: // game time
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+                m_fGameTime = FuncUtils::bound(m_fGameTime - GAME_TIME_INTERVAL,
+                                               MIN_GAME_TIME, MAX_GAME_TIME);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
+                break;
+            case COMMAND_PROMPT_RIGHT:
+                m_fGameTime = FuncUtils::bound(m_fGameTime + GAME_TIME_INTERVAL,
+                                               MIN_GAME_TIME, MAX_GAME_TIME);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
+                break;
+            }
+            break;
+        case eFixedCommand::COMMAND_PROMPT_SELECT_5: // Map
+
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+                m_iMapNumber = FuncUtils::subtractModulo(m_iMapNumber, 1,
+                                                         MIN_MAP_NUMBER, MAX_MAP_NUMBER);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_iMapNumber << endl;
+                break;
+            case COMMAND_PROMPT_RIGHT:
+                m_iMapNumber = FuncUtils::addModulo(m_iMapNumber, 1,
+                                                    MIN_MAP_NUMBER, MAX_MAP_NUMBER);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_iMapNumber << endl;
                 break;
             }
             break;
