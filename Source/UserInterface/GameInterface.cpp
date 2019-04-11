@@ -423,6 +423,7 @@ void GameInterface::startMajorTimeWarning()
 void GameInterface::startMinorTimeWarning()
 {
     m_bHasStartedMinorWarning = true;
+    m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_WARNING);
     displayNotification(NOTIFICATION_TIME_MINOR);
 }
 

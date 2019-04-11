@@ -76,6 +76,7 @@ public:
         SOUND_UI_END_GAME_CHEER,
         SOUND_UI_NEW_LEADER,
         // For major time warnings
+        SOUND_UI_TIME_REMAINING_WARNING,
         SOUND_UI_TIME_REMAINING_LOOP,
         // For resuming the game
         SOUND_UI_RESUME_COUNTDOWN,
@@ -305,7 +306,9 @@ private:
                                          }},
         {SOUND_UI_END_GAME_CHEER,        { "event:/ui/notification/end_game_cheer",
                                          }},
-        {SOUND_UI_TIME_REMAINING_LOOP,   { "event:/ui/notification/time_remaining_warning",
+        {SOUND_UI_TIME_REMAINING_WARNING,{ "event:/ui/notification/time_remaining_warning",
+                                         }},
+        {SOUND_UI_TIME_REMAINING_LOOP,   { "event:/ui/notification/time_remaining_warning_with_tick",
                                          }},
         {SOUND_UI_NEW_LEADER,            { "event:/ui/notification/new_leader",
                                          }},
