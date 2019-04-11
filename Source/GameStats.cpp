@@ -292,6 +292,11 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason, eAbilit
     }
 }
 
+void GameStats::reflectRocket(eHovercraft hovercraft)
+{
+    stats[hovercraft][ROCKETS_REFLECTED]++;
+}
+
 /*
     Track that the hovecraft used an ability.
     This is used to track all the past abilities the hovercraft has used for
