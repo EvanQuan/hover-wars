@@ -2,6 +2,7 @@
 #include "UserInterface/MenuInterface.h"
 
 #define BACK_TO_MAIN_MENU_OPTION "Return to Main Menu"
+#define AWARDS_OPTION "Awards"
 
 class PostgameInterface final : public MenuInterface
 {
@@ -86,9 +87,11 @@ private:
         RANK_8_SCORE_ONE,
         RANK_8_POINT_ICON,
 
+        MAIN_MENU,
     };
     static PostgameInterface* m_pInstance;
 
     void renderPlacement();
     void renderScore(int place, int score);
+    void renderOption();
 };

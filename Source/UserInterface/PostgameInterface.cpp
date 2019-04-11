@@ -136,6 +136,9 @@ PostgameInterface::PostgameInterface() : MenuInterface(
         {0.49f, 0.1f},
         // Rank 8 pts icon
         {0.52f, 0.1f},
+
+        // Main menu option
+        {0.7f, 0.3f},
     },
     // Translating
     vector<pair<float, float>>
@@ -177,85 +180,88 @@ PostgameInterface::PostgameInterface() : MenuInterface(
         {0.0f, 0.0f},
         // Rank 1 score one
         {0.0f, 0.0f},
-            // Rank 1 pts icon
-        { 0.0f, 0.0f },
+        // Rank 1 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 2 score thousand
-        { 0.0f, 0.0f },
-            // Rank 2 score hundred
-        { 0.0f, 0.0f },
-            // Rank 2 score ten
-        { 0.0f, 0.0f },
-            // Rank 2 score one
-        { 0.0f, 0.0f },
-            // Rank 2 pts icon
-        { 0.0f, 0.0f },
+        // Rank 2 score thousand
+        {0.0f, 0.0f},
+        // Rank 2 score hundred
+        {0.0f, 0.0f},
+        // Rank 2 score ten
+        {0.0f, 0.0f},
+        // Rank 2 score one
+        {0.0f, 0.0f},
+        // Rank 2 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 3 score thousand
-        { 0.0f, 0.0f },
-            // Rank 3 score hundred
-        { 0.0f, 0.0f },
-            // Rank 3 score ten
-        { 0.0f, 0.0f },
-            // Rank 3 score one
-        { 0.0f, 0.0f },
-            // Rank 3 pts icon
-        { 0.0f, 0.0f },
+        // Rank 3 score thousand
+        {0.0f, 0.0f},
+        // Rank 3 score hundred
+        {0.0f, 0.0f},
+        // Rank 3 score ten
+        {0.0f, 0.0f},
+        // Rank 3 score one
+        {0.0f, 0.0f},
+        // Rank 3 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 4 score thousand
-        { 0.0f, 0.0f },
-            // Rank 4 score hundred
-        { 0.0f, 0.0f },
-            // Rank 4 score ten
-        { 0.0f, 0.0f },
-            // Rank 4 score one
-        { 0.0f, 0.0f },
-            // Rank 4 pts icon
-        { 0.0f, 0.0f },
+        // Rank 4 score thousand
+        {0.0f, 0.0f},
+        // Rank 4 score hundred
+        {0.0f, 0.0f},
+        // Rank 4 score ten
+        {0.0f, 0.0f},
+        // Rank 4 score one
+        {0.0f, 0.0f},
+        // Rank 4 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 5 score thousand
-        { 0.0f, 0.0f },
-            // Rank 5 score hundred
-        { 0.0f, 0.0f },
-            // Rank 5 score ten
-        { 0.0f, 0.0f },
-            // Rank 5 score one
-        { 0.0f, 0.0f },
-            // Rank 5 pts icon
-        { 0.0f, 0.0f },
+        // Rank 5 score thousand
+        {0.0f, 0.0f},
+        // Rank 5 score hundred
+        {0.0f, 0.0f},
+        // Rank 5 score ten
+        {0.0f, 0.0f},
+        // Rank 5 score one
+        {0.0f, 0.0f},
+        // Rank 5 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 6 score thousand
-        { 0.0f, 0.0f },
-            // Rank 6 score hundred
-        { 0.0f, 0.0f },
-            // Rank 6 score ten
-        { 0.0f, 0.0f },
-            // Rank 6 score one
-        { 0.0f, 0.0f },
-            // Rank 6 pts icon
-        { 0.0f, 0.0f },
+        // Rank 6 score thousand
+        {0.0f, 0.0f},
+        // Rank 6 score hundred
+        {0.0f, 0.0f},
+        // Rank 6 score ten
+        {0.0f, 0.0f},
+        // Rank 6 score one
+        {0.0f, 0.0f},
+        // Rank 6 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 7 score thousand
-        { 0.0f, 0.0f },
-            // Rank 7 score hundred
-        { 0.0f, 0.0f },
-            // Rank 7 score ten
-        { 0.0f, 0.0f },
-            // Rank 7 score one
-        { 0.0f, 0.0f },
-            // Rank 7 pts icon
-        { 0.0f, 0.0f },
+        // Rank 7 score thousand
+        {0.0f, 0.0f},
+        // Rank 7 score hundred
+        {0.0f, 0.0f},
+        // Rank 7 score ten
+        {0.0f, 0.0f},
+        // Rank 7 score one
+        {0.0f, 0.0f},
+        // Rank 7 pts icon
+        {0.0f, 0.0f},
 
-            // Rank 8 score thousand
-        { 0.0f, 0.0f },
-            // Rank 8 score hundred
-        { 0.0f, 0.0f },
-            // Rank 8 score ten
-        { 0.0f, 0.0f },
-            // Rank 8 score one
-        { 0.0f, 0.0f },
-            // Rank 8 pts icon
-        { 0.0f, 0.0f },
+        // Rank 8 score thousand
+        {0.0f, 0.0f},
+        // Rank 8 score hundred
+        {0.0f, 0.0f},
+        // Rank 8 score ten
+        {0.0f, 0.0f},
+        // Rank 8 score one
+        {0.0f, 0.0f},
+        // Rank 8 pts icon
+        {0.0f, 0.0f},
+
+        // Main menu option
+        {0.0f, 0.0f},
         }
 )
 {
@@ -285,12 +291,12 @@ void PostgameInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
     renderImage(IMAGE_PLACEMENT, m_vComponentCoordinates[PLACEMENT].first, m_vComponentCoordinates[PLACEMENT].second, 1.0f);
-    renderImage(IMAGE_AWARDS_1, m_vComponentCoordinates[AWARDS].first, m_vComponentCoordinates[AWARDS].second, 1.0f);
     renderImage(IMAGE_NUMBER_1, m_vComponentCoordinates[NUMBER_1].first, m_vComponentCoordinates[NUMBER_1].second, 1.0f);
     renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
 
     renderPlacement();
+    renderOption();
 }
 
 void PostgameInterface::renderPlacement()
@@ -478,5 +484,26 @@ void PostgameInterface::renderScore(int placements, int score)
         renderImage(IMAGE_9, m_vComponentCoordinates[17 + placements * 5].first + 0.4, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
         break;
     }
+
     renderImage(IMAGE_POINT, m_vComponentCoordinates[18 + placements * 5].first + 0.4, m_vComponentCoordinates[18 + placements * 5].second, 1.0f);
+}
+
+
+void PostgameInterface::renderOption()
+{
+    PostgameMenu* m = (PostgameMenu*)PostgameMenu::getInstance();
+    string option = m->getCurrentPrompt();
+
+    if (option == BACK_TO_MAIN_MENU_OPTION) {
+        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4, m_vComponentCoordinates[AWARDS].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+    }
+    else if (option == AWARDS_OPTION) {
+        renderImage(IMAGE_AWARDS_1, m_vComponentCoordinates[AWARDS].first + 0.4, m_vComponentCoordinates[AWARDS].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first + 0.4, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+    }
+    else {
+        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4, m_vComponentCoordinates[AWARDS].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+    }
 }
