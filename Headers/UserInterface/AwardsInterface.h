@@ -31,6 +31,7 @@ private:
     static AwardsInterface* m_pInstance;
 
     void renderOption();
-    void AwardsInterface::renderAwards();
+    void renderAwards();
+    int compare(const void*a, const void*b);
 
 };
