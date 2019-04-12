@@ -43,6 +43,7 @@ public:
     void scaleInstance(string sHashKey, float fScale);
     vec3 getLinearVelocity();
     quat getRotation();
+    quat getRotation(string sHashKey);
     void flipVehicle();
     void dash(float x, float y);
     void push(float x, float y);

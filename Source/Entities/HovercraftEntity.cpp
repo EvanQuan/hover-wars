@@ -1259,22 +1259,30 @@ bool HovercraftEntity::isDashing() const
     @param tranform of the rocket as it collides with this hovercraft
     @param direction of the rocket as it collidees with this hovercraft
 */
-void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &direction)
+void HovercraftEntity::reflectRocket(mat4 &transform, quat& qRotation)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
-    // vec3 vVelocity = normalize(transform[2]);
-    vec3 vVelocity = normalize(direction);
+
+    // Get Velocity Direction
+    vec3 vVelocity;
     vec3 vNormal = PHYSICS_MANAGER->getClosestNormalOnHeightMap(transform[3]);
     vVelocity = normalize(cross(vec3(transform[0]), vNormal));
 
-    vVelocity *= Rocket::LAUNCH_SPEED;
-
-    m_m4ReflectTransform = transform;
+    // Set Normalized Reflect Velocity
     m_vReflectVelocity = -vVelocity;
 
-    // float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
-    // m_m4ReflectTransform = translate((m_vReflectVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f));
+    // Further Rotate the rotation quaternion of the Rocket by 180 degrees to flip it.
+    // Apply the Rotation in Local Space
+    qRotation = rotate(qRotation, 0.0f, vec3(0.0f, 1.0f, 0.0f));
+    m_m4ReflectTransform = toMat4(normalize(qRotation)) * mat4(1.0f);
 
+    // Translate the new rocket a little away from the hovercraft to not cause a collision with the wheels
+    m_m4ReflectTransform = translate(vec3(transform[3]) + m_vReflectVelocity * 5.0f) * m_m4ReflectTransform;
+
+    // Apply Rocket Speed to the Velocity
+    m_vReflectVelocity *= Rocket::LAUNCH_SPEED;
+
+    // Trigger the Action to be handled on update.
     queuedActions[QUEUED_REFLECT] = true;
 }
 
