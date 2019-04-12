@@ -28,16 +28,11 @@ out vec2 TexCoords;
 void main(void)
 {
     // Just to ensure that the z value is 0 in all cases.
+	gl_Position = vec4(vertex.xy, 0.0, 1.0);
+	
 	if (!backgroundImage)
-	{
-	    gl_Position = UIProjection * vec4(vertex.xy, 0.0, 1.0);
-		//gl_Position = projection * modelview * vec4(vertex.xy, 0.0, 1.0); // For Debugging
-	}
-	else
-	{
-		gl_Position = vec4(vertex.xy, 0.0, 1.0);
-		
-	}
+	    gl_Position = UIProjection * gl_Position;
+
 
     TexCoords = vertex.zw;
 }
