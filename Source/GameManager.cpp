@@ -257,52 +257,58 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
 */
 void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode aiType)
 {
-    // Load all colors into a set to pick from.
-    vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));
-    unsigned int iIndex;
-    // Shuffle all the solo colors for players
-    m_vPlayerColors.clear();
-    for (int i = 0; i < MAX_PLAYER_COUNT; ++i)
-    {
-        // Get a random Index
-        iIndex = rand() % vColors.size();
+    // Local Variables
+    bool bTeamAI = (GAMEMODE_TEAM_AI_SOLO_PLAYERS == aiType || GAMEMODE_TEAMS_AI_VS_PLAYERS == aiType);
+    bool bTeamPlayers = (GAMEMODE_TEAMS_AI_VS_PLAYERS == aiType);
+    vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));    // Load all colors into a set to pick from.
 
-        // Store Player Color
-        m_vPlayerColors.push_back(vColors[iIndex]);
+    // Select Player Colors First
+    selectColors(&m_vPlayerColors, &vColors, playerCount, bTeamPlayers);
 
-        // Remove Chosen Color for next pick.
-        vColors.erase(vColors.begin() + iIndex);
-    }
+    // Select Bot Colors
+    selectColors(&m_vBotColors, &vColors, botCount, bTeamAI);
 
-    m_vBotColors.clear();
-    switch (aiType)
-    {
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
-        // If the AI are on the same team, they will all use the same chosen color
-        iIndex = rand() % vColors.size();
-        for (int i = 0; i < MAX_BOT_COUNT; ++i)
-            m_vBotColors.push_back(vColors[iIndex]);
-
-        vColors.erase(vColors.begin() + iIndex);
-        break;
-    case GAMEMODE_FREE_FOR_ALL:
-        // If bots are solo, they wil use the remaining unused colors.
-        for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
-        {
-            // Get a random Index
-            iIndex = rand() % vColors.size();
-
-            // Store Bot Color
-            m_vBotColors.push_back(vColors[iIndex]);
-
-            // Remove Chosen Color for next pick.
-            vColors.erase(vColors.begin() + iIndex);
-        }
-        break;
-    }
+    // Spawn the Bots and Players with their respective colors
     spawnPlayers(playerCount, m_vPlayerColors);
     spawnBots(botCount, m_vBotColors);
+}
+
+// Name: selectColors
+// Written by: James Coté
+// Description: Applies randomization algorithm to select random colors from a pool of colors.
+void GameManager::selectColors(vector<vec3>* vReturnColors, vector<vec3>* vColorPool, unsigned int iNumPicks, bool bTeam)
+{
+    // Local Variables
+    unsigned int iIndex;
+
+    // Clear Colors to set.
+    vReturnColors->clear();
+    if (bTeam) // If the on the same team, they will all use the same chosen color
+    {
+        // Select Color
+        iIndex = rand() % vColorPool->size();
+
+        // Save Colors
+        for (unsigned int i = 0; i < iNumPicks; ++i)
+            vReturnColors->push_back((*vColorPool)[iIndex]);
+
+        // Erase Color from the pool
+        vColorPool->erase(vColorPool->begin() + iIndex);
+    }
+    else // If solo, they wil use the remaining unused colors.
+    {
+        for (unsigned int i = 0; i < iNumPicks; ++i)
+        {
+            // Get a random Index
+            iIndex = rand() % vColorPool->size();
+
+            // Store Color
+            vReturnColors->push_back((*vColorPool)[iIndex]);
+
+            // Remove Chosen Color for next pick.
+            vColorPool->erase(vColorPool->begin() + iIndex);
+        }
+    }
 }
 
 void GameManager::spawnPlayers(unsigned int playerCount, const vector<vec3> &colors)
