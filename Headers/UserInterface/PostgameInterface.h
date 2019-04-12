@@ -4,6 +4,8 @@
 #define BACK_TO_MAIN_MENU_OPTION "Return to Main Menu"
 #define AWARDS_OPTION "Awards"
 
+struct EndGameStat;
+
 class PostgameInterface final : public MenuInterface
 {
 public:
@@ -92,6 +94,9 @@ private:
     static PostgameInterface* m_pInstance;
 
     void renderPlacement();
+    void renderFreeForAll(const vector<EndGameStat> &endGameStats);
+    void renderTeamBots(const vector<EndGameStat> &endGameStats);
+    void renderPlayersVsBots();
     void renderScore(int place, int score);
     void renderOption();
 };

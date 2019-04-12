@@ -311,8 +311,24 @@ void PostgameInterface::renderPlacement()
     PostgameMenu* m = (PostgameMenu*)PostgameMenu::getInstance();
     string option = m->getCurrentPrompt();
 
-    int placements = 0;
     vector<EndGameStat> endGameStats = GAME_STATS->getEndGameStats();
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_FREE_FOR_ALL:
+        renderFreeForAll(endGameStats);
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        renderTeamBots(endGameStats);
+        break;
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        renderPlayersVsBots();
+        break;
+    }
+}
+
+void PostgameInterface::renderFreeForAll(const vector<EndGameStat> &endGameStats)
+{
+    int placements = 0;
     for (EndGameStat s : endGameStats)
     {
         switch (s.hovercraft) {
@@ -344,6 +360,14 @@ void PostgameInterface::renderPlacement()
         renderScore(placements, s.afterAwardsScore);
         placements++;
     }
+}
+
+void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
+{
+}
+
+void PostgameInterface::renderPlayersVsBots()
+{
 }
 
 
