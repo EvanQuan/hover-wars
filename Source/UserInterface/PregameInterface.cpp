@@ -37,16 +37,21 @@ PregameInterface::PregameInterface() : MenuInterface(
         // 10 Game mode type
         {0.6f, 0.4f},
 
-        // 11 Map label
+        // 11 Score loss label
         {0.2f, 0.3f},
-        // 12 Map type
+        // 12 Score loss type
         {0.6f, 0.3f},
 
-        // 13 Main menu
+        // 11 Map label
         {0.2f, 0.2f},
+        // 12 Map type
+        {0.6f, 0.2f},
+
+        // 13 Main menu
+        {0.2f, 0.1f},
 
         // 14 Start game
-        {0.5f, 0.2f},
+        {0.5f, 0.1f},
     },
     // Translating
     vector<pair<float, float>>
@@ -69,19 +74,25 @@ PregameInterface::PregameInterface() : MenuInterface(
         {0.0f, 0.0f},
         // 6 Game time number
         {0.0f, 0.0f},
+
         // 7 Game mode label
         {0.0f, 0.0f},
         // 8 Game mode type
         {0.0f, 0.0f},
 
-        // 9 Map label
+        // 9 Score loss label
         {0.0f, 0.0f},
-        // 10 Map type
+        // 10 Score loss type
         {0.0f, 0.0f},
 
-        // 11 Main menu
+        // 11 Map label
         {0.0f, 0.0f},
-        // 12 Start game
+        // 12 Map type
+        {0.0f, 0.0f},
+
+        // 13 Main menu
+        {0.0f, 0.0f},
+        // 14 Start game
         {0.0f, 0.0f},
     }
 )
@@ -204,6 +215,11 @@ void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
     }
 }
 
+void PregameInterface::renderScoreLoss(bool scoreLossEnabled)
+{
+    renderImage(scoreLossEnabled ? IMAGE_ENABLED : IMAGE_DISABLED, m_vComponentCoordinates[SCORELOSS_TYPE].first, m_vComponentCoordinates[SCORELOSS_TYPE].second, 1.0f);
+}
+
 void PregameInterface::renderMap(unsigned int mapNumber)
 {
     switch (mapNumber)
@@ -244,6 +260,7 @@ void PregameInterface::renderOption() {
     renderNumberOfBot(m->getBotCount());
     renderGameTime(m->getGameTime());
     renderGameMode(m->getGameMode());
+    renderScoreLoss(m->hasScoreLossEnabled());
     renderMap(m->getMapNumber());
     renderBotDifficulty(m->getBotDifficulty());
 
@@ -253,6 +270,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -263,6 +281,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -273,6 +292,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_2, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -283,6 +303,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_2, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -293,6 +314,18 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_2, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
+    }
+    else if (option == SCORELOSS_OPTION) {
+        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
+        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
+        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
+        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_2, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -303,6 +336,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_2, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -313,6 +347,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_2, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -323,6 +358,7 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
         renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
         renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);

@@ -104,7 +104,11 @@ GameInterface::GameInterface() : UserInterface(
         {0.48f, 0.50f},
         // 11 Kill/ deaths
         {0.7f, 0.9f},
-        // 12 Player
+        // 12 Team player score
+        {0.2f, 0.9f},
+        // 13 Team bot score
+        {0.2f, 0.9f},
+        // 14 Killstreak
         {0.7f, 0.9f},
     },
     // Translating
@@ -133,9 +137,13 @@ GameInterface::GameInterface() : UserInterface(
         // 10 Resume game countdown
         {0.0f, 0.0f},
         // 11 Kill/deaths
-        {0.0f, -44.0f},
-        // 12 Player
         {0.0f, 0.0f},
+        // 12 Team player score
+        {0.0f, -50.0f},
+        // 13 Team bot score
+        {0.0f, -100.0f},
+        // 14 Killstreak
+        {0.0f, -50.0f},
     }
 )
 {
@@ -144,6 +152,7 @@ GameInterface::GameInterface() : UserInterface(
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;
+    m_pGameStats = GAME_STATS;
 }
 
 GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
@@ -383,9 +392,11 @@ rendered to ensure the UI is on top.
 void GameInterface::renderOverride()
 {
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
-    renderPlayerNumber();
     renderGameTime();
     renderScores();
+    renderKillstreak();
+    renderTeamBotScore();
+    renderTeamPlayerScore();
     renderCooldowns();
     renderKillsAndDeaths();
     renderMessages();
@@ -580,14 +591,63 @@ void GameInterface::renderKillsAndDeaths()
         SCORE_SCALE, SCORE_COLOR);
 }
 
+void GameInterface::renderTeamPlayerScore()
+{
+    string score;
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        score = "Player team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+        renderText(score,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
+           SCORE_SCALE,
+           COLOR_WHITE);
+        break;
+    }
+}
+
+void GameInterface::renderTeamBotScore()
+{
+    string score;
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE));
+        renderText(score,
+           m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].first,
+           m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].second,
+           SCORE_SCALE,
+           GAME_MANAGER->getHovercraftColor(HOVERCRAFT_BOT_1));
+        break;
+    }
+}
+
+void GameInterface::renderKillstreak()
+{
+    renderText("Killstreak: ",
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].first,
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
+        SCORE_SCALE,
+        COLOR_WHITE);
+    int killstreak = GAME_STATS->get(m_eHovercraftFocus, GameStats::eHovercraftStat::KILLSTREAK_CURRENT);
+    renderText(killstreak,
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].first + 200,
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
+        SCORE_SCALE,
+        killstreak > 0 ? COLOR_GREEN : COLOR_WHITE);
+}
+
 void GameInterface::renderScores()
 {
     string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
                         GameStats::eHovercraftStat::SCORE_CURRENT));
-    renderText("Score: " + score,
+    renderText(m_eHovercraftToString.at(m_eHovercraftFocus) + ": " + score,
                m_vComponentCoordinates[COMPONENT_SCORE].first,
                m_vComponentCoordinates[COMPONENT_SCORE].second,
-               SCORE_SCALE, SCORE_COLOR);
+               SCORE_SCALE,
+               GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
 }
 
 void GameInterface::updateCooldowns()
@@ -678,17 +738,6 @@ void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft
 void GameInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 color)
 {
     /* TODO */
-}
-
-void GameInterface::renderPlayerNumber()
-{
-    string playerNumber = "Player " + to_string(m_eHovercraftFocus + 1);
-    vec3 color = GAME_MANAGER->getPlayerColor(m_eHovercraftFocus);
-    renderText(playerNumber,
-        m_vComponentCoordinates[COMPONENT_PLAYER_NUMBER].first,
-        m_vComponentCoordinates[COMPONENT_PLAYER_NUMBER].second,
-        1.0f,
-        color);
 }
 
 /*

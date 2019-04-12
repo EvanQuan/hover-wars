@@ -35,7 +35,9 @@ public:
                            unsigned int botCount,
                            eBotDifficulty botDifficulty,
                            float gameTime,
-                           eGameMode gameMode, unsigned int mapNumber);
+                           eGameMode gameMode,
+                           unsigned int mapNumber,
+                           bool scoreLossEnabled);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height Getters and Setters

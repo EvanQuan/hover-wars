@@ -90,7 +90,7 @@ Total time the trail can be activated from full to empty.
 
 Unit: seconds
 */
-#define TRAIL_GAUGE_FULL        3.0f
+#define TRAIL_GAUGE_FULL        2.0f
 /*
 Represents the trail gauge is empty.
 */
@@ -123,9 +123,9 @@ Time multiplier for the trail to recharge from empty to full.
 < 1: recharge rate is slower than drain rate
 
 */
-#define TRAIL_BASE_RECHARGE_MULTIPLIER 0.3f // 9 sec
+#define TRAIL_BASE_RECHARGE_MULTIPLIER 0.25f // 12 sec
 
-#define TRAIL_MAX_RECHARGE_MULTIPLIER 1.0f  // 3 sec
+#define TRAIL_MAX_RECHARGE_MULTIPLIER 0.75f  // 4 sec
 
 /*
 The interval of time between each created flame while the trail trail is
@@ -469,30 +469,33 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_PULSE_IMPACT, m_bIsPlayer);
     HovercraftEntity* attackerHovercraft = ENTITY_MANAGER->getHovercraft(attacker);
     bool attackerHadLargestScore = m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
-    if (m_pGameStats->hasLargestScore(m_eHovercraft))
+    if (!m_pGameStats->isOnSameTeam(attacker, m_eHovercraft))
     {
-        // If the attacker hit the hovercraft with the largest score, give them
-        // a speed boost
-        attackerHovercraft->queuePowerup(ePowerup::POWERUP_SPEED_BOOST);
-    }
-    setInvincible();
-    m_pGameStats->addScore(attacker,
-                           static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
-                           ability);
-    resetMaxCooldowns();
+        if (m_pGameStats->hasLargestScore(m_eHovercraft))
+        {
+            // If the attacker hit the hovercraft with the largest score, give them
+            // a speed boost
+            attackerHovercraft->queuePowerup(ePowerup::POWERUP_SPEED_BOOST);
+        }
+        setInvincible();
+        m_pGameStats->addScore(attacker,
+                               static_cast<GameStats::eAddScoreReason>(m_eHovercraft),
+                               ability);
+        resetMaxCooldowns();
 
-    lastAttacker = attacker;
-    lastAbility = ability;
-    hasCollisionEventHappened = true;
-    // Award attacker
-    attackerHovercraft->reduceMaxCooldowns();
-    attackerHovercraft->reduceCooldown(ability);
+        lastAttacker = attacker;
+        lastAbility = ability;
+        hasCollisionEventHappened = true;
+        // Award attacker
+        attackerHovercraft->reduceMaxCooldowns();
+        attackerHovercraft->reduceCooldown(ability);
 
-    switch (ability)
-    {
-    case ABILITY_TRAIL_ACTIVATE:
-        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
-        break;
+        switch (ability)
+        {
+        case ABILITY_TRAIL_ACTIVATE:
+            SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_TRAIL_IMPACT);
+            break;
+        }
     }
 }
 

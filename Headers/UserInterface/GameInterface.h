@@ -10,6 +10,7 @@
 class EntityManager;
 class HovercraftEntity;
 class SoundManager;
+class GameStats;
 
 
 /*
@@ -89,7 +90,9 @@ private:
         COMPONENT_NOTIFICATION,
         COMPONENT_COUNTDOWN,
         COMPONENT_KILL_DEATHS,
-        COMPONENT_PLAYER_NUMBER,
+        COMPONENT_TEAM_PLAYER_SCORE,
+        COMPONENT_TEAM_BOT_SCORE,
+        COMPONENT_KILLSTREAK,
         COMPONENT_COUNT
     };
 
@@ -111,6 +114,7 @@ private:
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
     SoundManager* m_pSoundManager;
+    GameStats  *m_pGameStats;
 
     void displayMessage(eHovercraft hovercraft, std::string text, vec3 color);
     /*
@@ -120,8 +124,6 @@ private:
     be updated during its update() call.
     */
     void renderComponent(eUIComponent component, GLfloat scale, vec3 color);
-
-    void renderPlayerNumber();
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
@@ -138,6 +140,11 @@ private:
     void renderNotifications();
     void renderResumeCountdown();
     void renderKillsAndDeaths();
+
+    void renderTeamPlayerScore();
+    void renderTeamBotScore();
+
+    void renderKillstreak();
 
     // Cooldowns
     void updateCooldowns();

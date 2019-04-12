@@ -98,12 +98,14 @@ GameStats::~GameStats()
 void GameStats::reinitialize(int playerCount,
     int botCount,
     eGameMode aiType,
-    eBotDifficulty botDifficulty)
+    eBotDifficulty botDifficulty,
+    bool scoreLossEnabled)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
     m_eGameMode = aiType;
     m_eBotDifficulty = botDifficulty;
+    m_bScoreLossEnabled = scoreLossEnabled;
     switch (m_eBotDifficulty)
     {
     case DIFFICULTY_EASY:
@@ -457,6 +459,10 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 */
 int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const
 {
+    if (!m_bScoreLossEnabled)
+    {
+        return 0;
+    }
     int basePoints = POINTS_LOST_GOT_HIT;
     int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
     int totalPointsLost = basePoints + killstreakBonus;
@@ -471,6 +477,28 @@ void GameStats::addScore(eHovercraft attacker, int points)
     stats[attacker][SCORE_CHANGE] = points;
     stats[attacker][SCORE_CURRENT] += points;
     stats[attacker][SCORE_TOTAL] += points;
+
+    // Update team scores if team game mode
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        if (isBot(attacker))
+        {
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
+        else
+        {
+            globalStats[TEAM_PLAYER_SCORE] += points;
+        }
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        if (isBot(attacker))
+        {
+            // Only bots have a team
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
+        break;
+    }
 }
 
 void GameStats::removeScore(eHovercraft hit, int points)
@@ -478,6 +506,27 @@ void GameStats::removeScore(eHovercraft hit, int points)
     stats[hit][SCORE_CHANGE] = -points;
     stats[hit][SCORE_CURRENT] -= points;
 
+    // Update team scores if team game mode
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        if (isBot(hit))
+        {
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
+        }
+        else
+        {
+            globalStats[TEAM_PLAYER_SCORE] = FuncUtils::max(globalStats[TEAM_PLAYER_SCORE] - points, 0);
+        }
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        if (isBot(hit))
+        {
+            // Only bots have a team
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
+        }
+        break;
+    }
 }
 
 bool GameStats::hasLargestScore(eHovercraft hovercraft)

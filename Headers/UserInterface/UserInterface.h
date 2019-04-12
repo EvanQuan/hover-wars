@@ -81,6 +81,10 @@
 #define IMAGE_BOT_TEAM "textures/menu/bot_team2.png"
 // #define IMAGE_BOT_TEAM IMAGE_10_MIN
 #define IMAGE_BOT_VS_PLAYERS "textures/menu/bots_vs_players2.png"
+#define IMAGE_SCORE_LOSS_1 "textures/menu/score_loss.png"
+#define IMAGE_SCORE_LOSS_2 "textures/menu/score_loss2.png"
+#define IMAGE_ENABLED "textures/menu/enabled2.png"
+#define IMAGE_DISABLED "textures/menu/disabled2.png"
 #define IMAGE_MAP_1 "textures/menu/map.png"
 #define IMAGE_MAP_2 "textures/menu/map2.png"
 

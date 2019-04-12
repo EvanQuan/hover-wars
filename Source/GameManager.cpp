@@ -433,7 +433,8 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     eBotDifficulty botDifficulty,
                                     float gameTime,
                                     eGameMode gameMode,
-                                    unsigned int mapNumber)
+                                    unsigned int mapNumber,
+                                    bool scoreLossEnabled)
 {
     // Before we initialize, set to LoadingMenu and Interface
     m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
@@ -473,7 +474,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
-    m_pGameStats->reinitialize(playerCount, botCount, gameMode, botDifficulty);
+    m_pGameStats->reinitialize(playerCount, botCount, gameMode, botDifficulty, scoreLossEnabled);
     m_pAIManager->reinitialize(gameMode, mapNumber);
 
     setKeyboardHovercraft(playerCount);

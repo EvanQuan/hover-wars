@@ -147,6 +147,10 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_FREE_FOR_ALL] = TEXTURE_MANAGER->loadTexture(IMAGE_FREE_FOR_ALL);
     m_Textures[IMAGE_BOT_TEAM] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_TEAM);
     m_Textures[IMAGE_BOT_VS_PLAYERS] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_VS_PLAYERS);
+    m_Textures[IMAGE_SCORE_LOSS_1] = TEXTURE_MANAGER->loadTexture(IMAGE_SCORE_LOSS_1);
+    m_Textures[IMAGE_SCORE_LOSS_2] = TEXTURE_MANAGER->loadTexture(IMAGE_SCORE_LOSS_2);
+    m_Textures[IMAGE_ENABLED] = TEXTURE_MANAGER->loadTexture(IMAGE_ENABLED);
+    m_Textures[IMAGE_DISABLED] = TEXTURE_MANAGER->loadTexture(IMAGE_DISABLED);
     m_Textures[IMAGE_BOT_DIFFICULTY_1] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_1);
     m_Textures[IMAGE_BOT_DIFFICULTY_2] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_2);
     m_Textures[IMAGE_HARD] = TEXTURE_MANAGER->loadTexture(IMAGE_HARD);
