@@ -1146,6 +1146,9 @@ void HovercraftEntity::activateRocket()
     vec3 vVelocity;
     m_pPhysicsComponent->getTransformMatrix(&m4CurrentTransform);
     vVelocity = normalize(m4CurrentTransform[2]);
+
+    vec3 vNormal = PHYSICS_MANAGER->getClosestNormalOnHeightMap(m4CurrentTransform[3]);
+    vVelocity = normalize(cross(vec3(m4CurrentTransform[0]), vNormal));
     
     // The rocket is at the hovercraft's origin
     float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
