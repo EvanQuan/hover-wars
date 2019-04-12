@@ -364,6 +364,58 @@ void PostgameInterface::renderFreeForAll(const vector<EndGameStat> &endGameStats
 
 void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
 {
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
+    // Apply awards
+    for (EndGameStat s : endGameStats)
+    {
+        bool onBotTeam = GAME_STATS->isBot(s.hovercraft);
+        if (onBotTeam)
+        {
+            for (Award a : s.awards)
+            {
+                teamBotScore += a.points;
+            }
+        }
+    }
+    bool teamBotPlaced = false;
+
+    int placements = 0;
+    for (EndGameStat s : endGameStats)
+    {
+
+        if (!teamBotPlaced && (teamBotScore > s.afterAwardsScore))
+        {
+            teamBotPlaced = true;
+            renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+            renderScore(placements, teamBotScore);
+            placements++;
+        }
+        else if (GAME_STATS->isPlayer(s.hovercraft))
+        {
+            switch (s.hovercraft) {
+                case HOVERCRAFT_PLAYER_1:
+                    renderImage(IMAGE_PLAYER_1, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                    break;
+                case HOVERCRAFT_PLAYER_2:
+                    renderImage(IMAGE_PLAYER_2, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                    break;
+                case HOVERCRAFT_PLAYER_3:
+                    renderImage(IMAGE_PLAYER_3, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                    break;
+                case HOVERCRAFT_PLAYER_4:
+                    renderImage(IMAGE_PLAYER_4, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                    break;
+            }
+            renderScore(placements, s.afterAwardsScore);
+            placements++;
+        }
+    }
+    if (!teamBotPlaced)
+    {
+        renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+        renderScore(placements, teamBotScore);
+    }
+
 }
 
 void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameStats)
