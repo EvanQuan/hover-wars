@@ -69,7 +69,7 @@ void AwardsInterface::renderAwards() {
     string s_awardname;
 
     int i_count = 0;
-    for (int i = 0; i < endGameStats.size(); i++) {
+    for (int i = 0; i < (int)endGameStats.size(); i++) {
         if (endGameStats.at(i).awards.size() > 0) {
             i_count++;
         }
@@ -79,7 +79,7 @@ void AwardsInterface::renderAwards() {
     GLfloat y = 950;
     int i_done = 0;
     int k = 0;
-    while (k < endGameStats.size())
+    while (k < (int)endGameStats.size())
     {
         eHovercraft hovercraft = endGameStats.at(k).hovercraft;
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
@@ -114,7 +114,7 @@ void AwardsInterface::renderAwards() {
             renderText(s_playername, x, y, 1.0f, vec3(1.0f));
             y -= 50;
 
-            for (int i = 0; i < awards.size(); i++) {
+            for (int i = 0; i < (int)awards.size(); i++) {
                 string name = awards[i].name;
                 string description = awards[i].description;
                 int points = awards[i].points;
@@ -139,7 +139,7 @@ void AwardsInterface::renderAwards() {
 
     x = 1000;
     y = 950;
-    for (k; k < endGameStats.size(); k++)
+    for (k; k < (int)endGameStats.size(); k++)
     {
         eHovercraft hovercraft = endGameStats.at(k).hovercraft;
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
@@ -174,7 +174,7 @@ void AwardsInterface::renderAwards() {
             renderText(s_playername, x, y, 1.0f, vec3(1.0f));
             y -= 50;
 
-            for (int i = 0; i < awards.size(); i++) {
+            for (int i = 0; i < (int)awards.size(); i++) {
                 string name = awards[i].name;
                 string description = awards[i].description;
                 int points = awards[i].points;
