@@ -69,6 +69,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     m_eBotDifficulty = DIFFICULTY_MEDIUM;
     m_eGameMode = GAMEMODE_TEAM_AI_SOLO_PLAYERS;
     m_fGameTime = DEFAULT_GAME_TIME;
+    m_bScoreLossEnabled = true;
     m_iMapNumber = MIN_MAP_NUMBER;
 }
 
