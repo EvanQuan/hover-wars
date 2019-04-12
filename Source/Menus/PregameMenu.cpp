@@ -35,6 +35,9 @@ PregameMenu::PregameMenu() : PromptMenu(
             { "Bot count", eFixedCommand::COMMAND_PROMPT_SELECT_2 },
         },
         {
+            { "Bot difficulty", eFixedCommand::COMMAND_PROMPT_SELECT_6 },
+        },
+        {
             { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
         },
         {
@@ -60,6 +63,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     m_iPlayerCount = 2;
 #endif // NDEBUG
 
+    m_eBotDifficulty = DIFFICULTY_MEDIUM;
     m_eGameMode = GAMEMODE_TEAM_AI_SOLO_PLAYERS;
     m_fGameTime = DEFAULT_GAME_TIME;
     m_iMapNumber = MIN_MAP_NUMBER;
@@ -144,7 +148,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                 break;
             }
             break;
-        case eFixedCommand::COMMAND_PROMPT_SELECT_3: // AI
+        case eFixedCommand::COMMAND_PROMPT_SELECT_3: // Game mode
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
@@ -158,6 +162,23 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                                                         0, GAMEMODE_COUNT - 1);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
+                break;
+            }
+            break;
+        case eFixedCommand::COMMAND_PROMPT_SELECT_6: // bot difficulty
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+                m_eBotDifficulty = FuncUtils::subtractModulo(m_eBotDifficulty, 1,
+                                                        DIFFICULTY_EASY, DIFFICULTY_HARD);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_eBotDifficulty << endl;
+                break;
+            case COMMAND_PROMPT_RIGHT:
+                m_eBotDifficulty = FuncUtils::addModulo(m_eBotDifficulty, 1,
+                                                        DIFFICULTY_EASY, DIFFICULTY_HARD);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_eBotDifficulty << endl;
                 break;
             }
             break;

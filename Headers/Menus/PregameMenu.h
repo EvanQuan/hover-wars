@@ -14,6 +14,7 @@ public:
     int getGameTime() const { return m_fGameTime; };
     eGameMode getGameMode() const { return static_cast<eGameMode>(m_eGameMode); };
     unsigned int getMapNumber() const { return m_iMapNumber; };
+    eBotDifficulty getBotDifficulty() const { return static_cast<eBotDifficulty>(m_eBotDifficulty); }
 
 private:
     PregameMenu();
@@ -32,6 +33,9 @@ private:
     int m_fGameTime;
     unsigned int m_iMapNumber;
 
+    // These are actually enums, but are stored as ints to later be casted.
+    // easier to work with ints
+    unsigned int m_eBotDifficulty;
     unsigned int m_eGameMode;
 
     static PregameMenu* m_pInstance;
