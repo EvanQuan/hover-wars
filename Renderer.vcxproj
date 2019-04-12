@@ -67,6 +67,7 @@
     <ClInclude Include="Headers\GameTime.h" />
     <ClInclude Include="Headers\ImageReader.h" />
     <ClInclude Include="Headers\InputHandler.h" />
+    <ClInclude Include="Headers\Menus\AwardsMenu.h" />
     <ClInclude Include="Headers\Menus\ControlsMenu.h" />
     <ClInclude Include="Headers\Menus\EndMenu.h" />
     <ClInclude Include="Headers\Menus\GameMenu.h" />
@@ -97,6 +98,7 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\Texture.h" />
     <ClInclude Include="Headers\TextureManager.h" />
+    <ClInclude Include="Headers\UserInterface\AwardsInterface.h" />
     <ClInclude Include="Headers\UserInterface\ControlsInterface.h" />
     <ClInclude Include="Headers\UserInterface\GameInterface.h" />
     <ClInclude Include="Headers\UserInterface\LoadingInterface.h" />
@@ -140,6 +142,7 @@
     <ClCompile Include="Source\ImageReader.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Menus\AwardsMenu.cpp" />
     <ClCompile Include="Source\Menus\ControlsMenu.cpp" />
     <ClCompile Include="Source\Menus\EndMenu.cpp" />
     <ClCompile Include="Source\Menus\GameMenu.cpp" />
@@ -170,6 +173,7 @@
     <ClCompile Include="Source\SpatialDataMap.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\TextureManager.cpp" />
+    <ClCompile Include="Source\UserInterface\AwardsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\ControlsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\LoadingInterface.cpp" />

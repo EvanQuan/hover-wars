@@ -245,6 +245,12 @@
     <ClInclude Include="Headers\Enums\eAIType.h">
       <Filter>Headers\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\UserInterface\AwardsInterface.h">
+      <Filter>Headers\UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menus\AwardsMenu.h">
+      <Filter>Headers\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
@@ -449,6 +455,12 @@
     </ClCompile>
     <ClCompile Include="Source\Menus\LoadingMenu.cpp">
       <Filter>Source\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menus\AwardsMenu.cpp">
+      <Filter>Source\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface\AwardsInterface.cpp">
+      <Filter>Source\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
