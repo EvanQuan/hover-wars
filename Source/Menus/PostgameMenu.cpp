@@ -7,18 +7,20 @@
 
 
 // Unit: seconds
-#define IGNORE_INPUT_TIME 2.0f
+#define IGNORE_INPUT_TIME 0.5f
 // Singleton instance
 PostgameMenu* PostgameMenu::m_pInstance = nullptr;
 
 PostgameMenu::PostgameMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        {
-            { "Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
-        },
+        // We select awards first to prevent the user from accidentally going
+        // instantly to the main menu as the game ends
         {
             { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
+        },
+        {
+            { "Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
     }
 )
