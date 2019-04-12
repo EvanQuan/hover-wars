@@ -109,8 +109,7 @@ void AwardsInterface::renderAwards() {
         //int awards_size = sizeof(awards) / sizeof(awards[0]);
         //cout << "awards_size: " << awards.size << endl;
 
-        // Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        for (int i = 0; i < (int) awards.size; i++) {
+        for (int i = 0; i < (int) awards.size(); i++) {
             string name = awards[i].name;
             string description = awards[i].description;
             int points = awards[i].points;
