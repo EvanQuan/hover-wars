@@ -105,9 +105,9 @@ GameInterface::GameInterface() : UserInterface(
         // 11 Kill/ deaths
         {0.7f, 0.9f},
         // 12 Team player score
-        {0.47f, 0.58f},
+        {0.2f, 0.9f},
         // 13 Team bot score
-        {0.47f, 0.58f},
+        {0.2f, 0.9f},
     },
     // Translating
     vector<pair<float, float>>
@@ -137,9 +137,9 @@ GameInterface::GameInterface() : UserInterface(
         // 11 Kill/deaths
         {0.0f, 0.0f},
         // 12 Team player score
-        {0.0f, 0.0f},
+        {0.0f, -44.0f},
         // 13 Team bot score
-        {0.0f, 0.0f},
+        {0.0f, -88.0f},
     }
 )
 {
@@ -148,6 +148,7 @@ GameInterface::GameInterface() : UserInterface(
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;
+    m_pGameStats = GAME_STATS;
 }
 
 GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
@@ -581,6 +582,15 @@ void GameInterface::renderKillsAndDeaths()
         m_vComponentCoordinates[COMPONENT_KILL_DEATHS].first,
         m_vComponentCoordinates[COMPONENT_KILL_DEATHS].second,
         SCORE_SCALE, SCORE_COLOR);
+}
+
+void GameInterface::renderTeamPlayerScore()
+{
+
+}
+
+void GameInterface::renderTeamBotScore()
+{
 }
 
 void GameInterface::renderScores()

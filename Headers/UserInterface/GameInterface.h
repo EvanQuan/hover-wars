@@ -10,6 +10,7 @@
 class EntityManager;
 class HovercraftEntity;
 class SoundManager;
+class GameStats;
 
 
 /*
@@ -112,6 +113,7 @@ private:
     static GameInterface* m_pInstance;
     EntityManager* m_pEntityMngr;
     SoundManager* m_pSoundManager;
+    GameStats  *m_pGameStats;
 
     void displayMessage(eHovercraft hovercraft, std::string text, vec3 color);
     /*
@@ -137,6 +139,9 @@ private:
     void renderNotifications();
     void renderResumeCountdown();
     void renderKillsAndDeaths();
+
+    void renderTeamPlayerScore();
+    void renderTeamBotScore();
 
     // Cooldowns
     void updateCooldowns();
