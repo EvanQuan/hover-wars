@@ -71,7 +71,7 @@ public:
 private:
     glm::vec3 PhysicsManager::getNormVector(int x, int y);
     vector<vector<float>> heightMapVec;
-    float tileNum;
+    int tileNum;
     float tileDistance;
     // extra stuff to delete
     glm::vec3 getPointAt(int x, int y);
