@@ -598,6 +598,8 @@ void GameInterface::renderTeamPlayerScore()
 {
     string score;
     string score2;
+    vec3 color;
+    vec3 color2;
     switch (GAME_STATS->getGameMode())
     {
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
@@ -615,23 +617,27 @@ void GameInterface::renderTeamPlayerScore()
         case HOVERCRAFT_PLAYER_2:
         score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
         score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE));
+        color = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_1);
+        color2 = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_3);
             break;
         case HOVERCRAFT_PLAYER_3:
         case HOVERCRAFT_PLAYER_4:
         score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE));
         score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+        color = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_3);
+        color2 = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_1);
             break;
         }
         renderText(score,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
            SCORE_SCALE,
-           GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
+           color);
         renderText(score2,
-           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE2].first,
-           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE2].second,
+           m_vComponentCoordinates[COMPONENT_TEAM2_PLAYER_SCORE].first,
+           m_vComponentCoordinates[COMPONENT_TEAM2_PLAYER_SCORE].second,
            SCORE_SCALE,
-           GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
+           color2);
         break;
     }
 }
