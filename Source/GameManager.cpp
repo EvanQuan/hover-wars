@@ -36,10 +36,10 @@
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
     // Player colours should be very distinct from each other and stand out
-    vec3(1.0f, 0.0f, 0.0f),   //PLAYER 1 - Red (because red fire is cool, and should be in every game)
-    vec3(0.0f, 0.74901960784f, 1.0f),   //PLAYER 2 - Cyan (because pure blue is too dark, and makes flame difficult to see)
-    vec3(0.0f, 1.0f, 0.0f),   //PLAYER 3 - Green
-    vec3(1.0f, 0.75294117647f, 0.79607843137f),   //PLAYER 4 - Pink
+    vec3(1.0f, 0.0784313725490196f, 0.5764705882352941f),             //PLAYER 4 - Pink
+    vec3(0.1176470588235294f, 0.5647058823529412f, 1.0f),   //PLAYER 2 - Dodger Blue (because pure blue is too dark, and makes flame difficult to see)
+    vec3(1.0f, 0.0f, 0.0f),                                 //PLAYER 1 - Red (because red fire is cool, and should be in every game)
+    vec3(0.0f, 1.0f, 0.0f),                                 //PLAYER 3 - Green
     // Bot colours should be very similar to each other so players can easily
     // tell they are a bot rather than a player. Distinguishing between
     // different bots is not as important as identifying them as bots.
