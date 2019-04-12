@@ -732,7 +732,9 @@ glm::vec3 PhysicsManager::getPointAt(int x, int y) {
     if (y > tileNum-1) {
         y = tileNum-1;
     }
-    return vec3((x - (tileNum / 2.0f)) * tileDistance, heightMapVec.at(y).at(x), (y - (tileNum / 2.0f)) * tileDistance);
+    return vec3(static_cast<float>(x - (tileNum >> 1)) * tileDistance,
+                heightMapVec.at(y).at(x),
+                static_cast<float>(y - (tileNum >> 1)) * tileDistance);
 }
 glm::vec3 PhysicsManager::getNormVector(int x, int y) {
     vec3 diff1 = getPointAt(x + 1, y) - getPointAt(x, y);
@@ -745,10 +747,11 @@ glm::vec3 PhysicsManager::getNormVector(int x, int y) {
 
 }
 float PhysicsManager::getClosestNormalOnHeightMapDotProduct(glm::vec3 pos,glm::vec3 norm) {
-    int XindexFloor = floor(pos.x / tileDistance + (tileNum / 2.0f));
-    int XindexCeil = ceil(pos.x / tileDistance + (tileNum / 2.0f));
-    int YindexFloor = floor(pos.z / tileDistance + (tileNum / 2.0f));
-    int YindexCeil = ceil(pos.z / tileDistance + (tileNum / 2.0f));
+    float fTileMid = tileDistance + (static_cast<float>(tileNum) * 0.5f);
+    int XindexFloor = floor(pos.x / fTileMid);
+    int XindexCeil = ceil(pos.x / fTileMid);
+    int YindexFloor = floor(pos.z / fTileMid);
+    int YindexCeil = ceil(pos.z / fTileMid);
     vec3 normalizeFloorXY = getNormVector(XindexFloor,YindexFloor);
     vec3 normalizeCeilXY = getNormVector(XindexCeil, YindexCeil);
     vec3 normalizeFloorXCeilY = getNormVector(XindexFloor, YindexCeil);
@@ -762,8 +765,9 @@ float PhysicsManager::getClosestNormalOnHeightMapDotProduct(glm::vec3 pos,glm::v
             abs(dot(normalizeCeilXFloorY, norm)))); // hey bro i heard you like functions so i put a function in a function in a function in a function so that this would function.
 }
 glm::vec3 PhysicsManager::getClosestNormalOnHeightMap(glm::vec3 pos) {
-    int Xindex = pos.x / tileDistance + (tileNum / 2.0f);
-    int Yindex = pos.z / tileDistance + (tileNum / 2.0f);
+    float fTileMid = tileDistance + (static_cast<float>(tileNum) * 0.5f);
+    int Xindex = pos.x / fTileMid;
+    int Yindex = pos.z / fTileMid;
     vec3 diff1 = getPointAt(Xindex + 1, Yindex) - getPointAt(Xindex, Yindex);
     vec3 diff2 = getPointAt(Xindex, Yindex + 1) - getPointAt(Xindex, Yindex);
     //std::cout <<"diff1:" << diff1.x << "," << diff1.y << "," << diff1.z << endl;

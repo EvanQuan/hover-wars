@@ -581,8 +581,8 @@ void SceneLoader::resetAllProperties()
 void SceneLoader::postInitialize()
 {
     // Shuffle the order of spawn points so they are different every game.
-    srand(time(0));
-    std::random_shuffle(std::begin(m_vSpawnPoints), std::end(m_vSpawnPoints));
+    srand(static_cast<unsigned int>(time(0)));
+    random_shuffle(std::begin(m_vSpawnPoints), std::end(m_vSpawnPoints));
 }
 
 /************************************************************************\
