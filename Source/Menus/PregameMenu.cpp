@@ -44,6 +44,9 @@ PregameMenu::PregameMenu() : PromptMenu(
             { "Game mode", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
         },
         {
+            { "Score loss", eFixedCommand::COMMAND_PROMPT_SELECT_7 },
+        },
+        {
             { "Map", eFixedCommand::COMMAND_PROMPT_SELECT_5 },
         },
     }
@@ -90,7 +93,8 @@ void PregameMenu::select(eFixedCommand command)
                                           getBotDifficulty(),
                                           static_cast<float>(m_fGameTime),
                                           getGameMode(),
-                                          m_iMapNumber);
+                                          m_iMapNumber,
+                                          m_bScoreLossEnabled);
         break;
     }
 }
@@ -215,6 +219,18 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                                                     MIN_MAP_NUMBER, MAX_MAP_NUMBER);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iMapNumber << endl;
+                break;
+            }
+            break;
+        case eFixedCommand::COMMAND_PROMPT_SELECT_7: // Score loss
+
+            switch (direction)
+            {
+            case COMMAND_PROMPT_LEFT:
+            case COMMAND_PROMPT_RIGHT:
+                m_bScoreLossEnabled = !m_bScoreLossEnabled;
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_bScoreLossEnabled << endl;
                 break;
             }
             break;
