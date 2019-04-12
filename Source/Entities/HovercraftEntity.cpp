@@ -281,13 +281,15 @@ const vec3 BACK_CAMERA_POSITION_OFFSET = vec3(0, 0, BACK_CAMERA_OFFSET);
 
 // Hovercraft Entity Default Constructor.
 //  Call the base class Entity Constructor
-HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition)
+HovercraftEntity::HovercraftEntity(int iID, const vec3* vPosition, const vec3 &color)
     : Entity(iID, *vPosition, ENTITY_HOVERCRAFT)
 {
     // Initialize base information.
     m_pSpatialMap               = SPATIAL_DATA_MAP;
     m_pGameStats                = GAME_STATS;
     m_pSoundMngr                = SOUND_MANAGER;
+
+    m_vColor = color;
 }
 
 HovercraftEntity::~HovercraftEntity()
