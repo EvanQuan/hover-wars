@@ -92,6 +92,7 @@ private:
         COMPONENT_KILL_DEATHS,
         COMPONENT_TEAM_PLAYER_SCORE,
         COMPONENT_TEAM_BOT_SCORE,
+        COMPONENT_KILLSTREAK,
         COMPONENT_COUNT
     };
 
@@ -142,6 +143,8 @@ private:
 
     void renderTeamPlayerScore();
     void renderTeamBotScore();
+
+    void renderKillstreak();
 
     // Cooldowns
     void updateCooldowns();

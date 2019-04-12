@@ -108,6 +108,8 @@ GameInterface::GameInterface() : UserInterface(
         {0.2f, 0.9f},
         // 13 Team bot score
         {0.2f, 0.9f},
+        // 14 Killstreak
+        {0.7f, 0.9f},
     },
     // Translating
     vector<pair<float, float>>
@@ -137,9 +139,11 @@ GameInterface::GameInterface() : UserInterface(
         // 11 Kill/deaths
         {0.0f, 0.0f},
         // 12 Team player score
-        {0.0f, -44.0f},
+        {0.0f, -50.0f},
         // 13 Team bot score
-        {0.0f, -88.0f},
+        {0.0f, -100.0f},
+        // 14 Killstreak
+        {0.0f, -50.0f},
     }
 )
 {
@@ -390,6 +394,7 @@ void GameInterface::renderOverride()
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
     renderGameTime();
     renderScores();
+    renderKillstreak();
     renderTeamBotScore();
     renderTeamPlayerScore();
     renderCooldowns();
@@ -617,6 +622,21 @@ void GameInterface::renderTeamBotScore()
            GAME_MANAGER->getHovercraftColor(HOVERCRAFT_BOT_1));
         break;
     }
+}
+
+void GameInterface::renderKillstreak()
+{
+    renderText("Killstreak: ",
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].first,
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
+        SCORE_SCALE,
+        COLOR_WHITE);
+    int killstreak = GAME_STATS->get(m_eHovercraftFocus, GameStats::eHovercraftStat::KILLSTREAK_CURRENT);
+    renderText(killstreak,
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].first + 200,
+        m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
+        SCORE_SCALE,
+        killstreak > 0 ? COLOR_GREEN : COLOR_WHITE);
 }
 
 void GameInterface::renderScores()
