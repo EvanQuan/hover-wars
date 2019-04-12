@@ -471,7 +471,7 @@ void HovercraftEntity::getHitBy(eHovercraft attacker, eAbility ability)
     bool attackerHadLargestScore = m_pGameStats->hasLargestScore(attackerHovercraft->getEHovercraft());
     if (!m_pGameStats->isOnSameTeam(attacker, m_eHovercraft))
     {
-        if (m_pGameStats->hasLargestScore(m_eHovercraft))
+        if (m_pGameStats->hasLargestScore(m_eHovercraft) && m_pGameStats->hasSpeedBoostEnabled())
         {
             // If the attacker hit the hovercraft with the largest score, give them
             // a speed boost

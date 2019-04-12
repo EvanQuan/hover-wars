@@ -7,6 +7,11 @@
 Number of killstreaks against another player to count as domination
 */
 #define DOMINATION_COUNT 3
+
+/*
+    Number of hovercrafts needed in the game to enable speed boost powerup
+*/
+#define HOVERCRAFT_COUNT_TO_ENABLE_POWERUP 3
 /*
 After total score gained has been calculated, multiply score gained by value if
 hit a bot
@@ -124,6 +129,8 @@ void GameStats::reinitialize(int playerCount,
     firstBloodHappened = false;
     queueFirstBlood = false;
     m_eScoreLeaders.clear();
+
+    m_bSpeedBoostEnabled = (playerCount + botCount) >= HOVERCRAFT_COUNT_TO_ENABLE_POWERUP;
 }
 
 /*

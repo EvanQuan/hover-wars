@@ -200,6 +200,9 @@ public:
     bool isPlayer(eHovercraft hovercraft) const;
     bool isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) const;
 
+    // If there are not enough players, speed boost will not be enabled
+    bool hasSpeedBoostEnabled() const { return m_bSpeedBoostEnabled; }
+
     vector<EndGameStat> getEndGameStats();
 
     int get(eGlobalStat stat) const { return globalStats[stat]; };
@@ -325,6 +328,7 @@ private:
     eBotDifficulty m_eBotDifficulty;
     float m_eBotScoreMultiplier;
     bool m_bScoreLossEnabled;
+    bool m_bSpeedBoostEnabled;
 };
 
 
