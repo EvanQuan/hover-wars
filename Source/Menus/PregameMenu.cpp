@@ -87,7 +87,6 @@ void PregameMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_NEXT_MENU:
         m_pGameManager->initializeNewGame(m_iPlayerCount,
                                           m_iBotCount,
-                                          
                                           static_cast<float>(m_fGameTime),
                                           getGameMode(),
                                           m_iMapNumber);
@@ -171,13 +170,13 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             {
             case COMMAND_PROMPT_LEFT:
                 m_eBotDifficulty = FuncUtils::subtractModulo(m_eBotDifficulty, 1,
-                                                        0, DIFFICULTY_HARD - 1);
+                                                        DIFFICULTY_EASY, DIFFICULTY_HARD);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eBotDifficulty << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eBotDifficulty = FuncUtils::addModulo(m_eBotDifficulty, 1,
-                                                        0, DIFFICULTY_HARD - 1);
+                                                        DIFFICULTY_EASY, DIFFICULTY_HARD);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eBotDifficulty << endl;
                 break;
