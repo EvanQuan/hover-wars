@@ -476,6 +476,44 @@ void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameSt
 
 }
 
+void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStats)
+{
+    int placements = 0;
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
+    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
+    int team2PlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE);
+
+    // update scores with awards
+    for (EndGameStat s : endGameStats)
+    {
+        switch (s.hovercraft)
+        {
+        case HOVERCRAFT_PLAYER_1:
+        case HOVERCRAFT_PLAYER_2:
+            for (Award a : s.awards)
+            {
+                teamPlayerScore += a.points;
+            }
+            break;
+        case HOVERCRAFT_PLAYER_3:
+        case HOVERCRAFT_PLAYER_4:
+            for (Award a : s.awards)
+            {
+                team2PlayerScore += a.points;
+            }
+            break;
+        default:
+            for (Award a : s.awards)
+            {
+                teamBotScore += a.points;
+            }
+        }
+    }
+
+
+
+}
+
 
 void PostgameInterface::renderScore(int placements, int score)
 {

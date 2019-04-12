@@ -211,6 +211,9 @@ void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
         case GAMEMODE_FREE_FOR_ALL:
             renderImage(IMAGE_FREE_FOR_ALL, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
+        case GAMEMODE_TEAMS_PLAYERS:
+            renderImage(IMAGE_PLAYER_TEAMS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            break;
 
     }
 }

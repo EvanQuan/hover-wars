@@ -158,11 +158,16 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_SCORE_LOSS_2] = TEXTURE_MANAGER->loadTexture(IMAGE_SCORE_LOSS_2);
     m_Textures[IMAGE_ENABLED] = TEXTURE_MANAGER->loadTexture(IMAGE_ENABLED);
     m_Textures[IMAGE_DISABLED] = TEXTURE_MANAGER->loadTexture(IMAGE_DISABLED);
+    m_Textures[IMAGE_MAP_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MAP_1);
+    m_Textures[IMAGE_MAP_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MAP_2);
+    m_Textures[IMAGE_PLAYER_TEAM1] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_TEAM1);
+    m_Textures[IMAGE_PLAYER_TEAM2] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_TEAM2);
     m_Textures[IMAGE_BOT_DIFFICULTY_1] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_1);
     m_Textures[IMAGE_BOT_DIFFICULTY_2] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_2);
     m_Textures[IMAGE_HARD] = TEXTURE_MANAGER->loadTexture(IMAGE_HARD);
     m_Textures[IMAGE_MEDIUM] = TEXTURE_MANAGER->loadTexture(IMAGE_MEDIUM);
     m_Textures[IMAGE_EASY] = TEXTURE_MANAGER->loadTexture(IMAGE_EASY);
+    m_Textures[IMAGE_PLAYER_TEAMS] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_TEAMS);
 }
 
 UserInterface::~UserInterface()
@@ -393,6 +398,7 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     // Is text, not an image. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", false);
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "backgroundImage", false);
 
     // Bind Texture.
     glActiveTexture(GL_TEXTURE0 + m_iTextureBuffer);

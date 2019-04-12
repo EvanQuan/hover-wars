@@ -97,6 +97,7 @@ private:
     void renderFreeForAll(const vector<EndGameStat> &endGameStats);
     void renderTeamBots(const vector<EndGameStat> &endGameStats);
     void renderPlayersVsBots(const vector<EndGameStat> &endGameStats);
+    void renderTeamPlayers(const vector<EndGameStat> &endGameStats);
     void renderScore(int place, int score);
     void renderOption();
 };
