@@ -274,34 +274,34 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
 void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType)
 {
     // Shuffle all the solo colors for players
-    vector<vec3> playerColors;
+    m_vPlayerColors.clear();
     for (int i = 0; i < MAX_PLAYER_COUNT; ++i)
     {
-        playerColors.push_back(SOLO_COLORS[i]);
+        m_vPlayerColors.push_back(SOLO_COLORS[i]);
     }
     srand(static_cast<unsigned int>(time(0)));
-    random_shuffle(std::begin(playerColors), std::end(playerColors));
+    random_shuffle(std::begin(m_vPlayerColors), std::end(m_vPlayerColors));
 
-    vector<vec3> botColors;
+    m_vBotColors.clear();
     switch (aiType)
     {
     case AI_ON_SAME_TEAM:
         // If the AI are on the same team, they will use the bot team colors.
         for (int i = 0; i < MAX_BOT_COUNT; ++i)
         {
-            botColors.push_back(BOT_TEAM_COLORS[i]);
+            m_vBotColors.push_back(BOT_TEAM_COLORS[i]);
         }
         break;
     case AI_SOLO:
         // If bots are solo, they wil use the remaining unused solo colors.
         for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
         {
-            playerColors.push_back(SOLO_COLORS[i]);
+            m_vBotColors.push_back(SOLO_COLORS[i]);
         }
         break;
     }
-    spawnPlayers(playerCount, playerColors);
-    spawnBots(botCount, botColors);
+    spawnPlayers(playerCount, m_vPlayerColors);
+    spawnBots(botCount, m_vBotColors);
 }
 
 void GameManager::spawnPlayers(unsigned int playerCount, const vector<vec3> &colors)

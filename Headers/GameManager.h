@@ -61,6 +61,9 @@ public:
 
     MenuInterface* getMenuInterface() const { return m_pMenuInterface; }
 
+    vec3 getPlayerColor(eHovercraft player) const { return m_vPlayerColors.at(player); }
+    vec3 getBotColor(eHovercraft bot) const { return m_vPlayerColors.at(bot - MAX_PLAYER_COUNT); }
+
 private:
     // For Singleton Implementation
     GameManager(GLFWwindow* rWindow); 
@@ -219,4 +222,7 @@ private:
         to get the player raed.
     */
     bool m_bPaused;
+
+    vector<vec3> m_vPlayerColors;
+    vector<vec3> m_vBotColors;
 };
