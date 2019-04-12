@@ -425,8 +425,8 @@ void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
     int basePoints = POINTS_GAINED_HIT_BASE;
-    int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
-    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
+    int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * FuncUtils::max(stats[attacker][KILLSTREAK_CURRENT], 0);
+    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * FuncUtils::max(stats[hit][KILLSTREAK_CURRENT], 0);
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
     int firstBloodBonus;
     if (firstBloodHappened) {
@@ -464,7 +464,7 @@ int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const
         return 0;
     }
     int basePoints = POINTS_LOST_GOT_HIT;
-    int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
+    int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * FuncUtils::max(stats[hit][KILLSTREAK_CURRENT], 0);
     int totalPointsLost = basePoints + killstreakBonus;
     return stats[hit][SCORE_CURRENT] > totalPointsLost ? totalPointsLost : stats[hit][SCORE_CURRENT];
 }
@@ -663,10 +663,8 @@ void GameStats::increaseCurrentTotalKillstreak(eHovercraft hovercraft)
 */
 void GameStats::updateLargestTotalKillstreak(eHovercraft hovercraft)
 {
-    if (stats[hovercraft][KILLSTREAK_CURRENT] > stats[hovercraft][KILLSTREAK_LARGEST])
-    {
-        stats[hovercraft][KILLSTREAK_LARGEST] = stats[hovercraft][KILLSTREAK_CURRENT];
-    }
+    stats[hovercraft][KILLSTREAK_LARGEST] = FuncUtils::max(stats[hovercraft][KILLSTREAK_LARGEST],
+                                                           stats[hovercraft][KILLSTREAK_CURRENT]);
 }
 
 int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit) const
@@ -684,9 +682,22 @@ int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit
 void GameStats::resetKillstreak(eHovercraft hit, eHovercraft attacker)
 {
     // Reset current total killstreak
-    stats[hit][KILLSTREAK_CURRENT] = 0;
+    if (stats[hit][KILLSTREAK_CURRENT] > 0)
+    {
+        stats[hit][KILLSTREAK_CURRENT] = 0;
+        cout << hit << " killstreak " << " reset" << endl;
+    }
+
+    // Decrease killstreak to negative
+    stats[hit][KILLSTREAK_CURRENT]--;
+    cout << hit << " killstreak is now "  << stats[hit][KILLSTREAK_CURRENT] << endl;
+
     // Reset current total killstreak against attacker
-    stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker] = 0;
+    if (stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker] > 0)
+    {
+        stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker] = 0;
+    }
+    stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker]--;
 
     // If player hit was dominating attacker, disable domination and 
     // player revenge sound.
