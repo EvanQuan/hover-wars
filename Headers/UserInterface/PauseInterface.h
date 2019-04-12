@@ -26,9 +26,11 @@ private:
     {
         BACKGROUND = 0,
         CONTINUE,
-        MAIN_MENU
+        MAIN_MENU,
+        PAUSER,
     };
 
     static PauseInterface* m_pInstance;
     void renderOption();
+    void renderPauser();
 };

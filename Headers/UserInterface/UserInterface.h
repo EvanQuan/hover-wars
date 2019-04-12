@@ -210,6 +210,18 @@ protected:
     */
     vector<pair<float, float>> m_vComponentCoordinates;
 
+    const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
+    {
+        {HOVERCRAFT_BOT_1, "Alfa Bot"},
+        {HOVERCRAFT_BOT_2, "Bravo Bot"},
+        {HOVERCRAFT_BOT_3, "Charlie Bot"},
+        {HOVERCRAFT_BOT_4, "Delta Bot"},
+        {HOVERCRAFT_PLAYER_1, "Player 1"},
+        {HOVERCRAFT_PLAYER_2, "Player 2"},
+        {HOVERCRAFT_PLAYER_3, "Player 3"},
+        {HOVERCRAFT_PLAYER_4, "Player 4"},
+    };
+
 private:
     // Singleton Pointers
     // The UI needs to render its own components
@@ -251,5 +263,6 @@ private:
     float m_fGlobalMessageTime;
     float m_fGlobalMessageX;
     float m_fGlobalMessageY;
+
 
 };

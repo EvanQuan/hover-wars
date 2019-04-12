@@ -12,9 +12,12 @@ PauseInterface::PauseInterface() : MenuInterface(
         // 0 Background
         {0.0f, 0.0f},
         // 1 Prompt 1
-        {0.4f, 0.6f},
+        {0.4f, 0.5f},
         // 2 Prompt 2
         {0.4f, 0.4f},
+        // 3 Pauser
+        {0.5f, 0.75f},
+
     },
     // Translating
     vector<pair<float, float>>
@@ -25,6 +28,8 @@ PauseInterface::PauseInterface() : MenuInterface(
         {0.0f, 0.0f},
         // 2 Prompt 2
         {0.0f, 0.0f},
+        // 3 Pauser
+        {-230.0f, 0.0f},
     }
 )
 {
@@ -53,6 +58,7 @@ void PauseInterface::reinitialize(float gameTime)
 void PauseInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_PAUSE_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderPauser();
     renderOption();
 }
 
@@ -75,4 +81,15 @@ void PauseInterface::renderOption() {
         renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
     }
 
+}
+
+void PauseInterface::renderPauser()
+{
+    PauseMenu* m = (PauseMenu*)PauseMenu::getInstance();
+    eHovercraft pauser = m->getPauser();
+    renderText(m_eHovercraftToString.at(pauser) + " paused the game",
+        m_vComponentCoordinates[PAUSER].first,
+        m_vComponentCoordinates[PAUSER].second,
+        1.0f,
+        COLOR_WHITE);
 }
