@@ -104,11 +104,13 @@ GameInterface::GameInterface() : UserInterface(
         {0.48f, 0.50f},
         // 11 Kill/ deaths
         {0.7f, 0.9f},
-        // 12 Team player score
+        // 12 Team bot score
         {0.2f, 0.9f},
-        // 13 Team bot score
+        // 13 Team player score
         {0.2f, 0.9f},
-        // 14 Killstreak
+        // 14 Team player score 2
+        {0.2f, 0.9f},
+        // 15 Killstreak
         {0.7f, 0.9f},
     },
     // Translating
@@ -138,11 +140,13 @@ GameInterface::GameInterface() : UserInterface(
         {0.0f, 0.0f},
         // 11 Kill/deaths
         {0.0f, 0.0f},
-        // 12 Team player score
+        // 12 Team bot score
         {0.0f, -50.0f},
-        // 13 Team bot score
+        // 13 Team player score
         {0.0f, -100.0f},
-        // 14 Killstreak
+        // 14 Team player score 2
+        {0.0f, -150.0f},
+        // 15 Killstreak
         {0.0f, -50.0f},
     }
 )
@@ -593,6 +597,7 @@ void GameInterface::renderKillsAndDeaths()
 void GameInterface::renderTeamPlayerScore()
 {
     string score;
+    string score2;
     switch (GAME_STATS->getGameMode())
     {
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
@@ -600,6 +605,31 @@ void GameInterface::renderTeamPlayerScore()
         renderText(score,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
+           SCORE_SCALE,
+           GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
+        break;
+    case GAMEMODE_TEAMS_PLAYERS:
+        switch (m_eHovercraftFocus)
+        {
+        case HOVERCRAFT_PLAYER_1:
+        case HOVERCRAFT_PLAYER_2:
+        score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+        score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE));
+            break;
+        case HOVERCRAFT_PLAYER_3:
+        case HOVERCRAFT_PLAYER_4:
+        score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE));
+        score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+            break;
+        }
+        renderText(score,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
+           SCORE_SCALE,
+           GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
+        renderText(score2,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE2].first,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE2].second,
            SCORE_SCALE,
            GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
         break;
