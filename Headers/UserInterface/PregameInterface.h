@@ -9,6 +9,7 @@
 #define GAME_TIME_OPTION "Game time"
 #define GAMEMODE_OPTION "Game mode"
 #define MAP_OPTION "Map"
+#define BOT_DIFFICULTY_OPTION "Bot difficulty"
 
 
 class PregameInterface final : public MenuInterface
@@ -36,6 +37,8 @@ private:
         PLAYER_COUNT_NUMBER,
         BOT_COUNT,
         BOT_COUNT_NUMBER,
+        BOT_DIFFICULTY,
+        BOT_DIFFICULTY_VALUE,
         GAME_TIME,
         GAME_TIME_NUMBER,
         GAMEMODE_LABEL,
@@ -52,5 +55,6 @@ private:
     void renderGameTime(int i_GameTime);
     void renderGameMode(eGameMode m_eGameMode);
     void renderMap(unsigned int mapNumber);
+    void renderBotDifficulty(eBotDifficulty m_eBotDifficulty);
     void renderOption();
 };
