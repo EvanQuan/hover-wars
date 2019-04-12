@@ -89,7 +89,6 @@ private:
         COMPONENT_NOTIFICATION,
         COMPONENT_COUNTDOWN,
         COMPONENT_KILL_DEATHS,
-        COMPONENT_PLAYER_NUMBER,
         COMPONENT_TEAM_PLAYER_SCORE,
         COMPONENT_TEAM_BOT_SCORE,
         COMPONENT_COUNT
@@ -122,8 +121,6 @@ private:
     be updated during its update() call.
     */
     void renderComponent(eUIComponent component, GLfloat scale, vec3 color);
-
-    void renderPlayerNumber();
 
     // Game Time
     void updateGameTime(float fSecondsSinceLastUpdate);
