@@ -601,7 +601,7 @@ void GameInterface::renderTeamPlayerScore()
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
            SCORE_SCALE,
-           COLOR_WHITE);
+           GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
         break;
     }
 }
