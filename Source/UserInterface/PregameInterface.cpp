@@ -65,9 +65,9 @@ PregameInterface::PregameInterface() : MenuInterface(
         // 8 Game mode type
         {0.0f, 0.0f},
 
-        // 9 Game mode label
+        // 9 Map label
         {0.0f, 0.0f},
-        // 10 Game mode type
+        // 10 Map type
         {0.0f, 0.0f},
 
         // 11 Main menu
@@ -184,16 +184,16 @@ void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
     switch (m_eGameMode) {
         case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
             // TODO change image
-            // renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
-            renderImage(IMAGE_CONFIG_1, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            //renderImage(IMAGE_CONFIG_1, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
         case GAMEMODE_TEAMS_AI_VS_PLAYERS:
-            // renderImage(IMAGE_BOT_VS_PLAYERS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
-            renderImage(IMAGE_0, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            renderImage(IMAGE_BOT_VS_PLAYERS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            //renderImage(IMAGE_0, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
         case GAMEMODE_FREE_FOR_ALL:
-            // renderImage(IMAGE_FREE_FOR_ALL, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
-            renderImage(IMAGE_CONFIG_2, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            renderImage(IMAGE_FREE_FOR_ALL, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            //renderImage(IMAGE_CONFIG_2, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
 
     }
@@ -232,11 +232,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        // renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -246,11 +243,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_2, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        // renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -260,11 +254,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_2, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        // renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -274,12 +265,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_2, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        // renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_2, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-
+        renderImage(IMAGE_GAMEMODE_2, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -289,11 +276,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        // renderImage(IMAGE_MAP_2, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_2, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_2, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -303,11 +287,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        // renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_2, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
@@ -317,10 +298,8 @@ void PregameInterface::renderOption() {
         renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
         renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
 
-        // TODO change image
-        // renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
+        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
+        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
 
         renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
         renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);

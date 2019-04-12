@@ -63,7 +63,7 @@ void AwardsInterface::renderOption() {
 }
 
 void AwardsInterface::renderAwards() {
-    vector<EndGameStat> endGameStats = GAME_STATS->getEndGameStats();
+    //vector<EndGameStat> endGameStats = GAME_STATS->getEndGameStats();
 
-    renderText();
+    //renderText();
 }
