@@ -477,6 +477,28 @@ void GameStats::addScore(eHovercraft attacker, int points)
     stats[attacker][SCORE_CHANGE] = points;
     stats[attacker][SCORE_CURRENT] += points;
     stats[attacker][SCORE_TOTAL] += points;
+
+    // Update team scores if team game mode
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        if (isBot(attacker))
+        {
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
+        else
+        {
+            globalStats[TEAM_PLAYER_SCORE] += points;
+        }
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        if (isBot(attacker))
+        {
+            // Only bots have a team
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
+        break;
+    }
 }
 
 void GameStats::removeScore(eHovercraft hit, int points)
@@ -484,6 +506,27 @@ void GameStats::removeScore(eHovercraft hit, int points)
     stats[hit][SCORE_CHANGE] = -points;
     stats[hit][SCORE_CURRENT] -= points;
 
+    // Update team scores if team game mode
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        if (isBot(hit))
+        {
+            globalStats[TEAM_BOT_SCORE] -= points;
+        }
+        else
+        {
+            globalStats[TEAM_PLAYER_SCORE] -= points;
+        }
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        if (isBot(hit))
+        {
+            // Only bots have a team
+            globalStats[TEAM_BOT_SCORE] -= points;
+        }
+        break;
+    }
 }
 
 bool GameStats::hasLargestScore(eHovercraft hovercraft)
