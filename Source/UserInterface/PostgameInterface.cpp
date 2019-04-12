@@ -297,7 +297,7 @@ void PostgameInterface::renderOverride()
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
-    else if (hovercraftCount > 2)
+    if (hovercraftCount > 2)
     {
         renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
     }
