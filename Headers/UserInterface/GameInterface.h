@@ -1,9 +1,6 @@
 #pragma once
 #include "UserInterface/UserInterface.h"
 
-#define IMAGE_ROCKET "textures/hud/rocket.png"
-#define IMAGE_TRAIL "textures/hud/trail.png"
-#define IMAGE_EXPLOSION "textures/hud/explosion.png"
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
 
