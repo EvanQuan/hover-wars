@@ -35,32 +35,19 @@
 \*************/
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 
-/*
-    When hovercrafts are solo, every color should be distinct and vibrant for
-    both players and bots.
-*/
-const vec3 SOLO_COLORS[MAX_HOVERCRAFT_COUNT]{
-    vec3(1.0f, 0.0f, 0.0f),                         // Red
-    vec3(0.0f, 0.74901960784f, 1.0f),               // Cyan
-    vec3(0.0f, 1.0f, 0.0f),                         // Green
-    vec3(1.0f, 0.75294117647f, 0.79607843137f),     // Pink
-    vec3(1.0f, 0.54901960784f, 0.0f),               // Orange
-    vec3(1.0f, 0.0f, 1.0f),                         // Magenta
-    vec3(1.0f, 1.0f, 0.0f),                         // Yellow
-    vec3(0.0f, 0.5f, 1.0f)                          // Medium blue (more visible than pure blue)
-};
-
-/*
-    When bots are on the same team, they all appear in grey scale.
-    Bot colours should be very similar to each other so players can easily
-    tell they are a bot rather than a player. Distinguishing between
-    different bots is not as important as identifying them as bots.
-*/
-const vec3 BOT_TEAM_COLORS[MAX_BOT_COUNT]{
-    vec3(1.0f),     // White
-    vec3(0.8f),     // Light grey
-    vec3(0.6f),     // Grey
-    vec3(0.4f),     // Dark grey
+const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
+    // Player colours should be very distinct from each other and stand out
+    vec3(1.0f, 0.0784313725490196f, 0.5764705882352941f),             //PLAYER 4 - Pink
+    vec3(0.1176470588235294f, 0.5647058823529412f, 1.0f),   //PLAYER 2 - Dodger Blue (because pure blue is too dark, and makes flame difficult to see)
+    vec3(1.0f, 0.0f, 0.0f),                                 //PLAYER 1 - Red (because red fire is cool, and should be in every game)
+    vec3(0.0f, 1.0f, 0.0f),                                 //PLAYER 3 - Green
+    // Bot colours should be very similar to each other so players can easily
+    // tell they are a bot rather than a player. Distinguishing between
+    // different bots is not as important as identifying them as bots.
+    vec3(1.0f, 0.54901960784f, 0.0f),               //BOT 1    - White
+    vec3(1.0f, 0.0f, 1.0f),               //BOT 2    - Black
+    vec3(1.0f, 1.0f, 0.0f),               //BOT 3    - Light Grey
+    vec3(1.0f)                //BOT 4    - Dark Grey
 };
 
 const vec4 BLUR_QUAD[4]{
@@ -273,30 +260,46 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
 */
 void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType)
 {
+    // Load all colors into a set to pick from.
+    vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));
+    unsigned int iIndex;
     // Shuffle all the solo colors for players
     m_vPlayerColors.clear();
     for (int i = 0; i < MAX_PLAYER_COUNT; ++i)
     {
-        m_vPlayerColors.push_back(SOLO_COLORS[i]);
+        // Get a random Index
+        iIndex = rand() % vColors.size();
+
+        // Store Player Color
+        m_vPlayerColors.push_back(vColors[iIndex]);
+
+        // Remove Chosen Color for next pick.
+        vColors.erase(vColors.begin() + iIndex);
     }
-    srand(static_cast<unsigned int>(time(0)));
-    random_shuffle(std::begin(m_vPlayerColors), std::end(m_vPlayerColors));
 
     m_vBotColors.clear();
     switch (aiType)
     {
     case AI_ON_SAME_TEAM:
-        // If the AI are on the same team, they will use the bot team colors.
+        // If the AI are on the same team, they will all use the same chosen color
+        iIndex = rand() % vColors.size();
         for (int i = 0; i < MAX_BOT_COUNT; ++i)
-        {
-            m_vBotColors.push_back(BOT_TEAM_COLORS[i]);
-        }
+            m_vBotColors.push_back(vColors[iIndex]);
+
+        vColors.erase(vColors.begin() + iIndex);
         break;
     case AI_SOLO:
-        // If bots are solo, they wil use the remaining unused solo colors.
+        // If bots are solo, they wil use the remaining unused colors.
         for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
         {
-            m_vBotColors.push_back(SOLO_COLORS[i]);
+            // Get a random Index
+            iIndex = rand() % vColors.size();
+
+            // Store Bot Color
+            m_vBotColors.push_back(vColors[iIndex]);
+
+            // Remove Chosen Color for next pick.
+            vColors.erase(vColors.begin() + iIndex);
         }
         break;
     }
@@ -307,8 +310,8 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
 void GameManager::spawnPlayers(unsigned int playerCount, const vector<vec3> &colors)
 {
     for (unsigned int i = 0; i < playerCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createPlayer(i, &colors.at(i)));
-        m_vColors.push_back(SOLO_COLORS[i]);
+        m_vPositions.push_back(SCENE_LOADER->createPlayer(i, &colors[i]));
+        m_vColors.push_back(colors[i]);
         generateSplitScreen(i);
     }
 }
@@ -316,8 +319,8 @@ void GameManager::spawnPlayers(unsigned int playerCount, const vector<vec3> &col
 void GameManager::spawnBots(unsigned int botCount, const vector<vec3> &colors)
 {
     for (unsigned int i = 0; i < botCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createBot(&colors.at(i)));
-        m_vColors.push_back(SOLO_COLORS[MAX_PLAYER_COUNT + i]);
+        m_vPositions.push_back(SCENE_LOADER->createBot(&colors[i]));
+        m_vColors.push_back(colors[i]);
     }
 }
 

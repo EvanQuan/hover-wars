@@ -175,8 +175,8 @@ skybox {
 directional_light {
     0 -1 1
     0.5 0.5 0.5
-    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
-    0.1960784313725490196078431372549 0.1960784313725490196078431372549 0.58823529411764705882352941176471
+    1 1 1
+	1 1 1
     7500.0 1.0 7700.0
     8192 8192 1000.0
 }
@@ -184,22 +184,22 @@ directional_light {
 # Cyan lights {{{
 point_light {
     24.5 7 65
-    0.0 2.55 2.55
+    2.55 2.15 0.0
     5.0
 }
 point_light {
     65 7 24.5
-    0.0 2.55 2.55
+    2.55 2.15 0.0
     5.0
 }
 point_light {
     105.5 7 65
-    0.0 2.55 2.55
+    2.55 2.15 0.0
     5.0
 }
 point_light {
     65 7 105.5
-    0.0 2.55 2.55
+    2.55 2.15 0.0
     5.0
 }
 # }}}
@@ -270,13 +270,101 @@ point_light {
 }
 # }}}
 
+# Gold SpotLights
 spotlight {
-    0.0 7 150.0
-    0.0 -1.0 0.0
-    0 2.55 2.55
-    60
-    20
+    105 10 105
+    0.69310 -0.19803 0.69310
+    2.55 2.15 0.0
+    45
+    45
 }
+spotlight {
+    25 10 105
+    0 10 80
+    2.55 2.15 0.0
+    45
+    15
+}
+spotlight {
+    105 10 25
+    80 10 0
+    2.55 2.15 0.0
+    45
+    15
+}
+# // Gold SpotLights
+
+# Red Spotlights
+spotlight {
+    -105 10 -105
+    -0.69310 -0.19803 -0.69310
+    2.55 0 0
+    45
+    45
+}
+spotlight {
+    -105 10 -25
+    -80 10 0
+    2.55 0 0 
+    45
+    15
+}
+spotlight {
+    -25 10 -105
+    0 10 -80
+    2.55 0 0
+    45
+    15
+}
+# // Red Spotlights
+
+#Blue SpotLights
+spotlight {
+    105 10 -105
+    0.69310 -0.19803 -0.69310
+    0 0 2.55
+    45
+    45
+}
+spotlight {
+    105 10 -25
+    80 10 0
+    0 0 2.55
+    45
+    15
+}
+spotlight {
+    25 10 -105
+    0 10 -80
+    0 0 2.55
+    45
+    15
+}
+# // Blue SpotLights
+
+# Green Spotlights
+spotlight {
+    -105 10 105
+    -0.69310 -0.19803 0.69310
+    0 2.55 0.0
+    45
+    45
+}
+spotlight {
+    -105 10 25
+    -80 10 0
+    0 2.55 0
+    45
+    15
+}
+spotlight {
+    -25 10 105
+    0 10 80
+    0 2.55 0
+    45
+    15
+}
+# // Green Spotlights
 # }}}
 
 
@@ -425,7 +513,7 @@ cube {
     65 5 65
     10 80 80
     +material {
-        textures/cyan_wall.png
+        textures/yellow_wall_side.png
         0.0 0.0 0.0
         1.0
     }
@@ -442,7 +530,7 @@ cube {
     65 5 65
     200 20 20
     +material {
-        textures/cyan_wall.png
+        textures/yellow_wall_side.png
         0.0 0.0 0.0
         1.0
     }
@@ -569,8 +657,8 @@ cube {
     290 5 0
     10 200 250
     +material {
-        textures/green_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -585,8 +673,8 @@ cube {
     -290 5 0
     10 200 250
     +material {
-        textures/green_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -601,8 +689,8 @@ cube {
     0 5 -290
     10 250 200 
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -617,8 +705,8 @@ cube {
     0 5 290
     10 250 200 
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -633,8 +721,8 @@ cube {
     265 5 204
     10 250 300
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -649,8 +737,8 @@ cube {
     265 5 -204
     10 250 300
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -665,8 +753,8 @@ cube {
     -265 5 204
     10 250 300
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -681,8 +769,8 @@ cube {
     -265 5 -204
     10 250 300
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -697,8 +785,8 @@ cube {
     204 5 265
     10 300 250
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -713,8 +801,8 @@ cube {
     -204 5 265
     10 300 250
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -729,8 +817,8 @@ cube {
     204 5 -265
     10 300 250
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -745,8 +833,8 @@ cube {
     -204 5 -265
     10 300 250
     +material {
-        textures/yellow_wall_side.png
-        0.0 0.0 0.0
+        textures/tron_wall_side.png
+        0.1 0.1 0.1
         1.0
     }
     +bounding {
@@ -754,7 +842,7 @@ cube {
         10 300 250
     }
     +shader {
-        tron_shdr
+        blinn_phong_shdr
     }
 }
 # }}}
