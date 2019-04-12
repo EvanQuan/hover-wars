@@ -23,7 +23,7 @@ public:
 
     void update(float fTimeInSeconds);
 
-    eGameMode getAIType() const { return m_eGameMode; }
+    eGameMode getGameMode() const { return m_eGameMode; }
 private:
     AIManager();
 

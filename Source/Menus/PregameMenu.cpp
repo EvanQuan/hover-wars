@@ -35,7 +35,7 @@ PregameMenu::PregameMenu() : PromptMenu(
             { "Bot count", eFixedCommand::COMMAND_PROMPT_SELECT_2 },
         },
         {
-            { "AI", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
+            { "Game mode", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
         },
         {
             { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
@@ -84,7 +84,7 @@ void PregameMenu::select(eFixedCommand command)
         m_pGameManager->initializeNewGame(m_iPlayerCount,
                                           m_iBotCount,
                                           static_cast<float>(m_fGameTime),
-                                          m_eGameMode,
+                                          getGameMode(),
                                           m_iMapNumber);
         break;
     }
@@ -148,17 +148,14 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             switch (direction)
             {
             case COMMAND_PROMPT_LEFT:
+                m_eGameMode = FuncUtils::subtractModulo(m_eGameMode, 1,
+                                                        0, GAMEMODE_COUNT);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
+                cout << "\t" << m_eGameMode << endl;
+                break;
             case COMMAND_PROMPT_RIGHT:
-                // Currently there are only 2 AI configurations, so we will
-                // toggle between them.
-                if (m_eGameMode == GAMEMODE_TEAM_AI_SOLO_PLAYERS)
-                {
-                    m_eGameMode = GAMEMODE_FREE_FOR_ALL;
-                }
-                else
-                {
-                    m_eGameMode = GAMEMODE_TEAM_AI_SOLO_PLAYERS;
-                }
+                m_eGameMode = FuncUtils::addModulo(m_eGameMode, 1,
+                                                        0, GAMEMODE_COUNT);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;

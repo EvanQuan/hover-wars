@@ -181,7 +181,7 @@ void PregameInterface::renderOption() {
     renderNumberOfPlayer(m->getPlayerCount());
     renderNumberOfBot(m->getBotCount());
     renderGameTime(m->getGameTime());
-    renderAI(m->getAIType());
+    renderAI(m->getGameMode());
 
     if (option == PLAY_COUNT_OPTION) {
         renderImage(IMAGE_NUMBER_OF_PLAYER_2, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);

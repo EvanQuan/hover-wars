@@ -427,13 +427,13 @@ void GameManager::updateEnvironment()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
-    @param eGameMode      of game
+    @param eGameMode    of game
     @param mapNumber    of map
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,
                                     float gameTime,
-                                    eGameMode aiType,
+                                    eGameMode gameMode,
                                     unsigned int mapNumber)
 {
     // Before we initialize, set to LoadingMenu and Interface
@@ -468,13 +468,13 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     calculateScreenDimensions(playerCount);
 
-    spawnHovercrafts(playerCount, botCount, aiType);
+    spawnHovercrafts(playerCount, botCount, gameMode);
 
     setupMapData();
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
-    m_pGameStats->reinitialize(playerCount, botCount, aiType);
+    m_pGameStats->reinitialize(playerCount, botCount, gameMode);
     m_pAIManager->reinitialize(aiType, mapNumber);
 
     setKeyboardHovercraft(playerCount);
