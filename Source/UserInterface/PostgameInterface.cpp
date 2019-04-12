@@ -297,7 +297,8 @@ void PostgameInterface::renderOverride()
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
-    if ((GAME_STATS->getGameMode() != GAMEMODE_TEAMS_PLAYERS && hovercraftCount > 2) && (GAME_STATS->getGameMode() == GAMEMODE_TEAMS_PLAYERS && GAME_STATS->getBotCount() > 0))
+    if ((GAME_STATS->getGameMode() != GAMEMODE_TEAMS_PLAYERS && hovercraftCount > 2)
+        || (GAME_STATS->getGameMode() == GAMEMODE_TEAMS_PLAYERS && GAME_STATS->getBotCount() > 0))
     {
         renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
     }
