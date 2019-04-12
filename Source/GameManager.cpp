@@ -701,6 +701,7 @@ void GameManager::drawScene()
             // Render the Split Screen Quads
             renderSplitScreen();
         }
+
         glDisable(GL_DEPTH_TEST);
         if (!m_bInGame)
         {

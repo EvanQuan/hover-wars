@@ -14,6 +14,7 @@ layout (std140, binding = 0) uniform Matrices
 layout (location = 0) in vec4 vertex;	// <vec2 pos, vec2 tex>
 
 uniform mat4 UIProjection;
+uniform bool backgroundImage;
 out vec2 TexCoords;
 
 /**
@@ -27,7 +28,16 @@ out vec2 TexCoords;
 void main(void)
 {
     // Just to ensure that the z value is 0 in all cases.
-    gl_Position = UIProjection * vec4(vertex.xy, 0.0, 1.0);
-	//gl_Position = projection * modelview * vec4(vertex.xy, 0.0, 1.0); // For Debugging
+	if (!backgroundImage)
+	{
+	    gl_Position = UIProjection * vec4(vertex.xy, 0.0, 1.0);
+		//gl_Position = projection * modelview * vec4(vertex.xy, 0.0, 1.0); // For Debugging
+	}
+	else
+	{
+		gl_Position = vec4(vertex.xy, 0.0, 1.0);
+		
+	}
+
     TexCoords = vertex.zw;
 }

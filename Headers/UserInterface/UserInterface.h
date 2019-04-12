@@ -185,6 +185,7 @@ protected:
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
+    void renderBackgroundImage(string filepath);
 
     // width of the window in pixels
     int m_iWidth;

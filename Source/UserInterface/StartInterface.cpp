@@ -52,7 +52,7 @@ void StartInterface::reinitialize(float gameTime)
 
 void StartInterface::renderOverride()
 {
-    renderImage(IMAGE_BACKGROUND_START_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderBackgroundImage(IMAGE_BACKGROUND_START_MENU);
     renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
     renderOption(); 
 }

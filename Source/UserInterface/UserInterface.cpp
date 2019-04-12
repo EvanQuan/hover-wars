@@ -536,12 +536,49 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     // Is an image, not text. This distinguishment needs to be made since images and
     // text share the same shader.
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "backgroundImage", false);
 
     vec4 vCorners[4] = {
     vec4(x           ,            y, 0.0f, 1.0f),
     vec4(x + iImage_x,            y, 1.0f, 1.0f),
     vec4(x           , y + iImage_y, 0.0f, 0.0f),
     vec4(x + iImage_x, y + iImage_y, 1.0f, 0.0f)
+    };
+
+    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
+
+    // Update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, (sizeof(vec4) << 2), vCorners, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Render Quad
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    image->unbindTexture();
+}
+
+void UserInterface::renderBackgroundImage(string filepath)
+{
+    // Get texture height and width
+    auto tFoundIt = m_Textures.find(filepath);
+    Texture* image = tFoundIt->second;
+    int iImage_x, iImage_y;
+    image->getTextureDimensions(&iImage_y, &iImage_x);
+
+    // Set up OpenGL for Rendering
+    glBindVertexArray(m_iVertexArray);
+    glUseProgram(m_pShdrMngr->getProgram(ShaderManager::eShaderType::UI_SHDR));
+    // Is an image, not text. This distinguishment needs to be made since images and
+    // text share the same shader.
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "isImage", true);
+    m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "backgroundImage", true);
+
+    vec4 vCorners[4] = {
+        vec4(-1.0f, -1.0f, 1.0f, 1.0f), /*Bottom Left*/
+        vec4(1.0f,  -1.0f, 0.0f, 1.0f), /*Bottom Right*/
+        vec4(-1.0f, 1.0f,  1.0f, 0.0f), /*Top Left*/
+        vec4(1.0f,  1.0f,  0.0f, 0.0f), /*Top Right*/
     };
 
     image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
