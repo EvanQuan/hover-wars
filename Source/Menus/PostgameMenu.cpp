@@ -1,4 +1,5 @@
 #include "Menus/PostgameMenu.h"
+#include "Menus/AwardsMenu.h"
 #include "Menus/MainMenu.h"
 #include "UserInterface/PostgameInterface.h"
 #include "GameStats.h"
@@ -45,7 +46,7 @@ void PostgameMenu::select(eFixedCommand command)
         back();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
-        //
+        nextMenu(AwardsMenu::getInstance());
         break;
     }
 }
