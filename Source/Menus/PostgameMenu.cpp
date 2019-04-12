@@ -7,7 +7,8 @@
 
 
 // Unit: seconds
-#define IGNORE_INPUT_TIME 0.5f
+// Disable for now
+#define IGNORE_INPUT_TIME 0.0f
 // Singleton instance
 PostgameMenu* PostgameMenu::m_pInstance = nullptr;
 
@@ -17,10 +18,10 @@ PostgameMenu::PostgameMenu() : PromptMenu(
         // We select awards first to prevent the user from accidentally going
         // instantly to the main menu as the game ends
         {
-            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
+            { "Return to Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
         {
-            { "Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
+            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
         },
     }
 )
@@ -83,7 +84,7 @@ void PostgameMenu::enter()
 
     cout << "> " << getCurrentPrompt() << endl;
 
-    m_bIgnoreUserInput = true;
+    m_bIgnoreUserInput = false;
     m_fIgnoreUserInputTime = IGNORE_INPUT_TIME;
 }
 

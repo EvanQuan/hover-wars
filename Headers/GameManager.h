@@ -76,8 +76,9 @@ private:
 
     // Initializing a new game
     void calculateScreenDimensions(unsigned int playerCount);
-    void spawnPlayers(unsigned int playerCount);
-    void spawnBots(unsigned int botCount);
+    void spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType);
+    void spawnPlayers(unsigned int playerCount, const vector<vec3> &colors);
+    void spawnBots(unsigned int botCount, const vector<vec3> &colors);
     void setupMapData();
 
     // Time
