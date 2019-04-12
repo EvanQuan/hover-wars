@@ -35,10 +35,10 @@ PregameMenu::PregameMenu() : PromptMenu(
             { "Bot count", eFixedCommand::COMMAND_PROMPT_SELECT_2 },
         },
         {
-            { "Game mode", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
+            { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
         },
         {
-            { "Game time", eFixedCommand::COMMAND_PROMPT_SELECT_4 },
+            { "Game mode", eFixedCommand::COMMAND_PROMPT_SELECT_3 },
         },
         {
             { "Map", eFixedCommand::COMMAND_PROMPT_SELECT_5 },

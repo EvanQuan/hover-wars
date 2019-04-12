@@ -8,6 +8,7 @@
 #define AI_OPTION "AI"
 #define GAME_TIME_OPTION "Game time"
 #define GAMEMODE_OPTION "Game mode"
+#define MAP_OPTION "Map"
 
 
 class PregameInterface final : public MenuInterface
@@ -39,6 +40,8 @@ private:
         GAME_TIME_NUMBER,
         GAMEMODE_LABEL,
         GAMEMODE_TYPE,
+        MAP_LABEL,
+        MAP_NUMBER,
         MAIN_MENU,
         START_GAME,
     };
@@ -48,5 +51,6 @@ private:
     void renderNumberOfBot(int i_NumOfBot);
     void renderGameTime(int i_GameTime);
     void renderGameMode(eGameMode m_eGameMode);
+    void renderMap(unsigned int mapNumber);
     void renderOption();
 };
