@@ -17,7 +17,12 @@ enum eGameMode
     // All players for themselves.
     GAMEMODE_FREE_FOR_ALL = 2,
 
-    GAMEMODE_COUNT = 3,
+    // Split the players into 2 teams
+    // The bots are on their own team
+    GAMEMODE_TEAMS_PLAYERS = 3,
+
+    // Total number of game modes
+    GAMEMODE_COUNT = 4,
 };
 
 /*

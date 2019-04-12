@@ -615,6 +615,11 @@ bool GameStats::isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) c
     case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
         return isBot(hovercraft1) && isBot(hovercraft2);
         break;
+    case GAMEMODE_TEAMS_PLAYERS:
+        return (isBot(hovercraft1) && isBot(hovercraft2))
+            || (hovercraft1 == HOVERCRAFT_PLAYER_1 && hovercraft2 == HOVERCRAFT_PLAYER_3)
+            || (hovercraft1 == HOVERCRAFT_PLAYER_2 && hovercraft2 == HOVERCRAFT_PLAYER_4);
+        break;
     default:
         return false;
     }
