@@ -268,18 +268,23 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
     {
         selectColors(&m_vPlayerColors, &vColors, 2, true);
         selectColors(&m_vPlayerColors, &vColors, 2, true);
+        // Bots are forced to a team
+        // Select Bot Colors
+        // Clear Colors to set.
+        m_vBotColors.clear();
+        selectColors(&m_vBotColors, &vColors, botCount, true);
     }
     else
     {
         // Select Player Colors First
         // Clear Colors to set.
         selectColors(&m_vPlayerColors, &vColors, playerCount, bTeamPlayers);
+        // Select Bot Colors
+        // Clear Colors to set.
+        m_vBotColors.clear();
+        selectColors(&m_vBotColors, &vColors, botCount, bTeamAI);
     }
 
-    // Select Bot Colors
-    // Clear Colors to set.
-    m_vBotColors.clear();
-    selectColors(&m_vBotColors, &vColors, botCount, bTeamAI);
 
     // Spawn the Bots and Players with their respective colors
     spawnPlayers(playerCount, m_vPlayerColors);

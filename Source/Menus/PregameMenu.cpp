@@ -159,13 +159,13 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             {
             case COMMAND_PROMPT_LEFT:
                 m_eGameMode = FuncUtils::subtractModulo(m_eGameMode, 1,
-                                                        0, GAMEMODE_COUNT - 1);
+                                                        0, GAMEMODE_COUNT - 2);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eGameMode = FuncUtils::addModulo(m_eGameMode, 1,
-                                                        0, GAMEMODE_COUNT - 1);
+                                                        0, GAMEMODE_COUNT - 2);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;
