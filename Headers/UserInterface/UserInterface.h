@@ -22,6 +22,11 @@
 // size 30
 // effect 'Style-Neon'
 // color 00FCFF and FF00E1
+#define IMAGE_MENU_0 "textures/menu/menu_0.png"
+#define IMAGE_MENU_1 "textures/menu/menu_1.png"
+#define IMAGE_MENU_2 "textures/menu/menu_2.png"
+#define IMAGE_MENU_3 "textures/menu/menu_3.png"
+#define IMAGE_MENU_4 "textures/menu/menu_4.png"
 #define IMAGE_0 "textures/menu/0.png"
 #define IMAGE_1 "textures/menu/1.png"
 #define IMAGE_2 "textures/menu/2.png"
@@ -79,8 +84,13 @@
 #define IMAGE_GAMEMODE_2 "textures/menu/game_mode2.png"
 #define IMAGE_FREE_FOR_ALL "textures/menu/free_for_all2.png"
 #define IMAGE_BOT_TEAM "textures/menu/bot_team2.png"
+#define IMAGE_PLAYER_TEAM "textures/menu/player_team2.png"
 // #define IMAGE_BOT_TEAM IMAGE_10_MIN
 #define IMAGE_BOT_VS_PLAYERS "textures/menu/bots_vs_players2.png"
+#define IMAGE_SCORE_LOSS_1 "textures/menu/score_loss.png"
+#define IMAGE_SCORE_LOSS_2 "textures/menu/score_loss2.png"
+#define IMAGE_ENABLED "textures/menu/enabled2.png"
+#define IMAGE_DISABLED "textures/menu/disabled2.png"
 #define IMAGE_MAP_1 "textures/menu/map.png"
 #define IMAGE_MAP_2 "textures/menu/map2.png"
 

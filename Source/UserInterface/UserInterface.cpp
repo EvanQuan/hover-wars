@@ -69,6 +69,12 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
+    m_Textures[IMAGE_MENU_0] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_0);
+    m_Textures[IMAGE_MENU_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_1);
+    m_Textures[IMAGE_MENU_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_2);
+    m_Textures[IMAGE_MENU_3] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_3);
+    m_Textures[IMAGE_MENU_4] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_4);
+
     m_Textures[IMAGE_0] = TEXTURE_MANAGER->loadTexture(IMAGE_0);
     m_Textures[IMAGE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1);
     m_Textures[IMAGE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2);
@@ -146,7 +152,12 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_GAMEMODE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_GAMEMODE_2);
     m_Textures[IMAGE_FREE_FOR_ALL] = TEXTURE_MANAGER->loadTexture(IMAGE_FREE_FOR_ALL);
     m_Textures[IMAGE_BOT_TEAM] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_TEAM);
+    m_Textures[IMAGE_PLAYER_TEAM] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_TEAM);
     m_Textures[IMAGE_BOT_VS_PLAYERS] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_VS_PLAYERS);
+    m_Textures[IMAGE_SCORE_LOSS_1] = TEXTURE_MANAGER->loadTexture(IMAGE_SCORE_LOSS_1);
+    m_Textures[IMAGE_SCORE_LOSS_2] = TEXTURE_MANAGER->loadTexture(IMAGE_SCORE_LOSS_2);
+    m_Textures[IMAGE_ENABLED] = TEXTURE_MANAGER->loadTexture(IMAGE_ENABLED);
+    m_Textures[IMAGE_DISABLED] = TEXTURE_MANAGER->loadTexture(IMAGE_DISABLED);
     m_Textures[IMAGE_BOT_DIFFICULTY_1] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_1);
     m_Textures[IMAGE_BOT_DIFFICULTY_2] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_2);
     m_Textures[IMAGE_HARD] = TEXTURE_MANAGER->loadTexture(IMAGE_HARD);

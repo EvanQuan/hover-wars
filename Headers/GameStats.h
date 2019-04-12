@@ -95,6 +95,10 @@ public:
         IS_DOMINATING_PLAYER_2,
         IS_DOMINATING_PLAYER_3,
         IS_DOMINATING_PLAYER_4,
+        IS_DOMINATING_BOT_1,
+        IS_DOMINATING_BOT_2,
+        IS_DOMINATING_BOT_3,
+        IS_DOMINATING_BOT_4,
         KILLSTREAK_CURRENT,
         KILLSTREAK_CURRENT_AGAINST_PLAYER_1,
         KILLSTREAK_CURRENT_AGAINST_PLAYER_2,
@@ -129,6 +133,8 @@ public:
     enum eGlobalStat
     {
        SCORE_LARGEST,
+       TEAM_PLAYER_SCORE,
+       TEAM_BOT_SCORE,
        GLOBALSTAT_COUNT
     };
 
@@ -181,7 +187,7 @@ public:
     // Cooldowns
     void useAbility(eHovercraft hovercraft, eAbility ability);
 
-    void reinitialize(int playerCount, int botCount, eGameMode aiType, eBotDifficulty botDifficulty);
+    void reinitialize(int playerCount, int botCount, eGameMode aiType, eBotDifficulty botDifficulty, bool scoreLossEnabled);
 
     eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getOrDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
     bool isBot(int entityID) const { return isBot(getEHovercraft(entityID)); };
@@ -193,6 +199,9 @@ public:
     bool isBot(eHovercraft hovercraft) const;
     bool isPlayer(eHovercraft hovercraft) const;
     bool isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) const;
+
+    // If there are not enough players, speed boost will not be enabled
+    bool hasSpeedBoostEnabled() const { return m_bSpeedBoostEnabled; }
 
     vector<EndGameStat> getEndGameStats();
 
@@ -318,6 +327,8 @@ private:
     eGameMode m_eGameMode;
     eBotDifficulty m_eBotDifficulty;
     float m_eBotScoreMultiplier;
+    bool m_bScoreLossEnabled;
+    bool m_bSpeedBoostEnabled;
 };
 
 

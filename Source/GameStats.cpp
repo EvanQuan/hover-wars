@@ -7,6 +7,11 @@
 Number of killstreaks against another player to count as domination
 */
 #define DOMINATION_COUNT 3
+
+/*
+    Number of hovercrafts needed in the game to enable speed boost powerup
+*/
+#define HOVERCRAFT_COUNT_TO_ENABLE_POWERUP 3
 /*
 After total score gained has been calculated, multiply score gained by value if
 hit a bot
@@ -98,12 +103,14 @@ GameStats::~GameStats()
 void GameStats::reinitialize(int playerCount,
     int botCount,
     eGameMode aiType,
-    eBotDifficulty botDifficulty)
+    eBotDifficulty botDifficulty,
+    bool scoreLossEnabled)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
     m_eGameMode = aiType;
     m_eBotDifficulty = botDifficulty;
+    m_bScoreLossEnabled = scoreLossEnabled;
     switch (m_eBotDifficulty)
     {
     case DIFFICULTY_EASY:
@@ -122,6 +129,8 @@ void GameStats::reinitialize(int playerCount,
     firstBloodHappened = false;
     queueFirstBlood = false;
     m_eScoreLeaders.clear();
+
+    m_bSpeedBoostEnabled = (playerCount + botCount) >= HOVERCRAFT_COUNT_TO_ENABLE_POWERUP;
 }
 
 /*
@@ -372,6 +381,8 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 
     m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
+    debug(attacker);
+    debug(hit);
 #ifndef NDEBUG
     // cout << "Player " << attacker << " hit Player " << attacker << endl;
     // debug(attacker);
@@ -381,7 +392,7 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 
 void GameStats::debug(eHovercraft hovercraft)
 {
-    cout << "\tPlayer " << hovercraft << endl
+    cout << "\t " << (hovercraft <= HOVERCRAFT_PLAYER_4 ? "Player " + to_string((int)hovercraft) : "Bot " + to_string((int)(hovercraft - HOVERCRAFT_BOT_1))) << endl
         << "\t\tscore: " << stats[hovercraft][SCORE_CURRENT] << endl
         << "\t\ttotal kills: " << stats[hovercraft][KILLS_TOTAL] << endl
         << "\t\tcurrent total killstreak: " << stats[hovercraft][KILLSTREAK_CURRENT] << endl
@@ -390,10 +401,18 @@ void GameStats::debug(eHovercraft hovercraft)
         << "\t\tcurrent killstreak against Player 1: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_PLAYER_2) << endl
         << "\t\tcurrent killstreak against Player 2: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_PLAYER_3) << endl
         << "\t\tcurrent killstreak against Player 3: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_PLAYER_4) << endl
+        << "\t\tcurrent killstreak against Bot 0: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_BOT_1) << endl
+        << "\t\tcurrent killstreak against Bot 1: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_BOT_2) << endl
+        << "\t\tcurrent killstreak against Bot 2: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_BOT_3) << endl
+        << "\t\tcurrent killstreak against Bot 3: " << getCurrentKillstreakAgainst(hovercraft, HOVERCRAFT_BOT_4) << endl
         << "\t\tis dominating Player 0: " << isDominating(hovercraft, HOVERCRAFT_PLAYER_1) << endl
         << "\t\tis dominating Player 1: " << isDominating(hovercraft, HOVERCRAFT_PLAYER_2) << endl
         << "\t\tis dominating Player 2: " << isDominating(hovercraft, HOVERCRAFT_PLAYER_3) << endl
         << "\t\tis dominating Player 3: " << isDominating(hovercraft, HOVERCRAFT_PLAYER_4) << endl
+        << "\t\tis dominating Bot 0: " << isDominating(hovercraft, HOVERCRAFT_BOT_1) << endl
+        << "\t\tis dominating Bot 1: " << isDominating(hovercraft, HOVERCRAFT_BOT_2) << endl
+        << "\t\tis dominating Bot 2: " << isDominating(hovercraft, HOVERCRAFT_BOT_3) << endl
+        << "\t\tis dominating Bot 3: " << isDominating(hovercraft, HOVERCRAFT_BOT_4) << endl
         << "\t\ttotal abilities used: " << stats[hovercraft][ABILITIES_TOTAL_USED] << endl
         << "\t\ttotal rockets used: " << stats[hovercraft][ABILITY_ROCKET_USED] << endl
         << "\t\ttotal spikes used: " << stats[hovercraft][ABILITY_SPIKES_USED] << endl
@@ -423,8 +442,8 @@ void GameStats::updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit)
 int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 {
     int basePoints = POINTS_GAINED_HIT_BASE;
-    int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * stats[attacker][KILLSTREAK_CURRENT];
-    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
+    int killstreakBonus = POINTS_GAINED_PER_KILLSTREAK * FuncUtils::max(stats[attacker][KILLSTREAK_CURRENT], 0);
+    int killstreakEndingBonus = POINTS_GAINED_PER_HIT_KILLSTREAK * FuncUtils::max(stats[hit][KILLSTREAK_CURRENT], 0);
     int revengeBonus = isDominating(hit, attacker) ? POINTS_GAINED_HIT_REVENGE : 0;
     int firstBloodBonus;
     if (firstBloodHappened) {
@@ -457,8 +476,12 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 */
 int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const
 {
+    if (!m_bScoreLossEnabled)
+    {
+        return 0;
+    }
     int basePoints = POINTS_LOST_GOT_HIT;
-    int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
+    int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * FuncUtils::max(stats[hit][KILLSTREAK_CURRENT], 0);
     int totalPointsLost = basePoints + killstreakBonus;
     return stats[hit][SCORE_CURRENT] > totalPointsLost ? totalPointsLost : stats[hit][SCORE_CURRENT];
 }
@@ -471,6 +494,28 @@ void GameStats::addScore(eHovercraft attacker, int points)
     stats[attacker][SCORE_CHANGE] = points;
     stats[attacker][SCORE_CURRENT] += points;
     stats[attacker][SCORE_TOTAL] += points;
+
+    // Update team scores if team game mode
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        if (isBot(attacker))
+        {
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
+        else
+        {
+            globalStats[TEAM_PLAYER_SCORE] += points;
+        }
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        if (isBot(attacker))
+        {
+            // Only bots have a team
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
+        break;
+    }
 }
 
 void GameStats::removeScore(eHovercraft hit, int points)
@@ -478,6 +523,27 @@ void GameStats::removeScore(eHovercraft hit, int points)
     stats[hit][SCORE_CHANGE] = -points;
     stats[hit][SCORE_CURRENT] -= points;
 
+    // Update team scores if team game mode
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        if (isBot(hit))
+        {
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
+        }
+        else
+        {
+            globalStats[TEAM_PLAYER_SCORE] = FuncUtils::max(globalStats[TEAM_PLAYER_SCORE] - points, 0);
+        }
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        if (isBot(hit))
+        {
+            // Only bots have a team
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
+        }
+        break;
+    }
 }
 
 bool GameStats::hasLargestScore(eHovercraft hovercraft)
@@ -604,7 +670,8 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
 */
 void GameStats::increaseCurrentTotalKillstreak(eHovercraft hovercraft)
 {
-    stats[hovercraft][KILLSTREAK_CURRENT]++;
+    stats[hovercraft][KILLSTREAK_CURRENT] = FuncUtils::max(1, stats[hovercraft][KILLSTREAK_CURRENT] + 1);
+    cout << hovercraft << " killstreak increase to " << stats[hovercraft][KILLSTREAK_CURRENT] << endl;
     updateLargestTotalKillstreak(hovercraft);
 }
 
@@ -614,10 +681,8 @@ void GameStats::increaseCurrentTotalKillstreak(eHovercraft hovercraft)
 */
 void GameStats::updateLargestTotalKillstreak(eHovercraft hovercraft)
 {
-    if (stats[hovercraft][KILLSTREAK_CURRENT] > stats[hovercraft][KILLSTREAK_LARGEST])
-    {
-        stats[hovercraft][KILLSTREAK_LARGEST] = stats[hovercraft][KILLSTREAK_CURRENT];
-    }
+    stats[hovercraft][KILLSTREAK_LARGEST] = FuncUtils::max(stats[hovercraft][KILLSTREAK_LARGEST],
+                                                           stats[hovercraft][KILLSTREAK_CURRENT]);
 }
 
 int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit) const
@@ -634,10 +699,24 @@ int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit
 */
 void GameStats::resetKillstreak(eHovercraft hit, eHovercraft attacker)
 {
+    cout << hit << " killstreak before "  << stats[hit][KILLSTREAK_CURRENT] << endl;
     // Reset current total killstreak
-    stats[hit][KILLSTREAK_CURRENT] = 0;
+    if (stats[hit][KILLSTREAK_CURRENT] > 0)
+    {
+        stats[hit][KILLSTREAK_CURRENT] = 0;
+        cout << hit << " killstreak " << " reset" << endl;
+    }
+
+    // Decrease killstreak to negative
+    stats[hit][KILLSTREAK_CURRENT]--;
+    cout << hit << " killstreak is now "  << stats[hit][KILLSTREAK_CURRENT] << endl;
+
     // Reset current total killstreak against attacker
-    stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker] = 0;
+    if (stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker] > 0)
+    {
+        stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker] = 0;
+    }
+    stats[hit][KILLSTREAK_CURRENT_AGAINST_PLAYER_1 + attacker]--;
 
     // If player hit was dominating attacker, disable domination and 
     // player revenge sound.
@@ -899,11 +978,11 @@ void GameStats::awardToHovercrafts(eHovercraftStat stat,
             award.points = points;
             award.statValue = stats[hovercraft][stat];
             endGameStats.at(i).awards.push_back(award);
-            cout << "Award "
-                << hovercraft
-                << " with " << name << ": \"" <<
-                description << " of " << award.statValue
-                << "\" +" << points << endl;
+            //cout << "Award "
+            //    << hovercraft
+            //    << " with " << name << ": \"" <<
+            //    description << " of " << award.statValue
+            //   << "\" +" << points << endl;
         }
     }
 }

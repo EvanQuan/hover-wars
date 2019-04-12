@@ -8,6 +8,7 @@
 #define AI_OPTION "AI"
 #define GAME_TIME_OPTION "Game time"
 #define GAMEMODE_OPTION "Game mode"
+#define SCORELOSS_OPTION "Score loss"
 #define MAP_OPTION "Map"
 #define BOT_DIFFICULTY_OPTION "Bot difficulty"
 
@@ -43,6 +44,8 @@ private:
         GAME_TIME_NUMBER,
         GAMEMODE_LABEL,
         GAMEMODE_TYPE,
+        SCORELOSS_LABEL,
+        SCORELOSS_TYPE,
         MAP_LABEL,
         MAP_NUMBER,
         MAIN_MENU,
@@ -54,6 +57,7 @@ private:
     void renderNumberOfBot(int i_NumOfBot);
     void renderGameTime(int i_GameTime);
     void renderGameMode(eGameMode m_eGameMode);
+    void renderScoreLoss(bool scoreLossEnabled);
     void renderMap(unsigned int mapNumber);
     void renderBotDifficulty(eBotDifficulty m_eBotDifficulty);
     void renderOption();
