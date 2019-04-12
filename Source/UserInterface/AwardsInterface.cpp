@@ -121,7 +121,7 @@ void AwardsInterface::renderAwards() {
             sprintf(s_points, "%d", points);
             sprintf(s_statValue, "%d", statValue);
 
-            string sentence = name + ": \"" + description + " of " + s_points + "\" +" + s_statValue;
+            string sentence = name + ": \"" + description + " of " + s_statValue + "\" +" + s_points;
             renderText(sentence, x, y, 1.0f, vec3(1.0f));
             y -= 50;
         }
