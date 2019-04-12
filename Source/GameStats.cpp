@@ -908,7 +908,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveLowest(eHovercraftStat stat
             hovercrafts.push_back(player);
         }
     }
-    for (int b = HOVERCRAFT_BOT_1; b < m_iBotCount; b++)
+    for (int b = HOVERCRAFT_BOT_1; b < HOVERCRAFT_BOT_1 + m_iBotCount; b++)
     {
         eHovercraft bot = static_cast<eHovercraft>(b);
         value = get(bot, stat);
@@ -945,7 +945,7 @@ vector<eHovercraft> GameStats::getHovercraftsThatHaveZero(eHovercraftStat stat)
         }
     }
     // Bots
-    for (int b = HOVERCRAFT_BOT_1; b < m_iBotCount; b++)
+    for (int b = HOVERCRAFT_BOT_1; b < HOVERCRAFT_BOT_1 + m_iBotCount; b++)
     {
         eHovercraft bot = static_cast<eHovercraft>(b);
         if (get(bot, stat) == 0)
