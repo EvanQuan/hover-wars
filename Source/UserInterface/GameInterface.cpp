@@ -152,7 +152,6 @@ GameInterface::GameInterface() : UserInterface(
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     m_pEntityMngr = ENTITY_MANAGER;
     m_pSoundManager = SOUND_MANAGER;
-    m_pGameStats = GAME_STATS;
 }
 
 GameInterface* GameInterface::getInstance(int iWidth, int iHeight)
