@@ -313,10 +313,19 @@ quat PhysicsComponent::getRotation()
 {
     PxQuat pCurrRotation;
 
-    // if (nullptr != body)
-    // {
-        pCurrRotation = body->getGlobalPose().q;
-    // }
+    pCurrRotation = body->getGlobalPose().q;
+    return quat(pCurrRotation.w, pCurrRotation.x, pCurrRotation.y, pCurrRotation.z);
+}
+
+quat PhysicsComponent::getRotation(string sHashKey)
+{
+    PxQuat pCurrRotation;
+
+    if (!m_bVehicle && m_pDynamicObjects.find(sHashKey) != m_pDynamicObjects.end())
+    {
+        pCurrRotation = m_pDynamicObjects[sHashKey]->getGlobalPose().q;
+    }
+
     return quat(pCurrRotation.w, pCurrRotation.x, pCurrRotation.y, pCurrRotation.z);
 }
 
