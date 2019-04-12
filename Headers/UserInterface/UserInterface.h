@@ -78,7 +78,7 @@
 #define IMAGE_GAME_RULE_1 "textures/menu/rules.png"
 #define IMAGE_GAME_RULE_2 "textures/menu/rules2.png"
 #define IMAGE_CONTROLLER_MENU "textures/menu/controller_menu.png"
-#define IMAGE_RULE_MENU "textures/menu/rule_menu.png"
+#define IMAGE_RULE_MENU "textures/menu/rule_menu.jpg"
 
 #define IMAGE_GAMEMODE_1 "textures/menu/game_mode.png"
 #define IMAGE_GAMEMODE_2 "textures/menu/game_mode2.png"
