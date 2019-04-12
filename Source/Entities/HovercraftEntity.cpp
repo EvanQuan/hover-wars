@@ -1262,9 +1262,10 @@ bool HovercraftEntity::isDashing() const
 void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &direction)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
-
+    // vec3 vVelocity = normalize(transform[2]);
+    vec3 vVelocity = normalize(direction);
     vec3 vNormal = PHYSICS_MANAGER->getClosestNormalOnHeightMap(transform[3]);
-    vec3 vVelocity = normalize(cross(vec3(transform[0]), vNormal));
+    vVelocity = normalize(cross(vec3(transform[0]), vNormal));
 
     vVelocity *= Rocket::LAUNCH_SPEED;
 
