@@ -16,7 +16,7 @@ private:
     void select(eFixedCommand command);
 
     // ControlsMenu cannot go back to anything
-    void back() {}
+    void back();
 
     // @Override
     void enter();

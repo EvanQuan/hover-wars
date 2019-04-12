@@ -134,6 +134,7 @@ public:
     {
        SCORE_LARGEST,
        TEAM_PLAYER_SCORE,
+       TEAM2_PLAYER_SCORE,
        TEAM_BOT_SCORE,
        GLOBALSTAT_COUNT
     };

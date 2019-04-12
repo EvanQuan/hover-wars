@@ -223,6 +223,7 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         hit(hovercraft, scoreReasonToHovercraft.at(reason));
         break;
     case PICKUP_POWERUP:
+        // @Deprecated
         pickupPowerup(hovercraft);
         break;
     }
@@ -381,12 +382,12 @@ void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 
     m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::KILL_MESSAGE_KILL);
 
-    debug(attacker);
-    debug(hit);
-#ifndef NDEBUG
+#ifdef _DEBUG
     // cout << "Player " << attacker << " hit Player " << attacker << endl;
     // debug(attacker);
     // debug(hit);
+    debug(attacker);
+    debug(hit);
 #endif
 }
 
@@ -515,6 +516,20 @@ void GameStats::addScore(eHovercraft attacker, int points)
             globalStats[TEAM_BOT_SCORE] += points;
         }
         break;
+    case GAMEMODE_TEAMS_PLAYERS:
+        switch (attacker)
+        {
+        case HOVERCRAFT_PLAYER_1:
+        case HOVERCRAFT_PLAYER_2:
+            globalStats[TEAM_PLAYER_SCORE] += points;
+            break;
+        case HOVERCRAFT_PLAYER_3:
+        case HOVERCRAFT_PLAYER_4:
+            globalStats[TEAM2_PLAYER_SCORE] += points;
+            break;
+        default:
+            globalStats[TEAM_BOT_SCORE] += points;
+        }
     }
 }
 
@@ -543,6 +558,20 @@ void GameStats::removeScore(eHovercraft hit, int points)
             globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
         }
         break;
+    case GAMEMODE_TEAMS_PLAYERS:
+        switch (hit)
+        {
+        case HOVERCRAFT_PLAYER_1:
+        case HOVERCRAFT_PLAYER_2:
+            globalStats[TEAM_PLAYER_SCORE] = FuncUtils::max(globalStats[TEAM_PLAYER_SCORE] - points, 0);
+            break;
+        case HOVERCRAFT_PLAYER_3:
+        case HOVERCRAFT_PLAYER_4:
+            globalStats[TEAM2_PLAYER_SCORE] = FuncUtils::max(globalStats[TEAM2_PLAYER_SCORE] - points, 0);
+            break;
+        default:
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
+        }
     }
 }
 

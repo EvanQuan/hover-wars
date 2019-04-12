@@ -127,7 +127,9 @@ void PregameInterface::renderOverride()
 
 void PregameInterface::renderNumberOfPlayer(int i_NumOfPlayer) {
     // get the player count and render number
-    switch(i_NumOfPlayer) {
+    PregameMenu* m = (PregameMenu*)PregameMenu::getInstance();
+    // If in team players, the number of players if forced to 4
+    switch(m->getGameMode() == GAMEMODE_TEAMS_PLAYERS ? MAX_PLAYER_COUNT : i_NumOfPlayer) {
         case 1:
             renderImage(IMAGE_MENU_1, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
             break;
@@ -210,6 +212,9 @@ void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
             break;
         case GAMEMODE_FREE_FOR_ALL:
             renderImage(IMAGE_FREE_FOR_ALL, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            break;
+        case GAMEMODE_TEAMS_PLAYERS:
+            renderImage(IMAGE_PLAYER_TEAMS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
 
     }

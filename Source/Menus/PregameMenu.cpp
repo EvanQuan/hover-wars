@@ -89,7 +89,8 @@ void PregameMenu::select(eFixedCommand command)
         back();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->initializeNewGame(m_iPlayerCount,
+        // Force 4 players if playing player teams
+        m_pGameManager->initializeNewGame(getGameMode() == GAMEMODE_TEAMS_PLAYERS ? MAX_PLAYER_COUNT : m_iPlayerCount,
                                           m_iBotCount,
                                           getBotDifficulty(),
                                           static_cast<float>(m_fGameTime),
@@ -159,13 +160,13 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             {
             case COMMAND_PROMPT_LEFT:
                 m_eGameMode = FuncUtils::subtractModulo(m_eGameMode, 1,
-                                                        0, GAMEMODE_COUNT - 2);
+                                                        0, GAMEMODE_COUNT - 1);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eGameMode = FuncUtils::addModulo(m_eGameMode, 1,
-                                                        0, GAMEMODE_COUNT - 2);
+                                                        0, GAMEMODE_COUNT - 1);
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;

@@ -67,7 +67,7 @@ public:
 
     MenuInterface* getMenuInterface() const { return m_pMenuInterface; }
 
-    vec3 getPlayerColor(eHovercraft player) const { return m_vPlayerColors.at(player); }
+    vec3 getPlayerColor(eHovercraft player) const { return (int)m_vPlayerColors.size() > (int)player ? m_vPlayerColors.at(player) : vec3(1.0f); }
     vec3 getBotColor(eHovercraft bot) const { return m_vBotColors.empty() ? vec3(1.0f) : m_vBotColors.at(bot - MAX_PLAYER_COUNT); }
     vec3 getHovercraftColor(eHovercraft hovercraft) const { return hovercraft <= HOVERCRAFT_PLAYER_4 ? getPlayerColor(hovercraft) : getBotColor(hovercraft); }
 

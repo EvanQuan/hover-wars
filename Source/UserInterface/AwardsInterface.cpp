@@ -82,6 +82,12 @@ void AwardsInterface::renderAwards() {
     while (k < (int)endGameStats.size())
     {
         eHovercraft hovercraft = endGameStats.at(k).hovercraft;
+        if (GAME_STATS->isBot(hovercraft))
+        {
+            k++;
+            continue;
+        }
+
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
         if (awards.size() > 0) {
             renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
@@ -115,6 +121,11 @@ void AwardsInterface::renderAwards() {
     for (k; k < (int)endGameStats.size(); k++)
     {
         eHovercraft hovercraft = endGameStats.at(k).hovercraft;
+        if (GAME_STATS->isBot(hovercraft))
+        {
+            continue;
+        }
+
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
         if (awards.size() > 0) {
             renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));

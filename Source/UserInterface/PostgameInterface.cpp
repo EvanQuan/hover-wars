@@ -297,7 +297,8 @@ void PostgameInterface::renderOverride()
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
-    else if (hovercraftCount > 2)
+    if ((GAME_STATS->getGameMode() != GAMEMODE_TEAMS_PLAYERS && hovercraftCount > 2)
+        || (GAME_STATS->getGameMode() == GAMEMODE_TEAMS_PLAYERS && GAME_STATS->getBotCount() > 0))
     {
         renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
     }
@@ -322,6 +323,12 @@ void PostgameInterface::renderPlacement()
         break;
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
         renderPlayersVsBots(endGameStats);
+        break;
+    case GAMEMODE_TEAMS_PLAYERS:
+        renderTeamPlayers(endGameStats);
+        break;
+    default:
+        renderFreeForAll(endGameStats);
         break;
     }
 }
@@ -473,6 +480,90 @@ void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameSt
         renderScore(placements, teamBotScore);
     }
 
+
+}
+
+void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStats)
+{
+    int placements = 0;
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
+    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
+    int team2PlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE);
+
+    // update scores with awards
+    for (EndGameStat s : endGameStats)
+    {
+        switch (s.hovercraft)
+        {
+        case HOVERCRAFT_PLAYER_1:
+        case HOVERCRAFT_PLAYER_2:
+            for (Award a : s.awards)
+            {
+                teamPlayerScore += a.points;
+            }
+            break;
+        case HOVERCRAFT_PLAYER_3:
+        case HOVERCRAFT_PLAYER_4:
+            for (Award a : s.awards)
+            {
+                team2PlayerScore += a.points;
+            }
+            break;
+        default:
+            for (Award a : s.awards)
+            {
+                teamBotScore += a.points;
+            }
+        }
+    }
+
+    bool botsExist = GAME_STATS->getBotCount() > 0;
+    if (!botsExist)
+    {
+        teamBotScore = -1; // ensure bots are last place
+    }
+
+
+
+    vector<pair<int, string>> teamScores;
+    teamScores.push_back(make_pair(teamBotScore, IMAGE_BOT_TEAM));
+    teamScores.push_back(make_pair(teamPlayerScore, IMAGE_PLAYER_TEAM1));
+    teamScores.push_back(make_pair(team2PlayerScore, IMAGE_PLAYER_TEAM2));
+
+    if (teamScores[0].first < teamScores[1].first)
+    {
+        swap(teamScores[0], teamScores[1]);
+    }
+    if (teamScores[0].first < teamScores[2].first)
+    {
+        swap(teamScores[0], teamScores[2]);
+    }
+    if (teamScores[1].first < teamScores[2].first)
+    {
+        swap(teamScores[1], teamScores[2]);
+    }
+    // Sorted from highest score to less
+
+    renderImage(teamScores[0].second,
+        m_vComponentCoordinates[placements].first,
+        m_vComponentCoordinates[placements].second,
+        1.0f);
+    renderScore(placements, teamScores[0].first);
+    placements++;
+    renderImage(teamScores[1].second,
+        m_vComponentCoordinates[placements].first,
+        m_vComponentCoordinates[placements].second,
+        1.0f);
+    renderScore(placements, teamScores[1].first);
+    if (botsExist)
+    {
+        placements++;
+        renderImage(teamScores[2].second,
+            m_vComponentCoordinates[placements].first,
+            m_vComponentCoordinates[placements].second,
+            1.0f);
+        renderScore(placements, teamScores[2].first);
+    }
 
 }
 
