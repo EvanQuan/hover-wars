@@ -104,6 +104,8 @@ GameInterface::GameInterface() : UserInterface(
         {0.48f, 0.50f},
         // 11 Kill/ deaths
         {0.7f, 0.9f},
+        // 12 Player
+        {0.7f, 0.9f},
     },
     // Translating
     vector<pair<float, float>>
@@ -131,6 +133,8 @@ GameInterface::GameInterface() : UserInterface(
         // 10 Resume game countdown
         {0.0f, 0.0f},
         // 11 Kill/deaths
+        {0.0f, -44.0f},
+        // 12 Player
         {0.0f, 0.0f},
     }
 )
@@ -336,6 +340,7 @@ rendered to ensure the UI is on top.
 void GameInterface::renderOverride()
 {
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
+    renderPlayerNumber();
     renderGameTime();
     renderScores();
     renderCooldowns();
@@ -630,6 +635,17 @@ void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft
 void GameInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 color)
 {
     /* TODO */
+}
+
+void GameInterface::renderPlayerNumber()
+{
+    string playerNumber = "Player " + to_string(m_eHovercraftFocus + 1);
+    vec3 color = GAME_MANAGER->getPlayerColor(m_eHovercraftFocus);
+    renderText(playerNumber,
+        m_vComponentCoordinates[COMPONENT_PLAYER_NUMBER].first,
+        m_vComponentCoordinates[COMPONENT_PLAYER_NUMBER].second,
+        1.0f,
+        color);
 }
 
 /*
