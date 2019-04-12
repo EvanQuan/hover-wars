@@ -163,13 +163,13 @@ void PregameInterface::renderGameTime(int i_GameTime) {
     }
 }
 
-void PregameInterface::renderAI(eGameMode m_eGameMode) {
+void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
     switch (m_eGameMode) {
         case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
-            renderImage(IMAGE_CONFIG_1, m_vComponentCoordinates[AI_TYPE].first, m_vComponentCoordinates[AI_TYPE].second, 1.0f);
+            renderImage(IMAGE_CONFIG_1, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
         case GAMEMODE_FREE_FOR_ALL:
-            renderImage(IMAGE_CONFIG_2, m_vComponentCoordinates[AI_TYPE].first, m_vComponentCoordinates[AI_TYPE].second, 1.0f);
+            renderImage(IMAGE_CONFIG_2, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
 
     }
@@ -181,7 +181,7 @@ void PregameInterface::renderOption() {
     renderNumberOfPlayer(m->getPlayerCount());
     renderNumberOfBot(m->getBotCount());
     renderGameTime(m->getGameTime());
-    renderAI(m->getGameMode());
+    renderGameMode(m->getGameMode());
 
     if (option == PLAY_COUNT_OPTION) {
         renderImage(IMAGE_NUMBER_OF_PLAYER_2, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);

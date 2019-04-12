@@ -37,7 +37,7 @@ private:
         GAME_TIME,
         GAME_TIME_NUMBER,
         AI,
-        AI_TYPE,
+        GAMEMODE_TYPE,
         MAIN_MENU,
         START_GAME,
     };
@@ -46,6 +46,6 @@ private:
     void renderNumberOfPlayer(int i_NumOfPlayer);
     void renderNumberOfBot(int i_NumOfBot);
     void renderGameTime(int i_GameTime);
-    void renderAI(eGameMode m_eGameMode);
+    void renderGameMode(eGameMode m_eGameMode);
     void renderOption();
 };
