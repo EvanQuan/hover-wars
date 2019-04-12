@@ -512,18 +512,18 @@ void GameStats::removeScore(eHovercraft hit, int points)
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
         if (isBot(hit))
         {
-            globalStats[TEAM_BOT_SCORE] -= points;
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
         }
         else
         {
-            globalStats[TEAM_PLAYER_SCORE] -= points;
+            globalStats[TEAM_PLAYER_SCORE] = FuncUtils::max(globalStats[TEAM_PLAYER_SCORE] - points, 0);
         }
         break;
     case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
         if (isBot(hit))
         {
             // Only bots have a team
-            globalStats[TEAM_BOT_SCORE] -= points;
+            globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
         }
         break;
     }
