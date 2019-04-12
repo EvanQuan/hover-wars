@@ -7,6 +7,8 @@
 #define BOT_COUNT_OPTION "Bot count"
 #define AI_OPTION "AI"
 #define GAME_TIME_OPTION "Game time"
+#define GAMEMODE_OPTION "Game mode"
+#define MAP_OPTION "Map"
 
 
 class PregameInterface final : public MenuInterface
@@ -36,8 +38,10 @@ private:
         BOT_COUNT_NUMBER,
         GAME_TIME,
         GAME_TIME_NUMBER,
-        AI,
-        AI_TYPE,
+        GAMEMODE_LABEL,
+        GAMEMODE_TYPE,
+        MAP_LABEL,
+        MAP_NUMBER,
         MAIN_MENU,
         START_GAME,
     };
@@ -46,6 +50,7 @@ private:
     void renderNumberOfPlayer(int i_NumOfPlayer);
     void renderNumberOfBot(int i_NumOfBot);
     void renderGameTime(int i_GameTime);
-    void renderAI(eAIType m_eAIType);
+    void renderGameMode(eGameMode m_eGameMode);
+    void renderMap(unsigned int mapNumber);
     void renderOption();
 };

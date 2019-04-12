@@ -31,7 +31,7 @@ public:
     // Graphics Application
     bool initialize();
     void startRendering();
-    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eAIType aiType, unsigned int mapNumber);
+    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eGameMode aiType, unsigned int mapNumber);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height Getters and Setters
@@ -80,7 +80,7 @@ private:
 
     // Initializing a new game
     void calculateScreenDimensions(unsigned int playerCount);
-    void spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType);
+    void spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode aiType);
     void spawnPlayers(unsigned int playerCount, const vector<vec3> &colors);
     void spawnBots(unsigned int botCount, const vector<vec3> &colors);
     void setupMapData();
