@@ -18,10 +18,10 @@ PostgameMenu::PostgameMenu() : PromptMenu(
         // We select awards first to prevent the user from accidentally going
         // instantly to the main menu as the game ends
         {
-            { "Return to Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
+            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
         },
         {
-            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
+            { "Return to Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
     }
 )

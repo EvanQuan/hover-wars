@@ -113,7 +113,7 @@ void AwardsInterface::renderAwards() {
             string name = awards[i].name;
             string description = awards[i].description;
             int points = awards[i].points;
-            int statValue = awards[i].points;
+            int statValue = awards[i].statValue;
 
             char s_points[3];
             char s_statValue[4];
