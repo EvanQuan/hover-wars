@@ -180,8 +180,12 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
     {
     case KILL_MESSAGE_DOMINATION:
         m_pSoundManager->play(SoundManager::SOUND_KILL_DOMINATION, playerInvolved);
-        displayMessage(attacker, "You are now dominating " + m_eHovercraftToString.at(hit));
-        displayMessage(hit, m_eHovercraftToString.at(attacker) + " is now dominating you");
+        displayMessage(attacker,
+                       "You are now dominating " + m_eHovercraftToString.at(hit),
+                       GAME_MANAGER->getHovercraftColor(hit));
+        displayMessage(hit,
+                       m_eHovercraftToString.at(attacker) + " is now dominating you",
+                       GAME_MANAGER->getHovercraftColor(attacker));
         break;
     case KILL_MESSAGE_FIRST_BLOOD:
         m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_KILL_FIRST_BLOOD);
@@ -190,23 +194,49 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
              player < playerCount;
              player++)
         {
-            string attackerName = attacker == player ? "You" : m_eHovercraftToString.at(attacker);
-            string hitName = hit == player ? "you" : m_eHovercraftToString.at(hit);
-            displayMessage(static_cast<eHovercraft>(player),
-                attackerName + " got first blood against " + hitName);
+            string attackerName;
+            string hitName;
+            vec3 color;
+            if (attacker == player)
+            {
+                attackerName = "You";
+                hitName = m_eHovercraftToString.at(hit);
+                color = GAME_MANAGER->getHovercraftColor(hit);
+            }
+            else if (hit == player)
+            {
+                attackerName = m_eHovercraftToString.at(attacker);
+                hitName = "you";
+                color = GAME_MANAGER->getHovercraftColor(attacker);
+            }
+            else 
+            {
+                attackerName = m_eHovercraftToString.at(attacker);
+                hitName = m_eHovercraftToString.at(hit);
+                color = GAME_MANAGER->getHovercraftColor(attacker);
+            }
+            displayMessage(
+                static_cast<eHovercraft>(player),
+                attackerName + " got first blood against " + hitName,
+                color);
         }
         // displayKillMessage(attacker, "You got first blood against " + m_eHovercraftToString.at(hit));
         // displayKillMessage(hit, m_eHovercraftToString.at(attacker) + " got first blood against you");
         break;
     case KILL_MESSAGE_REVENGE:
         m_pSoundManager->play(SoundManager::SOUND_KILL_REVENGE, playerInvolved);
-        displayMessage(attacker, "You got revenge from " + m_eHovercraftToString.at(hit));
-        displayMessage(hit, m_eHovercraftToString.at(attacker) + " got revenge from you");
+        displayMessage(attacker,
+                       "You got revenge from " + m_eHovercraftToString.at(hit),
+                        GAME_MANAGER->getHovercraftColor(hit));
+        displayMessage(hit,
+                       m_eHovercraftToString.at(attacker) + " got revenge from you",
+                       GAME_MANAGER->getHovercraftColor(attacker));
         break;
     case KILL_MESSAGE_KILLSTREAK:
         m_pSoundManager->play(SoundManager::SOUND_KILL_STREAK, playerInvolved);
         displayMessage(attacker, "You have a killstreak of "
-            + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)));
+            + std::to_string(GAME_STATS->get(attacker, GameStats::eHovercraftStat::KILLSTREAK_CURRENT)),
+            MESSAGE_COLOR);
         break;
     case KILL_MESSAGE_KILL:
         m_fScoreChangeTimes[attacker] = SCORE_CHANGE_DURATION;
@@ -214,14 +244,26 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
         break;
     case KILL_MESSAGE_NEW_LEADER:
         m_pSoundManager->play(SoundManager::SOUND_UI_NEW_LEADER);
-        for (int player = 0, playerCount = GAME_STATS->getPlayerCount();
+        for (int player = 0, playerCount = MAX_HOVERCRAFT_COUNT;
             player < playerCount;
             player++)
         {
-            string newLeaderName = attacker == player ?
-                "You are" : m_eHovercraftToString.at(attacker) + " is";
-            displayMessage(static_cast<eHovercraft>(player),
-                newLeaderName + " now in the lead");
+            string newLeaderName;
+            vec3 color;
+            eHovercraft hovercraft = static_cast<eHovercraft>(player);
+            if (attacker == hovercraft)
+            {
+                newLeaderName = "You are";
+                color = MESSAGE_COLOR;
+            }
+            else
+            {
+                newLeaderName = m_eHovercraftToString.at(attacker) + " is";
+                color = GAME_MANAGER->getHovercraftColor(attacker);
+            }
+            displayMessage(hovercraft,
+                newLeaderName + " now in the lead",
+                color);
         }
         break;
     }
@@ -261,10 +303,11 @@ Display a message for a given hovercraft's UI for a short duration.
                     this hovercraft's UI is displayed.
 @param text         to display
 */
-void GameInterface::displayMessage(eHovercraft hovercraft, std::string text)
+void GameInterface::displayMessage(eHovercraft hovercraft, std::string text, vec3 color)
 {
     m_sMessages[hovercraft] = text;
     m_fMessageTimes[hovercraft] = MESSAGE_DURATION;
+    m_sMessageColors[hovercraft] = color;
 }
 
 /*
@@ -442,7 +485,7 @@ void GameInterface::renderMessages()
         renderText(m_sMessages[m_eHovercraftFocus],
             m_vComponentCoordinates[COMPONENT_MESSAGE].first,
             m_vComponentCoordinates[COMPONENT_MESSAGE].second,
-            MESSAGE_SCALE, MESSAGE_COLOR);
+            MESSAGE_SCALE, m_sMessageColors[m_eHovercraftFocus]);
     }
     if (m_fScoreChangeTimes[m_eHovercraftFocus] > 0)
     {
@@ -480,7 +523,7 @@ void GameInterface::renderNotifications()
             renderText(m_sNotification,
                 m_vComponentCoordinates[COMPONENT_NOTIFICATION].first,
                 m_vComponentCoordinates[COMPONENT_NOTIFICATION].second,
-                MESSAGE_SCALE, MESSAGE_COLOR);
+                MESSAGE_SCALE, m_sMessageColors[m_eHovercraftFocus]);
         }
     }
 }

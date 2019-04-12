@@ -412,7 +412,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     if (isBot(hit))
     {
         // @Evan refine this value
-        totalGained >>= 2; // Divide by 4
+        totalGained >>= 1; // Divide by 2
     }
     return totalGained;
 }
