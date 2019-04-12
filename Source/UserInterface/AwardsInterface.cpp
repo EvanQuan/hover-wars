@@ -84,34 +84,7 @@ void AwardsInterface::renderAwards() {
         eHovercraft hovercraft = endGameStats.at(k).hovercraft;
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
         if (awards.size() > 0) {
-            switch (hovercraft) {
-            case HOVERCRAFT_PLAYER_1:
-                s_playername = "Player 1";
-                break;
-            case HOVERCRAFT_PLAYER_2:
-                s_playername = "Player 2";
-                break;
-            case HOVERCRAFT_PLAYER_3:
-                s_playername = "Player 3";
-                break;
-            case HOVERCRAFT_PLAYER_4:
-                s_playername = "Player 4";
-                break;
-            case HOVERCRAFT_BOT_1:
-                s_playername = "Bot 1";
-                break;
-            case HOVERCRAFT_BOT_2:
-                s_playername = "Bot 2";
-                break;
-            case HOVERCRAFT_BOT_3:
-                s_playername = "Bot 3";
-                break;
-            case HOVERCRAFT_BOT_4:
-                s_playername = "Bot 4";
-                break;
-            }
-
-            renderText(s_playername, x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
+            renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
             for (int i = 0; i < (int)awards.size(); i++) {
@@ -144,34 +117,7 @@ void AwardsInterface::renderAwards() {
         eHovercraft hovercraft = endGameStats.at(k).hovercraft;
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
         if (awards.size() > 0) {
-            switch (hovercraft) {
-            case HOVERCRAFT_PLAYER_1:
-                s_playername = "Player 1";
-                break;
-            case HOVERCRAFT_PLAYER_2:
-                s_playername = "Player 2";
-                break;
-            case HOVERCRAFT_PLAYER_3:
-                s_playername = "Player 3";
-                break;
-            case HOVERCRAFT_PLAYER_4:
-                s_playername = "Player 4";
-                break;
-            case HOVERCRAFT_BOT_1:
-                s_playername = "Bot 1";
-                break;
-            case HOVERCRAFT_BOT_2:
-                s_playername = "Bot 2";
-                break;
-            case HOVERCRAFT_BOT_3:
-                s_playername = "Bot 3";
-                break;
-            case HOVERCRAFT_BOT_4:
-                s_playername = "Bot 4";
-                break;
-            }
-
-            renderText(s_playername, x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
+            renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
             for (int i = 0; i < (int)awards.size(); i++) {
