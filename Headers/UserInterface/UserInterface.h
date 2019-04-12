@@ -74,6 +74,16 @@
 #define IMAGE_GAME_RULE_2 "textures/menu/rules2.png"
 #define IMAGE_CONTROLLER_MENU "textures/menu/controller_menu.png"
 #define IMAGE_RULE_MENU "textures/menu/rule_menu.png"
+
+#define IMAGE_GAMEMODE_1 "textures/menu/game_mode.png"
+#define IMAGE_GAMEMODE_2 "textures/menu/game_mode2.png"
+#define IMAGE_FREE_FOR_ALL "textures/menu/free_for_all2.png"
+#define IMAGE_BOT_TEAM "textures/menu/bot_team2.png"
+// #define IMAGE_BOT_TEAM IMAGE_10_MIN
+#define IMAGE_BOT_VS_PLAYERS "textures/menu/bots_vs_players2.png"
+#define IMAGE_MAP_1 "textures/menu/map.png"
+#define IMAGE_MAP_2 "textures/menu/map2.png"
+
 #define IMAGE_AI_1 "textures/menu/ai.png"
 #define IMAGE_AI_2 "textures/menu/ai_2.png"
 #define IMAGE_CONFIG_1 "textures/menu/config_1.png"

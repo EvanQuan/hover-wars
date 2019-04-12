@@ -258,7 +258,7 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
     Spawn hovercrafts of the specified player and bot count. Depending on the
     AI type, the bots may share a team color.
 */
-void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType)
+void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode aiType)
 {
     // Load all colors into a set to pick from.
     vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));
@@ -280,7 +280,8 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
     m_vBotColors.clear();
     switch (aiType)
     {
-    case AI_ON_SAME_TEAM:
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
         // If the AI are on the same team, they will all use the same chosen color
         iIndex = rand() % vColors.size();
         for (int i = 0; i < MAX_BOT_COUNT; ++i)
@@ -288,7 +289,7 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
 
         vColors.erase(vColors.begin() + iIndex);
         break;
-    case AI_SOLO:
+    case GAMEMODE_FREE_FOR_ALL:
         // If bots are solo, they wil use the remaining unused colors.
         for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
         {
@@ -426,13 +427,13 @@ void GameManager::updateEnvironment()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
-    @param eAIType      of game
+    @param eGameMode    of game
     @param mapNumber    of map
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,
                                     float gameTime,
-                                    eAIType aiType,
+                                    eGameMode gameMode,
                                     unsigned int mapNumber)
 {
     // Before we initialize, set to LoadingMenu and Interface
@@ -467,14 +468,14 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     calculateScreenDimensions(playerCount);
 
-    spawnHovercrafts(playerCount, botCount, aiType);
+    spawnHovercrafts(playerCount, botCount, gameMode);
 
     setupMapData();
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
-    m_pGameStats->reinitialize(playerCount, botCount, aiType);
-    m_pAIManager->reinitialize(aiType, mapNumber);
+    m_pGameStats->reinitialize(playerCount, botCount, gameMode);
+    m_pAIManager->reinitialize(gameMode, mapNumber);
 
     setKeyboardHovercraft(playerCount);
 
