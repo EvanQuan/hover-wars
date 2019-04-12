@@ -52,8 +52,8 @@ void AwardsInterface::reinitialize(float gameTime)
 
 void AwardsInterface::renderOverride()
 {
-    renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
-    renderText("Awards", 100, 1000, 1.0f, vec3(1.0f));
+    renderBackgroundImage(IMAGE_BACKGROUND_POST_MENU);
+    renderText("Awards", 100, 1000, 1.0f, COLOR_WHITE);
     renderAwards();
 }
 

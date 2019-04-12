@@ -44,5 +44,5 @@ void ControlsInterface::reinitialize(float gameTime)
 
 void ControlsInterface::renderOverride()
 {
-    renderImage(IMAGE_CONTROLLER_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 2.0f);
+    renderBackgroundImage(IMAGE_CONTROLLER_MENU);
 }

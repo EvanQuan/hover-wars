@@ -290,7 +290,7 @@ void PostgameInterface::reinitialize(float gameTime)
 void PostgameInterface::renderOverride()
 {
     int hovercraftCount = GAME_STATS->getPlayerCount() + GAME_STATS->getBotCount();
-    renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderBackgroundImage(IMAGE_BACKGROUND_POST_MENU);
     renderImage(IMAGE_PLACEMENT, m_vComponentCoordinates[PLACEMENT].first, m_vComponentCoordinates[PLACEMENT].second, 1.0f);
     renderImage(IMAGE_NUMBER_1, m_vComponentCoordinates[NUMBER_1].first, m_vComponentCoordinates[NUMBER_1].second, 1.0f);
     if (hovercraftCount > 1)

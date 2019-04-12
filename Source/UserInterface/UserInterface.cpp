@@ -575,10 +575,10 @@ void UserInterface::renderBackgroundImage(string filepath)
     m_pShdrMngr->setUniformBool(ShaderManager::eShaderType::UI_SHDR, "backgroundImage", true);
 
     vec4 vCorners[4] = {
-        vec4(-1.0f, -1.0f, 1.0f, 1.0f), /*Bottom Left*/
-        vec4(1.0f,  -1.0f, 0.0f, 1.0f), /*Bottom Right*/
-        vec4(-1.0f, 1.0f,  1.0f, 0.0f), /*Top Left*/
-        vec4(1.0f,  1.0f,  0.0f, 0.0f), /*Top Right*/
+        vec4(-1.0f, -1.0f, 0.0f, 0.0f), /*Bottom Left*/
+        vec4(1.0f,  -1.0f, 1.0f, 0.0f), /*Bottom Right*/
+        vec4(-1.0f, 1.0f,  0.0f, 1.0f), /*Top Left*/
+        vec4(1.0f,  1.0f,  1.0f, 1.0f), /*Top Right*/
     };
 
     image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");

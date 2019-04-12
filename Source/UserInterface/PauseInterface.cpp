@@ -57,7 +57,7 @@ void PauseInterface::reinitialize(float gameTime)
 
 void PauseInterface::renderOverride()
 {
-    renderImage(IMAGE_BACKGROUND_PAUSE_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderBackgroundImage(IMAGE_BACKGROUND_PAUSE_MENU);
     renderPauser();
     renderOption();
 }
