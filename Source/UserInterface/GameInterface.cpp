@@ -106,6 +106,10 @@ GameInterface::GameInterface() : UserInterface(
         {0.7f, 0.9f},
         // 12 Player
         {0.7f, 0.9f},
+        // 13 Team player score
+        {0.47f, 0.58f},
+        // 14 Team bot score
+        {0.47f, 0.58f},
     },
     // Translating
     vector<pair<float, float>>
@@ -135,6 +139,10 @@ GameInterface::GameInterface() : UserInterface(
         // 11 Kill/deaths
         {0.0f, -44.0f},
         // 12 Player
+        {0.0f, 0.0f},
+        // 13 Team player score
+        {0.0f, 0.0f},
+        // 14 Team bot score
         {0.0f, 0.0f},
     }
 )
@@ -584,10 +592,10 @@ void GameInterface::renderScores()
 {
     string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
                         GameStats::eHovercraftStat::SCORE_CURRENT));
-    renderText("Score: " + score,
+    renderText(m_eHovercraftToString.at(m_eHovercraftFocus) + ": " + score,
                m_vComponentCoordinates[COMPONENT_SCORE].first,
                m_vComponentCoordinates[COMPONENT_SCORE].second,
-               SCORE_SCALE, SCORE_COLOR);
+               SCORE_SCALE, GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
 }
 
 void GameInterface::updateCooldowns()
