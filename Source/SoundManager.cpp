@@ -196,7 +196,7 @@ void SoundManager::handleContextCollisionSound(HovercraftEntity* collider,
     if (collider->hasSpikesActivated()
         || collided->hasSpikesActivated())
     {
-        play(eSoundEvent::SOUND_SPIKES_IMPACT);
+        play(eSoundEvent::SOUND_SPIKES_IMPACT, !(collider->isBot() && collided->isBot()));
     }
 
 }
