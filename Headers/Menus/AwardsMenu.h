@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Menus/PromptMenu.h"
+#include "GameStats.h"
 
 class AwardsMenu final : public PromptMenu
 {
