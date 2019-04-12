@@ -10,10 +10,10 @@ enum eGameMode
 {
     // AI will team up to only target players and share a score at the end of
     // the game, but players are still solo.
-    AI_ON_SAME_TEAM,
+    GAMEMODE_TEAM_AI_SOLO_PLAYERS,
     // AI are on a team, and players are on a team. Both teams have a shared
     // score at the end of the game.
-    AI_VS_PLAYERS,
+    GAMEMODE_TEAMS_AI_VS_PLAYERS,
     // All players for themselves.
-    GAMEMODE_DEATH_MATCH,
+    GAMEMODE_FREE_FOR_ALL,
 };

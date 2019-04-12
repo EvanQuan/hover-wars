@@ -60,7 +60,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     m_iPlayerCount = 2;
 #endif // NDEBUG
 
-    m_eAIType = AI_ON_SAME_TEAM;
+    m_eAIType = GAMEMODE_TEAM_AI_SOLO_PLAYERS;
     m_fGameTime = DEFAULT_GAME_TIME;
     m_iMapNumber = MIN_MAP_NUMBER;
 }
@@ -151,13 +151,13 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_RIGHT:
                 // Currently there are only 2 AI configurations, so we will
                 // toggle between them.
-                if (m_eAIType == AI_ON_SAME_TEAM)
+                if (m_eAIType == GAMEMODE_TEAM_AI_SOLO_PLAYERS)
                 {
-                    m_eAIType = GAMEMODE_DEATH_MATCH;
+                    m_eAIType = GAMEMODE_FREE_FOR_ALL;
                 }
                 else
                 {
-                    m_eAIType = AI_ON_SAME_TEAM;
+                    m_eAIType = GAMEMODE_TEAM_AI_SOLO_PLAYERS;
                 }
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eAIType << endl;

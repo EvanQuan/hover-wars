@@ -341,7 +341,7 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 */
 void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 {
-    if (m_eAIType == AI_ON_SAME_TEAM
+    if (m_eAIType == GAMEMODE_TEAM_AI_SOLO_PLAYERS
         && isBot(attacker)
         && isBot(hit))
     {

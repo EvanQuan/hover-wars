@@ -280,7 +280,8 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
     m_vBotColors.clear();
     switch (aiType)
     {
-    case AI_ON_SAME_TEAM:
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
         // If the AI are on the same team, they will all use the same chosen color
         iIndex = rand() % vColors.size();
         for (int i = 0; i < MAX_BOT_COUNT; ++i)
@@ -288,7 +289,7 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
 
         vColors.erase(vColors.begin() + iIndex);
         break;
-    case GAMEMODE_DEATH_MATCH:
+    case GAMEMODE_FREE_FOR_ALL:
         // If bots are solo, they wil use the remaining unused colors.
         for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
         {
