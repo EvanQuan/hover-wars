@@ -54,7 +54,7 @@ risky as you will lose more points.
 /*
 Notifies a killstreak message once player hits a milestone.
 */
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 7
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 10
 
 
 // Singleton instance
@@ -89,11 +89,15 @@ GameStats::~GameStats()
 
     This should be called at the start of every game, or if the game resets.
     It should also be called AFTER players and bots have been initialized.
+
+    @param aiType   if AI on the same team, if they hit each other, there is no
+    point change.
 */
-void GameStats::reinitialize(int playerCount, int botCount)
+void GameStats::reinitialize(int playerCount, int botCount, eGameMode aiType)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
+    m_eGameMode = aiType;
 
     initializeStats();
     correspondEntitiesToHovercrafts();
@@ -337,6 +341,10 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 */
 void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 {
+    if (isOnSameTeam(attacker, hit))
+    {
+        return;
+    }
     // Update score first
     updateAttackerAndHitScore(attacker, hit);
 
@@ -411,8 +419,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
     if (isBot(hit))
     {
-        // @Evan refine this value
-        totalGained >>= 2; // Divide by 4
+        totalGained = static_cast<int>(totalGained * POINT_MULTIPLIER_HIT_BOT);
     }
     return totalGained;
 }
@@ -508,6 +515,25 @@ bool GameStats::isBot(eHovercraft hovercraft) const
 bool GameStats::isPlayer(eHovercraft hovercraft) const
 {
     return HOVERCRAFT_PLAYER_1 <= hovercraft && hovercraft <= HOVERCRAFT_PLAYER_4;
+}
+
+bool GameStats::isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) const
+{
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_FREE_FOR_ALL:
+        return false;
+        break;
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        return (isPlayer(hovercraft1) && isPlayer(hovercraft2))
+            || (isBot(hovercraft1) && isBot(hovercraft2));
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        return isBot(hovercraft1) && isBot(hovercraft2);
+        break;
+    default:
+        return false;
+    }
 }
 
 /*

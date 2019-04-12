@@ -1,9 +1,6 @@
 #pragma once
 #include "UserInterface/UserInterface.h"
 
-#define IMAGE_ROCKET "textures/hud/rocket.png"
-#define IMAGE_TRAIL "textures/hud/trail.png"
-#define IMAGE_EXPLOSION "textures/hud/explosion.png"
 #define DISPLAY_COUNT_MIN 0
 #define DISPLAY_COUNT_MAX 4
 
@@ -115,7 +112,7 @@ private:
     EntityManager* m_pEntityMngr;
     SoundManager* m_pSoundManager;
 
-    void displayMessage(eHovercraft hovercraft, std::string text);
+    void displayMessage(eHovercraft hovercraft, std::string text, vec3 color);
     /*
     Other classes should not be able to directly tell the UI to render text or
     images. Instead, the UI gathers the necessary information from other
@@ -164,6 +161,7 @@ private:
     */
     string m_sPowerupMessages[MAX_HOVERCRAFT_COUNT];
     string m_sMessages[MAX_HOVERCRAFT_COUNT];
+    vec3 m_sMessageColors[MAX_HOVERCRAFT_COUNT];
     float m_fPowerupMessageTimes[MAX_HOVERCRAFT_COUNT];
     float m_fMessageTimes[MAX_HOVERCRAFT_COUNT];
 

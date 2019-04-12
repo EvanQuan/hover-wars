@@ -21,7 +21,7 @@ PostgameMenu::PostgameMenu() : PromptMenu(
             { "Return to Main Menu", eFixedCommand::COMMAND_PROMPT_BACK },
         },
         {
-            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU},
+            { "Awards", eFixedCommand::COMMAND_PROMPT_NEXT_MENU },
         },
     }
 )
@@ -39,10 +39,10 @@ Menu* PostgameMenu::getInstance()
 
 void PostgameMenu::select(eFixedCommand command)
 {
-    if (m_bIgnoreUserInput)
-    {
-        return;
-    }
+    //jif (m_bIgnoreUserInput)
+    //j{
+        //jreturn;
+    //j}
     switch (command)
     {
     case COMMAND_PROMPT_BACK:
@@ -60,16 +60,6 @@ void PostgameMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void PostgameMenu::updateTimeValues(float fTimeInSeconds)
-{
-    m_fIgnoreUserInputTime -= fTimeInSeconds;
-
-    if (m_fIgnoreUserInputTime <= 0)
-    {
-        m_bIgnoreUserInput = false;
-    }
-}
-
 void PostgameMenu::enter()
 {
     PromptMenu::enter();
@@ -83,8 +73,5 @@ void PostgameMenu::enter()
     }
 
     cout << "> " << getCurrentPrompt() << endl;
-
-    m_bIgnoreUserInput = false;
-    m_fIgnoreUserInputTime = IGNORE_INPUT_TIME;
 }
 

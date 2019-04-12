@@ -31,7 +31,7 @@ public:
     // Graphics Application
     bool initialize();
     void startRendering();
-    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eAIType aiType, unsigned int mapNumber);
+    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eGameMode aiType, unsigned int mapNumber);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height Getters and Setters
@@ -62,7 +62,8 @@ public:
     MenuInterface* getMenuInterface() const { return m_pMenuInterface; }
 
     vec3 getPlayerColor(eHovercraft player) const { return m_vPlayerColors.at(player); }
-    vec3 getBotColor(eHovercraft bot) const { return m_vPlayerColors.at(bot - MAX_PLAYER_COUNT); }
+    vec3 getBotColor(eHovercraft bot) const { return m_vBotColors.at(bot - MAX_PLAYER_COUNT); }
+    vec3 getHovercraftColor(eHovercraft hovercraft) const { return hovercraft <= HOVERCRAFT_PLAYER_4 ? getPlayerColor(hovercraft) : getBotColor(hovercraft); }
 
 private:
     // For Singleton Implementation
@@ -79,7 +80,7 @@ private:
 
     // Initializing a new game
     void calculateScreenDimensions(unsigned int playerCount);
-    void spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType);
+    void spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode aiType);
     void spawnPlayers(unsigned int playerCount, const vector<vec3> &colors);
     void spawnBots(unsigned int botCount, const vector<vec3> &colors);
     void setupMapData();
