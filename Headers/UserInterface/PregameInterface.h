@@ -7,6 +7,7 @@
 #define BOT_COUNT_OPTION "Bot count"
 #define AI_OPTION "AI"
 #define GAME_TIME_OPTION "Game time"
+#define GAMEMODE_OPTION "Game mode"
 
 
 class PregameInterface final : public MenuInterface
@@ -36,7 +37,7 @@ private:
         BOT_COUNT_NUMBER,
         GAME_TIME,
         GAME_TIME_NUMBER,
-        AI,
+        GAMEMODE_LABEL,
         GAMEMODE_TYPE,
         MAIN_MENU,
         START_GAME,
