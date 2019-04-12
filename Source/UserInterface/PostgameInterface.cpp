@@ -366,11 +366,31 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
 {
 }
 
-void PostgameInterface::renderPlayersVsBots()
+void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameStats)
 {
     int placements = 0;
     int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
     int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
+
+    // update scores with awards
+    for (EndGameStat s : endGameStats)
+    {
+        bool onPlayerTeam = GAME_STATS->isPlayer(s.hovercraft);
+        if (onPlayerTeam)
+        {
+            for (Award a : s.awards)
+            {
+                teamPlayerScore += a.points;
+            }
+        }
+        else
+        {
+            for (Award a : s.awards)
+            {
+                teamBotScore += a.points;
+            }
+        }
+    }
 
     if (teamBotScore > teamPlayerScore) // Humans win by default on tie, get rekt bots
     {
