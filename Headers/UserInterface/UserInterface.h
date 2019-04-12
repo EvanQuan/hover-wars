@@ -94,6 +94,10 @@
 #define IMAGE_NUMBER_3 "textures/menu/number_3.png"
 #define IMAGE_POINT "textures/menu/pts.png"
 
+#define IMAGE_ROCKET "textures/hud/rocket.png"
+#define IMAGE_TRAIL "textures/hud/trail.png"
+#define IMAGE_EXPLOSION "textures/hud/explosion.png"
+
 // Forward Declaration
 class ShaderManager;
 class Texture;

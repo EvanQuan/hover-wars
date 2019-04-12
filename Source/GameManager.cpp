@@ -473,7 +473,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
-    m_pGameStats->reinitialize(playerCount, botCount);
+    m_pGameStats->reinitialize(playerCount, botCount, aiType);
     m_pAIManager->reinitialize(aiType, mapNumber);
 
     setKeyboardHovercraft(playerCount);

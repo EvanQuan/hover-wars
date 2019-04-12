@@ -181,7 +181,7 @@ public:
     // Cooldowns
     void useAbility(eHovercraft hovercraft, eAbility ability);
 
-    void reinitialize(int playerCount, int botCount);
+    void reinitialize(int playerCount, int botCount, eAIType aiType);
 
     eHovercraft getEHovercraft(int entityID) const { return FuncUtils::getOrDefault(entityIDToHovercraft, entityID, HOVERCRAFT_INVALID); }
     bool isBot(int entityID) const { return isBot(getEHovercraft(entityID)); };
@@ -311,6 +311,8 @@ private:
 
     int m_iPlayerCount;
     int m_iBotCount;
+
+    eAIType m_eAIType;
 };
 
 
