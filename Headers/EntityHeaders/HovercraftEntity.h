@@ -148,7 +148,7 @@ public:
     bool isDashing() const;
 
     // Public access for Rocket class
-    void reflectRocket(mat4 &transform, vec3 &velocity);
+    void reflectRocket(mat4 &transform, quat& qRotation);
 
     // Should be initialized AFTER the hovercraft has been created when
     // GameStats corresponds entities to hovercrafts.

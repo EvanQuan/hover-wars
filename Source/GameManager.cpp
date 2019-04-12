@@ -37,17 +37,14 @@ const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
 
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
     // Player colours should be very distinct from each other and stand out
-    vec3(1.0f, 0.0784313725490196f, 0.5764705882352941f),             //PLAYER 4 - Pink
-    vec3(0.1176470588235294f, 0.5647058823529412f, 1.0f),   //PLAYER 2 - Dodger Blue (because pure blue is too dark, and makes flame difficult to see)
-    vec3(1.0f, 0.0f, 0.0f),                                 //PLAYER 1 - Red (because red fire is cool, and should be in every game)
-    vec3(0.0f, 1.0f, 0.0f),                                 //PLAYER 3 - Green
-    // Bot colours should be very similar to each other so players can easily
-    // tell they are a bot rather than a player. Distinguishing between
-    // different bots is not as important as identifying them as bots.
-    vec3(1.0f, 0.54901960784f, 0.0f),               //BOT 1    - White
-    vec3(1.0f, 0.0f, 1.0f),               //BOT 2    - Black
-    vec3(1.0f, 1.0f, 0.0f),               //BOT 3    - Light Grey
-    vec3(1.0f)                //BOT 4    - Dark Grey
+    vec3(1.0f, 0.5490196078431373f, 0.0f),                  // Orange
+    vec3(1.0f, 0.4117647058823529f, 0.7058823529411765f),   // Pink
+    vec3(0.1176470588235294f, 0.5647058823529412f, 1.0f),   // Dodger Blue (because pure blue is too dark, and makes flame difficult to see)
+    vec3(1.0f, 0.0f, 0.0f),                                 // Red (because red fire is cool, and should be in every game)
+    vec3(0.4862745098039216f,	0.9882352941176471f, 0.0f), // Lawn Green
+    vec3(0.00f, 1.00f, 0.59f),                              // Spring Green
+    vec3(1.0f, 1.0f, 0.0f),                                 // Yellow
+    vec3(1.0f)                                              // White
 };
 
 const vec4 BLUR_QUAD[4]{
@@ -426,12 +423,14 @@ void GameManager::updateEnvironment()
 
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
+    @param botDifficulty of bots
     @param gameTime     of game, in seconds
     @param eGameMode    of game
     @param mapNumber    of map
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,
+                                    eBotDifficulty botDifficulty,
                                     float gameTime,
                                     eGameMode gameMode,
                                     unsigned int mapNumber)
@@ -474,7 +473,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     // AFTER the players and bots have been made, the GameStats and AI
     // need to reinitialize to track the players and bots
-    m_pGameStats->reinitialize(playerCount, botCount, gameMode);
+    m_pGameStats->reinitialize(playerCount, botCount, gameMode, botDifficulty);
     m_pAIManager->reinitialize(gameMode, mapNumber);
 
     setKeyboardHovercraft(playerCount);

@@ -31,7 +31,11 @@ public:
     // Graphics Application
     bool initialize();
     void startRendering();
-    void initializeNewGame(unsigned int playerCount, unsigned int botCount, float gameTime, eGameMode aiType, unsigned int mapNumber);
+    void initializeNewGame(unsigned int playerCount,
+                           unsigned int botCount,
+                           eBotDifficulty botDifficulty,
+                           float gameTime,
+                           eGameMode gameMode, unsigned int mapNumber);
     void resetTime() { m_pTimer.resetTimer(); }
 
     // Window Width and Height Getters and Setters
