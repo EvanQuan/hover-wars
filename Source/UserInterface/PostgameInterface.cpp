@@ -321,7 +321,7 @@ void PostgameInterface::renderPlacement()
         renderTeamBots(endGameStats);
         break;
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
-        renderPlayersVsBots();
+        renderPlayersVsBots(endGameStats);
         break;
     }
 }
