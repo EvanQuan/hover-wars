@@ -54,7 +54,7 @@ risky as you will lose more points.
 /*
 Notifies a killstreak message once player hits a milestone.
 */
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 7
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 10
 
 
 // Singleton instance
@@ -89,11 +89,15 @@ GameStats::~GameStats()
 
     This should be called at the start of every game, or if the game resets.
     It should also be called AFTER players and bots have been initialized.
+
+    @param aiType   if AI on the same team, if they hit each other, there is no
+    point change.
 */
-void GameStats::reinitialize(int playerCount, int botCount)
+void GameStats::reinitialize(int playerCount, int botCount, eAIType aiType)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
+    m_eAIType = aiType;
 
     initializeStats();
     correspondEntitiesToHovercrafts();
@@ -337,6 +341,12 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 */
 void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 {
+    if (m_eAIType == AI_ON_SAME_TEAM
+        && isBot(attacker)
+        && isBot(hit))
+    {
+        return;
+    }
     // Update score first
     updateAttackerAndHitScore(attacker, hit);
 
