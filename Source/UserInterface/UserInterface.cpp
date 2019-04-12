@@ -69,6 +69,12 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
+    m_Textures[IMAGE_MENU_0] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_0);
+    m_Textures[IMAGE_MENU_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_1);
+    m_Textures[IMAGE_MENU_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_2);
+    m_Textures[IMAGE_MENU_3] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_3);
+    m_Textures[IMAGE_MENU_4] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_4);
+
     m_Textures[IMAGE_0] = TEXTURE_MANAGER->loadTexture(IMAGE_0);
     m_Textures[IMAGE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_1);
     m_Textures[IMAGE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_2);

@@ -53,6 +53,7 @@ void AwardsInterface::reinitialize(float gameTime)
 void AwardsInterface::renderOverride()
 {
     renderImage(IMAGE_BACKGROUND_POST_MENU, m_vComponentCoordinates[BACKGROUND].first, m_vComponentCoordinates[BACKGROUND].second, 1.0f);
+    renderText("Awards", 100, 1000, 1.0f, vec3(1.0f));
     renderAwards();
 }
 
@@ -67,16 +68,23 @@ void AwardsInterface::renderAwards() {
     string s_playername;
     string s_awardname;
 
-     
+    int i_count = 0;
+    for (int i = 0; i < endGameStats.size(); i++) {
+        if (endGameStats.at(i).awards.size() > 0) {
+            i_count++;
+        }
+    }
 
     GLfloat x = 100;
-    GLfloat y = 1000;
-    for (int i = 0, size = endGameStats.size(); i < size; i++)
+    GLfloat y = 950;
+    int i_done = 0;
+    int k = 0;
+    while (k < endGameStats.size())
     {
-        eHovercraft hovercraft = endGameStats.at(i).hovercraft;
-        vector<Award, allocator<Award>> awards = endGameStats.at(i).awards;
-
-        switch(hovercraft) {
+        eHovercraft hovercraft = endGameStats.at(k).hovercraft;
+        vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
+        if (awards.size() > 0) {
+            switch (hovercraft) {
             case HOVERCRAFT_PLAYER_1:
                 s_playername = "Player 1";
                 break;
@@ -101,40 +109,89 @@ void AwardsInterface::renderAwards() {
             case HOVERCRAFT_BOT_4:
                 s_playername = "Bot 4";
                 break;
+            }
+
+            renderText(s_playername, x, y, 1.0f, vec3(1.0f));
+            y -= 50;
+
+            for (int i = 0; i < awards.size(); i++) {
+                string name = awards[i].name;
+                string description = awards[i].description;
+                int points = awards[i].points;
+                int statValue = awards[i].statValue;
+
+                char s_points[3];
+                char s_statValue[4];
+
+                sprintf(s_points, "%d", points);
+                sprintf(s_statValue, "%d", statValue);
+
+                string sentence = name + ": \"" + description + " of " + s_statValue + "\" +" + s_points;
+                renderText(sentence, x, y, 1.0f, vec3(1.0f));
+                y -= 50;
+            }
+            y -= 50;
+            i_done++;
         }
+        k++;
+        if (i_done >= i_count / 2 + 1) break;
+    }
 
-        renderText(s_playername, x, y, 1.0f, vec3(1.0f));
-        y -= 50;
+    x = 1000;
+    y = 950;
+    for (k; k < endGameStats.size(); k++)
+    {
+        eHovercraft hovercraft = endGameStats.at(k).hovercraft;
+        vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
+        if (awards.size() > 0) {
+            switch (hovercraft) {
+            case HOVERCRAFT_PLAYER_1:
+                s_playername = "Player 1";
+                break;
+            case HOVERCRAFT_PLAYER_2:
+                s_playername = "Player 2";
+                break;
+            case HOVERCRAFT_PLAYER_3:
+                s_playername = "Player 3";
+                break;
+            case HOVERCRAFT_PLAYER_4:
+                s_playername = "Player 4";
+                break;
+            case HOVERCRAFT_BOT_1:
+                s_playername = "Bot 1";
+                break;
+            case HOVERCRAFT_BOT_2:
+                s_playername = "Bot 2";
+                break;
+            case HOVERCRAFT_BOT_3:
+                s_playername = "Bot 3";
+                break;
+            case HOVERCRAFT_BOT_4:
+                s_playername = "Bot 4";
+                break;
+            }
 
-        //int awards_size = sizeof(awards) / sizeof(awards[0]);
-        //cout << "awards_size: " << awards.size << endl;
+            renderText(s_playername, x, y, 1.0f, vec3(1.0f));
+            y -= 50;
 
-        for (int i = 0; i < (int) awards.size(); i++) {
-            string name = awards[i].name;
-            string description = awards[i].description;
-            int points = awards[i].points;
-            int statValue = awards[i].points;
+            for (int i = 0; i < awards.size(); i++) {
+                string name = awards[i].name;
+                string description = awards[i].description;
+                int points = awards[i].points;
+                int statValue = awards[i].statValue;
 
-            char s_points[3];
-            char s_statValue[4];
+                char s_points[3];
+                char s_statValue[4];
 
-            sprintf(s_points, "%d", points);
-            sprintf(s_statValue, "%d", statValue);
+                sprintf(s_points, "%d", points);
+                sprintf(s_statValue, "%d", statValue);
 
-            string sentence = name + ": \"" + description + " of " + s_points + "\" +" + s_statValue;
-            renderText(sentence, x, y, 1.0f, vec3(1.0f));
+                string sentence = name + ": \"" + description + " of " + s_statValue + "\" +" + s_points;
+                renderText(sentence, x, y, 1.0f, vec3(1.0f));
+                y -= 50;
+            }
             y -= 50;
         }
-        y -= 50;
     }
-    //renderText("Award 0 with Survivor: \"Least deaths of 0\" +500", 500, 500, 1.0f, vec3(1.0f));
-}
 
-int AwardsInterface::compare(const void*a, const void*b) {
-    int int_a = *((int*)a);
-    int int_b = *((int*)b);
-
-    if (int_a == int_b) return 0;
-    else if (int_a < int_b) return -1;
-    else return 1;
 }

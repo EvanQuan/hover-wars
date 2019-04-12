@@ -22,6 +22,11 @@
 // size 30
 // effect 'Style-Neon'
 // color 00FCFF and FF00E1
+#define IMAGE_MENU_0 "textures/menu/menu_0.png"
+#define IMAGE_MENU_1 "textures/menu/menu_1.png"
+#define IMAGE_MENU_2 "textures/menu/menu_2.png"
+#define IMAGE_MENU_3 "textures/menu/menu_3.png"
+#define IMAGE_MENU_4 "textures/menu/menu_4.png"
 #define IMAGE_0 "textures/menu/0.png"
 #define IMAGE_1 "textures/menu/1.png"
 #define IMAGE_2 "textures/menu/2.png"
