@@ -11,7 +11,9 @@ Number of killstreaks against another player to count as domination
 After total score gained has been calculated, multiply score gained by value if
 hit a bot
 */
-#define POINT_MULTIPLIER_HIT_BOT 0.3
+#define BOT_SCORE_MULTIPLIER_EASY   1.0
+#define BOT_SCORE_MULTIPLIER_MEDIUM 0.5
+#define BOT_SCORE_MULTIPLIER_HARD   0.25
 /*
 Base points gained for hitting a hovercraft
 */
@@ -93,11 +95,27 @@ GameStats::~GameStats()
     @param aiType   if AI on the same team, if they hit each other, there is no
     point change.
 */
-void GameStats::reinitialize(int playerCount, int botCount, eGameMode aiType)
+void GameStats::reinitialize(int playerCount,
+    int botCount,
+    eGameMode aiType,
+    eBotDifficulty botDifficulty)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
     m_eGameMode = aiType;
+    m_eBotDifficulty = botDifficulty;
+    switch (m_eBotDifficulty)
+    {
+    case DIFFICULTY_EASY:
+        m_eBotScoreMultiplier = BOT_SCORE_MULTIPLIER_EASY;
+        break;
+    case DIFFICULTY_MEDIUM:
+        m_eBotScoreMultiplier = BOT_SCORE_MULTIPLIER_MEDIUM;
+        break;
+    case DIFFICULTY_HARD:
+        m_eBotScoreMultiplier = BOT_SCORE_MULTIPLIER_HARD;
+        break;
+    }
 
     initializeStats();
     correspondEntitiesToHovercrafts();
@@ -419,7 +437,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
     if (isBot(hit))
     {
-        totalGained = static_cast<int>(totalGained * POINT_MULTIPLIER_HIT_BOT);
+        totalGained = static_cast<int>(totalGained * m_eBotScoreMultiplier);
     }
     return totalGained;
 }

@@ -87,6 +87,7 @@ void PregameMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_NEXT_MENU:
         m_pGameManager->initializeNewGame(m_iPlayerCount,
                                           m_iBotCount,
+                                          getBotDifficulty(),
                                           static_cast<float>(m_fGameTime),
                                           getGameMode(),
                                           m_iMapNumber);
