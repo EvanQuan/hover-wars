@@ -104,11 +104,9 @@ GameInterface::GameInterface() : UserInterface(
         {0.48f, 0.50f},
         // 11 Kill/ deaths
         {0.7f, 0.9f},
-        // 12 Player
-        {0.7f, 0.9f},
-        // 13 Team player score
+        // 12 Team player score
         {0.47f, 0.58f},
-        // 14 Team bot score
+        // 13 Team bot score
         {0.47f, 0.58f},
     },
     // Translating
@@ -137,12 +135,10 @@ GameInterface::GameInterface() : UserInterface(
         // 10 Resume game countdown
         {0.0f, 0.0f},
         // 11 Kill/deaths
-        {0.0f, -44.0f},
-        // 12 Player
         {0.0f, 0.0f},
-        // 13 Team player score
+        // 12 Team player score
         {0.0f, 0.0f},
-        // 14 Team bot score
+        // 13 Team bot score
         {0.0f, 0.0f},
     }
 )
