@@ -15,8 +15,8 @@ private:
 
     void select(eFixedCommand command);
 
-    // AwardsMenu cannot go back to anything
-    void back() {}
+    // Override
+    void back();
 
     // @Override
     void enter();
