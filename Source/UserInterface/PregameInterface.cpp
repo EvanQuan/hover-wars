@@ -163,8 +163,8 @@ void PregameInterface::renderGameTime(int i_GameTime) {
     }
 }
 
-void PregameInterface::renderAI(eGameMode m_eAIType) {
-    switch (m_eAIType) {
+void PregameInterface::renderAI(eGameMode m_eGameMode) {
+    switch (m_eGameMode) {
         case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
             renderImage(IMAGE_CONFIG_1, m_vComponentCoordinates[AI_TYPE].first, m_vComponentCoordinates[AI_TYPE].second, 1.0f);
             break;

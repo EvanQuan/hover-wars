@@ -187,11 +187,12 @@ public:
     bool isBot(int entityID) const { return isBot(getEHovercraft(entityID)); };
     bool isPlayer(int entityID) const { return isPlayer(getEHovercraft(entityID)); };
 
-    bool isBot(HovercraftEntity* hovercraft) const;
-    bool isPlayer(HovercraftEntity* hovercraft) const;
+    bool isBot(HovercraftEntity *hovercraft) const;
+    bool isPlayer(HovercraftEntity *hovercraft) const;
 
     bool isBot(eHovercraft hovercraft) const;
     bool isPlayer(eHovercraft hovercraft) const;
+    bool isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) const;
 
     vector<EndGameStat> getEndGameStats();
 
@@ -200,6 +201,8 @@ public:
 
     int getPlayerCount() const { return m_iPlayerCount; }
     int getBotCount() const { return m_iBotCount; }
+
+    eGameMode getGameMode() const { return m_eGameMode; }
 
 private:
     GameStats(int iWidth, int iHeight);
@@ -312,7 +315,7 @@ private:
     int m_iPlayerCount;
     int m_iBotCount;
 
-    eGameMode m_eAIType;
+    eGameMode m_eGameMode;
 };
 
 

@@ -97,7 +97,7 @@ void GameStats::reinitialize(int playerCount, int botCount, eGameMode aiType)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
-    m_eAIType = aiType;
+    m_eGameMode = aiType;
 
     initializeStats();
     correspondEntitiesToHovercrafts();
@@ -341,9 +341,7 @@ void GameStats::useAbility(eHovercraft hovercraft, eAbility ability)
 */
 void GameStats::hit(eHovercraft attacker, eHovercraft hit)
 {
-    if (m_eAIType == GAMEMODE_TEAM_AI_SOLO_PLAYERS
-        && isBot(attacker)
-        && isBot(hit))
+    if (isOnSameTeam(attacker, hit))
     {
         return;
     }
@@ -517,6 +515,25 @@ bool GameStats::isBot(eHovercraft hovercraft) const
 bool GameStats::isPlayer(eHovercraft hovercraft) const
 {
     return HOVERCRAFT_PLAYER_1 <= hovercraft && hovercraft <= HOVERCRAFT_PLAYER_4;
+}
+
+bool GameStats::isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) const
+{
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_FREE_FOR_ALL:
+        return false;
+        break;
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        return (isPlayer(hovercraft1) && isPlayer(hovercraft2))
+            || (isBot(hovercraft1) && isBot(hovercraft2));
+        break;
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        return isBot(hovercraft1) && isBot(hovercraft2);
+        break;
+    default:
+        return false;
+    }
 }
 
 /*

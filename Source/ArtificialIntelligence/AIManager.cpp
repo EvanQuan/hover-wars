@@ -26,7 +26,7 @@ AIManager* AIManager::getInstance()
 
 void AIManager::reinitialize(eGameMode aiType, unsigned int mapNumber)
 {
-    m_eAIType = aiType;
+    m_eGameMode = aiType;
     m_vAIComponents.clear();
     const vector<HovercraftEntity*>* bots = m_pEntityMngr->getBotList();
     for (size_t i = 0, size = bots->size(); i < size; i++)
@@ -127,7 +127,7 @@ eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPl
         return nearestPlayer;
     }
 
-    switch (m_eAIType) {
+    switch (m_eGameMode) {
     case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
         return nearestPlayer;

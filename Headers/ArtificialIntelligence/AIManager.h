@@ -23,7 +23,7 @@ public:
 
     void update(float fTimeInSeconds);
 
-    eGameMode getAIType() const { return m_eAIType; }
+    eGameMode getAIType() const { return m_eGameMode; }
 private:
     AIManager();
 
@@ -60,7 +60,7 @@ private:
     void executeAction(HovercraftEntity *bot, const Action &a);
     bool shouldMove(const HovercraftEntity *bot, const Action &a) const;
 
-    eGameMode m_eAIType;
+    eGameMode m_eGameMode;
 };
 
 
