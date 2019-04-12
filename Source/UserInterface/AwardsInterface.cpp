@@ -111,7 +111,7 @@ void AwardsInterface::renderAwards() {
                 break;
             }
 
-            renderText(s_playername, x, y, 1.0f, vec3(1.0f));
+            renderText(s_playername, x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
             for (int i = 0; i < (int)awards.size(); i++) {
@@ -127,7 +127,7 @@ void AwardsInterface::renderAwards() {
                 sprintf(s_statValue, "%d", statValue);
 
                 string sentence = name + ": \"" + description + " of " + s_statValue + "\" +" + s_points;
-                renderText(sentence, x, y, 1.0f, vec3(1.0f));
+                renderText(sentence, x, y, 1.0f, COLOR_WHITE);
                 y -= 50;
             }
             y -= 50;
@@ -171,7 +171,7 @@ void AwardsInterface::renderAwards() {
                 break;
             }
 
-            renderText(s_playername, x, y, 1.0f, vec3(1.0f));
+            renderText(s_playername, x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
             for (int i = 0; i < (int)awards.size(); i++) {
