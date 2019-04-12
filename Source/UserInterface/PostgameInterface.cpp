@@ -297,7 +297,7 @@ void PostgameInterface::renderOverride()
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
-    if (hovercraftCount > 2)
+    if ((GAME_STATS->getGameMode() != GAMEMODE_TEAMS_PLAYERS && hovercraftCount > 2) && (GAME_STATS->getGameMode() == GAMEMODE_TEAMS_PLAYERS && GAME_STATS->getBotCount() > 0))
     {
         renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
     }
@@ -488,12 +488,6 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
     int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
     int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
     int team2PlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE);
-    string first;
-    string second;
-    string third;
-    int firstScore;
-    int secondScore;
-    int thirdScore;
 
     // update scores with awards
     for (EndGameStat s : endGameStats)
@@ -520,6 +514,12 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
                 teamBotScore += a.points;
             }
         }
+    }
+
+    bool botsExist = GAME_STATS->getBotCount() > 0;
+    if (!botsExist)
+    {
+        teamBotScore = -1; // ensure bots are last place
     }
 
 
@@ -554,12 +554,15 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
         m_vComponentCoordinates[placements].second,
         1.0f);
     renderScore(placements, teamScores[1].first);
-    placements++;
-    renderImage(teamScores[2].second,
-        m_vComponentCoordinates[placements].first,
-        m_vComponentCoordinates[placements].second,
-        1.0f);
-    renderScore(placements, teamScores[2].first);
+    if (botsExist)
+    {
+        placements++;
+        renderImage(teamScores[2].second,
+            m_vComponentCoordinates[placements].first,
+            m_vComponentCoordinates[placements].second,
+            1.0f);
+        renderScore(placements, teamScores[2].first);
+    }
 
 }
 

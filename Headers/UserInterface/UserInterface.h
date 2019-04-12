@@ -86,8 +86,8 @@
 #define IMAGE_PLAYER_TEAMS "textures/menu/player_teams2.png"
 #define IMAGE_BOT_TEAM "textures/menu/bot_team2.png"
 #define IMAGE_PLAYER_TEAM "textures/menu/player_team2.png"
-#define IMAGE_PLAYER_TEAM1 "textures/menu/player_team1_2.png"
-#define IMAGE_PLAYER_TEAM2 "textures/menu/player_team2_2.png"
+#define IMAGE_PLAYER_TEAM1 "textures/menu/team1.png"
+#define IMAGE_PLAYER_TEAM2 "textures/menu/team2.png"
 
 // #define IMAGE_BOT_TEAM IMAGE_10_MIN
 #define IMAGE_BOT_VS_PLAYERS "textures/menu/bots_vs_players2.png"

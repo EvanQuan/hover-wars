@@ -89,7 +89,8 @@ void PregameMenu::select(eFixedCommand command)
         back();
         break;
     case COMMAND_PROMPT_NEXT_MENU:
-        m_pGameManager->initializeNewGame(m_iPlayerCount,
+        // Force 4 players if playing player teams
+        m_pGameManager->initializeNewGame(getGameMode() == GAMEMODE_TEAMS_PLAYERS ? MAX_PLAYER_COUNT : m_iPlayerCount,
                                           m_iBotCount,
                                           getBotDifficulty(),
                                           static_cast<float>(m_fGameTime),
