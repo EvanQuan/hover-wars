@@ -19,3 +19,13 @@ enum eGameMode
 
     GAMEMODE_COUNT = 3,
 };
+
+/*
+    Affects score multipliers of the bots.
+*/
+enum eBotDifficulty
+{
+    DIFFICULTY_EASY,
+    DIFFICULTY_MEDIUM,
+    DIFFICULTY_HARD,
+};

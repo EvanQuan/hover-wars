@@ -108,6 +108,13 @@
 #define IMAGE_TRAIL "textures/hud/trail.png"
 #define IMAGE_EXPLOSION "textures/hud/explosion.png"
 
+#define IMAGE_BOT_DIFFICULTY_1 "textures/menu/bot_difficulty.png"
+#define IMAGE_BOT_DIFFICULTY_2 "textures/menu/bot_difficulty2.png"
+
+#define IMAGE_HARD "textures/menu/hard.png"
+#define IMAGE_MEDIUM "textures/menu/medium.png"
+#define IMAGE_EASY "textures/menu/easy.png"
+
 // Forward Declaration
 class ShaderManager;
 class Texture;

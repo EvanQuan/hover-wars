@@ -1,6 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/AwardsMenu.h"
 #include "Menus/PostgameMenu.h"
+#include "GameStats.h"
 #include "UserInterface/AwardsInterface.h"
 #include "CommandHandler.h"
 

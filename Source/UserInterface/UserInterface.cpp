@@ -140,6 +140,18 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_NUMBER_2] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_2);
     m_Textures[IMAGE_NUMBER_3] = TEXTURE_MANAGER->loadTexture(IMAGE_NUMBER_3);
     m_Textures[IMAGE_POINT] = TEXTURE_MANAGER->loadTexture(IMAGE_POINT);
+    m_Textures[IMAGE_MAP_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MAP_1);
+    m_Textures[IMAGE_MAP_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MAP_2);
+    m_Textures[IMAGE_GAMEMODE_1] = TEXTURE_MANAGER->loadTexture(IMAGE_GAMEMODE_1);
+    m_Textures[IMAGE_GAMEMODE_2] = TEXTURE_MANAGER->loadTexture(IMAGE_GAMEMODE_2);
+    m_Textures[IMAGE_FREE_FOR_ALL] = TEXTURE_MANAGER->loadTexture(IMAGE_FREE_FOR_ALL);
+    m_Textures[IMAGE_BOT_TEAM] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_TEAM);
+    m_Textures[IMAGE_BOT_VS_PLAYERS] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_VS_PLAYERS);
+    m_Textures[IMAGE_BOT_DIFFICULTY_1] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_1);
+    m_Textures[IMAGE_BOT_DIFFICULTY_2] = TEXTURE_MANAGER->loadTexture(IMAGE_BOT_DIFFICULTY_2);
+    m_Textures[IMAGE_HARD] = TEXTURE_MANAGER->loadTexture(IMAGE_HARD);
+    m_Textures[IMAGE_MEDIUM] = TEXTURE_MANAGER->loadTexture(IMAGE_MEDIUM);
+    m_Textures[IMAGE_EASY] = TEXTURE_MANAGER->loadTexture(IMAGE_EASY);
 }
 
 UserInterface::~UserInterface()
