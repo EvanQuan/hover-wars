@@ -255,17 +255,30 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
     Spawn hovercrafts of the specified player and bot count. Depending on the
     AI type, the bots may share a team color.
 */
-void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode aiType)
+void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode gameMode)
 {
     // Local Variables
-    bool bTeamAI = (GAMEMODE_TEAM_AI_SOLO_PLAYERS == aiType || GAMEMODE_TEAMS_AI_VS_PLAYERS == aiType);
-    bool bTeamPlayers = (GAMEMODE_TEAMS_AI_VS_PLAYERS == aiType);
+    bool bTeamAI = (GAMEMODE_TEAM_AI_SOLO_PLAYERS == gameMode || GAMEMODE_TEAMS_AI_VS_PLAYERS == gameMode);
+    bool bTeamPlayers = (GAMEMODE_TEAMS_AI_VS_PLAYERS == gameMode);
+    bool bSplitTeamPlayers = (GAMEMODE_TEAMS_PLAYERS == gameMode);
     vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));    // Load all colors into a set to pick from.
 
-    // Select Player Colors First
-    selectColors(&m_vPlayerColors, &vColors, playerCount, bTeamPlayers);
+    m_vPlayerColors.clear();
+    if (bSplitTeamPlayers)
+    {
+        selectColors(&m_vPlayerColors, &vColors, 2, true);
+        selectColors(&m_vPlayerColors, &vColors, 2, true);
+    }
+    else
+    {
+        // Select Player Colors First
+        // Clear Colors to set.
+        selectColors(&m_vPlayerColors, &vColors, playerCount, bTeamPlayers);
+    }
 
     // Select Bot Colors
+    // Clear Colors to set.
+    m_vBotColors.clear();
     selectColors(&m_vBotColors, &vColors, botCount, bTeamAI);
 
     // Spawn the Bots and Players with their respective colors
@@ -281,8 +294,6 @@ void GameManager::selectColors(vector<vec3>* vReturnColors, vector<vec3>* vColor
     // Local Variables
     unsigned int iIndex;
 
-    // Clear Colors to set.
-    vReturnColors->clear();
     if (bTeam) // If the on the same team, they will all use the same chosen color
     {
         // Select Color
