@@ -649,6 +649,7 @@ void GameInterface::renderTeamBotScore()
     {
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
     case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS:
         score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE));
         renderText(score,
            m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].first,

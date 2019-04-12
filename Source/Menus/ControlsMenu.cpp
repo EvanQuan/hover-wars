@@ -34,8 +34,15 @@ void ControlsMenu::select(eFixedCommand command)
     }
 }
 
+void ControlsMenu::back()
+{
+    nextMenu(MainMenu::getInstance());
+}
+
 void ControlsMenu::enter()
 {
     PromptMenu::enter();
     m_pGameManager->setCurrentInterface(ControlsInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }
+
+

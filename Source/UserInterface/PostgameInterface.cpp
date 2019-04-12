@@ -323,6 +323,12 @@ void PostgameInterface::renderPlacement()
     case GAMEMODE_TEAMS_AI_VS_PLAYERS:
         renderPlayersVsBots(endGameStats);
         break;
+    case GAMEMODE_TEAMS_PLAYERS:
+        renderTeamPlayers(endGameStats);
+        break;
+    default:
+        renderFreeForAll(endGameStats);
+        break;
     }
 }
 
@@ -482,6 +488,12 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
     int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
     int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
     int team2PlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE);
+    string first;
+    string second;
+    string third;
+    int firstScore;
+    int secondScore;
+    int thirdScore;
 
     // update scores with awards
     for (EndGameStat s : endGameStats)
@@ -511,6 +523,43 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
     }
 
 
+
+    vector<pair<int, string>> teamScores;
+    teamScores.push_back(make_pair(teamBotScore, IMAGE_BOT_TEAM));
+    teamScores.push_back(make_pair(teamPlayerScore, IMAGE_PLAYER_TEAM1));
+    teamScores.push_back(make_pair(team2PlayerScore, IMAGE_PLAYER_TEAM2));
+
+    if (teamScores[0].first < teamScores[1].first)
+    {
+        swap(teamScores[0], teamScores[1]);
+    }
+    if (teamScores[0].first < teamScores[2].first)
+    {
+        swap(teamScores[0], teamScores[2]);
+    }
+    if (teamScores[1].first < teamScores[2].first)
+    {
+        swap(teamScores[1], teamScores[2]);
+    }
+    // Sorted from highest score to less
+
+    renderImage(teamScores[0].second,
+        m_vComponentCoordinates[placements].first,
+        m_vComponentCoordinates[placements].second,
+        1.0f);
+    renderScore(placements, teamScores[0].first);
+    placements++;
+    renderImage(teamScores[1].second,
+        m_vComponentCoordinates[placements].first,
+        m_vComponentCoordinates[placements].second,
+        1.0f);
+    renderScore(placements, teamScores[1].first);
+    placements++;
+    renderImage(teamScores[2].second,
+        m_vComponentCoordinates[placements].first,
+        m_vComponentCoordinates[placements].second,
+        1.0f);
+    renderScore(placements, teamScores[2].first);
 
 }
 

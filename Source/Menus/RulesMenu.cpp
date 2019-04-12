@@ -34,6 +34,11 @@ void RulesMenu::select(eFixedCommand command)
     }
 }
 
+void RulesMenu::back()
+{
+    nextMenu(MainMenu::getInstance());
+}
+
 void RulesMenu::enter()
 {
     PromptMenu::enter();
