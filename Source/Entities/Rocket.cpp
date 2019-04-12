@@ -189,17 +189,10 @@ void Rocket::reflect(unsigned int iVictimMsg, HovercraftEntity *pOther)
     m_pPhysicsComponent->getTransformMatrix(sHashKey, &transform);
     // vec3 velocity = m_pPhysicsComponent->getDirectionVector(sHashKey);
 
-    // transform[2].y = 0;
-    vec3 velocity = glm::normalize(transform[2]) * LAUNCH_SPEED;
-
-
-    // 2. flip it's direction by 180
-    // float angle = glm::radians(180);
-    // vec3 axis = vec3(0, 1, 0);
-    velocity = -velocity;
+    vec3 direction = glm::normalize(transform[2]);
 
     // 3. launch rocket with new direction with the owner's ID without sound
-    pOther->reflectRocket(transform, velocity);
+    pOther->reflectRocket(transform, direction);
 
     // 4. Silently remove this rocket without explosion
     removeFromScene(iVictimMsg, false);

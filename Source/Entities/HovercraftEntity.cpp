@@ -761,7 +761,7 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         }
         // Momentarily lose control of vehicle to prevent air moving
     
-        // TODO check if need to determine which velocity to do
+        // TODO check if need to determine which vVelocity to do
 
         
         // vec3 myVelocity = getLinearVelocity();
@@ -1255,12 +1255,25 @@ bool HovercraftEntity::isDashing() const
     Reflect a rocket of a specified tranform and direction.
     This will silently launch a new rocket in the opposite direction, and will
     not affect cooldowns or rocket fire count.
+
+    @param tranform of the rocket as it collides with this hovercraft
+    @param direction of the rocket as it collidees with this hovercraft
 */
-void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &velocity)
+void HovercraftEntity::reflectRocket(mat4 &transform, vec3 &direction)
 {
     SOUND_MANAGER->play(SoundManager::SOUND_ROCKET_REFLECT);
+
+    vec3 vNormal = PHYSICS_MANAGER->getClosestNormalOnHeightMap(transform[3]);
+    vec3 vVelocity = normalize(cross(vec3(transform[0]), vNormal));
+
+    vVelocity *= Rocket::LAUNCH_SPEED;
+
     m_m4ReflectTransform = transform;
-    m_vReflectVelocity = velocity;
+    m_vReflectVelocity = -vVelocity;
+
+    // float translateUp = -0.5f, translateForward = 5.0f; // + is up, - is down
+    // m_m4ReflectTransform = translate((m_vReflectVelocity * translateForward) + vec3(0.0f, translateUp, 0.0f));
+
     queuedActions[QUEUED_REFLECT] = true;
 }
 
