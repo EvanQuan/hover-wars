@@ -14,6 +14,7 @@ public:
     int getGameTime() const { return m_fGameTime; };
     eGameMode getGameMode() const { return static_cast<eGameMode>(m_eGameMode); };
     unsigned int getMapNumber() const { return m_iMapNumber; };
+    eBotDifficulty getBotDifficulty() const { return static_cast<eBotDifficulty>(m_eBotDifficulty); }
 
 private:
     PregameMenu();
