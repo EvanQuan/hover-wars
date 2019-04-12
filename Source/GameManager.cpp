@@ -258,7 +258,7 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
     Spawn hovercrafts of the specified player and bot count. Depending on the
     AI type, the bots may share a team color.
 */
-void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType)
+void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode aiType)
 {
     // Load all colors into a set to pick from.
     vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));
@@ -288,7 +288,7 @@ void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCou
 
         vColors.erase(vColors.begin() + iIndex);
         break;
-    case AI_SOLO:
+    case GAMEMODE_DEATH_MATCH:
         // If bots are solo, they wil use the remaining unused colors.
         for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
         {
@@ -426,13 +426,13 @@ void GameManager::updateEnvironment()
     @param playerCount  player hovercrafts to register
     @param botCount     bot hovercrafts to register
     @param gameTime     of game, in seconds
-    @param eAIType      of game
+    @param eGameMode      of game
     @param mapNumber    of map
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,
                                     float gameTime,
-                                    eAIType aiType,
+                                    eGameMode aiType,
                                     unsigned int mapNumber)
 {
     // Before we initialize, set to LoadingMenu and Interface

@@ -163,12 +163,12 @@ void PregameInterface::renderGameTime(int i_GameTime) {
     }
 }
 
-void PregameInterface::renderAI(eAIType m_eAIType) {
+void PregameInterface::renderAI(eGameMode m_eAIType) {
     switch (m_eAIType) {
         case AI_ON_SAME_TEAM:
             renderImage(IMAGE_CONFIG_1, m_vComponentCoordinates[AI_TYPE].first, m_vComponentCoordinates[AI_TYPE].second, 1.0f);
             break;
-        case AI_SOLO:
+        case GAMEMODE_DEATH_MATCH:
             renderImage(IMAGE_CONFIG_2, m_vComponentCoordinates[AI_TYPE].first, m_vComponentCoordinates[AI_TYPE].second, 1.0f);
             break;
 

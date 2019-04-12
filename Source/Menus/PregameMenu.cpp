@@ -153,7 +153,7 @@ void PregameMenu::moveCursor(eFixedCommand direction)
                 // toggle between them.
                 if (m_eAIType == AI_ON_SAME_TEAM)
                 {
-                    m_eAIType = AI_SOLO;
+                    m_eAIType = GAMEMODE_DEATH_MATCH;
                 }
                 else
                 {

@@ -12,7 +12,7 @@ public:
     int getPlayerCount() const { return m_iPlayerCount; };
     int getBotCount() const { return m_iBotCount; };
     int getGameTime() const { return m_fGameTime; };
-    eAIType getAIType() const { return m_eAIType; };
+    eGameMode getAIType() const { return m_eAIType; };
     unsigned int getMapNumber() const { return m_iMapNumber; };
 
 private:
@@ -32,7 +32,7 @@ private:
     int m_fGameTime;
     unsigned int m_iMapNumber;
 
-    eAIType m_eAIType;
+    eGameMode m_eAIType;
 
     static PregameMenu* m_pInstance;
 };

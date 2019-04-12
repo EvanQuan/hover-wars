@@ -46,6 +46,6 @@ private:
     void renderNumberOfPlayer(int i_NumOfPlayer);
     void renderNumberOfBot(int i_NumOfBot);
     void renderGameTime(int i_GameTime);
-    void renderAI(eAIType m_eAIType);
+    void renderAI(eGameMode m_eAIType);
     void renderOption();
 };

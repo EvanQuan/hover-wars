@@ -24,7 +24,7 @@ AIManager* AIManager::getInstance()
     return m_pInstance;
 }
 
-void AIManager::reinitialize(eAIType aiType, unsigned int mapNumber)
+void AIManager::reinitialize(eGameMode aiType, unsigned int mapNumber)
 {
     m_eAIType = aiType;
     m_vAIComponents.clear();
@@ -130,7 +130,7 @@ eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPl
     switch (m_eAIType) {
     case AI_ON_SAME_TEAM:
         return nearestPlayer;
-    case AI_SOLO:
+    case GAMEMODE_DEATH_MATCH:
         return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;
     }
 

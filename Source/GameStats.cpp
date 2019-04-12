@@ -93,7 +93,7 @@ GameStats::~GameStats()
     @param aiType   if AI on the same team, if they hit each other, there is no
     point change.
 */
-void GameStats::reinitialize(int playerCount, int botCount, eAIType aiType)
+void GameStats::reinitialize(int playerCount, int botCount, eGameMode aiType)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;

@@ -19,11 +19,11 @@ public:
         @param aiType   to initialize for the given game
         @param mapNumber of the given game
     */
-    void reinitialize(eAIType aiType, unsigned int mapNumber);
+    void reinitialize(eGameMode aiType, unsigned int mapNumber);
 
     void update(float fTimeInSeconds);
 
-    eAIType getAIType() const { return m_eAIType; }
+    eGameMode getAIType() const { return m_eAIType; }
 private:
     AIManager();
 
@@ -60,7 +60,7 @@ private:
     void executeAction(HovercraftEntity *bot, const Action &a);
     bool shouldMove(const HovercraftEntity *bot, const Action &a) const;
 
-    eAIType m_eAIType;
+    eGameMode m_eAIType;
 };
 
 
