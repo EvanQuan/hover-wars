@@ -390,6 +390,8 @@ void GameInterface::renderOverride()
     // renderText("Hello World!", 250.0f, 250.0f, 1.0f, vec3(1.0f));
     renderGameTime();
     renderScores();
+    renderTeamBotScore();
+    renderTeamPlayerScore();
     renderCooldowns();
     renderKillsAndDeaths();
     renderMessages();
@@ -586,11 +588,35 @@ void GameInterface::renderKillsAndDeaths()
 
 void GameInterface::renderTeamPlayerScore()
 {
-
+    string score;
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        score = "Player team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+        renderText(score,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
+           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
+           SCORE_SCALE,
+           COLOR_WHITE);
+        break;
+    }
 }
 
 void GameInterface::renderTeamBotScore()
 {
+    string score;
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE));
+        renderText(score,
+           m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].first,
+           m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].second,
+           SCORE_SCALE,
+           GAME_MANAGER->getHovercraftColor(HOVERCRAFT_BOT_1));
+        break;
+    }
 }
 
 void GameInterface::renderScores()
@@ -600,7 +626,8 @@ void GameInterface::renderScores()
     renderText(m_eHovercraftToString.at(m_eHovercraftFocus) + ": " + score,
                m_vComponentCoordinates[COMPONENT_SCORE].first,
                m_vComponentCoordinates[COMPONENT_SCORE].second,
-               SCORE_SCALE, GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
+               SCORE_SCALE,
+               GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
 }
 
 void GameInterface::updateCooldowns()
