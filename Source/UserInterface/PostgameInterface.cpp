@@ -368,6 +368,40 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
 
 void PostgameInterface::renderPlayersVsBots()
 {
+    int placements = 0;
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
+    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
+
+    if (teamBotScore > teamPlayerScore) // Humans win by default on tie, get rekt bots
+    {
+        renderImage(IMAGE_BOT_TEAM,
+            m_vComponentCoordinates[placements].first,
+            m_vComponentCoordinates[placements].second,
+            1.0f);
+        renderScore(placements, teamBotScore);
+        placements++;
+        renderImage(IMAGE_PLAYER_TEAM,
+            m_vComponentCoordinates[placements].first,
+            m_vComponentCoordinates[placements].second,
+            1.0f);
+        renderScore(placements, teamPlayerScore);
+    }
+    else
+    {
+        renderImage(IMAGE_PLAYER_TEAM,
+            m_vComponentCoordinates[placements].first,
+            m_vComponentCoordinates[placements].second,
+            1.0f);
+        renderScore(placements, teamPlayerScore);
+        placements++;
+        renderImage(IMAGE_BOT_TEAM,
+            m_vComponentCoordinates[placements].first,
+            m_vComponentCoordinates[placements].second,
+            1.0f);
+        renderScore(placements, teamBotScore);
+    }
+
+
 }
 
 
