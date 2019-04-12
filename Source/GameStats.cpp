@@ -653,7 +653,8 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
 */
 void GameStats::increaseCurrentTotalKillstreak(eHovercraft hovercraft)
 {
-    stats[hovercraft][KILLSTREAK_CURRENT]++;
+    stats[hovercraft][KILLSTREAK_CURRENT] = FuncUtils::max(1, stats[hovercraft][KILLSTREAK_CURRENT] + 1);
+    cout << hovercraft << " killstreak increase to " << stats[hovercraft][KILLSTREAK_CURRENT] << endl;
     updateLargestTotalKillstreak(hovercraft);
 }
 
@@ -681,6 +682,7 @@ int GameStats::getCurrentKillstreakAgainst(eHovercraft attacker, eHovercraft hit
 */
 void GameStats::resetKillstreak(eHovercraft hit, eHovercraft attacker)
 {
+    cout << hit << " killstreak before "  << stats[hit][KILLSTREAK_CURRENT] << endl;
     // Reset current total killstreak
     if (stats[hit][KILLSTREAK_CURRENT] > 0)
     {
