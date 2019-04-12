@@ -133,7 +133,7 @@ GameInterface::GameInterface() : UserInterface(
         // 10 Resume game countdown
         {0.0f, 0.0f},
         // 11 Kill/deaths
-        {0.0f, -12.0f},
+        {0.0f, -44.0f},
         // 12 Player
         {0.0f, 0.0f},
     }
@@ -639,8 +639,13 @@ void GameInterface::renderComponent(eUIComponent component, GLfloat scale, vec3 
 
 void GameInterface::renderPlayerNumber()
 {
-    string playerNumber = "Player " + 
-    renderText()
+    string playerNumber = "Player " + to_string(m_eHovercraftFocus + 1);
+    vec3 color = GAME_MANAGER->getPlayerColor(m_eHovercraftFocus);
+    renderText(playerNumber,
+        m_vComponentCoordinates[COMPONENT_PLAYER_NUMBER].first,
+        m_vComponentCoordinates[COMPONENT_PLAYER_NUMBER].second,
+        1.0f,
+        color);
 }
 
 /*
