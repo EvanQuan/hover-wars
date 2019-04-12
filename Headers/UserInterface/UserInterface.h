@@ -84,6 +84,7 @@
 #define IMAGE_GAMEMODE_2 "textures/menu/game_mode2.png"
 #define IMAGE_FREE_FOR_ALL "textures/menu/free_for_all2.png"
 #define IMAGE_BOT_TEAM "textures/menu/bot_team2.png"
+#define IMAGE_PLAYER_TEAM "textures/menu/player_team2.png"
 // #define IMAGE_BOT_TEAM IMAGE_10_MIN
 #define IMAGE_BOT_VS_PLAYERS "textures/menu/bots_vs_players2.png"
 #define IMAGE_SCORE_LOSS_1 "textures/menu/score_loss.png"

@@ -632,11 +632,28 @@ void GameInterface::renderKillstreak()
         SCORE_SCALE,
         COLOR_WHITE);
     int killstreak = GAME_STATS->get(m_eHovercraftFocus, GameStats::eHovercraftStat::KILLSTREAK_CURRENT);
-    renderText(killstreak,
+    string message;
+    vec3 color;
+    if (killstreak > 0)
+    {
+        message = "+" + to_string(killstreak);
+        color = COLOR_GREEN;
+    }
+    else if (killstreak < 0)
+    {
+        message = to_string(killstreak);
+        color = COLOR_RED;
+    }
+    else
+    {
+        message = to_string(killstreak);
+        color = COLOR_WHITE;
+    }
+    renderText(message,
         m_vComponentCoordinates[COMPONENT_KILLSTREAK].first + 200,
         m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
         SCORE_SCALE,
-        killstreak > 0 ? COLOR_GREEN : COLOR_WHITE);
+        color);
 }
 
 void GameInterface::renderScores()

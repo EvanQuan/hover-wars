@@ -1287,6 +1287,8 @@ void HovercraftEntity::reflectRocket(mat4 &transform, quat& qRotation)
 
     // Trigger the Action to be handled on update.
     queuedActions[QUEUED_REFLECT] = true;
+
+    m_pGameStats->reflectRocket(m_eHovercraft);
 }
 
 void HovercraftEntity::correspondToEHovercraft(eHovercraft hovercraft)
