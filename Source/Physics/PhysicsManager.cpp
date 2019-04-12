@@ -747,11 +747,13 @@ glm::vec3 PhysicsManager::getNormVector(int x, int y) {
 
 }
 float PhysicsManager::getClosestNormalOnHeightMapDotProduct(glm::vec3 pos,glm::vec3 norm) {
-    float fTileMid = tileDistance + (static_cast<float>(tileNum) * 0.5f);
-    int XindexFloor = floor(pos.x / fTileMid);
-    int XindexCeil = ceil(pos.x / fTileMid);
-    int YindexFloor = floor(pos.z / fTileMid);
-    int YindexCeil = ceil(pos.z / fTileMid);
+    float fTileMid = (static_cast<float>(tileNum) * 0.5f);
+    float fX = (pos.x / tileDistance) + fTileMid;
+    float fZ = (pos.z / tileDistance) + fTileMid;
+    int XindexFloor =   static_cast<int>(floor(fX));
+    int XindexCeil =    static_cast<int>(ceil(fX));
+    int YindexFloor =   static_cast<int>(floor(fZ));
+    int YindexCeil =    static_cast<int>(ceil(fZ));
     vec3 normalizeFloorXY = getNormVector(XindexFloor,YindexFloor);
     vec3 normalizeCeilXY = getNormVector(XindexCeil, YindexCeil);
     vec3 normalizeFloorXCeilY = getNormVector(XindexFloor, YindexCeil);
@@ -765,15 +767,16 @@ float PhysicsManager::getClosestNormalOnHeightMapDotProduct(glm::vec3 pos,glm::v
             abs(dot(normalizeCeilXFloorY, norm)))); // hey bro i heard you like functions so i put a function in a function in a function in a function so that this would function.
 }
 glm::vec3 PhysicsManager::getClosestNormalOnHeightMap(glm::vec3 pos) {
-    float fTileMid = tileDistance + (static_cast<float>(tileNum) * 0.5f);
-    int Xindex = pos.x / fTileMid;
-    int Yindex = pos.z / fTileMid;
-    vec3 diff1 = getPointAt(Xindex + 1, Yindex) - getPointAt(Xindex, Yindex);
-    vec3 diff2 = getPointAt(Xindex, Yindex + 1) - getPointAt(Xindex, Yindex);
+    float fTileMid = (static_cast<float>(tileNum) * 0.5f);
+    int Xindex = static_cast<int>((pos.x / tileDistance) + fTileMid);
+    int Yindex = static_cast<int>((pos.z / tileDistance) + fTileMid);
+    vec3 vCurrPoint = getPointAt(Xindex, Yindex);
+    vec3 diff1 = getPointAt(Xindex + 1, Yindex) - vCurrPoint;
+    vec3 diff2 = getPointAt(Xindex, Yindex + 1) - vCurrPoint;
     //std::cout <<"diff1:" << diff1.x << "," << diff1.y << "," << diff1.z << endl;
     //std::cout <<"diff2:"<< diff2.x << "," << diff2.y << "," << diff2.z << endl;
-    vec3 A = cross(diff1, diff2);
-    vec3 B = cross(getPointAt(Xindex - 1, Yindex) - getPointAt(Xindex, Yindex), getPointAt(Xindex, Yindex - 1) - getPointAt(Xindex, Yindex));
+    vec3 A = cross(diff2, diff1);
+    vec3 B = cross(getPointAt(Xindex, Yindex - 1) - vCurrPoint, getPointAt(Xindex - 1, Yindex) - vCurrPoint);
     return normalize(A + B);
 }
 bool PhysicsManager::updateCar(PxVehicleNoDrive *vehicle, float fTimeDelta) {

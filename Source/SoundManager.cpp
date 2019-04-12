@@ -140,8 +140,7 @@ bool SoundManager::handleBaseCollisionSound(eEntityType eColliderType,
             return true;
             break;
         case eEntityType::ENTITY_STATIC:
-        case eEntityType::ENTITY_PLANE:
-            // Collided with Static Entity or Plane, impacted world
+            // Collided with Static Entity, impacted world
             play(eSoundEvent::SOUND_HOVERCAR_IMPACT_WORLD,
                  !colliderIsBot);
             break;

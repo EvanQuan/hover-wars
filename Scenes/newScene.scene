@@ -611,7 +611,7 @@ cube {
     }
     +bounding {
         box
-    20 30 10
+		10 30 10
     }
 	+shader {
         tron_shdr
@@ -627,7 +627,7 @@ cube {
     }
     +bounding {
         box
-    20 60 10
+		10 60 10
     }
 	+shader {
         tron_shdr
@@ -644,7 +644,7 @@ cube {
     }
     +bounding {
         box
-    20 10 100
+		10 10 100
     }
 	+shader {
         tron_shdr
@@ -660,7 +660,7 @@ cube {
     }
     +bounding {
         box
-    20 300 10
+		30 300 10
     }
 	+shader {
         tron_shdr
@@ -678,7 +678,7 @@ cube {
     }
     +bounding {
         box
-    20 10 60
+		10 10 60
     }
 	+shader {
         tron_shdr
@@ -696,7 +696,7 @@ cube {
     }
     +bounding {
         box
-    20 30 10
+		10 30 10
     }
 	+shader {
         tron_shdr
@@ -712,7 +712,7 @@ cube {
     }
     +bounding {
         box
-    20 60 10
+		10 60 10
     }
 	+shader {
         tron_shdr
@@ -729,7 +729,7 @@ cube {
     }
     +bounding {
         box
-    20 10 100
+		10 10 100
     }
 	+shader {
         tron_shdr
@@ -745,7 +745,7 @@ cube {
     }
     +bounding {
         box
-    20 300 10
+		30 300 10
     }
 	+shader {
         tron_shdr
@@ -761,7 +761,7 @@ cube {
     }
     +bounding {
         box
-        1 1 1
+        10 500 500
     }
 	+shader {
         tron_shdr

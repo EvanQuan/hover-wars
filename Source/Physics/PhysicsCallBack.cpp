@@ -50,57 +50,45 @@ void PhysicsCallBack::onContact(const PxContactPairHeader &pairHeader, const PxC
                 // Parse Names
                 istringstream HitterSS(sCollider);
                 vector<string> HitterResults(istream_iterator<string>{HitterSS},
-                                             istream_iterator<string>());
+                    istream_iterator<string>());
                 // istringstream VictimSS(sCollided);
                 istringstream VictimSS(sCollided);
                 vector<string> VictimResults(istream_iterator<string>{VictimSS},
-                                             istream_iterator<string>());
+                    istream_iterator<string>());
 
                 // Get Entity IDs
                 // The ground has its own special ID since its not treated the same
                 // as the other entities
                 // @NOTE this crashes when sCollider == ""
                 try {
-                    iColliderID = (HitterResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(HitterResults.front()));
-                    iCollidedID = (VictimResults.front().front() == C_SUBTYPE_GROUND ? GROUND_ID : stoi(VictimResults.front()));
+                    if (!HitterResults.empty() && !VictimResults.empty())
+                    {
+                        iColliderID = stoi(HitterResults.front());
+                        iCollidedID = stoi(VictimResults.front());
+                    }
+                    else
+                        continue; // Skip this collision if it's unreadable.
                 }
                 catch (invalid_argument e)
                 {
-                    continue;
+                    continue; // Skip this collision if it's unreadable
                 }
                 unsigned int iColliderMsg = 0, iCollidedMsg = 0;
 
-                // Simply play sound when collided with ground
-                if (GROUND_ID == iCollidedID || GROUND_ID == iColliderID)
-                {
-                    // Do not play ground collision sounds
-                    // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_IMPACT_WORLD);
-                    // cout << iColliderID << " collided with " << iCollidedID << endl;
-                }
-                else    // Tell the Entity Manager to Dispatch the  Collision between the two colliding entities
-                {
+#ifndef NDEBUG
+                // Player 1: 11
+                // Bot 1: 14
+                // std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
+                // std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
+#endif
+                // Catch Messages if available.
+                if (HitterResults.size() > 1)
+                    iColliderMsg = stoi(HitterResults[1]);
+                if (VictimResults.size() > 1)
+                    iCollidedMsg = stoi(VictimResults[1]);
 
-    #ifndef NDEBUG
-                    // Player 1: 11
-                    // Bot 1: 14
-                    // std::cout << "\tactor 0: " << HitterResults.front() << std::endl;
-                    // std::cout << "\tactor 1: " << VictimResults.front() << std::endl;
-    #endif
-                    // Catch Messages if available.
-                    if (HitterResults.size() > 1)
-                        iColliderMsg = stoi(HitterResults[1]);
-                    if (VictimResults.size() > 1)
-                        iCollidedMsg = stoi(VictimResults[1]);
-
-                    // Pass information to Entity Manager to handle collision
-                    m_pEntMngr->dispatchCollision(iColliderID, iCollidedID, iColliderMsg, iCollidedMsg);
-                }
-            }
-            else
-            {
-                cout << "detected improper names:" << endl
-                    << "\tsCollider \"" << sCollider << "\"" << endl
-                    << "\tsCollided \"" << sCollided << "\"" << endl;
+                // Pass information to Entity Manager to handle collision
+                m_pEntMngr->dispatchCollision(iColliderID, iCollidedID, iColliderMsg, iCollidedMsg);
             }
         }
     }
