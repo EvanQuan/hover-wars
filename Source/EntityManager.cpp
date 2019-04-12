@@ -498,13 +498,18 @@ void EntityManager::generateStaticMesh(const ObjectInfo* pObjectProperties, cons
 Generate a Player Entity at a starting position with a given Material, scale,
 mesh location and shader type.
 */
-void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, const vec3* vColor, float fScale, const string& sShaderType)
+void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties,
+                                         const string& sMeshLocation,
+                                         const vec3* vColor, float fScale,
+                                         const string& sShaderType)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize Player Entity.
-    unique_ptr<HovercraftEntity> pNewPlayer = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
+    unique_ptr<HovercraftEntity> pNewPlayer = make_unique<HovercraftEntity>(iNewEntityID,
+                                                                            &pObjectProperties->vPosition,
+                                                                            *vColor);
     pNewPlayer->initialize(sMeshLocation, pObjectProperties, sShaderType, vColor, fScale);
 
     // Store Player Entity In Player Entity List as well as Master Entity List.
@@ -517,13 +522,18 @@ void EntityManager::generatePlayerEntity(const ObjectInfo* pObjectProperties, co
 Generate a Bot Entity at a starting position with a given Material, scale,
 mesh location and shader type.
 */
-void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties, const string& sMeshLocation, const vec3* vColor, float fScale, const string& sShaderType)
+void EntityManager::generateBotEntity(const ObjectInfo* pObjectProperties,
+                                      const string& sMeshLocation,
+                                      const vec3* vColor, float fScale,
+                                      const string& sShaderType)
 {
     // Get a new ID for this Entity.
     int iNewEntityID = getNewEntityID();
 
     // Generate and Initialize a new Bot Entity
-    unique_ptr<HovercraftEntity> pNewBot = make_unique<HovercraftEntity>(iNewEntityID, &pObjectProperties->vPosition);
+    unique_ptr<HovercraftEntity> pNewBot = make_unique<HovercraftEntity>(iNewEntityID,
+                                                                         &pObjectProperties->vPosition,
+                                                                         *vColor);
     pNewBot->initialize(sMeshLocation, pObjectProperties, sShaderType, vColor, fScale);
 
     // Store Bot Entity in Bot Entity List as well as Master Entity List

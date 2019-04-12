@@ -227,7 +227,11 @@ void SceneLoader::createCube(vector< string > sData, int iLength)
 vec3 SceneLoader::createPlayer(unsigned int iPlayerNumber, const vec3* vColor)
 {
     getNextSpawnPoint(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition);
-    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation, vColor, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty, m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
+    m_pEntityManager->generatePlayerEntity(&m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties,
+                                           m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sMeshLocation,
+                                           vColor,
+                                           m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].fScaleProperty,
+                                           m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].sShaderProperty);
 
     // Return starting position
     return m_sProperties[PLAYER_1_PROPERTIES + iPlayerNumber].pObjectProperties.vPosition;

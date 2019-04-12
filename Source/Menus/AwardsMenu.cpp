@@ -28,12 +28,17 @@ Menu* AwardsMenu::getInstance()
     return m_pInstance;
 }
 
+void AwardsMenu::back()
+{
+    nextMenu(PostgameMenu::getInstance());
+}
+
 void AwardsMenu::select(eFixedCommand command)
 {
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
-        nextMenu(PostgameMenu::getInstance());
+        back();
         break;
     }
 }

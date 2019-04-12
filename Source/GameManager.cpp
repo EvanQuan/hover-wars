@@ -34,6 +34,7 @@
  * Constants *
 \*************/
 const unsigned int FOUR_VEC4 = (sizeof(vec4) << 2);
+
 const vec3 COLORS[MAX_HOVERCRAFT_COUNT]{
     // Player colours should be very distinct from each other and stand out
     vec3(1.0f, 0.0784313725490196f, 0.5764705882352941f),             //PLAYER 4 - Pink
@@ -253,20 +254,73 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
 }
 
-void GameManager::spawnPlayers(unsigned int playerCount)
+/*
+    Spawn hovercrafts of the specified player and bot count. Depending on the
+    AI type, the bots may share a team color.
+*/
+void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eAIType aiType)
+{
+    // Load all colors into a set to pick from.
+    vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));
+    unsigned int iIndex;
+    // Shuffle all the solo colors for players
+    m_vPlayerColors.clear();
+    for (int i = 0; i < MAX_PLAYER_COUNT; ++i)
+    {
+        // Get a random Index
+        iIndex = rand() % vColors.size();
+
+        // Store Player Color
+        m_vPlayerColors.push_back(vColors[iIndex]);
+
+        // Remove Chosen Color for next pick.
+        vColors.erase(vColors.begin() + iIndex);
+    }
+
+    m_vBotColors.clear();
+    switch (aiType)
+    {
+    case AI_ON_SAME_TEAM:
+        // If the AI are on the same team, they will all use the same chosen color
+        iIndex = rand() % vColors.size();
+        for (int i = 0; i < MAX_BOT_COUNT; ++i)
+            m_vBotColors.push_back(vColors[iIndex]);
+
+        vColors.erase(vColors.begin() + iIndex);
+        break;
+    case AI_SOLO:
+        // If bots are solo, they wil use the remaining unused colors.
+        for (int i = MAX_PLAYER_COUNT; i < MAX_HOVERCRAFT_COUNT; ++i)
+        {
+            // Get a random Index
+            iIndex = rand() % vColors.size();
+
+            // Store Bot Color
+            m_vBotColors.push_back(vColors[iIndex]);
+
+            // Remove Chosen Color for next pick.
+            vColors.erase(vColors.begin() + iIndex);
+        }
+        break;
+    }
+    spawnPlayers(playerCount, m_vPlayerColors);
+    spawnBots(botCount, m_vBotColors);
+}
+
+void GameManager::spawnPlayers(unsigned int playerCount, const vector<vec3> &colors)
 {
     for (unsigned int i = 0; i < playerCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createPlayer(i, &COLORS[i]));
-        m_vColors.push_back(COLORS[i]);
+        m_vPositions.push_back(SCENE_LOADER->createPlayer(i, &colors[i]));
+        m_vColors.push_back(colors[i]);
         generateSplitScreen(i);
     }
 }
 
-void GameManager::spawnBots(unsigned int botCount)
+void GameManager::spawnBots(unsigned int botCount, const vector<vec3> &colors)
 {
     for (unsigned int i = 0; i < botCount; i++) {
-        m_vPositions.push_back(SCENE_LOADER->createBot(&COLORS[MAX_PLAYER_COUNT + i]));
-        m_vColors.push_back(COLORS[MAX_PLAYER_COUNT + i]);
+        m_vPositions.push_back(SCENE_LOADER->createBot(&colors[i]));
+        m_vColors.push_back(colors[i]);
     }
 }
 
@@ -413,8 +467,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
 
     calculateScreenDimensions(playerCount);
 
-    spawnPlayers(playerCount);
-    spawnBots(botCount);
+    spawnHovercrafts(playerCount, botCount, aiType);
 
     setupMapData();
 

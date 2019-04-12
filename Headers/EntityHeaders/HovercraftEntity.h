@@ -41,7 +41,7 @@ class HovercraftEntity :
 {
 public:
 
-    HovercraftEntity(int iID, const vec3* vPosition);
+    HovercraftEntity(int iID, const vec3* vPosition, const vec3 &vColor);
     virtual ~HovercraftEntity();
 
     // Implementation of inherited functionality
@@ -163,6 +163,8 @@ public:
     bool hasCollisionEventHappened = false;
     eHovercraft getLastAttackerBot();
     eAbility getLastAbilityBot();
+
+    vec3 getColor() const { return m_vColor; }
 private:
     eHovercraft lastAttacker;
     eAbility lastAbility;
@@ -321,4 +323,6 @@ private:
     // Used to determine if the hovercraft is a bot or player
     eHovercraft m_eHovercraft;
     bool m_bIsPlayer;
+
+    vec3 m_vColor;
 };
