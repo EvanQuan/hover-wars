@@ -98,12 +98,14 @@ GameStats::~GameStats()
 void GameStats::reinitialize(int playerCount,
     int botCount,
     eGameMode aiType,
-    eBotDifficulty botDifficulty)
+    eBotDifficulty botDifficulty,
+    bool scoreLossEnabled)
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
     m_eGameMode = aiType;
     m_eBotDifficulty = botDifficulty;
+    m_bScoreLossEnabled = scoreLossEnabled;
     switch (m_eBotDifficulty)
     {
     case DIFFICULTY_EASY:
@@ -457,6 +459,10 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
 */
 int GameStats::getScoreLostForHit(eHovercraft attacker, eHovercraft hit) const
 {
+    if (!m_bScoreLossEnabled)
+    {
+        return 0;
+    }
     int basePoints = POINTS_LOST_GOT_HIT;
     int killstreakBonus = POINTS_LOST_PER_KILLSTREAK * stats[hit][KILLSTREAK_CURRENT];
     int totalPointsLost = basePoints + killstreakBonus;
