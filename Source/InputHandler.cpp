@@ -537,12 +537,12 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
     for (int button = 0; button < m_pJoystickData[joystickID].iButtonCount; button++)
     {
         if (m_pJoystickData[joystickID].pRawButtons[button] == GLFW_PRESS
-            && m_pJoystickData[joystickID].pRawButtons[button] != INPUT_PRESSED)
+            && m_pJoystickData[joystickID].eButtonState[button] != INPUT_PRESSED)
         {
             m_pJoystickData[joystickID].eButtonState[button] = INPUT_JUST_PRESSED;
         }
         else if (m_pJoystickData[joystickID].pRawButtons[button] == GLFW_RELEASE
-            && m_pJoystickData[joystickID].pRawButtons[button] != INPUT_RELEASED)
+            && m_pJoystickData[joystickID].eButtonState[button] != INPUT_RELEASED)
         {
             m_pJoystickData[joystickID].eButtonState[button] = INPUT_JUST_RELEASED;
         }

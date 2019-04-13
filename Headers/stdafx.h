@@ -110,7 +110,7 @@ using namespace physx;
 #define AXIS_LEFT_TRIGGER        4
 #define AXIS_RIGHT_TRIGGER       5
 
-#define PS4_MASK                 0x80
+#define PS4_MASK                 0x80000000
 #define PS4_BUTTON_X             1
 #define PS4_BUTTON_O             2
 #define PS4_BUTTON_SQUARE        0
