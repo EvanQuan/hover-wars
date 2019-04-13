@@ -5,15 +5,15 @@ class GameManager;
 class EntityManager;
 
 /*
-Receives and stores user input (mouse, keyboard and controller).
+    Receives and stores user input (mouse, keyboard and controller).
 */
 class InputHandler final
 {
 public:
 
     /*
-    The states of joystick buttons. This is for expanding on joystick states,
-    as GLFW does not give this information.
+        The states of joystick buttons. This is for expanding on joystick
+        states, as GLFW does not give this information.
     */
     enum eInputState
     {
@@ -57,18 +57,18 @@ public:
     }
 
     /*
-    Keyboard
+        Keyboard
 
-    Hold the states of pressed, just pressed, and just released keys.
-    Valid input states:
-        INPUT_PRESSED
-        INPUT_JUST_PRESSED
-        INPUT_JUST_RELEASED
+        Hold the states of pressed, just pressed, and just released keys.
+        Valid input states:
+            INPUT_PRESSED
+            INPUT_JUST_PRESSED
+            INPUT_JUST_RELEASED
 
-    Keys that are INPUT_RELEASED will not be present in the map.
+        Keys that are INPUT_RELEASED will not be present in the map.
 
-    Key: glfw key values
-    Value: state of the key
+        Key: glfw key values
+        Value: state of the key
     */
     map<int, eInputState> m_keys;
 

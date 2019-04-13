@@ -22,11 +22,11 @@
 // size 30
 // effect 'Style-Neon'
 // color 00FCFF and FF00E1
-#define IMAGE_MENU_0 "textures/menu/menu_0.png"
-#define IMAGE_MENU_1 "textures/menu/menu_1.png"
-#define IMAGE_MENU_2 "textures/menu/menu_2.png"
-#define IMAGE_MENU_3 "textures/menu/menu_3.png"
-#define IMAGE_MENU_4 "textures/menu/menu_4.png"
+#define IMAGE_MENU_0 "textures/menu/0.png"
+#define IMAGE_MENU_1 "textures/menu/1.png"
+#define IMAGE_MENU_2 "textures/menu/2.png"
+#define IMAGE_MENU_3 "textures/menu/3.png"
+#define IMAGE_MENU_4 "textures/menu/4.png"
 #define IMAGE_0 "textures/menu/0.png"
 #define IMAGE_1 "textures/menu/1.png"
 #define IMAGE_2 "textures/menu/2.png"
@@ -114,7 +114,7 @@
 #define IMAGE_BOT_3 "textures/menu/bot3.png"
 #define IMAGE_BOT_4 "textures/menu/bot4.png"
 #define IMAGE_NUMBER_1 "textures/menu/number_1.png"
-#define IMAGE_NUMBER_2 "textures/menu/number_2.png"
+#define IMAGE_NUMBER_2 "textures/menu/number_2.png" // for some reason, grey or silver causees rendering issues
 #define IMAGE_NUMBER_3 "textures/menu/number_3.png"
 #define IMAGE_POINT "textures/menu/pts.png"
 
@@ -147,24 +147,20 @@ public:
     ~UserInterface();
 
     /*
-    This visually updates the UserInterface to all value changes since last update.
-    
-    Under the scenes, this retrieves all needed the values from GameStats and
-    displays them. This is why it does not need a time value in order to determine
-    time-sensitive information such as cooldown and game time.
-    @TODO this may change later on.
-    
-    This should be called once per frame update.
-    
+        This visually updates the UserInterface to all value changes since last update.
+        
+        Under the scenes, this retrieves all needed the values from GameStats and
+        displays them. This is why it does not need a time value in order to determine
+        time-sensitive information such as cooldown and game time.
+        @TODO this may change later on.
+        
+        This should be called once per frame update.
     */
     virtual void update(float fDeltaTime) final {
         m_fGlobalMessageTime -= fDeltaTime;
         updateOverride(fDeltaTime);
         renderGlobalMessage();
     }
-
-    virtual void updateOverride(float fFrameDeltaTime) = 0;
-
 
     virtual void reinitialize(float gameTime) = 0;
 
@@ -185,6 +181,8 @@ protected:
                   vector<pair<float, float>> componentTranslating);
     UserInterface(const UserInterface* pCopy);            // Default Copy Constructor
     UserInterface& operator=(const UserInterface* pCopy); // Assignment Operator.
+
+    virtual void updateOverride(float fFrameDeltaTime) = 0;
 
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
@@ -214,7 +212,10 @@ protected:
         there is a window resize event, these values are all recalculated.
     */
     vector<pair<float, float>> m_vComponentCoordinates;
-
+    /*
+        Every hovercraft has a corresponding name. If the UI ever needs to user
+        a hovercraft's name, it should use this.
+    */
     const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
     {
         {HOVERCRAFT_BOT_1, "Alfa Bot"},

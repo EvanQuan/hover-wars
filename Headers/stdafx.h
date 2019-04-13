@@ -228,7 +228,7 @@ const std::unordered_map<string, eBoundingBoxTypes> BOUNDING_BOX_MAP =
 };
 
 /* Manager Defines */
-#define COMMAND_HANDLER     CommandHandler::getInstance()
+#define MENU_MANAGER        MenuManager::getInstance()
 #define EMITTER_ENGINE      EmitterEngine::getInstance()
 #define ENTITY_MANAGER      EntityManager::getInstance()
 #define GAME_MANAGER        GameManager::getInstance()

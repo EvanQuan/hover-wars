@@ -1,7 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/RulesMenu.h"
 #include "UserInterface/RulesInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 RulesMenu* RulesMenu::m_pInstance = nullptr;
@@ -13,7 +13,7 @@ RulesMenu::RulesMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* RulesMenu::getInstance()
@@ -39,9 +39,8 @@ void RulesMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void RulesMenu::enter()
+void RulesMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->getWidth(),
                                                                     m_pGameManager->getHeight()));
 }

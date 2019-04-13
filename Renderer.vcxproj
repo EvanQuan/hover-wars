@@ -17,7 +17,7 @@
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
-    <ClInclude Include="Headers\CommandHandler.h" />
+    <ClInclude Include="Headers\Menus\MenuManager.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
     <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
@@ -68,6 +68,7 @@
     <ClInclude Include="Headers\Menus\PregameMenu.h" />
     <ClInclude Include="Headers\Menus\PromptMenu.h" />
     <ClInclude Include="Headers\Menus\RulesMenu.h" />
+    <ClInclude Include="Headers\Menus\SettingsMenu.h" />
     <ClInclude Include="Headers\Menus\StartMenu.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
@@ -92,7 +93,7 @@
     <ClInclude Include="Headers\UserInterface\GameInterface.h" />
     <ClInclude Include="Headers\UserInterface\LoadingInterface.h" />
     <ClInclude Include="Headers\UserInterface\MainInterface.h" />
-    <ClInclude Include="Headers\UserInterface\MenuInterface.h" />
+    <ClInclude Include="Headers\UserInterface\PromptInterface.h" />
     <ClInclude Include="Headers\UserInterface\PauseInterface.h" />
     <ClInclude Include="Headers\UserInterface\PostgameInterface.h" />
     <ClInclude Include="Headers\UserInterface\PregameInterface.h" />
@@ -103,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp" />
-    <ClCompile Include="Source\CommandHandler.cpp" />
+    <ClCompile Include="Source\Menus\MenuManager.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
     <ClCompile Include="Source\EmitterEngine.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Source\Menus\PregameMenu.cpp" />
     <ClCompile Include="Source\Menus\PromptMenu.cpp" />
     <ClCompile Include="Source\Menus\RulesMenu.cpp" />
+    <ClCompile Include="Source\Menus\SettingsMenu.cpp" />
     <ClCompile Include="Source\Menus\StartMenu.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
@@ -167,7 +169,7 @@
     <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\LoadingInterface.cpp" />
     <ClCompile Include="Source\UserInterface\MainInterface.cpp" />
-    <ClCompile Include="Source\UserInterface\MenuInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\PromptInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PauseInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PostgameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PregameInterface.cpp" />

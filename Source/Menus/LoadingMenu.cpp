@@ -1,7 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/LoadingMenu.h"
 #include "UserInterface/LoadingInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 LoadingMenu* LoadingMenu::m_pInstance = nullptr;
@@ -13,7 +13,7 @@ LoadingMenu::LoadingMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* LoadingMenu::getInstance()
@@ -28,8 +28,7 @@ void LoadingMenu::select(eFixedCommand command)
 {
 }
 
-void LoadingMenu::enter()
+void LoadingMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(LoadingInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }

@@ -16,7 +16,7 @@ PostgameInterface* PostgameInterface::m_pInstance = nullptr;
 
                         Main Menu
 */
-PostgameInterface::PostgameInterface() : MenuInterface(
+PostgameInterface::PostgameInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

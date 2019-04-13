@@ -20,5 +20,5 @@ private:
     static MainMenu* m_pInstance;
 
     // @Override
-    void enter();
+    void enterOverride();
 };

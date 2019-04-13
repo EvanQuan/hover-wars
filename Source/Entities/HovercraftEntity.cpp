@@ -50,8 +50,8 @@
 
     Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        5.0f
-#define SPIKES_BASE_COOLDOWN        5.0f
+#define ROCKET_BASE_COOLDOWN        4.0f
+#define SPIKES_BASE_COOLDOWN        4.0f
 #define TRAIL_COOLDOWN              0.0f
 // Cooldown between dash usages
 #define DASH_BASE_COOLDOWN          0.5f

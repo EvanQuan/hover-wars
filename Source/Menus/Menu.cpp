@@ -1,5 +1,5 @@
 #include "Menus/Menu.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 Menu::Menu(
     unordered_map<int, eFixedCommand> pressedKeyToFixedCommand,
@@ -30,11 +30,11 @@ Menu::~Menu()
 }
 
 /*
-Change the CommandHandler's next menu
+Change the MenuManager's next menu
 */
 void Menu::nextMenu(Menu* next)
 {
-    COMMAND_HANDLER->setCurrentMenu(next);
+    MENU_MANAGER->setCurrentMenu(next);
 }
 
 // Toggles Wireframe drawing

@@ -2,12 +2,13 @@
 #include "Menus/StartMenu.h"
 #include "Menus/PregameMenu.h"
 #include "Menus/ControlsMenu.h"
+#include "Menus/SettingsMenu.h"
 #include "Menus/RulesMenu.h"
 #include "UserInterface/PregameInterface.h"
 #include "UserInterface/RulesInterface.h"
 #include "UserInterface/ControlsInterface.h"
 #include "UserInterface/MainInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 MainMenu* MainMenu::m_pInstance = nullptr;
@@ -24,13 +25,16 @@ MainMenu::MainMenu() : PromptMenu(
         {
             {"Controls", eFixedCommand::COMMAND_PROMPT_SELECT_2},
         },
+        // {
+            // {"Settings", eFixedCommand::COMMAND_PROMPT_SELECT_3},
+        // },
         {
             {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW},
         },
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* MainMenu::getInstance()
@@ -54,6 +58,9 @@ void MainMenu::select(eFixedCommand command)
     case COMMAND_PROMPT_SELECT_2:
         nextMenu(ControlsMenu::getInstance());
         break;
+    case COMMAND_PROMPT_SELECT_3:
+        nextMenu(SettingsMenu::getInstance());
+        break;
     case COMMAND_CLOSE_WINDOW:
         PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);
         break;
@@ -66,8 +73,7 @@ void MainMenu::back()
     nextMenu(StartMenu::getInstance());
 }
 
-void MainMenu::enter()
+void MainMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }

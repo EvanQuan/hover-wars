@@ -1,7 +1,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/StartMenu.h"
 #include "UserInterface/StartInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 StartMenu* StartMenu::m_pInstance = nullptr;
@@ -13,7 +13,7 @@ StartMenu::StartMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* StartMenu::getInstance()
@@ -29,14 +29,14 @@ void StartMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_INSERT_COIN);
         nextMenu(MainMenu::getInstance());
         break;
     }
 }
 
-void StartMenu::enter()
+void StartMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(StartInterface::getInstance(m_pGameManager->getWidth(),
                                                                    m_pGameManager->getHeight()));
 }

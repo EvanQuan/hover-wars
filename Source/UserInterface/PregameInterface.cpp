@@ -5,7 +5,7 @@
 // Singleton instance
 PregameInterface* PregameInterface::m_pInstance = nullptr;
 
-PregameInterface::PregameInterface() : MenuInterface(
+PregameInterface::PregameInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

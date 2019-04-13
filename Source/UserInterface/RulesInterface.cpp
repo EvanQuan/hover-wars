@@ -5,7 +5,7 @@
 // Singleton instance
 RulesInterface* RulesInterface::m_pInstance = nullptr;
 
-RulesInterface::RulesInterface() : MenuInterface(
+RulesInterface::RulesInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

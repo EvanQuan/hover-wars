@@ -3,7 +3,7 @@
 #include "Menus/PostgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/AwardsInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 AwardsMenu* AwardsMenu::m_pInstance = nullptr;
@@ -18,7 +18,7 @@ AwardsMenu::AwardsMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* AwardsMenu::getInstance()
@@ -44,9 +44,8 @@ void AwardsMenu::select(eFixedCommand command)
     }
 }
 
-void AwardsMenu::enter()
+void AwardsMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(AwardsInterface::getInstance(m_pGameManager->getWidth(),
                                                                    m_pGameManager->getHeight()));
 }

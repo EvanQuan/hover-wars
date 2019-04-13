@@ -90,6 +90,8 @@ public:
         SOUND_UI_RESUME_COUNTDOWN,
         // For controller connecting
         SOUND_UI_CONTROLLER_CONNECT,
+
+        SOUND_UI_INSERT_COIN,
     };
 
     void play(eSoundEvent sound);
@@ -339,6 +341,8 @@ private:
         {SOUND_UI_RESUME_COUNTDOWN,        { "event:/ui/notification/countdown_tick",
                                          }},
         {SOUND_UI_CONTROLLER_CONNECT,    { "event:/ui/notification/controller_connect",
+                                         }},
+        {SOUND_UI_INSERT_COIN,           { "event:/ui/insert_coin",
                                          }},
     };
 };

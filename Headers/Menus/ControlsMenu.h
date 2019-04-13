@@ -19,7 +19,7 @@ private:
     void back();
 
     // @Override
-    void enter();
+    void enterOverride();
 
     static ControlsMenu* m_pInstance;
 };

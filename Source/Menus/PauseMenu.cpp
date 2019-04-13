@@ -2,7 +2,7 @@
 #include "Menus/GameMenu.h"
 #include "Menus/MainMenu.h"
 #include "UserInterface/PauseInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 PauseMenu* PauseMenu::m_pInstance = nullptr;
@@ -19,7 +19,7 @@ PauseMenu::PauseMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* PauseMenu::getInstance()
@@ -49,9 +49,8 @@ void PauseMenu::back()
     select(eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE);
 }
 
-void PauseMenu::enter()
+void PauseMenu::enterOverride()
 { 
-    PromptMenu::enter();
     GAME_MANAGER->setPaused(true);
     m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
                                                                    m_pGameManager->getHeight()));

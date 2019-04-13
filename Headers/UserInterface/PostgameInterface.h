@@ -1,12 +1,12 @@
 #pragma once
-#include "UserInterface/MenuInterface.h"
+#include "UserInterface/PromptInterface.h"
 
 #define BACK_TO_MAIN_MENU_OPTION "Return to Main Menu"
 #define AWARDS_OPTION "Awards"
 
 struct EndGameStat;
 
-class PostgameInterface final : public MenuInterface
+class PostgameInterface final : public PromptInterface
 {
 public:
 

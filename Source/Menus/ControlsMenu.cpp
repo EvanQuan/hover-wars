@@ -1,6 +1,6 @@
 #include "Menus/MainMenu.h"
 #include "Menus/ControlsMenu.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 #include "UserInterface/ControlsInterface.h"
 
 // Singleton instance
@@ -13,7 +13,7 @@ ControlsMenu::ControlsMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* ControlsMenu::getInstance()
@@ -39,9 +39,8 @@ void ControlsMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void ControlsMenu::enter()
+void ControlsMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(ControlsInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }
 

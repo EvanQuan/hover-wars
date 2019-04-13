@@ -8,9 +8,9 @@
 // Forward Declarations
 class AIManager;
 class EntityManager;
-class CommandHandler;
+class MenuManager;
 class ShaderManager;
-class MenuInterface;
+class PromptInterface;
 class UserInterface;
 class GameInterface;
 class GameStats;
@@ -57,7 +57,7 @@ public:
     void setPaused(bool paused);
 
     void addInterface(UserInterface* ui);
-    void setCurrentInterface(MenuInterface* ui);
+    void setCurrentInterface(PromptInterface* ui);
 
     // Automatically called at end of game if time runs out, or if ended thrugh
     // pause menu
@@ -65,7 +65,7 @@ public:
 
     void flagWindowToClose() { glfwSetWindowShouldClose(m_pWindow, GL_TRUE); }
 
-    MenuInterface* getMenuInterface() const { return m_pMenuInterface; }
+    PromptInterface* getMenuInterface() const { return m_pMenuInterface; }
 
     vec3 getPlayerColor(eHovercraft player) const { return (int)m_vPlayerColors.size() > (int)player ? m_vPlayerColors.at(player) : vec3(1.0f); }
     vec3 getBotColor(eHovercraft bot) const { return m_vBotColors.empty() ? vec3(1.0f) : m_vBotColors.at(bot - MAX_PLAYER_COUNT); }
@@ -176,12 +176,12 @@ private:
     // Manager Pointers
     EntityManager*      m_pEntityManager;
     ShaderManager*      m_pShaderManager;
-    CommandHandler*     m_pCommandHandler;
+    MenuManager*        m_pMenuManager;
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
     PhysicsManager*     m_pPhysicsManager;
-    MenuInterface*      m_pMenuInterface;
+    PromptInterface*    m_pMenuInterface;
     GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
     SoundManager*       m_pSoundManager;

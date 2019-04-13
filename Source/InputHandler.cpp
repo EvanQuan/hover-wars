@@ -3,7 +3,7 @@
 #include "GameManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityManager.h"
-#include "UserInterface/MenuInterface.h"
+#include "UserInterface/PromptInterface.h"
 #include "SoundManager.h"
 #include "UserInterface/GameInterface.h"
 #include "GameStats.h"
@@ -33,7 +33,7 @@ InputHandler::InputHandler(GLFWwindow *rWindow)
 }
 
 /*
-@return singleton instance
+    @return singleton instance
 */
 InputHandler* InputHandler::getInstance(GLFWwindow *rWindow)
 {
@@ -55,55 +55,55 @@ InputHandler::~InputHandler()
 
 
 /*
-Receives input from keyborad and updates the key status in pressed. Since keys
-are updated through call backs, which may be faster than every frame update,
-we may have multiple key callbacks per frame update. This means, we cannot reliably
-check for just pressed or just released key statuses here.
-NOTE: Keyboard input is read from CommandHandler. All keyboard input processing
-should be done in the CommandHandler, not here.
+    Receives input from keyborad and updates the key status in pressed. Since
+    keys are updated through call backs, which may be faster than every frame
+    update, we may have multiple key callbacks per frame update. This means, we
+    cannot reliably check for just pressed or just released key statuses here.
+    NOTE: Keyboard input is read from MenuManager. All keyboard input
+    processing should be done in the MenuManager, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
     /*
-    Reject unknown keys. We only want to process keys available to standard keyboards.
-    It is fastest to exit early while we can.
+        Reject unknown keys. We only want to process keys available to standard
+        keyboards. It is fastest to exit early while we can.
     */
     if (GLFW_KEY_UNKNOWN == key)
         return;
 
     /*
-    Possible actions:
-           GLFW_RELEASE = 0
-           GLFW_PRESS   = 1
-           GLFW_REPEAT  = 2
+        Possible actions:
+               GLFW_RELEASE = 0
+               GLFW_PRESS   = 1
+               GLFW_REPEAT  = 2
 
-    We can save time by ignoring all GLFW_REPEAT callbacks, as these can be set
-    during input processing.
+        We can save time by ignoring all GLFW_REPEAT callbacks, as these can be
+        set during input processing.
     */
     switch (action)
     {
     case GLFW_PRESS:
         /*
-        Since key callbacks occur at a faster rate than frame updates, both
-        initial key presses and repeated key pressed will be viewed as just
-        pressed until the input is processed for that fram. Only after it is
-        processed, it can be changed to INPUT_PRESSED if the key remains
-        pressed.
+            Since key callbacks occur at a faster rate than frame updates, both
+            initial key presses and repeated key pressed will be viewed as just
+            pressed until the input is processed for that fram. Only after it
+            is processed, it can be changed to INPUT_PRESSED if the key remains
+            pressed.
 
-        We want to make sure that if the key is already pressed and is repeated
-        (ie. the state is INPUT_PRESSED), that we do not override it with
-        INPUT_JUST_PRESSED.
+            We want to make sure that if the key is already pressed and is
+            repeated (ie. the state is INPUT_PRESSED), that we do not override
+            it with INPUT_JUST_PRESSED.
         */
         m_pInstance->m_keys[key] = INPUT_JUST_PRESSED;
         break;
     case GLFW_RELEASE:
         /*
-        As the key has just be released, we keep the key in the map, but note
-        it as just released. This allows us to parse for "just released"
-        commands, such as returning to the default camera, after holding the
-        camera swtich key. Once this key has been read has just released, it
-        will be removed from the map.
+            As the key has just be released, we keep the key in the map, but
+            note it as just released. This allows us to parse for "just
+            released" commands, such as returning to the default camera, after
+            holding the camera swtich key. Once this key has been read has just
+            released, it will be removed from the map.
         */
         m_pInstance->m_keys[key] = INPUT_JUST_RELEASED;
         break;
@@ -116,8 +116,9 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 
 #ifndef NDEBUG
 /*
-After being introduced and then removed, debugKeyCommands has returned from the grave.
-I guess if you really want to do your debug key commands here, you can. Have fun!
+    After being introduced and then removed, debugKeyCommands has returned from
+    the grave. I guess if you really want to do your debug key commands here,
+    you can. Have fun!
 */
 void InputHandler::debugKeyCommands(int key, int action)
 {
@@ -176,8 +177,8 @@ void InputHandler::debugKeyCommands(int key, int action)
 #endif
 
 /*
-Mouse Button Callback
-Handle mouse movement controls.
+    Mouse Button Callback
+    Handle mouse movement controls.
 */
 void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -209,10 +210,11 @@ void InputHandler::mouseButtonCallback(GLFWwindow* window, int button, int actio
 }
 
 /*
- Handles input from Mouse Moves.
-@param window   the mouse corresponds to
-@param x        x-coordinate of the mouse in window coordinates
-@param y        y-coordinate of the mouse in window coordinates
+    Handles input from Mouse Moves.
+
+    @param window   the mouse corresponds to
+    @param x        x-coordinate of the mouse in window coordinates
+    @param y        y-coordinate of the mouse in window coordinates
 */
 void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
@@ -226,11 +228,11 @@ void InputHandler::mouseMoveCallback(GLFWwindow* window, double x, double y)
 }
 
 /*
-Handle scroll wheel callbacks
+    Handle scroll wheel callbacks
 
-@param window   the mouse corresponds to
-@param xoffset  of the mouse wheel
-@param yoffset  of the mouse wheel
+    @param window   the mouse corresponds to
+    @param xoffset  of the mouse wheel
+    @param yoffset  of the mouse wheel
 */
 void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -238,10 +240,10 @@ void InputHandler::mouseScrollCallback(GLFWwindow* window, double xoffset, doubl
 }
 
 /*
-Initializes all joysticks at the start of the program. This is necessary as
-joysticks that are already connected before the program starts do not initiate
-glfwSetJoystickCallback(), which initializes controllers that are connected
-mid-program.
+    Initializes all joysticks at the start of the program. This is necessary as
+    joysticks that are already connected before the program starts do not
+    initiate glfwSetJoystickCallback(), which initializes controllers that are
+    connected mid-program.
 */
 void InputHandler::initializeJoysticksAtStart()
 {
@@ -259,7 +261,7 @@ void InputHandler::initializeJoysticksAtStart()
 }
 
 /*
-Initialize joystick variables before they are set
+    Initialize joystick variables before they are set
 */
 void InputHandler::initializeJoystickVariables()
 {
@@ -268,7 +270,7 @@ void InputHandler::initializeJoystickVariables()
 }
 
 /*
-Check all if all joysticks are connected
+    Check all if all joysticks are connected
 */
 void InputHandler::checkForPresentJoysticks()
 {
@@ -280,10 +282,10 @@ void InputHandler::checkForPresentJoysticks()
 
 
 /*
-Initializes a joysticks of a given joystickID. It will only initialize if the
-joystick is actually present.
+    Initializes a joysticks of a given joystickID. It will only initialize if
+    the joystick is actually present.
 
-@param joystickID   to initialize
+    @param joystickID   to initialize
 */
 void InputHandler::initializeJoystick(int joystickID)
 {
@@ -522,13 +524,16 @@ int InputHandler::getJoystickCount()
 
     Can only set values to just pressed and just released if there is a change in
     pressed/released state. Changes to pressed and released are made in the
-    CommandHandler after the input has been processed.
+    MenuManager after the input has been processed.
 
     @param joystickID   to update
 */
 void InputHandler::updateJoystickButtonStates(int joystickID)
 {
     // Double check
+    // Even though the controller is checked if it is present in the parent
+    // updateJoysticks() call, without this redundant check, the game will crash
+    // if a controller is disconnected mid-program.
     if (!m_pJoystickData[joystickID].bPresent)
     {
         return;

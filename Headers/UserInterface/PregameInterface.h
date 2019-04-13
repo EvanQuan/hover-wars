@@ -1,5 +1,5 @@
 #pragma once
-#include "UserInterface/MenuInterface.h"
+#include "UserInterface/PromptInterface.h"
 
 #define START_GAME_OPTION "Start Game"
 #define BACK_OPTION "Back"
@@ -13,7 +13,7 @@
 #define BOT_DIFFICULTY_OPTION "Bot difficulty"
 
 
-class PregameInterface final : public MenuInterface
+class PregameInterface final : public PromptInterface
 {
 public:
 

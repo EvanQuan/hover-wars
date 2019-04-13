@@ -5,7 +5,7 @@
 // Singleton instance
 ControlsInterface* ControlsInterface::m_pInstance = nullptr;
 
-ControlsInterface::ControlsInterface() : MenuInterface(
+ControlsInterface::ControlsInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

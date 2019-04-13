@@ -5,7 +5,7 @@
 // Singleton instance
 AwardsInterface* AwardsInterface::m_pInstance = nullptr;
 
-AwardsInterface::AwardsInterface() : MenuInterface(
+AwardsInterface::AwardsInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {
