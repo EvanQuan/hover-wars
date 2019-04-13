@@ -5,7 +5,7 @@
 class StartMenu final : public PromptMenu
 {
 public:
-    // TODO nothing to destruct?
+
     ~StartMenu() {}
 
     static Menu* getInstance();
@@ -18,7 +18,6 @@ private:
     // StartMenu cannot go back to anything
     void back() {}
 
-    // @Override
     void enterOverride();
 
     static StartMenu* m_pInstance;

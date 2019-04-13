@@ -7,7 +7,7 @@
 #define QUIT_OPTION "Quit"
 
 
-class MainInterface final : public MenuInterface
+class MainInterface final : public PromptInterface
 {
 public:
 

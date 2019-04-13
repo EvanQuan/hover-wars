@@ -13,7 +13,7 @@
 #define BOT_DIFFICULTY_OPTION "Bot difficulty"
 
 
-class PregameInterface final : public MenuInterface
+class PregameInterface final : public PromptInterface
 {
 public:
 

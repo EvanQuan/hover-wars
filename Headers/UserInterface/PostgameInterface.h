@@ -6,7 +6,7 @@
 
 struct EndGameStat;
 
-class PostgameInterface final : public MenuInterface
+class PostgameInterface final : public PromptInterface
 {
 public:
 

@@ -1,6 +1,6 @@
 #include "UserInterface/MenuInterface.h"
 
-MenuInterface::MenuInterface(
+PromptInterface::PromptInterface(
     vector<pair<float, float>> componentScaling,
     vector<pair<float, float>> componentTranslating)
     : UserInterface(

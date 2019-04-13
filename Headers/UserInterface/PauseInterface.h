@@ -4,7 +4,7 @@
 #define CONTINUE_OPTION "Continue"
 #define END_GAME_OPTION "End Game"
 
-class PauseInterface final : public MenuInterface
+class PauseInterface final : public PromptInterface
 {
 public:
 

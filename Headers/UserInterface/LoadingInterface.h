@@ -1,7 +1,7 @@
 #pragma once
 #include "UserInterface/MenuInterface.h"
 
-class LoadingInterface final : public MenuInterface
+class LoadingInterface final : public PromptInterface
 {
 public:
 

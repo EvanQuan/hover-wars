@@ -5,7 +5,7 @@
 // Singleton instance
 StartInterface* StartInterface::m_pInstance = nullptr;
 
-StartInterface::StartInterface() : MenuInterface(
+StartInterface::StartInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

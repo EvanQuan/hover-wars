@@ -12,7 +12,7 @@ MainInterface* MainInterface::m_pInstance = nullptr;
       Quit
 
 */
-MainInterface::MainInterface() : MenuInterface(
+MainInterface::MainInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

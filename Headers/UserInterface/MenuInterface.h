@@ -2,15 +2,18 @@
 #include "UserInterface/UserInterface.h"
 
 
-class MenuInterface abstract : public UserInterface
+/*
+    PromptInterfaces visually correspond with PromptMenus.
+*/
+class PromptInterface abstract : public UserInterface
 {
 public:
 
     // Default Constructor
-    MenuInterface(vector<pair<float, float>> componentScaling,
+    PromptInterface(vector<pair<float, float>> componentScaling,
                   vector<pair<float, float>> componentTranslating);
-    MenuInterface(const MenuInterface* pCopy);                              // Default Copy Constructor
-    MenuInterface& operator=(const MenuInterface* pCopy);                   // Assignment Operator.
+    PromptInterface(const PromptInterface* pCopy);                              // Default Copy Constructor
+    PromptInterface& operator=(const PromptInterface* pCopy);                   // Assignment Operator.
 
     virtual void updateOverride(float fSecondsSinceLastUpdate) = 0;
 

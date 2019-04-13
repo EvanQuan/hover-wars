@@ -373,6 +373,8 @@ void PromptMenu::updateTimeValues(float fTimeInSeconds)
     {
         m_fSecondsToNextRepeat -= fTimeInSeconds;
     }
+
+    updateTimeValueOverride(fTimeInSeconds);
 }
 
 //@EvanQuan : Functions not implemented

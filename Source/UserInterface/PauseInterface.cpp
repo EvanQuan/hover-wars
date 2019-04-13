@@ -5,7 +5,7 @@
 // Singleton instance
 PauseInterface* PauseInterface::m_pInstance = nullptr;
 
-PauseInterface::PauseInterface() : MenuInterface(
+PauseInterface::PauseInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {

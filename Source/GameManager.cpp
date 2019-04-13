@@ -186,7 +186,7 @@ void GameManager::addInterface(UserInterface* ui)
 {
     m_vInterfaceInstances.push_back(ui);
 }
-void GameManager::setCurrentInterface(MenuInterface* ui)
+void GameManager::setCurrentInterface(PromptInterface* ui)
 {
     m_pMenuInterface = ui;
 }

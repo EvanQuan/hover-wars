@@ -45,7 +45,7 @@ private:
     eFixedCommand joystickStateToPromptDirection(float x, float y);
 
     // Override
-    void updateTimeValues(float fTimeInSeconds);
+    void updateTimeValues(float fTimeInSeconds) final;
 
     void enter() final;
 
@@ -72,11 +72,11 @@ private:
     void moveCursorKeyboard(eFixedCommand direction);
 
     /*
-        Every prompt menu has a corresponding MenuInterface to visualize
+        Every prompt menu has a corresponding PromptInterface to visualize
         the menu state. Whenever we enter a prompt menu, we should also switch
-        to the corresponding MenuInterface.
+        to the corresponding PromptInterface.
     */
-    // MenuInterface *m_pMenuInterface;
+    // PromptInterface *m_pMenuInterface;
 
     virtual void moveCursor(eFixedCommand direction) final;
 
@@ -84,6 +84,12 @@ protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
+    /*
+        Subclasses can update their time sensitive values here.
+        This will be called independently and alongside the cursor moving time
+        updating.
+    */
+    virtual void updateTimeValueOverride(float fTimeInSeconds) {};
 
     /*
         If there is custom move cursor behaviour, override this.

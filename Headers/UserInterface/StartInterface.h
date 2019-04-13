@@ -3,7 +3,7 @@
 
 #define INSERT_COIN_OPTION "Insert Coin"
 
-class StartInterface final : public MenuInterface
+class StartInterface final : public PromptInterface
 {
 public:
 

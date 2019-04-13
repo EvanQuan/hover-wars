@@ -8,7 +8,7 @@ LoadingInterface* LoadingInterface::m_pInstance = nullptr;
 /*
     Signifies the game is loading.
 */
-LoadingInterface::LoadingInterface() : MenuInterface(
+LoadingInterface::LoadingInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {
