@@ -67,38 +67,38 @@ GameMenu::GameMenu() : Menu(
     // repeatButtonToFixedCommand
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_BACK,            COMMAND_MENU_BACK},
-        {BUTTON_LEFT_STICK,      COMMAND_INVALID_FIXED },
-        {BUTTON_RIGHT_STICK,     COMMAND_INVALID_FIXED },
-        {BUTTON_UP,              COMMAND_INVALID_FIXED },
-        {BUTTON_RIGHT,           COMMAND_INVALID_FIXED },
-        {BUTTON_DOWN,            COMMAND_INVALID_FIXED },
-        {BUTTON_LEFT,            COMMAND_INVALID_FIXED },
-        {MAX_BUTTON_INDEX,       COMMAND_INVALID_FIXED },
-        {BUTTON_START,           COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_BACK,            COMMAND_MENU_BACK},
+        {XBOX_BUTTON_LEFT_STICK,      COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_RIGHT_STICK,     COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_UP,              COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_RIGHT,           COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_DOWN,            COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_LEFT,            COMMAND_INVALID_FIXED },
+        { XBOX_MAX_BUTTON_INDEX,       COMMAND_INVALID_FIXED },
+        {XBOX_BUTTON_START,           COMMAND_INVALID_FIXED },
         },
     // justPressedButtonToFixedCommand
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_LEFT_BUMPER,    COMMAND_ABILITY_SPIKES},
-        {BUTTON_A,              COMMAND_DASH_BACK},
-        {BUTTON_Y,              COMMAND_DASH_FORWARD},
-        {BUTTON_X,              COMMAND_DASH_LEFT},
-        {BUTTON_B,              COMMAND_DASH_RIGHT},
-        {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
-        {BUTTON_START,          COMMAND_MENU_PAUSE_TOGGLE},
-        {BUTTON_BACK,           COMMAND_MENU_START}, // TODO for now until we find a purpose
-        {BUTTON_UP,             COMMAND_HONK_UP},
-        {BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
-        {BUTTON_DOWN,           COMMAND_HONK_DOWN},
-        {BUTTON_LEFT,           COMMAND_HONK_LEFT},
+        {XBOX_BUTTON_LEFT_BUMPER,    COMMAND_ABILITY_SPIKES},
+        {XBOX_BUTTON_A,              COMMAND_DASH_BACK},
+        {XBOX_BUTTON_Y,              COMMAND_DASH_FORWARD},
+        {XBOX_BUTTON_X,              COMMAND_DASH_LEFT},
+        {XBOX_BUTTON_B,              COMMAND_DASH_RIGHT},
+        {XBOX_BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
+        {XBOX_BUTTON_START,          COMMAND_MENU_PAUSE_TOGGLE},
+        {XBOX_BUTTON_BACK,           COMMAND_MENU_START}, // TODO for now until we find a purpose
+        {XBOX_BUTTON_UP,             COMMAND_HONK_UP},
+        {XBOX_BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
+        {XBOX_BUTTON_DOWN,           COMMAND_HONK_DOWN},
+        {XBOX_BUTTON_LEFT,           COMMAND_HONK_LEFT},
         {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_ACTIVATE},
         {TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
         },
     // justReleasedButtonToFixedCommand
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
+        {XBOX_BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
         {TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_DEACTIVATE},
     }
 )

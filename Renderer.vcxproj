@@ -47,6 +47,7 @@
     <ClInclude Include="Headers\Enums\eCooldown.h" />
     <ClInclude Include="Headers\Enums\eEntityTypes.h" />
     <ClInclude Include="Headers\Enums\eFixedCommand.h" />
+    <ClInclude Include="Headers\Enums\eJoyStickMaps.h" />
     <ClInclude Include="Headers\Enums\ePlayer.h" />
     <ClInclude Include="Headers\Enums\ePowerup.h" />
     <ClInclude Include="Headers\Enums\eVariableCommand.h" />

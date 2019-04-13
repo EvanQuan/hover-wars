@@ -103,6 +103,7 @@ void Menu::updateKeyboardCommands()
 
 void Menu::updateJoystickCommands()
 {
+    int iButtonCount = 0;
     m_pInputHandler->updateJoysticks();
 
     eFixedCommand command;
@@ -111,17 +112,17 @@ void Menu::updateJoystickCommands()
         joystickID < MAX_PLAYER_JOYSTICK;
         joystickID++)
     {
-        int joystickIsPresent = m_pInputHandler->m_pJoystickIsPresent[joystickID];
+        int joystickIsPresent = m_pInputHandler->isJoystickPresent(joystickID);
         if (joystickIsPresent)
         {
-            const float* axes = m_pInputHandler->m_pJoystickAxes[joystickID];
-            InputHandler::eInputState *buttons =
-                m_pInputHandler->m_joystickButtons[joystickID];
+            const float* axes = m_pInputHandler->getAxesPointer(joystickID);
+            InputHandler::eInputState *buttons = 
+                m_pInputHandler->getInputStateArray(joystickID, &iButtonCount);
 
             eHovercraft hovercraft = static_cast<eHovercraft>(joystickID);
 
             // Check buttons
-            for (int button = BUTTON_A; button < MAX_BUTTON_COUNT; button++)
+            for (int button = 0; button < iButtonCount; button++)
             {
                 switch (buttons[button])
                 {
@@ -131,8 +132,7 @@ void Menu::updateJoystickCommands()
                     {
                         executeFixedCommand(hovercraft, command);
                     }
-                    m_pInputHandler->m_joystickButtons[joystickID][button] =
-                        InputHandler::INPUT_PRESSED;
+                    buttons[button] = InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
                     command = repeatButtonToFixedCommand(button);
@@ -147,8 +147,7 @@ void Menu::updateJoystickCommands()
                     {
                         executeFixedCommand(hovercraft, command);
                     }
-                    m_pInputHandler->m_joystickButtons[joystickID][button] =
-                        InputHandler::INPUT_RELEASED;
+                    buttons[button] = InputHandler::INPUT_RELEASED;
                     break;
                 }
             }

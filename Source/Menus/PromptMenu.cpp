@@ -61,28 +61,28 @@ PromptMenu::PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts
     // repeatButton
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_UP,     COMMAND_PROMPT_UP},
-        {BUTTON_LEFT,   COMMAND_PROMPT_LEFT},
-        {BUTTON_DOWN,   COMMAND_PROMPT_DOWN},
-        {BUTTON_RIGHT,  COMMAND_PROMPT_RIGHT},
+        {XBOX_BUTTON_UP,     COMMAND_PROMPT_UP},
+        {XBOX_BUTTON_LEFT,   COMMAND_PROMPT_LEFT},
+        {XBOX_BUTTON_DOWN,   COMMAND_PROMPT_DOWN},
+        {XBOX_BUTTON_RIGHT,  COMMAND_PROMPT_RIGHT},
     },
     // justPressedButton
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_A,      COMMAND_PROMPT_SELECT},
-        {TRIGGER_RIGHT, COMMAND_PROMPT_SELECT},
-        {BUTTON_START,  COMMAND_PROMPT_SELECT},
-        {BUTTON_B,      COMMAND_PROMPT_BACK},
-        {TRIGGER_LEFT,  COMMAND_PROMPT_BACK},
-        {BUTTON_BACK,   COMMAND_PROMPT_BACK},
+        {XBOX_BUTTON_A,      COMMAND_PROMPT_SELECT},
+        {TRIGGER_RIGHT,      COMMAND_PROMPT_SELECT},
+        {XBOX_BUTTON_START,  COMMAND_PROMPT_SELECT},
+        {XBOX_BUTTON_B,      COMMAND_PROMPT_BACK},
+        {TRIGGER_LEFT,       COMMAND_PROMPT_BACK},
+        {XBOX_BUTTON_BACK,   COMMAND_PROMPT_BACK},
     },
     // justReleasedButton
     unordered_map<int, eFixedCommand>
     {
-        {BUTTON_UP,     COMMAND_PROMPT_CURSOR_RELEASE},
-        {BUTTON_LEFT,   COMMAND_PROMPT_CURSOR_RELEASE},
-        {BUTTON_DOWN,   COMMAND_PROMPT_CURSOR_RELEASE},
-        {BUTTON_RIGHT,  COMMAND_PROMPT_CURSOR_RELEASE},
+        {XBOX_BUTTON_UP,     COMMAND_PROMPT_CURSOR_RELEASE},
+        {XBOX_BUTTON_LEFT,   COMMAND_PROMPT_CURSOR_RELEASE},
+        {XBOX_BUTTON_DOWN,   COMMAND_PROMPT_CURSOR_RELEASE},
+        {XBOX_BUTTON_RIGHT,  COMMAND_PROMPT_CURSOR_RELEASE},
     }
 )
 {

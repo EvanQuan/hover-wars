@@ -251,6 +251,9 @@
     <ClInclude Include="Headers\Menus\AwardsMenu.h">
       <Filter>Headers\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Enums\eJoyStickMaps.h">
+      <Filter>Headers\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
