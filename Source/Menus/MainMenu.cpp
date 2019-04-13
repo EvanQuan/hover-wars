@@ -25,9 +25,9 @@ MainMenu::MainMenu() : PromptMenu(
         {
             {"Controls", eFixedCommand::COMMAND_PROMPT_SELECT_2},
         },
-        {
-            {"Settings", eFixedCommand::COMMAND_PROMPT_SELECT_3},
-        },
+        // {
+            // {"Settings", eFixedCommand::COMMAND_PROMPT_SELECT_3},
+        // },
         {
             {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW},
         },
