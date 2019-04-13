@@ -49,9 +49,10 @@ public:
     // Getters and Setters for Joystick information
     bool                isJoystickPresent(unsigned int iJoystick)   { return m_pJoystickData[iJoystick].bPresent; }
     const float*        getAxesPointer(unsigned int iJoystick)      { return m_pJoystickData[iJoystick].pAxes; }
-    eInputState*        getInputStateArray(unsigned int iJoystick, int* iReturnButtonCount)
+    eInputState*        getInputStateArray(unsigned int iJoystick, int* iReturnButtonCount, int* iReturnButtonMask)
     {
         *iReturnButtonCount = m_pJoystickData[iJoystick].iButtonCount;
+        *iReturnButtonMask = m_pJoystickData[iJoystick].iMask;
         return m_pJoystickData[iJoystick].eButtonState;
     }
 
@@ -120,6 +121,10 @@ private:
         */
         bool            bPresent;
         /*
+            Mask for referencing controls for different joystick types.
+        */
+        int             iMask;
+        /*
             The number of axes each joystick has. Ideally, every joystick has 4 axes.
         */
         int             iAxesCount;
@@ -156,10 +161,13 @@ private:
         void initialize()
         {
             // Set Default Values
-            bPresent = false;
-            iAxesCount = 0;
-            iButtonCount = 0;
-            sName = EMPTY_CONTROLLER;
+            bPresent        = false;
+            iMask           = XBOX_MASK;
+            iAxesCount      = 0;
+            pAxes           = nullptr;
+            iButtonCount    = 0;
+            sName           = EMPTY_CONTROLLER;
+            pRawButtons     = nullptr;
 
             // Set all Button States to Released
             for (int button = 0; button < MAX_BUTTON_COUNT; button++)

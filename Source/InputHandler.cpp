@@ -299,11 +299,23 @@ void InputHandler::initializeJoystick(int joystickID)
     // Button states
     m_pJoystickData[joystickID].pRawButtons = glfwGetJoystickButtons(joystickID, &m_pJoystickData[joystickID].iButtonCount);
 
+    // Set the Mask based on the Button Count.
+    switch (m_pJoystickData[joystickID].iButtonCount)
+    {
+    case PS4_BUTTON_COUNT:
+        m_pJoystickData[joystickID].iMask = PS4_MASK;
+        break;
+    case XBOX_BUTTON_COUNT:
+    default:
+        m_pJoystickData[joystickID].iMask = XBOX_MASK;
+        break;
+    }
+
     // Names
     m_pJoystickData[joystickID].sName = glfwGetJoystickName(joystickID);
 
-#ifdef NDEBUG
-    // debugPrintJoystickInformation(joystickID);
+#ifndef NDEBUG
+    debugPrintJoystickInformation(joystickID);
 #endif
 }
 
@@ -327,8 +339,8 @@ void InputHandler::debugPrintJoystickInformation(int joystickID)
         << " is " <<  (m_pJoystickData[joystickID].bPresent ? "" : "dis" ) << "connected"
         << std::endl;
 
-    // debugPrintJoystickAxes(joystickID);
-    // debugPrintJoystickButtons(joystickID);
+    debugPrintJoystickAxes(joystickID);
+    debugPrintJoystickButtons(joystickID);
 }
 #endif
 
@@ -348,13 +360,27 @@ void InputHandler::debugPrintJoystickAxes(int joystickID)
     const float* axes = m_pJoystickData[joystickID].pAxes;
     //for (unsigned int i = 0; i < m_pJoystickData[joystickID].iAxesCount; ++i)
     //    cout << "Axis(" << to_string(i) << "): " << axes[i] << endl;
-    std::cout << "\tAxes[" << m_pJoystickData[joystickID].iAxesCount << "]: " << std::endl
-              << "\t\tLeft stick x: "  << axes[PS4_AXES_LEFT_X]  << std::endl
-              << "\t\t           y: "  << axes[PS4_AXES_LEFT_Y]  << std::endl
-              << "\t\tRight stick x: " << axes[PS4_AXES_RIGHT_X] << std::endl
-              << "\t\t            y: " << axes[PS4_AXES_RIGHT_Y] << std::endl
-              << "\t\tLeft trigger: "  << axes[PS4_AXES_L2]  << std::endl
-              << "\t\tRight trigger: " << axes[PS4_AXES_R2] << std::endl;
+    switch (m_pJoystickData[joystickID].iButtonCount)
+    {
+    case XBOX_BUTTON_COUNT:
+        std::cout << "\tAxes[" << m_pJoystickData[joystickID].iAxesCount << "]: " << std::endl
+            << "\t\tLeft stick x: "     << axes[AXIS_LEFT_STICK_X] << std::endl
+            << "\t\t           y: "     << axes[AXIS_LEFT_STICK_Y] << std::endl
+            << "\t\tRight stick x: "    << axes[AXIS_RIGHT_STICK_X] << std::endl
+            << "\t\t            y: "    << axes[AXIS_RIGHT_STICK_Y] << std::endl
+            << "\t\tLeft trigger: "     << axes[AXIS_LEFT_TRIGGER] << std::endl
+            << "\t\tRight trigger: "    << axes[AXIS_RIGHT_TRIGGER] << std::endl;
+        break;
+    case PS4_BUTTON_COUNT:
+        std::cout << "\tAxes[" << m_pJoystickData[joystickID].iAxesCount << "]: " << std::endl
+            << "\t\tLeft stick x: "     << axes[PS4_AXIS_LEFT_X] << std::endl
+            << "\t\t           y: "     << axes[PS4_AXIS_LEFT_Y] << std::endl
+            << "\t\tRight stick x: "    << axes[PS4_AXIS_RIGHT_X] << std::endl
+            << "\t\t            y: "    << axes[PS4_AXIS_RIGHT_Y] << std::endl
+            << "\t\tL2: "               << axes[PS4_AXIS_L2] << std::endl
+            << "\t\tR2: "               << axes[PS4_AXIS_R2] << std::endl;
+        break;
+    }
     std::cout << "\t\t[";
     for (int i = 0; i < m_pJoystickData[joystickID].iAxesCount; i++)
     {
@@ -390,37 +416,36 @@ void InputHandler::debugPrintJoystickButtons(int joystickID)
             << "\t\tRight: "        << buttonsPressed[XBOX_BUTTON_RIGHT] << std::endl
             << "\t\tDown: "         << buttonsPressed[XBOX_BUTTON_DOWN] << std::endl
             << "\t\tLeft: "         << buttonsPressed[XBOX_BUTTON_LEFT] << std::endl;
-        std::cout << "\t\t[";
-        for (int i = 0; i < m_pJoystickData[joystickID].iButtonCount; i++)
-        {
-            std::cout << buttonsPressed[i] << " ";
-        }
-        std::cout << "]" << std::endl;
         break;
     case PS4_BUTTON_COUNT:
         std::cout << "\tPS4 Buttons[" << m_pJoystickData[joystickID].iButtonCount << "]: " << std::endl
-            << "\t\tA: "            << buttonsPressed[XBOX_BUTTON_A] << std::endl
-            << "\t\tB: "            << buttonsPressed[XBOX_BUTTON_B] << std::endl
-            << "\t\tX: "            << buttonsPressed[XBOX_BUTTON_X] << std::endl
-            << "\t\tY: "            << buttonsPressed[XBOX_BUTTON_Y] << std::endl
-            << "\t\tLeft Bumper: "  << buttonsPressed[XBOX_BUTTON_LEFT_BUMPER] << std::endl
-            << "\t\tRight Bumper: " << buttonsPressed[XBOX_BUTTON_RIGHT_BUMPER] << std::endl
-            << "\t\tBack: "         << buttonsPressed[XBOX_BUTTON_BACK] << std::endl
-            << "\t\tStart: "        << buttonsPressed[XBOX_BUTTON_START] << std::endl
-            << "\t\tLeft Stick: "   << buttonsPressed[XBOX_BUTTON_LEFT_STICK] << std::endl
-            << "\t\tRight Stick: "  << buttonsPressed[XBOX_BUTTON_RIGHT_STICK] << std::endl
-            << "\t\tUp: "           << buttonsPressed[XBOX_BUTTON_UP] << std::endl
-            << "\t\tRight: "        << buttonsPressed[XBOX_BUTTON_RIGHT] << std::endl
-            << "\t\tDown: "         << buttonsPressed[XBOX_BUTTON_DOWN] << std::endl
-            << "\t\tLeft: "         << buttonsPressed[XBOX_BUTTON_LEFT] << std::endl;
-        std::cout << "\t\t[";
-        for (int i = 0; i < m_pJoystickData[joystickID].iButtonCount; i++)
-        {
-            std::cout << buttonsPressed[i] << " ";
-        }
-        std::cout << "]" << std::endl;
+            << "\t\tX: "        << buttonsPressed[PS4_BUTTON_X] << std::endl
+            << "\t\tO: "        << buttonsPressed[PS4_BUTTON_O] << std::endl
+            << "\t\tSquare: "   << buttonsPressed[PS4_BUTTON_SQUARE] << std::endl
+            << "\t\tTriangle: " << buttonsPressed[PS4_BUTTON_TRIANGLE] << std::endl
+            << "\t\tL1: "       << buttonsPressed[PS4_BUTTON_L1] << std::endl
+            << "\t\tL2: "       << buttonsPressed[PS4_BUTTON_L2] << std::endl
+            << "\t\tL3: "       << buttonsPressed[PS4_BUTTON_L3] << std::endl
+            << "\t\tR1: "       << buttonsPressed[PS4_BUTTON_R1] << std::endl
+            << "\t\tR2: "       << buttonsPressed[PS4_BUTTON_R2] << std::endl
+            << "\t\tR3: "       << buttonsPressed[PS4_BUTTON_R3] << std::endl
+            << "\t\tUp: "       << buttonsPressed[PS4_BUTTON_UP] << std::endl
+            << "\t\tRight: "    << buttonsPressed[PS4_BUTTON_RIGHT] << std::endl
+            << "\t\tDown: "     << buttonsPressed[PS4_BUTTON_DOWN] << std::endl
+            << "\t\tLeft: "     << buttonsPressed[PS4_BUTTON_LEFT] << std::endl
+            << "\t\tOptions: "  << buttonsPressed[PS4_BUTTON_OPTIONS] << std::endl
+            << "\t\tShare: "    << buttonsPressed[PS4_BUTTON_SHARE] << std::endl
+            << "\t\tTrackpad: " << buttonsPressed[PS4_BUTTON_TRACKPAD] << std::endl
+            << "\t\tPS: "       << buttonsPressed[PS4_BUTTON_PS] << std::endl;
         break;
     }
+
+    std::cout << "\t\t[";
+    for (int i = 0; i < m_pJoystickData[joystickID].iButtonCount; i++)
+    {
+        std::cout << buttonsPressed[i] << " ";
+    }
+    std::cout << "]" << std::endl;
     
 }
 #endif
@@ -431,7 +456,7 @@ Registers a joystick as not connected to the game.
 void InputHandler::disconnectJoystick(int joystickID)
 {
     m_pJoystickData[joystickID].initialize();
-    // debugPrintJoystickInformation(joystickID);
+    debugPrintJoystickInformation(joystickID);
 
 }
 
@@ -522,29 +547,50 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
             m_pJoystickData[joystickID].eButtonState[button] = INPUT_JUST_RELEASED;
         }
     }
-    // Update triggers as buttons
-    if (m_pJoystickData[joystickID].iButtonCount == XBOX_BUTTON_COUNT)
-    {
-        if (m_pJoystickData[joystickID].pAxes[AXIS_LEFT_TRIGGER] > TRIGGER_IS_NETURAL
-            && m_pJoystickData[joystickID].eButtonState[TRIGGER_LEFT] != INPUT_PRESSED)
-        {
-            m_pJoystickData[joystickID].eButtonState[TRIGGER_LEFT] = INPUT_JUST_PRESSED;
-        }
-        else if (m_pJoystickData[joystickID].pAxes[AXIS_LEFT_TRIGGER] == TRIGGER_IS_NETURAL
-            && m_pJoystickData[joystickID].eButtonState[TRIGGER_LEFT] != INPUT_RELEASED)
-        {
-            m_pJoystickData[joystickID].eButtonState[TRIGGER_LEFT] = INPUT_JUST_RELEASED;
-        }
 
-        if (m_pJoystickData[joystickID].pAxes[AXIS_RIGHT_TRIGGER] > TRIGGER_IS_NETURAL
-            && m_pJoystickData[joystickID].eButtonState[TRIGGER_RIGHT] != INPUT_PRESSED)
-        {
-            m_pJoystickData[joystickID].eButtonState[TRIGGER_RIGHT] = INPUT_JUST_PRESSED;
-        }
-        else if (m_pJoystickData[joystickID].pAxes[AXIS_RIGHT_TRIGGER] == TRIGGER_IS_NETURAL
-            && m_pJoystickData[joystickID].eButtonState[TRIGGER_RIGHT] != INPUT_RELEASED)
-        {
-            m_pJoystickData[joystickID].eButtonState[TRIGGER_RIGHT] = INPUT_JUST_RELEASED;
-        }
+    eInputState* pRightTriggerState, *pLeftTriggerState;
+    const float* pLeftTriggerAxis, *pRightTriggerAxis;
+
+    // Get Pointers to Triggers
+    switch (m_pJoystickData[joystickID].iButtonCount)
+    {
+    case PS4_BUTTON_COUNT:
+        pRightTriggerAxis = &m_pJoystickData[joystickID].pAxes[PS4_AXIS_R2];
+        pRightTriggerState = &m_pJoystickData[joystickID].eButtonState[PS4_BUTTON_R2];
+        pLeftTriggerAxis = &m_pJoystickData[joystickID].pAxes[PS4_AXIS_L2];
+        pLeftTriggerState = &m_pJoystickData[joystickID].eButtonState[PS4_BUTTON_L2];
+        break;
+    case XBOX_BUTTON_COUNT:
+    default:
+        pRightTriggerAxis = &m_pJoystickData[joystickID].pAxes[AXIS_RIGHT_TRIGGER];
+        pRightTriggerState = &m_pJoystickData[joystickID].eButtonState[XBOX_TRIGGER_RIGHT];
+        pLeftTriggerAxis = &m_pJoystickData[joystickID].pAxes[AXIS_LEFT_TRIGGER];
+        pLeftTriggerState = &m_pJoystickData[joystickID].eButtonState[XBOX_TRIGGER_LEFT];
+        break;
+    }
+
+    // Update Triggers as buttons
+    // Left Trigger
+    if (*pLeftTriggerAxis > TRIGGER_IS_NETURAL
+        && *pLeftTriggerState != INPUT_PRESSED)
+    {
+        *pLeftTriggerState = INPUT_JUST_PRESSED;
+    }
+    else if (*pLeftTriggerAxis == TRIGGER_IS_NETURAL
+        && *pLeftTriggerState != INPUT_RELEASED)
+    {
+        *pLeftTriggerState = INPUT_JUST_RELEASED;
+    }
+
+    // Right Trigger
+    if (*pRightTriggerAxis > TRIGGER_IS_NETURAL
+        && *pRightTriggerState != INPUT_PRESSED)
+    {
+        *pRightTriggerState = INPUT_JUST_PRESSED;
+    }
+    else if (*pRightTriggerAxis == TRIGGER_IS_NETURAL
+        && *pRightTriggerState != INPUT_RELEASED)
+    {
+        *pRightTriggerState = INPUT_JUST_RELEASED;
     }
 }

@@ -103,7 +103,7 @@ void Menu::updateKeyboardCommands()
 
 void Menu::updateJoystickCommands()
 {
-    int iButtonCount = 0;
+    int iButtonCount = 0, iMask = 0, iMaskedButton = 0;
     m_pInputHandler->updateJoysticks();
 
     eFixedCommand command;
@@ -117,17 +117,18 @@ void Menu::updateJoystickCommands()
         {
             const float* axes = m_pInputHandler->getAxesPointer(joystickID);
             InputHandler::eInputState *buttons = 
-                m_pInputHandler->getInputStateArray(joystickID, &iButtonCount);
+                m_pInputHandler->getInputStateArray(joystickID, &iButtonCount, &iMask);
 
             eHovercraft hovercraft = static_cast<eHovercraft>(joystickID);
 
             // Check buttons
             for (int button = 0; button < iButtonCount; button++)
             {
+                iMaskedButton = iMask | button;
                 switch (buttons[button])
                 {
                 case InputHandler::INPUT_JUST_PRESSED:
-                    command = justPressedButtonToFixedCommand(button);
+                    command = justPressedButtonToFixedCommand(iMaskedButton);
                     if (command != COMMAND_INVALID_FIXED)
                     {
                         executeFixedCommand(hovercraft, command);
@@ -135,14 +136,14 @@ void Menu::updateJoystickCommands()
                     buttons[button] = InputHandler::INPUT_PRESSED;
                     break;
                 case InputHandler::INPUT_PRESSED:
-                    command = repeatButtonToFixedCommand(button);
+                    command = repeatButtonToFixedCommand(iMaskedButton);
                     if (command != COMMAND_INVALID_FIXED)
                     {
                         executeFixedCommand(hovercraft, command);
                     }
                     break;
                 case InputHandler::INPUT_JUST_RELEASED:
-                    command = justReleasedButtonToFixedCommand(button);
+                    command = justReleasedButtonToFixedCommand(iMaskedButton);
                     if (command != COMMAND_INVALID_FIXED)
                     {
                         executeFixedCommand(hovercraft, command);
@@ -153,13 +154,29 @@ void Menu::updateJoystickCommands()
             }
 
             // Check axes
-            if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
+            switch (iMask)
             {
-                updateLeftStick(hovercraft, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
-            }
-            if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
-            {
-                updateRightStick(hovercraft, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+            case XBOX_MASK:
+            default:
+                if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
+                {
+                    updateLeftStick(hovercraft, axes[AXIS_LEFT_STICK_X], axes[AXIS_LEFT_STICK_Y]);
+                }
+                if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
+                {
+                    updateRightStick(hovercraft, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
+                }
+                break;
+            case PS4_MASK:
+                if (axes[PS4_AXIS_LEFT_X] != 0.0f && axes[PS4_AXIS_LEFT_Y] != 0.0f)
+                {
+                    updateLeftStick(hovercraft, axes[PS4_AXIS_LEFT_X], -axes[PS4_AXIS_LEFT_Y]);
+                }
+                if (axes[PS4_AXIS_RIGHT_X] != 0.0f && axes[PS4_AXIS_RIGHT_Y] != 0.0f)
+                {
+                    updateRightStick(hovercraft, axes[PS4_AXIS_RIGHT_X], axes[PS4_AXIS_RIGHT_Y]);
+                }
+                break;
             }
         }
     }
