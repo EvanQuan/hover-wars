@@ -2,6 +2,7 @@
 #include "Menus/StartMenu.h"
 #include "Menus/PregameMenu.h"
 #include "Menus/ControlsMenu.h"
+#include "Menus/SettingsMenu.h"
 #include "Menus/RulesMenu.h"
 #include "UserInterface/PregameInterface.h"
 #include "UserInterface/RulesInterface.h"
@@ -23,6 +24,9 @@ MainMenu::MainMenu() : PromptMenu(
         },
         {
             {"Controls", eFixedCommand::COMMAND_PROMPT_SELECT_2},
+        },
+        {
+            {"Settings", eFixedCommand::COMMAND_PROMPT_SELECT_3},
         },
         {
             {"Quit", eFixedCommand::COMMAND_CLOSE_WINDOW},
@@ -53,6 +57,9 @@ void MainMenu::select(eFixedCommand command)
         break;
     case COMMAND_PROMPT_SELECT_2:
         nextMenu(ControlsMenu::getInstance());
+        break;
+    case COMMAND_PROMPT_SELECT_3:
+        nextMenu(SettingsMenu::getInstance());
         break;
     case COMMAND_CLOSE_WINDOW:
         PromptMenu::executeFixedCommand(HOVERCRAFT_INVALID, COMMAND_CLOSE_WINDOW);

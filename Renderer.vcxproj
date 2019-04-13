@@ -67,6 +67,7 @@
     <ClInclude Include="Headers\Menus\PregameMenu.h" />
     <ClInclude Include="Headers\Menus\PromptMenu.h" />
     <ClInclude Include="Headers\Menus\RulesMenu.h" />
+    <ClInclude Include="Headers\Menus\SettingsMenu.h" />
     <ClInclude Include="Headers\Menus\StartMenu.h" />
     <ClInclude Include="Headers\Mesh.h" />
     <ClInclude Include="Headers\MeshManager.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="Source\Menus\PregameMenu.cpp" />
     <ClCompile Include="Source\Menus\PromptMenu.cpp" />
     <ClCompile Include="Source\Menus\RulesMenu.cpp" />
+    <ClCompile Include="Source\Menus\SettingsMenu.cpp" />
     <ClCompile Include="Source\Menus\StartMenu.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshManager.cpp" />
