@@ -1,6 +1,6 @@
 #include "Menus/GameMenu.h"
 #include "Menus/PauseMenu.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 #include "UserInterface/PauseInterface.h"
 
@@ -131,7 +131,7 @@ GameMenu::GameMenu() : Menu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 /*
@@ -234,7 +234,7 @@ void GameMenu::executeValidHovercraft(HovercraftEntity *hovercraft,
 #ifndef NDEBUG
     // Can only close the game directly in game in debug mode, for convenience
     //case COMMAND_CLOSE_WINDOW:
-        //glfwSetWindowShouldClose(COMMAND_HANDLER->m_pWindow, GL_TRUE);
+        //glfwSetWindowShouldClose(MENU_MANAGER->m_pWindow, GL_TRUE);
         //break;
 
     case COMMAND_DEBUG_TOGGLE_WIREFRAME:

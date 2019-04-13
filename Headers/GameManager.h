@@ -8,7 +8,7 @@
 // Forward Declarations
 class AIManager;
 class EntityManager;
-class CommandHandler;
+class MenuManager;
 class ShaderManager;
 class PromptInterface;
 class UserInterface;
@@ -176,12 +176,12 @@ private:
     // Manager Pointers
     EntityManager*      m_pEntityManager;
     ShaderManager*      m_pShaderManager;
-    CommandHandler*     m_pCommandHandler;
+    MenuManager*        m_pMenuManager;
     AIManager*          m_pAIManager;
     GameTime            m_pTimer;
     GameStats*          m_pGameStats;
     PhysicsManager*     m_pPhysicsManager;
-    PromptInterface*      m_pMenuInterface;
+    PromptInterface*    m_pMenuInterface;
     GameInterface*      m_pGameInterface;
     vector<UserInterface*> m_vInterfaceInstances;
     SoundManager*       m_pSoundManager;

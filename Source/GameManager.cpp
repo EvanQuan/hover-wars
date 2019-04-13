@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 #include "GameManager.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 #include "ArtificialIntelligence/AIManager.h"
 #include "SceneLoader.h"
 #include "ShaderManager.h"
@@ -78,7 +78,7 @@ GameManager::GameManager(GLFWwindow* rWindow)
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
 
-    m_pCommandHandler = COMMAND_HANDLER;
+    m_pMenuManager = MENU_MANAGER;
 
     m_pPhysicsManager = PHYSICS_MANAGER;
 
@@ -163,8 +163,8 @@ GameManager::~GameManager()
     }
     m_vInterfaceInstances.clear();
 
-    if (nullptr != m_pCommandHandler)   // Command Handler
-        delete m_pCommandHandler;
+    if (nullptr != m_pMenuManager)   // Command Handler
+        delete m_pMenuManager;
 
     if (nullptr != m_pAIManager)        // AI Manager
         delete m_pAIManager;
@@ -216,7 +216,7 @@ bool GameManager::renderGraphics()
     // Execute all commands for this frame
     // These should be done before the EntityManager updates so that the
     // environment can respond to the commands issued this frame.
-    m_pCommandHandler->update(m_fFrameDeltaTime);
+    m_pMenuManager->update(m_fFrameDeltaTime);
     m_pMenuInterface->update(m_fFrameDeltaTime);
     checkIfStartedGameOver();
 
@@ -434,7 +434,7 @@ void GameManager::updateEnvironment()
     // is paused.
     m_pSoundManager->update();
     // The game interface should update after the EntityManager and
-    // CommandHandler has changed in order to reflect their changes.
+    // MenuManager has changed in order to reflect their changes.
     // It also cannot update inside the EntityManager since it is able
     // to be updated while the EntityManager is paused.
     m_pGameInterface->update(m_fFrameDeltaTime);
@@ -459,7 +459,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
                                     bool scoreLossEnabled)
 {
     // Before we initialize, set to LoadingMenu and Interface
-    m_pCommandHandler->setCurrentMenu(LoadingMenu::getInstance());
+    m_pMenuManager->setCurrentMenu(LoadingMenu::getInstance());
 
     // We intialize all values for the game to immediately start
     m_pPhysicsManager->initPhysics(true);
@@ -506,7 +506,7 @@ void GameManager::initializeNewGame(unsigned int playerCount,
     // Only after everything has loaded, switch to the game menu.
     // Don't need to switch to GameInterface, as the GameInterface is directly
     // rendered for each player.
-    m_pCommandHandler->setCurrentMenu(GameMenu::getInstance());
+    m_pMenuManager->setCurrentMenu(GameMenu::getInstance());
 }
 
 /*
@@ -659,7 +659,7 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     m_bInGame = false;
     m_bPaused = true;
-    m_pCommandHandler->setCurrentMenu(PostgameMenu::getInstance());
+    m_pMenuManager->setCurrentMenu(PostgameMenu::getInstance());
     m_pEntityManager->purgeEnvironment();
 
     cleanupFrameBuffers();
@@ -906,7 +906,7 @@ bool GameManager::initialize()
     startedGameOver = false;
     m_fGameOverTime = GAME_OVER_TIME;
 
-    m_pCommandHandler->setCurrentMenu(StartMenu::getInstance());
+    m_pMenuManager->setCurrentMenu(StartMenu::getInstance());
     m_pMenuInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
 
     // Return error results

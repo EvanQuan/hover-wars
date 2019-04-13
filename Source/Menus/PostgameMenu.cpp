@@ -3,7 +3,7 @@
 #include "Menus/MainMenu.h"
 #include "UserInterface/PostgameInterface.h"
 #include "GameStats.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 
 // Unit: seconds
@@ -26,7 +26,7 @@ PostgameMenu::PostgameMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* PostgameMenu::getInstance()

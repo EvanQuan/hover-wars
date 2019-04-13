@@ -15,17 +15,15 @@ class Menu;
 
 /* CLASS */
 /*
-Receives user command initiates appropriate actions that correspond to that
-command. Usually these commands would come from InputHandler (user input), but
-may come from other means for test purposes.
+    Stores and manages Menu instances.
 
-@author Evan Quan
+    @author Evan Quan
 */
-class CommandHandler final
+class MenuManager final
 {
 public:
-    static CommandHandler* getInstance();
-    ~CommandHandler();
+    static MenuManager* getInstance();
+    ~MenuManager();
 
     // Execute all commands for a given frame.
     void update(float fTimeInSeconds);
@@ -36,8 +34,8 @@ public:
     GLFWwindow* m_pWindow;
 private:
     // Singleton Variables
-    CommandHandler();
-    static CommandHandler* m_pInstance;
+    MenuManager();
+    static MenuManager* m_pInstance;
 
     Menu* m_pCurrentMenu;
     // For memory management

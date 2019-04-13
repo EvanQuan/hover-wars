@@ -139,7 +139,7 @@ private:
     // GameStats needs to iterate over all players and bots to correspond
     // EntityIDs with eHovercraft enum values
     /*
-        The CommandHandler uses this to determine which hovercrafts are
+        The MenuManager uses this to determine which hovercrafts are
         registered to receive input from
     */
     vector<HovercraftEntity*>                       m_pPlayerEntityList;

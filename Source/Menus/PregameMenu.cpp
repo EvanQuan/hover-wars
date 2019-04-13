@@ -2,7 +2,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/LoadingMenu.h"
 #include "UserInterface/PregameInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 
 // Interval of time to change game time
@@ -52,7 +52,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
     // Note that this is in the constructor, not enterOverride(). While there are
     // initial bot and player values, these SHOULD persist between menu changes
     // during runtime because it's annoying to have the values changed away

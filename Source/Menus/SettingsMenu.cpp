@@ -2,7 +2,7 @@
 #include "Menus/MainMenu.h"
 #include "Menus/LoadingMenu.h"
 // #include "UserInterface/SettingsInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 
 // Interval of time to change game time
@@ -31,7 +31,7 @@ SettingsMenu::SettingsMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 
     // Default setting values
     // As of now, these values are reset every game launch. Perhaps later,

@@ -14,12 +14,12 @@
 /* CLASS */
 /*
 Menus determine the state of the game with respect to how input is processed by
-the CommandHandler.
+the MenuManager.
 
 Depending on the current menu state of the CommandHander, the input is processed
 differently.
 
-Every subclass should add its singleton instance to CommandHandler's
+Every subclass should add its singleton instance to MenuManager's
 menuInstances vector.
 
 @author Evan Quan

@@ -8,7 +8,7 @@
 #include "UserInterface/RulesInterface.h"
 #include "UserInterface/ControlsInterface.h"
 #include "UserInterface/MainInterface.h"
-#include "CommandHandler.h"
+#include "Menus/MenuManager.h"
 
 // Singleton instance
 MainMenu* MainMenu::m_pInstance = nullptr;
@@ -34,7 +34,7 @@ MainMenu::MainMenu() : PromptMenu(
     }
 )
 {
-    COMMAND_HANDLER->addMenu(this);
+    MENU_MANAGER->addMenu(this);
 }
 
 Menu* MainMenu::getInstance()

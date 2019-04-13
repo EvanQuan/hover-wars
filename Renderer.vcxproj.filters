@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp" />
-    <ClCompile Include="Source\CommandHandler.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
     <ClCompile Include="Source\EmitterEngine.cpp" />
@@ -75,12 +74,12 @@
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
     <ClCompile Include="Source\UserInterface\PromptInterface.cpp" />
+    <ClCompile Include="Source\Menus\MenuManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
-    <ClInclude Include="Headers\CommandHandler.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
     <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
@@ -164,6 +163,7 @@
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
     <ClInclude Include="Headers\UserInterface\PromptInterface.h" />
+    <ClInclude Include="Headers\Menus\MenuManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

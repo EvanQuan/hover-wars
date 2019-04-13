@@ -59,8 +59,8 @@ InputHandler::~InputHandler()
     keys are updated through call backs, which may be faster than every frame
     update, we may have multiple key callbacks per frame update. This means, we
     cannot reliably check for just pressed or just released key statuses here.
-    NOTE: Keyboard input is read from CommandHandler. All keyboard input
-    processing should be done in the CommandHandler, not here.
+    NOTE: Keyboard input is read from MenuManager. All keyboard input
+    processing should be done in the MenuManager, not here.
 */
 void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -524,7 +524,7 @@ int InputHandler::getJoystickCount()
 
     Can only set values to just pressed and just released if there is a change in
     pressed/released state. Changes to pressed and released are made in the
-    CommandHandler after the input has been processed.
+    MenuManager after the input has been processed.
 
     @param joystickID   to update
 */

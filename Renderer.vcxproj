@@ -17,7 +17,7 @@
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
-    <ClInclude Include="Headers\CommandHandler.h" />
+    <ClInclude Include="Headers\Menus\MenuManager.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
     <ClInclude Include="Headers\DataStructures\SpriteSheetDatabase.h" />
@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp" />
-    <ClCompile Include="Source\CommandHandler.cpp" />
+    <ClCompile Include="Source\Menus\MenuManager.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
     <ClCompile Include="Source\EmitterEngine.cpp" />
