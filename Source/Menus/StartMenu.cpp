@@ -29,6 +29,7 @@ void StartMenu::select(eFixedCommand command)
     switch (command)
     {
     case COMMAND_PROMPT_NEXT_MENU:
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_INSERT_COIN);
         nextMenu(MainMenu::getInstance());
         break;
     }
