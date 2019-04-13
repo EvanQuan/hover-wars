@@ -147,15 +147,14 @@ public:
     ~UserInterface();
 
     /*
-    This visually updates the UserInterface to all value changes since last update.
-    
-    Under the scenes, this retrieves all needed the values from GameStats and
-    displays them. This is why it does not need a time value in order to determine
-    time-sensitive information such as cooldown and game time.
-    @TODO this may change later on.
-    
-    This should be called once per frame update.
-    
+        This visually updates the UserInterface to all value changes since last update.
+        
+        Under the scenes, this retrieves all needed the values from GameStats and
+        displays them. This is why it does not need a time value in order to determine
+        time-sensitive information such as cooldown and game time.
+        @TODO this may change later on.
+        
+        This should be called once per frame update.
     */
     virtual void update(float fDeltaTime) final {
         m_fGlobalMessageTime -= fDeltaTime;
@@ -214,7 +213,10 @@ protected:
         there is a window resize event, these values are all recalculated.
     */
     vector<pair<float, float>> m_vComponentCoordinates;
-
+    /*
+        Every hovercraft has a corresponding name. If the UI ever needs to user
+        a hovercraft's name, it should use this.
+    */
     const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
     {
         {HOVERCRAFT_BOT_1, "Alfa Bot"},

@@ -22,7 +22,8 @@ private:
 
     void select(eFixedCommand command);
 
-    void moveCursor(eFixedCommand command);
+    // @Override
+    bool moveCursorOverride(eFixedCommand command);
 
     void back();
 

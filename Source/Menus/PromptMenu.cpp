@@ -325,9 +325,11 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         moved = moveRightColumn();
         break;
     default:
-        return; // end early as it was not a cursor movement command
+        // end early as it was not a cursor movement command
+        return; 
     }
-    if (moved)
+    // @OTOD check logic on this
+    if (moveCursorOverride(direction) || moved)
     {
         // We have modulo checks to keep the cursor looping within valid options
         // However, if it loops through a dimension with only 1 option, the cursor
@@ -354,6 +356,7 @@ void PromptMenu::releaseCursor()
 
 void PromptMenu::enter()
 {
+    // Whenever we enter a menu, we reset the cursor position coordinates.
     m_iCursorRow = 0;
     m_iCursorColumn = 0;
     cout << "\n" << "Changed to " << this << " menu:" << "\n> " << getCurrentPrompt() << endl;

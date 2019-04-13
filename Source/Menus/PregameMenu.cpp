@@ -115,9 +115,8 @@ void PregameMenu::enter()
 
 }
 
-void PregameMenu::moveCursor(eFixedCommand direction)
+bool PregameMenu::moveCursorOverride(eFixedCommand direction)
 {
-    PromptMenu::moveCursor(direction);
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
@@ -127,13 +126,11 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
                 m_iPlayerCount = FuncUtils::subtractModulo(m_iPlayerCount, 1,
                                                            MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iPlayerCount = FuncUtils::addModulo(m_iPlayerCount, 1,
                                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;
             }
@@ -144,13 +141,11 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
                 m_iBotCount = FuncUtils::subtractModulo(m_iBotCount, 1,
                                                         MIN_BOT_COUNT, MAX_BOT_COUNT);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iBotCount << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iBotCount = FuncUtils::addModulo(m_iBotCount, 1,
                                                    MIN_BOT_COUNT, MAX_BOT_COUNT);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iBotCount << endl;
                 break;
             }
@@ -161,13 +156,11 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
                 m_eGameMode = FuncUtils::subtractModulo(m_eGameMode, 1,
                                                         0, GAMEMODE_COUNT - 1);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eGameMode = FuncUtils::addModulo(m_eGameMode, 1,
                                                         0, GAMEMODE_COUNT - 1);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eGameMode << endl;
                 break;
             }
@@ -178,13 +171,11 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
                 m_eBotDifficulty = FuncUtils::subtractModulo(m_eBotDifficulty, 1,
                                                         DIFFICULTY_EASY, DIFFICULTY_HARD);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eBotDifficulty << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eBotDifficulty = FuncUtils::addModulo(m_eBotDifficulty, 1,
                                                         DIFFICULTY_EASY, DIFFICULTY_HARD);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_eBotDifficulty << endl;
                 break;
             }
@@ -195,13 +186,11 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
                 m_fGameTime = FuncUtils::bound(m_fGameTime - GAME_TIME_INTERVAL,
                                                MIN_GAME_TIME, MAX_GAME_TIME);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_fGameTime = FuncUtils::bound(m_fGameTime + GAME_TIME_INTERVAL,
                                                MIN_GAME_TIME, MAX_GAME_TIME);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
                 break;
             }
@@ -213,13 +202,11 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
                 m_iMapNumber = FuncUtils::subtractModulo(m_iMapNumber, 1,
                                                          MIN_MAP_NUMBER, MAX_MAP_NUMBER);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iMapNumber << endl;
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iMapNumber = FuncUtils::addModulo(m_iMapNumber, 1,
                                                     MIN_MAP_NUMBER, MAX_MAP_NUMBER);
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_iMapNumber << endl;
                 break;
             }
@@ -231,12 +218,14 @@ void PregameMenu::moveCursor(eFixedCommand direction)
             case COMMAND_PROMPT_LEFT:
             case COMMAND_PROMPT_RIGHT:
                 m_bScoreLossEnabled = !m_bScoreLossEnabled;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
                 cout << "\t" << m_bScoreLossEnabled << endl;
                 break;
             }
             break;
+        default:
+            return false;
     }
+    return true;
 }
 
 

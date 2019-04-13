@@ -69,12 +69,27 @@ private:
 
     void moveCursorKeyboard(eFixedCommand direction);
 
+    /*
+        Every prompt menu has a corresponding MenuInterface to visualize
+        the menu state. Whenever we enter a prompt menu, we should also switch
+        to the corresponding MenuInterface.
+    */
+    // MenuInterface *m_pMenuInterface;
+
+    virtual void moveCursor(eFixedCommand direction) final;
+
 protected:
     PromptMenu(vector<vector<pair<const char*, eFixedCommand>>> vPrompts);
     // void setPrompts(vector<vector<const char*>> prompts) { m_vPrompts = prompts; }
 
-    // If overriden, call the parent version
-    virtual void moveCursor(eFixedCommand direction);
+
+    /*
+        If there is custom move cursor behaviour, override this.
+
+        @return true if cursor sound should play.
+    */
+    virtual bool moveCursorOverride(eFixedCommand direction) { return false; };
+
     // Process the current selected command.
     // This is called as the user selects the prompt under the current cursor
     // location.

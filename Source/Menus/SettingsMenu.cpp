@@ -71,9 +71,8 @@ void SettingsMenu::enter()
 
 }
 
-void SettingsMenu::moveCursor(eFixedCommand direction)
+bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
 {
-    PromptMenu::moveCursor(direction);
     switch (getCurrentPromptCommand())
     {
         case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
@@ -84,9 +83,10 @@ void SettingsMenu::moveCursor(eFixedCommand direction)
             case eFixedCommand::COMMAND_PROMPT_LEFT:
                 m_bMusicEnabled = !m_bMusicEnabled;
                 cout << "music enabled: " << m_bMusicEnabled << endl;
-                break;
+                return true;
             }
     }
+    return false;
 }
 
 
