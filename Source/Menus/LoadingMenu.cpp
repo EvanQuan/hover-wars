@@ -28,8 +28,7 @@ void LoadingMenu::select(eFixedCommand command)
 {
 }
 
-void LoadingMenu::enter()
+void LoadingMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(LoadingInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }

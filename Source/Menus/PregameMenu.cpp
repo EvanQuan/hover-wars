@@ -53,7 +53,7 @@ PregameMenu::PregameMenu() : PromptMenu(
 )
 {
     COMMAND_HANDLER->addMenu(this);
-    // Note that this is in the constructor, not enter(). While there are
+    // Note that this is in the constructor, not enterOverride(). While there are
     // initial bot and player values, these SHOULD persist between menu changes
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
@@ -107,9 +107,8 @@ void PregameMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void PregameMenu::enter()
+void PregameMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->getWidth(),
                                                                    m_pGameManager->getHeight()));
 

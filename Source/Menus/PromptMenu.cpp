@@ -360,6 +360,8 @@ void PromptMenu::enter()
     m_iCursorRow = 0;
     m_iCursorColumn = 0;
     cout << "\n" << "Changed to " << this << " menu:" << "\n> " << getCurrentPrompt() << endl;
+
+    enterOverride();
 }
 
 

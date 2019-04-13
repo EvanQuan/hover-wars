@@ -29,7 +29,7 @@ private:
     void back();
 
     // @Override
-    void enter();
+    void enterOverride();
 
     static SettingsMenu* m_pInstance;
 

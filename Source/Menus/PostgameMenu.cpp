@@ -60,9 +60,8 @@ void PostgameMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void PostgameMenu::enter()
+void PostgameMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(PostgameInterface::getInstance(m_pGameManager->getWidth(),
                                                                    m_pGameManager->getHeight()));
     endGameStats = GAME_STATS->getEndGameStats();

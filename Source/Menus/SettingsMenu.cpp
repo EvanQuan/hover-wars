@@ -63,9 +63,8 @@ void SettingsMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void SettingsMenu::enter()
+void SettingsMenu::enterOverride()
 {
-    PromptMenu::enter();
     // m_pGameManager->setCurrentInterface(SettingsInterface::getInstance(m_pGameManager->getWidth(),
       //                                                             m_pGameManager->getHeight()));
 

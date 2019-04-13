@@ -39,9 +39,8 @@ void RulesMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void RulesMenu::enter()
+void RulesMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->getWidth(),
                                                                     m_pGameManager->getHeight()));
 }

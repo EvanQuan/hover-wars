@@ -28,7 +28,7 @@ private:
     void back();
 
     // @Override
-    void enter();
+    void enterOverride();
 
     int m_iBotCount;
     int m_iPlayerCount;

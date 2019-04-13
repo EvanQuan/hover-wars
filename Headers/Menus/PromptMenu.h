@@ -47,6 +47,8 @@ private:
     // Override
     void updateTimeValues(float fTimeInSeconds);
 
+    void enter() final;
+
     int getMaxRowIndex();
     int getMaxColumnIndex();
 
@@ -99,7 +101,7 @@ protected:
     // other menu.
     virtual void back() = 0;
 
-    void enter();
+    virtual void enterOverride() = 0;
 
     eFixedCommand getCurrentPromptCommand() const { return m_vPrompts.at(m_iCursorRow).at(m_iCursorColumn).second; }
 

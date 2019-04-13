@@ -17,7 +17,7 @@ public:
 private:
     PostgameMenu();
 
-    void enter();
+    void enterOverride();
 
     void select(eFixedCommand command);
 

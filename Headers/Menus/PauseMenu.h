@@ -23,7 +23,7 @@ private:
 
     void back();
 
-    void enter();
+    void enterOverride();
 
     // @Override
     void executeFixedCommand(eHovercraft hovercraft, eFixedCommand command);

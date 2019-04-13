@@ -39,9 +39,8 @@ void ControlsMenu::back()
     nextMenu(MainMenu::getInstance());
 }
 
-void ControlsMenu::enter()
+void ControlsMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(ControlsInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }
 

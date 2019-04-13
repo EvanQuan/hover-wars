@@ -73,8 +73,7 @@ void MainMenu::back()
     nextMenu(StartMenu::getInstance());
 }
 
-void MainMenu::enter()
+void MainMenu::enterOverride()
 {
-    PromptMenu::enter();
     m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
 }

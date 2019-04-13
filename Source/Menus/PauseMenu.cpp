@@ -49,9 +49,8 @@ void PauseMenu::back()
     select(eFixedCommand::COMMAND_MENU_PAUSE_TOGGLE);
 }
 
-void PauseMenu::enter()
+void PauseMenu::enterOverride()
 { 
-    PromptMenu::enter();
     GAME_MANAGER->setPaused(true);
     m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
                                                                    m_pGameManager->getHeight()));
