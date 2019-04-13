@@ -3,7 +3,7 @@
 #include "GameManager.h"
 #include "EntityHeaders/HovercraftEntity.h"
 #include "EntityManager.h"
-#include "UserInterface/MenuInterface.h"
+#include "UserInterface/PromptInterface.h"
 #include "SoundManager.h"
 #include "UserInterface/GameInterface.h"
 #include "GameStats.h"

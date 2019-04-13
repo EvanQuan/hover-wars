@@ -1,5 +1,5 @@
 #pragma once
-#include "UserInterface/MenuInterface.h"
+#include "UserInterface/PromptInterface.h"
 
 #define NEW_GAME_OPTION "New Game"
 #define GAME_RULE "Rules"

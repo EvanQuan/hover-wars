@@ -1,5 +1,5 @@
 #pragma once
-#include "UserInterface/MenuInterface.h"
+#include "UserInterface/PromptInterface.h"
 
 #define CONTINUE_OPTION "Continue"
 #define END_GAME_OPTION "End Game"

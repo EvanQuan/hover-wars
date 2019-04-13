@@ -162,9 +162,6 @@ public:
         renderGlobalMessage();
     }
 
-    virtual void updateOverride(float fFrameDeltaTime) = 0;
-
-
     virtual void reinitialize(float gameTime) = 0;
 
     virtual void render() final;
@@ -184,6 +181,8 @@ protected:
                   vector<pair<float, float>> componentTranslating);
     UserInterface(const UserInterface* pCopy);            // Default Copy Constructor
     UserInterface& operator=(const UserInterface* pCopy); // Assignment Operator.
+
+    virtual void updateOverride(float fFrameDeltaTime) = 0;
 
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
     void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);

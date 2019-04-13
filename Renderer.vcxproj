@@ -93,7 +93,7 @@
     <ClInclude Include="Headers\UserInterface\GameInterface.h" />
     <ClInclude Include="Headers\UserInterface\LoadingInterface.h" />
     <ClInclude Include="Headers\UserInterface\MainInterface.h" />
-    <ClInclude Include="Headers\UserInterface\MenuInterface.h" />
+    <ClInclude Include="Headers\UserInterface\PromptInterface.h" />
     <ClInclude Include="Headers\UserInterface\PauseInterface.h" />
     <ClInclude Include="Headers\UserInterface\PostgameInterface.h" />
     <ClInclude Include="Headers\UserInterface\PregameInterface.h" />
@@ -169,7 +169,7 @@
     <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\LoadingInterface.cpp" />
     <ClCompile Include="Source\UserInterface\MainInterface.cpp" />
-    <ClCompile Include="Source\UserInterface\MenuInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\PromptInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PauseInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PostgameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PregameInterface.cpp" />
