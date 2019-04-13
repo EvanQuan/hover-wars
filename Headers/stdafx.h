@@ -84,43 +84,67 @@ using namespace physx;
 #define MAX_HOVERCRAFT_COUNT MAX_PLAYER_COUNT + MAX_BOT_COUNT
 #define XBOX_CONTROLLER     "Xbox"
 #define EMPTY_CONTROLLER    "Empty Controller"
-// m_pJoystickAxes
-#define AXIS_LEFT_STICK_X   0
-#define AXIS_LEFT_STICK_Y   1
-#define AXIS_RIGHT_STICK_X  2
-#define AXIS_RIGHT_STICK_Y  3
-#define AXIS_LEFT_TRIGGER   4
-#define AXIS_RIGHT_TRIGGER  5
-// m_joystickButtons
-#define BUTTON_A            0
-#define BUTTON_B            1
-#define BUTTON_X            2
-#define BUTTON_Y            3
-#define BUTTON_LEFT_BUMPER  4
-#define BUTTON_RIGHT_BUMPER 5
-#define BUTTON_BACK         6
-#define BUTTON_START        7
-#define BUTTON_LEFT_STICK   8
-#define BUTTON_RIGHT_STICK  9
-#define BUTTON_UP           10
-#define BUTTON_RIGHT        11
-#define BUTTON_DOWN         12
-#define BUTTON_LEFT         13
-#define MAX_BUTTON_INDEX    14
-// XBox controllers seem to have 2 more buttons (14, 15)
-// I have not been able to found out what these buttons actually represent.
-// Instead we will use the triggers as button states
-// so they can detect just pressed states
-#define TRIGGER_LEFT        14
-#define TRIGGER_RIGHT       15
-//
-#define MAX_BUTTON_COUNT    16
+
+// XBOX Joystick Axes
+#define XBOX_MASK                0x00
+#define XBOX_BUTTON_A            0
+#define XBOX_BUTTON_B            1
+#define XBOX_BUTTON_X            2
+#define XBOX_BUTTON_Y            3
+#define XBOX_BUTTON_LEFT_BUMPER  4
+#define XBOX_BUTTON_RIGHT_BUMPER 5
+#define XBOX_BUTTON_BACK         6
+#define XBOX_BUTTON_START        7
+#define XBOX_BUTTON_LEFT_STICK   8
+#define XBOX_BUTTON_RIGHT_STICK  9
+#define XBOX_BUTTON_UP           10
+#define XBOX_BUTTON_RIGHT        11
+#define XBOX_BUTTON_DOWN         12
+#define XBOX_BUTTON_LEFT         13
+#define XBOX_TRIGGER_LEFT        14
+#define XBOX_TRIGGER_RIGHT       15
+#define AXIS_LEFT_STICK_X        0
+#define AXIS_LEFT_STICK_Y        1
+#define AXIS_RIGHT_STICK_X       2
+#define AXIS_RIGHT_STICK_Y       3
+#define AXIS_LEFT_TRIGGER        4
+#define AXIS_RIGHT_TRIGGER       5
+
+#define PS4_MASK                 0x80000000
+#define PS4_BUTTON_X             1
+#define PS4_BUTTON_O             2
+#define PS4_BUTTON_SQUARE        0
+#define PS4_BUTTON_TRIANGLE      3
+#define PS4_BUTTON_OPTIONS       9
+#define PS4_BUTTON_SHARE         8
+#define PS4_BUTTON_R1            5
+#define PS4_BUTTON_R2            7
+#define PS4_BUTTON_R3            11
+#define PS4_BUTTON_L1            4
+#define PS4_BUTTON_L2            6 
+#define PS4_BUTTON_L3            10
+#define PS4_BUTTON_LEFT          17
+#define PS4_BUTTON_RIGHT         15
+#define PS4_BUTTON_UP            14
+#define PS4_BUTTON_DOWN          16
+#define PS4_BUTTON_TRACKPAD      13
+#define PS4_BUTTON_PS            12
+#define PS4_AXIS_LEFT_X          0
+#define PS4_AXIS_LEFT_Y          1
+#define PS4_AXIS_RIGHT_X         2
+#define PS4_AXIS_RIGHT_Y         5
+#define PS4_AXIS_L2              3
+#define PS4_AXIS_R2              4
+
+#define XBOX_BUTTON_COUNT       16
+#define PS4_BUTTON_COUNT        18
+#define MAX_BUTTON_COUNT        18
 // Joystick/trigger values
-#define JOYSTICK_IS_MAX     1.0f
-#define JOYSTICK_IS_MIN     -1.0f
-#define JOYSTICK_IS_NEUTRAL 0.0f
-#define TRIGGER_IS_NETURAL  -1.0f
-#define TRIGGER_IS_FULL     1.0f
+#define JOYSTICK_IS_MAX         1.0f
+#define JOYSTICK_IS_MIN         -1.0f
+#define JOYSTICK_IS_NEUTRAL     0.0f
+#define TRIGGER_IS_NETURAL      -1.0f
+#define TRIGGER_IS_FULL         1.0f
 
 /*
 Actor names
