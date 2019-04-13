@@ -314,8 +314,8 @@ void InputHandler::initializeJoystick(int joystickID)
     // Names
     m_pJoystickData[joystickID].sName = glfwGetJoystickName(joystickID);
 
-#ifndef NDEBUG
-    debugPrintJoystickInformation(joystickID);
+#ifdef NDEBUG
+    // debugPrintJoystickInformation(joystickID);
 #endif
 }
 
@@ -339,8 +339,8 @@ void InputHandler::debugPrintJoystickInformation(int joystickID)
         << " is " <<  (m_pJoystickData[joystickID].bPresent ? "" : "dis" ) << "connected"
         << std::endl;
 
-    debugPrintJoystickAxes(joystickID);
-    debugPrintJoystickButtons(joystickID);
+    // debugPrintJoystickAxes(joystickID);
+    // debugPrintJoystickButtons(joystickID);
 }
 #endif
 
@@ -456,7 +456,7 @@ Registers a joystick as not connected to the game.
 void InputHandler::disconnectJoystick(int joystickID)
 {
     m_pJoystickData[joystickID].initialize();
-    debugPrintJoystickInformation(joystickID);
+    // debugPrintJoystickInformation(joystickID);
 
 }
 
