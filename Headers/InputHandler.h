@@ -44,6 +44,18 @@ public:
 
     int getJoystickCount();
 
+    void debugAXIS(int joystickID);
+
+    // Getters and Setters for Joystick information
+    bool                isJoystickPresent(unsigned int iJoystick)   { return m_pJoystickData[iJoystick].bPresent; }
+    const float*        getAxesPointer(unsigned int iJoystick)      { return m_pJoystickData[iJoystick].pAxes; }
+    eInputState*        getInputStateArray(unsigned int iJoystick, int* iReturnButtonCount, int* iReturnButtonMask)
+    {
+        *iReturnButtonCount = m_pJoystickData[iJoystick].iButtonCount;
+        *iReturnButtonMask = m_pJoystickData[iJoystick].iMask;
+        return m_pJoystickData[iJoystick].eButtonState;
+    }
+
     /*
     Keyboard
 
@@ -67,36 +79,101 @@ public:
     true - present
     0 - not present
     */
-    bool m_pJoystickIsPresent[MAX_PLAYER_COUNT];
-    /*
-    The number of axes each joystick has. Ideally, every joystick has 4 axes.
-    */
-    int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
-    /*
-    The value of each axis for each player.
-    */
-    const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
-    /*
-    The number of buttons that each joystick has. Ideally, every joystick would have the
-    same number of buttons, but we can never be too sure.
-    */
-    int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
-    /*
-    The input states of each button for each joystick.
-
-    Index retrieval
-    0 : int joystickID
-    1 : int button macro
-    */
-    eInputState m_joystickButtons[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
-    /*
-    The names of each joystick. This is only important for debugging purposes.
-    */
-    const char* m_pJoystickNames[MAX_PLAYER_COUNT];
+    //bool m_pJoystickIsPresent[MAX_PLAYER_COUNT];
+    ///*
+    //The number of axes each joystick has. Ideally, every joystick has 4 axes.
+    //*/
+    //int m_pJoystickAxesCount[MAX_PLAYER_COUNT];
+    ///*
+    //The value of each axis for each player.
+    //*/
+    //const float* m_pJoystickAxes[MAX_PLAYER_COUNT];
+    ///*
+    //The number of buttons that each joystick has. Ideally, every joystick would have the
+    //same number of buttons, but we can never be too sure.
+    //*/
+    //int m_pJoystickButtonCount[MAX_PLAYER_COUNT];
+    ///*
+    //The input states of each button for each joystick.
+    //
+    //Index retrieval
+    //0 : int joystickID
+    //1 : int button macro
+    //*/
+    //eInputState m_joystickButtons[MAX_PLAYER_COUNT][MAX_BUTTON_COUNT];
+    ///*
+    //The names of each joystick. This is only important for debugging purposes.
+    //*/
+    //const char* m_pJoystickNames[MAX_PLAYER_COUNT];
 private:
     // Singleton Variables
     InputHandler(GLFWwindow *rWindow);
     void checkForPresentJoysticks();
+
+    // Joystick information
+    struct sJoystickInfo
+    {
+        /*
+            List of joysticks that are present (detected) by the game.
+            Only present controllers are initialized
+            true - present
+            0 - not present
+        */
+        bool            bPresent;
+        /*
+            Mask for referencing controls for different joystick types.
+        */
+        int             iMask;
+        /*
+            The number of axes each joystick has. Ideally, every joystick has 4 axes.
+        */
+        int             iAxesCount;
+        /*
+            The value of each axis for each player.
+        */
+        const float*    pAxes;
+        /*
+            The names of each joystick. This is only important for debugging purposes.
+        */
+        string          sName;
+        /*
+            The number of buttons that each joystick has. Ideally, every joystick would have the
+            same number of buttons, but we can never be too sure.
+        */
+        int             iButtonCount;
+        /*
+            The input states of each button for each joystick.
+            
+            Index retrieval
+            0 : int joystickID
+            1 : int button macro
+        */
+        eInputState     eButtonState[MAX_BUTTON_COUNT];
+        /*
+            Raw input values retrieved from glfwGetJoystickButtons()
+            The values are either GLFW_PRESS or GLFW_RELEASE
+        */
+        const unsigned char* pRawButtons;
+
+        /*
+            Initializes Default Values for a joystick
+        */
+        void initialize()
+        {
+            // Set Default Values
+            bPresent        = false;
+            iMask           = XBOX_MASK;
+            iAxesCount      = 0;
+            pAxes           = nullptr;
+            iButtonCount    = 0;
+            sName           = EMPTY_CONTROLLER;
+            pRawButtons     = nullptr;
+
+            // Set all Button States to Released
+            for (int button = 0; button < MAX_BUTTON_COUNT; button++)
+                eButtonState[button] = INPUT_RELEASED;
+        }
+    } m_pJoystickData[MAX_PLAYER_COUNT];
 
 #ifndef NDEBUG
     void debugKeyCommands(int key, int action);
@@ -124,9 +201,4 @@ private:
 
     // Joysticks
     void updateJoystickButtonStates(int joystick);
-    /*
-    Raw input values retrieved from glfwGetJoystickButtons()
-    The values are either GLFW_PRESS or GLFW_RELEASE
-    */
-    const unsigned char* m_pJoystickButtonsRaw[MAX_PLAYER_COUNT];
 };
