@@ -114,7 +114,7 @@
 #define IMAGE_BOT_3 "textures/menu/bot3.png"
 #define IMAGE_BOT_4 "textures/menu/bot4.png"
 #define IMAGE_NUMBER_1 "textures/menu/number_1.png"
-#define IMAGE_NUMBER_2 "textures/menu/number_2.png"
+#define IMAGE_NUMBER_2 "textures/menu/number_2.png" // for some reason, grey or silver causees rendering issues
 #define IMAGE_NUMBER_3 "textures/menu/number_3.png"
 #define IMAGE_POINT "textures/menu/pts.png"
 

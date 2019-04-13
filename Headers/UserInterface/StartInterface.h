@@ -14,11 +14,8 @@ public:
     StartInterface(const StartInterface* pCopy);                              // Default Copy Constructor
     StartInterface& operator=(const StartInterface* pCopy);                   // Assignment Operator.
 
-    void updateOverride(float fSecondsSinceLastUpdate);
-
     void reinitialize(float gameTime);
 
-    void renderOverride();
 
 private:
     enum eUIComponent
@@ -30,5 +27,12 @@ private:
 
     static StartInterface* m_pInstance;
 
+    void updateOverride(float fTimeInSeconds);
+
+    void renderOverride();
+
     void renderOption();
+
+    float m_fBlinkTime;
+    bool m_bPromptVisible;
 };
