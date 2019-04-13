@@ -76,6 +76,7 @@ GameMenu::GameMenu() : Menu(
         {XBOX_BUTTON_LEFT,            COMMAND_INVALID_FIXED },
         {XBOX_TRIGGER_LEFT,           COMMAND_INVALID_FIXED },
         {XBOX_BUTTON_START,           COMMAND_INVALID_FIXED },
+
         {PS4_MASK | PS4_BUTTON_SHARE,           COMMAND_MENU_BACK },
         {PS4_MASK | PS4_BUTTON_L3,              COMMAND_INVALID_FIXED },
         {PS4_MASK | PS4_BUTTON_R3,              COMMAND_INVALID_FIXED },
@@ -96,13 +97,14 @@ GameMenu::GameMenu() : Menu(
         {XBOX_BUTTON_B,              COMMAND_DASH_RIGHT},
         {XBOX_BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_BACK},
         {XBOX_BUTTON_START,          COMMAND_MENU_PAUSE_TOGGLE},
-        {XBOX_BUTTON_BACK,           COMMAND_MENU_START}, // TODO for now until we find a purpose
+        {XBOX_BUTTON_BACK,           COMMAND_MENU_START},
         {XBOX_BUTTON_UP,             COMMAND_HONK_UP},
         {XBOX_BUTTON_RIGHT,          COMMAND_HONK_RIGHT},
         {XBOX_BUTTON_DOWN,           COMMAND_HONK_DOWN},
         {XBOX_BUTTON_LEFT,           COMMAND_HONK_LEFT},
         {XBOX_TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_ACTIVATE},
         {XBOX_TRIGGER_RIGHT,         COMMAND_ABILITY_ROCKET},
+
         {PS4_MASK | PS4_BUTTON_L1,          COMMAND_ABILITY_SPIKES },
         {PS4_MASK | PS4_BUTTON_X,           COMMAND_DASH_BACK },
         {PS4_MASK | PS4_BUTTON_TRIANGLE,    COMMAND_DASH_FORWARD },
@@ -110,7 +112,7 @@ GameMenu::GameMenu() : Menu(
         {PS4_MASK | PS4_BUTTON_O,           COMMAND_DASH_RIGHT },
         {PS4_MASK | PS4_BUTTON_R1,          COMMAND_CAMERA_BACK },
         {PS4_MASK | PS4_BUTTON_OPTIONS,     COMMAND_MENU_PAUSE_TOGGLE },
-        {PS4_MASK | PS4_BUTTON_SHARE,       COMMAND_MENU_START }, // TODO for now until we find a purpose
+        {PS4_MASK | PS4_BUTTON_SHARE,       COMMAND_MENU_START },
         {PS4_MASK | PS4_BUTTON_UP,          COMMAND_HONK_UP },
         {PS4_MASK | PS4_BUTTON_RIGHT,       COMMAND_HONK_RIGHT },
         {PS4_MASK | PS4_BUTTON_DOWN,        COMMAND_HONK_DOWN },
@@ -121,8 +123,9 @@ GameMenu::GameMenu() : Menu(
     // justReleasedButtonToFixedCommand
     unordered_map<int, eFixedCommand>
     {
-        {XBOX_BUTTON_RIGHT_BUMPER,   COMMAND_CAMERA_FRONT},
-        {XBOX_TRIGGER_LEFT,          COMMAND_ABILITY_TRAIL_DEACTIVATE},
+        { XBOX_BUTTON_RIGHT_BUMPER,  COMMAND_CAMERA_FRONT },
+        { XBOX_TRIGGER_LEFT,         COMMAND_ABILITY_TRAIL_DEACTIVATE },
+
         { PS4_MASK | PS4_BUTTON_R1,  COMMAND_CAMERA_FRONT },
         { PS4_MASK | PS4_BUTTON_L2,  COMMAND_ABILITY_TRAIL_DEACTIVATE },
     }
