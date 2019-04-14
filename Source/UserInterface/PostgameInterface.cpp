@@ -300,7 +300,7 @@ void PostgameInterface::renderOverride()
     // There is always at least 1 player or team
     renderImage(IMAGE_NUMBER_1, m_vComponentCoordinates[NUMBER_1].first, m_vComponentCoordinates[NUMBER_1].second, 1.0f);
 
-    if (shouldRenderPlacement2(gameMode, hovercraftCount))
+    if (shouldRenderPlacement2(gameMode, hovercraftCount, playerCount, botCount))
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
