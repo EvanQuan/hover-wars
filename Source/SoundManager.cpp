@@ -687,8 +687,8 @@ void SoundManager::setPauseMenu() {
         it.second->setPaused(true);
     }
     // play pause music
-    auto tFoundIt = mEvents.find(getPath(SOUND_MUSIC_PAUSE));
-    tFoundIt->second->setPaused(false);
+    // auto tFoundIt = mEvents.find(getPath(SOUND_MUSIC_PAUSE));
+    // tFoundIt->second->setPaused(false);
     play(SOUND_MUSIC_PAUSE);
     updateChannels();
 }

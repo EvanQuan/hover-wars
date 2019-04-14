@@ -4,7 +4,7 @@
 
 <!-- ![](title-image) -->
 
-## Download and Running
+## Installation
 
 [You can find the most recent release
 here](https://github.com/EvanQuan/hover-wars/releases).
