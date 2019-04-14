@@ -247,13 +247,22 @@ void PregameInterface::renderMap(unsigned int mapNumber)
 void PregameInterface::renderBotDifficulty(eBotDifficulty m_eBotDifficulty) {
     switch (m_eBotDifficulty) {\
         case DIFFICULTY_EASY:
-            renderImage(IMAGE_EASY, m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].first, m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].second, 1.0f);
+            renderImage(IMAGE_EASY,
+                m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].first,
+                m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].second,
+                1.0f);
             break;
         case DIFFICULTY_MEDIUM:
-            renderImage(IMAGE_MEDIUM, m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].first, m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].second, 1.0f);
+            renderImage(IMAGE_MEDIUM,
+                m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].first,
+                m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].second,
+                1.0f);
             break;
         case DIFFICULTY_HARD:
-            renderImage(IMAGE_HARD, m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].first, m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].second, 1.0f);
+            renderImage(IMAGE_HARD,
+                m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].first,
+                m_vComponentCoordinates[BOT_DIFFICULTY_VALUE].second,
+                1.0f);
             break;
     }
 }
@@ -269,103 +278,49 @@ void PregameInterface::renderOption() {
     renderMap(m->getMapNumber());
     renderBotDifficulty(m->getBotDifficulty());
 
-    if (option == PLAY_COUNT_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_2, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == BOT_COUNT_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_2, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == BOT_DIFFICULTY_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_2, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == GAME_TIME_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_2, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == GAMEMODE_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_2, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == SCORELOSS_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_2, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == MAP_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_2, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == START_GAME_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_2, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
-    else if (option == BACK_OPTION) {
-        renderImage(IMAGE_NUMBER_OF_PLAYER_1, m_vComponentCoordinates[PLAYER_COUNT].first, m_vComponentCoordinates[PLAYER_COUNT].second, 1.0f);
-        renderImage(IMAGE_NUMBER_OF_BOT_1, m_vComponentCoordinates[BOT_COUNT].first, m_vComponentCoordinates[BOT_COUNT].second, 1.0f);
-        renderImage(IMAGE_BOT_DIFFICULTY_1, m_vComponentCoordinates[BOT_DIFFICULTY].first, m_vComponentCoordinates[BOT_DIFFICULTY].second, 1.0f);
-        renderImage(IMAGE_GAME_TIME_1, m_vComponentCoordinates[GAME_TIME].first, m_vComponentCoordinates[GAME_TIME].second, 1.0f);
-        renderImage(IMAGE_GAMEMODE_1, m_vComponentCoordinates[GAMEMODE_LABEL].first, m_vComponentCoordinates[GAMEMODE_LABEL].second, 1.0f);
-        renderImage(IMAGE_SCORE_LOSS_1, m_vComponentCoordinates[SCORELOSS_LABEL].first, m_vComponentCoordinates[SCORELOSS_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAP_1, m_vComponentCoordinates[MAP_LABEL].first, m_vComponentCoordinates[MAP_LABEL].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-        renderImage(IMAGE_START_1, m_vComponentCoordinates[START_GAME].first, m_vComponentCoordinates[START_GAME].second, 1.0f);
-    }
+    renderImage(option == PLAY_COUNT_OPTION ?
+        IMAGE_NUMBER_OF_PLAYER_2 : IMAGE_NUMBER_OF_PLAYER_1,
+        m_vComponentCoordinates[PLAYER_COUNT].first,
+        m_vComponentCoordinates[PLAYER_COUNT].second,
+        1.0f);
+    renderImage(option == BOT_COUNT_OPTION ?
+        IMAGE_NUMBER_OF_BOT_2 : IMAGE_NUMBER_OF_BOT_1,
+        m_vComponentCoordinates[BOT_COUNT].first,
+        m_vComponentCoordinates[BOT_COUNT].second,
+        1.0f);
+    renderImage(option == BOT_DIFFICULTY_OPTION ?
+        IMAGE_BOT_DIFFICULTY_2 : IMAGE_BOT_DIFFICULTY_1,
+        m_vComponentCoordinates[BOT_DIFFICULTY].first,
+        m_vComponentCoordinates[BOT_DIFFICULTY].second,
+        1.0f);
+    renderImage(option == GAME_TIME_OPTION ?
+        IMAGE_GAME_TIME_2 : IMAGE_GAME_TIME_1,
+        m_vComponentCoordinates[GAME_TIME].first,
+        m_vComponentCoordinates[GAME_TIME].second,
+        1.0f);
+    renderImage(option == GAMEMODE_OPTION ?
+        IMAGE_GAMEMODE_2 : IMAGE_GAMEMODE_1,
+        m_vComponentCoordinates[GAMEMODE_LABEL].first,
+        m_vComponentCoordinates[GAMEMODE_LABEL].second,
+        1.0f);
+    renderImage(option == SCORELOSS_OPTION ?
+        IMAGE_SCORE_LOSS_2 : IMAGE_SCORE_LOSS_1,
+        m_vComponentCoordinates[SCORELOSS_LABEL].first,
+        m_vComponentCoordinates[SCORELOSS_LABEL].second,
+        1.0f);
+    renderImage(option == MAP_OPTION ?
+        IMAGE_MAP_2 : IMAGE_MAP_1,
+        m_vComponentCoordinates[MAP_LABEL].first,
+        m_vComponentCoordinates[MAP_LABEL].second,
+        1.0f);
+    renderImage(option == BACK_OPTION ?
+        IMAGE_MAIN_MENU_BUTTON_2 : IMAGE_MAIN_MENU_BUTTON_1,
+        m_vComponentCoordinates[MAIN_MENU].first,
+        m_vComponentCoordinates[MAIN_MENU].second,
+        1.0f);
+    renderImage(option == START_GAME_OPTION ?
+        IMAGE_START_2 : IMAGE_START_1,
+        m_vComponentCoordinates[START_GAME].first,
+        m_vComponentCoordinates[START_GAME].second,
+        1.0f);
 }
