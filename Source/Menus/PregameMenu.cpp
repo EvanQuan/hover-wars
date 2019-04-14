@@ -126,14 +126,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 m_iPlayerCount = FuncUtils::subtractModulo(m_iPlayerCount, 1,
                                                            MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
                 cout << "\t" << m_iPlayerCount << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iPlayerCount = FuncUtils::addModulo(m_iPlayerCount, 1,
                                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
                 cout << "\t" << m_iPlayerCount << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_2: // Bot
@@ -143,14 +143,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 m_iBotCount = FuncUtils::subtractModulo(m_iBotCount, 1,
                                                         MIN_BOT_COUNT, MAX_BOT_COUNT);
                 cout << "\t" << m_iBotCount << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iBotCount = FuncUtils::addModulo(m_iBotCount, 1,
                                                    MIN_BOT_COUNT, MAX_BOT_COUNT);
                 cout << "\t" << m_iBotCount << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_3: // Game mode
@@ -160,14 +160,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 m_eGameMode = FuncUtils::subtractModulo(m_eGameMode, 1,
                                                         0, GAMEMODE_COUNT - 1);
                 cout << "\t" << m_eGameMode << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eGameMode = FuncUtils::addModulo(m_eGameMode, 1,
                                                         0, GAMEMODE_COUNT - 1);
                 cout << "\t" << m_eGameMode << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_6: // bot difficulty
@@ -177,14 +177,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 m_eBotDifficulty = FuncUtils::subtractModulo(m_eBotDifficulty, 1,
                                                         DIFFICULTY_EASY, DIFFICULTY_HARD);
                 cout << "\t" << m_eBotDifficulty << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_eBotDifficulty = FuncUtils::addModulo(m_eBotDifficulty, 1,
                                                         DIFFICULTY_EASY, DIFFICULTY_HARD);
                 cout << "\t" << m_eBotDifficulty << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_4: // game time
@@ -194,14 +194,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 m_fGameTime = FuncUtils::bound(m_fGameTime - GAME_TIME_INTERVAL,
                                                MIN_GAME_TIME, MAX_GAME_TIME);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_fGameTime = FuncUtils::bound(m_fGameTime + GAME_TIME_INTERVAL,
                                                MIN_GAME_TIME, MAX_GAME_TIME);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_5: // Map
@@ -212,14 +212,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 m_iMapNumber = FuncUtils::subtractModulo(m_iMapNumber, 1,
                                                          MIN_MAP_NUMBER, MAX_MAP_NUMBER);
                 cout << "\t" << m_iMapNumber << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
             case COMMAND_PROMPT_RIGHT:
                 m_iMapNumber = FuncUtils::addModulo(m_iMapNumber, 1,
                                                     MIN_MAP_NUMBER, MAX_MAP_NUMBER);
                 cout << "\t" << m_iMapNumber << endl;
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_7: // Score loss
@@ -232,12 +232,14 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                 cout << "\t" << m_bScoreLossEnabled << endl;
                 SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         default:
             return false;
     }
-    return false;
+    return true;
 }
 
 

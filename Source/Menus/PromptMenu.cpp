@@ -343,7 +343,11 @@ void PromptMenu::moveCursor(eFixedCommand direction)
         return; 
     }
     // @OTOD check logic on this
-    if (moveCursorOverride(direction) || moved)
+    if (moveCursorOverride(direction))
+    {
+        SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
+    }
+    else if (moved)
     {
         // We have modulo checks to keep the cursor looping within valid options
         // However, if it loops through a dimension with only 1 option, the cursor
