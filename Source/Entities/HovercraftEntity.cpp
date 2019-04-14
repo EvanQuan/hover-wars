@@ -99,7 +99,7 @@ Represents the trail gauge is empty.
 // Fire dimensions
 // Affects both the hitboxes and sprite size
 #define FIRE_HEIGHT             3.0
-#define FIRE_WIDTH              3.0
+#define FIRE_WIDTH              3.0 // 15 is good for wide flames
 
 /*
     Duration powerups last before disapating.
