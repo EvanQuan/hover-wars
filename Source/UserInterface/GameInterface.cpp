@@ -602,7 +602,7 @@ void GameInterface::renderTeamPlayerScore()
     vec3 color2;
     switch (GAME_STATS->getGameMode())
     {
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         score = "Player team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
         renderText(score,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
@@ -610,7 +610,7 @@ void GameInterface::renderTeamPlayerScore()
            SCORE_SCALE,
            GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
         break;
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         switch (m_eHovercraftFocus)
         {
         case HOVERCRAFT_PLAYER_1:
@@ -647,9 +647,9 @@ void GameInterface::renderTeamBotScore()
     string score;
     switch (GAME_STATS->getGameMode())
     {
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         if (GAME_STATS->getBotCount() > 0)
         {
             score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE));
