@@ -21,8 +21,15 @@ public:
 private:
     enum eUIComponent
     {
-        BACKGROUND = 0,
+        TITLE,
+        MUSIC_LABEL,
+        MUSIC_SETTING,
+        BACK,
     };
 
     static SettingsInterface* m_pInstance;
+
+    void renderTitle();
+    void renderMusic(bool selected, bool musicEnabled);
+    void renderBack(bool selected);
 };

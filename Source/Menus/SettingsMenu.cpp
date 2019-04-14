@@ -20,13 +20,11 @@ SettingsMenu* SettingsMenu::m_pInstance = nullptr;
 SettingsMenu::SettingsMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        // Logically, back is selected by default first, although visually it
-        // should appear last in the SettingsInterface
-        {
-            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
-        },
         {
             { "Music", eFixedCommand::COMMAND_PROMPT_SELECT }
+        },
+        {
+            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
         },
     }
 )
