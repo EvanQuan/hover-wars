@@ -98,6 +98,7 @@
     <ClInclude Include="Headers\UserInterface\PostgameInterface.h" />
     <ClInclude Include="Headers\UserInterface\PregameInterface.h" />
     <ClInclude Include="Headers\UserInterface\RulesInterface.h" />
+    <ClInclude Include="Headers\UserInterface\SettingsInterface.h" />
     <ClInclude Include="Headers\UserInterface\StartInterface.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="Source\UserInterface\PostgameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\PregameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\RulesInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\SettingsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\StartInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />

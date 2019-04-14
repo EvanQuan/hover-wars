@@ -129,6 +129,11 @@
 #define IMAGE_MEDIUM "textures/menu/medium.png"
 #define IMAGE_EASY "textures/menu/easy.png"
 
+#define IMAGE_MUSIC_1 "textures/menu/music.png"
+#define IMAGE_MUSIC_2 "textures/menu/music2.png"
+#define IMAGE_SETTINGS_1 "textures/menu/settings.png"
+#define IMAGE_SETTINGS_2 "textures/menu/settings2.png"
+
 // Forward Declaration
 class ShaderManager;
 class Texture;

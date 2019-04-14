@@ -75,6 +75,7 @@
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
     <ClCompile Include="Source\UserInterface\PromptInterface.cpp" />
     <ClCompile Include="Source\Menus\MenuManager.cpp" />
+    <ClCompile Include="Source\UserInterface\SettingsInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Anim_Track.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
     <ClInclude Include="Headers\UserInterface\PromptInterface.h" />
     <ClInclude Include="Headers\Menus\MenuManager.h" />
+    <ClInclude Include="Headers\UserInterface\SettingsInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

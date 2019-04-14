@@ -1,7 +1,7 @@
 #include "Menus/SettingsMenu.h"
 #include "Menus/MainMenu.h"
 #include "Menus/LoadingMenu.h"
-// #include "UserInterface/SettingsInterface.h"
+#include "UserInterface/SettingsInterface.h"
 #include "Menus/MenuManager.h"
 
 
@@ -65,9 +65,8 @@ void SettingsMenu::back()
 
 void SettingsMenu::enterOverride()
 {
-    // m_pGameManager->setCurrentInterface(SettingsInterface::getInstance(m_pGameManager->getWidth(),
-      //                                                             m_pGameManager->getHeight()));
-
+    m_pGameManager->setCurrentInterface(SettingsInterface::getInstance(m_pGameManager->getWidth(),
+                                                                       m_pGameManager->getHeight()));
 }
 
 bool SettingsMenu::moveCursorOverride(eFixedCommand direction)

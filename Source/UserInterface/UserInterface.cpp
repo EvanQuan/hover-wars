@@ -69,6 +69,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
+    // @Deprecated too difficult to read
     m_Textures[IMAGE_MENU_0] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_0);
     m_Textures[IMAGE_MENU_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_1);
     m_Textures[IMAGE_MENU_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MENU_2);
@@ -168,6 +169,10 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_MEDIUM] = TEXTURE_MANAGER->loadTexture(IMAGE_MEDIUM);
     m_Textures[IMAGE_EASY] = TEXTURE_MANAGER->loadTexture(IMAGE_EASY);
     m_Textures[IMAGE_PLAYER_TEAMS] = TEXTURE_MANAGER->loadTexture(IMAGE_PLAYER_TEAMS);
+    m_Textures[IMAGE_MUSIC_1] = TEXTURE_MANAGER->loadTexture(IMAGE_MUSIC_1);
+    m_Textures[IMAGE_MUSIC_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MUSIC_2);
+    m_Textures[IMAGE_SETTINGS_1] = TEXTURE_MANAGER->loadTexture(IMAGE_SETTINGS_1);
+    m_Textures[IMAGE_SETTINGS_2] = TEXTURE_MANAGER->loadTexture(IMAGE_SETTINGS_2);
 }
 
 UserInterface::~UserInterface()
