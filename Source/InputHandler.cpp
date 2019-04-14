@@ -301,8 +301,6 @@ void InputHandler::initializeJoystick(int joystickID)
     // Button states
     m_pJoystickData[joystickID].pRawButtons = glfwGetJoystickButtons(joystickID, &m_pJoystickData[joystickID].iButtonCount);
 
-    cout << "Button count: " << m_pJoystickData[joystickID].iButtonCount << endl;
-
     // Set the Mask based on the Button Count.
     switch (m_pJoystickData[joystickID].iButtonCount)
     {
@@ -600,9 +598,4 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
     {
         *pRightTriggerState = INPUT_JUST_RELEASED;
     }
-
-    // system("CLS");
-    // cout << "left trigger: " << *pLeftTriggerAxis << endl;
-    // cout << "right trigger: " << *pRightTriggerAxis << endl;
-
 }
