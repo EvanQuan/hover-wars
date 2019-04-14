@@ -11,8 +11,8 @@ split-screen multiplayer for up to 4 players.
 [You can find the most recent release
 here](https://github.com/EvanQuan/hover-wars/releases).
 
-1. Download the `zip` or `tar.gz` and extract it.
-2. Run `HoverWars.exe` to start the program.
+1. Download the **Source Code** `zip` or `tar.gz` and extract it.
+2. Double-click `HoverWars.exe` to start the program.
 3. Have fun!
 
 ## Controls
