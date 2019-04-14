@@ -9,10 +9,10 @@
 #include "stdafx.h"
 
 /*
-Handles the collisions between objects in the game world.
+    Handles the collisions between objects in the game world.
 
-@author Austin Eaton
-@author Evan Quan
+    @author Austin Eaton
+    @author Evan Quan
 */
 class PhysicsCallBack : public physx::PxSimulationEventCallback {
 public:
@@ -30,16 +30,4 @@ public:
 private:
     PxRigidDynamic *m_pBody1 = NULL;
     PxRigidDynamic *m_pBody2 = NULL;
-
-    std::unordered_map<char, eHovercraft> ownerToHovercraft =
-    {
-        {C_OWNER_PLAYER_1,  HOVERCRAFT_PLAYER_1},
-        {C_OWNER_PLAYER_2,  HOVERCRAFT_PLAYER_2},
-        {C_OWNER_PLAYER_3,  HOVERCRAFT_PLAYER_3},
-        {C_OWNER_PLAYER_4,  HOVERCRAFT_PLAYER_4},
-        {C_OWNER_BOT_1,     HOVERCRAFT_BOT_1},
-        {C_OWNER_BOT_2,     HOVERCRAFT_BOT_2},
-        {C_OWNER_BOT_3,     HOVERCRAFT_BOT_3},
-        {C_OWNER_BOT_4,     HOVERCRAFT_BOT_4},
-    };
 };

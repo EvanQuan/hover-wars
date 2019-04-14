@@ -143,11 +143,13 @@ using namespace physx;
     This is important for iterating through the joystick buttons
     in Menu::updateJoystickCommands() to ensure we check the trigger
     input states.
-    
+
+    As a result, MIN_BUTTON_COUNT will be 2 more than the XBOX_BUTTON_COUNT to
+    ensure we iterate over the xbox triggers in Menu::updateJoystickCommands().
 */
-#define XBOX_BUTTON_COUNT       16
+#define XBOX_BUTTON_COUNT       14
 #define PS4_BUTTON_COUNT        18
-#define MIN_BUTTON_COUNT        XBOX_BUTTON_COUNT
+#define MIN_BUTTON_COUNT        XBOX_BUTTON_COUNT + 2
 #define MAX_BUTTON_COUNT        PS4_BUTTON_COUNT
 // Joystick/trigger values
 #define JOYSTICK_IS_MAX         1.0f
@@ -155,79 +157,6 @@ using namespace physx;
 #define JOYSTICK_IS_NEUTRAL     0.0f
 #define TRIGGER_IS_NETURAL      -1.0f
 #define TRIGGER_IS_FULL         1.0f
-
-/*
-Actor names
-
-Interactable entities have actor names so the game can discern what type of
-object they are. This is especially important for collisions, as collisions
-between different kinds of entities determine the results.
-
-Actor names are composed of 2 characters. The order of tokens are:
-
-1. Type
-
-2. Subtype or Owner
-*/
-// Type
-#define TYPE_WORLD      "w"
-#define TYPE_POWERUP    "p"
-#define TYPE_TRAIL      "t"
-#define TYPE_PLAYER     "P"
-#define TYPE_HOVERCRAFT "h"
-#define TYPE_BOT        "b"
-#define TYPE_ROCKET     "r"
-#define TYPE_SPIKES     "s"
-
-#define C_TYPE_WORLD      'w'
-#define C_TYPE_POWERUP    'p'
-#define C_TYPE_TRAIL      't'
-#define C_TYPE_PLAYER     'P'
-#define C_TYPE_BOT        'b'
-#define C_TYPE_HOVERCRAFT 'h'
-#define C_TYPE_ROCKET     'r'
-#define C_TYPE_SPIKES     's'
-
-// Subtype
-#define SUBTYPE_WALL          "W"
-#define SUBTYPE_GROUND        "g"
-#define SUBTYPE_POWERUP_SPEED "S"
-
-#define C_SUBTYPE_WALL          'W'
-#define C_SUBTYPE_GROUND        'g'
-#define C_SUBTYPE_POWERUP_SPEED 'S'
-
-// Owner
-#define OWNER_PLAYER_1 "1"
-#define OWNER_PLAYER_2 "2"
-#define OWNER_PLAYER_3 "3"
-#define OWNER_PLAYER_4 "4"
-#define OWNER_BOT_1    "5"
-#define OWNER_BOT_2    "6"
-#define OWNER_BOT_3    "7"
-#define OWNER_BOT_4    "8"
-
-#define C_OWNER_PLAYER_1 '1'
-#define C_OWNER_PLAYER_2 '2'
-#define C_OWNER_PLAYER_3 '3'
-#define C_OWNER_PLAYER_4 '4'
-#define C_OWNER_BOT_1    '5'
-#define C_OWNER_BOT_2    '6'
-#define C_OWNER_BOT_3    '7'
-#define C_OWNER_BOT_4    '8'
-
-// Don't use these
-#define NAME_PLAYER  "p"
-#define NAME_BOT     "b"
-#define NAME_ROCKET  "r"
-#define NAME_TRAIL   "t"
-#define NAME_SPIKES  "s"
-#define NAME_WALL    "w"
-#define NAME_GROUND  "g"
-
-// Don't use these
-#define NAME_SPHERE  "sphere"
-#define NAME_MESH    "mesh"
 
 
 // Mapping potential types from the scene loader to corresponding enums

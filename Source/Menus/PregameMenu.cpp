@@ -132,6 +132,8 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
                 cout << "\t" << m_iPlayerCount << endl;
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_2: // Bot
@@ -147,6 +149,8 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                                                    MIN_BOT_COUNT, MAX_BOT_COUNT);
                 cout << "\t" << m_iBotCount << endl;
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_3: // Game mode
@@ -162,6 +166,8 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                                                         0, GAMEMODE_COUNT - 1);
                 cout << "\t" << m_eGameMode << endl;
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_6: // bot difficulty
@@ -177,6 +183,8 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                                                         DIFFICULTY_EASY, DIFFICULTY_HARD);
                 cout << "\t" << m_eBotDifficulty << endl;
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_4: // game time
@@ -192,6 +200,8 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                                                MIN_GAME_TIME, MAX_GAME_TIME);
                 cout << "\t" << FuncUtils::timeToString(m_fGameTime) << endl;
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_5: // Map
@@ -208,6 +218,8 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
                                                     MIN_MAP_NUMBER, MAX_MAP_NUMBER);
                 cout << "\t" << m_iMapNumber << endl;
                 break;
+            default:
+                return false;
             }
             break;
         case eFixedCommand::COMMAND_PROMPT_SELECT_7: // Score loss
@@ -218,7 +230,10 @@ bool PregameMenu::moveCursorOverride(eFixedCommand direction)
             case COMMAND_PROMPT_RIGHT:
                 m_bScoreLossEnabled = !m_bScoreLossEnabled;
                 cout << "\t" << m_bScoreLossEnabled << endl;
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_SELECT);
                 break;
+            default:
+                return false;
             }
             break;
         default:

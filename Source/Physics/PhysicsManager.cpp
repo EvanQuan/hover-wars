@@ -266,8 +266,9 @@ PxRigidStatic* PhysicsManager::createFloorHeightMap(PxReal hfScale, PxU32 hfSize
     PxShape* hfShape = PxRigidActorExt::createExclusiveShape(*hfActor, hfGeom, *gWorldMaterial);
     //setCCDActive(*hfShape);
     if (!hfShape)
+    {
         cout << "creating heightfield shape failed" << endl;
-    hfActor->setName(C_SUBTYPE_GROUND + "");// :p fix later @austin
+    }
     gScene->addActor(*hfActor);
 
     return hfActor;
