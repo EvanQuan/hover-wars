@@ -1,7 +1,7 @@
 #include "Menus/SettingsMenu.h"
 #include "Menus/MainMenu.h"
 #include "Menus/LoadingMenu.h"
-// #include "UserInterface/SettingsInterface.h"
+#include "UserInterface/SettingsInterface.h"
 #include "Menus/MenuManager.h"
 
 
@@ -20,13 +20,11 @@ SettingsMenu* SettingsMenu::m_pInstance = nullptr;
 SettingsMenu::SettingsMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        // Logically, back is selected by default first, although visually it
-        // should appear last in the SettingsInterface
-        {
-            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
-        },
         {
             { "Music", eFixedCommand::COMMAND_PROMPT_SELECT }
+        },
+        {
+            { "Back", eFixedCommand::COMMAND_PROMPT_BACK }
         },
     }
 )
@@ -65,9 +63,8 @@ void SettingsMenu::back()
 
 void SettingsMenu::enterOverride()
 {
-    // m_pGameManager->setCurrentInterface(SettingsInterface::getInstance(m_pGameManager->getWidth(),
-      //                                                             m_pGameManager->getHeight()));
-
+    m_pGameManager->setCurrentInterface(SettingsInterface::getInstance(m_pGameManager->getWidth(),
+                                                                       m_pGameManager->getHeight()));
 }
 
 bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
@@ -82,6 +79,15 @@ bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
             case eFixedCommand::COMMAND_PROMPT_LEFT:
                 m_bMusicEnabled = !m_bMusicEnabled;
                 cout << "music enabled: " << m_bMusicEnabled << endl;
+                SOUND_MANAGER->setMusicEnabled(m_bMusicEnabled);
+                if (m_bMusicEnabled)
+                {
+                    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
+                }
+                else
+                {
+                    SOUND_MANAGER->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
+                }
                 return true;
             }
     }

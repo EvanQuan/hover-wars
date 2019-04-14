@@ -73,7 +73,7 @@ PregameMenu::PregameMenu() : PromptMenu(
     m_iMapNumber = MIN_MAP_NUMBER;
 }
 
-Menu* PregameMenu::getInstance()
+PregameMenu* PregameMenu::getInstance()
 {
     if (nullptr == m_pInstance) {
         m_pInstance = new PregameMenu();

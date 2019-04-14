@@ -259,7 +259,7 @@ void PregameInterface::renderBotDifficulty(eBotDifficulty m_eBotDifficulty) {
 }
 
 void PregameInterface::renderOption() {
-    PregameMenu* m = (PregameMenu*)PregameMenu::getInstance();
+    PregameMenu* m = PregameMenu::getInstance();
     string option = m->getCurrentPrompt();
     renderNumberOfPlayer(m->getPlayerCount());
     renderNumberOfBot(m->getBotCount());

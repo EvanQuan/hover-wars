@@ -59,9 +59,9 @@ risky as you will lose more points.
 */
 #define POINTS_LOST_PER_KILLSTREAK 10
 /*
-Notifies a killstreak message once player hits a milestone.
+    Notifies a killstreak message once player hits a milestone interval
 */
-#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 10
+#define CURRENT_TOTAL_KILLSTREAK_MILESTONE 5
 
 
 // Singleton instance
@@ -676,7 +676,7 @@ void GameStats::addKillstreak(eHovercraft attacker, eHovercraft hit)
     increaseCurrentTotalKillstreak(attacker);
     // notify if attacker reached current total killstreak milestone
     int killstreak = stats[attacker][KILLSTREAK_CURRENT];
-    if (killstreak > CURRENT_TOTAL_KILLSTREAK_MILESTONE)
+    if (killstreak % CURRENT_TOTAL_KILLSTREAK_MILESTONE == 0)
     {
         // Only display kill message if players are involved (either attacker or hit).
         // This avoids unnecessary work to do and sound effects.

@@ -8,7 +8,7 @@ public:
     // TODO nothing to destruct?
     ~PregameMenu() {}
 
-    static Menu* getInstance();
+    static PregameMenu* getInstance();
     int getPlayerCount() const { return m_iPlayerCount; };
     int getBotCount() const { return m_iBotCount; };
     int getGameTime() const { return m_fGameTime; };

@@ -4,6 +4,7 @@
 #define NEW_GAME_OPTION "New Game"
 #define GAME_RULE "Rules"
 #define GAME_CONTROLLER "Controls"
+#define SETTINGS_OPTION "Settings"
 #define QUIT_OPTION "Quit"
 
 
@@ -32,6 +33,7 @@ private:
         NEW_GAME,
         RULE,
         CONTROLLER,
+        SETTINGS,
         EXIT
     };
 

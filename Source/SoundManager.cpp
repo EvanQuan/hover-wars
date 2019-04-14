@@ -42,6 +42,8 @@ SoundManager::SoundManager() {
                                            FMOD_INIT_NORMAL,
                                            NO_EXTRA_DRIVER_DATA));
 
+    m_bMusicEnabled = true;
+
 }
 
 /*************************************************************************\
@@ -687,9 +689,9 @@ void SoundManager::setPauseMenu() {
         it.second->setPaused(true);
     }
     // play pause music
-    auto tFoundIt = mEvents.find(getPath(SOUND_MUSIC_PAUSE));
-    tFoundIt->second->setPaused(false);
-    play(SOUND_MUSIC_PAUSE);
+    // auto tFoundIt = mEvents.find(getPath(SOUND_MUSIC_PAUSE));
+    // tFoundIt->second->setPaused(false);
+    play(SOUND_MUSIC_PAUSE, m_bMusicEnabled);
     updateChannels();
 }
 
@@ -714,7 +716,7 @@ void SoundManager::setEndGame()
 {
     stopAllEvents();
     play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
-    play(SOUND_MUSIC_INGAME);
+    play(SOUND_MUSIC_INGAME, m_bMusicEnabled);
 }
 
 // @Deprecated
@@ -738,7 +740,7 @@ void SoundManager::downPosition() {
 }
 
 void SoundManager::start() {
-    play(SOUND_MUSIC_INGAME);
+    play(SOUND_MUSIC_INGAME, m_bMusicEnabled);
 }
 
 // Call every frame (or more often)
