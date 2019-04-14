@@ -136,9 +136,19 @@ using namespace physx;
 #define PS4_AXIS_L2              3
 #define PS4_AXIS_R2              4
 
-#define XBOX_BUTTON_COUNT       14 // 16
+/*
+    The actual button count for XBOX controllers is 14.
+    As we treat the left and right triggers (which are actually axes)
+    as buttons, we increase the value to 16.
+    This is important for iterating through the joystick buttons
+    in Menu::updateJoystickCommands() to ensure we check the trigger
+    input states.
+    
+*/
+#define XBOX_BUTTON_COUNT       16
 #define PS4_BUTTON_COUNT        18
-#define MAX_BUTTON_COUNT        18
+#define MIN_BUTTON_COUNT        XBOX_BUTTON_COUNT
+#define MAX_BUTTON_COUNT        PS4_BUTTON_COUNT
 // Joystick/trigger values
 #define JOYSTICK_IS_MAX         1.0f
 #define JOYSTICK_IS_MIN         -1.0f

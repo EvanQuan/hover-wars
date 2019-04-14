@@ -601,8 +601,8 @@ void InputHandler::updateJoystickButtonStates(int joystickID)
         *pRightTriggerState = INPUT_JUST_RELEASED;
     }
 
-    system("CLS");
-    cout << "left trigger: " << *pLeftTriggerAxis << endl;
-    cout << "right trigger: " << *pRightTriggerAxis << endl;
+    // system("CLS");
+    // cout << "left trigger: " << *pLeftTriggerAxis << endl;
+    // cout << "right trigger: " << *pRightTriggerAxis << endl;
 
 }

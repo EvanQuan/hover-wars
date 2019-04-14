@@ -121,6 +121,18 @@ void Menu::updateJoystickCommands()
 
             eHovercraft hovercraft = static_cast<eHovercraft>(joystickID);
 
+
+            /*
+                The actual button count for XBOX controllers is 14.
+                As we treat the left and right triggers (which are actually axes)
+                as buttons, we increase the value to 16.
+                This is important for iterating through the joystick buttons
+                in Menu::updateJoystickCommands() to ensure we check the trigger
+                input states.
+                
+            */
+            iButtonCount = FuncUtils::max(iButtonCount, MIN_BUTTON_COUNT);
+
             // Check buttons
             for (int button = 0; button < iButtonCount; button++)
             {
@@ -154,8 +166,20 @@ void Menu::updateJoystickCommands()
             }
 
             // Check axes
+            // Only update the axes values if at least one of them is not neutral.
+            // This prevents unnecessary updating when both sticks are neutral.
             switch (iMask)
             {
+            case PS4_MASK:
+                if (axes[PS4_AXIS_LEFT_X] != 0.0f && axes[PS4_AXIS_LEFT_Y] != 0.0f)
+                {
+                    updateLeftStick(hovercraft, axes[PS4_AXIS_LEFT_X], -axes[PS4_AXIS_LEFT_Y]);
+                }
+                if (axes[PS4_AXIS_RIGHT_X] != 0.0f && axes[PS4_AXIS_RIGHT_Y] != 0.0f)
+                {
+                    updateRightStick(hovercraft, axes[PS4_AXIS_RIGHT_X], axes[PS4_AXIS_RIGHT_Y]);
+                }
+                break;
             case XBOX_MASK:
             default:
                 if (axes[AXIS_LEFT_STICK_X] != 0.0f && axes[AXIS_LEFT_STICK_Y] != 0.0f)
@@ -165,16 +189,6 @@ void Menu::updateJoystickCommands()
                 if (axes[AXIS_RIGHT_STICK_X] != 0.0f && axes[AXIS_RIGHT_STICK_Y] != 0.0f)
                 {
                     updateRightStick(hovercraft, axes[AXIS_RIGHT_STICK_X], axes[AXIS_RIGHT_STICK_Y]);
-                }
-                break;
-            case PS4_MASK:
-                if (axes[PS4_AXIS_LEFT_X] != 0.0f && axes[PS4_AXIS_LEFT_Y] != 0.0f)
-                {
-                    updateLeftStick(hovercraft, axes[PS4_AXIS_LEFT_X], -axes[PS4_AXIS_LEFT_Y]);
-                }
-                if (axes[PS4_AXIS_RIGHT_X] != 0.0f && axes[PS4_AXIS_RIGHT_Y] != 0.0f)
-                {
-                    updateRightStick(hovercraft, axes[PS4_AXIS_RIGHT_X], axes[PS4_AXIS_RIGHT_Y]);
                 }
                 break;
             }
