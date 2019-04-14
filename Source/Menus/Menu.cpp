@@ -112,7 +112,7 @@ void Menu::updateJoystickCommands()
         joystickID < MAX_PLAYER_JOYSTICK;
         joystickID++)
     {
-        int joystickIsPresent = m_pInputHandler->isJoystickPresent(joystickID);
+        bool joystickIsPresent = m_pInputHandler->isJoystickPresent(joystickID);
         if (joystickIsPresent)
         {
             const float* axes = m_pInputHandler->getAxesPointer(joystickID);
