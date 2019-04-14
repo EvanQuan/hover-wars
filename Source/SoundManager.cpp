@@ -42,6 +42,8 @@ SoundManager::SoundManager() {
                                            FMOD_INIT_NORMAL,
                                            NO_EXTRA_DRIVER_DATA));
 
+    m_bMusicEnabled = true;
+
 }
 
 /*************************************************************************\
