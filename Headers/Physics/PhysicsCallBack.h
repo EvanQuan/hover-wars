@@ -9,10 +9,10 @@
 #include "stdafx.h"
 
 /*
-Handles the collisions between objects in the game world.
+    Handles the collisions between objects in the game world.
 
-@author Austin Eaton
-@author Evan Quan
+    @author Austin Eaton
+    @author Evan Quan
 */
 class PhysicsCallBack : public physx::PxSimulationEventCallback {
 public:
