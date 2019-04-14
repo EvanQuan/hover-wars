@@ -13,7 +13,10 @@ public:
 
     /*
         The states of joystick buttons. This is for expanding on joystick
-        states, as GLFW does not give this information.
+        states, as GLFW only provides GLFW_PRESS and GLFW_RELEASE.
+        Just pressed and just released states allow us to register certain
+        commands only once if a key or button is pressed and held down instead
+        of repeatedly.
     */
     enum eInputState
     {
@@ -65,7 +68,8 @@ public:
             INPUT_JUST_PRESSED
             INPUT_JUST_RELEASED
 
-        Keys that are INPUT_RELEASED will not be present in the map.
+        Keys that are INPUT_RELEASED will not be present in the map to save
+        us from having to iterate through all the released keys every update.
 
         Key: glfw key values
         Value: state of the key
@@ -126,6 +130,10 @@ private:
         int             iMask;
         /*
             The number of axes each joystick has. Ideally, every joystick has 4 axes.
+            0 Left stick x-direction
+            1 Left stick y-direction
+            2 Right stick x-direction
+            3 Right stick y-direction
         */
         int             iAxesCount;
         /*
@@ -133,20 +141,24 @@ private:
         */
         const float*    pAxes;
         /*
-            The names of each joystick. This is only important for debugging purposes.
+            The names of each joystick. This is only important for debugging
+            purposes.
         */
         string          sName;
         /*
-            The number of buttons that each joystick has. Ideally, every joystick would have the
-            same number of buttons, but we can never be too sure.
+            The number of buttons that each joystick has. Ideally, every
+            joystick would have the same number of buttons, but we can never be
+            too sure.
         */
         int             iButtonCount;
         /*
             The input states of each button for each joystick.
             
-            Index retrieval
-            0 : int joystickID
-            1 : int button macro
+            Index retrieval:
+            The XBOX_BUTTON and PS4_BUTTON macros define which index
+            corresponds which which button. These values are empirically
+            determined. The introduction of a new controller type therefore
+            cannot guarantee to follow the same button indices.
         */
         eInputState     eButtonState[MAX_BUTTON_COUNT];
         /*
