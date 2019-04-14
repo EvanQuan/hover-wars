@@ -294,26 +294,34 @@ void PostgameInterface::renderOverride()
     int hovercraftCount = playerCount + botCount;
     eGameMode gameMode = GAME_STATS->getGameMode();
 
+    bool renderPlacement2 = shouldRenderPlacement2(gameMode, hovercraftCount, playerCount, botCount);
+    bool renderPlacement3 = shouldRenderPlacement3(gameMode, hovercraftCount, playerCount, botCount);
+
     renderBackgroundImage(IMAGE_BACKGROUND_POST_MENU);
     // Placement title
     renderImage(IMAGE_PLACEMENT, m_vComponentCoordinates[PLACEMENT].first, m_vComponentCoordinates[PLACEMENT].second, 1.0f);
     // There is always at least 1 player or team
     renderImage(IMAGE_NUMBER_1, m_vComponentCoordinates[NUMBER_1].first, m_vComponentCoordinates[NUMBER_1].second, 1.0f);
 
-    if (shouldRenderPlacement2(gameMode, hovercraftCount, playerCount, botCount))
+    if (renderPlacement2)
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
-    if (shouldRenderPlacement3(gameMode, hovercraftCount, playerCount, botCount))
+    if (renderPlacement3)
     {
         renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
     }
 
-    renderPlacement();
+    renderPlacement(botCount > 0);
     renderOption();
 }
 
-void PostgameInterface::renderPlacement()
+/*
+    @param[in] renderBots   true if bot scores should be rendered. Typically if
+                            there are no bots in the game, their score (team or
+                            individual) should be ignored.
+*/
+void PostgameInterface::renderPlacement(bool renderBots)
 {
     PostgameMenu* m = (PostgameMenu*)PostgameMenu::getInstance();
     string option = m->getCurrentPrompt();
@@ -325,13 +333,13 @@ void PostgameInterface::renderPlacement()
         renderFreeForAll(endGameStats);
         break;
     case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
-        renderTeamBots(endGameStats);
+        renderTeamBots(endGameStats, renderBots);
         break;
     case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
-        renderPlayersVsBots(endGameStats);
+        renderPlayersVsBots(endGameStats, renderBots);
         break;
     case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
-        renderTeamPlayers(endGameStats);
+        renderTeamPlayers(endGameStats, renderBots);
         break;
     default:
         renderFreeForAll(endGameStats);
@@ -375,7 +383,8 @@ void PostgameInterface::renderFreeForAll(const vector<EndGameStat> &endGameStats
     }
 }
 
-void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
+void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats,
+                                       bool renderBots)
 {
     int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
     // Apply awards
@@ -396,7 +405,7 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
     for (EndGameStat s : endGameStats)
     {
 
-        if (!teamBotPlaced && (teamBotScore > s.afterAwardsScore))
+        if (!teamBotPlaced && (teamBotScore > s.afterAwardsScore) && renderBots)
         {
             teamBotPlaced = true;
             renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
@@ -423,7 +432,7 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
             placements++;
         }
     }
-    if (!teamBotPlaced)
+    if (!teamBotPlaced && renderBots)
     {
         renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
         renderScore(placements, teamBotScore);
@@ -431,7 +440,8 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats)
 
 }
 
-void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameStats)
+void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameStats,
+                                            bool renderBots)
 {
     int placements = 0;
     int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
@@ -479,17 +489,21 @@ void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameSt
             1.0f);
         renderScore(placements, teamPlayerScore);
         placements++;
-        renderImage(IMAGE_BOT_TEAM,
-            m_vComponentCoordinates[placements].first,
-            m_vComponentCoordinates[placements].second,
-            1.0f);
-        renderScore(placements, teamBotScore);
+        if (renderBots)
+        {
+            renderImage(IMAGE_BOT_TEAM,
+                m_vComponentCoordinates[placements].first,
+                m_vComponentCoordinates[placements].second,
+                1.0f);
+            renderScore(placements, teamBotScore);
+        }
     }
 
 
 }
 
-void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStats)
+void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStats,
+                                          bool renderBots)
 {
     int placements = 0;
     int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
@@ -523,8 +537,7 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
         }
     }
 
-    bool botsExist = GAME_STATS->getBotCount() > 0;
-    if (!botsExist)
+    if (!renderBots)
     {
         teamBotScore = -1; // ensure bots are last place
     }
@@ -561,7 +574,7 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
         m_vComponentCoordinates[placements].second,
         1.0f);
     renderScore(placements, teamScores[1].first);
-    if (botsExist)
+    if (renderBots)
     {
         placements++;
         renderImage(teamScores[2].second,

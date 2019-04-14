@@ -93,11 +93,11 @@ private:
     };
     static PostgameInterface* m_pInstance;
 
-    void renderPlacement();
+    void renderPlacement(bool renderBots);
     void renderFreeForAll(const vector<EndGameStat> &endGameStats);
-    void renderTeamBots(const vector<EndGameStat> &endGameStats);
-    void renderPlayersVsBots(const vector<EndGameStat> &endGameStats);
-    void renderTeamPlayers(const vector<EndGameStat> &endGameStats);
+    void renderTeamBots(const vector<EndGameStat> &endGameStats, bool renderBots);
+    void renderPlayersVsBots(const vector<EndGameStat> &endGameStats, bool renderBots);
+    void renderTeamPlayers(const vector<EndGameStat> &endGameStats, bool renderBots);
     void renderScore(int place, int score);
     void renderOption();
 
