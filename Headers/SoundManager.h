@@ -132,6 +132,9 @@ public:
 
     void start();
     void update();
+
+    bool hasMusicEnabled() const { return m_bMusicEnabled; }
+    void setMusicEnabled(bool bMusicEnabled) { m_bMusicEnabled = bMusicEnabled; }
 private:
 
     FMOD_3D_ATTRIBUTES testAttrubute;
@@ -191,6 +194,8 @@ private:
     float dbToVolume(float db);
     float volumeTodB(float volume);
     bool isPaused = false;
+
+    bool m_bMusicEnabled;
 
     FMOD_VECTOR vectorToFmod(const vec3& vPosition);
 
