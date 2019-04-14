@@ -289,16 +289,22 @@ void PostgameInterface::reinitialize(float gameTime)
 
 void PostgameInterface::renderOverride()
 {
-    int hovercraftCount = GAME_STATS->getPlayerCount() + GAME_STATS->getBotCount();
+    int playerCount = GAME_STATS->getPlayerCount();
+    int botCount = GAME_STATS->getBotCount();
+    int hovercraftCount = playerCount + botCount;
+    eGameMode gameMode = GAME_STATS->getGameMode();
+
     renderBackgroundImage(IMAGE_BACKGROUND_POST_MENU);
+    // Placement title
     renderImage(IMAGE_PLACEMENT, m_vComponentCoordinates[PLACEMENT].first, m_vComponentCoordinates[PLACEMENT].second, 1.0f);
+    // There is always at least 1 player or team
     renderImage(IMAGE_NUMBER_1, m_vComponentCoordinates[NUMBER_1].first, m_vComponentCoordinates[NUMBER_1].second, 1.0f);
-    if (hovercraftCount > 1)
+
+    if (shouldRenderPlacement2(gameMode, hovercraftCount))
     {
         renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
     } 
-    if ((GAME_STATS->getGameMode() != GAMEMODE_TEAMS_PLAYERS && hovercraftCount > 2)
-        || (GAME_STATS->getGameMode() == GAMEMODE_TEAMS_PLAYERS && GAME_STATS->getBotCount() > 0))
+    if (shouldRenderPlacement3(gameMode, hovercraftCount, playerCount, botCount))
     {
         renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
     }
@@ -318,13 +324,13 @@ void PostgameInterface::renderPlacement()
     case GAMEMODE_FREE_FOR_ALL:
         renderFreeForAll(endGameStats);
         break;
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
         renderTeamBots(endGameStats);
         break;
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         renderPlayersVsBots(endGameStats);
         break;
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         renderTeamPlayers(endGameStats);
         break;
     default:
@@ -733,5 +739,55 @@ void PostgameInterface::renderOption()
     else {
         renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
         renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
+    }
+}
+
+bool PostgameInterface::shouldRenderPlacement2(eGameMode gameMode,
+                                               int hovercraftCount,
+                                               int playerCount,
+                                               int botCount)
+{
+    switch (gameMode)
+    {
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
+        return botCount > 0;
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
+        // We force 4 players here so there are at least 2 player teams, guaranteed.
+        return true;
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+        return (playerCount >= 2)
+            || (playerCount >= 1 && botCount >= 1);
+    default:
+        return hovercraftCount >= 2;
+    }
+}
+
+bool PostgameInterface::shouldRenderPlacement3(eGameMode gameMode,
+                                               int hovercraftCount,
+                                               int playerCount,
+                                               int botCount)
+{
+    switch (gameMode)
+    {
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
+        // If we have team players, then the only placements are for player
+        // team 1, player team 2, and the bot team.
+        // Since player teams 1 and 2 are guaranteed every game, as we force
+        // the player count to 4, we can guarantee the first 2 placements.
+        // The only case in which there is no 3rd placement is if there is no
+        // bot team.
+        return botCount > 0;
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
+        // There are only 2 placements at maximum, for the player team and bot team.
+        return false;
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+        // If there 3 players, then each will take up a slot.
+        // If there are 2 players, and at least a bot, then all three slots are filled.
+        return (playerCount >= 3)
+            || (playerCount >= 2 && botCount > 1);
+    default:
+        // In all other modes, as long as there are at least 3 hovercrafts,
+        // there will be 3 placements.
+        return hovercraftCount > 2;
     }
 }

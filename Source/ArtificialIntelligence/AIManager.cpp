@@ -128,9 +128,9 @@ eHovercraft AIManager::getTargetID(eHovercraft nearestPlayer, float distanceToPl
     }
 
     switch (m_eGameMode) {
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         return nearestPlayer;
     case GAMEMODE_FREE_FOR_ALL:
         return distanceToPlayer < distanceToBot ? nearestPlayer : nearestBot;

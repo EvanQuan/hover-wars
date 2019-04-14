@@ -100,4 +100,7 @@ private:
     void renderTeamPlayers(const vector<EndGameStat> &endGameStats);
     void renderScore(int place, int score);
     void renderOption();
+
+    bool shouldRenderPlacement2(eGameMode gameMode, int hovercraftCount, int playerCount, int botCount);
+    bool shouldRenderPlacement3(eGameMode gameMode, int hovercraftCount, int playerCount, int botCount);
 };

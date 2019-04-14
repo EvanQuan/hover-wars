@@ -67,7 +67,7 @@ PregameMenu::PregameMenu() : PromptMenu(
 #endif // NDEBUG
 
     m_eBotDifficulty = DIFFICULTY_MEDIUM;
-    m_eGameMode = GAMEMODE_TEAM_AI_SOLO_PLAYERS;
+    m_eGameMode = GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS;
     m_fGameTime = DEFAULT_GAME_TIME;
     m_bScoreLossEnabled = true;
     m_iMapNumber = MIN_MAP_NUMBER;
@@ -90,7 +90,7 @@ void PregameMenu::select(eFixedCommand command)
         break;
     case COMMAND_PROMPT_NEXT_MENU:
         // Force 4 players if playing player teams
-        m_pGameManager->initializeNewGame(getGameMode() == GAMEMODE_TEAMS_PLAYERS ? MAX_PLAYER_COUNT : m_iPlayerCount,
+        m_pGameManager->initializeNewGame(getGameMode() == GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS ? MAX_PLAYER_COUNT : m_iPlayerCount,
                                           m_iBotCount,
                                           getBotDifficulty(),
                                           static_cast<float>(m_fGameTime),

@@ -258,9 +258,9 @@ void GameManager::calculateScreenDimensions(unsigned int playerCount)
 void GameManager::spawnHovercrafts(unsigned int playerCount, unsigned int botCount, eGameMode gameMode)
 {
     // Local Variables
-    bool bTeamAI = (GAMEMODE_TEAM_AI_SOLO_PLAYERS == gameMode || GAMEMODE_TEAMS_AI_VS_PLAYERS == gameMode);
-    bool bTeamPlayers = (GAMEMODE_TEAMS_AI_VS_PLAYERS == gameMode);
-    bool bSplitTeamPlayers = (GAMEMODE_TEAMS_PLAYERS == gameMode);
+    bool bTeamAI = (GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS == gameMode || GAMEMODE_TEAMS_BOTS_VS_PLAYERS == gameMode);
+    bool bTeamPlayers = (GAMEMODE_TEAMS_BOTS_VS_PLAYERS == gameMode);
+    bool bSplitTeamPlayers = (GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS == gameMode);
     vector< vec3 > vColors(COLORS, COLORS + sizeof(COLORS) / sizeof(COLORS[0]));    // Load all colors into a set to pick from.
 
     m_vPlayerColors.clear();

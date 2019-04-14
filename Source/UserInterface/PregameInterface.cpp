@@ -129,7 +129,7 @@ void PregameInterface::renderNumberOfPlayer(int i_NumOfPlayer) {
     // get the player count and render number
     PregameMenu* m = (PregameMenu*)PregameMenu::getInstance();
     // If in team players, the number of players if forced to 4
-    switch(m->getGameMode() == GAMEMODE_TEAMS_PLAYERS ? MAX_PLAYER_COUNT : i_NumOfPlayer) {
+    switch(m->getGameMode() == GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS ? MAX_PLAYER_COUNT : i_NumOfPlayer) {
         case 1:
             renderImage(IMAGE_MENU_1, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
             break;
@@ -204,16 +204,16 @@ void PregameInterface::renderGameTime(int i_GameTime) {
 
 void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
     switch (m_eGameMode) {
-        case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+        case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
             renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
-        case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+        case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
             renderImage(IMAGE_BOT_VS_PLAYERS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
         case GAMEMODE_FREE_FOR_ALL:
             renderImage(IMAGE_FREE_FOR_ALL, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
-        case GAMEMODE_TEAMS_PLAYERS:
+        case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
             renderImage(IMAGE_PLAYER_TEAMS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
 

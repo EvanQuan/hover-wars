@@ -499,7 +499,7 @@ void GameStats::addScore(eHovercraft attacker, int points)
     // Update team scores if team game mode
     switch (m_eGameMode)
     {
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         if (isBot(attacker))
         {
             globalStats[TEAM_BOT_SCORE] += points;
@@ -509,14 +509,14 @@ void GameStats::addScore(eHovercraft attacker, int points)
             globalStats[TEAM_PLAYER_SCORE] += points;
         }
         break;
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
         if (isBot(attacker))
         {
             // Only bots have a team
             globalStats[TEAM_BOT_SCORE] += points;
         }
         break;
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         switch (attacker)
         {
         case HOVERCRAFT_PLAYER_1:
@@ -541,7 +541,7 @@ void GameStats::removeScore(eHovercraft hit, int points)
     // Update team scores if team game mode
     switch (m_eGameMode)
     {
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         if (isBot(hit))
         {
             globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
@@ -551,14 +551,14 @@ void GameStats::removeScore(eHovercraft hit, int points)
             globalStats[TEAM_PLAYER_SCORE] = FuncUtils::max(globalStats[TEAM_PLAYER_SCORE] - points, 0);
         }
         break;
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
         if (isBot(hit))
         {
             // Only bots have a team
             globalStats[TEAM_BOT_SCORE] = FuncUtils::max(globalStats[TEAM_BOT_SCORE] - points, 0);
         }
         break;
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         switch (hit)
         {
         case HOVERCRAFT_PLAYER_1:
@@ -637,14 +637,14 @@ bool GameStats::isOnSameTeam(eHovercraft hovercraft1, eHovercraft hovercraft2) c
     case GAMEMODE_FREE_FOR_ALL:
         return false;
         break;
-    case GAMEMODE_TEAMS_AI_VS_PLAYERS:
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         return (isPlayer(hovercraft1) && isPlayer(hovercraft2))
             || (isBot(hovercraft1) && isBot(hovercraft2));
         break;
-    case GAMEMODE_TEAM_AI_SOLO_PLAYERS:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
         return isBot(hovercraft1) && isBot(hovercraft2);
         break;
-    case GAMEMODE_TEAMS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         return (isBot(hovercraft1) && isBot(hovercraft2))
             || (hovercraft1 == HOVERCRAFT_PLAYER_1 && hovercraft2 == HOVERCRAFT_PLAYER_2)
             || (hovercraft1 == HOVERCRAFT_PLAYER_3 && hovercraft2 == HOVERCRAFT_PLAYER_4);
