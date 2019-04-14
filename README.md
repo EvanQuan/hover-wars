@@ -1,26 +1,16 @@
-# Hover Wars
+# :video_game: Hover Wars
 
-CPSC 585 - Games Programming - Winter 2019
+
 
 <!-- ![](title-image) -->
 
-## Table of Contents
+## Download and Running
 
-<details>
-<summary>Click here to show.</summary>
+[You can find the most recent release
+here](https://github.com/EvanQuan/hover-wars/releases).
 
-1. [Compilation](#compilation)
-2. [Controls](#controls)
-3. [Write-Up](#write-up)
-    - [Since Milestone 4](#since-milestone-4)
-    - [Since Milestone 3](#since-milestone-3)
-    - [Since Milestone 2](#since-milestone-2)
-4. [Team](#team)
-5. [Libraries](#libraries)
-
-</details>
-
-## Compilation
+1. Download the `zip` or `tar.gz` and extract it.
+2. Run `HoverWars.exe` to start the program.
 
 #### Compiling on Windows:
 
@@ -29,6 +19,9 @@ CPSC 585 - Games Programming - Winter 2019
 1. The Libraries and Settings should all be set up in the VS project.
 
 ## Controls
+
+The game supports both keyboard and controller support, although it is highly
+recommended to use a controller.
 
 ##### Keyboard
 
