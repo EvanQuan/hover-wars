@@ -136,7 +136,7 @@ using namespace physx;
 #define PS4_AXIS_L2              3
 #define PS4_AXIS_R2              4
 
-#define XBOX_BUTTON_COUNT       16
+#define XBOX_BUTTON_COUNT       14 // 16
 #define PS4_BUTTON_COUNT        18
 #define MAX_BUTTON_COUNT        18
 // Joystick/trigger values
