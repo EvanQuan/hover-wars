@@ -74,6 +74,7 @@ void InputHandler::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 
     /*
         Possible actions:
+
                GLFW_RELEASE = 0
                GLFW_PRESS   = 1
                GLFW_REPEAT  = 2

@@ -80,7 +80,7 @@ using namespace physx;
 #define SECONDS_PER_MINUTE  60
 
 #define KEYS                349
-#define MAX_PLAYER_JOYSTICK GLFW_JOYSTICK_4
+#define MAX_PLAYER_JOYSTICK 4
 #define MIN_PLAYER_COUNT    1
 #define MAX_PLAYER_COUNT    4
 #define MIN_BOT_COUNT       0
