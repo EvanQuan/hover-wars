@@ -333,7 +333,7 @@ void GameStats::updateTeamScores(eHovercraft hovercraft, int points)
             updateTeamLeader(SCORE_PLAYER_TEAM2, points);
             break;
         default:
-            globalStats[SCORE_BOT_TEAM] = FuncUtils::max(globalStats[SCORE_BOT_TEAM] + points, 0);
+            updateTeamLeader(SCORE_BOT_TEAM, points);
         }
     }
 }
@@ -557,7 +557,7 @@ void GameStats::removeScore(eHovercraft hit, int points)
     stats[hit][SCORE_CHANGE] = -points;
     stats[hit][SCORE_CURRENT] -= points;
 
-    updateTeamScores(hit, points);
+    updateTeamScores(hit, -points);
 }
 
 bool GameStats::hasLargestScore(eHovercraft hovercraft)
