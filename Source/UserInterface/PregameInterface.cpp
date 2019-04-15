@@ -170,36 +170,37 @@ void PregameInterface::renderGameTime(int i_GameTime) {
     // get the player count and render number
     switch(i_GameTime) {
         case 60:
-            renderImage(IMAGE_1_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_1, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 120:
-            renderImage(IMAGE_2_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_2, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 180:
-            renderImage(IMAGE_3_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_3, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 240:
-            renderImage(IMAGE_4_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_4, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 300:
-            renderImage(IMAGE_5_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_5, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 360:
-            renderImage(IMAGE_6_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_6, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 420:
-            renderImage(IMAGE_7_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_7, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 480:
-            renderImage(IMAGE_8_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_8, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 540:
-            renderImage(IMAGE_9_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_9, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
         case 600:
-            renderImage(IMAGE_10_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
+            renderImage(IMAGE_10, m_vComponentCoordinates[GAME_TIME_NUMBER].first, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
             break;
     }
+        renderImage(IMAGE_MIN, m_vComponentCoordinates[GAME_TIME_NUMBER].first + 50, m_vComponentCoordinates[GAME_TIME_NUMBER].second, 1.0f);
 }
 
 void PregameInterface::renderGameMode(eGameMode m_eGameMode) {

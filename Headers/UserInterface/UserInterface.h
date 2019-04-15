@@ -74,7 +74,7 @@
 #define IMAGE_8_MIN "textures/menu/8_min.png"
 #define IMAGE_9_MIN "textures/menu/9_min.png"
 #define IMAGE_10_MIN "textures/menu/10_min.png"
-#define IMAGE_MIN "textures/menu/min.png"
+#define IMAGE_MIN "textures/menu/min2.png"
 #define IMAGE_CONTROLLER_1 "textures/menu/controls.png"
 #define IMAGE_CONTROLLER_2 "textures/menu/controls2.png"
 #define IMAGE_GAME_RULE_1 "textures/menu/rules.png"
