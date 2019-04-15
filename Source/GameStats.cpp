@@ -1024,13 +1024,13 @@ bool GameStats::shouldAwardPlayerAndBotKillAwards()
     {
     case GAMEMODE_FREE_FOR_ALL:
         /*
-            There must be at least 3 hovercrafts in order for players
-            to have a choice to hit a bot or a player. The smallest cases are:
+            There must be at least 2 hovercrafts of each type in order for
+            everyone to have a choice to hit a bot or a player. The smallest
+            case is:
 
-                2 players and 1 bot
-                1 player and 2 bots
+                2 players and 2 bot
         */
-        return (m_iHovercraftCount >= 3 && m_iBotCount >= 1);
+        return (m_iHovercraftCount >= 2 && m_iBotCount >= 2);
     case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         /*
             Since only players can attack bots, and bots can attack players,
