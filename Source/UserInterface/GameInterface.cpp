@@ -282,6 +282,18 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
                 color);
         }
         break;
+    case KILL_MESSAGE_TEAM_1_IS_LEADER:
+        m_pSoundManager->play(SoundManager::SOUND_UI_TEAM_LEADER_1);
+        /* TODO */
+        break;
+    case KILL_MESSAGE_TEAM_2_IS_LEADER:
+        m_pSoundManager->play(SoundManager::SOUND_UI_TEAM_LEADER_2);
+        /* TODO */
+        break;
+    case KILL_MESSAGE_TEAM_BOT_IS_LEADER:
+        m_pSoundManager->play(SoundManager::SOUND_UI_TEAM_LEADER_BOTS);
+        /* TODO */
+        break;
     }
 }
 

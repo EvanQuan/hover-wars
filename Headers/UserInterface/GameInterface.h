@@ -32,6 +32,9 @@ public:
         KILL_MESSAGE_KILLSTREAK,
         KILL_MESSAGE_KILL,
         KILL_MESSAGE_NEW_LEADER,
+        KILL_MESSAGE_TEAM_1_IS_LEADER,
+        KILL_MESSAGE_TEAM_2_IS_LEADER,
+        KILL_MESSAGE_TEAM_BOT_IS_LEADER,
     };
 
     enum eNotification

@@ -257,6 +257,7 @@ void GameStats::checkForNewScoreLeader(eHovercraft candidate)
 */
 void GameStats::checkForNewTeamLeader()
 {
+    /* TODO */
 }
 
 // Predicate for filtering old leaders
