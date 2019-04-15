@@ -82,7 +82,11 @@ public:
 
         // For resuming the game
         SOUND_UI_END_GAME_CHEER,
+
         SOUND_UI_NEW_LEADER,
+        SOUND_UI_TEAM_LEADER_1,
+        SOUND_UI_TEAM_LEADER_2,
+        SOUND_UI_TEAM_LEADER_BOTS,
         // For major time warnings
         SOUND_UI_TIME_REMAINING_WARNING,
         SOUND_UI_TIME_REMAINING_LOOP,
@@ -342,6 +346,12 @@ private:
         {SOUND_UI_TIME_REMAINING_LOOP,   { "event:/ui/notification/time_remaining_warning_with_tick",
                                          }},
         {SOUND_UI_NEW_LEADER,            { "event:/ui/notification/new_leader",
+                                         }},
+        {SOUND_UI_TEAM_LEADER_1,         { "event:/ui/notification/team1_leader",
+                                         }},
+        {SOUND_UI_TEAM_LEADER_2,         { "event:/ui/notification/team2_leader",
+                                         }},
+        {SOUND_UI_TEAM_LEADER_BOTS,      { "event:/ui/notification/teambot_leader",
                                          }},
         {SOUND_UI_RESUME_COUNTDOWN,        { "event:/ui/notification/countdown_tick",
                                          }},
