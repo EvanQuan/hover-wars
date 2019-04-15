@@ -139,6 +139,8 @@ private:
     // Score
     void renderScores();
     void renderScoreLeader();
+    void getScoreLeaderColorAndScore(vec3 &leaderColor, int &leaderScore);
+    bool shouldRenderScoreLeader();
     
     void renderNotifications();
     void renderResumeCountdown();

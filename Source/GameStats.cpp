@@ -1048,12 +1048,18 @@ bool GameStats::shouldAwardPlayerAndBotKillAwards()
         /*
             There must be at least 2 players in order for players to have a
             choice to hit a bot or a player. Since bots are on the same team,
-            and therefore can't hit each other, the smallest case is:
+            and therefore can't hit each other, we don't care about giving bots
+            the choice, only that there exists at least 1 bot. The smallest
+            case is:
 
                 2 players and 1 bot
         */
         return (m_iPlayerCount >= 2) && (m_iBotCount >= 1);
     default:
+        /*
+            While every mode should have there own criteria, we might as well
+            default to true.
+        */
         return true;
     }
 

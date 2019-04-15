@@ -531,6 +531,21 @@ void GameInterface::renderMessages()
     }
 }
 
+bool GameInterface::shouldRenderScoreLeader()
+{
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_FREE_FOR_ALL:
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+        return true;
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
+        return false;
+    default:
+        return true;
+    }
+}
+
 /*
     Render the notification message to all players.
 */
@@ -712,16 +727,52 @@ void GameInterface::renderScores()
                GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
 }
 
+/*
+    Depending on the game mode, the leader is either a player or a team.
+    Also depending on the game mode, showing the leader may be redundant and so
+    should not be shown.
+*/
 void GameInterface::renderScoreLeader()
 {
-    eHovercraft leader = GAME_STATS->getScoreLeader();
-    vec3 leaderColor = GAME_MANAGER->getHovercraftColor(leader);
-    int score = GAME_STATS->get(leader, GameStats::eHovercraftStat::SCORE_CURRENT);
-    renderText("Leader: " + to_string(score),
-               m_vComponentCoordinates[COMPONENT_SCORE_LEADER].first,
-               m_vComponentCoordinates[COMPONENT_SCORE_LEADER].second,
-               SCORE_SCALE,
-               leaderColor);
+    if (shouldRenderScoreLeader())
+    {
+        vec3 leaderColor;
+        int leaderScore;
+        getScoreLeaderColorAndScore(leaderColor, leaderScore);
+        renderText("Leader: " + to_string(leaderScore),
+                   m_vComponentCoordinates[COMPONENT_SCORE_LEADER].first,
+                   m_vComponentCoordinates[COMPONENT_SCORE_LEADER].second,
+                   SCORE_SCALE,
+                   leaderColor);
+    }
+}
+
+/*
+    @param[out] leaderColor
+    @param[out] leaderScore
+*/
+void GameInterface::getScoreLeaderColorAndScore(vec3 &leaderColor, int &leaderScore)
+{
+    int botTeamScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_BOT_TEAM);
+    int largestScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_LARGEST_HOVERCRAFT);
+    switch (GAME_STATS->getGameMode())
+    {
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+        if (largestScore >= botTeamScore)
+        {
+            leaderColor = GAME_MANAGER->getHovercraftColor(GAME_STATS->getScoreLeader());
+            leaderScore = largestScore;
+        }
+        else
+        {
+            leaderColor = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_BOT_1);
+            leaderScore = botTeamScore;
+        }
+    case GAMEMODE_FREE_FOR_ALL:
+    default:
+        leaderColor = GAME_MANAGER->getHovercraftColor(GAME_STATS->getScoreLeader());
+        leaderScore = largestScore;
+    }
 }
 
 void GameInterface::updateCooldowns()
