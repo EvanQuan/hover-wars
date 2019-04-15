@@ -84,6 +84,12 @@ While other controller types may work, there is no guarantee they will.
 
 </details>
 
+# Videos
+
+[![](![](https://img.youtube.com/vi/dV13zdt2WYA/0.jpg))](https://www.youtube.com/watch?v=dV13zdt2WYA)
+
+[![](![](https://img.youtube.com/vi/krGmpsAOZZE/0.jpg))](https://www.youtube.com/watch?v=krGmpsAOZZE)
+
 ## Screenshots
 
 ![](https://raw.githubusercontent.com/wiki/EvanQuan/hover-wars/gameplay01.png)
