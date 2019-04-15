@@ -353,7 +353,7 @@ private:
                                          }},
         {SOUND_UI_TEAM_LEADER_BOTS,      { "event:/ui/notification/teambot_leader",
                                          }},
-        {SOUND_UI_RESUME_COUNTDOWN,        { "event:/ui/notification/countdown_tick",
+        {SOUND_UI_RESUME_COUNTDOWN,      { "event:/ui/notification/countdown_tick",
                                          }},
         {SOUND_UI_CONTROLLER_CONNECT,    { "event:/ui/notification/controller_connect",
                                          }},

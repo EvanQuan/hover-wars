@@ -4,7 +4,7 @@
 #include "EntityHeaders/HovercraftEntity.h"
 
 /*
-Number of killstreaks against another player to count as domination
+    Number of killstreaks against another player to count as domination
 */
 #define DOMINATION_COUNT 3
 
@@ -13,49 +13,49 @@ Number of killstreaks against another player to count as domination
 */
 #define HOVERCRAFT_COUNT_TO_ENABLE_POWERUP 3
 /*
-After total score gained has been calculated, multiply score gained by value if
-hit a bot
+    After total score gained has been calculated, multiply score gained by
+    value if hit a bot
 */
 #define BOT_SCORE_MULTIPLIER_EASY   1.0
 #define BOT_SCORE_MULTIPLIER_MEDIUM 0.5
 #define BOT_SCORE_MULTIPLIER_HARD   0.25
 /*
-Base points gained for hitting a hovercraft
+    Base points gained for hitting a hovercraft
 */
 #define POINTS_GAINED_HIT_BASE 50
 /*
-Number of extra points gained when a player gets revenge
+    Number of extra points gained when a player gets revenge
 */
 #define POINTS_GAINED_HIT_REVENGE 100
 /*
-Number of extra points gained when a player gets the first kill
+    Number of extra points gained when a player gets the first kill
 */
 #define POINTS_GAINED_FIRST_BLOOD 150
 /*
-Players gain additional points against other players based on their current
-total killstreak. This gives players an incentive to not get hit.
+    Players gain additional points against other players based on their current
+    total killstreak. This gives players an incentive to not get hit.
 */
 #define POINTS_GAINED_PER_KILLSTREAK 20
 
 /*
-Players gain additional points against other played based on that hit player's
-current total killstreak. This gives players that have high killstreaks higher
-priority targets to attack.
+    Players gain additional points against other played based on that hit
+    player's current total killstreak. This gives players that have high
+    killstreaks higher priority targets to attack.
 */
 #define POINTS_GAINED_PER_HIT_KILLSTREAK 10
 /*
-Base points for picking up a power up
+    Base points for picking up a power up
 
-@Deprecated
+    @Deprecated
 */
 #define POINTS_GAINED_PICKUP_POWERUP 10
 /*
-Base points lost for getting hit
+    Base points lost for getting hit
 */
 #define POINTS_LOST_GOT_HIT 30
 /*
-Additional points lost per own killstreak. This makes having a large killstreak
-risky as you will lose more points.
+    Additional points lost per own killstreak. This makes having a large
+    killstreak risky as you will lose more points.
 */
 #define POINTS_LOST_PER_KILLSTREAK 10
 /*

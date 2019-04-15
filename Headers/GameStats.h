@@ -3,9 +3,21 @@
 
 struct Award
 {
+    /*
+        Name of the award.
+    */
     string name;
+    /*
+        Describes what the award is for.
+    */
     string description;
+    /*
+        Number of points gained for attaining this award.
+    */
     int points;
+    /*
+        The value of the stat corresponding to whatever this award is for.
+    */
     int statValue;
 };
 /*
@@ -28,42 +40,44 @@ struct EndGameStat
 class GameInterface;
 class HovercraftEntity;
 /*
-Stores and calculates all in-game stats.
+    Stores and calculates all in-game stats.
 
-Player:
-    Score:
-        Current score
-        Change in score
-        Total score
-    Kills:
-        Total kills
-        Total deaths
-        Total kills against players
-        Total kills against each player
-        Total kills against bots
-    Dominations:
-        Current dominations between players
-    Multikills: ? This requires some notion of time ?
-        Current multikills TODO
-        Largest multikills TODO
-    Killstreaks:
-        Current total killstreak
-        Current killstreak between players
-        Largest total killstreak
-        Largest total killstreak between players
-    Powerups:
-        Total powerups picked up
-    Abilities:
-        Total abilities used
-        Count of each ability used
-        Rockets reflected
+    Player:
+        Score:
+            Current score
+            Change in score
+            Total score
+        Kills:
+            Total kills
+            Total deaths
+            Total kills against players
+            Total kills against each player
+            Total kills against bots
+        Dominations:
+            Current dominations between players
+        Multikills: ? This requires some notion of time ?
+            Current multikills TODO
+            Largest multikills TODO
+        Killstreaks:
+            Current total killstreak
+            Current killstreak between players
+            Largest total killstreak
+            Largest total killstreak between players
+        Powerups:
+            Total powerups picked up
+        Abilities:
+            Total abilities used
+            Count of each ability used
+            Rockets reflected
 
-Game:
-    Kills
-        First blood
+    Game:
+        Kills
+            First blood
 
-Gets values from EntityManager to update stats as the game progresses.
-Gives information to UserInterface to display the correct values.
+    Gets values from EntityManager to update stats as the game progresses.
+    Gives information to UserInterface to display the correct values.
+
+    @author Evan Quan
 */
 class GameStats
 {
@@ -72,7 +86,7 @@ public:
     static GameStats* getInstance();
 
     /*
-    NOTE: Do not use HOVERCRAFTSTAT_COUNT as a Stat value. It denotes the number of stats.
+        NOTE: Do not use HOVERCRAFTSTAT_COUNT as a Stat value. It denotes the number of stats.
     */
     enum eHovercraftStat
     {
