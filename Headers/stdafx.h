@@ -2,8 +2,12 @@
 // or project specific include files that are used frequently, but
 // are changed infrequently
 //
-
 #pragma once
+
+/*
+    Game version. This is displayed in the rules interface.
+*/
+#define GAME_VERSION "v1.1.0"
 
 #define GLM_ENABLE_EXPERIMENTAL
 

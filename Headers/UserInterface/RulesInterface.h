@@ -22,6 +22,7 @@ private:
     enum eUIComponent
     {
         BACKGROUND = 0,
+        VERSION,
     };
 
     static RulesInterface* m_pInstance;

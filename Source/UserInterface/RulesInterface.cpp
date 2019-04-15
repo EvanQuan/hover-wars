@@ -11,12 +11,16 @@ RulesInterface::RulesInterface() : PromptInterface(
     {
         // 0 Background
         {0.0f, 0.0f},
+        // 1 Version
+        {0.0f, 0.0f},
     },
     // Translating
     vector<pair<float, float>>
     {
         // 0 Background
         {0.0f, 0.0f},
+        // 1 Version
+        {10.0f, 15.0f},
     }
 )
 {
@@ -45,5 +49,10 @@ void RulesInterface::reinitialize(float gameTime)
 void RulesInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_RULE_MENU);
+    renderText(GAME_VERSION,
+        m_vComponentCoordinates[VERSION].first,
+        m_vComponentCoordinates[VERSION].second,
+        1.0,
+        COLOR_WHITE);
 }
 

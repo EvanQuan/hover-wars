@@ -22,7 +22,7 @@ private:
     {
         BACKGROUND = 0,
         TITLE,
-        INSERT_COIN
+        INSERT_COIN,
     };
 
     static StartInterface* m_pInstance;
