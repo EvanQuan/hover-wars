@@ -39,7 +39,8 @@
 
     This rewards higher rocket accuracy instead of spamming.
 */
-#define COOLDOWN_REDUCTION_ON_HIT 0.5f
+#define ROCKET_COOLDOWN_REDUCTION_ON_HIT 0.50f
+#define SPIKES_COOLDOWN_REDUCTION_ON_HIT 0.25f
 
 /*
     Cooldowns
@@ -50,8 +51,8 @@
 
     Units: seconds
 */
-#define ROCKET_BASE_COOLDOWN        4.0f
-#define SPIKES_BASE_COOLDOWN        4.0f
+#define ROCKET_BASE_COOLDOWN        3.0f
+#define SPIKES_BASE_COOLDOWN        5.0f
 #define TRAIL_COOLDOWN              0.0f
 // Cooldown between dash usages
 #define DASH_BASE_COOLDOWN          0.5f
@@ -63,7 +64,7 @@
 /*
     Once spikes are activated, they are enabled for a duration before deactivating.
 */
-#define SPIKES_DURATION         1.0f
+#define SPIKES_DURATION         0.75f
 
 /*
 Power up cooldowns
@@ -522,10 +523,10 @@ void HovercraftEntity::reduceCooldown(eAbility ability)
     switch (ability)
     {
     case ABILITY_ROCKET:
-        m_fCooldowns[COOLDOWN_ROCKET] *= COOLDOWN_REDUCTION_ON_HIT;
+        m_fCooldowns[COOLDOWN_ROCKET] *= ROCKET_COOLDOWN_REDUCTION_ON_HIT;
         break;
     case ABILITY_SPIKES:
-        m_fCooldowns[COOLDOWN_SPIKES] *= COOLDOWN_REDUCTION_ON_HIT;
+        m_fCooldowns[COOLDOWN_SPIKES] *= SPIKES_COOLDOWN_REDUCTION_ON_HIT;
         break;
     }
 }
