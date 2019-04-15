@@ -94,6 +94,7 @@ private:
         COMPONENT_TEAM_PLAYER_SCORE,
         COMPONENT_TEAM2_PLAYER_SCORE,
         COMPONENT_KILLSTREAK,
+        COMPONENT_SCORE_LEADER,
         COMPONENT_COUNT
     };
 
@@ -137,6 +138,7 @@ private:
 
     // Score
     void renderScores();
+    void renderScoreLeader();
     
     void renderNotifications();
     void renderResumeCountdown();

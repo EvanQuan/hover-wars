@@ -214,6 +214,9 @@ public:
 
     eGameMode getGameMode() const { return m_eGameMode; }
 
+    vector<eHovercraft> getScoreLeaders() const { return m_eScoreLeaders; }
+    eHovercraft getScoreLeader() const { return m_eScoreLeaders.size() > 0 ? m_eScoreLeaders.at(0) : HOVERCRAFT_PLAYER_1; }
+
 private:
     GameStats(int iWidth, int iHeight);
     static GameStats* m_pInstance;

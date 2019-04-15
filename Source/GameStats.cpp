@@ -129,6 +129,7 @@ void GameStats::reinitialize(int playerCount,
     firstBloodHappened = false;
     queueFirstBlood = false;
     m_eScoreLeaders.clear();
+    m_eScoreLeaders.push_back(HOVERCRAFT_PLAYER_1);
 
     m_bSpeedBoostEnabled = (playerCount + botCount) >= HOVERCRAFT_COUNT_TO_ENABLE_POWERUP;
 }
