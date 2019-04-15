@@ -33,8 +33,10 @@ Coordinate system:
 
 // Unit: seconds
 #define GLOBAL_MESSAGE_TIME 3.0f
-#define GLOBAL_MESSAGE_X 0.5f
-#define GLOBAL_MESSAGE_Y 0.5f
+// Translating offset to be as close to the bottom left corner as possible
+// for large displays
+#define GLOBAL_MESSAGE_X 5.0f
+#define GLOBAL_MESSAGE_Y 10.0f
 
 
 /*************\
@@ -369,8 +371,8 @@ void UserInterface::updateWidthAndHeight(int iWidth, int iHeight)
         m_vComponentCoordinates[component].second = (m_iHeight * m_vComponentScaling[component].second) + m_vComponentTranslating[component].second;
     }
     // Update global message coordinates
-    m_fGlobalMessageX = (m_iWidth * GLOBAL_MESSAGE_X);
-    m_fGlobalMessageY = (m_iHeight * GLOBAL_MESSAGE_Y);
+    m_fGlobalMessageX = GLOBAL_MESSAGE_X;
+    m_fGlobalMessageY = GLOBAL_MESSAGE_Y;
 
 }
 
