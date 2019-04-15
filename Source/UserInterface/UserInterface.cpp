@@ -86,6 +86,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_7] = TEXTURE_MANAGER->loadTexture(IMAGE_7);
     m_Textures[IMAGE_8] = TEXTURE_MANAGER->loadTexture(IMAGE_8);
     m_Textures[IMAGE_9] = TEXTURE_MANAGER->loadTexture(IMAGE_9);
+    m_Textures[IMAGE_10] = TEXTURE_MANAGER->loadTexture(IMAGE_10);
     m_Textures[IMAGE_EXIT_1] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_1);
     m_Textures[IMAGE_EXIT_2] = TEXTURE_MANAGER->loadTexture(IMAGE_EXIT_2);
     m_Textures[IMAGE_BACKGROUND_START_MENU] = TEXTURE_MANAGER->loadTexture(IMAGE_BACKGROUND_START_MENU);
@@ -112,6 +113,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_END_GAME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_END_GAME_2);
     m_Textures[IMAGE_GAME_TIME_1] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_TIME_1);
     m_Textures[IMAGE_GAME_TIME_2] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_TIME_2);
+    m_Textures[IMAGE_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_MIN);
     m_Textures[IMAGE_1_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_1_MIN);
     m_Textures[IMAGE_2_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_2_MIN);
     m_Textures[IMAGE_3_MIN] = TEXTURE_MANAGER->loadTexture(IMAGE_3_MIN);

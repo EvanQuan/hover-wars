@@ -1,7 +1,12 @@
-https://fontmeme.com/tron-font/
+Menu text: https://fontmeme.com/tron-font/
 font: tron
 font size: 30
 effect: Style-Neon
 color:
 	cyan: 00FCFF
 	magenta: FF00E1
+
+
+Number text: https://fontmeme.com/this-war-of-mine-font/
+font: accid
+font size: 50

@@ -37,6 +37,7 @@
 #define IMAGE_7 "textures/menu/7.png"
 #define IMAGE_8 "textures/menu/8.png"
 #define IMAGE_9 "textures/menu/9.png"
+#define IMAGE_10 "textures/menu/10.png"
 #define IMAGE_MAIN_MENU_BUTTON_1 "textures/menu/main_menu_button.png"
 #define IMAGE_MAIN_MENU_BUTTON_2 "textures/menu/main_menu_button2.png"
 #define IMAGE_BACKGROUND_START_MENU "textures/menu/start_menu.jpg"
@@ -73,6 +74,7 @@
 #define IMAGE_8_MIN "textures/menu/8_min.png"
 #define IMAGE_9_MIN "textures/menu/9_min.png"
 #define IMAGE_10_MIN "textures/menu/10_min.png"
+#define IMAGE_MIN "textures/menu/min.png"
 #define IMAGE_CONTROLLER_1 "textures/menu/controls.png"
 #define IMAGE_CONTROLLER_2 "textures/menu/controls2.png"
 #define IMAGE_GAME_RULE_1 "textures/menu/rules.png"
@@ -114,7 +116,7 @@
 #define IMAGE_BOT_3 "textures/menu/bot3.png"
 #define IMAGE_BOT_4 "textures/menu/bot4.png"
 #define IMAGE_NUMBER_1 "textures/menu/number_1.png"
-#define IMAGE_NUMBER_2 "textures/menu/number_2.png" // for some reason, grey or silver causees rendering issues
+#define IMAGE_NUMBER_2 "textures/menu/number_2.png"
 #define IMAGE_NUMBER_3 "textures/menu/number_3.png"
 #define IMAGE_POINT "textures/menu/pts.png"
 
