@@ -172,16 +172,9 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     // can be annoying if they get stuck on a wall
     bool colliderIsBot = GAME_STATS->isBot(colliderHovercraft);
     bool collidedIsBot = GAME_STATS->isBot(collidedHovercraft);
-    if (handleBaseCollisionSound(colliderType, collidedType,
-                                 colliderIsBot, collidedIsBot))
-    {
-        // For some reason this check is not enough?
-        if (((colliderType == eEntityType::ENTITY_HOVERCRAFT))
-            && (collidedType == eEntityType::ENTITY_HOVERCRAFT))
-        {
-            handleContextCollisionSound(colliderHovercraft, collidedHovercraft);
-        }
-    }
+    handleBaseCollisionSound(
+        colliderType, collidedType,
+        colliderIsBot, collidedIsBot);
 }
 
 /*
@@ -191,14 +184,21 @@ void SoundManager::handleCollisionSound(Entity * collider, Entity * collided)
     @NOTE: This will be unneeded when interactable entities become further
            developed. As all abilities will be interactable entitise, context
            collisions will be determined in handleBaseCollisionSound.
+
+    @Deprecated
 */
 void SoundManager::handleContextCollisionSound(HovercraftEntity* collider,
                                                HovercraftEntity* collided)
 {
+    if (collider->isBot() && collided->isBot())
+    {
+        // We don't care about 2 bots colliding. Too much noise pollution.
+        return;
+    }
     if (collider->hasSpikesActivated()
         || collided->hasSpikesActivated())
     {
-        play(eSoundEvent::SOUND_SPIKES_IMPACT, !(collider->isBot() && collided->isBot()));
+        play(eSoundEvent::SOUND_SPIKES_IMPACT);
     }
 
 }

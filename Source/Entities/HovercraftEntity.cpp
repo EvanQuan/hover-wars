@@ -755,13 +755,13 @@ void HovercraftEntity::handleCollision(Entity* pOther, unsigned int iColliderMsg
         if (m_bSpikesActivated)
         {   // Tell the Targetted Entity that they were hit by this bot.
            pOtherHovercraft->getHitBy(GAME_STATS->getEHovercraft(m_iID), ABILITY_SPIKES);
-           m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
+           m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT, m_bIsPlayer);
            reduceMaxCooldowns();
         }
         if (pOtherHovercraft->hasSpikesActivated())
         {
             this->getHitBy(GAME_STATS->getEHovercraft(pOtherHovercraft->getID()), ABILITY_SPIKES);
-            m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT);
+            m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_IMPACT, m_bIsPlayer);
         }
         // Momentarily lose control of vehicle to prevent air moving
     
@@ -1169,7 +1169,7 @@ void HovercraftEntity::activateRocket()
 */
 void HovercraftEntity::activateSpikes()
 {
-    m_pSoundMngr->play(SoundManager::SOUND_SPIKES_ACTIVATE);
+    m_pSoundMngr->play(SoundManager::SOUND_SPIKES_ACTIVATE, m_bIsPlayer);
 
     m_fCooldowns[COOLDOWN_SPIKES] = m_fMaxCooldowns[COOLDOWN_SPIKES];
 
@@ -1304,6 +1304,5 @@ void HovercraftEntity::animateSpikes()
     for (unsigned int i = 0; i < NUM_SPIKES; ++i) {
         m_pSpikeAnimations[i]->animateToNextFrame();
     }
-    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_ACTIVATE);
 }
 
