@@ -221,32 +221,32 @@ void SoundManager::play(eSoundEvent sound, vec3 location)
     @param entityID that the sound belongs to
     @param loopID   to start looping
 */
-void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
+void SoundManager::startLoop(eSoundEvent sound, eHovercraft hovercraft)
 {
     auto eventInstance = mEvents[getPath(sound)];
-    switch (entityID) {
-    case 37:
+    switch (hovercraft) {
+    case HOVERCRAFT_PLAYER_1:
         eventInstance = mEvents[getPath(SOUND_TRAIL_1)];
         break;
-    case 40:
+    case HOVERCRAFT_PLAYER_2:
         eventInstance = mEvents[getPath(SOUND_TRAIL_2)];
         break;
-    case 43:
+    case HOVERCRAFT_PLAYER_3:
         eventInstance = mEvents[getPath(SOUND_TRAIL_3)];
         break;
-    case 46:
+    case HOVERCRAFT_PLAYER_4:
         eventInstance = mEvents[getPath(SOUND_TRAIL_4)];
         break;
-    case 49:
+    case HOVERCRAFT_BOT_1:
         eventInstance = mEvents[getPath(SOUND_TRAIL_5)];
         break;
-    case 52:
+    case HOVERCRAFT_BOT_2:
         eventInstance = mEvents[getPath(SOUND_TRAIL_6)];
         break;
-    case 55:
+    case HOVERCRAFT_BOT_3:
         eventInstance = mEvents[getPath(SOUND_TRAIL_7)];
         break;
-    case 58:
+    case HOVERCRAFT_BOT_4:
         eventInstance = mEvents[getPath(SOUND_TRAIL_8)];
         break;
     }
@@ -264,32 +264,32 @@ void SoundManager::startLoop(eSoundEvent sound, int entityID, int loopID)
     @param entityID that the sound belongs to
     @param loopID   to stop looping
 */
-void SoundManager::endLoop(eSoundEvent sound, int entityID, int loopID)
+void SoundManager::endLoop(eSoundEvent sound, eHovercraft hovercraft)
 {
     auto eventInstance = mEvents[getPath(sound)];
-    switch (entityID) {
-    case 37:
+    switch (hovercraft) {
+    case HOVERCRAFT_PLAYER_1:
         eventInstance = mEvents[getPath(SOUND_TRAIL_1)];
         break;
-    case 40:
+    case HOVERCRAFT_PLAYER_2:
         eventInstance = mEvents[getPath(SOUND_TRAIL_2)];
         break;
-    case 43:
+    case HOVERCRAFT_PLAYER_3:
         eventInstance = mEvents[getPath(SOUND_TRAIL_3)];
         break;
-    case 46:
+    case HOVERCRAFT_PLAYER_4:
         eventInstance = mEvents[getPath(SOUND_TRAIL_4)];
         break;
-    case 49:
+    case HOVERCRAFT_BOT_1:
         eventInstance = mEvents[getPath(SOUND_TRAIL_5)];
         break;
-    case 52:
+    case HOVERCRAFT_BOT_2:
         eventInstance = mEvents[getPath(SOUND_TRAIL_6)];
         break;
-    case 55:
+    case HOVERCRAFT_BOT_3:
         eventInstance = mEvents[getPath(SOUND_TRAIL_7)];
         break;
-    case 58:
+    case HOVERCRAFT_BOT_4:
         eventInstance = mEvents[getPath(SOUND_TRAIL_8)];
         break;
     }

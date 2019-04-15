@@ -101,8 +101,8 @@ public:
     // TODO figure out sound at locations
     void play(eSoundEvent sound, vec3 location);
 
-    void startLoop(eSoundEvent sound, int entityID, int loopID);
-    void endLoop(eSoundEvent sound, int entityID, int loopID);
+    void startLoop(eSoundEvent sound, eHovercraft hovercraft);
+    void endLoop(eSoundEvent sound, eHovercraft hovercraft);
 
     void startLoop(eSoundEvent sound, vec3 location, int entityID, int loopID);
     void endLoop(eSoundEvent sound, vec3 location, int entityID, int loopID);

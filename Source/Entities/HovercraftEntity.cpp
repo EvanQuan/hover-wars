@@ -1187,7 +1187,7 @@ void HovercraftEntity::activateTrail()
     // any fuel due to trail recharge cooldown. Need to check fuel first.
     if (m_fTrailGauge > TRAIL_GAUGE_EMPTY)
     {
-        m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, m_iID, 0);
+        m_pSoundMngr->startLoop(SoundManager::SOUND_TRAIL, m_eHovercraft);
         m_bTrailActivated = true;
         m_fSecondsSinceLastFlame = 0.0f;
         m_fSecondsSinceTrailDeactivated = 0.0f;
@@ -1202,7 +1202,7 @@ void HovercraftEntity::deactivateTrail()
 {
     if (m_bTrailActivated)
     {
-        m_pSoundMngr->endLoop(SoundManager::SOUND_TRAIL, m_iID, 0);
+        m_pSoundMngr->endLoop(SoundManager::SOUND_TRAIL, m_eHovercraft);
         m_bTrailActivated = false;
         m_vPositionOfLastFlame = vec3(numeric_limits<float>::max());    // Set Last Position so next spawn will always spawn
     }
