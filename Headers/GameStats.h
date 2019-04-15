@@ -154,7 +154,7 @@ public:
         SCORE_LARGEST_HOVERCRAFT,
         SCORE_PLAYER_TEAM1,
         SCORE_PLAYER_TEAM2,
-        SCORE_TEAM_BOT,
+        SCORE_BOT_TEAM,
         SCORE_LARGEST_TEAM,
         GLOBALSTAT_COUNT
     };
@@ -314,8 +314,7 @@ private:
     // Score leader
     void checkForNewScoreLeader(eHovercraft candidate);
     void updateScoreLeaders(eHovercraft newLeader);
-    void addTeamScores(eHovercraft attacker, int points);
-    void removeTeamScores(eHovercraft hit, int points);
+    void updateTeamScores(eHovercraft hovercraft, int points);
     void updateTeamLeader(eGlobalStat team, int points);
     vector<eHovercraft> m_eScoreLeaders;
 

@@ -291,87 +291,59 @@ void GameStats::updateScoreLeaders(eHovercraft candidate)
 
 }
 
-void GameStats::addTeamScores(eHovercraft attacker, int points)
+
+/*
+    Update the team scores.
+    If the point change is positive, we will update the 
+
+    @param[in] hovercraft   that was responsible for the point change.
+    @param[in] points       changed for the specified hovercraft.
+*/
+void GameStats::updateTeamScores(eHovercraft hovercraft, int points)
 {
     // Update team scores if team game mode
     switch (m_eGameMode)
     {
     case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
-        if (isBot(attacker))
+        if (isBot(hovercraft))
         {
-            globalStats[SCORE_TEAM_BOT] += points;
-
+            updateTeamLeader(SCORE_BOT_TEAM, points);
         }
         else
         {
-            globalStats[SCORE_PLAYER_TEAM1] += points;
+            updateTeamLeader(SCORE_PLAYER_TEAM1, points);
         }
         break;
     case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
-        if (isBot(attacker))
+        if (isBot(hovercraft))
         {
             // Only bots have a team
-            globalStats[SCORE_TEAM_BOT] += points;
+            updateTeamLeader(SCORE_BOT_TEAM, points);
         }
         break;
     case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
-        switch (attacker)
+        switch (hovercraft)
         {
         case HOVERCRAFT_PLAYER_1:
         case HOVERCRAFT_PLAYER_2:
-            globalStats[SCORE_PLAYER_TEAM1] += points;
+            updateTeamLeader(SCORE_PLAYER_TEAM1, points);
             break;
         case HOVERCRAFT_PLAYER_3:
         case HOVERCRAFT_PLAYER_4:
-            globalStats[SCORE_PLAYER_TEAM2] += points;
+            updateTeamLeader(SCORE_PLAYER_TEAM2, points);
             break;
         default:
-            globalStats[SCORE_TEAM_BOT] += points;
-        }
-    }
-}
-
-void GameStats::removeTeamScores(eHovercraft hit, int points)
-{
-    // Update team scores if team game mode
-    switch (m_eGameMode)
-    {
-    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
-        if (isBot(hit))
-        {
-            globalStats[SCORE_TEAM_BOT] = FuncUtils::max(globalStats[SCORE_TEAM_BOT] - points, 0);
-        }
-        else
-        {
-            globalStats[SCORE_PLAYER_TEAM1] = FuncUtils::max(globalStats[SCORE_PLAYER_TEAM1] - points, 0);
-        }
-        break;
-    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
-        if (isBot(hit))
-        {
-            // Only bots have a team
-            globalStats[SCORE_TEAM_BOT] = FuncUtils::max(globalStats[SCORE_TEAM_BOT] - points, 0);
-        }
-        break;
-    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
-        switch (hit)
-        {
-        case HOVERCRAFT_PLAYER_1:
-        case HOVERCRAFT_PLAYER_2:
-            globalStats[SCORE_PLAYER_TEAM1] = FuncUtils::max(globalStats[SCORE_PLAYER_TEAM1] - points, 0);
-            break;
-        case HOVERCRAFT_PLAYER_3:
-        case HOVERCRAFT_PLAYER_4:
-            globalStats[SCORE_PLAYER_TEAM2] = FuncUtils::max(globalStats[SCORE_PLAYER_TEAM2] - points, 0);
-            break;
-        default:
-            globalStats[SCORE_TEAM_BOT] = FuncUtils::max(globalStats[SCORE_TEAM_BOT] - points, 0);
+            globalStats[SCORE_BOT_TEAM] = FuncUtils::max(globalStats[SCORE_BOT_TEAM] + points, 0);
         }
     }
 }
 
 void GameStats::updateTeamLeader(eGlobalStat team, int points)
 {
+    globalStats[team] = FuncUtils::max(globalStats[team] + points, 0);
+    // If the score change is positive, we update with a notification.
+    // This prevents double notifications for when there is both a team score
+    // increase and decrease at the same time.
 }
 
 void GameStats::debugPrintAllScores()
@@ -577,7 +549,7 @@ void GameStats::addScore(eHovercraft attacker, int points)
     stats[attacker][SCORE_CURRENT] += points;
     stats[attacker][SCORE_TOTAL] += points;
 
-    addTeamScores(attacker, points);
+    updateTeamScores(attacker, points);
 }
 
 void GameStats::removeScore(eHovercraft hit, int points)
@@ -585,7 +557,7 @@ void GameStats::removeScore(eHovercraft hit, int points)
     stats[hit][SCORE_CHANGE] = -points;
     stats[hit][SCORE_CURRENT] -= points;
 
-    removeTeamScores(hit, points);
+    updateTeamScores(hit, points);
 }
 
 bool GameStats::hasLargestScore(eHovercraft hovercraft)

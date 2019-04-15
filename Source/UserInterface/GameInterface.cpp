@@ -658,7 +658,7 @@ void GameInterface::renderTeamBotScore()
     case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         if (GAME_STATS->getBotCount() > 0)
         {
-            score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_TEAM_BOT));
+            score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_BOT_TEAM));
             renderText(score,
                m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].first,
                m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].second,
