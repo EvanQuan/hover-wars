@@ -105,6 +105,7 @@ void GameStats::reinitialize(int playerCount,
 {
     m_iPlayerCount = playerCount;
     m_iBotCount = botCount;
+    m_iHovercraftCount = playerCount + botCount;
     m_eGameMode = gameMode;
     m_eBotDifficulty = botDifficulty;
     m_bScoreLossEnabled = scoreLossEnabled;
@@ -226,6 +227,7 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
         break;
     }
     checkForNewScoreLeader(hovercraft);
+    checkForNewTeamLeader();
 #ifdef _DEBUG
     debugPrintAllScores();
 #endif // _DEBUG
@@ -247,6 +249,14 @@ void GameStats::checkForNewScoreLeader(eHovercraft candidate)
         updateScoreLeaders(candidate);
     }
 
+}
+
+/*
+    After the scores have been updated, check if there is a new team leader.
+    If so, send a new team notification.
+*/
+void GameStats::checkForNewTeamLeader()
+{
 }
 
 // Predicate for filtering old leaders
@@ -307,18 +317,18 @@ void GameStats::updateTeamScores(eHovercraft hovercraft, int points)
     case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         if (isBot(hovercraft))
         {
-            updateTeamLeader(SCORE_BOT_TEAM, points);
+            updateTeamScore(SCORE_BOT_TEAM, points);
         }
         else
         {
-            updateTeamLeader(SCORE_PLAYER_TEAM1, points);
+            updateTeamScore(SCORE_PLAYER_TEAM1, points);
         }
         break;
     case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
         if (isBot(hovercraft))
         {
             // Only bots have a team
-            updateTeamLeader(SCORE_BOT_TEAM, points);
+            updateTeamScore(SCORE_BOT_TEAM, points);
         }
         break;
     case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
@@ -326,24 +336,21 @@ void GameStats::updateTeamScores(eHovercraft hovercraft, int points)
         {
         case HOVERCRAFT_PLAYER_1:
         case HOVERCRAFT_PLAYER_2:
-            updateTeamLeader(SCORE_PLAYER_TEAM1, points);
+            updateTeamScore(SCORE_PLAYER_TEAM1, points);
             break;
         case HOVERCRAFT_PLAYER_3:
         case HOVERCRAFT_PLAYER_4:
-            updateTeamLeader(SCORE_PLAYER_TEAM2, points);
+            updateTeamScore(SCORE_PLAYER_TEAM2, points);
             break;
         default:
-            updateTeamLeader(SCORE_BOT_TEAM, points);
+            updateTeamScore(SCORE_BOT_TEAM, points);
         }
     }
 }
 
-void GameStats::updateTeamLeader(eGlobalStat team, int points)
+void GameStats::updateTeamScore(eGlobalStat team, int points)
 {
     globalStats[team] = FuncUtils::max(globalStats[team] + points, 0);
-    // If the score change is positive, we update with a notification.
-    // This prevents double notifications for when there is both a team score
-    // increase and decrease at the same time.
 }
 
 void GameStats::debugPrintAllScores()
@@ -1005,6 +1012,52 @@ void GameStats::awardToHovercrafts(eHovercraftStat stat,
         }
     }
 }
+
+/*
+    It does not make sense to award most player and bot kill awards depending
+    on the context. The game mode, number of bots, and players all impact
+    whether it makes sense to give these awards.
+*/
+bool GameStats::shouldAwardPlayerAndBotKillAwards()
+{
+    switch (m_eGameMode)
+    {
+    case GAMEMODE_FREE_FOR_ALL:
+        /*
+            There must be at least 3 hovercrafts in order for players
+            to have a choice to hit a bot or a player. The smallest cases are:
+
+                2 players and 1 bot
+                1 player and 2 bots
+        */
+        return (m_iHovercraftCount >= 3 && m_iBotCount >= 1);
+    case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
+        /*
+            Since only players can attack bots, and bots can attack players,
+            these awards don't make sense, since this would be equivalent to
+            checking for the most kills on each team.
+        */
+        return false;
+    case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
+        /*
+            There must be a bot. Player count is forced to 4 players, so we
+            know there will always be the choice to hit other players.
+        */
+        return m_iBotCount >= 1;
+    case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
+        /*
+            There must be at least 2 players in order for players to have a
+            choice to hit a bot or a player. Since bots are on the same team,
+            and therefore can't hit each other, the smallest case is:
+
+                2 players and 1 bot
+        */
+        return (m_iPlayerCount >= 2) && (m_iBotCount >= 1);
+    default:
+        return true;
+    }
+
+}
 /*
     Award all hovercrafts with the award of having the highest specified stat.
     That specified stat must have a value strictly greater than 0 to count,
@@ -1061,7 +1114,7 @@ void GameStats::awardZeroStat(eHovercraftStat stat,
 void GameStats::awardAwards()
 {
     // Multiplayer only awards
-    if ((m_iPlayerCount > 1) && (m_iBotCount > 1))
+    if (shouldAwardPlayerAndBotKillAwards())
     {
         awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_BOTS,      "Ludite",        "Most bot kills",           200);
         awardHighestNonZeroStat(KILLS_TOTAL_AGAINST_PLAYERS,   "Misanthropist", "Most player kills",        200);

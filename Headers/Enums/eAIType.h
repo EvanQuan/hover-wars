@@ -19,6 +19,7 @@ enum eGameMode
 
     // Split the players into 2 teams
     // The bots are on their own team
+    // The player count is FORCED to 4 players
     GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS = 3,
 
     // Total number of game modes

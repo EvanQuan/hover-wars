@@ -266,6 +266,8 @@ private:
     void awardToHovercrafts(eHovercraftStat stat, string name,
         string description, int points, vector<eHovercraft> winners);
 
+    bool shouldAwardPlayerAndBotKillAwards();
+
 
     /*
     Overall game stats
@@ -313,9 +315,10 @@ private:
 
     // Score leader
     void checkForNewScoreLeader(eHovercraft candidate);
+    void checkForNewTeamLeader();
     void updateScoreLeaders(eHovercraft newLeader);
     void updateTeamScores(eHovercraft hovercraft, int points);
-    void updateTeamLeader(eGlobalStat team, int points);
+    void updateTeamScore(eGlobalStat team, int points);
     vector<eHovercraft> m_eScoreLeaders;
 
     // Powerups
@@ -349,6 +352,7 @@ private:
 
     int m_iPlayerCount;
     int m_iBotCount;
+    int m_iHovercraftCount;
 
     eGameMode m_eGameMode;
     eBotDifficulty m_eBotDifficulty;
