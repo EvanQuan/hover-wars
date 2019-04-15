@@ -386,7 +386,7 @@ void PostgameInterface::renderFreeForAll(const vector<EndGameStat> &endGameStats
 void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats,
                                        bool renderBots)
 {
-    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_TEAM_BOT);
     // Apply awards
     for (EndGameStat s : endGameStats)
     {
@@ -444,8 +444,8 @@ void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameSt
                                             bool renderBots)
 {
     int placements = 0;
-    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
-    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_TEAM_BOT);
+    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM1);
 
     // update scores with awards
     for (EndGameStat s : endGameStats)
@@ -506,9 +506,9 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
                                           bool renderBots)
 {
     int placements = 0;
-    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE);
-    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE);
-    int team2PlayerScore = GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE);
+    int teamBotScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_TEAM_BOT);
+    int teamPlayerScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM1);
+    int team2PlayerScore = GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM2);
 
     // update scores with awards
     for (EndGameStat s : endGameStats)

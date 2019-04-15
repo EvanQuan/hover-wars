@@ -609,7 +609,7 @@ void GameInterface::renderTeamPlayerScore()
     switch (GAME_STATS->getGameMode())
     {
     case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
-        score = "Player team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+        score = "Player team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM1));
         renderText(score,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
            m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
@@ -621,15 +621,15 @@ void GameInterface::renderTeamPlayerScore()
         {
         case HOVERCRAFT_PLAYER_1:
         case HOVERCRAFT_PLAYER_2:
-        score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
-        score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE));
+        score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM1));
+        score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM2));
         color = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_1);
         color2 = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_3);
             break;
         case HOVERCRAFT_PLAYER_3:
         case HOVERCRAFT_PLAYER_4:
-        score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM2_PLAYER_SCORE));
-        score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_PLAYER_SCORE));
+        score = "Your team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM2));
+        score2 = "Enemy team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM1));
         color = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_3);
         color2 = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_1);
             break;
@@ -658,7 +658,7 @@ void GameInterface::renderTeamBotScore()
     case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         if (GAME_STATS->getBotCount() > 0)
         {
-            score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::TEAM_BOT_SCORE));
+            score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_TEAM_BOT));
             renderText(score,
                m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].first,
                m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].second,

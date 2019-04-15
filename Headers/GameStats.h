@@ -146,11 +146,17 @@ public:
 
     enum eGlobalStat
     {
-       SCORE_LARGEST,
-       TEAM_PLAYER_SCORE,
-       TEAM2_PLAYER_SCORE,
-       TEAM_BOT_SCORE,
-       GLOBALSTAT_COUNT
+        /*
+            The largest hovercraft score.
+            More than one hovercraft may share this score,
+            meaning there may be more than one score leader.
+        */
+        SCORE_LARGEST_HOVERCRAFT,
+        SCORE_PLAYER_TEAM1,
+        SCORE_PLAYER_TEAM2,
+        SCORE_TEAM_BOT,
+        SCORE_LARGEST_TEAM,
+        GLOBALSTAT_COUNT
     };
 
     enum eAddScoreReason
@@ -277,7 +283,7 @@ private:
 
     // Actions
     // void hitBot(eHovercraft attacker, eBot hit);
-    void hit(eHovercraft attacker, eHovercraft hit);
+    void hitHovercraft(eHovercraft attacker, eHovercraft hit);
     // Score
     void updateAttackerAndHitScore(eHovercraft attacker, eHovercraft hit);
     int getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit);
@@ -308,6 +314,9 @@ private:
     // Score leader
     void checkForNewScoreLeader(eHovercraft candidate);
     void updateScoreLeaders(eHovercraft newLeader);
+    void addTeamScores(eHovercraft attacker, int points);
+    void removeTeamScores(eHovercraft hit, int points);
+    void updateTeamLeader(eGlobalStat team, int points);
     vector<eHovercraft> m_eScoreLeaders;
 
     // Powerups
