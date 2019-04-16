@@ -66,7 +66,7 @@
 #define IMAGE_RESUME_2 "resume2.png"
 #define IMAGE_START_1 "start.png"
 #define IMAGE_START_2 "start2.png"
-#define IMAGE_TITLE "Title.png"
+#define IMAGE_TITLE "title_4.png"
 #define IMAGE_INSERT_COIN_1 "insert_coin.png"
 #define IMAGE_INSERT_COIN_2 "insert_coin2.png"
 #define IMAGE_NUMBER_OF_PLAYER_1 "players.png"
