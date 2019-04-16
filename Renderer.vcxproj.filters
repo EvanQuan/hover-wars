@@ -166,6 +166,8 @@
     <ClInclude Include="Headers\UserInterface\PromptInterface.h" />
     <ClInclude Include="Headers\Menus\MenuManager.h" />
     <ClInclude Include="Headers\UserInterface\SettingsInterface.h" />
+    <ClInclude Include="Headers\Menus\EndgameMenu.h" />
+    <ClInclude Include="Headers\UserInterface\EndgameInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

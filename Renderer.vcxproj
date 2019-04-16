@@ -17,6 +17,7 @@
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
+    <ClInclude Include="Headers\Menus\EndgameMenu.h" />
     <ClInclude Include="Headers\Menus\MenuManager.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\UserInterface\AwardsInterface.h" />
     <ClInclude Include="Headers\UserInterface\ControlsInterface.h" />
+    <ClInclude Include="Headers\UserInterface\EndgameInterface.h" />
     <ClInclude Include="Headers\UserInterface\GameInterface.h" />
     <ClInclude Include="Headers\UserInterface\LoadingInterface.h" />
     <ClInclude Include="Headers\UserInterface\MainInterface.h" />
