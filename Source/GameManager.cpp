@@ -5,11 +5,9 @@
 #include "SceneLoader.h"
 #include "ShaderManager.h"
 #include "UserInterface/StartInterface.h"
-#include "Menus/PostgameMenu.h"
+#include "Menus/EndgameMenu.h"
 #include "GameStats.h"
 #include "UserInterface/GameInterface.h"
-#include "UserInterface/LoadingInterface.h"
-#include "UserInterface/PostgameInterface.h"
 #include "Menus/GameMenu.h"
 #include "Menus/StartMenu.h"
 #include "Menus/LoadingMenu.h"
@@ -659,7 +657,7 @@ void GameManager::endGame()
     cout << "GameManger::endGame()" << endl;
     m_bInGame = false;
     m_bPaused = true;
-    m_pMenuManager->setCurrentMenu(PostgameMenu::getInstance());
+    m_pMenuManager->setCurrentMenu(EndgameMenu::getInstance());
     m_pEntityManager->purgeEnvironment();
 
     cleanupFrameBuffers();

@@ -12,7 +12,7 @@ EndgameInterface::EndgameInterface() : PromptInterface(
         // 0 Background
         {0.0f, 0.0f},
         // 1 Version
-        {0.0f, 0.0f},
+        {0.4f, 0.4f},
     },
     // Translating
     vector<pair<float, float>>
@@ -20,7 +20,7 @@ EndgameInterface::EndgameInterface() : PromptInterface(
         // 0 Background
         {0.0f, 0.0f},
         // 1 Version
-        {10.0f, 15.0f},
+        {0.0f, 0.0f},
     }
 )
 {
@@ -49,7 +49,7 @@ void EndgameInterface::reinitialize(float gameTime)
 void EndgameInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_RULE_MENU);
-    renderText(GAME_VERSION,
+    renderText("End game text",
         m_vComponentCoordinates[VERSION].first,
         m_vComponentCoordinates[VERSION].second,
         1.0,

@@ -21,5 +21,10 @@ private:
     // @Override
     void enterOverride();
 
+    // @Override
+    void updateTimeValueOverride(float fTimeInSeconds);
+
     static EndgameMenu* m_pInstance;
+
+    float m_fDelayTime;
 };
