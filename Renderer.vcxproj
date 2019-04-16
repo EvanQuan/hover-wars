@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp" />
+    <ClCompile Include="Source\Menus\EndgameMenu.cpp" />
     <ClCompile Include="Source\Menus\MenuManager.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\UserInterface\AwardsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\ControlsInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\EndgameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\LoadingInterface.cpp" />
     <ClCompile Include="Source\UserInterface\MainInterface.cpp" />

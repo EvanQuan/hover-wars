@@ -76,6 +76,8 @@
     <ClCompile Include="Source\UserInterface\PromptInterface.cpp" />
     <ClCompile Include="Source\Menus\MenuManager.cpp" />
     <ClCompile Include="Source\UserInterface\SettingsInterface.cpp" />
+    <ClCompile Include="Source\Menus\EndgameMenu.cpp" />
+    <ClCompile Include="Source\UserInterface\EndgameInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Anim_Track.h" />
