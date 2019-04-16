@@ -12,7 +12,7 @@ EndgameInterface::EndgameInterface() : PromptInterface(
         // 0 Background
         {0.0f, 0.0f},
         // 1 Version
-        {0.3f, 0.3f},
+        {0.3f, 0.6f},
     },
     // Translating
     vector<pair<float, float>>
