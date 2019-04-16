@@ -109,7 +109,7 @@ void Menu::updateJoystickCommands()
     eFixedCommand command;
 
     for (int joystickID = GLFW_JOYSTICK_1;
-        joystickID < MAX_PLAYER_JOYSTICK;
+        joystickID < MAX_JOYSTICK_COUNT;
         joystickID++)
     {
         bool joystickIsPresent = m_pInputHandler->isJoystickPresent(joystickID);
