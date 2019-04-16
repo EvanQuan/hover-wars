@@ -73,14 +73,8 @@ void StartInterface::renderOverride()
 void StartInterface::renderOption() {
     StartMenu* m = static_cast<StartMenu*>(StartMenu::getInstance());
     // Since there is only 1 prompt, we don't care which prompt is selected.
-    // string option = m->getCurrentPrompt();
-    // if (option == INSERT_COIN_OPTION) {
     if (m_bPromptVisible)
     {
         renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
     }
-    // }
-    // else {
-        // renderImage(IMAGE_INSERT_COIN_1, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
-    // }
 }

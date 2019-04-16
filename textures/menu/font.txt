@@ -10,3 +10,11 @@ color:
 Number text: https://fontmeme.com/this-war-of-mine-font/
 font: accid
 font size: 50
+
+title size: 65
+
+placements:
+
+gold: FFDF00	D4AF37
+silver: CAE2E7 (with color to prevent render bug)
+brozne: cd7f32 

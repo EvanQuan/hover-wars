@@ -17,6 +17,7 @@
     <ClInclude Include="Headers\Anim_Track.h" />
     <ClInclude Include="Headers\ArtificialIntelligence\AIManager.h" />
     <ClInclude Include="Headers\BoidEngine.h" />
+    <ClInclude Include="Headers\Menus\EndgameMenu.h" />
     <ClInclude Include="Headers\Menus\MenuManager.h" />
     <ClInclude Include="Headers\DataStructures\Bag.h" />
     <ClInclude Include="Headers\DataStructures\ObjectInfo.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Headers\TextureManager.h" />
     <ClInclude Include="Headers\UserInterface\AwardsInterface.h" />
     <ClInclude Include="Headers\UserInterface\ControlsInterface.h" />
+    <ClInclude Include="Headers\UserInterface\EndgameInterface.h" />
     <ClInclude Include="Headers\UserInterface\GameInterface.h" />
     <ClInclude Include="Headers\UserInterface\LoadingInterface.h" />
     <ClInclude Include="Headers\UserInterface\MainInterface.h" />
@@ -105,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ArtificialIntelligence\AIManager.cpp" />
+    <ClCompile Include="Source\Menus\EndgameMenu.cpp" />
     <ClCompile Include="Source\Menus\MenuManager.cpp" />
     <ClCompile Include="Source\DataStructures\Bag.cpp" />
     <ClCompile Include="Source\Emitter.cpp" />
@@ -167,6 +170,7 @@
     <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\UserInterface\AwardsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\ControlsInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\EndgameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\GameInterface.cpp" />
     <ClCompile Include="Source\UserInterface\LoadingInterface.cpp" />
     <ClCompile Include="Source\UserInterface\MainInterface.cpp" />

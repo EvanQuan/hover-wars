@@ -11,18 +11,22 @@
     #include "UserInterface/UserInterface.h"
 #endif
 
-/* CLASS */
 /*
-Menus determine the state of the game with respect to how input is processed by
-the MenuManager.
+    Menus provide state of available options the user can currently perform.
 
-Depending on the current menu state of the CommandHander, the input is processed
-differently.
+    Each menu defines what keys or buttons correspond with what commands in
+    what context and perform the necessary actions once those commands are
+    issued.
 
-Every subclass should add its singleton instance to MenuManager's
-menuInstances vector.
+    In order to guarantee that every menu has all button/key to command
+    mappings, each menu must pass the necessary mappings through the
+    constructor.
 
-@author Evan Quan
+    Every subclass should add its singleton instance to MenuManager's
+    menuInstances vector in order for the program to know its current menu
+    state.
+
+    @author Evan Quan
 */
 class Menu abstract
 {
