@@ -27,7 +27,18 @@ public:
 
     // Methods:
     Texture* loadTexture(const string &sFileName);
-    unordered_map<string, Texture*> loadTextures(const vector<string> &files);
+
+    /*
+        Load a vector of textures from a given directory.
+
+        @param[in] vFiles       paths of all the files to load from the specified
+                                directory as the root
+        @param[in] sDirectory   from which the files are located.
+
+        @return a map of textures, of which the given file paths are their
+                corresponding keys.
+    */
+    unordered_map<string, Texture*> loadTextures(const vector<string> &files, const string sDirectory);
     Texture* loadCubeMap(const vector<string>* sFileNames);
     Texture* genTexture(const vec4* vColor);
     Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);

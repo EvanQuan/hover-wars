@@ -18,121 +18,128 @@
 #define COLOR_GREEN             vec3(0.0, 1.0, 0.0)
 #define COLOR_YELLOW            vec3(1.0, 1.0, 0.0)
 
+
+/*
+    The root directory for all UI textures.
+    Any UI textures to be loaded should be placed in here.
+*/
+#define IMAGE_DIRECTORY "textures/menu/"
+
 // font website: https://fontmeme.com/tron-font/
 // size 30
 // effect 'Style-Neon'
 // color 00FCFF and FF00E1
-#define IMAGE_0_1 "textures/menu/0_1.png"
-#define IMAGE_1_1 "textures/menu/1_1.png"
-#define IMAGE_2_1 "textures/menu/2_1.png"
-#define IMAGE_3_1 "textures/menu/3_1.png"
-#define IMAGE_4_1 "textures/menu/4_1.png"
-#define IMAGE_5_1 "textures/menu/5_1.png"
-#define IMAGE_6_1 "textures/menu/6_1.png"
-#define IMAGE_7_1 "textures/menu/7_1.png"
-#define IMAGE_8_1 "textures/menu/8_1.png"
-#define IMAGE_9_1 "textures/menu/9_1.png"
-#define IMAGE_10_1 "textures/menu/10_1.png"
-#define IMAGE_0_2 "textures/menu/0.png"
-#define IMAGE_1_2 "textures/menu/1.png"
-#define IMAGE_2_2 "textures/menu/2.png"
-#define IMAGE_3_2 "textures/menu/3.png"
-#define IMAGE_4_2 "textures/menu/4.png"
-#define IMAGE_5_2 "textures/menu/5.png"
-#define IMAGE_6_2 "textures/menu/6.png"
-#define IMAGE_7_2 "textures/menu/7.png"
-#define IMAGE_8_2 "textures/menu/8.png"
-#define IMAGE_9_2 "textures/menu/9.png"
-#define IMAGE_10_2 "textures/menu/10.png"
-#define IMAGE_MAIN_MENU_BUTTON_1 "textures/menu/main_menu_button.png"
-#define IMAGE_MAIN_MENU_BUTTON_2 "textures/menu/main_menu_button2.png"
-#define IMAGE_BACKGROUND_START_MENU "textures/menu/start_menu.jpg"
-#define IMAGE_BACKGROUND_MAIN_MENU "textures/menu/post_menu3.jpg"
-#define IMAGE_NEW_GAME_1 "textures/menu/new_game.png"
-#define IMAGE_NEW_GAME_2 "textures/menu/new_game2.png"
-#define IMAGE_EXIT_1 "textures/menu/exit.png"
-#define IMAGE_EXIT_2 "textures/menu/exit2.png"
-#define IMAGE_BACKGROUND_PAUSE_MENU "textures/menu/pause_menu4.jpg"
-#define IMAGE_BACKGROUND_POST_MENU "textures/menu/post_menu3.jpg" 
-#define IMAGE_BACKGROUND_PRE_MENU "textures/menu/pre_menu2.jpg" 
-#define IMAGE_RESUME_1 "textures/menu/resume.png"
-#define IMAGE_RESUME_2 "textures/menu/resume2.png"
-#define IMAGE_START_1 "textures/menu/start.png"
-#define IMAGE_START_2 "textures/menu/start2.png"
-#define IMAGE_TITLE "textures/menu/Title.png"
-#define IMAGE_INSERT_COIN_1 "textures/menu/insert_coin.png"
-#define IMAGE_INSERT_COIN_2 "textures/menu/insert_coin2.png"
-#define IMAGE_NUMBER_OF_PLAYER_1 "textures/menu/players.png"
-#define IMAGE_NUMBER_OF_PLAYER_2 "textures/menu/players2.png"
-#define IMAGE_NUMBER_OF_BOT_1 "textures/menu/bots.png"
-#define IMAGE_NUMBER_OF_BOT_2 "textures/menu/bots2.png"
-#define IMAGE_END_GAME_1 "textures/menu/end_game.png"
-#define IMAGE_END_GAME_2 "textures/menu/end_game2.png"
-#define IMAGE_GAME_TIME_1 "textures/menu/game_time.png"
-#define IMAGE_GAME_TIME_2 "textures/menu/game_time2.png"
-#define IMAGE_MIN "textures/menu/min2.png"
-#define IMAGE_CONTROLLER_1 "textures/menu/controls.png"
-#define IMAGE_CONTROLLER_2 "textures/menu/controls2.png"
-#define IMAGE_GAME_RULE_1 "textures/menu/rules.png"
-#define IMAGE_GAME_RULE_2 "textures/menu/rules2.png"
-#define IMAGE_CONTROLLER_MENU "textures/menu/controller_menu.png"
-#define IMAGE_RULE_MENU "textures/menu/rule_menu.png"
+#define IMAGE_0_1 "0_1.png"
+#define IMAGE_1_1 "1_1.png"
+#define IMAGE_2_1 "2_1.png"
+#define IMAGE_3_1 "3_1.png"
+#define IMAGE_4_1 "4_1.png"
+#define IMAGE_5_1 "5_1.png"
+#define IMAGE_6_1 "6_1.png"
+#define IMAGE_7_1 "7_1.png"
+#define IMAGE_8_1 "8_1.png"
+#define IMAGE_9_1 "9_1.png"
+#define IMAGE_10_1 "10_1.png"
+#define IMAGE_0_2 "0.png"
+#define IMAGE_1_2 "1.png"
+#define IMAGE_2_2 "2.png"
+#define IMAGE_3_2 "3.png"
+#define IMAGE_4_2 "4.png"
+#define IMAGE_5_2 "5.png"
+#define IMAGE_6_2 "6.png"
+#define IMAGE_7_2 "7.png"
+#define IMAGE_8_2 "8.png"
+#define IMAGE_9_2 "9.png"
+#define IMAGE_10_2 "10.png"
+#define IMAGE_MAIN_MENU_BUTTON_1 "main_menu_button.png"
+#define IMAGE_MAIN_MENU_BUTTON_2 "main_menu_button2.png"
+#define IMAGE_BACKGROUND_START_MENU "start_menu.jpg"
+#define IMAGE_BACKGROUND_MAIN_MENU "post_menu3.jpg"
+#define IMAGE_NEW_GAME_1 "new_game.png"
+#define IMAGE_NEW_GAME_2 "new_game2.png"
+#define IMAGE_EXIT_1 "exit.png"
+#define IMAGE_EXIT_2 "exit2.png"
+#define IMAGE_BACKGROUND_PAUSE_MENU "pause_menu4.jpg"
+#define IMAGE_BACKGROUND_POST_MENU "post_menu3.jpg" 
+#define IMAGE_BACKGROUND_PRE_MENU "pre_menu2.jpg" 
+#define IMAGE_RESUME_1 "resume.png"
+#define IMAGE_RESUME_2 "resume2.png"
+#define IMAGE_START_1 "start.png"
+#define IMAGE_START_2 "start2.png"
+#define IMAGE_TITLE "Title.png"
+#define IMAGE_INSERT_COIN_1 "insert_coin.png"
+#define IMAGE_INSERT_COIN_2 "insert_coin2.png"
+#define IMAGE_NUMBER_OF_PLAYER_1 "players.png"
+#define IMAGE_NUMBER_OF_PLAYER_2 "players2.png"
+#define IMAGE_NUMBER_OF_BOT_1 "bots.png"
+#define IMAGE_NUMBER_OF_BOT_2 "bots2.png"
+#define IMAGE_END_GAME_1 "end_game.png"
+#define IMAGE_END_GAME_2 "end_game2.png"
+#define IMAGE_GAME_TIME_1 "game_time.png"
+#define IMAGE_GAME_TIME_2 "game_time2.png"
+#define IMAGE_MIN "min2.png"
+#define IMAGE_CONTROLLER_1 "controls.png"
+#define IMAGE_CONTROLLER_2 "controls2.png"
+#define IMAGE_GAME_RULE_1 "rules.png"
+#define IMAGE_GAME_RULE_2 "rules2.png"
+#define IMAGE_CONTROLLER_MENU "controller_menu.png"
+#define IMAGE_RULE_MENU "rule_menu.png"
 
-#define IMAGE_GAMEMODE_1 "textures/menu/game_mode.png"
-#define IMAGE_GAMEMODE_2 "textures/menu/game_mode2.png"
-#define IMAGE_FREE_FOR_ALL "textures/menu/free_for_all2.png"
-#define IMAGE_PLAYER_TEAMS "textures/menu/player_teams2.png"
-#define IMAGE_BOT_TEAM "textures/menu/bot_team2.png"
-#define IMAGE_PLAYER_TEAM "textures/menu/player_team2.png"
-#define IMAGE_PLAYER_TEAM1 "textures/menu/team1.png"
-#define IMAGE_PLAYER_TEAM2 "textures/menu/team2.png"
+#define IMAGE_GAMEMODE_1 "game_mode.png"
+#define IMAGE_GAMEMODE_2 "game_mode2.png"
+#define IMAGE_FREE_FOR_ALL "free_for_all2.png"
+#define IMAGE_PLAYER_TEAMS "player_teams2.png"
+#define IMAGE_BOT_TEAM "bot_team2.png"
+#define IMAGE_PLAYER_TEAM "player_team2.png"
+#define IMAGE_PLAYER_TEAM1 "team1.png"
+#define IMAGE_PLAYER_TEAM2 "team2.png"
 
 // #define IMAGE_BOT_TEAM IMAGE_10_MIN
-#define IMAGE_BOT_VS_PLAYERS "textures/menu/bots_vs_players2.png"
-#define IMAGE_SCORE_LOSS_1 "textures/menu/score_loss.png"
-#define IMAGE_SCORE_LOSS_2 "textures/menu/score_loss2.png"
-#define IMAGE_ENABLED "textures/menu/enabled2.png"
-#define IMAGE_DISABLED "textures/menu/disabled2.png"
-#define IMAGE_MAP_1 "textures/menu/map.png"
-#define IMAGE_MAP_2 "textures/menu/map2.png"
+#define IMAGE_BOT_VS_PLAYERS "bots_vs_players2.png"
+#define IMAGE_SCORE_LOSS_1 "score_loss.png"
+#define IMAGE_SCORE_LOSS_2 "score_loss2.png"
+#define IMAGE_ENABLED "enabled2.png"
+#define IMAGE_DISABLED "disabled2.png"
+#define IMAGE_MAP_1 "map.png"
+#define IMAGE_MAP_2 "map2.png"
 
-#define IMAGE_AI_1 "textures/menu/ai.png"
-#define IMAGE_AI_2 "textures/menu/ai_2.png"
-#define IMAGE_CONFIG_1 "textures/menu/config_1.png"
-#define IMAGE_CONFIG_2 "textures/menu/config_2.png"
-#define IMAGE_PLACEMENT "textures/menu/placement.png"
-#define IMAGE_AWARDS_1 "textures/menu/awards.png"
-#define IMAGE_AWARDS_2 "textures/menu/awards_2.png"
+#define IMAGE_AI_1 "ai.png"
+#define IMAGE_AI_2 "ai_2.png"
+#define IMAGE_CONFIG_1 "config_1.png"
+#define IMAGE_CONFIG_2 "config_2.png"
+#define IMAGE_PLACEMENT "placement.png"
+#define IMAGE_AWARDS_1 "awards.png"
+#define IMAGE_AWARDS_2 "awards_2.png"
 
-#define IMAGE_PLAYER "textures/menu/player.png"
+#define IMAGE_PLAYER "player.png"
 
-#define IMAGE_BOT_1 "textures/menu/bot_1.png"
-#define IMAGE_BOT_2 "textures/menu/bot_2.png"
-#define IMAGE_BOT_3 "textures/menu/bot_3.png"
-#define IMAGE_BOT_4 "textures/menu/bot_4.png"
+#define IMAGE_BOT_1 "bot_1.png"
+#define IMAGE_BOT_2 "bot_2.png"
+#define IMAGE_BOT_3 "bot_3.png"
+#define IMAGE_BOT_4 "bot_4.png"
 
-#define IMAGE_NUMBER_1 "textures/menu/number_1.png"
-#define IMAGE_NUMBER_2 "textures/menu/number_2.png"
-#define IMAGE_NUMBER_3 "textures/menu/number_3.png"
-#define IMAGE_POINT "textures/menu/pts.png"
+#define IMAGE_NUMBER_1 "number_1.png"
+#define IMAGE_NUMBER_2 "number_2.png"
+#define IMAGE_NUMBER_3 "number_3.png"
+#define IMAGE_POINT "pts.png"
 
-#define IMAGE_ROCKET "textures/hud/rocket.png"
-#define IMAGE_TRAIL "textures/hud/trail.png"
-#define IMAGE_EXPLOSION "textures/hud/explosion.png"
+// #define IMAGE_ROCKET "textures/hud/rocket.png"
+// #define IMAGE_TRAIL "textures/hud/trail.png"
+// #define IMAGE_EXPLOSION "textures/hud/explosion.png"
 
-#define IMAGE_BOT_DIFFICULTY_1 "textures/menu/bot_difficulty.png"
-#define IMAGE_BOT_DIFFICULTY_2 "textures/menu/bot_difficulty2.png"
+#define IMAGE_BOT_DIFFICULTY_1 "bot_difficulty.png"
+#define IMAGE_BOT_DIFFICULTY_2 "bot_difficulty2.png"
 
-#define IMAGE_HARD "textures/menu/hard.png"
-#define IMAGE_MEDIUM "textures/menu/medium.png"
-#define IMAGE_EASY "textures/menu/easy.png"
+#define IMAGE_HARD "hard.png"
+#define IMAGE_MEDIUM "medium.png"
+#define IMAGE_EASY "easy.png"
 
-#define IMAGE_MUSIC_1 "textures/menu/music.png"
-#define IMAGE_MUSIC_2 "textures/menu/music2.png"
-#define IMAGE_SETTINGS_1 "textures/menu/settings.png"
-#define IMAGE_SETTINGS_2 "textures/menu/settings2.png"
+#define IMAGE_MUSIC_1 "music.png"
+#define IMAGE_MUSIC_2 "music2.png"
+#define IMAGE_SETTINGS_1 "settings.png"
+#define IMAGE_SETTINGS_2 "settings2.png"
 
-#define IMAGE_GAME_OVER "textures/menu/game_over_large.png"
+#define IMAGE_GAME_OVER "game_over_large.png"
 
 // Forward Declaration
 class ShaderManager;
@@ -275,6 +282,10 @@ private:
     float m_fGlobalMessageX;
     float m_fGlobalMessageY;
 
+    /*
+        Whenever a UI texture is to be loaded, the filepath should be added to this
+        vector.
+    */
     const vector<string> m_vTextureFiles
     {
         IMAGE_0_1,  
@@ -328,7 +339,7 @@ private:
         IMAGE_END_GAME_2,
         IMAGE_EXIT_1,
         IMAGE_EXIT_2,
-        IMAGE_EXPLOSION,
+        // IMAGE_EXPLOSION,
         IMAGE_FREE_FOR_ALL,
         IMAGE_GAMEMODE_1,
         IMAGE_GAMEMODE_2,
@@ -366,7 +377,7 @@ private:
         IMAGE_POINT,
         IMAGE_RESUME_1,
         IMAGE_RESUME_2,
-        IMAGE_ROCKET,
+        // IMAGE_ROCKET,
         IMAGE_RULE_MENU,
         IMAGE_SCORE_LOSS_1,
         IMAGE_SCORE_LOSS_2,
@@ -375,6 +386,6 @@ private:
         IMAGE_START_1,
         IMAGE_START_2,
         IMAGE_TITLE,
-        IMAGE_TRAIL,
+        // IMAGE_TRAIL,
     };
 };

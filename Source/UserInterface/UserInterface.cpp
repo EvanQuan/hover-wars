@@ -71,7 +71,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    m_Textures = TEXTURE_MANAGER->loadTextures(m_vTextureFiles);
+    m_Textures = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, IMAGE_DIRECTORY);
 }
 
 UserInterface::~UserInterface()
