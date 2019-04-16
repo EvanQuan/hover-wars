@@ -131,16 +131,16 @@ void PregameInterface::renderNumberOfPlayer(int i_NumOfPlayer) {
     // If in team players, the number of players if forced to 4
     switch(m->getGameMode() == GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS ? MAX_PLAYER_COUNT : i_NumOfPlayer) {
         case 1:
-            renderImage(IMAGE_MENU_1, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_1_2, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
             break;
         case 2:
-            renderImage(IMAGE_MENU_2, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_2_2, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
             break;
         case 3:
-            renderImage(IMAGE_MENU_3, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_3_2, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
             break;
         case 4:
-            renderImage(IMAGE_MENU_4, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_4_2, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].first, m_vComponentCoordinates[PLAYER_COUNT_NUMBER].second, 1.0f);
             break;
     }
 }
@@ -149,19 +149,19 @@ void PregameInterface::renderNumberOfBot(int i_NumOfBot) {
     // get the bot count and render number
     switch(i_NumOfBot) {
         case 0:
-            renderImage(IMAGE_MENU_0, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_0_2, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
             break;
         case 1:
-            renderImage(IMAGE_MENU_1, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_1_2, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
             break;
         case 2:
-            renderImage(IMAGE_MENU_2, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_2_2, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
             break;
         case 3:
-            renderImage(IMAGE_MENU_3, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_3_2, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
             break;
         case 4:
-            renderImage(IMAGE_MENU_4, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
+            renderImage(IMAGE_4_2, m_vComponentCoordinates[BOT_COUNT_NUMBER].first, m_vComponentCoordinates[BOT_COUNT_NUMBER].second, 1.0f);
             break;
     }
 }
@@ -231,13 +231,13 @@ void PregameInterface::renderMap(unsigned int mapNumber)
     switch (mapNumber)
     {
     case 0:
-        renderImage(IMAGE_MENU_1,
+        renderImage(IMAGE_1_2,
             m_vComponentCoordinates[MAP_NUMBER].first,
             m_vComponentCoordinates[MAP_NUMBER].second,
             1.0f);
         break;
     case 1:
-        renderImage(IMAGE_MENU_2,
+        renderImage(IMAGE_2_2,
             m_vComponentCoordinates[MAP_NUMBER].first,
             m_vComponentCoordinates[MAP_NUMBER].second,
             1.0f);
