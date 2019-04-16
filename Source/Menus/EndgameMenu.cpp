@@ -4,7 +4,7 @@
 #include "UserInterface/EndgameInterface.h"
 #include "Menus/MenuManager.h"
 
-#define DELAY_TIME 2.0f
+#define DELAY_TIME 3.0f
 
 // Singleton instance
 EndgameMenu* EndgameMenu::m_pInstance = nullptr;

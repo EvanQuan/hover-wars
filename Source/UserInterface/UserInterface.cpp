@@ -177,6 +177,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_Textures[IMAGE_MUSIC_2] = TEXTURE_MANAGER->loadTexture(IMAGE_MUSIC_2);
     m_Textures[IMAGE_SETTINGS_1] = TEXTURE_MANAGER->loadTexture(IMAGE_SETTINGS_1);
     m_Textures[IMAGE_SETTINGS_2] = TEXTURE_MANAGER->loadTexture(IMAGE_SETTINGS_2);
+    m_Textures[IMAGE_GAME_OVER] = TEXTURE_MANAGER->loadTexture(IMAGE_GAME_OVER);
 }
 
 UserInterface::~UserInterface()

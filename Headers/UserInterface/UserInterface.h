@@ -136,6 +136,8 @@
 #define IMAGE_SETTINGS_1 "textures/menu/settings.png"
 #define IMAGE_SETTINGS_2 "textures/menu/settings2.png"
 
+#define IMAGE_GAME_OVER "textures/menu/game_over_large.png"
+
 // Forward Declaration
 class ShaderManager;
 class Texture;

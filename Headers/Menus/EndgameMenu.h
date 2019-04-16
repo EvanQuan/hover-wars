@@ -26,5 +26,8 @@ private:
 
     static EndgameMenu* m_pInstance;
 
+    /*
+        Time until the menu automatically moves onto the PostgameMenu
+    */
     float m_fDelayTime;
 };
