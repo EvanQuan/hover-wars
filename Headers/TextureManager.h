@@ -27,6 +27,7 @@ public:
 
     // Methods:
     Texture* loadTexture(const string &sFileName);
+    unordered_map<string, Texture*> loadTextures(const vector<string> &files);
     Texture* loadCubeMap(const vector<string>* sFileNames);
     Texture* genTexture(const vec4* vColor);
     Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);
