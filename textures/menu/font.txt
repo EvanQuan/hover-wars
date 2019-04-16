@@ -1,3 +1,7 @@
+Title
+https://fontmeme.com/fonts/outrun-future-font/
+normal
+https://fontmeme.com/fonts/morning-star-font/
 Menu text: https://fontmeme.com/tron-font/
 font: tron
 font size: 30
@@ -12,6 +16,7 @@ font: accid
 font size: 50
 
 title size: 65
+outrun title size: 
 
 placements:
 

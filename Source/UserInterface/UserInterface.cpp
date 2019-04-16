@@ -71,7 +71,8 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    m_Textures = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, IMAGE_DIRECTORY);
+    m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, TRON_DIRECTORY);
+    m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
 }
 
 UserInterface::~UserInterface()
@@ -449,7 +450,7 @@ Window coordinates in pixels
 void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
-    auto tFoundIt = m_Textures.find(filepath);
+    auto tFoundIt = m_TexturesTron.find(filepath);
     Texture* image = tFoundIt->second;
     int iImage_x, iImage_y;
     image->getTextureDimensions(&iImage_y, &iImage_x);
@@ -498,7 +499,7 @@ void UserInterface::renderImage(const string filepath, int component, float x, f
 void UserInterface::renderBackgroundImage(const string filepath)
 {
     // Get texture height and width
-    auto tFoundIt = m_Textures.find(filepath);
+    auto tFoundIt = m_TexturesTron.find(filepath);
     Texture* image = tFoundIt->second;
     int iImage_x, iImage_y;
     image->getTextureDimensions(&iImage_y, &iImage_x);

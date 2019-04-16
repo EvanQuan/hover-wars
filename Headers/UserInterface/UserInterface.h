@@ -24,6 +24,8 @@
     Any UI textures to be loaded should be placed in here.
 */
 #define IMAGE_DIRECTORY "textures/menu/"
+#define TRON_DIRECTORY "textures/menu/tron/"
+#define OUTRUN_DIRECTORY "textures/menu/outrun/"
 
 // font website: https://fontmeme.com/tron-font/
 // size 30
@@ -125,7 +127,7 @@
 #define IMAGE_SETTINGS_2 "settings2.png"
 #define IMAGE_START_1 "start.png"
 #define IMAGE_START_2 "start2.png"
-#define IMAGE_TITLE "Title.png"
+#define IMAGE_TITLE "title.png"
 
 // Forward Declaration
 class ShaderManager;
@@ -251,7 +253,15 @@ private:
     */
     int m_iComponentCount;
 
-    unordered_map<string, Texture*>m_Textures;
+    /*
+        For tron aesthetics
+    */
+    unordered_map<string, Texture*>m_TexturesTron;
+
+    /*
+        For outrun aesthetics
+    */
+    unordered_map<string, Texture*>m_TexturesOutrun;
 
     // Global message values
     string m_sGlobalMessage;
