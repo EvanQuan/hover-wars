@@ -89,8 +89,9 @@
 #define IMAGE_GAMEMODE_2 "game_mode2.png"
 #define IMAGE_FREE_FOR_ALL "free_for_all2.png"
 #define IMAGE_PLAYER_TEAMS "player_teams2.png"
-#define IMAGE_BOT_TEAM "bot_team2.png"
-#define IMAGE_PLAYER_TEAM "player_team2.png"
+#define IMAGE_BOT_TEAM "bot_team.png"
+#define IMAGE_BOT_TEAM_2 "bot_team2.png"
+#define IMAGE_PLAYER_TEAM "player_team.png"
 #define IMAGE_PLAYER_TEAM1 "team1.png"
 #define IMAGE_PLAYER_TEAM2 "team2.png"
 
@@ -326,6 +327,7 @@ private:
         IMAGE_BOT_DIFFICULTY_1,
         IMAGE_BOT_DIFFICULTY_2,
         IMAGE_BOT_TEAM,
+        IMAGE_BOT_TEAM_2,
         IMAGE_BOT_VS_PLAYERS,
         IMAGE_CONFIG_1,
         IMAGE_CONFIG_2,

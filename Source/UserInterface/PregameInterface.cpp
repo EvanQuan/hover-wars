@@ -206,7 +206,7 @@ void PregameInterface::renderGameTime(int i_GameTime) {
 void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
     switch (m_eGameMode) {
         case GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS:
-            renderImage(IMAGE_BOT_TEAM, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
+            renderImage(IMAGE_BOT_TEAM_2, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
             break;
         case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
             renderImage(IMAGE_BOT_VS_PLAYERS, m_vComponentCoordinates[GAMEMODE_TYPE].first, m_vComponentCoordinates[GAMEMODE_TYPE].second, 1.0f);
