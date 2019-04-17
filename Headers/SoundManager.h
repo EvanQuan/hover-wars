@@ -34,6 +34,7 @@ public:
 
         SOUND_SPIKES_ACTIVATE,
         SOUND_SPIKES_IMPACT,
+        SOUND_SPIKES_RECHARGE,
 
         SOUND_TRAIL,
         SOUND_TRAIL_1,
@@ -246,6 +247,8 @@ private:
                                            "event:/spikes/spikes_impact_02",
                                            "event:/spikes/spikes_impact_03",
                                            "event:/spikes/spikes_impact_04",
+                                         }},
+        {SOUND_SPIKES_RECHARGE,           { "event:/spikes/spikes_recharge",
                                          }},
         {SOUND_PULSE_ACTIVATE,           { "event:/pulse/pulse_activate",
                                          }},
