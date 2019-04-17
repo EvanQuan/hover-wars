@@ -127,7 +127,6 @@ void GameStats::reinitialize(int playerCount,
     firstBloodHappened = false;
     queueFirstBlood = false;
     m_eScoreLeaders.clear();
-    m_eScoreLeaders.push_back(HOVERCRAFT_PLAYER_1);
 
     m_bSpeedBoostEnabled = (playerCount + botCount) >= HOVERCRAFT_COUNT_TO_ENABLE_POWERUP;
 }
@@ -231,7 +230,8 @@ void GameStats::addScore(eHovercraft hovercraft, eAddScoreReason reason)
 #ifdef _DEBUG
     debugPrintAllScores();
 #endif // _DEBUG
-
+    cout << "first blood happend: " << firstBloodHappened << endl;
+    cout << "queue blood happend: " << queueFirstBlood << endl;
 }
 
 /*
@@ -243,8 +243,11 @@ void GameStats::checkForNewScoreLeader(eHovercraft candidate)
     int newLargestScore = getLargestScore();
     int oldLargestScore = globalStats[eGlobalStat::SCORE_LARGEST_HOVERCRAFT];
 
+    cout << "newLargestScore: " << newLargestScore << endl;
+    cout << "oldLargestScore: " << oldLargestScore << endl;
     if (newLargestScore != oldLargestScore)
     {
+        cout << "updating new largest score " << endl;
         globalStats[eGlobalStat::SCORE_LARGEST_HOVERCRAFT] = newLargestScore;
         updateScoreLeaders(candidate);
     }
@@ -278,7 +281,7 @@ void GameStats::updateScoreLeaders(eHovercraft candidate)
                                          m_eScoreLeaders.end(),
                                          notScoreLeader),
                           m_eScoreLeaders.end());
-    if (!FuncUtils::contains(m_eScoreLeaders, candidate) && hasLargestScore(candidate))
+    if ((!FuncUtils::contains(m_eScoreLeaders, candidate)) && hasLargestScore(candidate))
     {
         // Add new leader
         m_eScoreLeaders.push_back(candidate);
@@ -513,6 +516,7 @@ int GameStats::getScoreGainedForAttacker(eHovercraft attacker, eHovercraft hit)
     } else {
         firstBloodBonus = POINTS_GAINED_FIRST_BLOOD;
         queueFirstBlood = true;
+        cout << "queuFirstBlood" << endl;
         m_pGameInterface->displayKillMessage(attacker, hit, GameInterface::eKillMessage::KILL_MESSAGE_FIRST_BLOOD);
     }
     int totalGained = basePoints + killstreakBonus + killstreakEndingBonus + revengeBonus + firstBloodBonus;
