@@ -7,7 +7,7 @@
 /*
     Game version. This is displayed in the rules interface.
 */
-#define GAME_VERSION "v1.1.1"
+#define GAME_VERSION "v1.2.0"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
