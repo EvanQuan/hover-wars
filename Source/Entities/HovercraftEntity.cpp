@@ -925,9 +925,14 @@ void HovercraftEntity::updateCooldowns(float fTimeInSeconds)
             {
                 // Ability is now off cooldown.
                 m_fCooldowns[i] = 0.0f;
-                if (static_cast<eAbility>(i) == ABILITY_ROCKET)
+                switch (static_cast<eAbility>(i))
                 {
+                case ABILITY_ROCKET:
                     m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_ROCKET_RECHARGE, m_bIsPlayer);
+                    break;
+                case ABILITY_SPIKES:
+                    m_pSoundMngr->play(SoundManager::eSoundEvent::SOUND_SPIKES_RECHARGE, m_bIsPlayer);
+                    break;
                 }
             }
         }

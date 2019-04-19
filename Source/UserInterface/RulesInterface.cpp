@@ -49,10 +49,6 @@ void RulesInterface::reinitialize(float gameTime)
 void RulesInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_RULE_MENU);
-    renderText(GAME_VERSION,
-        m_vComponentCoordinates[VERSION].first,
-        m_vComponentCoordinates[VERSION].second,
-        1.0,
-        COLOR_WHITE);
+    renderText(GAME_VERSION, VERSION, COLOR_WHITE);
 }
 

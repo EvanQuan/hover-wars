@@ -441,12 +441,12 @@ void GameManager::updateEnvironment()
 /*
     Initialize everything necessary to start a new game.
 
-    @param playerCount  player hovercrafts to register
-    @param botCount     bot hovercrafts to register
-    @param botDifficulty of bots
-    @param gameTime     of game, in seconds
-    @param eGameMode    of game
-    @param mapNumber    of map
+    @param[in] playerCount      player hovercrafts to register
+    @param[in] botCount         bot hovercrafts to register
+    @param[in] botDifficulty    of bots
+    @param[in] gameTime         of game, in seconds
+    @param[in] eGameMode        of game
+    @param[in] mapNumber        of map
 */
 void GameManager::initializeNewGame(unsigned int playerCount,
                                     unsigned int botCount,

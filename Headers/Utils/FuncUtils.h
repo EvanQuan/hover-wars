@@ -177,7 +177,13 @@ namespace FuncUtils
         @param decimalPlaces to include in the string
         @return string of float with specified decimal places
     */
-    std::string toString(float value, int decimalPlaces);
+    string toString(float value, int decimalPlaces);
+
+    /*
+        Every hovercraft has a corresponding name. If the UI ever needs to user
+        a hovercraft's name, it should use this.
+    */
+    string toString(eHovercraft hovercraft);
 
 
     /*

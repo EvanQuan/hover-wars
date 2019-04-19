@@ -23,9 +23,7 @@ public:
 private:
     enum eUIComponent
     {
-        BACKGROUND = 0,
         TITLE,
-        INSERT_COIN
     };
 
     static AwardsInterface* m_pInstance;

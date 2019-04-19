@@ -7,6 +7,22 @@
 using namespace FuncUtils;
 
 /*
+    Every hovercraft has a corresponding name. If the UI ever needs to user
+    a hovercraft's name, it should use this.
+*/
+const unordered_map<eHovercraft, std::string> m_eHovercraftToString =
+{
+    {HOVERCRAFT_BOT_1, "Alfa Bot"},
+    {HOVERCRAFT_BOT_2, "Bravo Bot"},
+    {HOVERCRAFT_BOT_3, "Charlie Bot"},
+    {HOVERCRAFT_BOT_4, "Delta Bot"},
+    {HOVERCRAFT_PLAYER_1, "Player 1"},
+    {HOVERCRAFT_PLAYER_2, "Player 2"},
+    {HOVERCRAFT_PLAYER_3, "Player 3"},
+    {HOVERCRAFT_PLAYER_4, "Player 4"},
+};
+
+/*
     Get the magnitude of a vector represented by its x and y coordinates
 
     @param float    x coordinate
@@ -74,6 +90,11 @@ std::string FuncUtils::toString(float value, int decimalPlaces)
     stringstream stream;
     stream << fixed << setprecision(decimalPlaces) << value;
     return stream.str();
+}
+
+string FuncUtils::toString(eHovercraft hovercraft)
+{
+    return m_eHovercraftToString.at(hovercraft);
 }
 
 #define M_PI 3.1415926535
@@ -178,3 +199,4 @@ void FuncUtils::sleep(float timeInSeconds)
 {
     std::this_thread::sleep_for(std::chrono::seconds(static_cast<long>(timeInSeconds)));
 }
+

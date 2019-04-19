@@ -66,20 +66,8 @@ void PauseInterface::renderOption() {
     PauseMenu* m = (PauseMenu*)PauseMenu::getInstance();
     string option = m->getCurrentPrompt();
 
-    if (option == CONTINUE_OPTION)
-    {   
-        renderImage(IMAGE_RESUME_2, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].second, 1.0f);
-        renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
-    else if (option == END_GAME_OPTION)
-    {
-        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].second, 1.0f);
-        renderImage(IMAGE_END_GAME_2, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
-    else {
-        renderImage(IMAGE_RESUME_1, m_vComponentCoordinates[CONTINUE].first, m_vComponentCoordinates[CONTINUE].second, 1.0f);
-        renderImage(IMAGE_END_GAME_1, m_vComponentCoordinates[MAIN_MENU].first, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
+    renderImage(option == CONTINUE_OPTION ? IMAGE_RESUME_2 : IMAGE_RESUME_1, CONTINUE);
+    renderImage(option == END_GAME_OPTION ? IMAGE_END_GAME_2 : IMAGE_END_GAME_1, MAIN_MENU);
 
 }
 
@@ -87,9 +75,7 @@ void PauseInterface::renderPauser()
 {
     PauseMenu* m = (PauseMenu*)PauseMenu::getInstance();
     eHovercraft pauser = m->getPauser();
-    renderText(m_eHovercraftToString.at(pauser) + " paused the game",
-        m_vComponentCoordinates[PAUSER].first,
-        m_vComponentCoordinates[PAUSER].second,
-        1.0f,
+    renderText(FuncUtils::toString(pauser) + " paused the game",
+        PAUSER,
         COLOR_WHITE);
 }
