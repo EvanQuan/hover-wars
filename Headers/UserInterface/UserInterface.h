@@ -57,11 +57,12 @@
 #define IMAGE_AI_2 "ai_2.png"
 #define IMAGE_AWARDS_1 "awards.png"
 #define IMAGE_AWARDS_2 "awards_2.png"
-#define IMAGE_BACKGROUND_MAIN_MENU "main_menu.jpg"
-#define IMAGE_BACKGROUND_PAUSE_MENU "pause_menu.jpg"
-#define IMAGE_BACKGROUND_POST_MENU "post_menu.jpg"
-#define IMAGE_BACKGROUND_PRE_MENU "pre_menu.jpg" 
+#define IMAGE_BACKGROUND_MAIN_MENU "post_menu3.jpg"
+#define IMAGE_BACKGROUND_PAUSE_MENU "pause_menu4.jpg"
+#define IMAGE_BACKGROUND_POST_MENU "post_menu3.jpg" 
+#define IMAGE_BACKGROUND_PRE_MENU "pre_menu2.jpg" 
 #define IMAGE_BACKGROUND_START_MENU "start_menu.jpg"
+#define IMAGE_BOTS_VS_PLAYERS "bots_vs_players2.png"
 #define IMAGE_BOT_1 "bot_1.png"
 #define IMAGE_BOT_2 "bot_2.png"
 #define IMAGE_BOT_3 "bot_3.png"
@@ -70,7 +71,6 @@
 #define IMAGE_BOT_DIFFICULTY_2 "bot_difficulty2.png"
 #define IMAGE_BOT_TEAM "bot_team.png"
 #define IMAGE_BOT_TEAM_2 "bot_team2.png"
-#define IMAGE_BOTS_VS_PLAYERS "bots_vs_players2.png"
 #define IMAGE_CONFIG_1 "config_1.png"
 #define IMAGE_CONFIG_2 "config_2.png"
 #define IMAGE_CONTROLLER_1 "controls.png"
@@ -113,7 +113,7 @@
 #define IMAGE_NUMBER_OF_PLAYER_2 "players2.png"
 #define IMAGE_PLACEMENT "placement.png"
 #define IMAGE_PLAYER "player.png"
-#define IMAGE_PLAYER_TEAM "player_team2.png"
+#define IMAGE_PLAYER_TEAM "player_team.png"
 #define IMAGE_PLAYER_TEAM1 "team1.png"
 #define IMAGE_PLAYER_TEAM2 "team2.png"
 #define IMAGE_PLAYER_TEAMS "player_teams2.png"
@@ -127,7 +127,7 @@
 #define IMAGE_SETTINGS_2 "settings2.png"
 #define IMAGE_START_1 "start.png"
 #define IMAGE_START_2 "start2.png"
-#define IMAGE_TITLE "title.png"
+#define IMAGE_TITLE "Title.png"
 
 // Forward Declaration
 class ShaderManager;
@@ -322,6 +322,7 @@ private:
         IMAGE_BACKGROUND_POST_MENU,
         IMAGE_BACKGROUND_PRE_MENU,
         IMAGE_BACKGROUND_START_MENU,
+        IMAGE_BOTS_VS_PLAYERS,
         IMAGE_BOT_1,
         IMAGE_BOT_2,
         IMAGE_BOT_3,
@@ -330,7 +331,6 @@ private:
         IMAGE_BOT_DIFFICULTY_2,
         IMAGE_BOT_TEAM,
         IMAGE_BOT_TEAM_2,
-        IMAGE_BOTS_VS_PLAYERS,
         IMAGE_CONFIG_1,
         IMAGE_CONFIG_2,
         IMAGE_CONTROLLER_1,
@@ -343,7 +343,6 @@ private:
         IMAGE_END_GAME_2,
         IMAGE_EXIT_1,
         IMAGE_EXIT_2,
-        // IMAGE_EXPLOSION,
         IMAGE_FREE_FOR_ALL,
         IMAGE_GAMEMODE_1,
         IMAGE_GAMEMODE_2,
@@ -381,7 +380,6 @@ private:
         IMAGE_POINT,
         IMAGE_RESUME_1,
         IMAGE_RESUME_2,
-        // IMAGE_ROCKET,
         IMAGE_RULE_MENU,
         IMAGE_SCORE_LOSS_1,
         IMAGE_SCORE_LOSS_2,
@@ -390,6 +388,5 @@ private:
         IMAGE_START_1,
         IMAGE_START_2,
         IMAGE_TITLE,
-        // IMAGE_TRAIL,
     };
 };
