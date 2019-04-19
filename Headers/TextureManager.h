@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "Texture.h"
+#include "UserInterface/UserInterface.h"
 
 // Texture Manager Class
 //        Manages all texture objects used by the system.
@@ -38,7 +39,7 @@ public:
         @return a map of textures, of which the given file paths are their
                 corresponding keys.
     */
-    unordered_map<string, Texture*> loadTextures(const vector<string> &files, const string sDirectory);
+    unordered_map<UserInterface::eImage, Texture*> loadTextures(const unordered_map<UserInterface::eImage, string> &mFiles, const string sDirectory);
     Texture* loadCubeMap(const vector<string>* sFileNames);
     Texture* genTexture(const vec4* vColor);
     Texture* genDepthBuffer(unsigned int iWidth, unsigned int iHeight);

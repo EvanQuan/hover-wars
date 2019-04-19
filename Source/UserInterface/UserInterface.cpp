@@ -71,7 +71,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, TRON_DIRECTORY);
+    m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_mImagePaths, TRON_DIRECTORY);
     // Don't load outrun until files are added
     // m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
 }
@@ -448,13 +448,13 @@ void UserInterface::renderText(const string text, int component, float x, float 
     @param y        y-coordinate of the bottom-left corner of text, in pixels
     @param scale    image, where 1.0 is the default size
 */
-void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale)
+void UserInterface::renderImage(const eImage image, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
-    auto tFoundIt = m_TexturesTron.find(filepath);
-    Texture* image = tFoundIt->second;
+    auto tFoundIt = m_TexturesTron.find(image);
+    Texture* texture = tFoundIt->second;
     int iImage_x, iImage_y;
-    image->getTextureDimensions(&iImage_y, &iImage_x);
+    texture->getTextureDimensions(&iImage_y, &iImage_x);
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
@@ -471,7 +471,7 @@ void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLf
     vec4(x + iImage_x, y + iImage_y, 1.0f, 0.0f)
     };
 
-    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
+    texture->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
@@ -481,29 +481,29 @@ void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLf
     // Render Quad
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    image->unbindTexture();
+    texture->unbindTexture();
 }
 
-void UserInterface::renderImage(const string filepath, int component)
+void UserInterface::renderImage(const eImage image, int component)
 {
-    renderImage(filepath, component, 0, 0);
+    renderImage(image, component, 0, 0);
 }
 
-void UserInterface::renderImage(const string filepath, int component, float x, float y)
+void UserInterface::renderImage(const eImage image, int component, float x, float y)
 {
-    renderImage(filepath,
+    renderImage(image,
         m_vComponentCoordinates[component].first + x,
         m_vComponentCoordinates[component].second + y,
         1.0f);
 }
 
-void UserInterface::renderBackgroundImage(const string filepath)
+void UserInterface::renderBackgroundImage(const eImage image)
 {
     // Get texture height and width
-    auto tFoundIt = m_TexturesTron.find(filepath);
-    Texture* image = tFoundIt->second;
+    auto tFoundIt = m_TexturesTron.find(image);
+    Texture* texture = tFoundIt->second;
     int iImage_x, iImage_y;
-    image->getTextureDimensions(&iImage_y, &iImage_x);
+    texture->getTextureDimensions(&iImage_y, &iImage_x);
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
@@ -520,7 +520,7 @@ void UserInterface::renderBackgroundImage(const string filepath)
         vec4(1.0f,  1.0f,  1.0f, 0.0f), /*Top Right*/
     };
 
-    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
+    texture->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
@@ -530,10 +530,10 @@ void UserInterface::renderBackgroundImage(const string filepath)
     // Render Quad
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    image->unbindTexture();
+    texture->unbindTexture();
 }
 
-string UserInterface::digitToImage(unsigned int digit)
+UserInterface::eImage UserInterface::digitToImage(unsigned int digit) const
 {
     switch (digit)
     {

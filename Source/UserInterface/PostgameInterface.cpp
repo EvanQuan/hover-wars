@@ -421,7 +421,7 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats,
         else if (GAME_STATS->isPlayer(s.hovercraft))
         {
             renderImage(IMAGE_PLAYER, placements);
-            string playerNumber ;
+            eImage playerNumber;
             switch (s.hovercraft) {
                 case HOVERCRAFT_PLAYER_1:
                     playerNumber = IMAGE_1_1;
@@ -543,7 +543,7 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
 
 
 
-    vector<pair<int, string>> teamScores;
+    vector<pair<int, eImage>> teamScores;
     teamScores.push_back(make_pair(teamBotScore, IMAGE_BOT_TEAM));
     teamScores.push_back(make_pair(teamPlayerScore, IMAGE_PLAYER_TEAM1));
     teamScores.push_back(make_pair(team2PlayerScore, IMAGE_PLAYER_TEAM2));

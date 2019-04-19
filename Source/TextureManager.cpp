@@ -79,13 +79,14 @@ Texture* TextureManager::loadTexture(const string& sFileName )
     return pReturnTexture;
 }
 
-unordered_map<string, Texture*> TextureManager::loadTextures(const vector<string>& vFiles,
-                                                             const string sDirectory)
+unordered_map<UserInterface::eImage, Texture*> TextureManager::loadTextures(
+    const unordered_map<UserInterface::eImage, string>& mFiles,
+    const string sDirectory)
 {
-    unordered_map<string, Texture*> textureMap;
-    for each (string sFile in vFiles)
+    unordered_map<UserInterface::eImage, Texture*> textureMap;
+    for each (pair<UserInterface::eImage, string> pair in mFiles)
     {
-        textureMap[sFile] = loadTexture(sDirectory + sFile);
+        textureMap[pair.first] = loadTexture(sDirectory + pair.second);
     }
     return textureMap;
 
