@@ -71,6 +71,7 @@
 #define IMAGE_BOT_DIFFICULTY_2 "bot_difficulty2.png"
 #define IMAGE_BOT_TEAM "bot_team.png"
 #define IMAGE_BOT_TEAM_2 "bot_team2.png"
+#define IMAGE_BOTS_VS_PLAYERS "bots_vs_players2.png"
 #define IMAGE_CONFIG_1 "config_1.png"
 #define IMAGE_CONFIG_2 "config_2.png"
 #define IMAGE_CONTROLLER_1 "controls.png"
