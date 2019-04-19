@@ -56,6 +56,11 @@ const string  DEFAULT_FONT = ASTRON_BOY_REGULAR_FONT;
 const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
 const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 
+void UserInterface::setTheme(eTheme theme)
+{
+    m_eCurrentTheme = theme;
+}
+
 UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
                               vector<pair<float, float>> componentTranslating)
 {
@@ -74,6 +79,8 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_mImagePaths, TRON_DIRECTORY);
     // Don't load outrun until files are added
     // m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
+    // For now until outrun is added
+    setTheme(THEME_TRON);
 }
 
 UserInterface::~UserInterface()

@@ -186,6 +186,28 @@ public:
 
 protected:
 
+    /*
+        Themes determine the menu appearance.
+    */
+    enum eTheme
+    {
+        /*
+            80s retro-future
+        */
+        THEME_OUTRUN,
+        /*
+            Tron-style future
+        */
+        THEME_TRON,
+    };
+
+    virtual void setTheme (eTheme theme) final;
+
+    /*
+        Get the current theme in use.
+    */
+    virtual eTheme getTheme() const final { return m_eCurrentTheme; }
+
     // Default Constructor
     UserInterface(vector<pair<float, float>> componentScaling,
                   vector<pair<float, float>> componentTranslating);
@@ -282,6 +304,8 @@ private:
     float m_fGlobalMessageTime;
     float m_fGlobalMessageX;
     float m_fGlobalMessageY;
+
+    eTheme m_eCurrentTheme;
 
     /*
         Whenever a UI texture is to be loaded, the filepath should be added to
