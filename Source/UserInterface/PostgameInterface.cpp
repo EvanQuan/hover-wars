@@ -262,7 +262,7 @@ PostgameInterface::PostgameInterface() : PromptInterface(
 
         // Main menu option
         {0.4f, 0.0f},
-        }
+    }
 )
 {
     GAME_MANAGER->addInterface(this);

@@ -9,21 +9,13 @@ AwardsInterface::AwardsInterface() : PromptInterface(
     // Scaling
     vector<pair<float, float>>
     {
-        // 0 Background
-        {0.0f, 0.0f},
         // 1 Title
-        {0.2f, 0.7f},
-        // 2 Prompt 1
-        {0.38f, 0.2f},
+        {0.2f, 0.95f},
     },
     // Translating
     vector<pair<float, float>>
     {
-        // 0 Background
-        {0.0f, 0.0f},
         // 1 Title
-        {0.0f, 0.0f},
-        // 2 Prompt 1
         {0.0f, 0.0f},
     }
 )
@@ -53,7 +45,7 @@ void AwardsInterface::reinitialize(float gameTime)
 void AwardsInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_BACKGROUND_POST_MENU);
-    renderText("Awards", 100, 1000, 1.0f, COLOR_WHITE);
+    renderText("Awards", TITLE, COLOR_WHITE);
     renderAwards();
 }
 
@@ -69,8 +61,9 @@ void AwardsInterface::renderAwards() {
     string s_awardname;
 
     int i_count = 0;
-    for (int i = 0; i < (int)endGameStats.size(); i++) {
-        if (endGameStats.at(i).awards.size() > 0) {
+    for each (EndGameStat stat in endGameStats) {
+        if (!stat.awards.empty())
+        {
             i_count++;
         }
     }
@@ -93,11 +86,11 @@ void AwardsInterface::renderAwards() {
             renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
-            for (int i = 0; i < (int)awards.size(); i++) {
-                string name = awards[i].name;
-                string description = awards[i].description;
-                int points = awards[i].points;
-                int statValue = awards[i].statValue;
+            for each (Award award in awards) {
+                string name = award.name;
+                string description = award.description;
+                int points = award.points;
+                int statValue = award.statValue;
 
                 char s_points[3];
                 char s_statValue[4];
@@ -127,15 +120,16 @@ void AwardsInterface::renderAwards() {
         }
 
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
-        if (awards.size() > 0) {
+        if (!awards.empty()) {
             renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
-            for (int i = 0; i < (int)awards.size(); i++) {
-                string name = awards[i].name;
-                string description = awards[i].description;
-                int points = awards[i].points;
-                int statValue = awards[i].statValue;
+            for each (Award award in awards) {
+
+                string name = award.name;
+                string description = award.description;
+                int points = award.points;
+                int statValue = award.statValue;
 
                 char s_points[3];
                 char s_statValue[4];
