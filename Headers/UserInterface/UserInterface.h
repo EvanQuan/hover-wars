@@ -195,11 +195,9 @@ protected:
 
     string digitToImage(unsigned int digit);
 
-    void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
     void renderText(const string text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
     void renderText(const string text, int component, vec3 color);
     void renderText(const string text, int component, float x, float y, const vec3 color);
-    void renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void renderImage(const string filepath, int component);
     void renderImage(const string filepath, int component, float x, float y);
     void renderBackgroundImage(const string filepath);
@@ -218,6 +216,12 @@ private:
 
     void renderGlobalMessage();
 
+    /*
+        UI children cannot directly render text or images to the screen. Must
+        use components.
+    */
+    void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
+    void renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale);
 
     // Initializes FreeType and the Font Library
     void initFreeType();

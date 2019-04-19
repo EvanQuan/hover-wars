@@ -279,19 +279,19 @@ void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, ve
     renderText(std::to_string(text), x, y, scale, color);
 }
 /*
-Render text to the screen.
+    Render text to the screen.
 
-Window coordinates in pixels
-(0, height)     (width, height)
+    Window coordinates in pixels
+    (0, height)     (width, height)
 
 
-(0, 0)          (width, 0)
+    (0, 0)          (width, 0)
 
-@param text     to render
-@param x        x-coordinate of the bottom-left corner of text, in pixels
-@param y        y-coordinate of the bottom-left corner of text, in pixels
-@param scale    text, where 1.0 is the default size
-@param color    rgb colors of the text
+    @param text     to render
+    @param x        x-coordinate of the bottom-left corner of text, in pixels
+    @param y        y-coordinate of the bottom-left corner of text, in pixels
+    @param scale    text, where 1.0 is the default size
+    @param color    rgb colors of the text
 */
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
