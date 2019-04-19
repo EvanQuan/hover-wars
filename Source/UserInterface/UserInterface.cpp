@@ -531,4 +531,45 @@ void UserInterface::renderBackgroundImage(const string filepath)
     image->unbindTexture();
 }
 
+string UserInterface::digitToImage(unsigned int digit)
+{
+    switch (digit)
+    {
+    case 0:
+        return IMAGE_0_2;
+        break;
+    case 1:
+        return IMAGE_1_2;
+        break;
+    case 2:
+        return IMAGE_2_2;
+        break;
+    case 3:
+        return IMAGE_3_2;
+        break;
+    case 4:
+        return IMAGE_4_2;
+        break;
+    case 5:
+        return IMAGE_5_2;
+        break;
+    case 6:
+        return IMAGE_6_2;
+        break;
+    case 7:
+        return IMAGE_7_2;
+        break;
+    case 8:
+        return IMAGE_8_2;
+        break;
+    case 9:
+        return IMAGE_9_2;
+        break;
+    case 10:
+        return IMAGE_10_2;
+        break;
+    default:
+        return IMAGE_0_2;
+    }
+}
 

@@ -197,6 +197,8 @@ protected:
 
     virtual void updateOverride(float fFrameDeltaTime) = 0;
 
+    string digitToImage(unsigned int digit);
+
     void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
     void renderText(const string text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
     void renderText(const string text, int component, vec3 color);

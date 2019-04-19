@@ -127,81 +127,19 @@ void PregameInterface::renderOverride()
 
 void PregameInterface::renderNumberOfPlayer(int i_NumOfPlayer) {
     // get the player count and render number
-    PregameMenu* m = (PregameMenu*)PregameMenu::getInstance();
+    PregameMenu* m = PregameMenu::getInstance();
     // If in team players, the number of players if forced to 4
-    switch(m->getGameMode() == GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS ?
-           MAX_PLAYER_COUNT : i_NumOfPlayer) {
-        case 1:
-            renderImage(IMAGE_1_2, PLAYER_COUNT_NUMBER);
-            break;
-        case 2:
-            renderImage(IMAGE_2_2, PLAYER_COUNT_NUMBER);
-            break;
-        case 3:
-            renderImage(IMAGE_3_2, PLAYER_COUNT_NUMBER);
-            break;
-        case 4:
-            renderImage(IMAGE_4_2, PLAYER_COUNT_NUMBER);
-            break;
-    }
+    renderImage(digitToImage(m->getGameMode() == GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS ?
+           MAX_PLAYER_COUNT : i_NumOfPlayer), PLAYER_COUNT_NUMBER);
 }
 
 void PregameInterface::renderNumberOfBot(int i_NumOfBot) {
-    // get the bot count and render number
-    switch(i_NumOfBot) {
-        case 0:
-            renderImage(IMAGE_0_2, BOT_COUNT_NUMBER);
-            break;
-        case 1:
-            renderImage(IMAGE_1_2, BOT_COUNT_NUMBER);
-            break;
-        case 2:
-            renderImage(IMAGE_2_2, BOT_COUNT_NUMBER);
-            break;
-        case 3:
-            renderImage(IMAGE_3_2, BOT_COUNT_NUMBER);
-            break;
-        case 4:
-            renderImage(IMAGE_4_2, BOT_COUNT_NUMBER);
-            break;
-    }
+    renderImage(digitToImage(i_NumOfBot), BOT_COUNT_NUMBER);
 }
 
 void PregameInterface::renderGameTime(int i_GameTime) {
-    // get the player count and render number
-    switch(i_GameTime) {
-        case 60:
-            renderImage(IMAGE_1_2, GAME_TIME_NUMBER);
-            break;
-        case 120:
-            renderImage(IMAGE_2_2, GAME_TIME_NUMBER);
-            break;
-        case 180:
-            renderImage(IMAGE_3_2, GAME_TIME_NUMBER);
-            break;
-        case 240:
-            renderImage(IMAGE_4_2, GAME_TIME_NUMBER);
-            break;
-        case 300:
-            renderImage(IMAGE_5_2, GAME_TIME_NUMBER);
-            break;
-        case 360:
-            renderImage(IMAGE_6_2, GAME_TIME_NUMBER);
-            break;
-        case 420:
-            renderImage(IMAGE_7_2, GAME_TIME_NUMBER);
-            break;
-        case 480:
-            renderImage(IMAGE_8_2, GAME_TIME_NUMBER);
-            break;
-        case 540:
-            renderImage(IMAGE_9_2, GAME_TIME_NUMBER);
-            break;
-        case 600:
-            renderImage(IMAGE_10_2, GAME_TIME_NUMBER);
-            break;
-    }
-        renderImage(IMAGE_MIN, GAME_TIME_NUMBER, 50, 0);
+    renderImage(digitToImage(i_GameTime / SECONDS_PER_MINUTE), GAME_TIME_NUMBER);
+    renderImage(IMAGE_MIN, GAME_TIME_NUMBER, 50, 0);
 }
 
 void PregameInterface::renderGameMode(eGameMode m_eGameMode) {
@@ -229,15 +167,9 @@ void PregameInterface::renderScoreLoss(bool scoreLossEnabled)
 
 void PregameInterface::renderMap(unsigned int mapNumber)
 {
-    switch (mapNumber)
-    {
-    case 0:
-        renderImage(IMAGE_1_2, MAP_NUMBER);
-        break;
-    case 1:
-        renderImage(IMAGE_2_2, MAP_NUMBER);
-        break;
-    }
+    // Add 1 as we index from 1 here
+    renderImage(digitToImage(mapNumber + 1), MAP_NUMBER);
+
 }
 
 void PregameInterface::renderBotDifficulty(eBotDifficulty m_eBotDifficulty) {

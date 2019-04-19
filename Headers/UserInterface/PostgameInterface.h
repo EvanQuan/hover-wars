@@ -103,6 +103,4 @@ private:
 
     bool shouldRenderPlacement2(eGameMode gameMode, int hovercraftCount, int playerCount, int botCount);
     bool shouldRenderPlacement3(eGameMode gameMode, int hovercraftCount, int playerCount, int botCount);
-
-    string digitToImage(int digit);
 };
