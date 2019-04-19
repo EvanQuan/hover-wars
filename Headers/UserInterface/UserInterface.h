@@ -59,7 +59,7 @@
 #define IMAGE_AWARDS_2 "awards_2.png"
 #define IMAGE_BACKGROUND_MAIN_MENU "main_menu.jpg"
 #define IMAGE_BACKGROUND_PAUSE_MENU "pause_menu.jpg"
-#define IMAGE_BACKGROUND_POST_MENU "post_menu.jpg" 
+#define IMAGE_BACKGROUND_POST_MENU "post_menu.jpg"
 #define IMAGE_BACKGROUND_PRE_MENU "pre_menu.jpg" 
 #define IMAGE_BACKGROUND_START_MENU "start_menu.jpg"
 #define IMAGE_BOT_1 "bot_1.png"
@@ -176,6 +176,15 @@ public:
 
 protected:
 
+    enum eTheme
+    {
+        /*
+            80s retro-future. Synth wave, retro wave.
+        */
+        THEME_OUTRUN,
+        THEME_TRON,
+    };
+
     // Default Constructor
     UserInterface(vector<pair<float, float>> componentScaling,
                   vector<pair<float, float>> componentTranslating);
@@ -199,6 +208,8 @@ protected:
     int m_iWidth;
     // height of the window in pixels
     int m_iHeight;
+
+    void setTheme(eTheme theme);
 
 private:
     // Singleton Pointers
@@ -262,6 +273,11 @@ private:
         For outrun aesthetics
     */
     unordered_map<string, Texture*>m_TexturesOutrun;
+
+    /*
+        Currently used textures.
+    */
+    unordered_map<string, Texture*>m_TexturesCurrent;
 
     // Global message values
     string m_sGlobalMessage;

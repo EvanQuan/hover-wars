@@ -73,6 +73,8 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
 
     m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, TRON_DIRECTORY);
     m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
+
+    setTheme(THEME_TRON);
 }
 
 UserInterface::~UserInterface()
@@ -450,7 +452,7 @@ Window coordinates in pixels
 void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
-    auto tFoundIt = m_TexturesTron.find(filepath);
+    auto tFoundIt = m_TexturesCurrent.find(filepath);
     Texture* image = tFoundIt->second;
     int iImage_x, iImage_y;
     image->getTextureDimensions(&iImage_y, &iImage_x);
@@ -499,7 +501,7 @@ void UserInterface::renderImage(const string filepath, int component, float x, f
 void UserInterface::renderBackgroundImage(const string filepath)
 {
     // Get texture height and width
-    auto tFoundIt = m_TexturesTron.find(filepath);
+    auto tFoundIt = m_TexturesCurrent.find(filepath);
     Texture* image = tFoundIt->second;
     int iImage_x, iImage_y;
     image->getTextureDimensions(&iImage_y, &iImage_x);
@@ -530,6 +532,19 @@ void UserInterface::renderBackgroundImage(const string filepath)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     image->unbindTexture();
+}
+
+void UserInterface::setTheme(eTheme theme)
+{
+    switch (theme)
+    {
+    case THEME_TRON:
+        m_TexturesCurrent = m_TexturesTron;
+        break;
+    case THEME_OUTRUN:
+    default:
+        m_TexturesCurrent = m_TexturesOutrun;
+    }
 }
 
 string UserInterface::digitToImage(unsigned int digit)
