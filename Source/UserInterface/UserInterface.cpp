@@ -218,13 +218,13 @@ void UserInterface::addNewCharacter(char c, const FT_GlyphSlotRec_* pGlyph, cons
     Character cNewChar;
 
     // Set up rest of Character Structure
-    cNewChar.uvOffset = vec2(vOffsets->x / F_BITMAP_WIDTH,                                      // UV Offset for Bitmap
+    cNewChar.uvOffset = vec2(vOffsets->x / F_BITMAP_WIDTH,                               // UV Offset for Bitmap
                              vOffsets->y / F_BITMAP_HEIGHT);
     cNewChar.uvSize = vec2(static_cast<float>(pGlyph->bitmap.width) / F_BITMAP_WIDTH,    // Size of UV section
                            static_cast<float>(pGlyph->bitmap.rows) / F_BITMAP_HEIGHT);
-    cNewChar.size = ivec2(pGlyph->bitmap.width, pGlyph->bitmap.rows);     // Pixel Size
-    cNewChar.bearing = ivec2(pGlyph->bitmap_left, pGlyph->bitmap_top);    // Bearing Information
-    cNewChar.advance = pGlyph->advance.x;                                        // Glyph Advance information
+    cNewChar.size = ivec2(pGlyph->bitmap.width, pGlyph->bitmap.rows);                   // Pixel Size
+    cNewChar.bearing = ivec2(pGlyph->bitmap_left, pGlyph->bitmap_top);                  // Bearing Information
+    cNewChar.advance = pGlyph->advance.x;                                               // Glyph Advance information
 
     // Store Character for Later use.
     m_pCharacters.insert(make_pair(c, cNewChar));
@@ -278,19 +278,19 @@ void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, ve
     renderText(std::to_string(text), x, y, scale, color);
 }
 /*
-Render text to the screen.
+    Render text to the screen.
 
-Window coordinates in pixels
-(0, height)     (width, height)
+    Window coordinates in pixels
+    (0, height)     (width, height)
 
 
-(0, 0)          (width, 0)
+    (0, 0)          (width, 0)
 
-@param text     to render
-@param x        x-coordinate of the bottom-left corner of text, in pixels
-@param y        y-coordinate of the bottom-left corner of text, in pixels
-@param scale    text, where 1.0 is the default size
-@param color    rgb colors of the text
+    @param text     to render
+    @param x        x-coordinate of the bottom-left corner of text, in pixels
+    @param y        y-coordinate of the bottom-left corner of text, in pixels
+    @param scale    text, where 1.0 is the default size
+    @param color    rgb colors of the text
 */
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
@@ -434,19 +434,19 @@ void UserInterface::renderText(const string text, int component, float x, float 
 }
 
 /*
-TODO Use hashmap for image instead of image filepath directly
-Render image to the screen.
+    TODO Use hashmap for image instead of image filepath directly
+    Render image to the screen.
 
-Window coordinates in pixels
-(0, height)     (width, height)
+    Window coordinates in pixels
+    (0, height)     (width, height)
 
 
-(0, 0)          (width, 0)
+    (0, 0)          (width, 0)
 
-@param filepath of image
-@param x        x-coordinate of the bottom-left corner of text, in pixels
-@param y        y-coordinate of the bottom-left corner of text, in pixels
-@param scale    image, where 1.0 is the default size
+    @param filepath of image
+    @param x        x-coordinate of the bottom-left corner of text, in pixels
+    @param y        y-coordinate of the bottom-left corner of text, in pixels
+    @param scale    image, where 1.0 is the default size
 */
 void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {

@@ -194,6 +194,10 @@ protected:
     void renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale);
     void renderImage(const string filepath, int component);
     void renderImage(const string filepath, int component, float x, float y);
+
+    /*
+        Background images stretch to fill the window dimensions.
+    */
     void renderBackgroundImage(const string filepath);
 
     // width of the window in pixels
