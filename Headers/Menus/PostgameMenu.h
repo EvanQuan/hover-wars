@@ -9,7 +9,7 @@ public:
     // TODO nothing to destruct?
     ~PostgameMenu() {}
 
-    static Menu* getInstance();
+    static PostgameMenu* getInstance();
 
     int getBotCount() const { return m_iBotCount; }
     int getPlayerCount() const { return m_iPlayerCount; }

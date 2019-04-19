@@ -29,7 +29,7 @@ PostgameMenu::PostgameMenu() : PromptMenu(
     MENU_MANAGER->addMenu(this);
 }
 
-Menu* PostgameMenu::getInstance()
+PostgameMenu* PostgameMenu::getInstance()
 {
     if (nullptr == m_pInstance) {
         m_pInstance = new PostgameMenu();

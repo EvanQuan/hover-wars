@@ -66,29 +66,17 @@ void SettingsInterface::renderOverride()
 
 void SettingsInterface::renderTitle()
 {
-    renderImage(IMAGE_SETTINGS_1,
-        m_vComponentCoordinates[TITLE].first,
-        m_vComponentCoordinates[TITLE].second,
-        1.0f);
+    renderImage(IMAGE_SETTINGS_1, TITLE);
 }
 
 void SettingsInterface::renderMusic(bool selected, bool musicEnabled)
 {
-    renderImage(selected ? IMAGE_MUSIC_2 : IMAGE_MUSIC_1,
-        m_vComponentCoordinates[MUSIC_LABEL].first,
-        m_vComponentCoordinates[MUSIC_LABEL].second,
-        1.0f);
-    renderImage(musicEnabled ? IMAGE_ENABLED : IMAGE_DISABLED,
-        m_vComponentCoordinates[MUSIC_SETTING].first,
-        m_vComponentCoordinates[MUSIC_SETTING].second,
-        1.0f);
+    renderImage(selected ? IMAGE_MUSIC_2 : IMAGE_MUSIC_1, MUSIC_LABEL);
+    renderImage(musicEnabled ? IMAGE_ENABLED : IMAGE_DISABLED, MUSIC_SETTING);
 }
 
 void SettingsInterface::renderBack(bool selected)
 {
-    renderImage(selected ? IMAGE_MAIN_MENU_BUTTON_2 : IMAGE_MAIN_MENU_BUTTON_1,
-        m_vComponentCoordinates[BACK].first,
-        m_vComponentCoordinates[BACK].second,
-        1.0f);
+    renderImage(selected ? IMAGE_MAIN_MENU_BUTTON_2 : IMAGE_MAIN_MENU_BUTTON_1, BACK);
 }
 
