@@ -97,7 +97,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     // It doesn't matter the number of times TRON_DIRECTORY or OUTRUN directory
     // is loaded or in which order.
     // Both directories load without errors individually.
-    // m_mTexturesTron = textureManager->loadTextures(m_mImagePaths, TRON_DIRECTORY);
+    m_mTexturesTron = textureManager->loadTextures(m_mImagePaths, TRON_DIRECTORY);
 
     m_mTexturesOutrun = textureManager->loadTextures(m_mImagePaths, OUTRUN_DIRECTORY);
 

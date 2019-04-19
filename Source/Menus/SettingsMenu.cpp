@@ -21,6 +21,9 @@ SettingsMenu::SettingsMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
         {
+            { "Theme", eFixedCommand::COMMAND_PROMPT_SELECT_2 }
+        },
+        {
             { "Music", eFixedCommand::COMMAND_PROMPT_SELECT }
         },
         {
@@ -69,27 +72,52 @@ void SettingsMenu::enterOverride()
 
 bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
 {
+    SettingsInterface *settingsUI = SettingsInterface::getInstance(
+        m_pGameManager->getWidth(),
+        m_pGameManager->getHeight());
+
+    UserInterface::eTheme theme;
+
     switch (getCurrentPromptCommand())
     {
-        case eFixedCommand::COMMAND_PROMPT_SELECT: // Player
+    case eFixedCommand::COMMAND_PROMPT_SELECT: // Music
 
-            switch (direction)
+        switch (direction)
+        {
+        case eFixedCommand::COMMAND_PROMPT_RIGHT:
+        case eFixedCommand::COMMAND_PROMPT_LEFT:
+            m_bMusicEnabled = !m_bMusicEnabled;
+            cout << "music enabled: " << m_bMusicEnabled << endl;
+            SOUND_MANAGER->setMusicEnabled(m_bMusicEnabled);
+            if (m_bMusicEnabled)
             {
-            case eFixedCommand::COMMAND_PROMPT_RIGHT:
-            case eFixedCommand::COMMAND_PROMPT_LEFT:
-                m_bMusicEnabled = !m_bMusicEnabled;
-                cout << "music enabled: " << m_bMusicEnabled << endl;
-                SOUND_MANAGER->setMusicEnabled(m_bMusicEnabled);
-                if (m_bMusicEnabled)
-                {
-                    SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
-                }
-                else
-                {
-                    SOUND_MANAGER->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
-                }
-                return true;
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
             }
+            else
+            {
+                SOUND_MANAGER->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
+            }
+            return true;
+        }
+
+    case eFixedCommand::COMMAND_PROMPT_SELECT_2: // Theme
+        switch (direction)
+        {
+        case eFixedCommand::COMMAND_PROMPT_RIGHT:
+        case eFixedCommand::COMMAND_PROMPT_LEFT:
+            // Don't toggle in preparation for new themes
+            switch (settingsUI->getTheme())
+            {
+            case UserInterface::THEME_OUTRUN:
+                settingsUI->setTheme(UserInterface::THEME_TRON);
+                cout << "theme: tron" << endl;
+                break;
+            case UserInterface::THEME_TRON:
+                settingsUI->setTheme(UserInterface::THEME_OUTRUN);
+                cout << "theme: outrun" << endl;
+                break;
+            }
+        }
     }
     return false;
 }

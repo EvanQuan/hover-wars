@@ -184,8 +184,6 @@ public:
 
     void displayGlobalMessage(const string message);
 
-protected:
-
     /*
         Themes determine the menu appearance.
     */
@@ -207,6 +205,9 @@ protected:
         Get the current theme in use.
     */
     virtual eTheme getTheme() const final { return m_eCurrentTheme; }
+
+protected:
+
 
     // Default Constructor
     UserInterface(vector<pair<float, float>> componentScaling,
