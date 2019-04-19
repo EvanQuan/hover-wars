@@ -292,12 +292,14 @@ private:
     /*
         For tron aesthetics
     */
-    unordered_map<eImage, Texture*> m_TexturesTron;
+    unordered_map<eImage, Texture*> m_mTexturesTron;
 
     /*
         For outrun aesthetics
     */
-    unordered_map<eImage, Texture*> m_TexturesOutrun;
+    unordered_map<eImage, Texture*> m_mTexturesOutrun;
+
+    unordered_map<eImage, Texture*> m_mTexturesCurrent;
 
     // Global message values
     string m_sGlobalMessage;

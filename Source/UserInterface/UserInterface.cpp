@@ -59,6 +59,16 @@ const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 void UserInterface::setTheme(eTheme theme)
 {
     m_eCurrentTheme = theme;
+    switch (theme)
+    {
+    case THEME_TRON:
+        m_mTexturesCurrent = m_mTexturesTron;
+        break;
+    case THEME_OUTRUN:
+    default:
+        m_mTexturesCurrent = m_mTexturesOutrun;
+    }
+
 }
 
 UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
@@ -76,9 +86,9 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_mImagePaths, TRON_DIRECTORY);
+    m_mTexturesTron = TEXTURE_MANAGER->loadTextures(m_mImagePaths, TRON_DIRECTORY);
     // Don't load outrun until files are added
-    // m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
+    // m_mTexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
     // For now until outrun is added
     setTheme(THEME_TRON);
 }
@@ -458,7 +468,7 @@ void UserInterface::renderText(const string text, int component, float x, float 
 void UserInterface::renderImage(const eImage image, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
-    auto tFoundIt = m_TexturesTron.find(image);
+    auto tFoundIt = m_mTexturesCurrent.find(image);
     Texture* texture = tFoundIt->second;
     int iImage_x, iImage_y;
     texture->getTextureDimensions(&iImage_y, &iImage_x);
@@ -507,7 +517,7 @@ void UserInterface::renderImage(const eImage image, int component, float x, floa
 void UserInterface::renderBackgroundImage(const eImage image)
 {
     // Get texture height and width
-    auto tFoundIt = m_TexturesTron.find(image);
+    auto tFoundIt = m_mTexturesCurrent.find(image);
     Texture* texture = tFoundIt->second;
     int iImage_x, iImage_y;
     texture->getTextureDimensions(&iImage_y, &iImage_x);
