@@ -75,7 +75,7 @@ void PauseInterface::renderPauser()
 {
     PauseMenu* m = (PauseMenu*)PauseMenu::getInstance();
     eHovercraft pauser = m->getPauser();
-    renderText(m_eHovercraftToString.at(pauser) + " paused the game",
+    renderText(FuncUtils::toString(pauser) + " paused the game",
         PAUSER,
         COLOR_WHITE);
 }

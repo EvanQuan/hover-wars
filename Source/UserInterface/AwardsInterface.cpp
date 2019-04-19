@@ -53,6 +53,9 @@ void AwardsInterface::renderOption() {
 
 }
 
+/*
+    @TODO Make these dynamic on the window dimensions.
+*/
 void AwardsInterface::renderAwards() {
     vector<EndGameStat> endGameStats = GAME_STATS->getEndGameStats();
 
@@ -82,8 +85,8 @@ void AwardsInterface::renderAwards() {
         }
 
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
-        if (awards.size() > 0) {
-            renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
+        if (!awards.empty()) {
+            renderText(FuncUtils::toString(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
             for each (Award award in awards) {
@@ -121,7 +124,7 @@ void AwardsInterface::renderAwards() {
 
         vector<Award, allocator<Award>> awards = endGameStats.at(k).awards;
         if (!awards.empty()) {
-            renderText(m_eHovercraftToString.at(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
+            renderText(FuncUtils::toString(hovercraft), x, y, 1.0f, GAME_MANAGER->getHovercraftColor(hovercraft));
             y -= 50;
 
             for each (Award award in awards) {

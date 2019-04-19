@@ -197,10 +197,10 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
     case KILL_MESSAGE_DOMINATION:
         m_pSoundManager->play(SoundManager::SOUND_KILL_DOMINATION, playerInvolved);
         displayMessage(attacker,
-                       "You are now dominating " + m_eHovercraftToString.at(hit),
+                       "You are now dominating " + FuncUtils::toString(hit),
                        GAME_MANAGER->getHovercraftColor(hit));
         displayMessage(hit,
-                       m_eHovercraftToString.at(attacker) + " is now dominating you",
+                       FuncUtils::toString(attacker) + " is now dominating you",
                        GAME_MANAGER->getHovercraftColor(attacker));
         break;
     case KILL_MESSAGE_FIRST_BLOOD:
@@ -216,19 +216,19 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
             if (attacker == player)
             {
                 attackerName = "You";
-                hitName = m_eHovercraftToString.at(hit);
+                hitName = FuncUtils::toString(hit);
                 color = GAME_MANAGER->getHovercraftColor(hit);
             }
             else if (hit == player)
             {
-                attackerName = m_eHovercraftToString.at(attacker);
+                attackerName = FuncUtils::toString(attacker);
                 hitName = "you";
                 color = GAME_MANAGER->getHovercraftColor(attacker);
             }
             else 
             {
-                attackerName = m_eHovercraftToString.at(attacker);
-                hitName = m_eHovercraftToString.at(hit);
+                attackerName = FuncUtils::toString(attacker);
+                hitName = FuncUtils::toString(hit);
                 color = GAME_MANAGER->getHovercraftColor(attacker);
             }
             displayMessage(
@@ -242,10 +242,10 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
     case KILL_MESSAGE_REVENGE:
         m_pSoundManager->play(SoundManager::SOUND_KILL_REVENGE, playerInvolved);
         displayMessage(attacker,
-                       "You got revenge from " + m_eHovercraftToString.at(hit),
+                       "You got revenge from " + FuncUtils::toString(hit),
                         GAME_MANAGER->getHovercraftColor(hit));
         displayMessage(hit,
-                       m_eHovercraftToString.at(attacker) + " got revenge from you",
+                       FuncUtils::toString(attacker) + " got revenge from you",
                        GAME_MANAGER->getHovercraftColor(attacker));
         break;
     case KILL_MESSAGE_KILLSTREAK:
@@ -274,7 +274,7 @@ void GameInterface::displayKillMessage(eHovercraft attacker, eHovercraft hit, eK
             }
             else
             {
-                newLeaderName = m_eHovercraftToString.at(attacker) + " is";
+                newLeaderName = FuncUtils::toString(attacker) + " is";
                 color = GAME_MANAGER->getHovercraftColor(attacker);
             }
             displayMessage(hovercraft,
@@ -695,7 +695,7 @@ void GameInterface::renderScores()
 {
     string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
                         GameStats::eHovercraftStat::SCORE_CURRENT));
-    renderText(m_eHovercraftToString.at(m_eHovercraftFocus) + ": " + score,
+    renderText(FuncUtils::toString(m_eHovercraftFocus) + ": " + score,
                COMPONENT_SCORE,
                GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
 }
