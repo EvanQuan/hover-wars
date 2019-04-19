@@ -80,8 +80,8 @@ Texture* TextureManager::loadTexture(const string& sFileName )
 }
 
 unordered_map<UserInterface::eImage, Texture*> TextureManager::loadTextures(
-    const unordered_map<UserInterface::eImage, string>& mFiles,
-    const string sDirectory)
+    const unordered_map<UserInterface::eImage, string> &mFiles,
+    const string &sDirectory)
 {
     unordered_map<UserInterface::eImage, Texture*> textureMap;
     for each (pair<UserInterface::eImage, string> pair in mFiles)

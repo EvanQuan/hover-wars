@@ -86,11 +86,23 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    m_mTexturesTron = TEXTURE_MANAGER->loadTextures(m_mImagePaths, TRON_DIRECTORY);
-    // Don't load outrun until files are added
-    // m_mTexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
-    // For now until outrun is added
-    setTheme(THEME_TRON);
+
+    TextureManager *textureManager = TEXTURE_MANAGER;
+
+
+    // @NOTE bug. If both the outturn and tron directories are loaded then there are errors
+    // for rendering text... but not images... even though text is not involved here?
+    // It doesn't matter if both directories are used.
+    // It doesn't matter which map (m_mTexturesTron or m_mTexturesOutrun) is being used.
+    // It doesn't matter the number of times TRON_DIRECTORY or OUTRUN directory
+    // is loaded or in which order.
+    // Both directories load without errors individually.
+    // m_mTexturesTron = textureManager->loadTextures(m_mImagePaths, TRON_DIRECTORY);
+
+    m_mTexturesOutrun = textureManager->loadTextures(m_mImagePaths, OUTRUN_DIRECTORY);
+
+    // default theme
+    setTheme(THEME_OUTRUN);
 }
 
 UserInterface::~UserInterface()

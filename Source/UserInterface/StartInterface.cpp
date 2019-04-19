@@ -15,7 +15,7 @@ StartInterface::StartInterface() : PromptInterface(
         // 0 Background
         {0.0f, 0.0f},
         // 1 Title
-        {0.25f, 0.7f},
+        {0.27f, 0.75f},
         // 2 Prompt 1
         {0.38f, 0.2f},
     },
@@ -55,7 +55,6 @@ void StartInterface::updateOverride(float fTimeInSeconds)
     {
         m_bPromptVisible = !m_bPromptVisible;
         m_fBlinkTime = BLINK_INTERVAL;
-        // SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CURSOR_MOVE);
     }
 }
 
