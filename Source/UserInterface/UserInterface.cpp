@@ -72,7 +72,8 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initializeVBOs();
 
     m_TexturesTron = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, TRON_DIRECTORY);
-    m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
+    // Don't load outrun until files are added
+    // m_TexturesOutrun = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, OUTRUN_DIRECTORY);
 }
 
 UserInterface::~UserInterface()
