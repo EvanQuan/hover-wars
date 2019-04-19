@@ -49,9 +49,6 @@ void EndgameInterface::reinitialize(float gameTime)
 void EndgameInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_BACKGROUND_MAIN_MENU);
-    renderImage(IMAGE_GAME_OVER,
-        m_vComponentCoordinates[VERSION].first,
-        m_vComponentCoordinates[VERSION].second,
-        1.0);
+    renderImage(IMAGE_GAME_OVER, VERSION);
 }
 

@@ -376,6 +376,11 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void UserInterface::renderText(const string text, int component, vec3 color)
+{
+    renderText(text, component, 1.0f, 1.0f, color);
+}
+
 // Shows the Sprite Map for the text map for debugging.
 void UserInterface::debugFont()
 {
@@ -411,10 +416,19 @@ void UserInterface::debugFont()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void UserInterface::displayGlobalMessage(string message)
+void UserInterface::displayGlobalMessage(const string message)
 {
     m_sGlobalMessage = message;
     m_fGlobalMessageTime = GLOBAL_MESSAGE_TIME;
+}
+
+void UserInterface::renderText(const string text, int component, float x, float y, vec3 color)
+{
+    renderText(text,
+        m_vComponentCoordinates[component].first + x,
+        m_vComponentCoordinates[component].second + y,
+        1.0f,
+        color);
 }
 
 /*
@@ -432,7 +446,7 @@ Window coordinates in pixels
 @param y        y-coordinate of the bottom-left corner of text, in pixels
 @param scale    image, where 1.0 is the default size
 */
-void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale)
+void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
     auto tFoundIt = m_Textures.find(filepath);
@@ -468,7 +482,20 @@ void UserInterface::renderImage(string filepath, GLfloat x, GLfloat y, GLfloat s
     image->unbindTexture();
 }
 
-void UserInterface::renderBackgroundImage(string filepath)
+void UserInterface::renderImage(const string filepath, int component)
+{
+    renderImage(filepath, component, 0, 0);
+}
+
+void UserInterface::renderImage(const string filepath, int component, float x, float y)
+{
+    renderImage(filepath,
+        m_vComponentCoordinates[component].first + x,
+        m_vComponentCoordinates[component].second + y,
+        1.0f);
+}
+
+void UserInterface::renderBackgroundImage(const string filepath)
 {
     // Get texture height and width
     auto tFoundIt = m_Textures.find(filepath);

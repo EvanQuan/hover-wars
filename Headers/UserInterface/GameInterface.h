@@ -157,7 +157,7 @@ private:
     // Cooldowns
     void updateCooldowns();
     void renderCooldowns();
-    void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, GLfloat x, GLfloat y, GLfloat scale);
+    void renderCooldown(std::string label, eCooldown cooldown, float* cooldowns, int component);
     void renderCharges(float* cooldowns, HovercraftEntity* hovercraft);
 
     /*

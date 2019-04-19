@@ -66,7 +66,7 @@ void StartInterface::reinitialize(float gameTime)
 void StartInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_BACKGROUND_START_MENU);
-    renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
+    renderImage(IMAGE_TITLE, TITLE);
     renderOption(); 
 }
 
@@ -75,6 +75,6 @@ void StartInterface::renderOption() {
     // Since there is only 1 prompt, we don't care which prompt is selected.
     if (m_bPromptVisible)
     {
-        renderImage(IMAGE_INSERT_COIN_2, m_vComponentCoordinates[INSERT_COIN].first, m_vComponentCoordinates[INSERT_COIN].second, 1.0f);
+        renderImage(IMAGE_INSERT_COIN_2, INSERT_COIN);
     }
 }

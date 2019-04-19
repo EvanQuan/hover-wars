@@ -75,7 +75,7 @@ void MainInterface::reinitialize(float gameTime)
 void MainInterface::renderOverride()
 {
     renderBackgroundImage(IMAGE_BACKGROUND_MAIN_MENU);
-    renderImage(IMAGE_TITLE, m_vComponentCoordinates[TITLE].first, m_vComponentCoordinates[TITLE].second, 1.0f);
+    renderImage(IMAGE_TITLE, TITLE);
 
     renderOption();
 }
@@ -84,47 +84,9 @@ void MainInterface::renderOption() {
     MainMenu* m = (MainMenu*) MainMenu::getInstance();
     string option = m->getCurrentPrompt();
 
-    if (option == NEW_GAME_OPTION)
-    {
-        renderImage(IMAGE_NEW_GAME_2, m_vComponentCoordinates[NEW_GAME].first, m_vComponentCoordinates[NEW_GAME].second, 1.0f);
-        renderImage(IMAGE_GAME_RULE_1, m_vComponentCoordinates[RULE].first, m_vComponentCoordinates[RULE].second, 1.0f);
-        renderImage(IMAGE_CONTROLLER_1, m_vComponentCoordinates[CONTROLLER].first, m_vComponentCoordinates[CONTROLLER].second, 1.0f);
-        renderImage(IMAGE_SETTINGS_1, m_vComponentCoordinates[SETTINGS].first, m_vComponentCoordinates[SETTINGS].second, 1.0f);
-        renderImage(IMAGE_EXIT_1, m_vComponentCoordinates[EXIT].first, m_vComponentCoordinates[EXIT].second, 1.0f);
-    }
-    else if (option == GAME_RULE) {
-        renderImage(IMAGE_NEW_GAME_1, m_vComponentCoordinates[NEW_GAME].first, m_vComponentCoordinates[NEW_GAME].second, 1.0f);
-        renderImage(IMAGE_GAME_RULE_2, m_vComponentCoordinates[RULE].first, m_vComponentCoordinates[RULE].second, 1.0f);
-        renderImage(IMAGE_CONTROLLER_1, m_vComponentCoordinates[CONTROLLER].first, m_vComponentCoordinates[CONTROLLER].second, 1.0f);
-        renderImage(IMAGE_SETTINGS_1, m_vComponentCoordinates[SETTINGS].first, m_vComponentCoordinates[SETTINGS].second, 1.0f);
-        renderImage(IMAGE_EXIT_1, m_vComponentCoordinates[EXIT].first, m_vComponentCoordinates[EXIT].second, 1.0f);
-    }
-    else if (option == GAME_CONTROLLER) {
-        renderImage(IMAGE_NEW_GAME_1, m_vComponentCoordinates[NEW_GAME].first, m_vComponentCoordinates[NEW_GAME].second, 1.0f);
-        renderImage(IMAGE_GAME_RULE_1, m_vComponentCoordinates[RULE].first, m_vComponentCoordinates[RULE].second, 1.0f);
-        renderImage(IMAGE_CONTROLLER_2, m_vComponentCoordinates[CONTROLLER].first, m_vComponentCoordinates[CONTROLLER].second, 1.0f);
-        renderImage(IMAGE_SETTINGS_1, m_vComponentCoordinates[SETTINGS].first, m_vComponentCoordinates[SETTINGS].second, 1.0f);
-        renderImage(IMAGE_EXIT_1, m_vComponentCoordinates[EXIT].first, m_vComponentCoordinates[EXIT].second, 1.0f);
-    }
-    else if (option == SETTINGS_OPTION) {
-        renderImage(IMAGE_NEW_GAME_1, m_vComponentCoordinates[NEW_GAME].first, m_vComponentCoordinates[NEW_GAME].second, 1.0f);
-        renderImage(IMAGE_GAME_RULE_1, m_vComponentCoordinates[RULE].first, m_vComponentCoordinates[RULE].second, 1.0f);
-        renderImage(IMAGE_CONTROLLER_1, m_vComponentCoordinates[CONTROLLER].first, m_vComponentCoordinates[CONTROLLER].second, 1.0f);
-        renderImage(IMAGE_SETTINGS_2, m_vComponentCoordinates[SETTINGS].first, m_vComponentCoordinates[SETTINGS].second, 1.0f);
-        renderImage(IMAGE_EXIT_1, m_vComponentCoordinates[EXIT].first, m_vComponentCoordinates[EXIT].second, 1.0f);
-    }
-    else if (option == QUIT_OPTION) {
-        renderImage(IMAGE_NEW_GAME_1, m_vComponentCoordinates[NEW_GAME].first, m_vComponentCoordinates[NEW_GAME].second, 1.0f);
-        renderImage(IMAGE_GAME_RULE_1, m_vComponentCoordinates[RULE].first, m_vComponentCoordinates[RULE].second, 1.0f);
-        renderImage(IMAGE_CONTROLLER_1, m_vComponentCoordinates[CONTROLLER].first, m_vComponentCoordinates[CONTROLLER].second, 1.0f);
-        renderImage(IMAGE_SETTINGS_1, m_vComponentCoordinates[SETTINGS].first, m_vComponentCoordinates[SETTINGS].second, 1.0f);
-        renderImage(IMAGE_EXIT_2, m_vComponentCoordinates[EXIT].first, m_vComponentCoordinates[EXIT].second, 1.0f);
-    }
-    else {
-        renderImage(IMAGE_NEW_GAME_1, m_vComponentCoordinates[NEW_GAME].first, m_vComponentCoordinates[NEW_GAME].second, 1.0f);
-        renderImage(IMAGE_GAME_RULE_1, m_vComponentCoordinates[RULE].first, m_vComponentCoordinates[RULE].second, 1.0f);
-        renderImage(IMAGE_CONTROLLER_1, m_vComponentCoordinates[CONTROLLER].first, m_vComponentCoordinates[CONTROLLER].second, 1.0f);
-        renderImage(IMAGE_SETTINGS_1, m_vComponentCoordinates[SETTINGS].first, m_vComponentCoordinates[SETTINGS].second, 1.0f);
-        renderImage(IMAGE_EXIT_1, m_vComponentCoordinates[EXIT].first, m_vComponentCoordinates[EXIT].second, 1.0f);
-    }
+    renderImage(option == NEW_GAME_OPTION ? IMAGE_NEW_GAME_2 : IMAGE_NEW_GAME_1, NEW_GAME);
+    renderImage(option == GAME_RULE ? IMAGE_GAME_RULE_2 : IMAGE_GAME_RULE_1, RULE);
+    renderImage(option == GAME_CONTROLLER ? IMAGE_CONTROLLER_2 : IMAGE_CONTROLLER_1, CONTROLLER);
+    renderImage(option == SETTINGS_OPTION ? IMAGE_SETTINGS_2 : IMAGE_SETTINGS_1, SETTINGS);
+    renderImage(option == QUIT_OPTION ? IMAGE_EXIT_2 : IMAGE_EXIT_1, EXIT);
 }

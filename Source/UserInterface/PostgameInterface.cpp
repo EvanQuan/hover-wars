@@ -150,7 +150,7 @@ PostgameInterface::PostgameInterface() : PromptInterface(
         // Rank 3
         {0.0f, 0.0f},
         // Rank 4
-        {0.0f, 0.0f},
+        {0.4f, 0.0f},
         // Rank 5
         {0.0f, 0.0f},
         // Rank 6
@@ -261,7 +261,7 @@ PostgameInterface::PostgameInterface() : PromptInterface(
         {0.0f, 0.0f},
 
         // Main menu option
-        {0.0f, 0.0f},
+        {0.4f, 0.0f},
         }
 )
 {
@@ -299,17 +299,17 @@ void PostgameInterface::renderOverride()
 
     renderBackgroundImage(IMAGE_BACKGROUND_POST_MENU);
     // Placement title
-    renderImage(IMAGE_PLACEMENT, m_vComponentCoordinates[PLACEMENT].first, m_vComponentCoordinates[PLACEMENT].second, 1.0f);
+    renderImage(IMAGE_PLACEMENT, PLACEMENT);
     // There is always at least 1 player or team
-    renderImage(IMAGE_NUMBER_1, m_vComponentCoordinates[NUMBER_1].first, m_vComponentCoordinates[NUMBER_1].second, 1.0f);
+    renderImage(IMAGE_NUMBER_1, NUMBER_1);
 
     if (renderPlacement2)
     {
-        renderImage(IMAGE_NUMBER_2, m_vComponentCoordinates[NUMBER_2].first, m_vComponentCoordinates[NUMBER_2].second, 1.0f);
+        renderImage(IMAGE_NUMBER_2, NUMBER_2);
     } 
     if (renderPlacement3)
     {
-        renderImage(IMAGE_NUMBER_3, m_vComponentCoordinates[NUMBER_3].first, m_vComponentCoordinates[NUMBER_3].second, 1.0f);
+        renderImage(IMAGE_NUMBER_3, NUMBER_3);
     }
 
     renderPlacement(botCount > 0);
@@ -356,32 +356,32 @@ void PostgameInterface::renderFreeForAll(const vector<EndGameStat> &endGameStats
     {
         switch (s.hovercraft) {
             case HOVERCRAFT_PLAYER_1:
-                renderImage(IMAGE_PLAYER, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
-                renderImage(IMAGE_1_1, m_vComponentCoordinates[placements].first + PLAYER_NUMBER_OFFSET, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_PLAYER, placements);
+                renderImage(IMAGE_1_1, placements, PLAYER_NUMBER_OFFSET, 0.0f);
                 break;
             case HOVERCRAFT_PLAYER_2:
-                renderImage(IMAGE_PLAYER, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
-                renderImage(IMAGE_2_1, m_vComponentCoordinates[placements].first + PLAYER_NUMBER_OFFSET, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_PLAYER, placements);
+                renderImage(IMAGE_1_1, placements, PLAYER_NUMBER_OFFSET, 0.0f);
                 break;
             case HOVERCRAFT_PLAYER_3:
-                renderImage(IMAGE_PLAYER, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
-                renderImage(IMAGE_3_1, m_vComponentCoordinates[placements].first + PLAYER_NUMBER_OFFSET, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_PLAYER, placements);
+                renderImage(IMAGE_1_1, placements, PLAYER_NUMBER_OFFSET, 0.0f);
                 break;
             case HOVERCRAFT_PLAYER_4:
-                renderImage(IMAGE_PLAYER, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
-                renderImage(IMAGE_4_1, m_vComponentCoordinates[placements].first + PLAYER_NUMBER_OFFSET, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_PLAYER, placements);
+                renderImage(IMAGE_1_1, placements, PLAYER_NUMBER_OFFSET, 0.0f);
                 break;
             case HOVERCRAFT_BOT_1:
-                renderImage(IMAGE_BOT_1, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_BOT_1, placements);
                 break;
             case HOVERCRAFT_BOT_2:
-                renderImage(IMAGE_BOT_2, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_BOT_2, placements);
                 break;
             case HOVERCRAFT_BOT_3:
-                renderImage(IMAGE_BOT_3, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_BOT_3, placements);
                 break;
             case HOVERCRAFT_BOT_4:
-                renderImage(IMAGE_BOT_4, m_vComponentCoordinates[placements].first, m_vComponentCoordinates[placements].second, 1.0f);
+                renderImage(IMAGE_BOT_4, placements);
                 break;
         }
         renderScore(placements, s.afterAwardsScore);
@@ -414,17 +414,13 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats,
         if (!teamBotPlaced && (teamBotScore > s.afterAwardsScore) && renderBots)
         {
             teamBotPlaced = true;
-            renderImage(IMAGE_BOT_TEAM,
-                m_vComponentCoordinates[placements].first,
-                m_vComponentCoordinates[placements].second, 1.0f);
+            renderImage(IMAGE_BOT_TEAM, placements);
             renderScore(placements, teamBotScore);
             placements++;
         }
         else if (GAME_STATS->isPlayer(s.hovercraft))
         {
-            renderImage(IMAGE_PLAYER,
-                m_vComponentCoordinates[placements].first,
-                m_vComponentCoordinates[placements].second, 1.0f);
+            renderImage(IMAGE_PLAYER, placements);
             string playerNumber ;
             switch (s.hovercraft) {
                 case HOVERCRAFT_PLAYER_1:
@@ -442,18 +438,14 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats,
                 default:
                     playerNumber = IMAGE_1_1;
             }
-            renderImage(playerNumber,
-                m_vComponentCoordinates[placements].first + PLAYER_NUMBER_OFFSET,
-                m_vComponentCoordinates[placements].second, 1.0f);
+            renderImage(playerNumber, placements, PLAYER_NUMBER_OFFSET, 0.0f);
             renderScore(placements, s.afterAwardsScore);
             placements++;
         }
     }
     if (!teamBotPlaced && renderBots)
     {
-        renderImage(IMAGE_BOT_TEAM,
-            m_vComponentCoordinates[placements].first,
-            m_vComponentCoordinates[placements].second, 1.0f);
+        renderImage(IMAGE_BOT_TEAM, placements);
         renderScore(placements, teamBotScore);
     }
 
@@ -488,32 +480,20 @@ void PostgameInterface::renderPlayersVsBots(const vector<EndGameStat> &endGameSt
 
     if (teamBotScore > teamPlayerScore) // Humans win by default on tie, get rekt bots
     {
-        renderImage(IMAGE_BOT_TEAM,
-            m_vComponentCoordinates[placements].first,
-            m_vComponentCoordinates[placements].second,
-            1.0f);
+        renderImage(IMAGE_BOT_TEAM, placements);
         renderScore(placements, teamBotScore);
         placements++;
-        renderImage(IMAGE_PLAYER_TEAM,
-            m_vComponentCoordinates[placements].first,
-            m_vComponentCoordinates[placements].second,
-            1.0f);
+        renderImage(IMAGE_PLAYER_TEAM, placements);
         renderScore(placements, teamPlayerScore);
     }
     else
     {
-        renderImage(IMAGE_PLAYER_TEAM,
-            m_vComponentCoordinates[placements].first,
-            m_vComponentCoordinates[placements].second,
-            1.0f);
+        renderImage(IMAGE_PLAYER_TEAM, placements);
         renderScore(placements, teamPlayerScore);
         placements++;
         if (renderBots)
         {
-            renderImage(IMAGE_BOT_TEAM,
-                m_vComponentCoordinates[placements].first,
-                m_vComponentCoordinates[placements].second,
-                1.0f);
+            renderImage(IMAGE_BOT_TEAM, placements);
             renderScore(placements, teamBotScore);
         }
     }
@@ -582,24 +562,15 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
     }
     // Sorted from highest score to less
 
-    renderImage(teamScores[0].second,
-        m_vComponentCoordinates[placements].first,
-        m_vComponentCoordinates[placements].second,
-        1.0f);
+    renderImage(teamScores[0].second, placements);
     renderScore(placements, teamScores[0].first);
     placements++;
-    renderImage(teamScores[1].second,
-        m_vComponentCoordinates[placements].first,
-        m_vComponentCoordinates[placements].second,
-        1.0f);
+    renderImage(teamScores[1].second, placements);
     renderScore(placements, teamScores[1].first);
     if (renderBots)
     {
         placements++;
-        renderImage(teamScores[2].second,
-            m_vComponentCoordinates[placements].first,
-            m_vComponentCoordinates[placements].second,
-            1.0f);
+        renderImage(teamScores[2].second, placements);
         renderScore(placements, teamScores[2].first);
     }
 
@@ -618,165 +589,33 @@ void PostgameInterface::renderScore(int placements, int score)
     int ten = score / 10 % 10;
     int one = score % 10;
 
+    string image;
+
     if (score > 999) {
-        switch (thousand) {
-        case 0:
-            renderImage(IMAGE_0_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 1:
-            renderImage(IMAGE_1_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 2:
-            renderImage(IMAGE_2_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 3:
-            renderImage(IMAGE_3_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 4:
-            renderImage(IMAGE_4_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 5:
-            renderImage(IMAGE_5_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 6:
-            renderImage(IMAGE_6_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 7:
-            renderImage(IMAGE_7_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 8:
-            renderImage(IMAGE_8_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        case 9:
-            renderImage(IMAGE_9_2, m_vComponentCoordinates[14 + placements * 5].first + 0.1f, m_vComponentCoordinates[14 + placements * 5].second, 1.0f);
-            break;
-        }
+        renderImage(digitToImage(thousand), 14 + placements * 5, 0.1f, 0.0f);
     }
 
     if (score > 99) {
-        switch (hundred) {
-        case 0:
-            renderImage(IMAGE_0_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 1:
-            renderImage(IMAGE_1_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 2:
-            renderImage(IMAGE_2_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 3:
-            renderImage(IMAGE_3_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 4:
-            renderImage(IMAGE_4_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 5:
-            renderImage(IMAGE_5_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 6:
-            renderImage(IMAGE_6_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 7:
-            renderImage(IMAGE_7_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 8:
-            renderImage(IMAGE_8_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        case 9:
-            renderImage(IMAGE_9_2, m_vComponentCoordinates[15 + placements * 5].first + 0.2f, m_vComponentCoordinates[15 + placements * 5].second, 1.0f);
-            break;
-        }
+        renderImage(digitToImage(hundred), 15 + placements * 5, 0.2f, 0.0f);
     }
 
     if (score > 9) {
-        switch (ten) {
-        case 0:
-            renderImage(IMAGE_0_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 1:
-            renderImage(IMAGE_1_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 2:
-            renderImage(IMAGE_2_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 3:
-            renderImage(IMAGE_3_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 4:
-            renderImage(IMAGE_4_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 5:
-            renderImage(IMAGE_5_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 6:
-            renderImage(IMAGE_6_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 7:
-            renderImage(IMAGE_7_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 8:
-            renderImage(IMAGE_8_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        case 9:
-            renderImage(IMAGE_9_2, m_vComponentCoordinates[16 + placements * 5].first + 0.3f, m_vComponentCoordinates[16 + placements * 5].second, 1.0f);
-            break;
-        }
+        renderImage(digitToImage(ten), 16 + placements * 5, 0.3f, 0.0f);
     }
 
-    switch (one) {
-    case 0:
-        renderImage(IMAGE_0_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 1:
-        renderImage(IMAGE_1_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 2:
-        renderImage(IMAGE_2_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 3:
-        renderImage(IMAGE_3_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 4:
-        renderImage(IMAGE_4_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 5:
-        renderImage(IMAGE_5_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 6:
-        renderImage(IMAGE_6_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 7:
-        renderImage(IMAGE_7_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 8:
-        renderImage(IMAGE_8_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    case 9:
-        renderImage(IMAGE_9_2, m_vComponentCoordinates[17 + placements * 5].first + 0.4f, m_vComponentCoordinates[17 + placements * 5].second, 1.0f);
-        break;
-    }
+    renderImage(digitToImage(one), 17 + placements * 5, 0.4f, 0.0f);
 
-    renderImage(IMAGE_POINT, m_vComponentCoordinates[18 + placements * 5].first + 0.4f, m_vComponentCoordinates[18 + placements * 5].second, 1.0f);
+    renderImage(IMAGE_POINT, 18 + placements * 5, 0.4f, 0.0f);
 }
 
 
 void PostgameInterface::renderOption()
 {
-    PostgameMenu* m = (PostgameMenu*)PostgameMenu::getInstance();
+    PostgameMenu *m = PostgameMenu::getInstance();
     string option = m->getCurrentPrompt();
 
-    if (option == BACK_TO_MAIN_MENU_OPTION) {
-        renderImage(IMAGE_AWARDS_1, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_2, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
-    else if (option == AWARDS_OPTION) {
-        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
-    else {
-        renderImage(IMAGE_AWARDS_2, m_vComponentCoordinates[AWARDS].first + 0.4f, m_vComponentCoordinates[AWARDS].second, 1.0f);
-        renderImage(IMAGE_MAIN_MENU_BUTTON_1, m_vComponentCoordinates[MAIN_MENU].first + 0.4f, m_vComponentCoordinates[MAIN_MENU].second, 1.0f);
-    }
+    renderImage(option == AWARDS_OPTION ? IMAGE_AWARDS_2 : IMAGE_AWARDS_1, AWARDS);
+    renderImage(option == BACK_TO_MAIN_MENU_OPTION ? IMAGE_MAIN_MENU_BUTTON_2 : IMAGE_MAIN_MENU_BUTTON_1, MAIN_MENU);
 }
 
 bool PostgameInterface::shouldRenderPlacement2(eGameMode gameMode,
@@ -826,5 +665,44 @@ bool PostgameInterface::shouldRenderPlacement3(eGameMode gameMode,
         // In all other modes, as long as there are at least 3 hovercrafts,
         // there will be 3 placements.
         return hovercraftCount > 2;
+    }
+}
+
+string PostgameInterface::digitToImage(int digit)
+{
+    switch (digit)
+    {
+    case 0:
+        return IMAGE_0_2;
+        break;
+    case 1:
+        return IMAGE_1_2;
+        break;
+    case 2:
+        return IMAGE_2_2;
+        break;
+    case 3:
+        return IMAGE_3_2;
+        break;
+    case 4:
+        return IMAGE_4_2;
+        break;
+    case 5:
+        return IMAGE_5_2;
+        break;
+    case 6:
+        return IMAGE_6_2;
+        break;
+    case 7:
+        return IMAGE_7_2;
+        break;
+    case 8:
+        return IMAGE_8_2;
+        break;
+    case 9:
+        return IMAGE_9_2;
+        break;
+    default:
+        return IMAGE_0_2;
     }
 }

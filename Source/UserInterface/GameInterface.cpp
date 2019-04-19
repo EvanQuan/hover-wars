@@ -479,9 +479,8 @@ void GameInterface::renderGameTime()
         color = TIME_COLOR;
     }
     renderText(FuncUtils::timeToString(secondsRemaining),
-               m_vComponentCoordinates[COMPONENT_TIME].first,
-               m_vComponentCoordinates[COMPONENT_TIME].second,
-               TIME_SCALE, color);
+        COMPONENT_TIME,
+        color);
 
 }
 
@@ -515,9 +514,8 @@ void GameInterface::renderMessages()
     if (m_fMessageTimes[m_eHovercraftFocus] > 0)
     {
         renderText(m_sMessages[m_eHovercraftFocus],
-            m_vComponentCoordinates[COMPONENT_MESSAGE].first,
-            m_vComponentCoordinates[COMPONENT_MESSAGE].second,
-            MESSAGE_SCALE, m_sMessageColors[m_eHovercraftFocus]);
+            COMPONENT_MESSAGE,
+            m_sMessageColors[m_eHovercraftFocus]);
     }
     if (m_fScoreChangeTimes[m_eHovercraftFocus] > 0)
     {
@@ -527,19 +525,16 @@ void GameInterface::renderMessages()
         bool scoreIncreased = scoreChange >= 0;
         if (scoreChange != 0)
         {
-            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange) ,
-                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].first,
-                        m_vComponentCoordinates[COMPONENT_SCORE_CHANGE].second,
-                        SCORE_CHANGE_SCALE,
-                        scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
+            renderText((scoreIncreased ? "+" : "") + std::to_string(scoreChange),
+                COMPONENT_SCORE_CHANGE,
+                scoreIncreased ? SCORE_CHANGE_ADD_COLOR : SCORE_CHANGE_SUB_COLOR);
         }
     }
     if (m_fPowerupMessageTimes[m_eHovercraftFocus] > 0)
     {
         renderText(m_sPowerupMessages[m_eHovercraftFocus],
-            m_vComponentCoordinates[COMPONENT_POWERUP].first,
-            m_vComponentCoordinates[COMPONENT_POWERUP].second,
-            MESSAGE_SCALE, MESSAGE_COLOR);
+            COMPONENT_POWERUP,
+            MESSAGE_COLOR);
     }
 }
 
@@ -567,10 +562,8 @@ void GameInterface::renderNotifications()
     {
         if (m_fNotificationTime > 0)
         {
-            renderText(m_sNotification,
-                m_vComponentCoordinates[COMPONENT_NOTIFICATION].first,
-                m_vComponentCoordinates[COMPONENT_NOTIFICATION].second,
-                MESSAGE_SCALE, m_sMessageColors[m_eHovercraftFocus]);
+            renderText(m_sNotification, COMPONENT_NOTIFICATION,
+                m_sMessageColors[m_eHovercraftFocus]);
         }
     }
 }
@@ -604,10 +597,7 @@ void GameInterface::renderResumeCountdown()
             break;
         }
 
-        renderText(message,
-            m_vComponentCoordinates[COMPONENT_COUNTDOWN].first,
-            m_vComponentCoordinates[COMPONENT_COUNTDOWN].second,
-            MESSAGE_SCALE, color);
+        renderText(message, COMPONENT_COUNTDOWN, color);
     }
 
 }
@@ -621,10 +611,7 @@ void GameInterface::renderKillsAndDeaths()
 
     string kdr = "K/D   " + std::to_string(kills) + "/" + std::to_string(deaths);
 
-    renderText(kdr,
-        m_vComponentCoordinates[COMPONENT_KILL_DEATHS].first,
-        m_vComponentCoordinates[COMPONENT_KILL_DEATHS].second,
-        SCORE_SCALE, SCORE_COLOR);
+    renderText(kdr, COMPONENT_KILL_DEATHS, SCORE_COLOR);
 }
 
 void GameInterface::renderTeamPlayerScore()
@@ -637,11 +624,7 @@ void GameInterface::renderTeamPlayerScore()
     {
     case GAMEMODE_TEAMS_BOTS_VS_PLAYERS:
         score = "Player team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_PLAYER_TEAM1));
-        renderText(score,
-           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
-           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
-           SCORE_SCALE,
-           GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
+        renderText(score, COMPONENT_TEAM_PLAYER_SCORE, GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
         break;
     case GAMEMODE_TEAMS_PLAYERS1_VS_PLAYERS2_VS_BOTS:
         switch (m_eHovercraftFocus)
@@ -661,16 +644,8 @@ void GameInterface::renderTeamPlayerScore()
         color2 = GAME_MANAGER->getHovercraftColor(HOVERCRAFT_PLAYER_1);
             break;
         }
-        renderText(score,
-           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].first,
-           m_vComponentCoordinates[COMPONENT_TEAM_PLAYER_SCORE].second,
-           SCORE_SCALE,
-           color);
-        renderText(score2,
-           m_vComponentCoordinates[COMPONENT_TEAM2_PLAYER_SCORE].first,
-           m_vComponentCoordinates[COMPONENT_TEAM2_PLAYER_SCORE].second,
-           SCORE_SCALE,
-           color2);
+        renderText(score, COMPONENT_TEAM_PLAYER_SCORE, color);
+        renderText(score2, COMPONENT_TEAM2_PLAYER_SCORE, color2);
         break;
     }
 }
@@ -686,11 +661,7 @@ void GameInterface::renderTeamBotScore()
         if (GAME_STATS->getBotCount() > 0)
         {
             score = "Bot team: " + to_string(GAME_STATS->get(GameStats::eGlobalStat::SCORE_BOT_TEAM));
-            renderText(score,
-               m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].first,
-               m_vComponentCoordinates[COMPONENT_TEAM_BOT_SCORE].second,
-               SCORE_SCALE,
-               GAME_MANAGER->getHovercraftColor(HOVERCRAFT_BOT_1));
+            renderText(score, COMPONENT_TEAM_BOT_SCORE, GAME_MANAGER->getHovercraftColor(HOVERCRAFT_BOT_1));
         }
         break;
     }
@@ -698,11 +669,7 @@ void GameInterface::renderTeamBotScore()
 
 void GameInterface::renderKillstreak()
 {
-    renderText("Killstreak: ",
-        m_vComponentCoordinates[COMPONENT_KILLSTREAK].first,
-        m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
-        SCORE_SCALE,
-        COLOR_WHITE);
+    renderText("Killstreak: ", COMPONENT_KILLSTREAK, COLOR_WHITE);
     int killstreak = GAME_STATS->get(m_eHovercraftFocus, GameStats::eHovercraftStat::KILLSTREAK_CURRENT);
     string message;
     vec3 color;
@@ -721,11 +688,7 @@ void GameInterface::renderKillstreak()
         message = to_string(killstreak);
         color = COLOR_WHITE;
     }
-    renderText(message,
-        m_vComponentCoordinates[COMPONENT_KILLSTREAK].first + 200,
-        m_vComponentCoordinates[COMPONENT_KILLSTREAK].second,
-        SCORE_SCALE,
-        color);
+    renderText(message, COMPONENT_KILLSTREAK, 200.0f, 0.0f, color);
 }
 
 void GameInterface::renderScores()
@@ -733,9 +696,7 @@ void GameInterface::renderScores()
     string score = std::to_string(GAME_STATS->get(m_eHovercraftFocus,
                         GameStats::eHovercraftStat::SCORE_CURRENT));
     renderText(m_eHovercraftToString.at(m_eHovercraftFocus) + ": " + score,
-               m_vComponentCoordinates[COMPONENT_SCORE].first,
-               m_vComponentCoordinates[COMPONENT_SCORE].second,
-               SCORE_SCALE,
+               COMPONENT_SCORE,
                GAME_MANAGER->getHovercraftColor(m_eHovercraftFocus));
 }
 
@@ -751,11 +712,7 @@ void GameInterface::renderScoreLeader()
         vec3 leaderColor;
         int leaderScore;
         getScoreLeaderColorAndScore(leaderColor, leaderScore);
-        renderText("Leader: " + to_string(leaderScore),
-                   m_vComponentCoordinates[COMPONENT_SCORE_LEADER].first,
-                   m_vComponentCoordinates[COMPONENT_SCORE_LEADER].second,
-                   SCORE_SCALE,
-                   leaderColor);
+        renderText("Leader: " + to_string(leaderScore), COMPONENT_SCORE_LEADER, leaderColor);
     }
 }
 
@@ -804,22 +761,16 @@ void GameInterface::renderCooldowns()
         COLOR_READY : trailPercent == 0.0 ?
         COLOR_NOT_READY : COLOR_MID_READY;
     renderText("Flame: " + trailPercentString + "%",
-               m_vComponentCoordinates[COMPONENT_TRAIL].first,
-               m_vComponentCoordinates[COMPONENT_TRAIL].second,
-               TRAIL_SCALE,
-               trailColor);
+        COMPONENT_TRAIL,
+        trailColor);
     renderCooldown("Rocket",
-                   eCooldown::COOLDOWN_ROCKET,
-                   cooldowns,
-                   m_vComponentCoordinates[COMPONENT_ROCKET].first,
-                   m_vComponentCoordinates[COMPONENT_ROCKET].second,
-                   ROCKET_SCALE);
+        eCooldown::COOLDOWN_ROCKET,
+        cooldowns,
+        COMPONENT_ROCKET);
     renderCooldown("Spikes" + std::string(hovercraft->hasSpikesActivated() ? " enabled" : ""),
-                   eCooldown::COOLDOWN_SPIKES,
-                   cooldowns,
-                   m_vComponentCoordinates[COMPONENT_SPIKES].first,
-                   m_vComponentCoordinates[COMPONENT_SPIKES].second,
-                   SPIKES_SCALE);
+        eCooldown::COOLDOWN_SPIKES,
+        cooldowns,
+        COMPONENT_SPIKES);
     renderCharges(cooldowns, hovercraft);
 
     //  renderImage(IMAGE_TRAIL, 0, 0, 10);
@@ -831,21 +782,20 @@ void GameInterface::renderCooldowns()
     @param label        name of the cooldown
     @param cooldown     of ability, to determine the cooldown value to retrieve from cooldowns
     @param cooldowns    of all ability cooldowns
-    @param x            x-coordinate to place cooldown label
-    @param y            y-coordinate to place cooldown label
+    @param component    of cooldown label
     @param scale        of the label
 */
 void GameInterface::renderCooldown(std::string label,
                                    eCooldown cooldown,
                                    float* cooldowns,
-                                   GLfloat x, GLfloat y, GLfloat scale)
+                                   int component)
 {
     bool isReady = cooldowns[cooldown] == 0;
     std::string cooldownString = isReady ?
         COOLDOWN_READY :
         FuncUtils::toString(cooldowns[cooldown], COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isReady ? COLOR_READY : COLOR_NOT_READY;
-    renderText(label + ": " + cooldownString, x, y, scale, color);
+    renderText(label + ": " + cooldownString, component, color);
 }
 
 // Right now only dones for dashes
@@ -860,11 +810,7 @@ void GameInterface::renderCharges(float* cooldowns, HovercraftEntity* hovercraft
         FuncUtils::toString(hovercraft->getDashRecharge(), COOLDOWN_DECIMAL_PLACES) + "s";
     vec3 color = isFull ? COLOR_READY : canDash ? COLOR_MID_READY : COLOR_NOT_READY;
     std::string labelWithCharges = "Dash (" + std::to_string(hovercraft->getDashCharges()) + "): ";
-    renderText(labelWithCharges + cooldownString,
-               m_vComponentCoordinates[COMPONENT_DASH].first,
-               m_vComponentCoordinates[COMPONENT_DASH].second,
-               DASH_SCALE,
-               color);
+    renderText(labelWithCharges + cooldownString, COMPONENT_DASH, color);
 
 }
 

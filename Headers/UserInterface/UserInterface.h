@@ -96,7 +96,7 @@
 #define IMAGE_PLAYER_TEAM2 "team2.png"
 
 // #define IMAGE_BOT_TEAM IMAGE_10_MIN
-#define IMAGE_BOT_VS_PLAYERS "bots_vs_players2.png"
+#define IMAGE_BOTS_VS_PLAYERS "bots_vs_players2.png"
 #define IMAGE_SCORE_LOSS_1 "score_loss.png"
 #define IMAGE_SCORE_LOSS_2 "score_loss2.png"
 #define IMAGE_ENABLED "enabled2.png"
@@ -185,7 +185,7 @@ public:
     // Shows the Sprite Map for the text map for debugging.
     void debugFont();
 
-    void displayGlobalMessage(string message);
+    void displayGlobalMessage(const string message);
 
 protected:
 
@@ -197,34 +197,19 @@ protected:
 
     virtual void updateOverride(float fFrameDeltaTime) = 0;
 
-    void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
-    void renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color);
-    void renderImage(string filepath, GLfloat x, GLfloat y, GLfloat scale);
-    void renderBackgroundImage(string filepath);
+    void renderText(int text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
+    void renderText(const string text, GLfloat x, GLfloat y, GLfloat scale, const vec3 color);
+    void renderText(const string text, int component, vec3 color);
+    void renderText(const string text, int component, float x, float y, const vec3 color);
+    void renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale);
+    void renderImage(const string filepath, int component);
+    void renderImage(const string filepath, int component, float x, float y);
+    void renderBackgroundImage(const string filepath);
 
     // width of the window in pixels
     int m_iWidth;
     // height of the window in pixels
     int m_iHeight;
-
-    /*
-        Determines how each UI component is scaled based on window dimensions.
-        This can use useful for determining the general position of components
-        as window dimensions change.
-    */
-    vector<pair<float, float>> m_vComponentScaling;
-    /*
-        Determines how each UI component is translated after scaling. This can
-        be useful when certain components are placed a fixed distance relative
-        to other components.
-    */
-    vector<pair<float, float>> m_vComponentTranslating;
-    /*
-        The absolute value of the UI componnets are stored once they are
-        calculated so they do not need to be calculated every frame. Wheneever
-        there is a window resize event, these values are all recalculated.
-    */
-    vector<pair<float, float>> m_vComponentCoordinates;
     /*
         Every hovercraft has a corresponding name. If the UI ever needs to user
         a hovercraft's name, it should use this.
@@ -268,6 +253,25 @@ private:
     GLuint m_iVertexArray, m_iVertexBuffer, m_iTextureBuffer;
 
     void initializeComponentCoordinates();
+
+    /*
+        Determines how each UI component is scaled based on window dimensions.
+        This can use useful for determining the general position of components
+        as window dimensions change.
+    */
+    vector<pair<float, float>> m_vComponentScaling;
+    /*
+        Determines how each UI component is translated after scaling. This can
+        be useful when certain components are placed a fixed distance relative
+        to other components.
+    */
+    vector<pair<float, float>> m_vComponentTranslating;
+    /*
+        The absolute value of the UI componnets are stored once they are
+        calculated so they do not need to be calculated every frame. Wheneever
+        there is a window resize event, these values are all recalculated.
+    */
+    vector<pair<float, float>> m_vComponentCoordinates;
 
     /*
         m_vComponentScaling and m_vComponentTranslating should have the same
@@ -328,7 +332,7 @@ private:
         IMAGE_BOT_DIFFICULTY_2,
         IMAGE_BOT_TEAM,
         IMAGE_BOT_TEAM_2,
-        IMAGE_BOT_VS_PLAYERS,
+        IMAGE_BOTS_VS_PLAYERS,
         IMAGE_CONFIG_1,
         IMAGE_CONFIG_2,
         IMAGE_CONTROLLER_1,
