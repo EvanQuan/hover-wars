@@ -57,15 +57,9 @@ PregameMenu::PregameMenu() : PromptMenu(
     // initial bot and player values, these SHOULD persist between menu changes
     // during runtime because it's annoying to have the values changed away
     // from what the player chose.
-#ifdef NDEBUG
     m_iPlayerCount = FuncUtils::bound(INPUT_HANDLER->getJoystickCount(),
                                       MIN_PLAYER_COUNT, MAX_PLAYER_COUNT);
     m_iBotCount = m_iPlayerCount;
-#else
-    m_iBotCount = 0;
-    m_iPlayerCount = 2;
-#endif // NDEBUG
-
     m_eBotDifficulty = DIFFICULTY_MEDIUM;
     m_eGameMode = GAMEMODE_TEAM_BOTS_VS_SOLO_PLAYERS;
     m_fGameTime = DEFAULT_GAME_TIME;
@@ -109,8 +103,7 @@ void PregameMenu::back()
 
 void PregameMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(PregameInterface::getInstance());
 
 }
 

@@ -7,6 +7,7 @@
 #include "SoundManager.h"
 #include "UserInterface/GameInterface.h"
 #include "GameStats.h"
+#include "UserInterface/UserInterfaceManager.h"
 
 /***********\
  * Defines *
@@ -147,7 +148,7 @@ void InputHandler::debugKeyCommands(int key, int action)
             GameInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight())->setFocus(HOVERCRAFT_PLAYER_1);
             break;
         case GLFW_KEY_MINUS:
-            // SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_INGAME);
+            // SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_OUTRUN);
             break;
         case GLFW_KEY_DOWN:
             // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);
@@ -478,12 +479,12 @@ void InputHandler::joystickCallback(int joystickID, int event)
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->initializeJoystick(joystickID);
         name = m_pInstance->m_pJoystickData[joystickID].sName;
-        GAME_MANAGER->getMenuInterface()->displayGlobalMessage(name + " " + std::to_string(joystickID + 1) + " connected");
+        UI_MANAGER->getCurrentInterface()->displayGlobalMessage(name + " " + std::to_string(joystickID + 1) + " connected");
         break;
     case GLFW_DISCONNECTED:
         SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_UI_CONTROLLER_CONNECT);
         m_pInstance->disconnectJoystick(joystickID);
-        GAME_MANAGER->getMenuInterface()->displayGlobalMessage("Controller " + std::to_string(joystickID + 1) +  " disconnected.");
+        UI_MANAGER->getCurrentInterface()->displayGlobalMessage("Controller " + std::to_string(joystickID + 1) +  " disconnected.");
         break;
     }
 }

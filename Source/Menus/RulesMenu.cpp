@@ -41,6 +41,5 @@ void RulesMenu::back()
 
 void RulesMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(RulesInterface::getInstance(m_pGameManager->getWidth(),
-                                                                    m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(RulesInterface::getInstance());
 }

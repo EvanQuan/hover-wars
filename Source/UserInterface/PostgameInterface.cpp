@@ -265,16 +265,15 @@ PostgameInterface::PostgameInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-PostgameInterface* PostgameInterface::getInstance(int iWidth, int iHeight)
+PostgameInterface* PostgameInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new PostgameInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 
@@ -421,7 +420,7 @@ void PostgameInterface::renderTeamBots(const vector<EndGameStat> &endGameStats,
         else if (GAME_STATS->isPlayer(s.hovercraft))
         {
             renderImage(IMAGE_PLAYER, placements);
-            string playerNumber ;
+            eImage playerNumber;
             switch (s.hovercraft) {
                 case HOVERCRAFT_PLAYER_1:
                     playerNumber = IMAGE_1_1;
@@ -543,7 +542,7 @@ void PostgameInterface::renderTeamPlayers(const vector<EndGameStat>& endGameStat
 
 
 
-    vector<pair<int, string>> teamScores;
+    vector<pair<int, eImage>> teamScores;
     teamScores.push_back(make_pair(teamBotScore, IMAGE_BOT_TEAM));
     teamScores.push_back(make_pair(teamPlayerScore, IMAGE_PLAYER_TEAM1));
     teamScores.push_back(make_pair(team2PlayerScore, IMAGE_PLAYER_TEAM2));

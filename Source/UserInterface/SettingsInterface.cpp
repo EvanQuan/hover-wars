@@ -32,16 +32,15 @@ SettingsInterface::SettingsInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-SettingsInterface* SettingsInterface::getInstance(int iWidth, int iHeight)
+SettingsInterface* SettingsInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new SettingsInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 

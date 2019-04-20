@@ -28,16 +28,15 @@ LoadingInterface::LoadingInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-LoadingInterface* LoadingInterface::getInstance(int iWidth, int iHeight)
+LoadingInterface* LoadingInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new LoadingInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 

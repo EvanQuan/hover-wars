@@ -1,6 +1,7 @@
 #include "UserInterface/UserInterface.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "UserInterface/UserInterfaceManager.h"
 
 /***********\
  * Defines *
@@ -61,6 +62,7 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
 {
     // Get Singleton Handles
     m_pShdrMngr = SHADER_MANAGER;
+    m_pUserInterfaceManager = UserInterfaceManager::getInstance();
 
     m_vComponentScaling = componentScaling;
     m_vComponentTranslating = componentTranslating;
@@ -71,12 +73,17 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-    m_Textures = TEXTURE_MANAGER->loadTextures(m_vTextureFiles, IMAGE_DIRECTORY);
+    /*
+        Whenever a UI instance is created, it is automatically stored by the UI
+        Manager for memory management.
+    */
+    m_pUserInterfaceManager->addInterface(this);
 }
 
 UserInterface::~UserInterface()
 {
     m_pShdrMngr = nullptr;
+    m_pUserInterfaceManager = nullptr;
 
     // Clean up VBO and VAO
     glDeleteBuffers(1, &m_iVertexBuffer);
@@ -114,13 +121,11 @@ void UserInterface::initFreeType()
 
     // Initialize FreeType Library and Default Font: Each function returns a non-zero integer when an error occurs.
     bLoaded = (0 == FT_Init_FreeType(&ftLibrary));
-    if (!bLoaded )
-        cout << "ERROR: Freetype: could not initialize FreeType Library for UI.\n";
+    if (!bLoaded) cout << "ERROR: Freetype: could not initialize FreeType Library for UI.\n";
 
     // Initialize Default Face
     bLoaded &= (0 == FT_New_Face(ftLibrary, DEFAULT_FONT.c_str(), 0, &ftFace));
-    if (!bLoaded )
-        cout << "ERROR: Freetype: failed to load \"" << DEFAULT_FONT << "\" for UI.\n";
+    if (!bLoaded) cout << "ERROR: Freetype: failed to load \"" << DEFAULT_FONT << "\" for UI.\n";
 
     // Successfully loaded -> Finish loading the rest of the Library.
     if (bLoaded)
@@ -152,7 +157,9 @@ void UserInterface::initFreeType()
 
                 // If it won't go out of bounds, save to buffer
                 if (cTest - cData < (BITMAP_HEIGHT * BITMAP_WIDTH))
+                {
                     addBitmapToBuffer(&ftFace->glyph->bitmap, cPtr);
+                }
                 else    // If it will go out of bounds, escape and input an error.
                 {
                     cout << "ERROR: FreeType: Could not construct proper Bitmap, Buffer went out of bounds.\n";
@@ -216,13 +223,13 @@ void UserInterface::addNewCharacter(char c, const FT_GlyphSlotRec_* pGlyph, cons
     Character cNewChar;
 
     // Set up rest of Character Structure
-    cNewChar.uvOffset = vec2(vOffsets->x / F_BITMAP_WIDTH,                                      // UV Offset for Bitmap
+    cNewChar.uvOffset = vec2(vOffsets->x / F_BITMAP_WIDTH,                               // UV Offset for Bitmap
                              vOffsets->y / F_BITMAP_HEIGHT);
     cNewChar.uvSize = vec2(static_cast<float>(pGlyph->bitmap.width) / F_BITMAP_WIDTH,    // Size of UV section
                            static_cast<float>(pGlyph->bitmap.rows) / F_BITMAP_HEIGHT);
-    cNewChar.size = ivec2(pGlyph->bitmap.width, pGlyph->bitmap.rows);     // Pixel Size
-    cNewChar.bearing = ivec2(pGlyph->bitmap_left, pGlyph->bitmap_top);    // Bearing Information
-    cNewChar.advance = pGlyph->advance.x;                                        // Glyph Advance information
+    cNewChar.size = ivec2(pGlyph->bitmap.width, pGlyph->bitmap.rows);                   // Pixel Size
+    cNewChar.bearing = ivec2(pGlyph->bitmap_left, pGlyph->bitmap_top);                  // Bearing Information
+    cNewChar.advance = pGlyph->advance.x;                                               // Glyph Advance information
 
     // Store Character for Later use.
     m_pCharacters.insert(make_pair(c, cNewChar));
@@ -276,19 +283,19 @@ void UserInterface::renderText(int text, GLfloat x, GLfloat y, GLfloat scale, ve
     renderText(std::to_string(text), x, y, scale, color);
 }
 /*
-Render text to the screen.
+    Render text to the screen.
 
-Window coordinates in pixels
-(0, height)     (width, height)
+    Window coordinates in pixels
+    (0, height)     (width, height)
 
 
-(0, 0)          (width, 0)
+    (0, 0)          (width, 0)
 
-@param text     to render
-@param x        x-coordinate of the bottom-left corner of text, in pixels
-@param y        y-coordinate of the bottom-left corner of text, in pixels
-@param scale    text, where 1.0 is the default size
-@param color    rgb colors of the text
+    @param text     to render
+    @param x        x-coordinate of the bottom-left corner of text, in pixels
+    @param y        y-coordinate of the bottom-left corner of text, in pixels
+    @param scale    text, where 1.0 is the default size
+    @param color    rgb colors of the text
 */
 void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale, vec3 color)
 {
@@ -333,8 +340,8 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
-        // Triangles
         /*
+           Triangles
             
             2
             |\  
@@ -346,8 +353,8 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_LEFT]);
 
-        // Triangles
         /*
+            Triangles
 
             2---3
              \  |
@@ -432,27 +439,26 @@ void UserInterface::renderText(const string text, int component, float x, float 
 }
 
 /*
-TODO Use hashmap for image instead of image filepath directly
-Render image to the screen.
+    TODO Use hashmap for image instead of image filepath directly
+    Render image to the screen.
 
-Window coordinates in pixels
-(0, height)     (width, height)
+    Window coordinates in pixels
+    (0, height)     (width, height)
 
 
-(0, 0)          (width, 0)
+    (0, 0)          (width, 0)
 
-@param filepath of image
-@param x        x-coordinate of the bottom-left corner of text, in pixels
-@param y        y-coordinate of the bottom-left corner of text, in pixels
-@param scale    image, where 1.0 is the default size
+    @param filepath of image
+    @param x        x-coordinate of the bottom-left corner of text, in pixels
+    @param y        y-coordinate of the bottom-left corner of text, in pixels
+    @param scale    image, where 1.0 is the default size
 */
-void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLfloat scale)
+void UserInterface::renderImage(const eImage image, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
-    auto tFoundIt = m_Textures.find(filepath);
-    Texture* image = tFoundIt->second;
+    Texture* texture = m_pUserInterfaceManager->getTexture(image);
     int iImage_x, iImage_y;
-    image->getTextureDimensions(&iImage_y, &iImage_x);
+    texture->getTextureDimensions(&iImage_y, &iImage_x);
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
@@ -469,7 +475,7 @@ void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLf
     vec4(x + iImage_x, y + iImage_y, 1.0f, 0.0f)
     };
 
-    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
+    texture->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
@@ -479,29 +485,28 @@ void UserInterface::renderImage(const string filepath, GLfloat x, GLfloat y, GLf
     // Render Quad
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    image->unbindTexture();
+    texture->unbindTexture();
 }
 
-void UserInterface::renderImage(const string filepath, int component)
+void UserInterface::renderImage(const eImage image, int component)
 {
-    renderImage(filepath, component, 0, 0);
+    renderImage(image, component, 0, 0);
 }
 
-void UserInterface::renderImage(const string filepath, int component, float x, float y)
+void UserInterface::renderImage(const eImage image, int component, float x, float y)
 {
-    renderImage(filepath,
+    renderImage(image,
         m_vComponentCoordinates[component].first + x,
         m_vComponentCoordinates[component].second + y,
         1.0f);
 }
 
-void UserInterface::renderBackgroundImage(const string filepath)
+void UserInterface::renderBackgroundImage(const eImage image)
 {
     // Get texture height and width
-    auto tFoundIt = m_Textures.find(filepath);
-    Texture* image = tFoundIt->second;
+    Texture* texture = m_pUserInterfaceManager->getTexture(image);
     int iImage_x, iImage_y;
-    image->getTextureDimensions(&iImage_y, &iImage_x);
+    texture->getTextureDimensions(&iImage_y, &iImage_x);
 
     // Set up OpenGL for Rendering
     glBindVertexArray(m_iVertexArray);
@@ -518,7 +523,7 @@ void UserInterface::renderBackgroundImage(const string filepath)
         vec4(1.0f,  1.0f,  1.0f, 0.0f), /*Top Right*/
     };
 
-    image->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
+    texture->bindTexture(ShaderManager::eShaderType::UI_SHDR, "text");
 
     // Update content of VBO memory
     glBindBuffer(GL_ARRAY_BUFFER, m_iVertexBuffer);
@@ -528,10 +533,10 @@ void UserInterface::renderBackgroundImage(const string filepath)
     // Render Quad
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    image->unbindTexture();
+    texture->unbindTexture();
 }
 
-string UserInterface::digitToImage(unsigned int digit)
+UserInterface::eImage UserInterface::digitToImage(unsigned int digit) const
 {
     switch (digit)
     {

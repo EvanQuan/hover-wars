@@ -75,5 +75,5 @@ void MainMenu::back()
 
 void MainMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(MainInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(MainInterface::getInstance());
 }

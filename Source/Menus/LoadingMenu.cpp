@@ -30,5 +30,5 @@ void LoadingMenu::select(eFixedCommand command)
 
 void LoadingMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(LoadingInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(LoadingInterface::getInstance());
 }

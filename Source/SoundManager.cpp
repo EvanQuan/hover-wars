@@ -716,7 +716,7 @@ void SoundManager::setEndGame()
 {
     stopAllEvents();
     play(SoundManager::eSoundEvent::SOUND_UI_END_GAME_CHEER);
-    play(SOUND_MUSIC_INGAME, m_bMusicEnabled);
+    play(SOUND_MUSIC_OUTRUN, m_bMusicEnabled);
 }
 
 // @Deprecated
@@ -740,7 +740,7 @@ void SoundManager::downPosition() {
 }
 
 void SoundManager::start() {
-    play(SOUND_MUSIC_INGAME, m_bMusicEnabled);
+    play(SOUND_MUSIC_OUTRUN, m_bMusicEnabled);
 }
 
 // Call every frame (or more often)

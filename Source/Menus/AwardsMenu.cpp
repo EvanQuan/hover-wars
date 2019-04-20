@@ -46,6 +46,5 @@ void AwardsMenu::select(eFixedCommand command)
 
 void AwardsMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(AwardsInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(AwardsInterface::getInstance());
 }

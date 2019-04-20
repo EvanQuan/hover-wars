@@ -6,14 +6,14 @@
 
     Unit : seconds
 */
-#define PROMPT_START_REPEAT_DELAY 0.75f
+#define PROMPT_START_REPEAT_DELAY 1.0f
 /*
     As the prompt repeats, there is a delay betweeen each repeat to ensure the
     cursor does not move too quickly.
 
     Unit : seconds
 */
-#define PROMPT_REPEAT_DELAY 0.25f
+#define PROMPT_REPEAT_DELAY 0.2f
 
 /*
     To prevent very slight joystick movement from registering as cursor movement,

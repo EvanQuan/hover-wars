@@ -24,16 +24,15 @@ RulesInterface::RulesInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-RulesInterface* RulesInterface::getInstance(int iWidth, int iHeight)
+RulesInterface* RulesInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new RulesInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 

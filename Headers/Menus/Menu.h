@@ -3,9 +3,10 @@
 /* INCLUDES */
 #include "stdafx.h"
 #include "EntityManager.h"
-#include "GameManager.h"
+#include "UserInterface/UserInterfaceManager.h"
 #include "InputHandler.h"
 #include "SoundManager.h"
+#include "GameManager.h"
 
 #ifndef NDEBUG
     #include "UserInterface/UserInterface.h"
@@ -130,6 +131,7 @@ protected:
     // Toggles Wireframe drawing
     void Menu::debugToggleWireframe();
 
+    UserInterfaceManager* m_pUserInterfaceManager;
     GameManager* m_pGameManager;
     EntityManager* m_pEntityMngr;
 };

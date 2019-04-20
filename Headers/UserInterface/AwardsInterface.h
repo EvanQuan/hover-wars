@@ -7,7 +7,7 @@ class AwardsInterface final : public PromptInterface
 {
 public:
 
-    static AwardsInterface* getInstance(int iWidth, int iHeight);
+    static AwardsInterface* getInstance();
 
     // Default Constructor
     AwardsInterface();

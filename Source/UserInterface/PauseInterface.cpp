@@ -33,16 +33,15 @@ PauseInterface::PauseInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-PauseInterface* PauseInterface::getInstance(int iWidth, int iHeight)
+PauseInterface* PauseInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new PauseInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 

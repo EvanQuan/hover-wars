@@ -97,16 +97,15 @@ PregameInterface::PregameInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-PregameInterface* PregameInterface::getInstance(int iWidth, int iHeight)
+PregameInterface* PregameInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new PregameInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 

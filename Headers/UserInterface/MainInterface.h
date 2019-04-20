@@ -12,7 +12,7 @@ class MainInterface final : public PromptInterface
 {
 public:
 
-    static MainInterface* getInstance(int iWidth, int iHeight);
+    static MainInterface* getInstance();
 
     MainInterface();                                        // Default Constructor
     MainInterface(const MainInterface* pCopy);              // Default Copy Constructor

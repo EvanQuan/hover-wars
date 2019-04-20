@@ -8,7 +8,7 @@ class PauseInterface final : public PromptInterface
 {
 public:
 
-    static PauseInterface* getInstance(int iWidth, int iHeight);
+    static PauseInterface* getInstance();
 
     // Default Constructor
     PauseInterface();

@@ -155,7 +155,6 @@ GameInterface::GameInterface() : UserInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     m_pEntityMngr = ENTITY_MANAGER;
@@ -491,7 +490,7 @@ void GameInterface::renderGameTime()
 void GameInterface::startMajorTimeWarning()
 {
     m_bHasStartedMajorWarning = true;
-    m_pSoundManager->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
+    m_pSoundManager->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_OUTRUN);
     m_pSoundManager->play(SoundManager::eSoundEvent::SOUND_UI_TIME_REMAINING_LOOP);
     displayNotification(NOTIFICATION_TIME_MAJOR);
 }

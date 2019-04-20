@@ -78,6 +78,7 @@
     <ClCompile Include="Source\UserInterface\SettingsInterface.cpp" />
     <ClCompile Include="Source\Menus\EndgameMenu.cpp" />
     <ClCompile Include="Source\UserInterface\EndgameInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\UserInterfaceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Anim_Track.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Headers\UserInterface\SettingsInterface.h" />
     <ClInclude Include="Headers\Menus\EndgameMenu.h" />
     <ClInclude Include="Headers\UserInterface\EndgameInterface.h" />
+    <ClInclude Include="Headers\UserInterface\UserInterfaceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

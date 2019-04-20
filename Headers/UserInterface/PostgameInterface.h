@@ -10,7 +10,7 @@ class PostgameInterface final : public PromptInterface
 {
 public:
 
-    static PostgameInterface* getInstance(int iWidth, int iHeight);
+    static PostgameInterface* getInstance();
 
     // Default Constructor
     PostgameInterface();

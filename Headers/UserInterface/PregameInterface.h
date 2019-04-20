@@ -17,7 +17,7 @@ class PregameInterface final : public PromptInterface
 {
 public:
 
-    static PregameInterface* getInstance(int iWidth, int iHeight);
+    static PregameInterface* getInstance();
 
     // Default Constructor
     PregameInterface();

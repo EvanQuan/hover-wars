@@ -10,8 +10,7 @@ class AIManager;
 class EntityManager;
 class MenuManager;
 class ShaderManager;
-class PromptInterface;
-class UserInterface;
+class UserInterfaceManager;
 class GameInterface;
 class GameStats;
 class Texture;
@@ -56,16 +55,11 @@ public:
     bool isPaused() const { return m_bPaused; }
     void setPaused(bool paused);
 
-    void addInterface(UserInterface* ui);
-    void setCurrentInterface(PromptInterface* ui);
-
     // Automatically called at end of game if time runs out, or if ended thrugh
     // pause menu
     void endGame();
 
     void flagWindowToClose() { glfwSetWindowShouldClose(m_pWindow, GL_TRUE); }
-
-    PromptInterface* getMenuInterface() const { return m_pMenuInterface; }
 
     vec3 getPlayerColor(eHovercraft player) const { return (int)m_vPlayerColors.size() > (int)player ? m_vPlayerColors.at(player) : vec3(1.0f); }
     vec3 getBotColor(eHovercraft bot) const { return m_vBotColors.empty() ? vec3(1.0f) : m_vBotColors.at(bot - MAX_PLAYER_COUNT); }
@@ -174,17 +168,22 @@ private:
     float m_fFrameDeltaTime;
 
     // Manager Pointers
-    EntityManager*      m_pEntityManager;
-    ShaderManager*      m_pShaderManager;
-    MenuManager*        m_pMenuManager;
-    AIManager*          m_pAIManager;
-    GameTime            m_pTimer;
-    GameStats*          m_pGameStats;
-    PhysicsManager*     m_pPhysicsManager;
-    PromptInterface*    m_pMenuInterface;
-    GameInterface*      m_pGameInterface;
-    vector<UserInterface*> m_vInterfaceInstances;
-    SoundManager*       m_pSoundManager;
+    EntityManager*          m_pEntityManager;
+    ShaderManager*          m_pShaderManager;
+    MenuManager*            m_pMenuManager;
+    AIManager*              m_pAIManager;
+    GameTime                m_pTimer;
+    GameStats*              m_pGameStats;
+    PhysicsManager*         m_pPhysicsManager;
+    /*
+        All UserInterface's are managed by the UserInterfaceManager. However,
+        the GameInterface is treated differently and is updated differently.
+        The GameManager manages the GameInterface on its own separate from the
+        other UserInterfaces.
+    */
+    GameInterface*          m_pGameInterface;
+    SoundManager*           m_pSoundManager;
+    UserInterfaceManager*   m_pUserInterfaceManager;
 
     void setKeyboardHovercraft(int playerCount);
     // The keyboard corresponds to its own hovercraft

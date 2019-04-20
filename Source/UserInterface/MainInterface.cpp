@@ -19,7 +19,7 @@ MainInterface::MainInterface() : PromptInterface(
         // 0 Background
         {0.0f, 0.0f},
         // 1 Title
-        {0.25f, 0.75f},
+        {0.27f, 0.75f},
         // 2 New Game
         {0.37f, 0.60f},
         // 3 Game Rule
@@ -53,13 +53,13 @@ MainInterface::MainInterface() : PromptInterface(
 {
 }
 
-MainInterface* MainInterface::getInstance(int iWidth, int iHeight)
+MainInterface* MainInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new MainInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 
