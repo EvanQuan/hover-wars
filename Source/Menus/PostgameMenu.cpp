@@ -39,10 +39,6 @@ PostgameMenu* PostgameMenu::getInstance()
 
 void PostgameMenu::select(eFixedCommand command)
 {
-    //jif (m_bIgnoreUserInput)
-    //j{
-        //jreturn;
-    //j}
     switch (command)
     {
     case COMMAND_PROMPT_BACK:
