@@ -1,6 +1,7 @@
 #include "UserInterface/UserInterface.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "UserInterface/UserInterfaceManager.h"
 
 /***********\
  * Defines *
@@ -56,26 +57,12 @@ const string  DEFAULT_FONT = ASTRON_BOY_REGULAR_FONT;
 const float F_BITMAP_HEIGHT = static_cast<float>(BITMAP_HEIGHT);
 const float F_BITMAP_WIDTH = static_cast<float>(BITMAP_WIDTH);
 
-void UserInterface::setTheme(eTheme theme)
-{
-    m_eCurrentTheme = theme;
-    switch (theme)
-    {
-    case THEME_TRON:
-        m_mTexturesCurrent = m_mTexturesTron;
-        break;
-    case THEME_OUTRUN:
-    default:
-        m_mTexturesCurrent = m_mTexturesOutrun;
-    }
-
-}
-
 UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
                               vector<pair<float, float>> componentTranslating)
 {
     // Get Singleton Handles
     m_pShdrMngr = SHADER_MANAGER;
+    m_pUserInterfaceManager = UserInterfaceManager::getInstance();
 
     m_vComponentScaling = componentScaling;
     m_vComponentTranslating = componentTranslating;
@@ -86,28 +73,17 @@ UserInterface::UserInterface(vector<pair<float, float>> componentScaling,
     initFreeType();
     initializeVBOs();
 
-
-    TextureManager *textureManager = TEXTURE_MANAGER;
-
-
-    // @NOTE bug. If both the outturn and tron directories are loaded then there are errors
-    // for rendering text... but not images... even though text is not involved here?
-    // It doesn't matter if both directories are used.
-    // It doesn't matter which map (m_mTexturesTron or m_mTexturesOutrun) is being used.
-    // It doesn't matter the number of times TRON_DIRECTORY or OUTRUN directory
-    // is loaded or in which order.
-    // Both directories load without errors individually.
-    m_mTexturesTron = textureManager->loadTextures(m_mImagePaths, TRON_DIRECTORY);
-
-    m_mTexturesOutrun = textureManager->loadTextures(m_mImagePaths, OUTRUN_DIRECTORY);
-
-    // default theme
-    setTheme(THEME_OUTRUN);
+    /*
+        Whenever a UI instance is created, it is automatically stored by the UI
+        Manager for memory management.
+    */
+    m_pUserInterfaceManager->addInterface(this);
 }
 
 UserInterface::~UserInterface()
 {
     m_pShdrMngr = nullptr;
+    m_pUserInterfaceManager = nullptr;
 
     // Clean up VBO and VAO
     glDeleteBuffers(1, &m_iVertexBuffer);
@@ -145,13 +121,11 @@ void UserInterface::initFreeType()
 
     // Initialize FreeType Library and Default Font: Each function returns a non-zero integer when an error occurs.
     bLoaded = (0 == FT_Init_FreeType(&ftLibrary));
-    if (!bLoaded )
-        cout << "ERROR: Freetype: could not initialize FreeType Library for UI.\n";
+    if (!bLoaded) cout << "ERROR: Freetype: could not initialize FreeType Library for UI.\n";
 
     // Initialize Default Face
     bLoaded &= (0 == FT_New_Face(ftLibrary, DEFAULT_FONT.c_str(), 0, &ftFace));
-    if (!bLoaded )
-        cout << "ERROR: Freetype: failed to load \"" << DEFAULT_FONT << "\" for UI.\n";
+    if (!bLoaded) cout << "ERROR: Freetype: failed to load \"" << DEFAULT_FONT << "\" for UI.\n";
 
     // Successfully loaded -> Finish loading the rest of the Library.
     if (bLoaded)
@@ -183,7 +157,9 @@ void UserInterface::initFreeType()
 
                 // If it won't go out of bounds, save to buffer
                 if (cTest - cData < (BITMAP_HEIGHT * BITMAP_WIDTH))
+                {
                     addBitmapToBuffer(&ftFace->glyph->bitmap, cPtr);
+                }
                 else    // If it will go out of bounds, escape and input an error.
                 {
                     cout << "ERROR: FreeType: Could not construct proper Bitmap, Buffer went out of bounds.\n";
@@ -364,8 +340,8 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
             vec4(xpos + w,  ypos + h,   ch.uvOffset.x + ch.uvSize.x,    ch.uvOffset.y)
         };
 
-        // Triangles
         /*
+           Triangles
             
             2
             |\  
@@ -377,8 +353,8 @@ void UserInterface::renderText(string text, GLfloat x, GLfloat y, GLfloat scale,
         vTextOutput.push_back(vCorners[BOTTOM_RIGHT]);
         vTextOutput.push_back(vCorners[TOP_LEFT]);
 
-        // Triangles
         /*
+            Triangles
 
             2---3
              \  |
@@ -480,8 +456,7 @@ void UserInterface::renderText(const string text, int component, float x, float 
 void UserInterface::renderImage(const eImage image, GLfloat x, GLfloat y, GLfloat scale)
 {
     // Get texture height and width
-    auto tFoundIt = m_mTexturesCurrent.find(image);
-    Texture* texture = tFoundIt->second;
+    Texture* texture = m_pUserInterfaceManager->getTexture(image);
     int iImage_x, iImage_y;
     texture->getTextureDimensions(&iImage_y, &iImage_x);
 
@@ -529,8 +504,7 @@ void UserInterface::renderImage(const eImage image, int component, float x, floa
 void UserInterface::renderBackgroundImage(const eImage image)
 {
     // Get texture height and width
-    auto tFoundIt = m_mTexturesCurrent.find(image);
-    Texture* texture = tFoundIt->second;
+    Texture* texture = m_pUserInterfaceManager->getTexture(image);
     int iImage_x, iImage_y;
     texture->getTextureDimensions(&iImage_y, &iImage_x);
 

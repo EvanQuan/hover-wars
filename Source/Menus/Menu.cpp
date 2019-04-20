@@ -20,8 +20,9 @@ Menu::Menu(
     m_pInputHandler = InputHandler::getInstance();
     m_bWireFrameEnabled = false;
 
-    m_pGameManager = GameManager::getInstance();
+    m_pGameManager = GAME_MANAGER;
     m_pEntityMngr = ENTITY_MANAGER;
+    m_pUserInterfaceManager = UI_MANAGER;
 }
 
 Menu::~Menu()

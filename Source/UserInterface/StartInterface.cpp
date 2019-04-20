@@ -31,19 +31,17 @@ StartInterface::StartInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
-
     m_bPromptVisible = true;
     m_fBlinkTime = BLINK_INTERVAL;
 }
 
-StartInterface* StartInterface::getInstance(int iWidth, int iHeight)
+StartInterface* StartInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new StartInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getHeight());
     return m_pInstance;
 }
 

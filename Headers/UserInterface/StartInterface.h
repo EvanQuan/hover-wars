@@ -7,7 +7,7 @@ class StartInterface final : public PromptInterface
 {
 public:
 
-    static StartInterface* getInstance(int iWidth, int iHeight);
+    static StartInterface* getInstance();
 
     // Default Constructor
     StartInterface();

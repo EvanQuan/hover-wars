@@ -24,16 +24,15 @@ EndgameInterface::EndgameInterface() : PromptInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
 }
 
-EndgameInterface* EndgameInterface::getInstance(int iWidth, int iHeight)
+EndgameInterface* EndgameInterface::getInstance()
 {
     if (m_pInstance == nullptr)
     {
         m_pInstance = new EndgameInterface();
     }
-    m_pInstance->updateWidthAndHeight(iWidth, iHeight);
+    m_pInstance->updateWidthAndHeight(GAME_MANAGER->getWidth(), GAME_MANAGER->getWidth());
     return m_pInstance;
 }
 

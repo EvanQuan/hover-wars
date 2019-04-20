@@ -5,7 +5,7 @@ class LoadingInterface final : public PromptInterface
 {
 public:
 
-    static LoadingInterface* getInstance(int iWidth, int iHeight);
+    static LoadingInterface* getInstance();
 
     // Default Constructor
     LoadingInterface();

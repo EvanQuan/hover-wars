@@ -38,8 +38,7 @@ void EndgameMenu::back()
 
 void EndgameMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(EndgameInterface::getInstance(m_pGameManager->getWidth(),
-                                                                      m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(EndgameInterface::getInstance());
     m_fDelayTime = DELAY_TIME;
 }
 

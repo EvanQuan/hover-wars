@@ -66,18 +66,11 @@ void SettingsMenu::back()
 
 void SettingsMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(SettingsInterface::getInstance(m_pGameManager->getWidth(),
-                                                                       m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(SettingsInterface::getInstance());
 }
 
 bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
 {
-    SettingsInterface *settingsUI = SettingsInterface::getInstance(
-        m_pGameManager->getWidth(),
-        m_pGameManager->getHeight());
-
-    UserInterface::eTheme theme;
-
     switch (getCurrentPromptCommand())
     {
     case eFixedCommand::COMMAND_PROMPT_SELECT: // Music
@@ -106,14 +99,14 @@ bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
         case eFixedCommand::COMMAND_PROMPT_RIGHT:
         case eFixedCommand::COMMAND_PROMPT_LEFT:
             // Don't toggle in preparation for new themes
-            switch (settingsUI->getTheme())
+            switch (m_pUserInterfaceManager->getTheme())
             {
-            case UserInterface::THEME_OUTRUN:
-                settingsUI->setTheme(UserInterface::THEME_TRON);
+            case UserInterfaceManager::THEME_OUTRUN:
+                m_pUserInterfaceManager->setTheme(UserInterfaceManager::THEME_TRON);
                 cout << "theme: tron" << endl;
                 break;
-            case UserInterface::THEME_TRON:
-                settingsUI->setTheme(UserInterface::THEME_OUTRUN);
+            case UserInterfaceManager::THEME_TRON:
+                m_pUserInterfaceManager->setTheme(UserInterfaceManager::THEME_OUTRUN);
                 cout << "theme: outrun" << endl;
                 break;
             }

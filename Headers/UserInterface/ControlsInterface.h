@@ -7,7 +7,7 @@ class ControlsInterface final : public PromptInterface
 {
 public:
 
-    static ControlsInterface* getInstance(int iWidth, int iHeight);
+    static ControlsInterface* getInstance();
 
     ControlsInterface();                                            // Default Constructor
     ControlsInterface(const ControlsInterface* pCopy);              // Default Copy Constructor

@@ -103,8 +103,7 @@ void PregameMenu::back()
 
 void PregameMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(PregameInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(PregameInterface::getInstance());
 
 }
 

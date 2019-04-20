@@ -5,7 +5,7 @@ class EndgameInterface final : public PromptInterface
 {
 public:
 
-    static EndgameInterface* getInstance(int iWidth, int iHeight);
+    static EndgameInterface* getInstance();
 
     // Default Constructor
     EndgameInterface();

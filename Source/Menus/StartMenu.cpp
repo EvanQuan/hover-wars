@@ -37,6 +37,5 @@ void StartMenu::select(eFixedCommand command)
 
 void StartMenu::enterOverride()
 {
-    m_pGameManager->setCurrentInterface(StartInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(StartInterface::getInstance());
 }

@@ -103,6 +103,7 @@
     <ClInclude Include="Headers\UserInterface\SettingsInterface.h" />
     <ClInclude Include="Headers\UserInterface\StartInterface.h" />
     <ClInclude Include="Headers\UserInterface\UserInterface.h" />
+    <ClInclude Include="Headers\UserInterface\UserInterfaceManager.h" />
     <ClInclude Include="Headers\Utils\FuncUtils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
     <ClCompile Include="Source\UserInterface\SettingsInterface.cpp" />
     <ClCompile Include="Source\UserInterface\StartInterface.cpp" />
     <ClCompile Include="Source\UserInterface\UserInterface.cpp" />
+    <ClCompile Include="Source\UserInterface\UserInterfaceManager.cpp" />
     <ClCompile Include="Source\Utils\FuncUtils.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

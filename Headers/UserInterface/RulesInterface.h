@@ -5,7 +5,7 @@ class RulesInterface final : public PromptInterface
 {
 public:
 
-    static RulesInterface* getInstance(int iWidth, int iHeight);
+    static RulesInterface* getInstance();
 
     // Default Constructor
     RulesInterface();

@@ -52,8 +52,7 @@ void PauseMenu::back()
 void PauseMenu::enterOverride()
 { 
     GAME_MANAGER->setPaused(true);
-    m_pGameManager->setCurrentInterface(PauseInterface::getInstance(m_pGameManager->getWidth(),
-                                                                   m_pGameManager->getHeight()));
+    m_pUserInterfaceManager->setCurrentInterface(PauseInterface::getInstance());
 }
 
 /*

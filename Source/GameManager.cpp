@@ -12,6 +12,7 @@
 #include "Menus/StartMenu.h"
 #include "Menus/LoadingMenu.h"
 #include "TextureManager.h"
+#include "UserInterface/UserInterfaceManager.h"
 
 // Unit: seconds
 #define GAME_OVER_TIME 0.0f
@@ -75,6 +76,8 @@ GameManager::GameManager(GLFWwindow* rWindow)
     m_fMaxDeltaTime = sixtieth_of_a_sec{ 1 };
 
     m_eKeyboardHovercraft = HOVERCRAFT_PLAYER_1;
+
+    m_pUserInterfaceManager = UI_MANAGER;
 
     m_pMenuManager = MENU_MANAGER;
 
@@ -155,11 +158,8 @@ GameManager::~GameManager()
     if (nullptr != m_pShaderManager)    // Shader Manager
         delete m_pShaderManager;
 
-    // User Interface
-    for (UserInterface* ui : m_vInterfaceInstances) {
-        delete ui;
-    }
-    m_vInterfaceInstances.clear();
+    if (nullptr != m_pUserInterfaceManager)
+        delete m_pUserInterfaceManager;
 
     if (nullptr != m_pMenuManager)   // Command Handler
         delete m_pMenuManager;
@@ -174,20 +174,6 @@ GameManager::~GameManager()
         delete m_pGameStats;
 }
 
-
-/*
-    As UserInterface instances are generated, they are each added to
-    the m_vInterfaceInstances list.
-    At the end of the program, all interfaces are deleted.
-*/
-void GameManager::addInterface(UserInterface* ui)
-{
-    m_vInterfaceInstances.push_back(ui);
-}
-void GameManager::setCurrentInterface(PromptInterface* ui)
-{
-    m_pMenuInterface = ui;
-}
 /*
     Start rendering game to screen. This call with block until the game loop
     ends (it will hang the thread). When this function returns, the program
@@ -215,7 +201,7 @@ bool GameManager::renderGraphics()
     // These should be done before the EntityManager updates so that the
     // environment can respond to the commands issued this frame.
     m_pMenuManager->update(m_fFrameDeltaTime);
-    m_pMenuInterface->update(m_fFrameDeltaTime);
+    m_pUserInterfaceManager->update(m_fFrameDeltaTime);
     checkIfStartedGameOver();
 
     if (m_bInGame)
@@ -726,7 +712,7 @@ void GameManager::drawScene()
         if (!m_bInGame)
         {
             // In game check is to avoid double rendering the user interface.
-            m_pMenuInterface->render();
+            m_pUserInterfaceManager->render();
         }
         
 
@@ -905,7 +891,9 @@ bool GameManager::initialize()
     m_fGameOverTime = GAME_OVER_TIME;
 
     m_pMenuManager->setCurrentMenu(StartMenu::getInstance());
-    m_pMenuInterface = StartInterface::getInstance(m_iWidth, m_iHeight);
+    // Whenever a menu is set, so is the corresponding interface. Does not need
+    // to be done manually here.
+    // m_pUserInterfaceManager->setCurrentInterface(StartInterface::getInstance());
 
     // Return error results
     return true; 
@@ -956,7 +944,7 @@ void GameManager::resizeWindow( int iWidth, int iHeight )
         generateFrameBuffer(i);
 
     m_pEntityManager->updateWidthAndHeight(m_iSplitWidth, m_iSplitHeight);
-    m_pMenuInterface->updateWidthAndHeight(iWidth, iHeight);
+    m_pUserInterfaceManager->updateWidthAndHeight(iWidth, iHeight);
 }
 
 /*

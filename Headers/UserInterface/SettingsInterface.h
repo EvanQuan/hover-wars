@@ -5,7 +5,7 @@ class SettingsInterface final : public PromptInterface
 {
 public:
 
-    static SettingsInterface* getInstance(int iWidth, int iHeight);
+    static SettingsInterface* getInstance();
 
     // Default Constructor
     SettingsInterface();

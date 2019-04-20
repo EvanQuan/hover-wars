@@ -155,7 +155,6 @@ GameInterface::GameInterface() : UserInterface(
     }
 )
 {
-    GAME_MANAGER->addInterface(this);
     setDisplayCount(1);
     m_eHovercraftFocus = HOVERCRAFT_PLAYER_1;
     m_pEntityMngr = ENTITY_MANAGER;
