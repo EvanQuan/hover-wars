@@ -108,7 +108,7 @@ While other controller types may work, there is no guarantee they will.
 
 [James Coté](https://github.com/jamescote)
 
-[Jianan Ding](https://github.com/jiananding)
+[Stephen Ding](https://github.com/jiananding)
 
 ## Libraries
 
@@ -135,18 +135,14 @@ While other controller types may work, there is no guarantee they will.
 
 1. The Libraries and Settings should all be set up in the VS project.
 
+#### Scene File Syntax Highlighting
+
+[Because colors are cool.](https://github.com/EvanQuan/vim-scene)
+
 #### Debug Commands (for Debug mode only)
 
 
 ##### Switching Keyboard Player
-
-**1** - Player 1
-
-**2** - Player 2
-
-**3** - Player 3
-
-**4** - Player 4
 
 **F** - Toggle Wireframe Mode
 
@@ -155,20 +151,6 @@ While other controller types may work, there is no guarantee they will.
 **B** - Toggle Bounding Box rendering
 
 **M** - Toggle Spatial Map Debug rendering
-
-**Keypad 0** - Set User Interface display count to 0
-
-**Keypad 1** - Set User Interface display count to 1
-
-**Keypad 2** - Set User Interface display count to 2
-
-**Keypad 3** - Set User Interface display count to 3
-
-**Keypad 4** - Set User Interface display count to 4
-
-**R** - Player 1 hits Player 2
-
-**T** - Player 2 hits Player 1
 
 **Left Click** - Spawns a particle Emitter at the mouse intersection with the
              xz-plane @ yAxis = 0
