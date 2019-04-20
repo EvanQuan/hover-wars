@@ -148,7 +148,7 @@ void InputHandler::debugKeyCommands(int key, int action)
             GameInterface::getInstance(m_pGameManager->getWidth(), m_pGameManager->getHeight())->setFocus(HOVERCRAFT_PLAYER_1);
             break;
         case GLFW_KEY_MINUS:
-            // SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_INGAME);
+            // SOUND_MANAGER->play(SoundManager::SOUND_MUSIC_OUTRUN);
             break;
         case GLFW_KEY_DOWN:
             // SOUND_MANAGER->play(SoundManager::SOUND_HOVERCAR_ENGINE);

@@ -20,9 +20,9 @@ SettingsMenu* SettingsMenu::m_pInstance = nullptr;
 SettingsMenu::SettingsMenu() : PromptMenu(
     vector < vector<pair<const char*, eFixedCommand>> >
     {
-        {
-            { "Theme", eFixedCommand::COMMAND_PROMPT_SELECT_2 }
-        },
+        // {
+            // { "Theme", eFixedCommand::COMMAND_PROMPT_SELECT_2 }
+        // },
         {
             { "Music", eFixedCommand::COMMAND_PROMPT_SELECT }
         },
@@ -84,11 +84,11 @@ bool SettingsMenu::moveCursorOverride(eFixedCommand direction)
             SOUND_MANAGER->setMusicEnabled(m_bMusicEnabled);
             if (m_bMusicEnabled)
             {
-                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
+                SOUND_MANAGER->play(SoundManager::eSoundEvent::SOUND_MUSIC_OUTRUN);
             }
             else
             {
-                SOUND_MANAGER->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_INGAME);
+                SOUND_MANAGER->stopEvent(SoundManager::eSoundEvent::SOUND_MUSIC_OUTRUN);
             }
             return true;
         }

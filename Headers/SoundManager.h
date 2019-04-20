@@ -75,7 +75,7 @@ public:
         SOUND_POWERUP_SPEED_ACTIVATE,
         SOUND_POWERUP_SPEED_DEACTIVATE,
 
-        SOUND_MUSIC_INGAME,
+        SOUND_MUSIC_OUTRUN,
         SOUND_MUSIC_PAUSE,
 
         SOUND_UI_CURSOR_MOVE,
@@ -326,7 +326,7 @@ private:
                                          }},
         {SOUND_POWERUP_SPEED_DEACTIVATE, { "event:/powerup/speedboost_end",
                                          }},
-        {SOUND_MUSIC_INGAME,                   { "event:/background/music_loop_retro",
+        {SOUND_MUSIC_OUTRUN,                   { "event:/background/music_loop_retro",
                                          }},
         {SOUND_MUSIC_PAUSE,                    { "event:/background/music_loop_pause",
                                          }},
