@@ -6,7 +6,7 @@
 
     Unit : seconds
 */
-#define PROMPT_START_REPEAT_DELAY 0.8f
+#define PROMPT_START_REPEAT_DELAY 1.0f
 /*
     As the prompt repeats, there is a delay betweeen each repeat to ensure the
     cursor does not move too quickly.
