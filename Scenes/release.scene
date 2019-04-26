@@ -63,7 +63,9 @@
 #           - specifies a texture to use for the object.
 #           - <diffuse map location>    = specifies a texture to use as a diffuse map for the object
 #           - <*specular map location*> = (Optional) specifies a texture to use as a specular map.
-#                                       = (Optional) if specified as 3 floats, a texture of that shade will be generated.
+#                                       = (Optional) if specified as 3 floats,
+#                                                    a texture of that shade will be
+#                                                    generated.
 #           - S                         = specifies the shininess of the material
 #       +mesh       { <mesh location>  s }
 #           - specifies a mesh .obj that will be loaded for the object
