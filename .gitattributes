@@ -1,1 +1,9 @@
+# If sound bank files exceed 100MB, Github will not accept them until git-lfs
+# is used. While this is normally fine for development, a couple of problems
+# can arise:
+#   1. Files tracked under git-lfs do not behave as intended when zipped under
+#      Github's releases. (Although it's fine if you manually zip them from
+#      source).
+#   2. Developers need to install git-lfs in order to commit.
+#
 # *.bank filter=lfs diff=lfs merge=lfs -text
